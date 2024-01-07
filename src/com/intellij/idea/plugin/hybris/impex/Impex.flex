@@ -225,6 +225,7 @@ end_userrights                    = [$]END_USERRIGHTS
     "zip:"                                                  { return ImpexTypes.FIELD_VALUE_ZIP_PREFIX; }
     "file:"                                                 { return ImpexTypes.FIELD_VALUE_FILE_PREFIX; }
     "jar:"                                                  { return ImpexTypes.FIELD_VALUE_JAR_PREFIX; }
+    "/medias/"                                              { return ImpexTypes.FIELD_VALUE_EXPLODED_JAR_PREFIX; }
     "http:http"                                             {
                                                                 yypushback(4);
                                                                 return ImpexTypes.FIELD_VALUE_HTTP_PREFIX;

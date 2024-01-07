@@ -45,6 +45,7 @@
 - Inject `line` variable type of `Map<Integer, String>` into Groovy language [#915](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/915)
 - Parse and style field values `jar:`, `file:` and `zip:` [#918](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/918)
 - Parse and style field value `http:` [#929](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/929)
+- Parse and style field value `/medias/` for exploded jar [#930](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/930)
 - Suggest the next available type code when there is no value [#923](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/923)
 
 ### `ImpEx` inspection rules

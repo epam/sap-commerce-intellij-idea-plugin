@@ -96,6 +96,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.COLLECTION_MERGE_PREFIX -> COLLECTION_MERGE_PREFIX
 
             ImpexTypes.FIELD_VALUE_JAR_PREFIX -> FIELD_VALUE_JAR_PREFIX
+            ImpexTypes.FIELD_VALUE_EXPLODED_JAR_PREFIX -> FIELD_VALUE_EXPLODED_JAR_PREFIX
             ImpexTypes.FIELD_VALUE_FILE_PREFIX -> FIELD_VALUE_FILE_PREFIX
             ImpexTypes.FIELD_VALUE_ZIP_PREFIX -> FIELD_VALUE_ZIP_PREFIX
             ImpexTypes.FIELD_VALUE_HTTP_PREFIX -> FIELD_VALUE_HTTP_PREFIX
@@ -113,6 +114,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         val COLLECTION_REMOVE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_REMOVE_PREFIX)
         val COLLECTION_MERGE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_MERGE_PREFIX)
         val FIELD_VALUE_JAR_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_JAR_PREFIX)
+        val FIELD_VALUE_EXPLODED_JAR_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_EXPLODED_JAR_PREFIX)
         val FIELD_VALUE_FILE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_FILE_PREFIX)
         val FIELD_VALUE_ZIP_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX)
         val FIELD_VALUE_HTTP_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX)

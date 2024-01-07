@@ -261,22 +261,7 @@
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
-    <option name="IMPEX_FIELD_VALUE_JAR_PREFIX">
-        <value>
-            <option name="FONT_TYPE" value="1"/>
-        </value>
-    </option>
-    <option name="IMPEX_FIELD_VALUE_FILE_PREFIX">
-        <value>
-            <option name="FONT_TYPE" value="1"/>
-        </value>
-    </option>
-    <option name="IMPEX_FIELD_VALUE_ZIP_PREFIX">
-        <value>
-            <option name="FONT_TYPE" value="1"/>
-        </value>
-    </option>
-    <option name="IMPEX_FIELD_VALUE_HTTP_PREFIX">
+    <option name="IMPEX_FIELD_VALUE_PREFIX">
         <value>
             <option name="FONT_TYPE" value="1"/>
         </value>

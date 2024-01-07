@@ -89,6 +89,8 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
 ; jar:/impex/testfiles/import/media/dummymedia/img_05.jpg ;
 ; zip:ext/impex/resources/impex/testfiles/import/media/dummymedia/test_9-10.zip&img_09.jpg ;
 ; file:ext/impex/resources/impex/testfiles/import/media/dummymedia/img 02.jpg ;
+; http:http://site.org/picture.png ;
+; /medias/fromjar/demo5.jpg ;
 
 @@@@@
 """
@@ -138,6 +140,7 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
         AttributesDescriptor("Value//<null> value", ImpexHighlighterColors.FIELD_VALUE_NULL),
         AttributesDescriptor("Value//<ignore> value", ImpexHighlighterColors.FIELD_VALUE_IGNORE),
         AttributesDescriptor("Value//jar: prefix", ImpexHighlighterColors.FIELD_VALUE_JAR_PREFIX),
+        AttributesDescriptor("Value//exploded jar prefix", ImpexHighlighterColors.FIELD_VALUE_EXPLODED_JAR_PREFIX),
         AttributesDescriptor("Value//file: prefix", ImpexHighlighterColors.FIELD_VALUE_FILE_PREFIX),
         AttributesDescriptor("Value//zip: prefix", ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX),
         AttributesDescriptor("Value//http: prefix", ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX),
