@@ -43,7 +43,8 @@
 - Prepend default imports for injected Groovy language [#913](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/913)
 - Inject `impex` variable type of `ImpExImportReader` into Groovy language [#914](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/914)
 - Inject `line` variable type of `Map<Integer, String>` into Groovy language [#915](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/915)
-- Style field values `jar:`, `file:` and `zip:` [#918](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/918)
+- Parse and style field values `jar:`, `file:` and `zip:` [#918](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/918)
+- Parse and style field value `http:` [#929](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/929)
 - Suggest the next available type code when there is no value [#923](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/923)
 
 ### `ImpEx` inspection rules

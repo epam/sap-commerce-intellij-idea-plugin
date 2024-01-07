@@ -191,4 +191,10 @@
             <option name="FOREGROUND" value="FFFFFF"/>
         </value>
     </option>
+    <option name="IMPEX_FIELD_VALUE_HTTP_PREFIX">
+        <value>
+            <option name="FONT_TYPE" value="1"/>
+            <option name="FOREGROUND" value="FFFFFF"/>
+        </value>
+    </option>
 </list>

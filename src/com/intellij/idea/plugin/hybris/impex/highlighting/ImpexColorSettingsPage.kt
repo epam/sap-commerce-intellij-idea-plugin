@@ -140,6 +140,7 @@ INSERT_UPDATE Media; @media[translator = de.hybris.platform.impex.jalo.media.Med
         AttributesDescriptor("Value//jar: prefix", ImpexHighlighterColors.FIELD_VALUE_JAR_PREFIX),
         AttributesDescriptor("Value//file: prefix", ImpexHighlighterColors.FIELD_VALUE_FILE_PREFIX),
         AttributesDescriptor("Value//zip: prefix", ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX),
+        AttributesDescriptor("Value//http: prefix", ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX),
 
         AttributesDescriptor("Bean shell//Marker", ImpexHighlighterColors.BEAN_SHELL_MARKER),
         AttributesDescriptor("Bean shell//Body", ImpexHighlighterColors.BEAN_SHELL_BODY),
