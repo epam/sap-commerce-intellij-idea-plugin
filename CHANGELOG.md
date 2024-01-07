@@ -49,6 +49,7 @@
 - Parse and style password encoding prefixes as field value [#931](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/931)
 - Suggest the next available type code when there is no value [#923](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/923)
 - Improved code completion for `translator` modifier [#932](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/932)
+- Added special translator modifiers `expr`, `version`, `system`, `class` [#933](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/933)
 
 ### `ImpEx` inspection rules
 - Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)

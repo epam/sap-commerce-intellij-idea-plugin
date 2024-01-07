@@ -31,7 +31,7 @@ import com.intellij.openapi.project.Project
  */
 enum class AttributeModifier(
     override val modifierName: String,
-    private val modifierValues: Set<String> = emptySet()
+    private val modifierValues: Set<String> = emptySet(),
 ) : ImpexModifier {
 
     UNIQUE("unique", HybrisConstants.IMPEX_MODIFIER_BOOLEAN_VALUES),
@@ -66,7 +66,11 @@ enum class AttributeModifier(
     TRANSLATOR("translator") {
         override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
             .getImplementationsForClasses(*HybrisConstants.CLASS_FQN_IMPEX_TRANSLATORS)
-    };
+    },
+    EXPR("expr"),
+    SYSTEM("system"),
+    VERSION("version"),
+    CLASSIFICATION_CLASS("class");
 
     override fun getLookupElements(project: Project): Set<LookupElement> = modifierValues
         .map { ImpExLookupElementFactory.buildModifierValue(it) }
