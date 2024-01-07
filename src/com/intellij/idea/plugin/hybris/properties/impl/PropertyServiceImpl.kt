@@ -83,8 +83,6 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
             loadHybrisRuntimeProperties(result)
             loadHybrisOptionalConfigDir(result)
 
-            println("Read properties files: ${propertiesFiles.size}")
-
             CachedValueProvider.Result.create(result.values.toList(), propertiesFiles
                 .map { it.virtualFile }
                 .toTypedArray()

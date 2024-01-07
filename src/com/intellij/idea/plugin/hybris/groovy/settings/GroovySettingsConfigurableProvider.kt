@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.groovy.settings
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -39,21 +40,21 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
         message("hybris.settings.project.groovy.title"), "hybris.groovy.settings"
     ) {
 
-        private val state = HybrisProjectSettingsComponent.getInstance(project).state.groovySettings
+        private val developerSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.groovySettings
         private lateinit var enableActionToolbar: JCheckBox
 
         override fun createPanel() = panel {
             group("Language") {
                 row {
                     enableActionToolbar = checkBox("Enable actions toolbar for each Groovy file")
-                        .bindSelected(state::enableActionsToolbar)
+                        .bindSelected(developerSettings::enableActionsToolbar)
                         .comment("Actions toolbar enables possibility to change current remote SAP Commerce session and perform operations on current file, such as `Execute on remote server`")
                         .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }
                         .component
                 }
                 row {
                     checkBox("Enable actions toolbar for a Test Groovy file")
-                        .bindSelected(state::enableActionsToolbarForGroovyTest)
+                        .bindSelected(developerSettings::enableActionsToolbarForGroovyTest)
                         .comment("Enables Actions toolbar for the groovy files located in the <strong>${HybrisConstants.TEST_SRC_DIRECTORY}</strong> or <strong>${HybrisConstants.GROOVY_TEST_SRC_DIRECTORY}</strong> directory.")
                         .enabledIf(enableActionToolbar.selected)
                         .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.documentation
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.DocumentationTargetProvider
@@ -33,11 +34,12 @@ class ImpexDocumentationTargetProvider : DocumentationTargetProvider {
         if (file !is ImpexFile) return emptyList()
 
         val element = file.findElementAt(offset) ?: return emptyList()
-        val settingsComponent = HybrisProjectSettingsComponent.getInstance(file.project)
+        val projectSettings = HybrisProjectSettingsComponent.getInstance(file.project)
 
-        if (!settingsComponent.isHybrisProject()) return emptyList()
+        if (!projectSettings.isHybrisProject()) return emptyList()
 
-        val documentationSettings = settingsComponent.state.impexSettings.documentation
+        val developerSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(file.project).state
+        val documentationSettings = developerSettings.impexSettings.documentation
         if (!documentationSettings.enabled) return emptyList()
 
         val allowedElementTypes = with(mutableListOf<IElementType>()) {

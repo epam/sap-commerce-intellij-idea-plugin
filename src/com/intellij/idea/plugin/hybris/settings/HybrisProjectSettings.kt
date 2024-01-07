@@ -19,19 +19,10 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
-import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
-import com.intellij.idea.plugin.hybris.groovy.settings.GroovySettings
-import com.intellij.idea.plugin.hybris.impex.settings.ImpexSettings
-import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
 import com.intellij.openapi.components.BaseState
 import java.util.*
 
 class HybrisProjectSettings : BaseState() {
-    var flexibleSearchSettings by property(FlexibleSearchSettings()) { false }
-    var polyglotQuerySettings by property(PolyglotQuerySettings()) { false }
-    var impexSettings by property(ImpexSettings()) { false }
-    var groovySettings by property(GroovySettings()) { false }
-
     var customDirectory by string(null)
     var hybrisDirectory by string(null)
     var configDirectory by string(null)

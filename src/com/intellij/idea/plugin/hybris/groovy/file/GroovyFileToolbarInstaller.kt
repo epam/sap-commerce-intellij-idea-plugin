@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.groovy.file
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.ex.EditorEx
@@ -38,7 +38,7 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean {
-        val settings = HybrisProjectSettingsComponent.getInstance(project).state
+        val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
         val file = editor.virtualFile
         val path = file.path
         val isTestFile = path.contains(HybrisConstants.TEST_SRC_DIRECTORY, true)

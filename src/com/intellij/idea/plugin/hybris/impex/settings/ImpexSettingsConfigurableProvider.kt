@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -37,7 +38,7 @@ class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProv
         message("hybris.settings.project.impex.title"), "hybris.impex.settings"
     ) {
 
-        private val projectSettings = HybrisProjectSettingsComponent.getInstance(project).state.impexSettings
+        private val projectSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.impexSettings
 
         private lateinit var foldingEnableCheckBox: JCheckBox
         private lateinit var documentationEnableCheckBox: JCheckBox

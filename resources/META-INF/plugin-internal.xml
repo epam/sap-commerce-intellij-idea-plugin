@@ -31,7 +31,7 @@
         <treeStructureProvider order="first" implementation="com.intellij.idea.plugin.hybris.project.view.HybrisProjectView"/>
 
         <projectViewNodeDecorator order="last" implementation="com.intellij.idea.plugin.hybris.project.view.HybrisProjectViewNodeDecorator"/>
-        
+
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.bean.psi.contributor.BSReferenceContributor"/>
         <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.TSReferenceContributor"/>
