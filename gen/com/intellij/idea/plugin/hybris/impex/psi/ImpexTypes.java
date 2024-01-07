@@ -96,7 +96,6 @@ public interface ImpexTypes {
   IElementType FIELD_VALUE_JAR_PREFIX = new ImpexTokenType("FIELD_VALUE_JAR_PREFIX");
   IElementType FIELD_VALUE_NULL = new ImpexTokenType("FIELD_VALUE_NULL");
   IElementType FIELD_VALUE_SEPARATOR = new ImpexTokenType("FIELD_VALUE_SEPARATOR");
-  IElementType FIELD_VALUE_URL = new ImpexTokenType("FIELD_VALUE_URL");
   IElementType FIELD_VALUE_ZIP_PREFIX = new ImpexTokenType("FIELD_VALUE_ZIP_PREFIX");
   IElementType FUNCTION = new ImpexTokenType("FUNCTION");
   IElementType HEADER_MODE_INSERT = new ImpexTokenType("HEADER_MODE_INSERT");

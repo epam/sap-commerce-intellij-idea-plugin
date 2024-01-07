@@ -232,7 +232,7 @@ private value_dec ::= FIELD_VALUE
     | FIELD_VALUE_FILE_PREFIX
     | FIELD_VALUE_ZIP_PREFIX
     | FIELD_VALUE_HTTP_PREFIX
-    | FIELD_VALUE_URL
+//    | FIELD_VALUE_URL
     | BOOLEAN
     | DIGIT
     | string

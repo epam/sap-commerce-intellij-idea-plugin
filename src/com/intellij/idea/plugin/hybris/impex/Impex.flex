@@ -107,7 +107,7 @@ header_type = {identifier}+
 
 value_subtype      = {identifier}+
 field_value        = ({not_crlf}|{identifier}+)
-field_value_url    = ([/]{identifier}+)+[.]{identifier}+
+//field_value_url    = ([/]{identifier}+)+[.]{identifier}+
 field_value_ignore = "<ignore>"
 field_value_null   = "<null>"
 
@@ -250,7 +250,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
 
-    {field_value_url}                                       { return ImpexTypes.FIELD_VALUE_URL; }
+//    {field_value_url}                                       { return ImpexTypes.FIELD_VALUE_URL; }
     {field_value}                                           { return ImpexTypes.FIELD_VALUE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }
