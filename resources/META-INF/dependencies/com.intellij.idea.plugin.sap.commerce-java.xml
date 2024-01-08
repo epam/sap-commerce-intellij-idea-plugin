@@ -57,7 +57,7 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.VersionControlSystemConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultVersionControlSystemConfigurator"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DebugRunConfigurationConfigurator"/>
+        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultRunConfigurationConfigurator"/>
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSearchScopeConfigurator"/>

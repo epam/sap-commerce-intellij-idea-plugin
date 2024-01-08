@@ -22,6 +22,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 import com.intellij.execution.RunManager;
 import com.intellij.execution.RunnerAndConfigurationSettings;
 import com.intellij.execution.configurations.ConfigurationFactory;
+import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.remote.RemoteConfiguration;
 import com.intellij.execution.remote.RemoteConfigurationType;
@@ -34,6 +35,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.AbstractModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
+import com.intellij.idea.plugin.hybris.runConfigurations.LocalSapCXConfigurationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
@@ -42,10 +44,11 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 
-public class DebugRunConfigurationConfigurator implements RunConfigurationConfigurator {
+public class DefaultRunConfigurationConfigurator implements RunConfigurationConfigurator {
 
     @Override
     public void configure(
@@ -54,20 +57,22 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
         final @NotNull Project project,
         final @NotNull HybrisConfiguratorCache cache
     ) {
-        indicator.setText(message("hybris.project.import.runconfiguration.debug"));
+        indicator.setText(message("hybris.project.import.runconfiguration"));
         final RunManager runManager = RunManager.getInstance(project);
-        createRemoteDebug(runManager, hybrisProjectDescriptor, cache);
+        createRunConfiguration(runManager, RemoteConfigurationType.class, HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.remote.debug"), runner -> {
+            final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
+            remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, cache);
+            remoteConfiguration.setAllowRunningInParallel(false);
+        });
+        createRunConfiguration(runManager, LocalSapCXConfigurationType.class, HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.localserver"), runner -> {
+
+        });
+
     }
 
-    private void createRemoteDebug(
-        @NotNull final RunManager runManager,
-        @NotNull final HybrisProjectDescriptor hybrisProjectDescriptor,
-        @NotNull final HybrisConfiguratorCache cache
-    ) {
-        final RemoteConfigurationType remoteConfigurationType = ConfigurationTypeUtil.findConfigurationType(
-            RemoteConfigurationType.class);
-        final ConfigurationFactory configurationFactory = remoteConfigurationType.getConfigurationFactories()[0];
-        final String configurationName = HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.remote.debug");
+    private <T extends ConfigurationType> void createRunConfiguration(final RunManager runManager, final Class<T> configurationType, final String configurationName, final Consumer<RunnerAndConfigurationSettings> configurationConsumer) {
+        final T confType = ConfigurationTypeUtil.findConfigurationType(configurationType);
+        final ConfigurationFactory configurationFactory = confType.getConfigurationFactories()[0];
 
         if (runManager.findConfigurationByName(configurationName) != null) {
             return;
@@ -79,9 +84,7 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
                 configurationFactory
             );
 
-            final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
-            remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, cache);
-            remoteConfiguration.setAllowRunningInParallel(false);
+            configurationConsumer.accept(runner);
 
             runner.setActivateToolWindowBeforeRun(true);
             runner.storeInDotIdeaFolder();
@@ -130,14 +133,14 @@ public class DebugRunConfigurationConfigurator implements RunConfigurationConfig
             return null;
         }
         final Optional<String> transport = Arrays.stream(debugOptions.split(" "))
-                                                 .filter(e -> e.startsWith(HybrisConstants.X_RUNJDWP_TRANSPORT))
-                                                 .findAny();
+            .filter(e -> e.startsWith(HybrisConstants.X_RUNJDWP_TRANSPORT))
+            .findAny();
         if (transport.isEmpty()) {
             return null;
         }
         final Optional<String> address = Arrays.stream(transport.get().split(","))
-                                               .filter(e -> e.startsWith(HybrisConstants.ADDRESS))
-                                               .findAny();
+            .filter(e -> e.startsWith(HybrisConstants.ADDRESS))
+            .findAny();
         return address.map(s -> s.split("=")[1]).orElse(null);
     }
 }

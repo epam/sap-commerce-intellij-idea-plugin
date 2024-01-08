@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.runConfigurations
 
+import com.intellij.compiler.options.CompileStepBeforeRun
+import com.intellij.diagnostic.logging.LogsGroupFragment
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ModuleBasedConfiguration
@@ -27,15 +29,16 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.target.LanguageRuntimeType
 import com.intellij.execution.target.TargetEnvironmentAwareRunProfile
 import com.intellij.execution.target.TargetEnvironmentConfiguration
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.execution.ui.BeforeRunFragment
+import com.intellij.execution.ui.CommonParameterFragments
+import com.intellij.execution.ui.FragmentedSettingsEditor
+import com.intellij.execution.ui.SettingsEditorFragment
+import com.intellij.openapi.externalSystem.service.execution.configuration.addBeforeRunFragment
+import com.intellij.openapi.externalSystem.service.execution.configuration.fragments.SettingsEditorFragmentContainer
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.TextFieldWithBrowseButton
-import com.intellij.util.ui.FormBuilder
 import org.jdom.Element
-import javax.swing.JComponent
-import javax.swing.JPanel
 
 
 class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory) :
@@ -46,7 +49,7 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration?> {
-        return LocalSapCXRunSettingsEditor()
+        return LocalSapCXRunSettingsEditor(this)
     }
 
     override fun getState(
@@ -72,29 +75,12 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
     }
 }
 
-private class LocalSapCXRunSettingsEditor : SettingsEditor<LocalSapCXRunConfiguration>() {
-    private val myPanel: JPanel
-    private val scriptPathField = TextFieldWithBrowseButton()
+private class LocalSapCXRunSettingsEditor(runConfiguration: LocalSapCXRunConfiguration) : FragmentedSettingsEditor<LocalSapCXRunConfiguration>(runConfiguration) {
 
-    init {
-        scriptPathField.addBrowseFolderListener(
-            "Select Script File", null, null,
-            FileChooserDescriptorFactory.createSingleFileDescriptor()
-        )
-        myPanel = FormBuilder.createFormBuilder()
-            .addLabeledComponent("Script file", scriptPathField)
-            .getPanel()
-    }
-
-    override fun resetEditorFrom(runConfiguration: LocalSapCXRunConfiguration) {
-        // do Nothing
-    }
-
-    override fun applyEditorTo(runConfiguration: LocalSapCXRunConfiguration) {
-        // runConfiguration.setScriptName(scriptPathField.text)
-    }
-
-    override fun createEditor(): JComponent {
-        return myPanel
+    override fun createFragments(): List<SettingsEditorFragment<LocalSapCXRunConfiguration, *>> = SettingsEditorFragmentContainer.fragments {
+        add(CommonParameterFragments.createRunHeader())
+        addBeforeRunFragment(CompileStepBeforeRun.ID)
+        addAll(BeforeRunFragment.createGroup())
+        add(LogsGroupFragment())
     }
 }

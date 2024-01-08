@@ -18,7 +18,7 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DebugRunConfigurationConfigurator
+import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultRunConfigurationConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
@@ -34,6 +34,6 @@ interface RunConfigurationConfigurator {
     )
 
     companion object {
-        val instance: RunConfigurationConfigurator = ApplicationManager.getApplication().getService(DebugRunConfigurationConfigurator::class.java)
+        val instance: RunConfigurationConfigurator = ApplicationManager.getApplication().getService(DefaultRunConfigurationConfigurator::class.java)
     }
 }
