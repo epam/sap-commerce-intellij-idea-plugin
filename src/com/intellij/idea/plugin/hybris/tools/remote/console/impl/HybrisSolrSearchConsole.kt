@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -50,7 +50,6 @@ import java.awt.Dimension
 import java.io.Serial
 import java.util.*
 import javax.swing.*
-import javax.swing.border.EmptyBorder
 
 class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH, PlainTextLanguage.INSTANCE) {
 
@@ -88,7 +87,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     }
 
     private fun initCoresElements() {
-        coresLabel.border = EmptyBorder(labelInsets)
+        coresLabel.border = JBUI.Borders.empty(labelInsets)
         coresComboBox.renderer = SimpleListCellRenderer.create("...") { it.core }
         panel.add(coresLabel)
         panel.add(coresComboBox)
@@ -105,13 +104,13 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     }
 
     private fun initMaxRowsElements() {
-        maxRowsLabel.border = EmptyBorder(labelInsets)
+        maxRowsLabel.border = JBUI.Borders.empty(labelInsets)
         panel.add(maxRowsLabel)
         panel.add(maxRowsSpinner)
     }
 
     private fun initDocsElements() {
-        docsLabel.border = EmptyBorder(labelInsets)
+        docsLabel.border = JBUI.Borders.empty(labelInsets)
         panel.add(docsLabel)
         coresComboBox.selectedItemProperty().adviseEternal { setDocsLabelCount(it) }
     }

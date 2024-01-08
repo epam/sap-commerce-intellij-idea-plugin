@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -36,7 +36,6 @@ import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
-import javax.swing.border.EmptyBorder
 
 class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH, FlexibleSearchLanguage) {
 
@@ -70,19 +69,19 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
     }
 
     private fun initCommitElements() {
-        commitLabel.border = EmptyBorder(labelInsets)
+        commitLabel.border = JBUI.Borders.empty(labelInsets)
         panel.add(commitLabel)
         panel.add(commitCheckbox)
     }
 
     private fun initPlainSqlElements() {
-        plainSqlLabel.border = EmptyBorder(labelInsets)
+        plainSqlLabel.border = JBUI.Borders.empty(labelInsets)
         panel.add(plainSqlLabel)
         panel.add(plainSqlCheckbox)
     }
 
     private fun initMaxRowsElements() {
-        maxRowsLabel.border = EmptyBorder(labelInsets)
+        maxRowsLabel.border = JBUI.Borders.empty(labelInsets)
         panel.add(maxRowsLabel)
         panel.add(maxRowsSpinner)
     }

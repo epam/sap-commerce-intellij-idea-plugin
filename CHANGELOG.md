@@ -56,6 +56,7 @@
 - Style scripting action elements `beforeEach:`, `afterEach:`, `if:` and `endif:` [#938](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/938)
 - Inject Groovy language into a single line scripting block [#939](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/939)
 - Style scripting marker and action within multi-line block [#940](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/940)
+- Enhanced ImpEx Console with additional execution settings [#941](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/941)
 
 ### `ImpEx` inspection rules
 - Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)

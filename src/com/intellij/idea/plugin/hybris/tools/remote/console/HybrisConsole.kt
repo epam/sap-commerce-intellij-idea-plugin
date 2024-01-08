@@ -24,10 +24,15 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
+import com.intellij.util.ui.JBUI
 import java.io.Serial
 import javax.swing.Icon
 
 abstract class HybrisConsole(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
+
+    protected val borders10 = JBUI.Borders.empty(10)
+    protected val borders5 = JBUI.Borders.empty(5, 10)
+    protected val bordersLabel = JBUI.Borders.empty(10, 10, 10, 0)
 
     init {
         this.printDefaultText()
