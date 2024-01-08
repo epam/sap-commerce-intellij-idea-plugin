@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -57,10 +57,23 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                 }.layout(RowLayout.PARENT_GRID)
             }
 
+            group(message("hybris.settings.project.build.title")) {
+                row {
+                    checkBox("Generate code before the Rebuild Project action")
+                        .comment("""
+                            If checked, beans and models will be re-generated to the <strong>boostrap/gensrc</strong> before the compilation process.<br>
+                            Once generated, compilation will be triggered and create class files which will be placed under <strong>boostrap/modelclasses</strong>.<br>
+                            After that, <strong>models.jar</strong> will be created from the <strong>boostrap/modelclasses</strong> folder.<br>
+                            As a final step, project compilation will continue.
+                        """.trimIndent())
+                        .bindSelected(state::generateCodeOnRebuild)
+                }
+            }
+
             group(message("hybris.settings.project.common.title")) {
                 row {
                     checkBox("Show complete Module name in the Project View")
-                        .comment("If checked, complete module name will be represented as <code>[Platform.core]</code> instead of <code>core</code>")
+                        .comment("If checked, complete module name will be represented as <code>[Platform.core]</code> instead of <code>core</code>.")
                         .bindSelected(state::showFullModuleName)
                 }
             }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.TS_PREVIEW_SHOW_COLLECTIONS
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
@@ -37,7 +37,7 @@ class ShowOnlyCustomAction(val settings: TSViewSettings) : ToggleAction(message(
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.items.text"), null, AllIcons.Actions.GroupByClass) {
+class ShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.items.text"), null, HybrisIcons.TS_PREVIEW_SHOW_ITEMS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItems()
 
@@ -49,7 +49,7 @@ class ShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction(message("
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.maps.text"), null, AllIcons.Actions.GroupByPackage) {
+class ShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.maps.text"), null, HybrisIcons.TS_PREVIEW_SHOW_MAPS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaMaps()
 
@@ -61,7 +61,7 @@ class ShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(message("h
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaEnumsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.enums.text"), null, AllIcons.Actions.GroupByTestProduction) {
+class ShowMetaEnumsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.enums.text"), null, HybrisIcons.TS_PREVIEW_SHOW_ENUMS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaEnums()
 
@@ -73,7 +73,7 @@ class ShowMetaEnumsAction(val settings: TSViewSettings) : ToggleAction(message("
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.collections.text"), null, AllIcons.Actions.GroupByPrefix) {
+class ShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.collections.text"), null, TS_PREVIEW_SHOW_COLLECTIONS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaCollections()
 

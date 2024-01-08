@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,13 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+
+        <!-- We cannot rely on `context.isRebuild` as it will be false in case of modules of various types.-->
+        <!-- Thus, we're looking for Platform module.-->
+        <!-- See ModulesBuildSettings.isRebuild.-->
+        <compiler.task execute="BEFORE" implementation="com.intellij.idea.plugin.hybris.project.compile.ProjectBeforeCompilerTask"/>
+        <compiler.task execute="AFTER" implementation="com.intellij.idea.plugin.hybris.project.compile.ProjectAfterCompilerTask"/>
+
         <defaultLiveTemplates file="liveTemplates/Java.xml"/>
 
         <projectImportProvider implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider"/>
@@ -45,9 +52,6 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ModuleDependenciesConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultModuleDependenciesConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavadocModuleConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavadocModuleConfigurator"/>
-
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultConfiguratorFactory"/>
 
@@ -67,9 +71,6 @@
 
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.impex.completion.impl.ImpexImplementationClassCompletionContributorImpl"/>
 
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelEnumLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelItemLineMarkerProvider"/>

@@ -39,7 +39,6 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getCompilerOutputPathsConfigurator(): CompilerOutputPathsConfigurator = CompilerOutputPathsConfigurator.getInstance()
     override fun getLibRootsConfigurator(): LibRootsConfigurator = LibRootsConfigurator.getInstance()
     override fun getGroupModuleConfigurator(): GroupModuleConfigurator = GroupModuleConfigurator.getInstance()
-    override fun getJavadocModuleConfigurator(): JavadocModuleConfigurator = JavadocModuleConfigurator.getInstance()
     override fun getModuleSettingsConfigurator(): ModuleSettingsConfigurator = ModuleSettingsConfigurator.getInstance()
     override fun getVersionControlSystemConfigurator(): VersionControlSystemConfigurator = VersionControlSystemConfigurator.getInstance()
     override fun getDebugRunConfigurationConfigurator(): RunConfigurationConfigurator = RunConfigurationConfigurator.instance

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -73,6 +73,99 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
         ImpexTypes.ATTRIBUTE_NAME -> {
             when (element.text) {
+                AttributeModifier.EXPR.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    subHeader("VelocityTranslator")
+                    externalLink(
+                        "Special Value Translators",
+                        "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/4ce7b82cbc574456ac197393f88e5cc6.html?locale=en-US#special-value-translators"
+                    )
+                    texts(
+                        "The VelocityTranslator is used only for export. It can be used for exporting a value for an item using a velocity expression.",
+                        "With that, you can export a constant value or can aggregate different attributes.",
+                        "Using the following header at an export of an order item, the code of the order is exported as well as the id and name of the user owning the order and its payment address, street name, and country.",
+                    )
+                    example("""
+                        INSERT_UPDATE Order; code[unique=true]; \
+                                            @template1[translator=de.hybris.jakarta.ext.impex.jalo.translators.VelocityTranslator, expr='${"$"}item.user.getUID()']; \
+                                            @template2[translator=de.hybris.jakarta.ext.impex.jalo.translators.VelocityTranslator, expr='${"$"}item.user.name'];
+                    """.trimIndent())
+                }.build()
+
+                AttributeModifier.CLASSIFICATION_CLASS.modifierName,
+                AttributeModifier.SYSTEM.modifierName,
+                AttributeModifier.VERSION.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    subHeader("ClassificationAttributeTranslator")
+                    externalLink(
+                        "Special Value Translators",
+                        "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/4ce7b82cbc574456ac197393f88e5cc6.html?locale=en-US#special-value-translators"
+                    )
+                    texts(
+                        "Instead of importing each product feature one by one you can assign all features of a product with one value line using this translator.",
+                        "Therefore you have to declare a special attribute for each feature to import.",
+                        "Assuming you want to set a value for feature type at your product a suitable header could be as follows:",
+                    )
+                    example("""
+                        UPDATE Product; code[unique=true]; @type[system='SampleClassification',version='1.0',translator=de.hybris.platform.catalog.jalo.classification.impex.ClassificationAttributeTranslator;]
+                    """.trimIndent())
+                    texts("In this example, the modifiers system and version, which are both mandatory, specify the classification system version of the product feature.")
+                    texts("One more optional modifier class can be used with this translator.")
+                }.build()
+
+                TypeModifier.DISABLE_UNIQUE_ATTRIBUTES_VALIDATOR_FOR_TYPES.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    externalLink(
+                        "Disable Interceptors Programmatically",
+                        "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/9ce1b60e12714a7dba6ea7e66b4f7acd.html?locale=en-US#disable-interceptors-via-impex"
+                    )
+                    texts(
+                        "disable.UniqueAttributesValidator.for.types (InterceptorExecutionPolicy#DISABLED_UNIQUE_ATTRIBUTE_VALIDATOR_FOR_ITEM_TYPES).",
+                        "This attribute takes a set of item types for which you want to disable UniqueAttributesValidator.",
+                        "To disable UniqueAttributesValidator, specify a comma-separated item types for which you want to disable it:",
+                        "The following impex specifies only one such interceptor:"
+                    )
+                    example("""
+                        INSERT_UPDATE Currency[disable.UniqueAttributesValidator.for.types='Currency'];isocode[unique=true];digits;
+                        ;EUR_Test;-2;
+                    """.trimIndent())
+                    texts("If you want to specify more than one ID, put the bean IDs in apostrophes: <'beanID'>.")
+                }.build()
+
+                TypeModifier.DISABLE_INTERCEPTOR_BEANS.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    externalLink(
+                        "Disable Interceptors Programmatically",
+                        "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/9ce1b60e12714a7dba6ea7e66b4f7acd.html?locale=en-US#disable-interceptors-via-impex"
+                    )
+                    texts(
+                        "disable.interceptor.beans (InterceptorExecutionPolicy#DISABLED_INTERCEPTOR_BEANS constant).",
+                        "This attribute takes a set of Spring bean IDs.",
+                        "To disable specific interceptors, specify a comma-separated bean-IDs list for the disable.interceptor.beans header attribute.",
+                        "The following impex specifies only one such interceptor:"
+                    )
+                    example("""
+                        INSERT_UPDATE Currency[disable.interceptor.beans='validateCurrencyDataInterceptor'];isocode[unique=true];digits;
+                        ;EUR_Test;-2;
+                    """.trimIndent())
+                }.build()
+
+                TypeModifier.DISABLE_INTERCEPTOR_TYPES.modifierName -> impexDoc {
+                    typeModifier(element.text)
+                    externalLink(
+                        "Disable Interceptors Programmatically",
+                        "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/9ce1b60e12714a7dba6ea7e66b4f7acd.html?locale=en-US#disable-interceptors-via-impex"
+                    )
+                    texts(
+                        "disable.interceptor.types (InterceptorExecutionPolicy#DISABLED_INTERCEPTOR_TYPES constant)",
+                        "This attribute takes a set of interceptor types (de.hybris.platform.servicelayer.interceptor.impl.InterceptorExecutionPolicy.InterceptorType) that you want to disable."
+                    )
+                    example("""
+                        INSERT_UPDATE Currency[disable.interceptor.types=validate];isocode[unique=true];digits;
+                        ;EUR_Test2;-2;
+                    """.trimIndent())
+                }.build()
+
                 TypeModifier.SLD_ENABLED.modifierName -> impexDoc {
                     typeModifier(element.text)
                     externalLink(

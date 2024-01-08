@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,12 +22,12 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifie
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingPlaceholderBuilder
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters
+import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.firstLeaf
 import org.apache.commons.lang3.StringUtils
 import java.util.regex.Pattern
 
@@ -37,6 +37,7 @@ class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
     override fun getPlaceholder(psiElement: PsiElement): String = when (psiElement) {
         is ImpexAttribute -> getPlaceholder(psiElement)
         is ImpexParameters -> getParametersPlaceholder(psiElement.parameterList)
+        is ImpexUserRightsPermissionValue -> getPlaceholder(psiElement)
         else -> psiElement.text
     }
 
@@ -57,42 +58,66 @@ class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
         }
     }
 
-    private fun getPlaceholder(impexAttribute: ImpexAttribute): String {
-        val text = impexAttribute.anyAttributeName.text
-        if (quoteAwareStringEquals(text,
+    private fun getPlaceholder(element: ImpexUserRightsPermissionValue) = when (element.firstLeaf.elementType) {
+        ImpexTypes.PERMISSION_DENIED -> "❌"
+        ImpexTypes.PERMISSION_ALLOWED -> "✅"
+        else -> StringUtils.EMPTY
+    }
+
+    private fun getPlaceholder(impexAttribute: ImpexAttribute) = with(impexAttribute.anyAttributeName.text) {
+        when {
+            quoteAwareStringEquals(this, TypeModifier.DISABLE_INTERCEPTOR_TYPES) -> {
+                val foldedText = impexAttribute.anyAttributeValue
+                    ?.text
+                    ?: impexAttribute.text
+                "!$foldedText"
+            }
+
+            quoteAwareStringEquals(
+                this,
                 AttributeModifier.LANG,
                 AttributeModifier.DATE_FORMAT,
                 AttributeModifier.MODE,
-                AttributeModifier.NUMBER_FORMAT)) {
-            return impexAttribute.anyAttributeValue
-                ?.text
-                ?: impexAttribute.text
-        } else if (quoteAwareStringEquals(text,
+                AttributeModifier.NUMBER_FORMAT,
+                TypeModifier.DISABLE_INTERCEPTOR_BEANS,
+                TypeModifier.DISABLE_UNIQUE_ATTRIBUTES_VALIDATOR_FOR_TYPES
+            ) -> {
+                impexAttribute.anyAttributeValue
+                    ?.text
+                    ?: impexAttribute.text
+            }
+
+            quoteAwareStringEquals(
+                this,
                 AttributeModifier.TRANSLATOR,
                 AttributeModifier.CELL_DECORATOR,
-                TypeModifier.PROCESSOR)) {
+                TypeModifier.PROCESSOR
+            ) -> {
+                val value = impexAttribute.anyAttributeValue?.text ?: return impexAttribute.text
+                val clearedString = QUOTES_PATTERN.matcher(value).replaceAll(StringUtils.EMPTY)
 
-            val value = impexAttribute.anyAttributeValue?.text ?: return impexAttribute.text
-            val clearedString = QUOTES_PATTERN.matcher(value).replaceAll(StringUtils.EMPTY)
+                clearedString.substringAfterLast(".")
+                    .ifBlank { value }
+            }
 
-            return clearedString.substringAfterLast(".")
-                .ifBlank { value }
-        } else {
-            return isBooleanAttributeModifier(impexAttribute,
-                AttributeModifier.UNIQUE,
-                AttributeModifier.DEFAULT,
-                AttributeModifier.VIRTUAL,
-                AttributeModifier.ALLOW_NULL,
-                AttributeModifier.FORCE_WRITE,
-                AttributeModifier.IGNORE_NULL,
-                AttributeModifier.IGNORE_KEY_CASE,
-                TypeModifier.BATCH_MODE,
-                TypeModifier.SLD_ENABLED,
-                TypeModifier.IMPEX_LEGACY_MODE,
-                TypeModifier.BATCH_MODE,
-                TypeModifier.CACHE_UNIQUE
-            )
-                ?: return StringUtils.EMPTY
+            else -> {
+                isBooleanAttributeModifier(
+                    impexAttribute,
+                    AttributeModifier.UNIQUE,
+                    AttributeModifier.DEFAULT,
+                    AttributeModifier.VIRTUAL,
+                    AttributeModifier.ALLOW_NULL,
+                    AttributeModifier.FORCE_WRITE,
+                    AttributeModifier.IGNORE_NULL,
+                    AttributeModifier.IGNORE_KEY_CASE,
+                    TypeModifier.BATCH_MODE,
+                    TypeModifier.SLD_ENABLED,
+                    TypeModifier.IMPEX_LEGACY_MODE,
+                    TypeModifier.BATCH_MODE,
+                    TypeModifier.CACHE_UNIQUE
+                )
+                    ?: StringUtils.EMPTY
+            }
         }
     }
 

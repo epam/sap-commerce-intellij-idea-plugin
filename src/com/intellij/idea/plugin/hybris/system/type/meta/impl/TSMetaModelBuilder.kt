@@ -92,7 +92,7 @@ class TSMetaModelBuilder(
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
         return TSMetaItemImpl(
             dom, myModule, name, myCustom,
-            attributes = create(dom.attributes),
+            attributes = create(dom, dom.attributes),
             indexes = create(dom.indexes),
             customProperties = create(dom.customProperties),
             deployment = create(dom.deployment)
@@ -192,22 +192,27 @@ class TSMetaModelBuilder(
             TSMetaDeploymentImpl(dom, myModule, TSMetaModelNameProvider.extract(dom), myCustom)
         else null
 
-    private fun create(dom: Persistence): TSMetaPersistence {
-        return TSMetaPersistenceImpl(dom, myModule, TSMetaModelNameProvider.extract(dom), myCustom)
-    }
+    private fun create(itemTypeDom: ItemType, attributeDom: Attribute, dom: Persistence) = TSMetaPersistenceImpl(
+        itemTypeDom,
+        attributeDom,
+        dom,
+        myModule,
+        TSMetaModelNameProvider.extract(dom),
+        myCustom
+    )
 
-    private fun create(dom: Attribute): TSMetaItem.TSMetaItemAttribute? {
+    private fun create(itemTypeDom: ItemType, dom: Attribute): TSMetaItem.TSMetaItemAttribute? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
         return TSMetaItemImpl.TSMetaItemAttributeImpl(
             dom, myModule, name, myCustom,
             customProperties = create(dom.customProperties),
-            persistence = create(dom.persistence),
+            persistence = create(itemTypeDom, dom, dom.persistence),
             modifiers = create(dom.modifiers)
         )
     }
 
-    private fun create(dom: Attributes): Map<String, TSMetaItem.TSMetaItemAttribute> = dom.attributes
-        .mapNotNull { attr -> create(attr) }
+    private fun create(itemTypeDom: ItemType, dom: Attributes): Map<String, TSMetaItem.TSMetaItemAttribute> = dom.attributes
+        .mapNotNull { attr -> create(itemTypeDom, attr) }
         .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
 
     private fun create(dom: CustomProperties): Map<String, TSMetaCustomProperty> = dom.properties

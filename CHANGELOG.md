@@ -1,5 +1,17 @@
 ## [2023.3.3]
 
+### Features
+- Added `extends` information for Type System Item completion results [#892](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/892)
+- Moved project settings to developer specific settings [#935](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/935)
+
+### `Project Build` enhancements
+- Re-generate the code and `models.jar` before the `Build` -> `Rebuild Project` [#906](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/906)
+- Added configurable setting to toggle automatic re-generation of the code [#907](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/907)
+- Clean `modelclasses` and `gensrc` directories before the code generation [#909](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/909)
+- Trigger file system change after the code generation [#910](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/910)
+- Trigger code generation even if there are modules of various types [#911](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/911)
+- Trigger file system change if code generation failed [#919](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/919)
+
 ### `Project Import` enhancements
 - Added autoconfiguration of the JRebel Facet for custom extensions [#869](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/869)
 - Omit slow operations after project import [#871](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/871)
@@ -14,24 +26,88 @@
 ### `Ant` enhancements
 - Allow common targets for custom extensions [#873](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/873)
 
+### `Cockpit NG` enhancements
+- Added code completion for Editor wrapping types [#925](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/925)
+- Improved Editor wrapping type text range identification [#926](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/926)
+- Respect all fields of the DTO as a type [#927](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/927)
+- Add a type of the field in code completion for DTO as a type [#928](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/928)
+
+### `ImpEx` enhancements
+- Added `disable.interceptor.types` type modifier [#889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/889)
+- Added `disable.interceptor.beans` type modifier [#890](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/890)
+- Added `disable.UniqueAttributesValidator.for.types` type modifier [#891](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/891)
+- Added reference resolution for not quoted value of the `disable.interceptor.beans` [#893](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/893)
+- Added reference resolution for not quoted value of the `disable.interceptor.types` [#894](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/894)
+- Added reference resolution for not quoted value of the `disable.UniqueAttributesValidator.for.types` [#895](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/895)
+- Customized folding for `User Rights` permission flags [#897](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/897)
+- Improved Groovy language injection based on control markers [#912](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/912)
+- Prepend default imports for injected Groovy language [#913](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/913)
+- Inject `impex` variable type of `ImpExImportReader` into Groovy language [#914](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/914)
+- Inject `line` variable type of `Map<Integer, String>` into Groovy language [#915](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/915)
+- Parse and style field values `jar:`, `file:` and `zip:` [#918](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/918)
+- Parse and style field value `http:` [#929](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/929)
+- Parse and style field value `/medias/` for exploded jar [#930](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/930)
+- Parse and style password encoding prefixes as field value [#931](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/931)
+- Suggest the next available type code when there is no value [#923](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/923)
+- Improved code completion for `translator` modifier [#932](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/932)
+- Added special translator modifiers `expr`, `version`, `system`, `class` [#933](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/933)
+- Removed catalog version option from the ImpEx console [#934](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/934)
+
+### `ImpEx` inspection rules
+- Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)
+- Use inverted comma for attribute modifiers [#899](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/899)
+- Inspect a value set for `processor` modifier [#900](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/900)
+- Inspect a value set for `translator` modifier [#901](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/901)
+- Inspect a value set for `cellDecorator` modifier [#902](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/902)
+- Inspect a value set for `mode` modifier [#903](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/903)
+- Inspect a value set for `disable.interceptor.types` modifier [#916](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/916)
+- Inspect a value set for modifier of a boolean type [#904](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/904)
+- Disable `Unique attribute without an index` for `pk` attribute [#905](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/905)
+- Allow various Translators for `translator` modifier [#917](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/917)
+
 ### `FlexibleSearch` enhancements
 - Improved `words case` and `table alias` actions performance [#874](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/874)
 
 ### `Polyglot Query` enhancements
 - Improved `words case` action performance [#875](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/875)
 
+### `Business Process` enhancements
+- `ScriptAction` should not expect `bean` attribute [#881](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/881)
+
+### `Groovy` enhancements
+- Disable actions toolbar for the test `.groovy` files located in the `groovytestsrc` folder [#883](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/883)
+
 ### `items.xml` enhancements
 - Added groups icons in the Structure view [#865](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/865)
+- Added alternative dynamic attribute handler Spring bean resolution as Gutter icon [#886](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/886)
+
+### `items.xml` inspection rules
+- Inspect deployment code according to `reservedTypecodes.txt` [#922](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/922)
+
+### `beans.xml` enhancements
+- Added inlay hints for enum values [#920](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/920)
+
+### `Spring Framework` enhancements
+- Improved Spring bean resolution in IntelliJ IDEA Ultimate [#887](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/887)
+- Improved Spring bean resolution in IntelliJ IDEA Community [#888](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/888)
 
 ### Other
 - Incorrect `companion` object usage [#866](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/866)
 - Updated Slack invitation link [#868](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/868)
 - Removed SOLR and FlexibleSearch queries persistence in the Consoles [#870](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/870)
 - Use Plugin's icon and menubar title in case of macOS [#872](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/872) | [#878](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/878)
+- Use Plugin's icon and menubar title in case of macOS [#872](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/872) | [#880](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/880)
+- Removed no longer working Maven Javadoc and Source downloading [#885](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/885)
+- Updated icons usage [#921](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/921)
+- Improved performance by adding properties files aware cache for properties [#924](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/924)
 
 ### Fixes
 - Code styles fixes [#867](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/867)
-- Changed Maven plugin id from `maven` to `org.jetbrains.idea.maven` [#877](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/877)
+- Changed Maven plugin id from `maven` to `org.jetbrains.idea.maven` [#879](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/879)
+- FlexibleSearch is not injected into Kotlin simple string literals [#882](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/882)
+- IntelliLang pattern fix applied multiple times on each project re-opening during the same session [#884](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/884)
+- `Select ImpEx Statement` removes User Rights block [#898](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/898)
+- Fixed `items.xml` Enum value inlay icon when value is not yet generated [#908](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/908)
 
 ## [2023.3.2]
 
@@ -295,7 +371,7 @@
 - Omit usage of the ` \ ` multi-line separator for macro declaration [#677](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/677)
 - Added local fix for missing Config import processor [#711](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/711)
 
-### `Groovy Script` enhancements
+### `Groovy` enhancements
 - Disable actions toolbar for the test `.groovy` files [#704](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/704)
 - Dynamically toggle the actions toolbar for the opened `.groovy` files in case of settings change [#705](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/705)
 - Replace the action 'Execute Groovy Script' by two actions `Execute: Commit Mode ON` and `Execute: Commit Mode OFF` [#713](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/713)
@@ -369,7 +445,7 @@
 - Added code completion and references of Bean properties in the Level Mapping tags [#578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/578)
 - Display a flatten type for an item in the code completion menu for Level Mapping tags [#592](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/592) 
 
-### `Groovy Script` enhancements
+### `Groovy` enhancements
 - Introduced actions toolbar for `.groovy` files [#564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/564)
 - Added `Open Groovy Script` action
 - Added `Execute Groovy Script` action [#565](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/565)

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -42,7 +43,7 @@ class FlexibleSearchSettingsConfigurableProvider(val project: Project) : Configu
         message("hybris.settings.project.fxs.title"), "hybris.fxs.settings"
     ) {
 
-        private val state = HybrisProjectSettingsComponent.getInstance(project).state.flexibleSearchSettings
+        private val state = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.flexibleSearchSettings
 
         private lateinit var verifyCaseCheckBox: JCheckBox
 

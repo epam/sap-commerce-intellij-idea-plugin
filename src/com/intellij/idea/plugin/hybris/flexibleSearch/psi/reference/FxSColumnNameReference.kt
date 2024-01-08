@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxSColumnAliasNameResolveResult
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.result.FxSYColumnNameResolveResult
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -53,7 +53,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
         ?.resolve()
         ?.parent
         ?.let { fromClause ->
-            val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
+            val fxsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
             val addComma = FxSUtils.shouldAddCommaAfterExpression(element, fxsSettings)
 
             val aliases = findColumnAliasNames(fromClause) { true }
@@ -122,7 +122,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
             .toList()
 
         private fun getAlternativeVariants(element: PsiElement): Array<LookupElementBuilder> {
-            val fxsSettings = HybrisProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
+            val fxsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
 
             val addComma = FxSUtils.shouldAddCommaAfterExpression(element, fxsSettings)
             // only DOT allowed for non [y] columns

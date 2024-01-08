@@ -107,9 +107,10 @@ header_type = {identifier}+
 
 value_subtype      = {identifier}+
 field_value        = ({not_crlf}|{identifier}+)
-field_value_url    = ([/]{identifier}+)+[.]{identifier}+
+//field_value_url    = ([/]{identifier}+)+[.]{identifier}+
 field_value_ignore = "<ignore>"
 field_value_null   = "<null>"
+field_value_prefix_password_encoding = "*:" | "plain:" | "sha-256:" | "sha-512:" | "md5:" | "pbkdf2:"
 
 start_userrights                  = [$]START_USERRIGHTS
 end_userrights                    = [$]END_USERRIGHTS
@@ -222,6 +223,15 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <FIELD_VALUE> {
+    {field_value_prefix_password_encoding}                  { return ImpexTypes.FIELD_VALUE_PASSWORD_ENCODING_PREFIX; }
+    "zip:"                                                  { return ImpexTypes.FIELD_VALUE_ZIP_PREFIX; }
+    "file:"                                                 { return ImpexTypes.FIELD_VALUE_FILE_PREFIX; }
+    "jar:"                                                  { return ImpexTypes.FIELD_VALUE_JAR_PREFIX; }
+    "/medias/"                                              { return ImpexTypes.FIELD_VALUE_EXPLODED_JAR_PREFIX; }
+    "http:http"                                             {
+                                                                yypushback(4);
+                                                                return ImpexTypes.FIELD_VALUE_HTTP_PREFIX;
+                                                            }
     {semicolon}                                             { return ImpexTypes.FIELD_VALUE_SEPARATOR; }
     {multiline_separator}                                   { return ImpexTypes.MULTILINE_SEPARATOR; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
@@ -242,7 +252,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
     {macro_usage}                                           { return ImpexTypes.MACRO_USAGE; }
 
-    {field_value_url}                                       { return ImpexTypes.FIELD_VALUE_URL; }
+//    {field_value_url}                                       { return ImpexTypes.FIELD_VALUE_URL; }
     {field_value}                                           { return ImpexTypes.FIELD_VALUE; }
     {crlf}                                                  { yybegin(YYINITIAL); return ImpexTypes.CRLF; }
 }

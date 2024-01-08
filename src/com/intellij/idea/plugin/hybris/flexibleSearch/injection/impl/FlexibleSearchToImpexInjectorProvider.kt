@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjectorProvider
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.lang.Language
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -98,7 +98,7 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
             ?.computeValue()
             ?: return injectSimple(injectionPlacesRegistrar, host, expression)
 
-        val alias = HybrisProjectSettingsComponent.getInstance(host.project)
+        val alias = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(host.project)
             .state
             .flexibleSearchSettings
             .fallbackToTableNameIfNoAliasProvided

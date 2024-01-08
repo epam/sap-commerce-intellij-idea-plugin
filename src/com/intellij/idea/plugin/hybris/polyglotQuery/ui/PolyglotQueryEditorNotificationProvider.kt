@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 import com.intellij.openapi.application.ModalityState
@@ -47,10 +48,13 @@ import javax.swing.JComponent
 class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, DumbAware {
 
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        val settings = HybrisProjectSettingsComponent.getInstance(project)
-        if (!settings.isHybrisProject()) return null
+        val projectSettings = HybrisProjectSettingsComponent.getInstance(project)
+        if (!projectSettings.isHybrisProject()) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, PolyglotQueryFileType)) return null
-        val pgqSettings = settings.state.polyglotQuerySettings
+
+        val developerSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+
+        val pgqSettings = developerSettings.polyglotQuerySettings
         if (!pgqSettings.verifyCaseForReservedWords) return null
 
         val psiFile = PsiManager.getInstance(project).findFile(file) ?: return null

@@ -16,6 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.console
+package com.intellij.idea.plugin.hybris.impex.constants
 
-data class CatalogVersionOption(val name: String, val value: String)
+enum class InterceptorType(val code: String, val title: String, val interceptorClass: String) {
+    VALIDATE("validate", "Validate", "de.hybris.platform.servicelayer.interceptor.ValidateInterceptor"),
+    PREPARE("prepare", "Prepare", "de.hybris.platform.servicelayer.interceptor.PrepareInterceptor"),
+    LOAD("load", "Load", "de.hybris.platform.servicelayer.interceptor.LoadInterceptor"),
+    REMOVE("remove", "Remove", "de.hybris.platform.servicelayer.interceptor.RemoveInterceptor"),
+    INIT_DEFAULTS("init_defaults", "Init Defaults", "de.hybris.platform.servicelayer.interceptor.InitDefaultsInterceptor");
+}

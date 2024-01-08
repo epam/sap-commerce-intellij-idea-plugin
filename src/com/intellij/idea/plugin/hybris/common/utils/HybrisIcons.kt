@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ import com.intellij.openapi.util.IconLoader
 import com.intellij.util.ReflectionUtil
 import icons.GradleIcons
 import icons.OpenapiIcons
+import org.jetbrains.kotlin.idea.KotlinIcons
 
 /**
  * Please follow Intellij Platform UI style and naming convention for icons.
@@ -87,6 +88,7 @@ object HybrisIcons {
     val EXTENSION_BACKOFFICE = AllIcons.Nodes.Folder
     val EXTENSION_HMC = AllIcons.Nodes.Folder
     val EXTENSION_HAC = AllIcons.Nodes.Folder
+    val EXTENSION_KOTLIN_NATURE = KotlinIcons.SMALL_LOGO
 
     val TYPE_SYSTEM = getIcon("/icons/typeSystem.svg")
     val SPRING_BEAN = getIcon("icons/springBean.svg")
@@ -95,6 +97,8 @@ object HybrisIcons {
     val MACROS = getIcon("/icons/macros.svg")
 
     val INTERCEPTOR = getIcon("/icons/interceptor.svg")
+
+    val JAVA_CLASS = AllIcons.Nodes.Class
 
     val TYPE_PRIMITIVE = getIcon("/icons/typePrimitive.svg")
     val TYPE_BOXED = getIcon("/icons/typeBoxed.svg")
@@ -109,6 +113,7 @@ object HybrisIcons {
     val TS_GROUP_ITEM = getIcon("/icons/typeSystem/groupByItem.svg")
     val TS_GROUP_MAP = getIcon("/icons/typeSystem/groupByMap.svg")
     val TS_GROUP_RELATION = getIcon("/icons/typeSystem/groupByRelation.svg")
+    val TS_DESCRIPTION = AllIcons.Windows.Help
     val TS_ENUM = getIcon("/icons/typeSystem/enum.svg")
     val TS_ENUM_VALUE = getIcon("/icons/typeSystem/enumValue.svg")
     val TS_ATOMIC = getIcon("/icons/typeSystem/atomic.svg")
@@ -128,6 +133,13 @@ object HybrisIcons {
     val TS_IMPORT = AllIcons.ToolbarDecorator.Import
     val TS_ANNOTATION = AllIcons.Nodes.Annotationtype
     val TS_HEADER_ABBREVIATION = getIcon("/icons/typeSystem/headerAbbreviation.svg")
+    val TS_ALTERNATIVE_DECLARATION = AllIcons.Actions.Forward
+    val TS_SIBLING = AllIcons.Gutter.OverridenMethod
+    val TS_PREVIEW_SHOW = AllIcons.Actions.Show
+    val TS_PREVIEW_SHOW_COLLECTIONS = AllIcons.Actions.GroupByPrefix
+    val TS_PREVIEW_SHOW_ENUMS = AllIcons.Actions.GroupByTestProduction
+    val TS_PREVIEW_SHOW_MAPS = AllIcons.Actions.GroupByPackage
+    val TS_PREVIEW_SHOW_ITEMS = AllIcons.Actions.GroupByClass
 
     val BS_GROUP_BY_BEAN_DTO = getIcon("/icons/beanSystem/groupByDTO.svg")
     val BS_GROUP_BY_BEAN_EVENT = getIcon("/icons/beanSystem/groupByEvent.svg")
@@ -141,6 +153,14 @@ object HybrisIcons {
     val BS_ENUM = getIcon("/icons/beanSystem/enum.svg")
     val BS_ENUM_VALUE = getIcon("/icons/beanSystem/enumValue.svg")
     val BS_LEVEL_MAPPING = getIcon("/icons/beanSystem/levelMapping.svg")
+    val BS_ALTERNATIVE_DECLARATION = AllIcons.Actions.Forward
+    val BS_SIBLING = AllIcons.Gutter.OverridenMethod
+    val BS_PREVIEW_SHOW = AllIcons.Actions.Show
+
+    val CODE_NOT_GENERATED = AllIcons.General.ExclMark
+
+    val DIAGRAM = AllIcons.FileTypes.Diagram
+    val DIAGRAM_DIFF = AllIcons.Actions.DiagramDiff
 
     val BP_DIAGRAM_WAIT = getIcon("/icons/businessProcess/diagram/wait.svg")
     val BP_DIAGRAM_END = getIcon("/icons/businessProcess/diagram/end.svg")
@@ -157,6 +177,7 @@ object HybrisIcons {
     val BP_DIAGRAM_CLASS = AllIcons.Nodes.Class
     val BP_DIAGRAM_PARAMETER_REQUIRED = AllIcons.Nodes.Plugin
     val BP_DIAGRAM_PARAMETER_OPTIONAL = AllIcons.Nodes.Pluginobsolete
+    val BP_DIAGRAM_PROPERTIES = AllIcons.Nodes.Property
 
     val TS_DIAGRAM_PROPERTY = AllIcons.Nodes.Property
     val TS_DIAGRAM_DEPLOYMENT = AllIcons.Debugger.Db_db_object
@@ -179,10 +200,15 @@ object HybrisIcons {
 
     val GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg")
 
+    val CONSOLE = AllIcons.Debugger.Console
     val CONSOLE_SOLR = getIcon("/icons/console/solr.svg")
     val CONSOLE_OPEN = getIcon("/icons/console/open.svg")
     val CONSOLE_EXECUTE = AllIcons.Actions.Execute
+    val CONSOLE_SUSPEND = AllIcons.Actions.Suspend
     val CONSOLE_EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg")
+
+    val CONNECTION_ADD = AllIcons.General.Add
+    val CONNECTION_EDIT = AllIcons.Actions.Edit
 
     val TABLE_COLUMN_INSERT_LEFT = getIcon("/icons/table/columnInsertLeft.svg")
     val TABLE_COLUMN_INSERT_RIGHT = getIcon("/icons/table/columnInsertRight.svg")
@@ -197,6 +223,17 @@ object HybrisIcons {
     val UPLOAD = getIcon("/icons/upload.svg")
     val DELETE = getIcon("/icons/delete.svg")
     val CANCEL = DELETE
+
+    val ACTION_COLLAPSE_ALL = AllIcons.Actions.Collapseall
+    val ACTION_EXPAND_ALL = AllIcons.Actions.Expandall
+    val ACTION_CLEAR_ALL = AllIcons.Actions.GC
+    val ACTION_REMOVE = AllIcons.General.Remove
+    val ACTION_FORCE_REFRESH = AllIcons.Actions.ForceRefresh
+    val ACTION_FORWARD = AllIcons.Actions.Forward
+
+    val SCOPE_LOCAL = AllIcons.Ide.LocalScope
+
+    val NODE_JUNK = AllIcons.Modules.ExcludedGeneratedRoot
 
     private fun getIcon(path: String) = ReflectionUtil.getGrandCallerClass()
         ?.let { IconLoader.getIcon(path, it) }

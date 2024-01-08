@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.view
 
-import com.intellij.icons.AllIcons
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSChangeListener
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
@@ -124,7 +124,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
             true
         )
     ) {
-        templatePresentation.icon = AllIcons.Actions.Show
+        templatePresentation.icon = HybrisIcons.BS_PREVIEW_SHOW
 
         addSeparator(message("hybris.toolwindow.action.separator.show"))
         add(ShowOnlyCustomAction(mySettings))

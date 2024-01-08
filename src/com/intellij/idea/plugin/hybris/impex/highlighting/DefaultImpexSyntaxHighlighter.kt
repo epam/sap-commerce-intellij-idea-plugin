@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -95,6 +95,13 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.COLLECTION_REMOVE_PREFIX -> COLLECTION_REMOVE_PREFIX
             ImpexTypes.COLLECTION_MERGE_PREFIX -> COLLECTION_MERGE_PREFIX
 
+            ImpexTypes.FIELD_VALUE_JAR_PREFIX -> FIELD_VALUE_JAR_PREFIX
+            ImpexTypes.FIELD_VALUE_EXPLODED_JAR_PREFIX -> FIELD_VALUE_EXPLODED_JAR_PREFIX
+            ImpexTypes.FIELD_VALUE_FILE_PREFIX -> FIELD_VALUE_FILE_PREFIX
+            ImpexTypes.FIELD_VALUE_ZIP_PREFIX -> FIELD_VALUE_ZIP_PREFIX
+            ImpexTypes.FIELD_VALUE_HTTP_PREFIX -> FIELD_VALUE_HTTP_PREFIX
+            ImpexTypes.FIELD_VALUE_PASSWORD_ENCODING_PREFIX -> FIELD_VALUE_PASSWORD_ENCODING_PREFIX
+
             TokenType.BAD_CHARACTER -> BAD_CHARACTER_KEYS
             else -> EMPTY_KEYS
         }
@@ -107,6 +114,12 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         val COLLECTION_APPEND_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_APPEND_PREFIX)
         val COLLECTION_REMOVE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_REMOVE_PREFIX)
         val COLLECTION_MERGE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_MERGE_PREFIX)
+        val FIELD_VALUE_JAR_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_JAR_PREFIX)
+        val FIELD_VALUE_EXPLODED_JAR_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_EXPLODED_JAR_PREFIX)
+        val FIELD_VALUE_FILE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_FILE_PREFIX)
+        val FIELD_VALUE_ZIP_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX)
+        val FIELD_VALUE_HTTP_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX)
+        val FIELD_VALUE_PASSWORD_ENCODING_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX)
         val MACRO_NAME_DECLARATION_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_NAME_DECLARATION)
         val MACRO_VALUE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_VALUE)
         val MACRO_USAGE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_USAGE)

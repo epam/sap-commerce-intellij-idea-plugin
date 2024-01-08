@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,8 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemTypeCodeCompletionProvider
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngWrappingType
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
@@ -59,7 +61,7 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
             ?: return super.addCompletions(parameters, context, result)
         val tag = currentAttribute.parentOfType<XmlTag>()
             ?.takeIf { it.localName == Config.CONTEXT }
-            ?: return super.addCompletions(parameters, context, result)
+            ?: return addTypeCompletions(parameters, context, result)
 
         val metaModelAccess = TSMetaModelAccess.getInstance(element.project)
         val currentAttributeName = currentAttribute.localName
@@ -75,6 +77,18 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
             ?: return super.addCompletions(parameters, context, result)
 
         addContextSpecificCompletions(currentAttributeName, anotherAttributeValue, result, boostedItems, allItems)
+    }
+
+    private fun addTypeCompletions(
+        parameters: CompletionParameters,
+        context: ProcessingContext,
+        result: CompletionResultSet
+    ) {
+        super.addCompletions(parameters, context, result)
+
+        CngWrappingType.entries
+            .map { CngLookupElementFactory.buildWrappingType(it.type, it.presentation, it.tail) }
+            .forEach { result.addElement(it) }
     }
 
     private fun addContextSpecificCompletions(

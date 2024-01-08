@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.actions
 
 import com.intellij.diagram.DiagramAction
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramNode
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.openapi.actionSystem.ActionManager
@@ -28,7 +28,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 class ExcludeTypeNameDiagramAction : DiagramAction(
     message("hybris.diagram.ts.provider.actions.exclude_type_name"),
     null,
-    AllIcons.General.Remove
+    HybrisIcons.ACTION_REMOVE
 ) {
     override fun perform(event: AnActionEvent) {
         val project = event.project ?: return

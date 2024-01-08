@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,32 +19,21 @@
 package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.module.ModuleUtilCore
-import com.intellij.openapi.project.Project
+import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
-import com.intellij.spring.SpringManager
-import com.intellij.spring.contexts.model.SpringModel
-import com.intellij.spring.model.utils.SpringModelSearchers
 
 class SpringReference(
     element: PsiElement,
     val name: String,
-    private val project: Project = element.project
 ) : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
 
-    override fun getRangeInElement() = TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
+    override fun calculateDefaultRangeInElement() = if (element.text.startsWith("\"") || element.text.startsWith("'")) TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
+    else TextRange.from(0, element.textLength)
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return ResolveResult.EMPTY_ARRAY
-
-        val springModels = SpringManager.getInstance(project).getAllModels(module)
-        val pointer = findBean(springModels, name) ?: return ResolveResult.EMPTY_ARRAY
-
-        pointer.beanClass ?: return ResolveResult.EMPTY_ARRAY
-
-        return PsiElementResolveResult.createResults(pointer.beanClass)
-    }
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = TSSpringHelper.resolveBeanClass(element, name)
+        ?.let { PsiElementResolveResult.createResults(it) }
+        ?: ResolveResult.EMPTY_ARRAY
 
     override fun resolve(): PsiElement? {
         val resolveResults = multiResolve(false)
@@ -53,5 +42,4 @@ class SpringReference(
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
-    private fun findBean(springModels: Set<SpringModel>, name: String) = springModels.firstNotNullOfOrNull { SpringModelSearchers.findBean(it, name) }
 }

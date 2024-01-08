@@ -3,7 +3,7 @@
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
  * ----------------------------------------------------------------
  *
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,10 +28,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexAnyAttributeNameImpl extends ASTWrapperPsiElement implements ImpexAnyAttributeName {
+public class ImpexAnyAttributeNameImpl extends ImpexAttributeNameMixin implements ImpexAnyAttributeName {
 
   public ImpexAnyAttributeNameImpl(@NotNull ASTNode node) {
     super(node);
@@ -51,6 +50,12 @@ public class ImpexAnyAttributeNameImpl extends ASTWrapperPsiElement implements I
   @NotNull
   public List<ImpexString> getStringList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexString.class);
+  }
+
+  @Override
+  @Nullable
+  public ImpexAnyAttributeValue getAnyAttributeValue() {
+    return ImpexPsiUtil.getAnyAttributeValue(this);
   }
 
 }

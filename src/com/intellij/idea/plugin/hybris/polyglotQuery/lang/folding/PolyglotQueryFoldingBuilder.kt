@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -37,11 +37,9 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private val filter = PolyglotQueryFoldingBlocksFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingSetting = HybrisProjectSettingsComponent.getInstance(root.project).state.polyglotQuerySettings.folding
+        val foldingSetting = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(root.project).state.polyglotQuerySettings.folding
 
-        if (!foldingSetting.enabled) {
-            return emptyArray()
-        }
+        if (!foldingSetting.enabled) return emptyArray()
 
         return CachedValuesManager.getCachedValue(root) {
             val results = SyntaxTraverser.psiTraverser(root)
@@ -79,7 +77,7 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 ?.trim()
                 ?: "?"
 
-            if (HybrisProjectSettingsComponent.getInstance(node.psi.project).state.polyglotQuerySettings.folding.showLanguage) {
+            if (HybrisDeveloperSpecificProjectSettingsComponent.getInstance(node.psi.project).state.polyglotQuerySettings.folding.showLanguage) {
                 val language = node.findChildByType(PolyglotQueryTypes.LOCALIZED)
                     ?.let {
                         it.findChildByType(PolyglotQueryTypes.LOCALIZED_NAME)

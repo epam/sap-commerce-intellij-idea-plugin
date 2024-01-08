@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -47,13 +47,19 @@ class JavaClassReference : PsiReferenceBase<PsiElement>, HighlightedReference {
     override fun getVariants() = JavaPsiFacade.getInstance(element.project)
         .findClass(className, GlobalSearchScope.allScope(element.project))
         ?.let { psiClass ->
-            val fields = psiClass.fields
+            val fields = psiClass.allFields
 
             return@let if (psiClass.isRecord) fields.toList()
             else fields
-                .filter { JavaPsiHelper.hasGetter(psiClass, it) && JavaPsiHelper.hasSetter(psiClass, it) }
+                .filter {
+                    val targetClass = it.containingClass ?: return@filter false
+                    JavaPsiHelper.hasGetter(targetClass, it) && JavaPsiHelper.hasSetter(targetClass, it)
+                }
         }
-        ?.map { JavaLookupElementBuilder.forField(it) }
+        ?.map {
+            JavaLookupElementBuilder.forField(it, it.name, it.containingClass)
+                .withTypeText(it.type.presentableText, true)
+        }
         ?.toTypedArray()
         ?: emptyArray()
 
@@ -62,10 +68,13 @@ class JavaClassReference : PsiReferenceBase<PsiElement>, HighlightedReference {
         return JavaPsiFacade.getInstance(project)
             .findClass(className, GlobalSearchScope.allScope(project))
             ?.let { psiClass ->
-                val field = psiClass.findFieldByName(value, false)
+                val field = psiClass.findFieldByName(value, true)
                 return@let if (psiClass.isRecord) field
                 else field
-                    ?.takeIf { JavaPsiHelper.hasGetter(psiClass, it) && JavaPsiHelper.hasSetter(psiClass, it) }
+                    ?.takeIf {
+                        val targetClass = it.containingClass ?: return@takeIf false
+                        JavaPsiHelper.hasGetter(targetClass, it) && JavaPsiHelper.hasSetter(targetClass, it)
+                    }
             }
     }
 

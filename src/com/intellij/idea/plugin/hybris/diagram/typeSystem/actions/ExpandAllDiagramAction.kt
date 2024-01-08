@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.actions
 
 import com.intellij.diagram.DiagramAction
-import com.intellij.icons.AllIcons
 import com.intellij.idea.ActionsBundle
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramDataModel
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -27,7 +27,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 class ExpandAllDiagramAction : DiagramAction(
     ActionsBundle.message("action.ExpandAll.text"),
     null,
-    AllIcons.Actions.Expandall
+    HybrisIcons.ACTION_EXPAND_ALL
 ) {
 
     override fun perform(event: AnActionEvent) {

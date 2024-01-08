@@ -19,9 +19,6 @@
 
 package com.intellij.idea.plugin.hybris.util.xml
 
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.SPRING_PLUGIN_ID
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isPluginActive
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.PlainXmlReference
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.SpringReference
 import com.intellij.psi.PsiDocCommentOwner
 import com.intellij.psi.PsiElement
@@ -37,14 +34,9 @@ class SpringBeanReferenceConverter : CustomReferenceConverter<String>, Resolving
         element: PsiElement,
         context: ConvertContext
     ) = value.stringValue
+        ?.trim()
         ?.takeIf { it.isNotBlank() }
-        ?.let {
-            if (isPluginActive(SPRING_PLUGIN_ID)) {
-                arrayOf(SpringReference(element, it.trim()))
-            } else {
-                arrayOf(PlainXmlReference(element, value))
-            }
-        }
+        ?.let { arrayOf(SpringReference(element, it)) }
         ?: emptyArray()
 
     override fun canResolveTo(elementClass: Class<out PsiElement>) = !PsiDocCommentOwner::class.java.isAssignableFrom(elementClass)

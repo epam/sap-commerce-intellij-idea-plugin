@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,8 +37,6 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
 /**
- * https://help.sap.com/docs/SAP_COMMERCE/5c9ea0c629214e42b727bf08800d8dfa/8b59d395866910149db8889c5087a5ef.html?locale=en-US&q=ExtendedMultiReference
- *
  * see, standard-editors-spring.xml
  */
 open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
@@ -52,6 +50,9 @@ open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>
             ?.let { _ ->
                 val offset = element.text.indexOfLast { it == '(' } + 1
                 val length = element.text.indexOfFirst { it == ')' } - offset
+
+                // invalid value, can be due `List()List(Product)`
+                if (length < 0) return@let super.calculateDefaultRangeInElement()
                 TextRange.from(offset, length)
             }
             ?: if (element.textLength == 0) super.calculateDefaultRangeInElement()
@@ -96,13 +97,23 @@ open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>
             .toTypedArray()
 
         private val regexes = arrayOf(
+            // https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9b5366ff6eb34df5be29881ff55f97d2/8bad5c918669101499c8d4802cd12214.html
+            "^Range\\((.*)\\)\$".toRegex(),
+            // https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9b5366ff6eb34df5be29881ff55f97d2/8c0606208669101480e1b95aa5146259.html
             "^Localized\\((.*)\\)\$".toRegex(),
+            // https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9b5366ff6eb34df5be29881ff55f97d2/8c062ff286691014b2618f676f8099fe.html
             "^LocalizedSimple\\((.*)\\)\$".toRegex(),
+            // https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9b5366ff6eb34df5be29881ff55f97d2/8bac73cc866910148c4bcba41953b0ed.html
             "^List\\((.*)\\)\$".toRegex(),
+            // https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9b5366ff6eb34df5be29881ff55f97d2/8bad8ae286691014bf4ab06b9b99d7c6.html
             "^Reference\\((.*)\\)\$".toRegex(),
+            // https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9b5366ff6eb34df5be29881ff55f97d2/f7ce138967d0470aaeae5c7e01e1c162.html
             "^FixedValuesReference\\((.*)\\)\$".toRegex(),
+            // https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9b5366ff6eb34df5be29881ff55f97d2/8bad002786691014924ba694583a1368.html
             "^MultiReference-(COLLECTION|LIST|SET)\\((.*)\\)\$".toRegex(),
+            // https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9b5366ff6eb34df5be29881ff55f97d2/8bab997f86691014852cfbeabd21a5c8.html
             "^ExtendedMultiReference-(COLLECTION|LIST|SET)\\((.*)\\)\$".toRegex(),
+            // https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9b5366ff6eb34df5be29881ff55f97d2/8bab6c4486691014a3899cab8989d996.html
             "^EnumMultiReference-(COLLECTION|LIST|SET)\\((.*)\\)\$".toRegex(),
         )
     }

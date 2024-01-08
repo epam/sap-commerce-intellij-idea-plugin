@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,19 +18,28 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.groovy.settings.GroovySettings
+import com.intellij.idea.plugin.hybris.impex.settings.ImpexSettings
+import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
 import com.intellij.idea.plugin.hybris.system.bean.settings.BeanSystemSettings
 import com.intellij.idea.plugin.hybris.system.businessProcess.settings.BpSettings
 import com.intellij.idea.plugin.hybris.system.cockpitng.settings.CngSettings
 import com.intellij.idea.plugin.hybris.system.type.settings.TSDiagramSettings
 import com.intellij.idea.plugin.hybris.system.type.settings.TypeSystemSettings
+import com.intellij.openapi.components.BaseState
 
-data class HybrisDeveloperSpecificProjectSettings(
-    var activeRemoteConnectionID: String? = null,
-    var activeSolrConnectionID: String? = null,
-    var remoteConnectionSettingsList: MutableList<HybrisRemoteConnectionSettings> = mutableListOf(),
-    var typeSystemDiagramSettings: TSDiagramSettings = TSDiagramSettings(),
-    var beanSystemSettings: BeanSystemSettings = BeanSystemSettings(),
-    var typeSystemSettings: TypeSystemSettings = TypeSystemSettings(),
-    var cngSettings: CngSettings = CngSettings(),
-    var bpSettings: BpSettings = BpSettings(),
-)
+class HybrisDeveloperSpecificProjectSettings : BaseState() {
+    var activeRemoteConnectionID by string(null)
+    var activeSolrConnectionID by string(null)
+    var remoteConnectionSettingsList by list<HybrisRemoteConnectionSettings>()
+    var typeSystemDiagramSettings by property(TSDiagramSettings()) { false }
+    var beanSystemSettings by property(BeanSystemSettings()) { false }
+    var typeSystemSettings by property(TypeSystemSettings()) { false }
+    var cngSettings by property(CngSettings()) { false }
+    var bpSettings by property(BpSettings()) { false }
+    var flexibleSearchSettings by property(FlexibleSearchSettings()) { false }
+    var polyglotQuerySettings by property(PolyglotQuerySettings()) { false }
+    var impexSettings by property(ImpexSettings()) { false }
+    var groovySettings by property(GroovySettings()) { false }
+}

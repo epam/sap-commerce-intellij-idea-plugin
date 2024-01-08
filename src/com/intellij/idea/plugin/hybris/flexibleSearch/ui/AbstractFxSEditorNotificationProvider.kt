@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.ui
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileTypes.FileTypeRegistry
@@ -36,10 +37,12 @@ import javax.swing.JComponent
 abstract class AbstractFxSEditorNotificationProvider : EditorNotificationProvider, DumbAware {
 
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        val settings = HybrisProjectSettingsComponent.getInstance(project)
-        if (!settings.isHybrisProject()) return null
+        val projectSettings = HybrisProjectSettingsComponent.getInstance(project)
+        if (!projectSettings.isHybrisProject()) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, FlexibleSearchFileType)) return null
-        val fxsSettings = settings.state.flexibleSearchSettings
+
+        val developerSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+        val fxsSettings = developerSettings.flexibleSearchSettings
         if (!shouldCollect(fxsSettings)) return null
 
         val psiFile = PsiManager.getInstance(project).findFile(file) ?: return null

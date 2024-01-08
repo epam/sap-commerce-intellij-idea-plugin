@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,46 +17,15 @@
  */
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
-import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
-import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.model.deployments
-import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
-import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
-import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class TSDeploymentTypeCodeMustBeGreaterThanTenThousand : AbstractCustomOnlyTSInspection() {
+class TSDeploymentTypeCodeMustBeGreaterThanTenThousand : AbstractTSDeploymentTypeCodeInspection() {
 
-    override fun inspect(
-        project: Project,
-        dom: Items,
-        holder: DomElementAnnotationHolder,
-        helper: DomHighlightingHelper,
-        severity: HighlightSeverity
-    ) {
-        dom.deployments.forEach { check(it, project, holder, severity) }
-    }
+    override fun applicable(project: Project, dom: Deployment) = dom.typeCode.stringValue
+        ?.toIntOrNull()
+        ?.let { it in 1..HybrisConstants.TS_TYPECODE_MIN_ALLOWED }
+        ?: false
 
-    private fun check(
-        dom: Deployment,
-        project: Project,
-        holder: DomElementAnnotationHolder,
-        severity: HighlightSeverity
-    ) {
-        val typeCode = dom.typeCode.stringValue?.toIntOrNull()
-
-        if (typeCode != null && typeCode in 1..10000) {
-            holder.createProblem(
-                dom.typeCode,
-                severity,
-                displayName,
-                XmlUpdateAttributeQuickFix(
-                    Deployment.TYPE_CODE,
-                    TSMetaModelAccess.getInstance(project).getNextAvailableTypeCode().toString()
-                )
-            )
-        }
-    }
 }

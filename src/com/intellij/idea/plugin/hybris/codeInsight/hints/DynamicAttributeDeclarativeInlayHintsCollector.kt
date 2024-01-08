@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
+import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
 import com.intellij.idea.plugin.hybris.system.type.util.ModelsUtils
 import com.intellij.psi.*
 
@@ -59,13 +60,9 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
 
         val identifier = element.methodExpression.lastChild
 
-        val inlayActionData = attribute.retrieveDom()
-            ?.persistence
-            ?.attributeHandler
-            ?.xmlAttributeValue
-            ?.reference
-            ?.resolve()
-            ?.let { it as? PsiClass }
+        val inlayActionData = attribute.persistence
+            .attributeHandler
+            ?.let { TSSpringHelper.resolveBeanClass(element, it) }
             ?.let { SmartPointerManager.getInstance(element.project).createSmartPsiElementPointer(it) }
             ?.let {
                 InlayActionData(

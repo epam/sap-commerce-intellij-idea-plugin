@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,13 +19,6 @@
 package com.intellij.idea.plugin.hybris.properties.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ADVANCED_PROPERTIES_FILE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ENV_PROPERTIES_FILE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_OPT_CONFIG_DIR_ENV
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_RUNTIME_PROPERTIES_ENV
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.LOCAL_PROPERTIES_FILE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROJECT_PROPERTIES_FILE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_ENV_PROPERTY_PREFIX
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.lang.properties.IProperty
@@ -34,12 +27,15 @@ import com.intellij.lang.properties.psi.PropertiesFile
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.DelegatingGlobalSearchScope
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
@@ -52,6 +48,48 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
     private val nestedPropertyPrefix = "\${"
     private val nestedPropertySuffix = "}"
     private val optionalPropertiesFilePattern = Pattern.compile("([1-9]\\d)-(\\w*)\\.properties")
+
+    private val cachedProperties = CachedValuesManager.getManager(project).createCachedValue(
+        {
+            val result = LinkedHashMap<String, IProperty>()
+            val configModule = obtainConfigModule() ?: return@createCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
+            val platformModule = obtainPlatformModule() ?: return@createCachedValue CachedValueProvider.Result.create(emptyList(), ModificationTracker.NEVER_CHANGED)
+            val scope = createSearchScope(configModule, platformModule)
+            var envPropsFile: PropertiesFile? = null
+            var advancedPropsFile: PropertiesFile? = null
+            var localPropsFile: PropertiesFile? = null
+
+            val propertiesFiles = ArrayList<PropertiesFile>()
+
+            // Ignore Order and production.properties for now as `developer.mode` should be set to true for development anyway
+            FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
+                .mapNotNull { PsiManager.getInstance(project).findFile(it) }
+                .mapNotNull { it as? PropertiesFile }
+                .forEach { file ->
+                    when (file.name) {
+                        HybrisConstants.ENV_PROPERTIES_FILE -> envPropsFile = file
+                        HybrisConstants.ADVANCED_PROPERTIES_FILE -> advancedPropsFile = file
+                        HybrisConstants.LOCAL_PROPERTIES_FILE -> localPropsFile = file
+                        HybrisConstants.PROJECT_PROPERTIES_FILE -> propertiesFiles.add(file)
+                    }
+                }
+
+            localPropsFile?.let { propertiesFiles.add(it) }
+            advancedPropsFile?.let { propertiesFiles.add(0, it) }
+            envPropsFile?.let { propertiesFiles.add(0, it) }
+
+            propertiesFiles.forEach { addPropertyFile(result, it) }
+
+            loadHybrisRuntimeProperties(result)
+            loadHybrisOptionalConfigDir(result)
+
+            CachedValueProvider.Result.create(result.values.toList(), propertiesFiles
+                .map { it.virtualFile }
+                .toTypedArray()
+                .ifEmpty { ModificationTracker.EVER_CHANGED }
+            )
+        }, false
+    )
 
     override fun getLanguages(): Set<String> {
         val languages = findProperty(HybrisConstants.PROPERTY_LANG_PACKS)
@@ -85,43 +123,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
         return filteredProps.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
     }
 
-
-    private fun findAllIProperties(): List<IProperty> {
-        val result = LinkedHashMap<String, IProperty>()
-        val configModule = obtainConfigModule() ?: return emptyList()
-        val platformModule = obtainPlatformModule() ?: return emptyList()
-        val scope = createSearchScope(configModule, platformModule)
-        var envPropsFile: PropertiesFile? = null
-        var advancedPropsFile: PropertiesFile? = null
-        var localPropsFile: PropertiesFile? = null
-
-        val propertiesFiles = ArrayList<PropertiesFile>()
-
-        // Ignore Order and production.properties for now as `developer.mode` should be set to true for development anyway
-        FileTypeIndex.getFiles(PropertiesFileType.INSTANCE, scope)
-            .mapNotNull { PsiManager.getInstance(project).findFile(it) }
-            .mapNotNull { it as? PropertiesFile }
-            .forEach { file ->
-                when (file.name) {
-                    ENV_PROPERTIES_FILE -> envPropsFile = file
-                    ADVANCED_PROPERTIES_FILE -> advancedPropsFile = file
-                    LOCAL_PROPERTIES_FILE -> localPropsFile = file
-                    PROJECT_PROPERTIES_FILE -> propertiesFiles.add(file)
-                }
-            }
-
-        localPropsFile?.let { propertiesFiles.add(it) }
-        advancedPropsFile?.let { propertiesFiles.add(0, it) }
-        envPropsFile?.let { propertiesFiles.add(0, it) }
-
-        propertiesFiles.forEach { addPropertyFile(result, it) }
-
-        loadHybrisRuntimeProperties(result)
-        loadHybrisOptionalConfigDir(result)
-
-        return result.values
-            .toList()
-    }
+    private fun findAllIProperties() = cachedProperties.value
 
     override fun findAllProperties(): LinkedHashMap<String, String> = findAllIProperties()
         .filter { it.value != null && it.key != null }
@@ -135,7 +137,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
         }
 
     private fun addEnvironmentProperties(properties: MutableMap<String, String>) {
-        properties[PROPERTY_ENV_PROPERTY_PREFIX]
+        properties[HybrisConstants.PROPERTY_ENV_PROPERTY_PREFIX]
             ?.let { prefix ->
                 System.getenv()
                     .filter { it.key.startsWith(prefix) }
@@ -186,7 +188,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
         result[key] = replacedValue
     }
 
-    private fun loadHybrisOptionalConfigDir(result: MutableMap<String, IProperty>) = (System.getenv(HYBRIS_OPT_CONFIG_DIR_ENV)
+    private fun loadHybrisOptionalConfigDir(result: MutableMap<String, IProperty>) = (System.getenv(HybrisConstants.ENV_HYBRIS_OPT_CONFIG_DIR)
         ?: result[HybrisConstants.PROPERTY_OPTIONAL_CONFIG_DIR]?.value)
         ?.let { File(it) }
         ?.takeIf { it.isDirectory }
@@ -196,7 +198,7 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
         ?.mapNotNull { toPropertiesFile(it) }
         ?.forEach { addPropertyFile(result, it) }
 
-    private fun loadHybrisRuntimeProperties(result: MutableMap<String, IProperty>) = System.getenv(HYBRIS_RUNTIME_PROPERTIES_ENV)
+    private fun loadHybrisRuntimeProperties(result: MutableMap<String, IProperty>) = System.getenv(HybrisConstants.ENV_HYBRIS_RUNTIME_PROPERTIES)
         ?.takeIf { it.isNotBlank() }
         ?.let { File(it) }
         ?.let { toPropertiesFile(it) }
@@ -217,10 +219,10 @@ class PropertyServiceImpl(val project: Project) : PropertyService {
 
     private fun createSearchScope(configModule: Module, platformModule: Module): GlobalSearchScope {
         val projectPropertiesScope = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.everythingScope(project), PropertiesFileType.INSTANCE)
-            .filter { it.name == "project.properties" }
-        val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == ENV_PROPERTIES_FILE }
-        val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == ADVANCED_PROPERTIES_FILE }
-        val localPropertiesScope = configModule.moduleContentScope.filter { it.name == LOCAL_PROPERTIES_FILE }
+            .filter { it.name == HybrisConstants.PROJECT_PROPERTIES_FILE }
+        val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ENV_PROPERTIES_FILE }
+        val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ADVANCED_PROPERTIES_FILE }
+        val localPropertiesScope = configModule.moduleContentScope.filter { it.name == HybrisConstants.LOCAL_PROPERTIES_FILE }
 
         return projectPropertiesScope.or(envPropertiesScope.or(advancedPropertiesScope.or(localPropertiesScope)))
     }

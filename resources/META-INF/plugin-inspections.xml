@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -90,6 +90,10 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeAttributeInspection"/>
 
+        <localInspection groupPath="SAP Commerce" shortName="ImpExDoubleQuotedStringAsModifierInspection" displayName="[y] Double Quote string as a modifier"
+                         groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExDoubleQuotedStringAsModifierInspection"/>
+
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownFunctionTypeInspection" displayName="[y] Unknown type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownFunctionTypeInspection"/>
@@ -114,6 +118,30 @@
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeNameInspection" displayName="[y] Unknown type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeNameInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidProcessorValueInspection" displayName="[y] Invalid processor modifier value"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidProcessorValueInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidTranslatorValueInspection" displayName="[y] Invalid translator modifier value"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidTranslatorValueInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidCellDecoratorValueInspection" displayName="[y] Invalid cellDecorator modifier value"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidCellDecoratorValueInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidModeModifierValueInspection" displayName="[y] Invalid mode modifier value"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidModeModifierValueInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidDisableInterceptorTypesModifierValueInspection" displayName="[y] Invalid disable.interceptor.types modifier value"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidDisableInterceptorTypesModifierValueInspection"/>
+
+        <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidBooleanModifierValueInspection" displayName="[y] Invalid boolean modifier value"
+                         groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidBooleanModifierValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeModifierInspection" displayName="[y] Unknown type modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
@@ -342,6 +370,11 @@
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTypeCodeReservedForProcessingExtension.key"
                          shortName="DeploymentTypeCodeReservedForProcessingExtension" level="ERROR"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForProcessingExtension"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSDeploymentTypeCodeReservedInspection.key"
+                         shortName="TSDeploymentTypeCodeReservedInspection" level="ERROR"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedInspection"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"

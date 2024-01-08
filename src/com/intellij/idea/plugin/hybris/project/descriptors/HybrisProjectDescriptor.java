@@ -144,15 +144,7 @@ public interface HybrisProjectDescriptor {
 
     Set<File> getDetectedVcs();
 
-    boolean isWithMavenSources();
-
-    void setWithMavenSources(boolean withMavenSources);
-
     boolean isWithStandardProvidedSources();
 
     void setWithStandardProvidedSources(boolean withStandardProvidedSources);
-
-    boolean isWithMavenJavadocs();
-
-    void setWithMavenJavadocs(boolean withMavenJavadocs);
 }

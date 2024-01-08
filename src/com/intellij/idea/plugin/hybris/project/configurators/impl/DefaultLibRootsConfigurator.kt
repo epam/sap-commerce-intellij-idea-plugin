@@ -159,12 +159,6 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         }
 
         setLibraryEntryScope(modifiableRootModel, library, javaLibraryDescriptor.scope)
-
-        val mavenSources = resolveMavenSources(modifiableRootModel, javaLibraryDescriptor, moduleDescriptor, progressIndicator)
-
-        for (resultLib in mavenSources) {
-            libraryModifiableModel.addRoot("jar://$resultLib!/", OrderRootType.SOURCES)
-        }
     }
 
     private fun addLibsToModule(
@@ -190,15 +184,6 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
     private fun setLibraryEntryScope(modifiableRootModel: ModifiableRootModel, library: Library, scope: DependencyScope) {
         findOrderEntryForLibrary(modifiableRootModel, library).scope = scope
     }
-
-    private fun resolveMavenSources(
-        modifiableRootModel: ModifiableRootModel,
-        javaLibraryDescriptor: JavaLibraryDescriptor,
-        moduleDescriptor: ModuleDescriptor,
-        progressIndicator: ProgressIndicator
-    ) = if (LibraryDescriptorType.LIB == javaLibraryDescriptor.descriptorType && PluginCommon.isPluginActive(PluginCommon.MAVEN_PLUGIN_ID)) {
-        MavenUtils.resolveMavenSources(modifiableRootModel, moduleDescriptor, progressIndicator, HybrisApplicationSettingsComponent.getInstance().state)
-    } else emptyList()
 
     private fun attachSourceFiles(
         javaLibraryDescriptor: JavaLibraryDescriptor,

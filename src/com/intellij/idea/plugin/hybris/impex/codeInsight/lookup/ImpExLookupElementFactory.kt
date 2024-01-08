@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.impex.codeInsight.lookup
 
+import com.intellij.codeInsight.completion.JavaLookupElementBuilder
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.settings.ImpexCompletionSettings
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType
@@ -38,13 +39,18 @@ object ImpExLookupElementFactory {
 
     fun build(element: PsiElement, modifier: AttributeModifier, completionSettings: ImpexCompletionSettings) = build(element, modifier.modifierName, completionSettings)
 
-    fun buildJavaClass(qualifiedName: String, presentableText: String) = LookupElementBuilder.create(qualifiedName)
+    fun buildJavaClass(psiClass: PsiClass, presentableText: String) = JavaLookupElementBuilder.forClass(psiClass, psiClass.qualifiedName, true)
         .withPresentableText(presentableText)
-        .withIcon(AllIcons.FileTypes.JavaClass)
 
     fun buildModifierValue(lookupElement: String) = LookupElementBuilder.create(lookupElement)
-    fun buildModifierValue(lookupElement: String, typeText: String) = LookupElementBuilder.create(lookupElement)
+    fun buildModifierValue(lookupElement: String, typeText: String, presentableText: String = lookupElement) = LookupElementBuilder.create(lookupElement)
+        .withPresentableText(presentableText)
         .withTypeText(typeText, true)
+
+    fun buildInterceptor(lookupElement: String, beanClass: String? = "?") = LookupElementBuilder.create(lookupElement)
+        .withIcon(HybrisIcons.INTERCEPTOR)
+        .withTypeIconRightAligned(true)
+        .withTypeText(beanClass, HybrisIcons.SPRING_BEAN, true)
 
     fun buildUserRights() = LookupElementBuilder.create(
         """

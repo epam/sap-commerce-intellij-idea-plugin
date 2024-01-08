@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -56,18 +56,44 @@ class GroovyLanguageInjector : LanguageInjector {
 
         val hostString = StringUtil.unquoteString(impexString.text).lowercase()
         if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(groovyMarker)) {
-            injectLanguage(injectionPlacesRegistrar, impexString.textLength - offset - quoteSymbolLength, offset)
+            val markerOffset = setOf("beforeeach:", "aftereach:", "if:")
+                .map { it to impexString.text.indexOf(it, 0, true) }
+                .firstOrNull { it.second > -1 }
+                ?.let { it.first.length + it.second }
+                ?: offset
+
+            injectLanguage(injectionPlacesRegistrar, impexString.textLength - markerOffset - quoteSymbolLength, markerOffset)
         } else if (LanguageInjectionUtil.getLanguageForInjection(impexString) == ScriptType.GROOVY) {
             injectLanguage(injectionPlacesRegistrar, impexString.textLength - quoteSymbolLength - 1, quoteSymbolLength)
         }
     }
 
+    /**
+     * Imports are taken from official docs: https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/640172cbde9149ab8eb818180544020a.html?locale=en-US.<br>
+     * `line` is actually a Map returned by the de.hybris.platform.impex.jalo.AbstractCodeLine.
+     */
     private fun injectLanguage(injectionPlacesRegistrar: InjectedLanguagePlaces, length: Int, offset: Int) {
         val language = GroovyLanguage
         try {
             injectionPlacesRegistrar.addPlace(
                 language,
-                TextRange.from(offset, length), null, null
+                TextRange.from(offset, length), """
+                    import de.hybris.platform.core.*
+                    import de.hybris.platform.core.model.user.* 
+                    import de.hybris.platform.core.HybrisEnumValue
+                    import de.hybris.platform.util.* 
+                    import de.hybris.platform.impex.jalo.* 
+                    import de.hybris.platform.jalo.*
+                    import de.hybris.platform.jalo.c2l.Currency
+                    import de.hybris.platform.jalo.c2l.* 
+                    import de.hybris.platform.jalo.user.*
+                    import de.hybris.platform.jalo.flexiblesearch.* 
+                    import de.hybris.platform.jalo.product.ProductManager
+
+                    def line = new java.util.HashMap<>();
+                    def impex = new de.hybris.platform.impex.jalo.imp.ImpExImportReader(null);
+                    
+                """.trimIndent(), null
             )
         } catch (e: ProcessCanceledException) {
             // ignore

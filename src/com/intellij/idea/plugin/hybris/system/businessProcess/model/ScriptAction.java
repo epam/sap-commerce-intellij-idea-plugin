@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,16 +21,22 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.model;
 
+import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
 import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.de/xsd/processdefinition:scriptAction interface.
  */
-public interface ScriptAction extends Action {
+public interface ScriptAction extends NavigableElement {
 
 	String SCRIPT = "script";
+	String CAN_JOIN_PREVIOUS_NODE = "canJoinPreviousNode";
+	String NODE_GROUP = "nodeGroup";
+	String NODE = "node";
+	String TRANSITION = "transition";
 
 	/**
 	 * Returns the value of the script child.
@@ -40,5 +46,63 @@ public interface ScriptAction extends Action {
 	@SubTag (SCRIPT)
 	@Required
 	Script getScript();
+
+
+	/**
+	 * Returns the value of the node child.
+	 * @return the value of the node child.
+	 */
+	@NotNull
+	@com.intellij.util.xml.Attribute (NODE)
+	GenericAttributeValue<Integer> getNode();
+
+
+	/**
+	 * Returns the value of the nodeGroup child.
+	 * @return the value of the nodeGroup child.
+	 */
+	@NotNull
+	@com.intellij.util.xml.Attribute (NODE_GROUP)
+	GenericAttributeValue<String> getNodeGroup();
+
+
+	/**
+	 * Returns the value of the canJoinPreviousNode child.
+	 * @return the value of the canJoinPreviousNode child.
+	 */
+	@NotNull
+	@com.intellij.util.xml.Attribute (CAN_JOIN_PREVIOUS_NODE)
+	GenericAttributeValue<Boolean> getCanJoinPreviousNode();
+
+
+	/**
+	 * Returns the list of parameter children.
+	 * @return the list of parameter children.
+	 */
+	@NotNull
+	@SubTagList("parameter")
+	java.util.List<Parameter> getParameters();
+	/**
+	 * Adds new child to the list of parameter children.
+	 * @return created child
+	 */
+	@SubTagList ("parameter")
+	Parameter addParameter();
+
+
+	/**
+	 * Returns the list of transition children.
+	 * @return the list of transition children.
+	 */
+	@NotNull
+	@SubTagList (TRANSITION)
+	@Required
+	java.util.List<Transition> getTransitions();
+	/**
+	 * Adds new child to the list of transition children.
+	 * @return created child
+	 */
+	@SubTagList (TRANSITION)
+	Transition addTransition();
 
 }

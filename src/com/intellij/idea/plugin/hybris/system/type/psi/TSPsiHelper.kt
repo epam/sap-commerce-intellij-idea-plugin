@@ -20,21 +20,38 @@ package com.intellij.idea.plugin.hybris.system.type.psi
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
+import com.intellij.idea.plugin.hybris.system.type.model.Attribute
+import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemTypes
+import com.intellij.idea.plugin.hybris.system.type.model.Persistence
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.parentsOfType
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomElement
 
 object TSPsiHelper {
 
-    fun resolveTypeCode(element: PsiElement) = element.parentsOfType<XmlTag>()
-        .firstOrNull { it.localName == ItemTypes.ITEMTYPE && it.getAttribute("code") != null }
-        ?.getAttributeValue("code")
+    fun resolveTypeCode(element: PsiElement) = resolveItemType(element)
+        ?.getAttributeValue(ItemType.CODE)
+
+    fun resolveItemType(element: PsiElement): XmlTag? = PsiTreeUtil.findFirstParent(element, true)
+    { e -> return@findFirstParent e is XmlTag && e.name == ItemTypes.ITEMTYPE } as? XmlTag?
+
+    fun resolveAttributeHandlerId(persistenceXmlTag: XmlTag): String? {
+        val explicitAttributeHandler = persistenceXmlTag.getAttributeValue(Persistence.ATTRIBUTE_HANDLER)
+
+        if (explicitAttributeHandler != null) return explicitAttributeHandler
+
+        val typecode = resolveTypeCode(persistenceXmlTag) ?: return null
+        val attributeQualifier = persistenceXmlTag.parentTag?.getAttributeValue(Attribute.QUALIFIER) ?: return null
+
+        return TSMetaHelper.getAttributeHandlerId(typecode, attributeQualifier)
+    }
 
     fun delete(project: Project, owner: TSGlobalMetaEnum, meta: TSMetaEnum.TSMetaEnumValue) = delete(
         project, owner.name, meta,

@@ -3,7 +3,7 @@
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
  * ----------------------------------------------------------------
  *
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,5 +29,8 @@ public interface ImpexAnyAttributeName extends PsiElement {
 
   @NotNull
   List<ImpexString> getStringList();
+
+  @Nullable
+  ImpexAnyAttributeValue getAnyAttributeValue();
 
 }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,18 +21,18 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
-import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 
 class FxSHybrisColumnCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val fxsSettings = HybrisProjectSettingsComponent.getInstance(parameters.position.project).state.flexibleSearchSettings
+        val fxsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(parameters.position.project).state.flexibleSearchSettings
         val addComma = FxSUtils.shouldAddCommaAfterExpression(parameters.position, fxsSettings)
 
         val parent = parameters.position.parentOfType<FlexibleSearchColumnRefExpression>()

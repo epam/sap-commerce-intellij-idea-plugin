@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.structureView
 
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -155,7 +154,7 @@ class TSStructureTreeElement(
     }
 
     override fun getIcon(open: Boolean) = when (element) {
-        is Description -> AllIcons.Windows.Help
+        is Description -> HybrisIcons.TS_DESCRIPTION
         is AtomicTypes -> HybrisIcons.TS_GROUP_ATOMIC
         is CollectionTypes -> HybrisIcons.TS_GROUP_COLLECTION
         is MapTypes -> HybrisIcons.TS_GROUP_MAP

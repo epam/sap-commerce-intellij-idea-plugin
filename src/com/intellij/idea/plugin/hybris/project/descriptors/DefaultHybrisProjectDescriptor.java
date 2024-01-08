@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -114,9 +114,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected boolean excludeTestSources;
     protected boolean importCustomAntBuildFiles;
     protected boolean scanThroughExternalModule;
-    private boolean withMavenSources;
     private boolean withStandardProvidedSources;
-    private boolean withMavenJavadocs;
     private boolean ignoreNonExistingSourceDirectories;
     @NotNull
     private ConfigModuleDescriptor configHybrisModuleDescriptor;
@@ -266,7 +264,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return expectedConfigDir;
         }
 
-        String hybrisConfig = (String) properties.get(HybrisConstants.HYBRIS_CONFIG_DIR_ENV);
+        String hybrisConfig = (String) properties.get(HybrisConstants.ENV_HYBRIS_CONFIG_DIR);
         if (hybrisConfig == null) {
             return expectedConfigDir;
         }
@@ -1044,16 +1042,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public boolean isWithMavenSources() {
-        return withMavenSources;
-    }
-
-    @Override
-    public void setWithMavenSources(final boolean withMavenSources) {
-        this.withMavenSources = withMavenSources;
-    }
-
-    @Override
     public boolean isWithStandardProvidedSources() {
         return withStandardProvidedSources;
     }
@@ -1061,16 +1049,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setWithStandardProvidedSources(final boolean withStandardProvidedSources) {
         this.withStandardProvidedSources = withStandardProvidedSources;
-    }
-
-    @Override
-    public boolean isWithMavenJavadocs() {
-        return withMavenJavadocs;
-    }
-
-    @Override
-    public void setWithMavenJavadocs(final boolean withMavenJavadocs) {
-        this.withMavenJavadocs = withMavenJavadocs;
     }
 
     @Override

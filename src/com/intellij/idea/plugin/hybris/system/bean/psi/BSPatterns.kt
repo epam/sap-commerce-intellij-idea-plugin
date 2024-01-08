@@ -28,7 +28,7 @@ object BSPatterns {
 
     private val springBeansXmlFile = XmlPatterns.xmlTag()
         .withLocalName("beans")
-        .withNamespace("http://www.springframework.org/schema/beans")
+        .withNamespace(HybrisConstants.SPRING_NAMESPACE)
 
     private val beansXmlFile = PlatformPatterns.psiFile()
         .withName(StandardPatterns.string().endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING))

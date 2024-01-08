@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,8 +19,8 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.openapi.editor.markup.GutterIconRenderer
@@ -33,7 +33,7 @@ import javax.swing.Icon
 class ItemsXmlItemAlternativeDeclarationsLineMarkerProvider : AbstractItemsXmlLineMarkerProvider<XmlAttributeValue>() {
 
     override fun getName() = message("hybris.editor.gutter.ts.items.item.alternativeDeclarations.name")
-    override fun getIcon(): Icon = AllIcons.Actions.Forward
+    override fun getIcon(): Icon = HybrisIcons.TS_ALTERNATIVE_DECLARATION
     override fun tryCast(psi: PsiElement) = (psi as? XmlAttributeValue)
         ?.takeIf {
             val attribute = psi.parent as? XmlAttribute ?: return@takeIf false

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -227,7 +227,13 @@ value ::= (MULTILINE_SEPARATOR? value_dec)+
     | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
 
 private value_dec ::= FIELD_VALUE
-    | FIELD_VALUE_URL
+    | FIELD_VALUE_PASSWORD_ENCODING_PREFIX
+    | FIELD_VALUE_JAR_PREFIX
+    | FIELD_VALUE_EXPLODED_JAR_PREFIX
+    | FIELD_VALUE_FILE_PREFIX
+    | FIELD_VALUE_ZIP_PREFIX
+    | FIELD_VALUE_HTTP_PREFIX
+//    | FIELD_VALUE_URL
     | BOOLEAN
     | DIGIT
     | string
@@ -314,6 +320,10 @@ attribute ::= any_attribute_name ASSIGN_VALUE any_attribute_value
 {pin = 1}
 
 any_attribute_name ::= (ATTRIBUTE_NAME | string)+
+{
+    mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeNameMixin"
+    methods=[getAnyAttributeValue]
+}
 
 any_attribute_value ::= (
   ATTRIBUTE_VALUE
@@ -322,7 +332,10 @@ any_attribute_value ::= (
   | string
   | macro_usage_dec
 )+
-{mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeValueMixin"}
+{
+    mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexAttributeValueMixin"
+    methods=[getAnyAttributeName]
+}
 
 sub_type_name ::= VALUE_SUBTYPE {
     mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexSubTypeNameMixin"

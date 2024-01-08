@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSimpleFoldingPlaceholderBuilder
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSmartFoldingPlaceholderBuilder
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.openapi.project.Project
 
 object ImpexFoldingPlaceholderBuilderFactory {
@@ -27,7 +27,7 @@ object ImpexFoldingPlaceholderBuilderFactory {
     fun getPlaceholderBuilder(project: Project) = if (isUseSmartFolding(project)) ImpExSmartFoldingPlaceholderBuilder.getInstance()
     else ImpExSimpleFoldingPlaceholderBuilder.getInstance()
 
-    private fun isUseSmartFolding(project: Project) = HybrisProjectSettingsComponent.getInstance(project).getState()
+    private fun isUseSmartFolding(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getState()
         .impexSettings
         .folding
         .useSmartFolding

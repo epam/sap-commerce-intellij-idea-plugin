@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.impex
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
@@ -32,39 +33,38 @@ import com.intellij.psi.util.PsiTreeUtil
 class ImpexUniqueAttributeWithoutIndexInspection : LocalInspectionTool() {
 
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ParameterChecker(holder)
-}
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : ImpexVisitor() {
 
-private class ParameterChecker(val holder: ProblemsHolder) : ImpexVisitor() {
+        override fun visitFullHeaderParameter(param: ImpexFullHeaderParameter) {
+            val attribute = param.anyHeaderParameterName.text
 
-    override fun visitFullHeaderParameter(param: ImpexFullHeaderParameter) {
-        param.modifiersList
-            .flatMap { it.attributeList }
-            .asSequence()
-            .filter { it.anyAttributeValue?.text == "true" }
-            .filter { it.anyAttributeName.stringList.isEmpty() }
-            .filter { it.anyAttributeName.firstChild == it.anyAttributeName.lastChild }
-            .filter { it.anyAttributeName.text == "unique" }
-            .firstOrNull()
-            ?: return
-        val attribute = param.anyHeaderParameterName.text
+            // no need to validate special parameters
+            if (attribute.startsWith('@') || HybrisConstants.ATTRIBUTE_PK.equals(attribute, true)) return
 
-        // no need to validate special parameters
-        if (attribute.startsWith('@')) return
+            param.modifiersList
+                .flatMap { it.attributeList }
+                .asSequence()
+                .filter { it.anyAttributeValue?.text == "true" }
+                .filter { it.anyAttributeName.stringList.isEmpty() }
+                .filter { it.anyAttributeName.firstChild == it.anyAttributeName.lastChild }
+                .filter { it.anyAttributeName.text == "unique" }
+                .firstOrNull()
+                ?: return
 
-        val typeName = PsiTreeUtil.getParentOfType(param, ImpexHeaderLine::class.java)
-            ?.fullHeaderType
-            ?.headerTypeName
-            ?.text
-            ?: return
+            val typeName = PsiTreeUtil.getParentOfType(param, ImpexHeaderLine::class.java)
+                ?.fullHeaderType
+                ?.headerTypeName
+                ?.text
+                ?: return
 
-        val hasIndex = TSMetaModelAccess.getInstance(param.project).findMetaItemByName(typeName)
-            ?.allIndexes
-            ?.flatMap { it.keys }
-            ?.any { it.equals(attribute, true) }
-            ?: true
+            val hasIndex = TSMetaModelAccess.getInstance(param.project).findMetaItemByName(typeName)
+                ?.allIndexes
+                ?.flatMap { it.keys }
+                ?.any { it.equals(attribute, true) }
+                ?: true
 
-        if (!hasIndex) {
+            if (hasIndex) return
+
             holder.registerProblem(
                 param,
                 message("hybris.inspections.impex.ImpexUniqueAttributeWithoutIndexInspection.key", attribute, typeName)

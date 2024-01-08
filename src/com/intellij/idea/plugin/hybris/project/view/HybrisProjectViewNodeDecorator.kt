@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.view
+package com.intellij.idea.plugin.hybris.project.view
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
@@ -29,7 +29,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.roots.ProjectRootManager
-import org.jetbrains.kotlin.idea.KotlinIcons
 
 class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
 
@@ -56,7 +55,7 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         val descriptorType = projectSettings.getModuleSettings(module).type
 
         if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && PluginCommon.isPluginActive(PluginCommon.KOTLIN_PLUGIN_ID)) {
-            data.setIcon(KotlinIcons.SMALL_LOGO)
+            data.setIcon(HybrisIcons.EXTENSION_KOTLIN_NATURE)
             return
         }
 

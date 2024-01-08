@@ -1,10 +1,11 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -23,27 +24,22 @@ import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.IncorrectOperationException
 
-class ImpexJavaClassBaseReference(psiElement: PsiElement) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
+class ImpexJavaClassReference(psiElement: PsiElement) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val project = element.project
-        val psiFacade = JavaPsiFacade.getInstance(project)
-        val classes = psiFacade.findClasses(element.text, GlobalSearchScope.allScope(project))
 
-        if (classes.isNotEmpty()) {
-            return PsiElementResolveResult.createResults(classes.first().originalElement)
-        }
-        return ResolveResult.EMPTY_ARRAY
+        return JavaPsiFacade.getInstance(project).findClass(element.text, GlobalSearchScope.allScope(project))
+            ?.let { PsiElementResolveResult.createResults(it.originalElement) }
+            ?: ResolveResult.EMPTY_ARRAY
     }
 
     override fun getRangeInElement() = TextRange.from(0, element.textLength)
 
     @Throws(IncorrectOperationException::class)
-    override fun handleElementRename(newElementName: String) =
-            getManipulator().handleContentChange(myElement, rangeInElement, newElementName)
-
+    override fun handleElementRename(newElementName: String) = getManipulator().handleContentChange(myElement, rangeInElement, newElementName)
 
     private fun getManipulator(): ElementManipulator<PsiElement> {
         return object : AbstractElementManipulator<PsiElement>() {
