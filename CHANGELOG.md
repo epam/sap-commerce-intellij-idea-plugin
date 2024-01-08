@@ -54,6 +54,7 @@
 - Removed catalog version option from the ImpEx console [#934](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/934)
 - Enhanced Parser and Lexer with single line scripting `#%` elements [#937](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/937)
 - Style scripting action elements `beforeEach:`, `afterEach:`, `if:` and `endif:` [#938](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/938)
+- Inject Groovy language into a single line scripting block [#939](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/939)
 
 ### `ImpEx` inspection rules
 - Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)
