@@ -32,141 +32,97 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
 
     override fun getHighlightingLexer() = ImpexLexerAdapter()
 
-    // TODO: migrate to cache FlexibleSearchSyntaxHighlighter
-    override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
-        return when (tokenType) {
-            ImpexTypes.MULTILINE_SEPARATOR -> MULTI_LINE_SEPARATOR
-            ImpexTypes.ALTERNATIVE_MAP_DELIMITER -> ALTERNATIVE_MAP_DELIMITER_KEYS
-            ImpexTypes.DEFAULT_KEY_VALUE_DELIMITER -> DEFAULT_KEY_VALUE_DELIMITER_KEYS
-            ImpexTypes.ASSIGN_VALUE -> ASSIGN_VALUE_KEYS
-            ImpexTypes.ATTRIBUTE_NAME -> ATTRIBUTE_NAME_KEYS
-            ImpexTypes.ATTRIBUTE_SEPARATOR -> ATTRIBUTE_SEPARATOR_KEYS
-            ImpexTypes.ATTRIBUTE_VALUE -> ATTRIBUTE_VALUE_KEYS
-
-            ImpexTypes.BEAN_SHELL_MARKER -> SCRIPT_MARKER_KEYS
-            ImpexTypes.GROOVY_MARKER -> SCRIPT_MARKER_KEYS
-            ImpexTypes.JAVASCRIPT_MARKER -> SCRIPT_MARKER_KEYS
-
-            ImpexTypes.BOOLEAN -> BOOLEAN_KEYS
-            ImpexTypes.COMMA -> COMMA_KEYS
-            ImpexTypes.LINE_COMMENT -> PROPERTY_COMMENT_KEYS
-            ImpexTypes.DEFAULT_PATH_DELIMITER -> DEFAULT_PATH_DELIMITER_KEYS
-            ImpexTypes.DIGIT -> DIGIT_KEYS
-            ImpexTypes.DOUBLE_STRING -> DOUBLE_STRING_KEYS
-            ImpexTypes.FIELD_LIST_ITEM_SEPARATOR -> FIELD_LIST_ITEM_SEPARATOR_KEYS
-            ImpexTypes.FIELD_VALUE -> FIELD_VALUE_KEYS
-            ImpexTypes.FIELD_VALUE_IGNORE -> FIELD_VALUE_IGNORE_KEYS
-            ImpexTypes.FIELD_VALUE_NULL -> FIELD_VALUE_NULL_KEYS
-            ImpexTypes.FIELD_VALUE_SEPARATOR -> FIELD_VALUE_SEPARATOR_KEYS
-            ImpexTypes.HEADER_MODE_INSERT -> HEADER_MODE_INSERT_KEYS
-            ImpexTypes.HEADER_MODE_INSERT_UPDATE -> HEADER_MODE_INSERT_UPDATE_KEYS
-            ImpexTypes.HEADER_MODE_REMOVE -> HEADER_MODE_REMOVE_KEYS
-            ImpexTypes.HEADER_MODE_UPDATE -> HEADER_MODE_UPDATE_KEYS
-            ImpexTypes.HEADER_PARAMETER_NAME -> HEADER_PARAMETER_NAME_KEYS
-            ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME -> HEADER_SPECIAL_PARAMETER_NAME_KEYS
-            ImpexTypes.HEADER_TYPE -> HEADER_TYPE_KEYS
-            ImpexTypes.MACRO_NAME_DECLARATION -> MACRO_NAME_DECLARATION_KEYS
-            ImpexTypes.MACRO_USAGE -> MACRO_USAGE_KEYS
-            ImpexTypes.MACRO_VALUE -> MACRO_VALUE_KEYS
-            ImpexTypes.PARAMETERS_SEPARATOR -> PARAMETERS_SEPARATOR_KEYS
-            ImpexTypes.SINGLE_STRING -> SINGLE_STRING_KEYS
-            ImpexTypes.VALUE_SUBTYPE -> VALUE_SUBTYPE_KEYS
-            ImpexTypes.ALTERNATIVE_PATTERN -> ALTERNATIVE_PATTERN_KEYS
-            ImpexTypes.DOCUMENT_ID -> DOCUMENT_ID_KEYS
-            ImpexTypes.FUNCTION -> FUNCTION_KEYS
-
-            ImpexTypes.LEFT_ROUND_BRACKET,
-            ImpexTypes.RIGHT_ROUND_BRACKET -> ROUND_BRACKETS_KEYS
-
-            ImpexTypes.LEFT_SQUARE_BRACKET,
-            ImpexTypes.RIGHT_SQUARE_BRACKET -> SQUARE_BRACKETS_KEYS
-
-            ImpexTypes.START_USERRIGHTS,
-            ImpexTypes.END_USERRIGHTS -> USER_RIGHTS_KEYS
-
-            ImpexTypes.PERMISSION -> USER_RIGHTS_HEADER_PERMISSION_PARAMETER_KEYS
-
-            ImpexTypes.TYPE,
-            ImpexTypes.PASSWORD,
-            ImpexTypes.UID,
-            ImpexTypes.MEMBEROFGROUPS,
-            ImpexTypes.TARGET -> USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS
-
-            ImpexTypes.PERMISSION_ALLOWED -> USER_RIGHTS_PERMISSION_ALLOWED_KEYS
-            ImpexTypes.PERMISSION_DENIED -> USER_RIGHTS_PERMISSION_DENIED_KEYS
-
-            ImpexTypes.COLLECTION_APPEND_PREFIX -> COLLECTION_APPEND_PREFIX
-            ImpexTypes.COLLECTION_REMOVE_PREFIX -> COLLECTION_REMOVE_PREFIX
-            ImpexTypes.COLLECTION_MERGE_PREFIX -> COLLECTION_MERGE_PREFIX
-
-            ImpexTypes.FIELD_VALUE_JAR_PREFIX -> FIELD_VALUE_JAR_PREFIX
-            ImpexTypes.FIELD_VALUE_EXPLODED_JAR_PREFIX -> FIELD_VALUE_EXPLODED_JAR_PREFIX
-            ImpexTypes.FIELD_VALUE_FILE_PREFIX -> FIELD_VALUE_FILE_PREFIX
-            ImpexTypes.FIELD_VALUE_ZIP_PREFIX -> FIELD_VALUE_ZIP_PREFIX
-            ImpexTypes.FIELD_VALUE_HTTP_PREFIX -> FIELD_VALUE_HTTP_PREFIX
-            ImpexTypes.FIELD_VALUE_PASSWORD_ENCODING_PREFIX -> FIELD_VALUE_PASSWORD_ENCODING_PREFIX
-
-            TokenType.BAD_CHARACTER -> BAD_CHARACTER_KEYS
-            else -> EMPTY_KEYS
-        }
-    }
+    override fun getTokenHighlights(tokenType: IElementType) = cache[tokenType]
+        ?: emptyArray()
 
     companion object {
         fun getInstance(): DefaultImpexSyntaxHighlighter = ApplicationManager.getApplication().getService(DefaultImpexSyntaxHighlighter::class.java)
 
-        val PROPERTY_COMMENT_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.PROPERTY_COMMENT)
-        val COLLECTION_APPEND_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_APPEND_PREFIX)
-        val COLLECTION_REMOVE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_REMOVE_PREFIX)
-        val COLLECTION_MERGE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COLLECTION_MERGE_PREFIX)
-        val FIELD_VALUE_JAR_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_JAR_PREFIX)
-        val FIELD_VALUE_EXPLODED_JAR_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_EXPLODED_JAR_PREFIX)
-        val FIELD_VALUE_FILE_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_FILE_PREFIX)
-        val FIELD_VALUE_ZIP_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX)
-        val FIELD_VALUE_HTTP_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX)
-        val FIELD_VALUE_PASSWORD_ENCODING_PREFIX: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX)
-        val MACRO_NAME_DECLARATION_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_NAME_DECLARATION)
-        val MACRO_VALUE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_VALUE)
-        val MACRO_USAGE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MACRO_USAGE)
-        val ASSIGN_VALUE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ASSIGN_VALUE)
-        val HEADER_MODE_INSERT_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.HEADER_MODE_INSERT)
-        val HEADER_MODE_UPDATE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.HEADER_MODE_UPDATE)
-        val HEADER_MODE_INSERT_UPDATE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.HEADER_MODE_INSERT_UPDATE)
-        val HEADER_MODE_REMOVE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.HEADER_MODE_REMOVE)
-        val HEADER_TYPE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.HEADER_TYPE)
-        val FUNCTION_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FUNCTION_CALL)
-        val VALUE_SUBTYPE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.VALUE_SUBTYPE)
-        val FIELD_VALUE_SEPARATOR_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_SEPARATOR)
-        val FIELD_LIST_ITEM_SEPARATOR_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_LIST_ITEM_SEPARATOR)
-        val FIELD_VALUE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE)
-        val SINGLE_STRING_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.SINGLE_STRING)
-        val DOUBLE_STRING_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DOUBLE_STRING)
-        val FIELD_VALUE_IGNORE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_IGNORE)
-        val FIELD_VALUE_NULL_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_IGNORE)
-        val SCRIPT_MARKER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.SCRIPT_MARKER)
-        val SQUARE_BRACKETS_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.SQUARE_BRACKETS)
-        val ROUND_BRACKETS_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ROUND_BRACKETS)
-        val ATTRIBUTE_NAME_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ATTRIBUTE_NAME)
-        val ATTRIBUTE_VALUE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ATTRIBUTE_VALUE)
-        val ATTRIBUTE_SEPARATOR_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ATTRIBUTE_SEPARATOR)
-        val BOOLEAN_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.BOOLEAN)
-        val DIGIT_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DIGIT)
-        val MULTI_LINE_SEPARATOR: Array<TextAttributesKey> = pack(ImpexHighlighterColors.MULTI_LINE_SEPARATOR)
-        val ALTERNATIVE_MAP_DELIMITER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ALTERNATIVE_MAP_DELIMITER)
-        val DEFAULT_KEY_VALUE_DELIMITER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER)
-        val DEFAULT_PATH_DELIMITER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DEFAULT_PATH_DELIMITER)
-        val HEADER_PARAMETER_NAME_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.HEADER_PARAMETER_NAME)
-        val HEADER_SPECIAL_PARAMETER_NAME_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME)
-        val PARAMETERS_SEPARATOR_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.PARAMETERS_SEPARATOR)
-        val COMMA_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.COMMA)
-        val BAD_CHARACTER_KEYS: Array<TextAttributesKey> = pack(HighlighterColors.BAD_CHARACTER)
-        val ALTERNATIVE_PATTERN_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ALTERNATIVE_PATTERN)
-        val DOCUMENT_ID_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DOCUMENT_ID)
-        val USER_RIGHTS_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.USER_RIGHTS)
-        val USER_RIGHTS_HEADER_PERMISSION_PARAMETER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.USER_RIGHTS_HEADER_PARAMETER)
-        val USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER)
-        val USER_RIGHTS_PERMISSION_ALLOWED_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED)
-        val USER_RIGHTS_PERMISSION_DENIED_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.USER_RIGHTS_PERMISSION_DENIED)
-        private val EMPTY_KEYS = emptyArray<TextAttributesKey>()
+        private val USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS = pack(ImpexHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER)
+        private val SCRIPT_MARKER_KEYS = pack(ImpexHighlighterColors.SCRIPT_MARKER)
+        private val SQUARE_BRACKETS_KEYS = pack(ImpexHighlighterColors.SQUARE_BRACKETS)
+        private val ROUND_BRACKETS_KEYS = pack(ImpexHighlighterColors.ROUND_BRACKETS)
+        private val USER_RIGHTS_KEYS = pack(ImpexHighlighterColors.USER_RIGHTS)
+
+        private val cache: Map<IElementType, Array<TextAttributesKey>> = mapOf(
+            TokenType.BAD_CHARACTER to pack(HighlighterColors.BAD_CHARACTER),
+
+            ImpexTypes.FIELD_VALUE_JAR_PREFIX to pack(ImpexHighlighterColors.FIELD_VALUE_JAR_PREFIX),
+            ImpexTypes.FIELD_VALUE_EXPLODED_JAR_PREFIX to pack(ImpexHighlighterColors.FIELD_VALUE_EXPLODED_JAR_PREFIX),
+            ImpexTypes.FIELD_VALUE_FILE_PREFIX to pack(ImpexHighlighterColors.FIELD_VALUE_FILE_PREFIX),
+            ImpexTypes.FIELD_VALUE_ZIP_PREFIX to pack(ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX),
+            ImpexTypes.FIELD_VALUE_HTTP_PREFIX to pack(ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX),
+            ImpexTypes.FIELD_VALUE_PASSWORD_ENCODING_PREFIX to pack(ImpexHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX),
+
+            ImpexTypes.COLLECTION_APPEND_PREFIX to pack(ImpexHighlighterColors.COLLECTION_APPEND_PREFIX),
+            ImpexTypes.COLLECTION_REMOVE_PREFIX to pack(ImpexHighlighterColors.COLLECTION_REMOVE_PREFIX),
+            ImpexTypes.COLLECTION_MERGE_PREFIX to pack(ImpexHighlighterColors.COLLECTION_MERGE_PREFIX),
+
+            ImpexTypes.PERMISSION_ALLOWED to pack(ImpexHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
+            ImpexTypes.PERMISSION_DENIED to pack(ImpexHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),
+
+            ImpexTypes.TYPE to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+            ImpexTypes.PASSWORD to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+            ImpexTypes.UID to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+            ImpexTypes.MEMBEROFGROUPS to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+            ImpexTypes.TARGET to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+
+            ImpexTypes.MULTILINE_SEPARATOR to pack(ImpexHighlighterColors.MULTI_LINE_SEPARATOR),
+            ImpexTypes.ALTERNATIVE_MAP_DELIMITER to pack(ImpexHighlighterColors.ALTERNATIVE_MAP_DELIMITER),
+            ImpexTypes.DEFAULT_KEY_VALUE_DELIMITER to pack(ImpexHighlighterColors.DEFAULT_KEY_VALUE_DELIMITER),
+            ImpexTypes.ASSIGN_VALUE to pack(ImpexHighlighterColors.ASSIGN_VALUE),
+            ImpexTypes.ATTRIBUTE_NAME to pack(ImpexHighlighterColors.ATTRIBUTE_NAME),
+            ImpexTypes.ATTRIBUTE_SEPARATOR to pack(ImpexHighlighterColors.ATTRIBUTE_SEPARATOR),
+            ImpexTypes.ATTRIBUTE_VALUE to pack(ImpexHighlighterColors.ATTRIBUTE_VALUE),
+
+            ImpexTypes.BEAN_SHELL_MARKER to SCRIPT_MARKER_KEYS,
+            ImpexTypes.GROOVY_MARKER to SCRIPT_MARKER_KEYS,
+            ImpexTypes.JAVASCRIPT_MARKER to SCRIPT_MARKER_KEYS,
+            ImpexTypes.SCRIPT_ACTION to pack(ImpexHighlighterColors.SCRIPT_ACTION),
+
+            ImpexTypes.BOOLEAN to pack(ImpexHighlighterColors.BOOLEAN),
+            ImpexTypes.COMMA to pack(ImpexHighlighterColors.COMMA),
+            ImpexTypes.LINE_COMMENT to pack(ImpexHighlighterColors.PROPERTY_COMMENT),
+            ImpexTypes.DEFAULT_PATH_DELIMITER to pack(ImpexHighlighterColors.DEFAULT_PATH_DELIMITER),
+            ImpexTypes.DIGIT to pack(ImpexHighlighterColors.DIGIT),
+            ImpexTypes.DOUBLE_STRING to pack(ImpexHighlighterColors.DOUBLE_STRING),
+
+            ImpexTypes.FIELD_LIST_ITEM_SEPARATOR to pack(ImpexHighlighterColors.FIELD_LIST_ITEM_SEPARATOR),
+            ImpexTypes.FIELD_VALUE to pack(ImpexHighlighterColors.FIELD_VALUE),
+            ImpexTypes.FIELD_VALUE_IGNORE to pack(ImpexHighlighterColors.FIELD_VALUE_IGNORE),
+            ImpexTypes.FIELD_VALUE_NULL to pack(ImpexHighlighterColors.FIELD_VALUE_IGNORE),
+            ImpexTypes.FIELD_VALUE_SEPARATOR to pack(ImpexHighlighterColors.FIELD_VALUE_SEPARATOR),
+
+            ImpexTypes.HEADER_MODE_INSERT to pack(ImpexHighlighterColors.HEADER_MODE_INSERT),
+            ImpexTypes.HEADER_MODE_INSERT_UPDATE to pack(ImpexHighlighterColors.HEADER_MODE_INSERT_UPDATE),
+            ImpexTypes.HEADER_MODE_REMOVE to pack(ImpexHighlighterColors.HEADER_MODE_REMOVE),
+            ImpexTypes.HEADER_MODE_UPDATE to pack(ImpexHighlighterColors.HEADER_MODE_UPDATE),
+            ImpexTypes.HEADER_PARAMETER_NAME to pack(ImpexHighlighterColors.HEADER_PARAMETER_NAME),
+            ImpexTypes.HEADER_SPECIAL_PARAMETER_NAME to pack(ImpexHighlighterColors.HEADER_SPECIAL_PARAMETER_NAME),
+            ImpexTypes.HEADER_TYPE to pack(ImpexHighlighterColors.HEADER_TYPE),
+
+            ImpexTypes.MACRO_NAME_DECLARATION to pack(ImpexHighlighterColors.MACRO_NAME_DECLARATION),
+            ImpexTypes.MACRO_USAGE to pack(ImpexHighlighterColors.MACRO_USAGE),
+            ImpexTypes.MACRO_VALUE to pack(ImpexHighlighterColors.MACRO_VALUE),
+
+            ImpexTypes.PARAMETERS_SEPARATOR to pack(ImpexHighlighterColors.PARAMETERS_SEPARATOR),
+            ImpexTypes.SINGLE_STRING to pack(ImpexHighlighterColors.SINGLE_STRING),
+            ImpexTypes.VALUE_SUBTYPE to pack(ImpexHighlighterColors.VALUE_SUBTYPE),
+            ImpexTypes.ALTERNATIVE_PATTERN to pack(ImpexHighlighterColors.ALTERNATIVE_PATTERN),
+            ImpexTypes.DOCUMENT_ID to pack(ImpexHighlighterColors.DOCUMENT_ID),
+            ImpexTypes.FUNCTION to pack(ImpexHighlighterColors.FUNCTION_CALL),
+
+            ImpexTypes.LEFT_ROUND_BRACKET to ROUND_BRACKETS_KEYS,
+            ImpexTypes.RIGHT_ROUND_BRACKET to ROUND_BRACKETS_KEYS,
+
+            ImpexTypes.LEFT_SQUARE_BRACKET to SQUARE_BRACKETS_KEYS,
+            ImpexTypes.RIGHT_SQUARE_BRACKET to SQUARE_BRACKETS_KEYS,
+
+            ImpexTypes.START_USERRIGHTS to USER_RIGHTS_KEYS,
+            ImpexTypes.END_USERRIGHTS to USER_RIGHTS_KEYS,
+
+            ImpexTypes.PERMISSION to pack(ImpexHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
+        )
     }
 
 }

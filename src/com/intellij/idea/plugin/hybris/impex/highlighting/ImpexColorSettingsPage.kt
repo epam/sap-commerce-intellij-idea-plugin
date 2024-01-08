@@ -52,7 +52,7 @@ ${"$"}contentCatalog = projectContentCatalog
 ${"$"}contentCV = catalogVersion(CatalogVersion.catalog(Catalog.id[default = ${"$"}contentCatalog]), CatalogVersion.version[default = 'Staged'])[default = ${"$"}contentCatalog:Staged]
 ${"$"}macro = qwe;qwe, qwe, ;qwe
 
-#% impex.setLocale( Locale.GERMAN );
+#% beforeEach: impex.setLocale( Locale.GERMAN );
 
 UPDATE Language ; ${unique("isoCode")}[unique=true]; fallbackLanguages(isoCode)
 ; en ; (+) de
@@ -151,6 +151,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         AttributesDescriptor("Value//password encoding prefix", ImpexHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX),
 
         AttributesDescriptor("Scripting//Marker", ImpexHighlighterColors.SCRIPT_MARKER),
+        AttributesDescriptor("Scripting//Action", ImpexHighlighterColors.SCRIPT_ACTION),
 
         AttributesDescriptor("Brackets//Square brackets", ImpexHighlighterColors.SQUARE_BRACKETS),
         AttributesDescriptor("Brackets//Round brackets", ImpexHighlighterColors.ROUND_BRACKETS),
