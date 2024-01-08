@@ -41,7 +41,7 @@ class DefaultConfiguratorFactory : ConfiguratorFactory {
     override fun getGroupModuleConfigurator(): GroupModuleConfigurator = GroupModuleConfigurator.getInstance()
     override fun getModuleSettingsConfigurator(): ModuleSettingsConfigurator = ModuleSettingsConfigurator.getInstance()
     override fun getVersionControlSystemConfigurator(): VersionControlSystemConfigurator = VersionControlSystemConfigurator.getInstance()
-    override fun getDebugRunConfigurationConfigurator(): RunConfigurationConfigurator = RunConfigurationConfigurator.instance
+    override fun getDefaultRunConfigurationConfigurator(): RunConfigurationConfigurator = RunConfigurationConfigurator.instance
     override fun getMavenConfigurator(): MavenConfigurator? = MavenConfigurator.getInstance()
     override fun getEclipseConfigurator(): EclipseConfigurator? = EclipseConfigurator.getInstance()
     override fun getGradleConfigurator(): GradleConfigurator? = GradleConfigurator.getInstance()

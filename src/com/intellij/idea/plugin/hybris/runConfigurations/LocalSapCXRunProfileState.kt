@@ -20,10 +20,7 @@ package com.intellij.idea.plugin.hybris.runConfigurations
 
 import com.intellij.debugger.impl.GenericDebuggerRunnerSettings
 import com.intellij.execution.Executor
-import com.intellij.execution.configurations.CommandLineState
-import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.execution.configurations.RemoteConnection
-import com.intellij.execution.configurations.RemoteState
+import com.intellij.execution.configurations.*
 import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessHandlerFactory
@@ -39,7 +36,7 @@ import java.nio.file.Paths
 class LocalSapCXRunProfileState(
     val executor: Executor,
     environment: ExecutionEnvironment, val project: Project
-) : CommandLineState(environment), RemoteState {
+) : CommandLineState(environment), JavaCommandLine, RemoteConnectionCreator {
 
     private val SHMEM_ADDRESS: String = "javadebug"
     private val HOST = "localhost"
@@ -106,7 +103,7 @@ class LocalSapCXRunProfileState(
         debuggerRunnerSettings.debugPort = debugPort
     }
 
-    override fun getRemoteConnection(): RemoteConnection {
+    override fun createRemoteConnection(environment: ExecutionEnvironment?): RemoteConnection {
         val propertyService = PropertyService.getInstance(project)
         if (propertyService != null) {
             val debugOptions = propertyService.findProperty(HybrisConstants.TOMCAT_JAVA_DEBUG_OPTIONS)!!
@@ -120,6 +117,14 @@ class LocalSapCXRunProfileState(
             return getRemoteConnection(debugSetting)
         }
         return RemoteConnection(USE_SOCKET_TRANSPORT, HOST, PORT, SERVER_MODE)
+    }
+
+    override fun getJavaParameters(): JavaParameters {
+        return JavaParameters();
+    }
+
+    override fun isPollConnection(): Boolean {
+        return true
     }
 
 }

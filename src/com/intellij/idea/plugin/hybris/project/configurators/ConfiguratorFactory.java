@@ -55,7 +55,7 @@ public interface ConfiguratorFactory {
     VersionControlSystemConfigurator getVersionControlSystemConfigurator();
 
     @NotNull
-    RunConfigurationConfigurator getDebugRunConfigurationConfigurator();
+    RunConfigurationConfigurator getDefaultRunConfigurationConfigurator();
 
     @Nullable
     MavenConfigurator getMavenConfigurator();

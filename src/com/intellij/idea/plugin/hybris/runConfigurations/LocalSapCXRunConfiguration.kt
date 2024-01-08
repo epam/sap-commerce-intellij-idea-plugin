@@ -49,7 +49,7 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration?> {
-        return LocalSapCXRunSettingsEditor(this)
+        return LocalSapCXRunSettingsEditor(project, this)
     }
 
     override fun getState(
@@ -75,7 +75,7 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
     }
 }
 
-private class LocalSapCXRunSettingsEditor(runConfiguration: LocalSapCXRunConfiguration) : FragmentedSettingsEditor<LocalSapCXRunConfiguration>(runConfiguration) {
+private class LocalSapCXRunSettingsEditor(project: Project, runConfiguration: LocalSapCXRunConfiguration) : FragmentedSettingsEditor<LocalSapCXRunConfiguration>(runConfiguration) {
 
     override fun createFragments(): List<SettingsEditorFragment<LocalSapCXRunConfiguration, *>> = SettingsEditorFragmentContainer.fragments {
         add(CommonParameterFragments.createRunHeader())

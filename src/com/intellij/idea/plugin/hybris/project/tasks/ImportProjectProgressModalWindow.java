@@ -186,7 +186,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         configuratorFactory.getModulesDependenciesConfigurator().configure(indicator, hybrisProjectDescriptor, modifiableModelsProvider);
         configuratorFactory.getSpringConfigurator().configure(indicator, hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider);
-        configuratorFactory.getDebugRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
+        configuratorFactory.getDefaultRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
         configuratorFactory.getVersionControlSystemConfigurator().configure(indicator, hybrisProjectDescriptor, project);
         configuratorFactory.getSearchScopeConfigurator().configure(indicator, project, appSettings, rootProjectModifiableModel);
 
