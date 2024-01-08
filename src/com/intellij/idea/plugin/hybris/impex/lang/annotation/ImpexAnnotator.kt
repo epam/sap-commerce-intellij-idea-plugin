@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +34,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
+import com.intellij.refactoring.suggested.startOffset
 import org.jetbrains.kotlin.idea.codeinsight.utils.findExistingEditor
 
 class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstance()) {
@@ -56,6 +57,37 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element.elementType) {
+            ImpexTypes.DOUBLE_STRING -> {
+                val text = element.text
+
+                // multi-line script
+                if (!text.startsWith("\"#%")) return
+
+                val textOffset = element.startOffset
+                val indexOfTheMarker = text.indexOf("% ")
+                    .takeIf { it != -1 }
+                    ?: return
+
+                val markerType = when {
+                    text.startsWith("\"#%groovy%") -> ImpexTypes.GROOVY_MARKER
+                    text.startsWith("\"#%javascript%") -> ImpexTypes.JAVASCRIPT_MARKER
+                    else -> ImpexTypes.BEAN_SHELL_MARKER
+                }
+
+                highlight(markerType, holder, element, range = TextRange.from(textOffset + 1, indexOfTheMarker))
+
+                setOf("beforeEach:", "afterEach:", "if:", "endif:")
+                    .firstNotNullOfOrNull {
+                        text.indexOf(it, indexOfTheMarker, true)
+                            .takeIf { index -> index != -1 }
+                            ?.let { index -> textOffset + index }
+                            ?.let { index -> index to it.length }
+                    }
+                    ?.let {
+                        highlight(ImpexTypes.SCRIPT_ACTION, holder, element, range = TextRange.from(it.first, it.second))
+                    }
+            }
+
             ImpexTypes.VALUE_LINE,
             ImpexTypes.USER_RIGHTS_VALUE_LINE -> {
                 element.findExistingEditor()
