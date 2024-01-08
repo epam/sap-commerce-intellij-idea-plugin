@@ -41,9 +41,7 @@ import javax.swing.SpinnerNumberModel
 
 class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_IMPEX, ImpexLanguage) {
 
-    object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
-
-    private val panel = JPanel(WrappedFlowLayout(0, 0))
+    private object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 
     private val legacyModeCheckbox = JBCheckBox("Legacy mode")
         .also { it.border = borders10 }
@@ -63,6 +61,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
     init {
         isEditable = true
 
+        val panel = JPanel(WrappedFlowLayout(0, 0))
         panel.add(JBLabel("UTF-8").also { it.border = borders10 })
         panel.add(JBLabel("Validation mode:").also { it.border = bordersLabel })
         panel.add(importModeComboBox)
@@ -71,6 +70,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
         panel.add(enableCodeExecutionCheckbox)
         panel.add(directPersistenceCheckbox)
         panel.add(legacyModeCheckbox)
+
         add(panel, BorderLayout.NORTH)
 
         ConsoleHistoryController(MyConsoleRootType, "hybris.impex.shell", this).install()

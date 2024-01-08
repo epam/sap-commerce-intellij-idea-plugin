@@ -25,72 +25,52 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
-import com.intellij.util.ui.JBUI
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
 import java.io.Serial
-import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryLanguage.instance) {
 
-    object MyConsoleRootType : ConsoleRootType(ID, null)
+    private object MyConsoleRootType : ConsoleRootType(ID, null)
 
-    private val panel = JPanel(WrappedFlowLayout(0, 0))
-
-    private val commitCheckbox = JBCheckBox()
-    private val commitLabel = JBLabel("Commit mode: ")
-
+    private val commitCheckbox = JBCheckBox("Commit mode")
+        .also { it.border = borders10 }
+    private val plainSqlCheckbox = JBCheckBox("Plain SQL")
+        .also { it.border = borders10 }
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 100, 1))
-    private val maxRowsLabel = JBLabel("Rows (max 100): ")
-
-    private val labelInsets = JBUI.insets(0, 10, 0, 1)
+        .also { it.border = borders5 }
 
     init {
-        createUI()
+        isEditable = true
+
+        val panel = JPanel(WrappedFlowLayout(0, 0))
+        panel.add(commitCheckbox)
+        panel.add(plainSqlCheckbox)
+        panel.add(JBLabel("Rows (max 100):").also { it.border = bordersLabel })
+        panel.add(maxRowsSpinner)
+
+        add(panel, BorderLayout.NORTH)
+
         ConsoleHistoryController(MyConsoleRootType, ID, this).install()
     }
 
-    private fun createUI() {
-        initCommitElements()
-        initMaxRowsElements()
+    override fun execute(query: String) = HybrisHacHttpClient.getInstance(project).executeFlexibleSearch(
+        project,
+        commitCheckbox.isSelected,
+        false,
+        maxRowsSpinner.value.toString(),
+        query
+    )
 
-        add(panel, BorderLayout.NORTH)
-        isEditable = true
-    }
-
-    private fun initCommitElements() {
-        commitLabel.border = JBUI.Borders.empty(labelInsets)
-        panel.add(commitLabel)
-        panel.add(commitCheckbox)
-    }
-
-    private fun initMaxRowsElements() {
-        maxRowsLabel.border = JBUI.Borders.empty(labelInsets)
-        panel.add(maxRowsLabel)
-        panel.add(maxRowsSpinner)
-    }
-
-    override fun execute(query: String): HybrisHttpResult {
-        return HybrisHacHttpClient.getInstance(project)
-            .executeFlexibleSearch(
-                project,
-                commitCheckbox.isSelected,
-                false,
-                maxRowsSpinner.value.toString(),
-                query
-            )
-    }
-
-    override fun title(): String = "Polyglot Query"
-    override fun tip(): String = "Polyglot Persistence Query Language Console (available only for 1905+)"
-    override fun icon(): Icon = HybrisIcons.PGQ_FILE
+    override fun title() = "Polyglot Query"
+    override fun tip() = "Polyglot Persistence Query Language Console (available only for 1905+)"
+    override fun icon() = HybrisIcons.PGQ_FILE
 
     companion object {
         @Serial

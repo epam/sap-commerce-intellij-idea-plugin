@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
-import com.intellij.util.ui.JBUI
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
 import java.io.Serial
@@ -43,47 +42,24 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     private val panel = JPanel(WrappedFlowLayout(0, 0))
 
-    private val commitCheckbox = JBCheckBox()
-    private val commitLabel = JBLabel("Commit mode: ")
-
-    private val plainSqlCheckbox = JBCheckBox()
-    private val plainSqlLabel = JBLabel("SQL: ")
-
+    private val commitCheckbox = JBCheckBox("Commit mode")
+        .also { it.border = borders10 }
+    private val plainSqlCheckbox = JBCheckBox("Plain SQL")
+        .also { it.border = borders10 }
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 100, 1))
-    private val maxRowsLabel = JBLabel("Rows (max 100): ")
-
-    private val labelInsets = JBUI.insets(0, 10, 0, 1)
+        .also { it.border = borders5 }
 
     init {
-        createUI()
-        ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
-    }
+        isEditable = true
 
-    private fun createUI() {
-        initCommitElements()
-        initPlainSqlElements()
-        initMaxRowsElements()
+        panel.add(commitCheckbox)
+        panel.add(plainSqlCheckbox)
+        panel.add(JBLabel("Rows (max 100):").also { it.border = bordersLabel })
+        panel.add(maxRowsSpinner)
 
         add(panel, BorderLayout.NORTH)
-        isEditable = true
-    }
 
-    private fun initCommitElements() {
-        commitLabel.border = JBUI.Borders.empty(labelInsets)
-        panel.add(commitLabel)
-        panel.add(commitCheckbox)
-    }
-
-    private fun initPlainSqlElements() {
-        plainSqlLabel.border = JBUI.Borders.empty(labelInsets)
-        panel.add(plainSqlLabel)
-        panel.add(plainSqlCheckbox)
-    }
-
-    private fun initMaxRowsElements() {
-        maxRowsLabel.border = JBUI.Borders.empty(labelInsets)
-        panel.add(maxRowsLabel)
-        panel.add(maxRowsSpinner)
+        ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
     }
 
     override fun execute(query: String) = HybrisHacHttpClient.getInstance(project)

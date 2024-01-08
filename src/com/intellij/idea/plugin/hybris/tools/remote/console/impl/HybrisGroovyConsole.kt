@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,64 +24,48 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
-import com.intellij.util.ui.JBUI
+import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import icons.JetgroovyIcons
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import java.awt.BorderLayout
-import java.awt.FlowLayout
 import java.io.Serial
-import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_GROOVY, GroovyLanguage) {
 
-    object MyConsoleRootType : ConsoleRootType("hybris.groovy.shell", null)
+    private object MyConsoleRootType : ConsoleRootType("hybris.groovy.shell", null)
 
-    private val panel = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0))
-    private val commitCheckbox = JBCheckBox()
-    private val commitLabel = JBLabel("Commit mode: ")
-
-    private val timeoutSpinner = JSpinner(SpinnerNumberModel(
-            AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 10))
-    private val timeoutLabel = JBLabel("Timeout (seconds): ")
+    private val commitCheckbox = JBCheckBox("Commit mode")
+        .also { it.border = borders10 }
+    private val timeoutSpinner = JSpinner(SpinnerNumberModel(AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 10))
+        .also { it.border = borders5 }
 
     init {
-        createUI()
+        isEditable = true
+
+        val panel = JPanel(WrappedFlowLayout(0, 0))
+        panel.add(commitCheckbox)
+        panel.add(JBLabel("Timeout (seconds):").also { it.border = bordersLabel })
+        panel.add(timeoutSpinner)
+
+        add(panel, BorderLayout.NORTH)
+
         ConsoleHistoryController(MyConsoleRootType, "hybris.groovy.shell", this).install()
     }
 
-    private fun createUI() {
-        commitLabel.border = JBUI.Borders.empty(5, 10, 5, 3)
-        commitCheckbox.border = JBUI.Borders.emptyRight(5)
-        panel.add(commitLabel)
-        panel.add(commitCheckbox)
-        add(panel, BorderLayout.NORTH)
-        initTimeoutSpinner()
-        isEditable = true
-    }
+    override fun execute(query: String) = HybrisHacHttpClient.getInstance(project).executeGroovyScript(
+        project, query, commitCheckbox.isSelected,
+        timeoutSpinner.value.toString().toInt() * 1000
+    )
 
-    private fun initTimeoutSpinner() {
-        commitLabel.border = JBUI.Borders.empty(5, 10, 5, 3)
-        panel.add(timeoutLabel)
-        panel.add(timeoutSpinner)
-    }
-
-    override fun execute(query: String): HybrisHttpResult {
-        val timeout = Integer.valueOf(timeoutSpinner.value.toString()) * 1000
-        return HybrisHacHttpClient.getInstance(project).executeGroovyScript(project, query, commitCheckbox.isSelected, timeout)
-    }
-
-    override fun title(): String = "Groovy Scripting"
-
-    override fun tip(): String = "Groovy Console"
-
-    override fun icon(): Icon = JetgroovyIcons.Groovy.Groovy_16x16
+    override fun title() = "Groovy Scripting"
+    override fun tip() = "Groovy Console"
+    override fun icon() = JetgroovyIcons.Groovy.Groovy_16x16
 
     fun updateCommitMode(commitMode: Boolean) {
         commitCheckbox.isSelected = commitMode
