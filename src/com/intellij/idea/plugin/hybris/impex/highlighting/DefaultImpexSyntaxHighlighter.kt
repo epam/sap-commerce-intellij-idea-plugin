@@ -32,6 +32,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
 
     override fun getHighlightingLexer() = ImpexLexerAdapter()
 
+    // TODO: migrate to cache FlexibleSearchSyntaxHighlighter
     override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
         return when (tokenType) {
             ImpexTypes.MULTILINE_SEPARATOR -> MULTI_LINE_SEPARATOR
@@ -41,8 +42,11 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.ATTRIBUTE_NAME -> ATTRIBUTE_NAME_KEYS
             ImpexTypes.ATTRIBUTE_SEPARATOR -> ATTRIBUTE_SEPARATOR_KEYS
             ImpexTypes.ATTRIBUTE_VALUE -> ATTRIBUTE_VALUE_KEYS
-            ImpexTypes.BEAN_SHELL_BODY -> BEAN_SHELL_BODY_KEYS
-            ImpexTypes.BEAN_SHELL_MARKER -> BEAN_SHELL_MARKER_KEYS
+
+            ImpexTypes.BEAN_SHELL_MARKER -> SCRIPT_MARKER_KEYS
+            ImpexTypes.GROOVY_MARKER -> SCRIPT_MARKER_KEYS
+            ImpexTypes.JAVASCRIPT_MARKER -> SCRIPT_MARKER_KEYS
+
             ImpexTypes.BOOLEAN -> BOOLEAN_KEYS
             ImpexTypes.COMMA -> COMMA_KEYS
             ImpexTypes.LINE_COMMENT -> PROPERTY_COMMENT_KEYS
@@ -138,8 +142,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         val DOUBLE_STRING_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.DOUBLE_STRING)
         val FIELD_VALUE_IGNORE_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_IGNORE)
         val FIELD_VALUE_NULL_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.FIELD_VALUE_IGNORE)
-        val BEAN_SHELL_MARKER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.BEAN_SHELL_MARKER)
-        val BEAN_SHELL_BODY_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.BEAN_SHELL_BODY)
+        val SCRIPT_MARKER_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.SCRIPT_MARKER)
         val SQUARE_BRACKETS_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.SQUARE_BRACKETS)
         val ROUND_BRACKETS_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ROUND_BRACKETS)
         val ATTRIBUTE_NAME_KEYS: Array<TextAttributesKey> = pack(ImpexHighlighterColors.ATTRIBUTE_NAME)

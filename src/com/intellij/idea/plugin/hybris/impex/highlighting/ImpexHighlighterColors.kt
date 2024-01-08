@@ -47,8 +47,6 @@ object ImpexHighlighterColors {
     val DOUBLE_STRING = key("DOUBLE_STRING", DefaultLanguageHighlighterColors.STRING)
     val FIELD_VALUE_IGNORE = key("FIELD_VALUE_IGNORE", DefaultLanguageHighlighterColors.KEYWORD)
     val FIELD_VALUE_NULL = key("FIELD_VALUE_NULL", FIELD_VALUE_IGNORE)
-    val BEAN_SHELL_MARKER = key("BEAN_SHELL_MARKER", DefaultLanguageHighlighterColors.KEYWORD)
-    val BEAN_SHELL_BODY = key("BEAN_SHELL_BODY", HighlighterColors.TEXT)
     val SQUARE_BRACKETS = key("SQUARE_BRACKETS", DefaultLanguageHighlighterColors.KEYWORD)
     val ROUND_BRACKETS = key("ROUND_BRACKETS", DefaultLanguageHighlighterColors.KEYWORD)
     val ATTRIBUTE_NAME = key("IMPEX_ATTRIBUTE_NAME", HighlighterColors.TEXT)
@@ -81,6 +79,7 @@ object ImpexHighlighterColors {
     val COLLECTION_APPEND_PREFIX = key("IMPEX_COLLECTION_APPEND_PREFIX", HighlighterColors.TEXT)
     val COLLECTION_REMOVE_PREFIX = key("IMPEX_COLLECTION_REMOVE_PREFIX", HighlighterColors.TEXT)
     val COLLECTION_MERGE_PREFIX = key("IMPEX_COLLECTION_MERGE_PREFIX", HighlighterColors.TEXT)
+
     private val FIELD_VALUE_PREFIX = key("IMPEX_FIELD_VALUE_PREFIX", HighlighterColors.TEXT)
     val FIELD_VALUE_JAR_PREFIX = key("IMPEX_FIELD_VALUE_JAR_PREFIX", FIELD_VALUE_PREFIX)
     val FIELD_VALUE_EXPLODED_JAR_PREFIX = key("IMPEX_FIELD_VALUE_EXPLODED_JAR_PREFIX", FIELD_VALUE_PREFIX)
@@ -88,6 +87,8 @@ object ImpexHighlighterColors {
     val FIELD_VALUE_ZIP_PREFIX = key("IMPEX_FIELD_VALUE_ZIP_PREFIX", FIELD_VALUE_PREFIX)
     val FIELD_VALUE_HTTP_PREFIX = key("IMPEX_FIELD_VALUE_HTTP_PREFIX", FIELD_VALUE_PREFIX)
     val FIELD_VALUE_PASSWORD_ENCODING_PREFIX = key("IMPEX_FIELD_VALUE_PASSWORD_ENCODING_PREFIX", FIELD_VALUE_PREFIX)
+
+    val SCRIPT_MARKER = key("IMPEX_SCRIPT_MARKER", DefaultLanguageHighlighterColors.KEYWORD)
 
     private fun key(externalName: String, fallbackAttributeKey: TextAttributesKey) = TextAttributesKey.createTextAttributesKey(externalName, fallbackAttributeKey)
 }

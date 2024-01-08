@@ -47,7 +47,7 @@ public class ImpexVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitBeanShell(@NotNull ImpexBeanShell o) {
+  public void visitBeanshellScriptBody(@NotNull ImpexBeanshellScriptBody o) {
     visitPsiElement(o);
   }
 
@@ -63,11 +63,19 @@ public class ImpexVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitGroovyScriptBody(@NotNull ImpexGroovyScriptBody o) {
+    visitPsiElement(o);
+  }
+
   public void visitHeaderLine(@NotNull ImpexHeaderLine o) {
     visitPsiElement(o);
   }
 
   public void visitHeaderTypeName(@NotNull ImpexHeaderTypeName o) {
+    visitPsiElement(o);
+  }
+
+  public void visitJavascriptScriptBody(@NotNull ImpexJavascriptScriptBody o) {
     visitPsiElement(o);
   }
 
@@ -100,6 +108,10 @@ public class ImpexVisitor extends PsiElementVisitor {
   }
 
   public void visitRootMacroUsage(@NotNull ImpexRootMacroUsage o) {
+    visitPsiElement(o);
+  }
+
+  public void visitScript(@NotNull ImpexScript o) {
     visitPsiElement(o);
   }
 
