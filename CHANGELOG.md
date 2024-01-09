@@ -32,6 +32,7 @@
 - Improved Editor wrapping type text range identification [#926](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/926)
 - Respect all fields of the DTO as a type [#927](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/927)
 - Add a type of the field in code completion for DTO as a type [#928](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/928)
+- Added code completion and reference resolution for full text search [#943](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/943)
 
 ### `ImpEx` enhancements
 - Added `disable.interceptor.types` type modifier [#889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/889)
