@@ -115,6 +115,7 @@ class ProjectBeforeCompilerTask : CompileTask {
             .withExePath(vmExecutablePath)
             .withCharset(StandardCharsets.UTF_8)
             .withParameters(
+                "-Dfile.encoding=UTF-8",
                 "-cp",
                 classpath.joinToString(":"),
                 HybrisConstants.CLASS_FQN_CODE_GENERATOR,

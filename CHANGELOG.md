@@ -12,6 +12,7 @@
 - Trigger file system change after the code generation [#910](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/910)
 - Trigger code generation even if there are modules of various types [#911](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/911)
 - Trigger file system change if code generation failed [#919](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/919)
+- Generate code with `UTF-8` encoding charset [#945](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/945)
 
 ### `Project Import` enhancements
 - Added autoconfiguration of the JRebel Facet for custom extensions [#869](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/869)
@@ -54,7 +55,7 @@
 - Suggest the next available type code when there is no value [#923](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/923)
 - Improved code completion for `translator` modifier [#932](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/932)
 - Added special translator modifiers `expr`, `version`, `system`, `class` [#933](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/933)
-- Removed catalog version option from the ImpEx console [#934](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/934)
+- Removed a catalog version option from the ImpEx console [#934](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/934)
 - Enhanced Parser and Lexer with single line scripting `#%` elements [#937](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/937)
 - Style scripting action elements `beforeEach:`, `afterEach:`, `if:` and `endif:` [#938](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/938)
 - Inject Groovy language into a single line scripting block [#939](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/939)
