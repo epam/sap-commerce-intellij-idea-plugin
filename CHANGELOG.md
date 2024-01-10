@@ -35,6 +35,7 @@
 - Add a type of the field in code completion for DTO as a type [#928](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/928)
 - Added code completion and reference resolution for full text search [#943](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/943)
 - Added code folding for `navigation-node` element [#944](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/944)
+- Added `Spring EL` language injection into the body of the `y:label` tag [#946](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/946)
 
 ### `ImpEx` enhancements
 - Added `disable.interceptor.types` type modifier [#889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/889)

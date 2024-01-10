@@ -35,7 +35,7 @@ import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
-class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryLanguage.instance) {
+class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryLanguage) {
 
     private object MyConsoleRootType : ConsoleRootType(ID, null)
 
