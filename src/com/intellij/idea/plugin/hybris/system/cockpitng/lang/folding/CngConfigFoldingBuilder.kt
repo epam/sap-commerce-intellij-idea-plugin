@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor.Attribu
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor.Section
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListColumn
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListView
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.ExplorerNode
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.ExplorerTree
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.TypeNode
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.AdditionalParam
@@ -48,6 +49,7 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                 FieldList.FIELD,
                 Section.ATTRIBUTE,
                 ExplorerTree.TYPE_NODE,
+                ExplorerTree.NAVIGATION_NODE,
                 ListView.COLUMN,
                 PropertyList.PROPERTY,
                 Property.EDITOR_PARAMETER,
@@ -87,7 +89,7 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                 val value = subTags[Parameter.VALUE]
                     ?.value
                     ?.trimmedText
-                    ?.let { " = $it"}
+                    ?.let { " = $it" }
                     ?: " ?"
 
                 name + value
@@ -123,11 +125,25 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                         ?.let { "non-visible" },
                     psi.getAttributeValue(Attribute.MERGE_MODE)
                         ?.lowercase()
-                ))
+                )
+            )
 
             ExplorerTree.TYPE_NODE -> fold(psi, ExplorerTree.TYPE_NODE, TypeNode.ID,
                 getCachedFoldingSettings(psi)?.tablifyNavigationNodes,
-                psi.getAttributeValue(TypeNode.CODE)
+                (psi.getAttributeValue(TypeNode.CODE)
+                    ?.let { TYPE_SEPARATOR + it }
+                    ?: "") +
+                    computeExtraAttributes(
+                        psi.getAttributeValue(ExplorerNode.MERGE_MODE),
+                    )
+            )
+
+            ExplorerTree.NAVIGATION_NODE -> fold(psi, ExplorerTree.NAVIGATION_NODE, ExplorerNode.ID,
+                getCachedFoldingSettings(psi)?.tablifyNavigationNodes,
+                computeExtraAttributes(
+                    psi.getAttributeValue(ExplorerNode.MERGE_MODE),
+                )
+                    .takeIf { it.isNotBlank() }
                     ?.let { TYPE_SEPARATOR + it }
                     ?: ""
             )

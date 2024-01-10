@@ -28,7 +28,6 @@ import com.intellij.patterns.DomPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
 import com.intellij.patterns.XmlPatterns
-import com.intellij.patterns.XmlPatterns.xmlAttribute
 
 object CngPatterns {
     const val CONFIG_ROOT = "config"
@@ -173,7 +172,7 @@ object CngPatterns {
 
         XmlPatterns.xmlAttributeValue()
             .withParent(
-                xmlAttribute()
+                XmlPatterns.xmlAttribute()
                     .withLocalName("name")
                     .withParent(
                         XmlPatterns.xmlTag()
@@ -247,7 +246,7 @@ object CngPatterns {
     val CONTEXT_PARENT_NON_ITEM_TYPE = XmlPatterns.xmlAttributeValue()
         .withAncestor(6, XmlPatterns.xmlTag().withLocalName(CONFIG_ROOT))
         .withParent(
-            xmlAttribute("parent")
+            XmlPatterns.xmlAttribute("parent")
                 .withParent(
                     XmlPatterns.xmlTag()
                         .withLocalName(CONFIG_CONTEXT)
@@ -266,7 +265,7 @@ object CngPatterns {
         XmlPatterns.xmlAttributeValue()
             .withAncestor(6, XmlPatterns.xmlTag().withLocalName(CONFIG_ROOT))
             .withParent(
-                xmlAttribute("parent")
+                XmlPatterns.xmlAttribute("parent")
                     .withParent(
                         XmlPatterns.xmlTag()
                             .withLocalName(CONFIG_CONTEXT)
@@ -303,7 +302,7 @@ object CngPatterns {
         namespace: String
     ) = XmlPatterns.xmlAttributeValue()
         .withParent(
-            xmlAttribute()
+            XmlPatterns.xmlAttribute()
                 .withLocalName(attribute)
                 .withParent(
                     XmlPatterns.xmlTag()
@@ -323,7 +322,7 @@ object CngPatterns {
         namespace: String
     ) = XmlPatterns.xmlAttributeValue()
         .withParent(
-            xmlAttribute()
+            XmlPatterns.xmlAttribute()
                 .withLocalName(attribute)
                 .withParent(
                     XmlPatterns.xmlTag()
@@ -341,7 +340,7 @@ object CngPatterns {
         tag: String,
     ) = XmlPatterns.xmlAttributeValue()
         .withParent(
-            xmlAttribute()
+            XmlPatterns.xmlAttribute()
                 .withLocalName(attribute)
                 .withParent(
                     XmlPatterns.xmlTag()
