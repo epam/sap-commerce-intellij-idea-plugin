@@ -38,9 +38,8 @@
         <display-name>[y] ImpEx Converter</display-name>
         <place><![CDATA[xmlTag().withLocalName("value").withParent(xmlTag().withLocalName("property").withAttributeValue("name", "header").withParent(or(xmlTag().withLocalName("bean").withAttributeValue("class", "de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter"), xmlTag().withLocalName("bean").withAttributeValue("parent", "abstractDefaultImpexConverter"))))]]></place>
     </injection>
-<!--    <injection language="SpEl" injector-id="xml">-->
-<!--        <display-name>[y] SpEl - CockpitNG</display-name>-->
-<!--        <place><![CDATA[xmlText().withParent(xmlTag().withLocalName("label")).inside(xmlTag().withLocalName("config").withAttributeValue("xmlns", "http://www.hybris.com/cockpit/config"))]]></place>-->
-<!--        <place><![CDATA[psiElement(XmlTokenType.XML_DATA_CHARACTERS).withParent(xmlTag().withLocalName("label").withNamespace("http://www.hybris.com/cockpit/config/hybris"))]]></place>-->
-<!--    </injection>-->
+    <injection language="SpEL" injector-id="xml">
+        <display-name>[y] SpEl - CockpitNG</display-name>
+        <place><![CDATA[xmlAttribute("visible").withParent(xmlTag().withNamespace("http://www.hybris.com/cockpitng/config/wizard-config"))]]></place>
+    </injection>
 </component>

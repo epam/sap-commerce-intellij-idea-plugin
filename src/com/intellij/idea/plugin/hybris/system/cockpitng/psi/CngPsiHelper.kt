@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,12 +33,15 @@ object CngPsiHelper {
     fun resolveContextType(element: PsiElement) = resolveContextTag(element)
         ?.getAttributeValue("type")
 
-    fun resolveContextTypeForNewItemInWizardFlow(element: PsiElement): String? {
+    fun resolveContextTypeForNewItemInWizardFlow(element: PsiElement) = resolveNamedContextTypeForNewItemInWizardFlow(element)
+        ?.second
+
+    fun resolveNamedContextTypeForNewItemInWizardFlow(element: PsiElement): Pair<String?, String?>? {
         val newItemName = element.parentsOfType<XmlTag>()
             .firstOrNull { it.localName == "property-list" }
             ?.getAttributeValue("root")
             ?: resolveInlineItemName(element)
-            ?: return resolveContextType(element)
+            ?: return null to resolveContextType(element)
 
         val initializeProperty = element.parentsOfType<XmlTag>()
             .firstOrNull { it.localName == "flow" }
@@ -51,10 +54,10 @@ object CngPsiHelper {
         if (initializeProperty?.getAttributeValue("template-bean") != null) return null
 
         val newItemType = initializeProperty?.getAttributeValue("type")
-            ?: return resolveContextType(element)
+            ?: return newItemName to resolveContextType(element)
 
-        return if (HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(newItemType, true)) resolveContextType(element)
-        else newItemType
+        return if (HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE.equals(newItemType, true)) newItemName to resolveContextType(element)
+        else newItemName to newItemType
     }
 
     private fun resolveInlineItemName(element: PsiElement) = element

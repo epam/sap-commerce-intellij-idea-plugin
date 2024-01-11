@@ -17,13 +17,15 @@
  */
 package com.intellij.idea.plugin.hybris.lang.injection
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription
+import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Labels
 import com.intellij.lang.injection.MultiHostInjector
 import com.intellij.lang.injection.MultiHostRegistrar
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.xml.XmlAttributeValue
+import com.intellij.psi.xml.XmlTagChild
 import com.intellij.psi.xml.XmlText
 import com.intellij.spring.el.SpringELLanguage
 import com.intellij.spring.model.utils.SpringCommonUtils
@@ -34,14 +36,17 @@ class HybrisSpringELInjector : MultiHostInjector {
         val project = context.project
         if (project.isDefault) return
         if (!SpringCommonUtils.isSpringConfigured(project)) return
-        if (context !is XmlText) return
+        if (context !is XmlTagChild) return
 
         val tag = context.parentTag ?: return
 
-        if (tag.localName != Labels.LABEL || tag.namespace != CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS) return
         if (context !is PsiLanguageInjectionHost) return
 
-        doInject(registrar, context)
+        when {
+            context is XmlText
+                && tag.localName == Labels.LABEL
+                && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> doInject(registrar, context)
+        }
     }
 
     private fun doInject(registrar: MultiHostRegistrar, context: PsiLanguageInjectionHost) {
@@ -54,6 +59,7 @@ class HybrisSpringELInjector : MultiHostInjector {
     }
 
     override fun elementsToInjectIn() = mutableListOf(
-        XmlText::class.java
+        XmlText::class.java,
+        XmlAttributeValue::class.java,
     )
 }

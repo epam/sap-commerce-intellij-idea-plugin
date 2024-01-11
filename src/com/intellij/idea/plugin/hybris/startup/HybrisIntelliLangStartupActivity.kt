@@ -20,25 +20,20 @@ package com.intellij.idea.plugin.hybris.startup
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.patterns.PsiJavaPatterns
-import com.intellij.patterns.XmlPatterns
-import com.intellij.patterns.XmlPatterns.xmlTag
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ClassInheritorsSearch
-import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.concurrency.AppExecutorUtil
 import org.intellij.plugins.intelliLang.Configuration
 import org.intellij.plugins.intelliLang.inject.config.InjectionPlace
 import org.intellij.plugins.intelliLang.inject.java.InjectionCache
 import org.intellij.plugins.intelliLang.inject.java.JavaLanguageInjectionSupport
-import org.intellij.plugins.intelliLang.inject.xml.XmlLanguageInjectionSupport
 
 /**
  * TODO: reset Injection Cache on CRUD operation on classes related to FlexibleSearchQuery
@@ -48,28 +43,7 @@ class HybrisIntelliLangStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
 
-//        registerSpringELInjections(project)
         registerJavaInjections(project)
-    }
-
-    private fun registerSpringELInjections(project: Project) {
-        if (!PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) return
-
-        val injection = Configuration.getInstance().getInjections(XmlLanguageInjectionSupport.XML_SUPPORT_ID)
-            .firstOrNull { it.displayName == "[y] SpEl - CockpitNG" }
-            ?: return
-
-        val injectionPlaces = injection.injectionPlaces.toMutableSet()
-
-        if (injectionPlaces.isNotEmpty()) return
-
-        val place = InjectionPlace(
-            XmlPatterns.psiElement(XmlTokenType.XML_DATA_CHARACTERS).withParent(xmlTag().withLocalName("label").withNamespace("http://www.hybris.com/cockpit/config/hybris")),
-            true
-        )
-        injectionPlaces.add(place)
-
-        injection.setInjectionPlaces(*injectionPlaces.toTypedArray())
     }
 
     private fun registerJavaInjections(project: Project) {

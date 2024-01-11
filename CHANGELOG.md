@@ -36,6 +36,7 @@
 - Added code completion and reference resolution for full text search [#943](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/943)
 - Added code folding for `navigation-node` element [#944](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/944)
 - Added `Spring EL` language injection into the body of the `y:label` tag [#946](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/946)
+- Added `Spring EL` language injection into the `visible` attribute of the wizard tags [#947](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/947)
 
 ### `ImpEx` enhancements
 - Added `disable.interceptor.types` type modifier [#889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/889)
