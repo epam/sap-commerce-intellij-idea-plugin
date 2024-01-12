@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -98,7 +98,7 @@ tasks {
          - issue > https://github.com/JetBrains/gradle-intellij-plugin/issues/578
          - docs > https://plugins.jetbrains.com/docs/intellij/dev-alternate-products.html#configuring-gradle-build-script-using-the-intellij-idea-product-attribute
          */
-//        ideDir = file("/Users/<user>/Library/Application Support/JetBrains/Toolbox/apps/IDEA-C/ch-0/231.8770.65/IntelliJ IDEA CE.app/Contents")
+//        ideDir = file("/Users/<user>/Applications/IntelliJ IDEA Community Edition.app/Contents")
     }
 
     patchPluginXml {

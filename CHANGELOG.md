@@ -17,6 +17,7 @@
 ### `Project Import` enhancements
 - Added autoconfiguration of the JRebel Facet for custom extensions [#869](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/869)
 - Omit slow operations after project import [#871](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/871)
+- Do not remove custom third-party modules during the `Project Refresh` [#948](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/948)
 
 ### `Tests` enhancements
 - Add JDK Export Properties to JUnit Tests to run Integration Tests [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)
@@ -1175,9 +1176,11 @@
 ### Features
 - Added 2022.3 IntelliJ IDEA support
 - Introduction the Type System Management - the powerful tool to observe SAP Commerce type system [#62](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/62),
+[#63](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/63),
+[#66](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/66),
 [#60](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60)
-- Added support of the Enum completion in ImpEx/FSQ
-- Added support of the Relation completion in ImpEx/FSQ
+- Added support for the Enum completion in ImpEx/FSQ
+- Added support for the Relation completion in ImpEx/FSQ
 - Added MapType support for `items.xml`
 - Added postgresql DB mapping
 - Added next `typecode` suggestion via `items.xml` Inspection
@@ -1185,6 +1188,8 @@
 - Improved performance of the `items.xml` inspection
 - Extended/refactored type system inspection rules
 - Merged ToolsWindows "Hybris" (as Remote Instances) and "Hybris Console" (as Consoles) altogether with "Type system" into "Hybris" as a single entry point for all [y] related actions
+- Gutter Annotator for Enum Types (alternative definitions within items.xml) [#67](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/64)
+- Project refresh is broken when Gradle project was part of the initial import [#67](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/67)
 
 ### Deprecated
 - Decreased usage of the Deprecated API

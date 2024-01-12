@@ -42,6 +42,7 @@ class HybrisProjectSettings : BaseState() {
     var excludeTestSources by property(false)
     var importCustomAntBuildFiles by property(false)
     var showFullModuleName by property(false)
+    var removeExternalModulesOnRefresh by property(false)
     var completeSetOfAvailableExtensionsInHybris by stringSet()
     var unusedExtensions by stringSet()
     var modulesOnBlackList by stringSet()
