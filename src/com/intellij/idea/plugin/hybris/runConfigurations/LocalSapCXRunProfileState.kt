@@ -38,7 +38,7 @@ class LocalSapCXRunProfileState(
     environment: ExecutionEnvironment, val project: Project
 ) : CommandLineState(environment), JavaCommandLine, RemoteConnectionCreator {
 
-    private val SHMEM_ADDRESS: String = "javadebug"
+    private val SHMEM_ADDRESS = "javadebug"
     private val HOST = "localhost"
     private val PORT = "8000"
     private val SERVER_MODE = false
@@ -76,6 +76,7 @@ class LocalSapCXRunProfileState(
         return processHandler
     }
 
+
     private fun getRemoteConnection(propertyString: String): RemoteConnection {
         var useSocket: Boolean = USE_SOCKET_TRANSPORT
         var hostName: String = HOST
@@ -103,9 +104,8 @@ class LocalSapCXRunProfileState(
         debuggerRunnerSettings.debugPort = debugPort
     }
 
-    override fun createRemoteConnection(environment: ExecutionEnvironment?): RemoteConnection {
-        val propertyService = PropertyService.getInstance(project)
-        if (propertyService != null) {
+    override fun createRemoteConnection(environment: ExecutionEnvironment?) = PropertyService.getInstance(project)
+        ?.let { propertyService ->
             val debugOptions = propertyService.findProperty(HybrisConstants.TOMCAT_JAVA_DEBUG_OPTIONS)!!
 
             val propertyPrefix = "-Xrunjdwp:"
@@ -115,9 +115,8 @@ class LocalSapCXRunProfileState(
             val endIndex: Int = debugOptions.indexOf(' ', prefixStartIndex)
             val debugSetting: String = if (endIndex > -1) debugOptions.substring(prefixStartIndex, endIndex) else debugOptions.substring(prefixStartIndex)
             return getRemoteConnection(debugSetting)
-        }
-        return RemoteConnection(USE_SOCKET_TRANSPORT, HOST, PORT, SERVER_MODE)
-    }
+        } ?: RemoteConnection(USE_SOCKET_TRANSPORT, HOST, PORT, SERVER_MODE)
+
 
     override fun getJavaParameters(): JavaParameters {
         return JavaParameters();

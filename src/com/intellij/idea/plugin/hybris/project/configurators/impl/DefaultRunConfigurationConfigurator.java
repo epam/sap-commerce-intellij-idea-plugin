@@ -59,12 +59,12 @@ public class DefaultRunConfigurationConfigurator implements RunConfigurationConf
     ) {
         indicator.setText(message("hybris.project.import.runconfiguration"));
         final RunManager runManager = RunManager.getInstance(project);
-        createRunConfiguration(runManager, RemoteConfigurationType.class, HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.remote.debug"), runner -> {
+        createRunConfiguration(runManager, RemoteConfigurationType.class, HybrisI18NBundleUtils.message("hybris.project.run.configuration.remote.debug"), runner -> {
             final RemoteConfiguration remoteConfiguration = (RemoteConfiguration) runner.getConfiguration();
             remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, cache);
             remoteConfiguration.setAllowRunningInParallel(false);
         });
-        createRunConfiguration(runManager, LocalSapCXConfigurationType.class, HybrisI18NBundleUtils.message("hybris.project.import.run.configuration.localserver"), runner -> {
+        createRunConfiguration(runManager, LocalSapCXConfigurationType.class, HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver"), runner -> {
 
         });
 

@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.runConfigurations
 
-import com.intellij.execution.configurations.RunConfigurationModule
-import com.intellij.openapi.project.Project
-import org.jetbrains.annotations.NotNull
+import com.intellij.execution.configurations.ModuleBasedConfigurationOptions
 
-class LocalSapCXConfigurationModule(@NotNull project: Project) : RunConfigurationModule(project) {
+class LocalSapCXRunConfigurationOptions : ModuleBasedConfigurationOptions() {
+
 }
