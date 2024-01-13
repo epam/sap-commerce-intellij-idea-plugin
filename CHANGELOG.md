@@ -5,6 +5,8 @@
 - Moved project settings to developer-specific settings [#935](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/935)
 - Unified consoles execution settings visual representation [#942](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/942)
 - Omit slow operations for simple Spring bean resolution in a Community edition [#949](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/949)
+
+### `SAP CX Run Configuration` Feature
 - SAP CX Run Configuration for simple Starting and Debugging SAP CX Platform [#936](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/936)
 
 ### `Project Build` enhancements
