@@ -78,8 +78,6 @@ object TSSpringHelper {
     private fun springResolveBean(module: Module, beanId: String) = SpringManager.getInstance(module.project).getAllModels(module)
         .firstNotNullOfOrNull { SpringModelSearchers.findBean(it, beanId) }
 
-    // TODO: introduce custom cache logic for plain Spring Context
-    // current implementation leads to SLOW operations warnings.
     private fun plainResolveBean(module: Module, beanId: String) = SimpleSpringService.getService(module.project)
         ?.findBean(beanId)
 
