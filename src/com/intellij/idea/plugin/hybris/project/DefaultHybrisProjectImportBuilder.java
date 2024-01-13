@@ -160,7 +160,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         this.performProjectsCleanup(allModules);
 
         new ImportProjectProgressModalWindow(
-            project, model, configuratorFactory, hybrisProjectDescriptor, modules
+            project, model, configuratorFactory, hybrisProjectDescriptor, modules, refresh
         ).queue();
 
         if (refresh) {

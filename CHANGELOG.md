@@ -19,6 +19,7 @@
 - Added autoconfiguration of the JRebel Facet for custom extensions [#869](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/869)
 - Omit slow operations after project import [#871](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/871)
 - Do not remove custom third-party modules during the `Project Refresh` [#948](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/948)
+- Do not modify hybris directory during the `Project Refresh` [#950](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/950)
 
 ### `Tests` enhancements
 - Add JDK Export Properties to JUnit Tests to run Integration Tests [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)

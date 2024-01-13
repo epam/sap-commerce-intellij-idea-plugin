@@ -73,7 +73,6 @@ import com.intellij.psi.codeStyle.CodeStyleScheme;
 import com.intellij.psi.codeStyle.CodeStyleSchemes;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
-import com.intellij.spellchecker.dictionary.EditableDictionary;
 import com.intellij.spellchecker.dictionary.ProjectDictionary;
 import com.intellij.spellchecker.dictionary.UserDictionary;
 import com.intellij.spellchecker.state.ProjectDictionaryState;
@@ -109,6 +108,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private final ConfiguratorFactory configuratorFactory;
     private final HybrisProjectDescriptor hybrisProjectDescriptor;
     private final List<Module> modules;
+    private final boolean refresh;
     @NotNull
     private IdeModifiableModelsProvider modifiableModelsProvider;
 
@@ -117,8 +117,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ModifiableModuleModel model,
         final ConfiguratorFactory configuratorFactory,
         final HybrisProjectDescriptor hybrisProjectDescriptor,
-        final List<Module> modules
-    ) {
+        final List<Module> modules,
+        final boolean refresh) {
         super(project, message("hybris.project.import.commit"), false);
         this.project = project;
         this.model = model;
@@ -126,6 +126,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.configuratorFactory = configuratorFactory;
         this.hybrisProjectDescriptor = hybrisProjectDescriptor;
         this.modules = modules;
+        this.refresh = refresh;
     }
 
     @Override
@@ -149,7 +150,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.initializeHybrisProjectSettings(project, hybrisProjectSettings);
         this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
         this.selectSdk(project);
-        this.saveCustomDirectoryLocation(project, hybrisProjectSettings);
+
+        if (!refresh) {
+            this.saveCustomDirectoryLocation(project, hybrisProjectSettings);
+        }
+
         this.saveImportedSettings(project, hybrisProjectSettings, appSettings, projectSettingsComponent);
         this.disableWrapOnType(ImpexLanguage.INSTANCE);
 
@@ -369,12 +374,14 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final ProjectDictionaryState dictionaryState = project.getService(ProjectDictionaryState.class);
         final ProjectDictionary projectDictionary = dictionaryState.getProjectDictionary();
         projectDictionary.getEditableWords();//ensure dictionaries exist
-        EditableDictionary hybrisDictionary = projectDictionary.getDictionaries().stream()
-            .filter(e -> DICTIONARY_NAME.equals(e.getName())).findFirst().orElse(null);
-        if (hybrisDictionary == null) {
-            hybrisDictionary = new UserDictionary(DICTIONARY_NAME);
-            projectDictionary.getDictionaries().add(hybrisDictionary);
-        }
+        final var hybrisDictionary = projectDictionary.getDictionaries().stream()
+            .filter(e -> DICTIONARY_NAME.equals(e.getName()))
+            .findFirst()
+            .orElseGet(() -> {
+                final var dictionary = new UserDictionary(DICTIONARY_NAME);
+                projectDictionary.getDictionaries().add(dictionary);
+                return dictionary;
+            });
         hybrisDictionary.addToDictionary(DICTIONARY_WORDS);
         hybrisDictionary.addToDictionary(project.getName().toLowerCase());
         final Set<String> moduleNames = modules.stream()
