@@ -27,26 +27,52 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
-import com.intellij.util.ui.JBUI
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
 import javax.swing.JPanel
+import javax.swing.JSpinner
+import javax.swing.SpinnerNumberModel
 
 class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_IMPEX, ImpexLanguage) {
 
-    object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
+    private object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 
-    private val panel = JPanel(WrappedFlowLayout(0, 0))
-
-    private val legacyModeCheckbox = JBCheckBox()
-    private val legacyModeLabel = JBLabel("Legacy mode: ")
+    private val legacyModeCheckbox = JBCheckBox("Legacy mode")
+        .also { it.border = borders10 }
+    private val enableCodeExecutionCheckbox = JBCheckBox("Enable code execution", true)
+        .also { it.border = borders10 }
+    private val directPersistenceCheckbox = JBCheckBox("Direct persistence", true)
+        .also { it.border = borders10 }
+    private val maxThreadsSpinner = JSpinner(SpinnerNumberModel(1, 1, 100, 1))
+        .also { it.border = borders5 }
+    private val importModeComboBox = ComboBox(arrayOf("IMPORT_STRICT", "IMPORT_RELAXED"), 175)
+        .also {
+            it.border = borders5
+            it.selectedItem = "IMPORT_STRICT"
+            it.renderer = SimpleListCellRenderer.create("...") { value -> value }
+        }
 
     init {
-        createUI()
+        isEditable = true
+
+        val panel = JPanel(WrappedFlowLayout(0, 0))
+        panel.add(JBLabel("UTF-8").also { it.border = borders10 })
+        panel.add(JBLabel("Validation mode:").also { it.border = bordersLabel })
+        panel.add(importModeComboBox)
+        panel.add(JBLabel("Max threads:").also { it.border = bordersLabel })
+        panel.add(maxThreadsSpinner)
+        panel.add(enableCodeExecutionCheckbox)
+        panel.add(directPersistenceCheckbox)
+        panel.add(legacyModeCheckbox)
+
+        add(panel, BorderLayout.NORTH)
+
         ConsoleHistoryController(MyConsoleRootType, "hybris.impex.shell", this).install()
     }
 
@@ -64,32 +90,21 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
         return HybrisHacHttpClient.getInstance(project).validateImpex(project, requestParams)
     }
 
-    private fun createUI() {
-        legacyModeLabel.border = JBUI.Borders.empty(0, 10, 0, 5)
-        legacyModeCheckbox.border = JBUI.Borders.emptyRight(5)
-
-        panel.add(legacyModeLabel)
-        panel.add(legacyModeCheckbox)
-
-        add(panel, BorderLayout.NORTH)
-        isEditable = true
-    }
-
     private fun getRequestParams(query: String): MutableMap<String, String> {
         val requestParams = mutableMapOf(
             "scriptContent" to query,
-            "validationEnum" to "IMPORT_STRICT", // IMPORT_RELAXED
+            "validationEnum" to importModeComboBox.selectedItem as String,
             "encoding" to "UTF-8",
-            "maxThreads" to "4", // Max Threads
+            "maxThreads" to maxThreadsSpinner.value as String,
             "_legacyMode" to "on", // Legacy Mode
-            "enableCodeExecution" to "true", // Enable code execution
-            "_enableCodeExecution" to "on", // Enable code execution
+            "_enableCodeExecution" to "on",
             "_distributedMode" to "on", // Distributed mode
             "_sldEnabled" to "on", // Direct Persistence
         )
-        if (legacyModeCheckbox.isSelected) {
-            requestParams["legacyMode"] = "true"
-        }
+        if (legacyModeCheckbox.isSelected) requestParams["legacyMode"] = "true"
+        if (enableCodeExecutionCheckbox.isSelected) requestParams["enableCodeExecution"] = "true"
+        if (directPersistenceCheckbox.isSelected) requestParams["sldEnabled"] = "true"
+
         return requestParams
     }
 

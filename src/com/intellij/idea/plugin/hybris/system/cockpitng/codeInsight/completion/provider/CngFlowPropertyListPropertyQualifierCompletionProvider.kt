@@ -23,7 +23,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.JavaLookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.java.psi.JavaPsiHelper
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
 import com.intellij.openapi.application.ApplicationManager
@@ -45,7 +44,6 @@ class CngFlowPropertyListPropertyQualifierCompletionProvider : AttributeDeclarat
 
         if (type.contains(".")
             && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE
-            && PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID)
         ) addJavaPojoCompletions(project, type, result)
         else super.addCompletions(parameters, context, result)
     }

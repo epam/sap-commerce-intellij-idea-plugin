@@ -80,6 +80,11 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
 
             group(message("hybris.settings.project.refresh.title")) {
                 row {
+                    checkBox("Remove external modules")
+                        .comment("If checked, non SAP Commerce external modules will be removed during the project refresh.")
+                        .bindSelected(state::removeExternalModulesOnRefresh)
+                }
+                row {
                     checkBox(message("hybris.import.wizard.import.ootb.modules.read.only.label"))
                         .comment(message("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
                         .bindSelected(state::importOotbModulesInReadOnlyMode)

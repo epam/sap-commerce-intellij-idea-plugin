@@ -2,7 +2,9 @@
 
 ### Features
 - Added `extends` information for Type System Item completion results [#892](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/892)
-- Moved project settings to developer specific settings [#935](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/935)
+- Moved project settings to developer-specific settings [#935](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/935)
+- Unified consoles execution settings visual representation [#942](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/942)
+- Omit slow operations for simple Spring bean resolution in a Community edition [#949](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/949)
 
 ### `Project Build` enhancements
 - Re-generate the code and `models.jar` before the `Build` -> `Rebuild Project` [#906](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/906)
@@ -11,10 +13,12 @@
 - Trigger file system change after the code generation [#910](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/910)
 - Trigger code generation even if there are modules of various types [#911](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/911)
 - Trigger file system change if code generation failed [#919](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/919)
+- Generate code with `UTF-8` encoding charset [#945](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/945)
 
 ### `Project Import` enhancements
 - Added autoconfiguration of the JRebel Facet for custom extensions [#869](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/869)
 - Omit slow operations after project import [#871](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/871)
+- Do not remove custom third-party modules during the `Project Refresh` [#948](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/948)
 
 ### `Tests` enhancements
 - Add JDK Export Properties to JUnit Tests to run Integration Tests [#864](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/864)
@@ -31,6 +35,10 @@
 - Improved Editor wrapping type text range identification [#926](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/926)
 - Respect all fields of the DTO as a type [#927](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/927)
 - Add a type of the field in code completion for DTO as a type [#928](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/928)
+- Added code completion and reference resolution for full text search [#943](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/943)
+- Added code folding for `navigation-node` element [#944](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/944)
+- Added `Spring EL` language injection into the body of the `y:label` tag [#946](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/946)
+- Added `Spring EL` language injection into the `visible` attribute of the wizard tags [#947](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/947)
 
 ### `ImpEx` enhancements
 - Added `disable.interceptor.types` type modifier [#889](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/889)
@@ -51,7 +59,12 @@
 - Suggest the next available type code when there is no value [#923](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/923)
 - Improved code completion for `translator` modifier [#932](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/932)
 - Added special translator modifiers `expr`, `version`, `system`, `class` [#933](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/933)
-- Removed catalog version option from the ImpEx console [#934](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/934)
+- Removed a catalog version option from the ImpEx console [#934](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/934)
+- Enhanced Parser and Lexer with single line scripting `#%` elements [#937](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/937)
+- Style scripting action elements `beforeEach:`, `afterEach:`, `if:` and `endif:` [#938](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/938)
+- Inject Groovy language into a single line scripting block [#939](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/939)
+- Style scripting marker and action within multi-line block [#940](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/940)
+- Enhanced ImpEx Console with additional execution settings [#941](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/941)
 
 ### `ImpEx` inspection rules
 - Inspect type set for `disable.UniqueAttributesValidator.for.types` type modifier [#896](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/896)
@@ -1164,9 +1177,11 @@
 ### Features
 - Added 2022.3 IntelliJ IDEA support
 - Introduction the Type System Management - the powerful tool to observe SAP Commerce type system [#62](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/62),
+[#63](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/63),
+[#66](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/66),
 [#60](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60)
-- Added support of the Enum completion in ImpEx/FSQ
-- Added support of the Relation completion in ImpEx/FSQ
+- Added support for the Enum completion in ImpEx/FSQ
+- Added support for the Relation completion in ImpEx/FSQ
 - Added MapType support for `items.xml`
 - Added postgresql DB mapping
 - Added next `typecode` suggestion via `items.xml` Inspection
@@ -1174,6 +1189,8 @@
 - Improved performance of the `items.xml` inspection
 - Extended/refactored type system inspection rules
 - Merged ToolsWindows "Hybris" (as Remote Instances) and "Hybris Console" (as Consoles) altogether with "Type system" into "Hybris" as a single entry point for all [y] related actions
+- Gutter Annotator for Enum Types (alternative definitions within items.xml) [#67](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/64)
+- Project refresh is broken when Gradle project was part of the initial import [#67](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/67)
 
 ### Deprecated
 - Decreased usage of the Deprecated API

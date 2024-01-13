@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,6 +35,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -42,7 +43,10 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult;
@@ -100,7 +104,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final Map<String, String> requestParams,
         final HybrisRemoteConnectionSettings settings
 
-        ) {
+    ) {
         final List<BasicNameValuePair> params = createParamsList(requestParams);
         final String actionUrl = getHostHacURL(project) + urlSuffix;
         return post(project, actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings);
@@ -108,8 +112,8 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 
     private List<BasicNameValuePair> createParamsList(final Map<String, String> requestParams) {
         return requestParams.entrySet().stream()
-                            .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
-                            .collect(Collectors.toList());
+            .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
+            .collect(Collectors.toList());
     }
 
     public @NotNull
@@ -177,7 +181,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
         if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
             return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
-                                              statusLine.getReasonPhrase()).build();
+                statusLine.getReasonPhrase()).build();
         }
         final Document document;
         try {
@@ -226,7 +230,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
         if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
             return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
-                                              statusLine.getReasonPhrase()).build();
+                statusLine.getReasonPhrase()).build();
         }
         final Document document;
         try {
@@ -255,13 +259,15 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     }
 
     @NotNull
-    public HybrisHttpResult executeSolrSearch(final Project project, final Optional<SolrQueryObject> queryObject) {
-        return queryObject.map(query -> SolrHttpClient.getInstance(project).executeSolrQuery(project, query))
-                          .orElseGet(() ->
-                                         HybrisHttpResult.HybrisHttpResultBuilder
-                                             .createResult()
-                                             .httpCode(HttpStatus.SC_BAD_GATEWAY)
-                                             .errorMessage("Unable to connect to Solr server. Please, check connection configuration")
-                                             .build());
+    public HybrisHttpResult executeSolrSearch(final Project project, @Nullable final SolrQueryObject queryObject) {
+        if (queryObject != null) {
+            return SolrHttpClient.getInstance(project).executeSolrQuery(project, queryObject);
+        }
+
+        return HybrisHttpResult.HybrisHttpResultBuilder
+            .createResult()
+            .httpCode(HttpStatus.SC_BAD_GATEWAY)
+            .errorMessage("Unable to connect to Solr server. Please, check connection configuration")
+            .build();
     }
 }

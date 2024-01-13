@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.system.type.spring
 
-import com.intellij.ide.highlighter.XmlFileType
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.util.NotNullLazyValue
@@ -28,11 +27,6 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.PsiSearchHelper
-import com.intellij.psi.search.UsageSearchContext
-import com.intellij.psi.util.parentOfType
-import com.intellij.psi.xml.XmlAttribute
-import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.spring.SpringManager
 import com.intellij.spring.java.SpringJavaClassInfo
@@ -84,27 +78,7 @@ object TSSpringHelper {
     private fun springResolveBean(module: Module, beanId: String) = SpringManager.getInstance(module.project).getAllModels(module)
         .firstNotNullOfOrNull { SpringModelSearchers.findBean(it, beanId) }
 
-    // TODO: introduce custom cache logic for plain Spring Context
-    // current implementation leads to SLOW operations warnings.
-    private fun plainResolveBean(module: Module, beanId: String): XmlTag? {
-        var foundXmlTag: XmlTag? = null
-
-        val project = module.project
-        PsiSearchHelper.getInstance(project).processElementsWithWord(
-            { el, _ ->
-                if (el is XmlAttribute && el.name == "id" && el.parentOfType<XmlFile>()?.rootTag?.getAttributeValue("xmlns") == HybrisConstants.SPRING_NAMESPACE) {
-                    foundXmlTag = el.parent
-                    return@processElementsWithWord false
-                }
-                true
-            },
-            GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.allScope(project), XmlFileType.INSTANCE),
-            beanId,
-            UsageSearchContext.ANY,
-            true
-        )
-
-        return foundXmlTag
-    }
+    private fun plainResolveBean(module: Module, beanId: String) = SimpleSpringService.getService(module.project)
+        ?.findBean(beanId)
 
 }

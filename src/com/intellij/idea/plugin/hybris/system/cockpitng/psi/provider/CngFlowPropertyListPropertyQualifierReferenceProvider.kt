@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.java.psi.reference.JavaClassReference
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemAttributeReference
 import com.intellij.openapi.application.ApplicationManager
@@ -40,7 +39,6 @@ class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvid
 
         return if (type.contains(".")
             && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE
-            && PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID)
         ) arrayOf(JavaClassReference(element, type))
         else arrayOf(CngFlowTSItemAttributeReference(element))
     }

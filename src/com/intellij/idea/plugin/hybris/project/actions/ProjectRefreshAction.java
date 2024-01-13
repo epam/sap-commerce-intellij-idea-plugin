@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,6 +27,7 @@ import com.intellij.ide.util.projectWizard.ProjectBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.facet.YFacet;
 import com.intellij.idea.plugin.hybris.gradle.GradleSupport;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
@@ -38,7 +39,6 @@ import com.intellij.lang.ant.config.AntConfigurationBase;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
@@ -131,10 +131,13 @@ public class ProjectRefreshAction extends AnAction {
     }
 
     private static void removeOldProjectData(@NotNull final Project project) {
-        final ModifiableModuleModel moduleModel = ModuleManager.getInstance(project).getModifiableModel();
+        final var moduleModel = ModuleManager.getInstance(project).getModifiableModel();
+        final var removeExternalModulesOnRefresh = HybrisProjectSettingsComponent.getInstance(project).getState().getRemoveExternalModulesOnRefresh();
 
         for (Module module : moduleModel.getModules()) {
-            moduleModel.disposeModule(module);
+            if (removeExternalModulesOnRefresh || YFacet.Companion.getState(module) != null) {
+                moduleModel.disposeModule(module);
+            }
         }
         final LibraryTable.ModifiableModel libraryModel = LibraryTablesRegistrar.getInstance().getLibraryTable(project).getModifiableModel();
 

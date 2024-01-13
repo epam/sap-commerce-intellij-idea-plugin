@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -315,12 +315,13 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public void setList(final List<ModuleDescriptor> list) throws ConfigurationException {
+        final var hybrisProjectDescriptor = getHybrisProjectDescriptor();
 
-        final List<ModuleDescriptor> chosenForImport = new ArrayList<>(list);
+        final var chosenForImport = new ArrayList<>(list);
+        final var alreadyOpenedModules = hybrisProjectDescriptor.getAlreadyOpenedModules();
+        chosenForImport.removeAll(alreadyOpenedModules);
 
-        chosenForImport.removeAll(this.getHybrisProjectDescriptor().getAlreadyOpenedModules());
-
-        this.getHybrisProjectDescriptor().setModulesChosenForImport(chosenForImport);
+        hybrisProjectDescriptor.setModulesChosenForImport(chosenForImport);
     }
 
     @Override

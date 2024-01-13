@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,12 +31,14 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface AbstractAction extends DomElement {
 
+	String VISIBLE = "visible";
+
 	/**
 	 * Returns the value of the visible child.
 	 * @return the value of the visible child.
 	 */
 	@NotNull
-	@com.intellij.util.xml.Attribute ("visible")
+	@com.intellij.util.xml.Attribute (VISIBLE)
 	GenericAttributeValue<String> getVisible();
 
 

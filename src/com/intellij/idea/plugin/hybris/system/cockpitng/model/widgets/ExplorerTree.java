@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public interface ExplorerTree extends DomElement {
 
     String TYPE_NODE = "type-node";
+    String NAVIGATION_NODE = "navigation-node";
 
     /**
      * Returns the value of the title child.
@@ -52,7 +53,7 @@ public interface ExplorerTree extends DomElement {
      * @return the list of navigation-node children.
      */
     @NotNull
-    @SubTagList("navigation-node")
+    @SubTagList(NAVIGATION_NODE)
     java.util.List<NavigationNode> getNavigationNodes();
 
     /**
@@ -60,7 +61,7 @@ public interface ExplorerTree extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("navigation-node")
+    @SubTagList(NAVIGATION_NODE)
     NavigationNode addNavigationNode();
 
 

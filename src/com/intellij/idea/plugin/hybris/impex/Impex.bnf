@@ -1,5 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -48,8 +49,8 @@ private root_group ::= (
     | root_macro_usage
     | header_line
     | value_line
+    | script
     | comment
-    | bean_shell
     | (string (';')?)
     | macro_declaration
 )
@@ -73,6 +74,8 @@ private recover_root ::= !(
   |  LINE_COMMENT
   |  macro_name_dec
   |  BEAN_SHELL_MARKER
+  |  GROOVY_MARKER
+  |  JAVASCRIPT_MARKER
   |  DOUBLE_STRING
   |  SINGLE_STRING
   |  MACRO_USAGE
@@ -200,17 +203,29 @@ macro_declaration ::=  macro_name_dec ASSIGN_VALUE (
     )*
 {pin = 2}
 
-
-bean_shell ::= BEAN_SHELL_MARKER (BEAN_SHELL_BODY | MACRO_USAGE)?
+script ::= GROOVY_MARKER SCRIPT_ACTION? groovy_script_body
+    | JAVASCRIPT_MARKER SCRIPT_ACTION? javascript_script_body
+    | BEAN_SHELL_MARKER SCRIPT_ACTION? beanshell_script_body
 {pin = 1}
 
+beanshell_script_body ::= script_body
+groovy_script_body ::= script_body
+{
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexGroovyScriptBodyMixin"
+}
+javascript_script_body ::= script_body
+
+private script_body ::= (SCRIPT_BODY_VALUE
+    | MACRO_USAGE
+    | SINGLE_STRING
+    | DOUBLE_STRING
+    )*
 
 string ::= SINGLE_STRING | DOUBLE_STRING
 {
     mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexStringMixin"
     methods=[getValueGroup]
 }
-
 
 // Value line rules
 value_line ::= (sub_type_name value_group*) | (value_group+) {

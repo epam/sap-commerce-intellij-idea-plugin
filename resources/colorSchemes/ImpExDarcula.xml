@@ -180,4 +180,9 @@
             <option name="FOREGROUND" value="FFFFFF"/>
         </value>
     </option>
+    <option name="IMPEX_SCRIPT_ACTION">
+        <value>
+            <option name="FOREGROUND" value="FFDAC9"/>
+        </value>
+    </option>
 </list>

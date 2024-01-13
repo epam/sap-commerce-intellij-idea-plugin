@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,6 +43,10 @@ class HybrisIntelliLangStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
 
+        registerJavaInjections(project)
+    }
+
+    private fun registerJavaInjections(project: Project) {
         ReadAction
             .nonBlocking<Set<String>> { findCustomExtensionsOfTheFlexibleSearch(project) }
             .finishOnUiThread(ModalityState.defaultModalityState()) {
@@ -51,7 +55,7 @@ class HybrisIntelliLangStartupActivity : ProjectActivity {
                     addAll(it)
                 }
 
-                val targetLanguages = setOf(FlexibleSearchLanguage.id, PolyglotQueryLanguage.instance.id)
+                val targetLanguages = setOf(FlexibleSearchLanguage.id, PolyglotQueryLanguage.id)
 
                 // TODO: replace with pattern declared in the XML file once https://youtrack.jetbrains.com/issue/IDEA-339624/ will be resolved.
                 // com.intellij.patterns.compiler.PatternCompiler cannot parse primitive booleans required by the pattern

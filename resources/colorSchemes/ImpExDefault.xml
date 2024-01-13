@@ -86,12 +86,7 @@
             <option name="FOREGROUND" value="009FDA"/>
         </value>
     </option>
-    <option name="BEAN_SHELL_MARKER">
-        <value>
-            <option name="FOREGROUND" value="C7642F"/>
-        </value>
-    </option>
-    <option name="BEAN_SHELL_BODY">
+    <option name="IMPEX_SCRIPT_MARKER">
         <value>
             <option name="FOREGROUND" value="C7642F"/>
         </value>

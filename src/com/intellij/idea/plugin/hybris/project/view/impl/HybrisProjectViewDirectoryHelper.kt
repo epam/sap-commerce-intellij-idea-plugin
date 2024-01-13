@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,6 @@ import com.intellij.ide.projectView.impl.JavaProjectViewDirectoryHelper
 import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper
 import com.intellij.ide.projectView.impl.nodes.PsiFileSystemItemFilter
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
@@ -35,51 +34,38 @@ class HybrisProjectViewDirectoryHelper(project: Project) : ProjectViewDirectoryH
     private val javaProjectViewDirectoryHelper = JavaProjectViewDirectoryHelper(project)
     private val fileIndex = ProjectFileIndex.getInstance(project)
 
-    override fun getLocationString(psiDirectory: PsiDirectory, includeUrl: Boolean, includeRootType: Boolean) = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-        javaProjectViewDirectoryHelper.getLocationString(psiDirectory, includeUrl, includeRootType)
-    else super.getLocationString(psiDirectory, includeUrl, includeRootType)
+    override fun getLocationString(psiDirectory: PsiDirectory, includeUrl: Boolean, includeRootType: Boolean) = javaProjectViewDirectoryHelper
+        .getLocationString(psiDirectory, includeUrl, includeRootType)
 
-    override fun isShowFQName(settings: ViewSettings?, parentValue: Any?, value: PsiDirectory?) = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-        javaProjectViewDirectoryHelper.isShowFQName(settings, parentValue, value)
-    else super.isShowFQName(settings, parentValue, value)
+    override fun isShowFQName(settings: ViewSettings?, parentValue: Any?, value: PsiDirectory?) = javaProjectViewDirectoryHelper
+        .isShowFQName(settings, parentValue, value)
 
-    override fun shouldHideProjectConfigurationFilesDirectory() = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-        javaProjectViewDirectoryHelper.shouldHideProjectConfigurationFilesDirectory()
-    else super.shouldHideProjectConfigurationFilesDirectory()
+    override fun shouldHideProjectConfigurationFilesDirectory() = javaProjectViewDirectoryHelper
+        .shouldHideProjectConfigurationFilesDirectory()
 
-    override fun getNodeName(settings: ViewSettings?, parentValue: Any?, directory: PsiDirectory?) = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-        javaProjectViewDirectoryHelper.getNodeName(settings, parentValue, directory)
-    else super.getNodeName(settings, parentValue, directory)
+    override fun getNodeName(settings: ViewSettings?, parentValue: Any?, directory: PsiDirectory?) = javaProjectViewDirectoryHelper
+        .getNodeName(settings, parentValue, directory)
 
-    override fun skipDirectory(directory: PsiDirectory?) = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-        javaProjectViewDirectoryHelper.skipDirectory(directory)
-    else super.skipDirectory(directory)
+    override fun skipDirectory(directory: PsiDirectory?) = javaProjectViewDirectoryHelper
+        .skipDirectory(directory)
 
-    override fun canRepresent(element: VirtualFile, directory: PsiDirectory, owner: PsiDirectory, settings: ViewSettings?) =
-        if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-            javaProjectViewDirectoryHelper.canRepresent(element, directory, owner, settings)
-        else super.canRepresent(element, directory, owner, settings)
+    override fun canRepresent(element: VirtualFile, directory: PsiDirectory, owner: PsiDirectory, settings: ViewSettings?) = javaProjectViewDirectoryHelper
+        .canRepresent(element, directory, owner, settings)
 
-    override fun isEmptyMiddleDirectory(directory: PsiDirectory?, strictlyEmpty: Boolean, filter: PsiFileSystemItemFilter?) =
-        if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-            javaProjectViewDirectoryHelper.isEmptyMiddleDirectory(directory, strictlyEmpty, filter)
-        else super.isEmptyMiddleDirectory(directory, strictlyEmpty, filter)
+    override fun isEmptyMiddleDirectory(directory: PsiDirectory?, strictlyEmpty: Boolean, filter: PsiFileSystemItemFilter?) = javaProjectViewDirectoryHelper
+        .isEmptyMiddleDirectory(directory, strictlyEmpty, filter)
 
-    override fun isEmptyMiddleDirectory(directory: PsiDirectory?, strictlyEmpty: Boolean) = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-        javaProjectViewDirectoryHelper.isEmptyMiddleDirectory(directory, strictlyEmpty)
-    else super.isEmptyMiddleDirectory(directory, strictlyEmpty)
+    override fun isEmptyMiddleDirectory(directory: PsiDirectory?, strictlyEmpty: Boolean) = javaProjectViewDirectoryHelper
+        .isEmptyMiddleDirectory(directory, strictlyEmpty)
 
-    override fun supportsFlattenPackages() = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-        javaProjectViewDirectoryHelper.supportsFlattenPackages()
-    else super.supportsFlattenPackages()
+    override fun supportsFlattenPackages() = javaProjectViewDirectoryHelper
+        .supportsFlattenPackages()
 
-    override fun supportsHideEmptyMiddlePackages() = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-        javaProjectViewDirectoryHelper.supportsHideEmptyMiddlePackages()
-    else super.supportsHideEmptyMiddlePackages()
+    override fun supportsHideEmptyMiddlePackages() = javaProjectViewDirectoryHelper
+        .supportsHideEmptyMiddlePackages()
 
-    override fun canRepresent(element: Any?, directory: PsiDirectory?) = if (PluginCommon.isPluginActive(PluginCommon.JAVA_PLUGIN_ID))
-        javaProjectViewDirectoryHelper.canRepresent(element, directory)
-    else super.canRepresent(element, directory)
+    override fun canRepresent(element: Any?, directory: PsiDirectory?) = javaProjectViewDirectoryHelper
+        .canRepresent(element, directory)
 
     override fun getTopLevelRoots(): MutableList<VirtualFile> {
         val topLevelContentRoots = super.getTopLevelRoots()

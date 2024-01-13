@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -167,6 +167,42 @@ object CngPatterns {
             "compare-view",
             CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_COMPARE_VIEW
         )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        XmlPatterns.xmlAttributeValue()
+            .withParent(
+                XmlPatterns.xmlAttribute()
+                    .withLocalName("name")
+                    .withParent(
+                        XmlPatterns.xmlTag()
+                            .withLocalName("field")
+                            .inside(
+                                XmlPatterns.or(
+                                    XmlPatterns.xmlTag()
+                                        .withNamespace(CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH)
+                                        .withLocalName("fulltext-search")
+                                        .andNot(
+                                            XmlPatterns.xmlTag()
+                                                .withNamespace(CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH)
+                                                .withLocalName("fulltext-search")
+                                                .withChild(
+                                                    XmlPatterns.xmlTag().withLocalName("preferred-search-strategy")
+                                                )
+                                        ),
+                                    XmlPatterns.xmlTag()
+                                        .withNamespace(CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_FULLTEXT_SEARCH)
+                                        .withLocalName("fulltext-search")
+                                        .withChild(
+                                            XmlPatterns.xmlTag().withLocalName("preferred-search-strategy")
+                                                .withChild(
+                                                    XmlPatterns.xmlText().withText("flexible")
+                                                )
+                                        )
+                                )
+                            )
+                    )
+            )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)
     )
