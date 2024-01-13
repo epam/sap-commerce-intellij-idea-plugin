@@ -19,7 +19,17 @@
 package com.intellij.idea.plugin.hybris.runConfigurations
 
 import com.intellij.execution.configurations.ModuleBasedConfigurationOptions
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.util.xmlb.annotations.OptionTag
 
-class LocalSapCXRunConfigurationOptions : ModuleBasedConfigurationOptions() {
+class LocalSapCXRunnerOptions : ModuleBasedConfigurationOptions() {
+
+
+    @get:OptionTag(tag = "remoteDebugPort", valueAttribute = "remoteDebugPort", nameAttribute = "")
+    var remoteDebugPort: String? by string(HybrisConstants.REMOTE_DEBUG_DEFAULT_PORT)
+
+    @get:OptionTag(tag = "remoteDebugHost", valueAttribute = "remoteDebugHost", nameAttribute = "")
+    var remoteDebugHost: String? by string(HybrisConstants.REMOTE_DEBUG_DEFAULT_HOST)
+
 
 }

@@ -59,6 +59,9 @@ object HybrisConstants {
         "media-telco"
     )
 
+    const val REMOTE_DEBUG_DEFAULT_HOST = "localhost"
+    const val REMOTE_DEBUG_DEFAULT_PORT = "8000"
+
     val Y_FACET_TYPE_ID = FacetTypeId<YFacet>(YFacetType.FACET_ID)
 
     const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce"

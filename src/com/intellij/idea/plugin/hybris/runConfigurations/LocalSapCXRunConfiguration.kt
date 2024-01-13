@@ -18,22 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.runConfigurations
 
-import com.intellij.compiler.options.CompileStepBeforeRun
-import com.intellij.diagnostic.logging.LogsGroupFragment
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.*
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.target.LanguageRuntimeType
 import com.intellij.execution.target.TargetEnvironmentAwareRunProfile
 import com.intellij.execution.target.TargetEnvironmentConfiguration
-import com.intellij.execution.ui.*
-import com.intellij.openapi.externalSystem.service.execution.configuration.addBeforeRunFragment
-import com.intellij.openapi.externalSystem.service.execution.configuration.fragments.SettingsEditorFragmentContainer
-import com.intellij.openapi.externalSystem.service.execution.configuration.fragments.addSettingsEditorFragment
-import com.intellij.openapi.externalSystem.service.ui.completion.TextCompletionField
-import com.intellij.openapi.externalSystem.service.ui.completion.TextCompletionInfo
-import com.intellij.openapi.externalSystem.service.ui.completion.TextCompletionInfoRenderer
-import com.intellij.openapi.externalSystem.service.ui.util.SettingsFragmentInfo
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
@@ -45,20 +35,15 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
 
     override fun getValidModules(): MutableCollection<Module> = allModules
 
-    override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration?> = LocalSapCXRunSettingsEditor(project, this)
+    override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration?> = LocalSapCXRunSettingsEditor(this)
+
+    override fun getOptionsClass(): Class<out RunConfigurationOptions> = LocalSapCXRunnerOptions::class.java
+
 
     override fun getState(
         executor: Executor,
         environment: ExecutionEnvironment
-    ): RunProfileState = LocalSapCXRunProfileState(executor, environment, project)
-
-    override fun readExternal(element: Element) {
-        loadState(element)
-    }
-
-    override fun getOptionsClass(): Class<out RunConfigurationOptions> {
-        return LocalSapCXRunConfigurationOptions::class.java
-    }
+    ): RunProfileState = LocalSapCXRunProfileState(executor, environment, project, this)
 
     override fun canRunOn(target: TargetEnvironmentConfiguration): Boolean = true
 
@@ -67,48 +52,8 @@ class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory
     override fun getDefaultTargetName(): String? = null
 
     override fun setDefaultTargetName(targetName: String?) = Unit
-}
 
+    fun getSapCXOptions(): LocalSapCXRunnerOptions = super.getOptions() as LocalSapCXRunnerOptions
 
-private class LocalSapCXRunSettingsEditor(val project: Project, runConfiguration: LocalSapCXRunConfiguration) :
-    FragmentedSettingsEditor<LocalSapCXRunConfiguration>(runConfiguration) {
-
-    override fun createFragments(): List<SettingsEditorFragment<LocalSapCXRunConfiguration, *>> = SettingsEditorFragmentContainer.fragments {
-        add(CommonParameterFragments.createRunHeader())
-        addBeforeRunFragment(CompileStepBeforeRun.ID)
-        addAll(BeforeRunFragment.createGroup())
-        add(LogsGroupFragment())
-        addDebugFragment()
-
-//        addSettingsEditorFragment(
-//            DebugLineInfo,
-//            { CommandLineField(project, commandLineInfo, it) },
-//            { it, c -> Unit },
-//            { it, c -> Unit },
-//        )
-    }
-
-    private fun SettingsEditorFragmentContainer<LocalSapCXRunConfiguration>.addDebugFragment() = addSettingsEditorFragment(
-        DebugFragmentInfo(),
-        { HostField(project) },
-        { it, c -> Unit },
-        { it, c -> Unit }
-    )
-
-    private class HostField(project: Project) : TextCompletionField<TextCompletionInfo>(project) {
-        init {
-            renderer = TextCompletionInfoRenderer()
-            completionType = CompletionType.REPLACE_WORD
-        }
-    }
-
-    private class DebugFragmentInfo() : SettingsFragmentInfo {
-        override val settingsActionHint: String get() = "HINT?"
-        override val settingsGroup: String? get() = null
-        override val settingsHint: String? get() = null
-        override val settingsId: String get() = "hybris.debug.settings"
-        override val settingsName: String? get() = "debug"
-        override val settingsPriority: Int get() = 100
-        override val settingsType: SettingsEditorFragmentType get() = SettingsEditorFragmentType.COMMAND_LINE
-    }
+    fun getRemoteConnetion(): RemoteConnection = RemoteConnection(true, getSapCXOptions().remoteDebugHost, getSapCXOptions().remoteDebugPort, false)
 }
