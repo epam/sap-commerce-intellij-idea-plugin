@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.runConfigurations
 
 import com.intellij.compiler.options.CompileStepBeforeRun
 import com.intellij.diagnostic.logging.LogsGroupFragment
+import com.intellij.execution.ExecutionBundle
 import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.ui.BeforeRunFragment
 import com.intellij.execution.ui.CommonParameterFragments
@@ -28,6 +29,7 @@ import com.intellij.execution.ui.SettingsEditorFragment
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.openapi.externalSystem.service.execution.configuration.addBeforeRunFragment
+import com.intellij.openapi.externalSystem.service.execution.configuration.addEnvironmentFragment
 import com.intellij.openapi.externalSystem.service.execution.configuration.fragments.SettingsEditorFragmentContainer
 import com.intellij.openapi.externalSystem.service.execution.configuration.fragments.addLabeledSettingsEditorFragment
 import com.intellij.openapi.externalSystem.service.ui.util.LabeledSettingsFragmentInfo
@@ -35,6 +37,8 @@ import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.util.bind
 import com.intellij.ui.components.fields.ExtendableTextField
 import com.intellij.ui.components.fields.IntegerField
+import org.jetbrains.idea.maven.execution.MavenRunConfiguration
+import org.jetbrains.idea.maven.project.MavenConfigurableBundle
 
 class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfiguration) :
     RunConfigurationFragmentedEditor<LocalSapCXRunConfiguration>(runConfiguration, JavaRunConfigurationExtensionManager()) {
@@ -47,8 +51,24 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
         addDebugPortFragment()
         addDebugLineFragment(runConfiguration.getRemoteConnetion().launchCommandLine)
         add(LogsGroupFragment())
+        addEnvironmentFragment()
     }
-
+    private fun SettingsEditorFragmentContainer<LocalSapCXRunConfiguration>.addEnvironmentFragment() =
+        addEnvironmentFragment(
+            object : LabeledSettingsFragmentInfo {
+                override val editorLabel: String = ExecutionBundle.message("environment.variables.component.title")
+                override val settingsId: String = "maven.environment.variables.fragment"
+                override val settingsName: String = ExecutionBundle.message("environment.variables.fragment.name")
+                override val settingsGroup: String = MavenConfigurableBundle.message("maven.run.configuration.runner.options.group")
+                override val settingsHint: String = ExecutionBundle.message("environment.variables.fragment.hint")
+                override val settingsActionHint: String = ExecutionBundle.message("set.custom.environment.variables.for.the.process")
+            },
+            { sapCXOptions.environmentProperties },
+            { sapCXOptions.environmentProperties = it as MutableMap<String, String> },
+            { sapCXOptions.isPassParentEnv },
+            { sapCXOptions.isPassParentEnv = it },
+            hideWhenEmpty = true
+        )
     private fun SettingsEditorFragmentContainer<LocalSapCXRunConfiguration>.addDebugHostFragment() = addLabeledSettingsEditorFragment(
         object : LabeledSettingsFragmentInfo {
             override val editorLabel: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.host.field")

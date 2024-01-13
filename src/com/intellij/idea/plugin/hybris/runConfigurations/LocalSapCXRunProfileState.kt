@@ -61,6 +61,10 @@ class LocalSapCXRunProfileState(
         if (executor is DefaultDebugExecutor) {
             commandLine.addParameter("debug")
         }
+        if (configuration.getSapCXOptions().environmentProperties != null) {
+            commandLine.environment.putAll(configuration.getSapCXOptions().environmentProperties)
+        }
+
         val processHandler = ProcessHandlerFactory.getInstance().createColoredProcessHandler(commandLine)
         ProcessTerminatedListener.attach(processHandler)
         return processHandler

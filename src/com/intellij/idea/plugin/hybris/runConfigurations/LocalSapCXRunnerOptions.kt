@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.runConfigurations
 
 import com.intellij.execution.configurations.ModuleBasedConfigurationOptions
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.util.xmlb.annotations.MapAnnotation
 import com.intellij.util.xmlb.annotations.OptionTag
 
 class LocalSapCXRunnerOptions : ModuleBasedConfigurationOptions() {
@@ -31,5 +32,11 @@ class LocalSapCXRunnerOptions : ModuleBasedConfigurationOptions() {
     @get:OptionTag(tag = "remoteDebugHost", valueAttribute = "remoteDebugHost", nameAttribute = "")
     var remoteDebugHost: String? by string(HybrisConstants.REMOTE_DEBUG_DEFAULT_HOST)
 
+    @get:OptionTag
+    @get:MapAnnotation(sortBeforeSave = false)
+    var environmentProperties: MutableMap<String, String> by linkedMap()
+
+    @get:OptionTag(tag = "isPasParentEnv", valueAttribute = "isPasParentEnv", nameAttribute = "")
+    var isPassParentEnv: Boolean by property(true)
 
 }
