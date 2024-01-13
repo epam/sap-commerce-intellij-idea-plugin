@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.startup
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
@@ -34,6 +35,11 @@ class PreLoadSystemsStartupActivity : ProjectActivity {
         refreshSystem(project) { TSMetaModelAccess.getInstance(project).initMetaModel() }
         refreshSystem(project) { BSMetaModelAccess.getInstance(project).initMetaModel() }
         refreshSystem(project) { CngMetaModelAccess.getInstance(project).initMetaModel() }
+
+        SimpleSpringService.getService(project)
+            ?.let { simpleSpringService ->
+                refreshSystem(project) { simpleSpringService.initCache() }
+            }
     }
 
     private fun refreshSystem(project: Project, refresher: (Project) -> Unit) {

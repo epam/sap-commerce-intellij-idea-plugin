@@ -4,6 +4,7 @@
 - Added `extends` information for Type System Item completion results [#892](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/892)
 - Moved project settings to developer-specific settings [#935](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/935)
 - Unified consoles execution settings visual representation [#942](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/942)
+- Omit slow operations for simple Spring bean resolution in a Community edition [#949](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/949)
 
 ### `Project Build` enhancements
 - Re-generate the code and `models.jar` before the `Build` -> `Rebuild Project` [#906](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/906)
