@@ -48,15 +48,12 @@ backslash   = [\\]
 
 multiline_separator   = {backslash}{crlf}
 
-line_comment = [#][^%][^\r\n]*
+line_comment = [#]{not_crlf}*
 
 single_string = ['](('')|([^'\r\n])*)[']
 // Double string can contain line break
 double_string = [\"](([\"][\"])|[^\"])*[\"]
 
-groovy_marker = [#][%](groovy)[%]
-javascript_marker = [#][%](javascript)[%]
-bean_shell_marker = [#][%]((bsh)[%])?
 script_action = (beforeEach | afterEach | if | endif)[:]
 script_body_value = [^ '\"\r\n]+
 
@@ -125,6 +122,7 @@ end_userrights                    = [$]END_USERRIGHTS
 %state HEADER_LINE
 %state FIELD_VALUE
 %state BEAN_SHELL
+%state SCRIPT
 %state SCRIPT_BODY
 %state MODIFIERS_BLOCK
 %state WAITING_ATTR_OR_PARAM_VALUE
@@ -143,12 +141,41 @@ end_userrights                    = [$]END_USERRIGHTS
 {white_space}+                                              { return TokenType.WHITE_SPACE; }
 
 <YYINITIAL> {
-    {groovy_marker}                                         { yybegin(SCRIPT_BODY); return ImpexTypes.GROOVY_MARKER; }
-    {javascript_marker}                                     { yybegin(SCRIPT_BODY); return ImpexTypes.JAVASCRIPT_MARKER; }
-    {bean_shell_marker}                                     { yybegin(SCRIPT_BODY); return ImpexTypes.BEAN_SHELL_MARKER; }
     {double_string}                                         { return ImpexTypes.DOUBLE_STRING; }
 
-    {line_comment}                                          { return ImpexTypes.LINE_COMMENT; }
+    {line_comment}                                          {
+                                                                final String text = yytext().toString().trim();
+                                                                int index = text.indexOf("#%groovy%");
+
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 9);
+                                                                    return ImpexTypes.GROOVY_MARKER;
+                                                                }
+
+                                                                index = text.indexOf("#%javascript%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 13);
+                                                                    return ImpexTypes.JAVASCRIPT_MARKER;
+                                                                }
+
+                                                                index = text.indexOf("#%bsh%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 6);
+                                                                    return ImpexTypes.BEAN_SHELL_MARKER;
+                                                                }
+
+                                                                index = text.indexOf("#%");
+                                                                if (index > -1) {
+                                                                    yybegin(SCRIPT_BODY);
+                                                                    yypushback(yylength() - 2);
+                                                                    return ImpexTypes.BEAN_SHELL_MARKER;
+                                                                }
+
+                                                                return ImpexTypes.LINE_COMMENT;
+                                                            }
 
     {start_userrights}                                      { yybegin(USER_RIGHTS_START); return ImpexTypes.START_USERRIGHTS; }
     {root_macro_usage}                                      { return ImpexTypes.MACRO_USAGE; }
