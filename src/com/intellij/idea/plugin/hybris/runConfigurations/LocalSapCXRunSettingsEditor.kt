@@ -37,8 +37,6 @@ import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.util.bind
 import com.intellij.ui.components.fields.ExtendableTextField
 import com.intellij.ui.components.fields.IntegerField
-import org.jetbrains.idea.maven.execution.MavenRunConfiguration
-import org.jetbrains.idea.maven.project.MavenConfigurableBundle
 
 class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfiguration) :
     RunConfigurationFragmentedEditor<LocalSapCXRunConfiguration>(runConfiguration, JavaRunConfigurationExtensionManager()) {
@@ -53,15 +51,17 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
         add(LogsGroupFragment())
         addEnvironmentFragment()
     }
+
     private fun SettingsEditorFragmentContainer<LocalSapCXRunConfiguration>.addEnvironmentFragment() =
         addEnvironmentFragment(
             object : LabeledSettingsFragmentInfo {
-                override val editorLabel: String = ExecutionBundle.message("environment.variables.component.title")
-                override val settingsId: String = "maven.environment.variables.fragment"
-                override val settingsName: String = ExecutionBundle.message("environment.variables.fragment.name")
-                override val settingsGroup: String = MavenConfigurableBundle.message("maven.run.configuration.runner.options.group")
-                override val settingsHint: String = ExecutionBundle.message("environment.variables.fragment.hint")
-                override val settingsActionHint: String = ExecutionBundle.message("set.custom.environment.variables.for.the.process")
+                override val editorLabel: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.environment.variables.component.title")
+                override val settingsId: String = "hybris.project.run.configuration.localserver.environment.variables.fragment"
+                override val settingsName: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.environment.variables.fragment.name")
+                override val settingsGroup: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.environment.options.group")
+                override val settingsHint: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.environment.variables.fragment.hint")
+                override val settingsActionHint: String =
+                    HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.set.custom.environment.variables.for.the.process")
             },
             { sapCXOptions.environmentProperties },
             { sapCXOptions.environmentProperties = it as MutableMap<String, String> },
@@ -69,6 +69,7 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
             { sapCXOptions.isPassParentEnv = it },
             hideWhenEmpty = true
         )
+
     private fun SettingsEditorFragmentContainer<LocalSapCXRunConfiguration>.addDebugHostFragment() = addLabeledSettingsEditorFragment(
         object : LabeledSettingsFragmentInfo {
             override val editorLabel: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.host.field")
@@ -79,7 +80,7 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
             override val settingsHint: String = ""
             override val settingsActionHint: String? = null
         },
-        { HostField(HybrisConstants.REMOTE_DEBUG_DEFAULT_HOST) },
+        { HostField(HybrisConstants.DEBUG_HOST) },
         { it, c -> c.host = it.sapCXOptions.remoteDebugHost ?: "" },
         { it, c -> it.sapCXOptions.remoteDebugHost = c.host }
     )
@@ -95,7 +96,7 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
             override val settingsHint: String = ""
             override val settingsActionHint: String? = null
         },
-        { PortField(HybrisConstants.REMOTE_DEBUG_DEFAULT_PORT) },
+        { PortField(HybrisConstants.DEBUG_PORT) },
         { it, c -> c.port = it.sapCXOptions.remoteDebugPort ?: "" },
         { it, c -> it.sapCXOptions.remoteDebugPort = c.port }
     )

@@ -59,9 +59,6 @@ object HybrisConstants {
         "media-telco"
     )
 
-    const val REMOTE_DEBUG_DEFAULT_HOST = "localhost"
-    const val REMOTE_DEBUG_DEFAULT_PORT = "8000"
-
     val Y_FACET_TYPE_ID = FacetTypeId<YFacet>(YFacetType.FACET_ID)
 
     const val NOTIFICATION_GROUP_HYBRIS = "[y] SAP Commerce"
@@ -182,6 +179,7 @@ object HybrisConstants {
     const val HYBRIS_BEANS_XML_FILE_ENDING = "-beans.xml"
     const val HYBRIS_IMPEX_XML_FILE_ENDING = ".$IMPEX_FILE_EXTENSION"
 
+    const val DEBUG_HOST = "localhost"
     const val DEBUG_PORT = "8000"
 
     const val PROPERTY_HAC_WEBROOT = "hac.webroot"

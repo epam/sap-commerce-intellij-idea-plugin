@@ -39,18 +39,18 @@ class LocalSapCXRunProfileState(
 
 
     private fun getScriptPath(): String {
-        val basePath = project.basePath!!
+        val basePath = project.basePath ?: ""
         val settings = HybrisProjectSettingsComponent.getInstance(project).state
-        val hybrisDirectory = settings.hybrisDirectory!!
+        val hybrisDirectory = settings.hybrisDirectory ?: ""
         val script = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
 
         return Paths.get(basePath, hybrisDirectory, script).toString()
     }
 
     private fun getWorkDirectory(): String {
-        val basePath = project.basePath!!
+        val basePath = project.basePath ?: ""
         val settings = HybrisProjectSettingsComponent.getInstance(project).state
-        val hybrisDirectory = settings.hybrisDirectory!!
+        val hybrisDirectory = settings.hybrisDirectory ?: ""
 
         return Paths.get(basePath, hybrisDirectory, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()
     }
@@ -61,8 +61,8 @@ class LocalSapCXRunProfileState(
         if (executor is DefaultDebugExecutor) {
             commandLine.addParameter("debug")
         }
-        if (configuration.getSapCXOptions().environmentProperties != null) {
-            commandLine.environment.putAll(configuration.getSapCXOptions().environmentProperties)
+        if (sapCXOptions.environmentProperties != null) {
+            commandLine.environment.putAll(sapCXOptions.environmentProperties)
         }
 
         val processHandler = ProcessHandlerFactory.getInstance().createColoredProcessHandler(commandLine)
@@ -79,16 +79,15 @@ class LocalSapCXRunProfileState(
     override fun createRemoteConnection(environment: ExecutionEnvironment?): RemoteConnection {
         val remoteConnetion = configuration.getRemoteConnetion()
         updateDebugPort(remoteConnetion.debuggerAddress)
-        return remoteConnetion;
-    };
-
-
-    override fun getJavaParameters(): JavaParameters {
-        return JavaParameters();
+        return remoteConnetion
     }
 
-    override fun isPollConnection(): Boolean {
-        return true
-    }
+
+    override fun getJavaParameters(): JavaParameters = JavaParameters()
+
+    override fun isPollConnection(): Boolean = true
+
+    private val sapCXOptions: LocalSapCXRunnerOptions get() = configuration.getSapCXOptions()
+
 
 }
