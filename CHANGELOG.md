@@ -1,3 +1,8 @@
+## [2023.3.4]
+
+### `Project Build` enhancements
+- Make code generation timeout configurable [#953](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/953)
+
 ## [2023.3.3]
 
 ### Features

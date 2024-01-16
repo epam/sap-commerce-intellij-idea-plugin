@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.runConfigurations
 
 import com.intellij.compiler.options.CompileStepBeforeRun
 import com.intellij.diagnostic.logging.LogsGroupFragment
-import com.intellij.execution.ExecutionBundle
 import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.ui.BeforeRunFragment
 import com.intellij.execution.ui.CommonParameterFragments
@@ -37,6 +36,7 @@ import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.util.bind
 import com.intellij.ui.components.fields.ExtendableTextField
 import com.intellij.ui.components.fields.IntegerField
+import java.io.Serial
 
 class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfiguration) :
     RunConfigurationFragmentedEditor<LocalSapCXRunConfiguration>(runConfiguration, JavaRunConfigurationExtensionManager()) {
@@ -113,8 +113,8 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
             override val settingsActionHint: String? = null
         },
         { DebugCommandLine(commandLine) },
-        { it, c -> Unit },
-        { it, c -> Unit }
+        { _, _ -> },
+        { _, _ -> }
     )
 
     private class HostField(value: String) : ExtendableTextField(value) {
@@ -124,6 +124,11 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
 
         init {
             bind(hostProperty)
+        }
+
+        companion object {
+            @Serial
+            private const val serialVersionUID: Long = -2940721097765966640L
         }
     }
 
@@ -136,13 +141,21 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
             setDefaultValueText(myDefaultValueText)
             bind(portProperty)
         }
+
+        companion object {
+            @Serial
+            private const val serialVersionUID: Long = -6467164709803196765L
+        }
     }
 
 
     private class DebugCommandLine(commandLine: String) : ExtendableTextField(commandLine) {
+        companion object {
+            @Serial
+            private const val serialVersionUID: Long = -6412884305856818512L
+        }
     }
 
     private val LocalSapCXRunConfiguration.sapCXOptions: LocalSapCXRunnerOptions get() = getSapCXOptions()
-
 
 }

@@ -23,6 +23,8 @@ import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.layout.selected
+import javax.swing.JCheckBox
 
 class HybrisProjectSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
@@ -34,6 +36,7 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
     ) {
 
         private val state = HybrisProjectSettingsComponent.getInstance(project).state
+        private lateinit var generateCodeOnRebuildCheckBox: JCheckBox
 
         override fun createPanel() = panel {
             group(message("hybris.settings.project.details.title")) {
@@ -59,14 +62,22 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
 
             group(message("hybris.settings.project.build.title")) {
                 row {
-                    checkBox("Generate code before the Rebuild Project action")
-                        .comment("""
+                    generateCodeOnRebuildCheckBox = checkBox("Generate code before the Rebuild Project action")
+                        .comment(
+                            """
                             If checked, beans and models will be re-generated to the <strong>boostrap/gensrc</strong> before the compilation process.<br>
                             Once generated, compilation will be triggered and create class files which will be placed under <strong>boostrap/modelclasses</strong>.<br>
                             After that, <strong>models.jar</strong> will be created from the <strong>boostrap/modelclasses</strong> folder.<br>
                             As a final step, project compilation will continue.
-                        """.trimIndent())
+                        """.trimIndent()
+                        )
                         .bindSelected(state::generateCodeOnRebuild)
+                        .component
+                }
+                row("Code generation timeout (in seconds)") {
+                    spinner(1..10000, 1)
+                        .bindIntValue(state::generateCodeTimeoutSeconds)
+                        .enabledIf(generateCodeOnRebuildCheckBox.selected)
                 }
             }
 
