@@ -62,7 +62,7 @@ class XsdSchemaConfigurator {
     }
 
     companion object {
-        fun getInstance(): XsdSchemaConfigurator? = ApplicationManager.getApplication().getService(XsdSchemaConfigurator::class.java)
+        fun getXsdSchemaConfigurator(): XsdSchemaConfigurator? = ApplicationManager.getApplication().getService(XsdSchemaConfigurator::class.java)
     }
 
 }

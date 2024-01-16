@@ -19,14 +19,10 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 
 interface ModuleSettingsConfigurator {
 
     fun configure(moduleDescriptor: ModuleDescriptor, javaModule: Module)
 
-    companion object {
-        fun getInstance(): ModuleSettingsConfigurator = ApplicationManager.getApplication().getService(ModuleSettingsConfigurator::class.java)
-    }
 }

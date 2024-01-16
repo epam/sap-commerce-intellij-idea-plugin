@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.openapi.vfs.VfsUtil
@@ -76,10 +75,6 @@ class MavenConfigurator {
         }
 
         return actions
-    }
-
-    companion object {
-        fun getInstance(): MavenConfigurator? = ApplicationManager.getApplication().getService(MavenConfigurator::class.java)
     }
 
 }

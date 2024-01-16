@@ -22,7 +22,6 @@ import com.intellij.facet.FacetType
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleType
@@ -53,7 +52,4 @@ class JRebelConfigurator {
         return { ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false) }
     }
 
-    companion object {
-        fun getInstance(): JRebelConfigurator? = ApplicationManager.getApplication().getService(JRebelConfigurator::class.java)
-    }
 }

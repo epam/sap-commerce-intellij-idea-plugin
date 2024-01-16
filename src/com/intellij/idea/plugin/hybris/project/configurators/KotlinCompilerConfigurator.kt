@@ -123,8 +123,4 @@ class KotlinCompilerConfigurator {
         }
     }
 
-    companion object {
-        fun getInstance(): KotlinCompilerConfigurator? = ApplicationManager.getApplication().getService(KotlinCompilerConfigurator::class.java)
-    }
-
 }

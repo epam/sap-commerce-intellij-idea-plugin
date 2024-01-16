@@ -18,10 +18,8 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultContentRootConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.ModifiableRootModel
 
@@ -34,7 +32,4 @@ interface ContentRootConfigurator {
         appSettings: HybrisApplicationSettings
     )
 
-    companion object {
-        val instance: ContentRootConfigurator = ApplicationManager.getApplication().getService(DefaultContentRootConfigurator::class.java)
-    }
 }

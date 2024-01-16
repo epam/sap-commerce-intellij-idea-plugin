@@ -20,14 +20,10 @@ package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.EclipseModuleDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 
 interface EclipseConfigurator {
 
     fun configure(hybrisProjectDescriptor: HybrisProjectDescriptor, project: Project, eclipseModules: List<EclipseModuleDescriptor>)
 
-    companion object {
-        fun getInstance(): EclipseConfigurator? = ApplicationManager.getApplication().getService(EclipseConfigurator::class.java)
-    }
 }

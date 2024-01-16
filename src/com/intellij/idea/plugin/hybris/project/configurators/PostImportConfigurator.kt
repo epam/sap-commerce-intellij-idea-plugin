@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DataSourcesConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.notification.NotificationType
@@ -42,26 +41,28 @@ class PostImportConfigurator(val project: Project) {
             .nonBlocking<List<() -> Unit>> {
                 if (project.isDisposed) return@nonBlocking emptyList()
 
-                listOfNotNull(
-                    KotlinCompilerConfigurator.getInstance()
-                        ?.configureAfterImport(project),
+                with(ConfiguratorFactory.getInstance()) {
+                    listOfNotNull(
+                        getKotlinCompilerConfigurator()
+                            ?.configureAfterImport(project),
 
-                    DataSourcesConfigurator.getInstance()
-                        ?.configureAfterImport(project),
+                        getDataSourcesConfigurator()
+                            ?.configureAfterImport(project),
 
-                    AntConfigurator.getInstance()
-                        ?.configureAfterImport(project, hybrisProjectDescriptor, allHybrisModules),
+                        getAntConfigurator()
+                            ?.configureAfterImport(project, hybrisProjectDescriptor, allHybrisModules),
 
-                    XsdSchemaConfigurator.getInstance()
-                        ?.configureAfterImport(project, allHybrisModules),
+                        getXsdSchemaConfigurator()
+                            ?.configureAfterImport(project, allHybrisModules),
 
-                    JRebelConfigurator.getInstance()
-                        ?.configureAfterImport(project, allHybrisModules),
+                        getJRebelConfigurator()
+                            ?.configureAfterImport(project, allHybrisModules),
 
-                    MavenConfigurator.getInstance()
-                        ?.configureAfterImport(project, hybrisProjectDescriptor)
-                )
-                    .flatten()
+                        getMavenConfigurator()
+                            ?.configureAfterImport(project, hybrisProjectDescriptor)
+                    )
+                        .flatten()
+                }
             }
             .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
                 if (project.isDisposed) return@finishOnUiThread

@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 
 interface GroupModuleConfigurator {
@@ -29,7 +28,4 @@ interface GroupModuleConfigurator {
         modulesChosenForImport: List<ModuleDescriptor>
     )
 
-    companion object {
-        fun getInstance(): GroupModuleConfigurator = ApplicationManager.getApplication().getService(GroupModuleConfigurator::class.java)
-    }
 }

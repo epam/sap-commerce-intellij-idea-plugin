@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
@@ -33,7 +32,4 @@ interface SearchScopeConfigurator {
         model: ModifiableModuleModel
     )
 
-    companion object {
-        fun getInstance(): SearchScopeConfigurator = ApplicationManager.getApplication().getService(SearchScopeConfigurator::class.java)
-    }
 }

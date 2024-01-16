@@ -20,7 +20,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 
 interface JavaCompilerConfigurator {
@@ -30,8 +29,4 @@ interface JavaCompilerConfigurator {
         project: Project,
         cache: HybrisConfiguratorCache
     )
-
-    companion object {
-        fun getInstance(): JavaCompilerConfigurator = ApplicationManager.getApplication().getService(JavaCompilerConfigurator::class.java)
-    }
 }

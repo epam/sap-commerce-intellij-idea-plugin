@@ -3,6 +3,9 @@
 ### `Project Build` enhancements
 - Make code generation timeout configurable [#954](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/954)
 
+### Fixes
+- `AntInstallation` class not found on project refresh [#955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/955)
+
 ## [2023.3.3]
 
 ### Features

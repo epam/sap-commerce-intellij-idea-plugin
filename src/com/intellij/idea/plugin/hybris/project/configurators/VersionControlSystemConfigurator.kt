@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 
@@ -31,7 +30,4 @@ interface VersionControlSystemConfigurator {
         project: Project
     )
 
-    companion object {
-        fun getInstance(): VersionControlSystemConfigurator = ApplicationManager.getApplication().getService(VersionControlSystemConfigurator::class.java)
-    }
 }

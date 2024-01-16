@@ -189,9 +189,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             }
         }
 
-        configuratorFactory.getModulesDependenciesConfigurator().configure(indicator, hybrisProjectDescriptor, modifiableModelsProvider);
+        configuratorFactory.getModuleDependenciesConfigurator().configure(indicator, hybrisProjectDescriptor, modifiableModelsProvider);
         configuratorFactory.getSpringConfigurator().configure(indicator, hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider);
-        configuratorFactory.getDefaultRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
+        configuratorFactory.getRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
         configuratorFactory.getVersionControlSystemConfigurator().configure(indicator, hybrisProjectDescriptor, project);
         configuratorFactory.getSearchScopeConfigurator().configure(indicator, project, appSettings, rootProjectModifiableModel);
 
@@ -286,7 +286,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         modifiableRootModel.inheritSdk();
 
         configuratorFactory.getLibRootsConfigurator().configure(indicator, allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
-        configuratorFactory.getContentRootConfigurator(moduleDescriptor).configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
+        configuratorFactory.getContentRootConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
         configuratorFactory.getCompilerOutputPathsConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor);
 
         indicator.setText2(message("hybris.project.import.module.facet"));
@@ -315,7 +315,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void configureKotlinCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
-        final var compilerConfigurator = KotlinCompilerConfigurator.Companion.getInstance();
+        final var compilerConfigurator = configuratorFactory.getKotlinCompilerConfigurator();
 
         if (compilerConfigurator == null) return;
 

@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.ModifiableRootModel
 
@@ -29,8 +28,4 @@ interface CompilerOutputPathsConfigurator {
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor
     )
-
-    companion object {
-        fun getInstance(): CompilerOutputPathsConfigurator = ApplicationManager.getApplication().getService(CompilerOutputPathsConfigurator::class.java)
-    }
 }

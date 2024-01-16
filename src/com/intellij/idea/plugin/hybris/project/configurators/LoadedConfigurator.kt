@@ -42,7 +42,4 @@ class LoadedConfigurator {
         }
     }
 
-    companion object {
-        fun getInstance(): LoadedConfigurator = ApplicationManager.getApplication().getService(LoadedConfigurator::class.java)
-    }
 }

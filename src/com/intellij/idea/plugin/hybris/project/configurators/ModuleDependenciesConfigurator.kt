@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
 
@@ -31,7 +30,4 @@ interface ModuleDependenciesConfigurator {
         modifiableModelsProvider: IdeModifiableModelsProvider
     )
 
-    companion object {
-        fun getInstance(): ModuleDependenciesConfigurator = ApplicationManager.getApplication().getService(ModuleDependenciesConfigurator::class.java)
-    }
 }
