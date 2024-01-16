@@ -22,8 +22,6 @@
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.gradle.GradleSupport"/>
-
     </extensions>
 
 </idea-plugin>

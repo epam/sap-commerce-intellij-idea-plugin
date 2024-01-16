@@ -28,14 +28,12 @@ import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.facet.YFacet;
-import com.intellij.idea.plugin.hybris.gradle.GradleSupport;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
+import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.wizard.RefreshSupport;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
-import com.intellij.lang.ant.config.AntConfigurationBase;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
@@ -132,7 +130,8 @@ public class ProjectRefreshAction extends AnAction {
 
     private static void removeOldProjectData(@NotNull final Project project) {
         final var moduleModel = ModuleManager.getInstance(project).getModifiableModel();
-        final var removeExternalModulesOnRefresh = HybrisProjectSettingsComponent.getInstance(project).getState().getRemoveExternalModulesOnRefresh();
+        final var projectSettings = HybrisProjectSettingsComponent.getInstance(project).getState();
+        final var removeExternalModulesOnRefresh = projectSettings.getRemoveExternalModulesOnRefresh();
 
         for (Module module : moduleModel.getModules()) {
             if (removeExternalModulesOnRefresh || YFacet.Companion.getState(module) != null) {
@@ -149,28 +148,26 @@ public class ProjectRefreshAction extends AnAction {
             libraryModel.commit();
         });
 
-        clearGradleProjectData(project);
-        clearAntProjectData(project);
+        final var configuratorFactory = ConfiguratorFactory.Companion.getInstance();
+
+        clearGradleProjectData(project, configuratorFactory, projectSettings);
+        clearAntProjectData(project, configuratorFactory);
     }
 
-    private static void clearAntProjectData(final @NotNull Project project) {
-        if (!PluginCommon.isPluginActive(PluginCommon.ANT_SUPPORT_PLUGIN_ID)) return;
+    private static void clearAntProjectData(final @NotNull Project project, final ConfiguratorFactory configuratorFactory) {
+        final var antConfigurator = configuratorFactory.getAntConfigurator();
+        if (antConfigurator == null) return;
 
-        final var antConfiguration = AntConfigurationBase.getInstance(project);
-
-        if (antConfiguration == null) return;
-
-        for (final var antBuildFile : antConfiguration.getBuildFiles()) {
-            antConfiguration.removeBuildFile(antBuildFile);
-        }
+        antConfigurator.clearAntSettings(project);
     }
 
-    private static void clearGradleProjectData(final @NotNull Project project) {
-        final var gradleSupport = GradleSupport.getInstance();
+    private static void clearGradleProjectData(final @NotNull Project project, final ConfiguratorFactory configuratorFactory, final HybrisProjectSettings projectSettings) {
+        if (!projectSettings.getRemoveExternalModulesOnRefresh()) return;
 
-        if (gradleSupport == null) return;
+        final var gradleConfigurator = configuratorFactory.getGradleConfigurator();
+        if (gradleConfigurator == null) return;
 
-        gradleSupport.clearLinkedProjectSettings(project);
+        gradleConfigurator.clearLinkedProjectSettings(project);
     }
 
     private AddModuleWizard getWizard(final Project project) throws ConfigurationException {

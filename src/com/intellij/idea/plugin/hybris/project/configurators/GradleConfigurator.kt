@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.configurators
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor
 import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.gradle.service.project.open.linkAndRefreshGradleProject
+import org.jetbrains.plugins.gradle.settings.GradleSettings
 
 class GradleConfigurator {
 
@@ -31,6 +32,10 @@ class GradleConfigurator {
         gradleModules
             .mapNotNull { it.gradleFile.path }
             .forEach { linkAndRefreshGradleProject(it, project) }
+    }
+
+    fun clearLinkedProjectSettings(project: Project) {
+        GradleSettings.getInstance(project).linkedProjectsSettings = emptyList()
     }
 
 }

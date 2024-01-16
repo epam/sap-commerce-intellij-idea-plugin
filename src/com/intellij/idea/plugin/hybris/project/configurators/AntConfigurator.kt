@@ -367,6 +367,14 @@ class AntConfigurator {
         runManager.setBeforeRunTasks(runConfiguration, emptyList())
     }
 
+    fun clearAntSettings(project: Project) {
+        val antConfiguration = AntConfigurationBase.getInstance(project) ?: return
+
+        for (antBuildFile in antConfiguration.buildFiles) {
+            antConfiguration.removeBuildFile(antBuildFile)
+        }
+    }
+
     companion object {
         private val LOG = Logger.getInstance(AntConfigurator::class.java)
         private val PATTERN_APACHE_ANT: Pattern = Pattern.compile("apache-ant.*")
