@@ -18,11 +18,8 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSpringConfigurator
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DummySpringConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
 
@@ -41,8 +38,4 @@ interface SpringConfigurator {
         modifiableModelsProvider: IdeModifiableModelsProvider
     )
 
-    companion object {
-        fun getInstance(): DefaultSpringConfigurator? = ApplicationManager.getApplication().getService(DefaultSpringConfigurator::class.java)
-        fun getDummyInstance(): DummySpringConfigurator = ApplicationManager.getApplication().getService(DummySpringConfigurator::class.java)
-    }
 }

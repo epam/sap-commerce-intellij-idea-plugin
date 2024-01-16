@@ -19,13 +19,8 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.facet.ModifiableFacetModel
-import com.intellij.idea.plugin.hybris.project.configurators.impl.KotlinFacetConfigurator
-import com.intellij.idea.plugin.hybris.project.configurators.impl.SpringFacetConfigurator
-import com.intellij.idea.plugin.hybris.project.configurators.impl.WebFacetConfigurator
-import com.intellij.idea.plugin.hybris.project.configurators.impl.YFacetConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 
@@ -39,10 +34,4 @@ interface FacetConfigurator {
         modifiableRootModel: ModifiableRootModel
     )
 
-    companion object {
-        fun getYInstance(): YFacetConfigurator = ApplicationManager.getApplication().getService(YFacetConfigurator::class.java)
-        fun getSpringInstance(): SpringFacetConfigurator? = ApplicationManager.getApplication().getService(SpringFacetConfigurator::class.java)
-        fun getKotlinInstance(): KotlinFacetConfigurator? = ApplicationManager.getApplication().getService(KotlinFacetConfigurator::class.java)
-        fun getWebInstance(): WebFacetConfigurator? = ApplicationManager.getApplication().getService(WebFacetConfigurator::class.java)
-    }
 }

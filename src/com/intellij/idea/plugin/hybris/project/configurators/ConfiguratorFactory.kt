@@ -18,9 +18,7 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DataSourcesConfigurator
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultContentRootConfigurator
-import com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultRunConfigurationConfigurator
+import com.intellij.idea.plugin.hybris.project.configurators.impl.*
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -28,16 +26,17 @@ import com.intellij.openapi.components.Service
 @Service
 class ConfiguratorFactory {
 
-    fun getFacetConfigurators() = with(mutableListOf<FacetConfigurator>()) {
-        add(FacetConfigurator.getYInstance())
-        FacetConfigurator.getSpringInstance()?.let { add(it) }
-        FacetConfigurator.getKotlinInstance()?.let { add(it) }
-        FacetConfigurator.getWebInstance()?.let { add(it) }
-        this
+    fun getFacetConfigurators() = with(ApplicationManager.getApplication()) {
+        listOfNotNull(
+            getService(YFacetConfigurator::class.java),
+            getService(SpringFacetConfigurator::class.java),
+            getService(KotlinFacetConfigurator::class.java),
+            getService(WebFacetConfigurator::class.java)
+        )
     }
 
-    fun getSpringConfigurator(): SpringConfigurator = SpringConfigurator.getInstance()
-        ?: SpringConfigurator.getDummyInstance()
+    fun getSpringConfigurator(): SpringConfigurator = ApplicationManager.getApplication().getService(DefaultSpringConfigurator::class.java)
+        ?: ApplicationManager.getApplication().getService(DummySpringConfigurator::class.java)
 
     fun getContentRootConfigurator(): ContentRootConfigurator = ApplicationManager.getApplication().getService(DefaultContentRootConfigurator::class.java)
     fun getModuleDependenciesConfigurator(): ModuleDependenciesConfigurator = ApplicationManager.getApplication().getService(ModuleDependenciesConfigurator::class.java)
@@ -58,6 +57,7 @@ class ConfiguratorFactory {
     fun getAntConfigurator(): AntConfigurator? =
         if (PluginCommon.isPluginActive(PluginCommon.ANT_SUPPORT_PLUGIN_ID)) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
         else null
+
     fun getDataSourcesConfigurator(): DataSourcesConfigurator? = ApplicationManager.getApplication().getService(DataSourcesConfigurator::class.java)
     fun getJRebelConfigurator(): JRebelConfigurator? = ApplicationManager.getApplication().getService(JRebelConfigurator::class.java)
     fun getXsdSchemaConfigurator(): XsdSchemaConfigurator? = ApplicationManager.getApplication().getService(XsdSchemaConfigurator::class.java)
