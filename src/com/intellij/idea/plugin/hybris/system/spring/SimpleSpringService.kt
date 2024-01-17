@@ -94,7 +94,6 @@ class SimpleSpringService(val project: Project) {
     }
 
     companion object {
-
         fun getService(project: Project) = if (HybrisConstants.IDEA_EDITION_ULTIMATE.equals(ApplicationNamesInfo.getInstance().editionName, ignoreCase = true)) null
         else project.getService(SimpleSpringService::class.java)
     }

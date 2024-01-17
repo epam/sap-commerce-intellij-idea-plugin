@@ -22,8 +22,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <lang.foldingBuilder language="JSP" implementationClass="com.intellij.idea.plugin.hybris.jsp.JspPropertyFoldingBuilder"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.properties.PropertyService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.properties.impl.PropertyServiceImpl"/>
+        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.properties.PropertyService"/>
 
     </extensions>
 
