@@ -6,6 +6,7 @@
 ### `Project Build` enhancements
 - Make code generation timeout configurable [#954](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/954)
 - Do not unlink gradle projects during the project refresh [#956](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/956)
+- Changed output directory for custom modules to `classes` [#958](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/958)
 
 ### Fixes
 - `AntInstallation` class not found on project refresh [#955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/955)
