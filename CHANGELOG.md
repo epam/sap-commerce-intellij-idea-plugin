@@ -14,6 +14,7 @@
 
 ### Fixes
 - `AntInstallation` class not found on project refresh [#955](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/955)
+- Fixed Kotlin library automatic registration [#961](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/961)
 
 ## [2023.3.3]
 

@@ -71,11 +71,11 @@ class KotlinCompilerConfigurator {
         if (kotlinAwareModules.isEmpty()) return emptyList()
 
         val collector = NotificationMessageCollector.create(project)
-
         val actions = mutableListOf<() -> Unit>()
-        val writeActions = mutableListOf<() -> Unit>()
 
         actions.add() {
+            val writeActions = mutableListOf<() -> Unit>()
+
             runWriteAction {
                 KotlinJavaModuleConfigurator.instance.getOrCreateKotlinLibrary(project, collector)
             }
@@ -95,6 +95,8 @@ class KotlinCompilerConfigurator {
                     KotlinJavaModuleConfigurator.instance.configureModule(module, collector, writeActions)
                 }
             }
+
+            writeActions.forEach { it() }
         }
         return actions
     }
