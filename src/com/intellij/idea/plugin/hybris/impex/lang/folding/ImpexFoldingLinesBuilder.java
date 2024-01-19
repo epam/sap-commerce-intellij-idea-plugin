@@ -27,7 +27,6 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.FoldingGroup;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.SyntaxTraverser;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -115,8 +114,6 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
     @Nullable
     @Override
     public String getPlaceholderText(@NotNull final ASTNode node) {
-        Validate.notNull(node);
-
         return ImpexFoldingPlaceholderBuilderFactory.INSTANCE.getPlaceholderBuilder(node.getPsi().getProject()).getPlaceholder(node.getPsi());
     }
 

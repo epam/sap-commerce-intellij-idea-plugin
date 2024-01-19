@@ -27,7 +27,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.projectImport.ProjectImportBuilder;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -49,17 +48,12 @@ public class SearchHybrisDistributionDirectoryTaskModalWindow extends Task.Modal
             true
         );
 
-        Validate.notNull(rootProjectDirectory);
-        Validate.notNull(resultProcessor);
-
         this.rootProjectDirectory = rootProjectDirectory;
         this.resultProcessor = resultProcessor;
     }
 
     @Override
     public void run(@NotNull final ProgressIndicator indicator) {
-        Validate.notNull(indicator);
-
         final var virtualFileSystemService = VirtualFileSystemService.getInstance();
 
         final File hybrisServerShellScriptFile;

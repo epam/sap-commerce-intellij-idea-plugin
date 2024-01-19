@@ -78,7 +78,6 @@ import com.intellij.spellchecker.dictionary.UserDictionary;
 import com.intellij.spellchecker.state.ProjectDictionaryState;
 import com.intellij.spring.facet.SpringFacet;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -392,8 +391,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void initializeHybrisProjectSettings(@NotNull final Project project, final @NotNull HybrisProjectSettings hybrisProjectSettings) {
-        Validate.notNull(project);
-
         hybrisProjectSettings.setHybrisProject(true);
         final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
 
@@ -404,8 +401,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void selectSdk(@NotNull final Project project) {
-        Validate.notNull(project);
-
         final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(project);
 
         final Sdk projectSdk = projectRootManager.getProjectSdk();

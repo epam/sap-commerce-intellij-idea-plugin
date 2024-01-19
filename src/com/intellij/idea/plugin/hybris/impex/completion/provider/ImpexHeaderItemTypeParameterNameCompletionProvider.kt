@@ -28,7 +28,6 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.util.ProcessingContext
-import org.apache.commons.lang3.Validate
 
 @Service
 class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -38,9 +37,6 @@ class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<Co
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
-        Validate.notNull(parameters)
-        Validate.notNull(result)
-
         val project = parameters.position.project
         val psiElementUnderCaret = if (parameters.position is LeafPsiElement)
             parameters.position.parent

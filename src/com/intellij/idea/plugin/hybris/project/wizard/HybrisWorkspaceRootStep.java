@@ -37,7 +37,6 @@ import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.projectImport.ProjectImportWizardStep;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -515,8 +514,6 @@ public class HybrisWorkspaceRootStep extends ProjectImportWizardStep implements 
 
     @Nullable
     private String getHybrisVersion(@NotNull final String hybrisRootDir, final boolean apiOnly) {
-        Validate.notNull(hybrisRootDir);
-
         final File buildInfoFile = new File(hybrisRootDir + HybrisConstants.BUILD_NUMBER_FILE_PATH);
         final Properties buildProperties = new Properties();
 

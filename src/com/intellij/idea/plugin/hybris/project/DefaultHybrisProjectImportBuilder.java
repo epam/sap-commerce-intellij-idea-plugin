@@ -41,7 +41,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import kotlin.Triple;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,8 +81,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
 
     @Override
     public void setRootProjectDirectory(@NotNull final File directory) {
-        Validate.notNull(directory);
-
         LOG.info("setting RootProjectDirectory to "+directory.getAbsolutePath());
         ProgressManager.getInstance().run(new SearchModulesRootsTaskModalWindow(
             directory, this.getHybrisProjectDescriptor()
@@ -184,7 +181,6 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     protected void performProjectsCleanup(@NotNull final Iterable<ModuleDescriptor> modulesChosenForImport) {
-        Validate.notNull(modulesChosenForImport);
         final List<File> alreadyExistingModuleFiles;
         final File dir = hybrisProjectDescriptor.getModulesFilesDirectory();
         if (dir != null && dir.isDirectory()) {

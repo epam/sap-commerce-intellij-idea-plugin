@@ -1,25 +1,25 @@
 [versions]
 # libraries
 # https://mvnrepository.com/artifact/org.jsoup/jsoup
-jsoup = "1.16.1"
+jsoup = "1.17.2"
 # https://mvnrepository.com/artifact/com.wutka/dtdparser
 dtdparser = "1.21"
 # https://mvnrepository.com/artifact/commons-io/commons-io
-commonsIO = "2.12.0"
+commonsIO = "2.15.1"
 # https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
 jsr305 = "3.0.2"
 # https://mvnrepository.com/artifact/org.apache.maven/maven-model
-mavenModel = "3.9.2"
+mavenModel = "3.9.6"
 # https://mvnrepository.com/artifact/commons-codec/commons-codec
-commonsCodec = "1.15"
+commonsCodec = "1.16.0"
 # https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-commonsLang3 = "3.12.0"
+commonsLang3 = "3.14.0"
 # https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
 commonsCollections4 = "4.4"
 # https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-jakartaXmlBindApi = "4.0.0"
+jakartaXmlBindApi = "4.0.1"
 # https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl
-jaxbImpl = "4.0.2"
+jaxbImpl = "4.0.4"
 # https://mvnrepository.com/artifact/org.apache.solr/solr-solrj
 # version 9.2.1 is already available but we stick to the version used by Hybris
 # see folder hybris\bin\modules\search-and-navigation\solrserver\resources\solr\
@@ -27,11 +27,11 @@ solrSolrj = "8.11.2"
 
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
-kotlin = "1.9.0"
+kotlin = "1.9.22"
 # https://plugins.gradle.org/plugin/org.jetbrains.intellij
-gradleIntelliJPlugin = "1.16.1"
+gradleIntelliJPlugin = "1.17.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
-changelog = "2.1.2"
+changelog = "2.2.0"
 
 [libraries]
 commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIO" }

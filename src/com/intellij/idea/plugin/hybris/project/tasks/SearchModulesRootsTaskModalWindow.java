@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.projectImport.ProjectImportBuilder;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -43,17 +42,12 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
             true
         );
 
-        Validate.notNull(rootProjectDirectory);
-        Validate.notNull(projectImportParameters);
-
         this.rootProjectDirectory = rootProjectDirectory;
         this.projectImportParameters = projectImportParameters;
     }
 
     @Override
     public void run(@NotNull final ProgressIndicator indicator) {
-        Validate.notNull(indicator);
-
         this.projectImportParameters.setRootDirectoryAndScanForModules(
             this.rootProjectDirectory,
             new DirectoriesScannerProgressIndicatorUpdaterProcessor(indicator),

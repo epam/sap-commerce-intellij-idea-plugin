@@ -28,7 +28,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ui.ImageUtil;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -153,8 +152,6 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
      */
     @NotNull
     protected String getModuleNameAndPath(@NotNull final ModuleDescriptor moduleDescriptor) {
-        Validate.notNull(moduleDescriptor);
-
         final StringBuilder builder = new StringBuilder();
         builder.append(moduleDescriptor.getName());
 

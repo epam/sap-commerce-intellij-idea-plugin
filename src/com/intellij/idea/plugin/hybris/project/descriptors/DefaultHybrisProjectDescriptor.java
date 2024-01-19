@@ -49,7 +49,6 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -155,7 +154,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     private void preselectModules(@NotNull final ConfigModuleDescriptor configHybrisModuleDescriptor, final Set<String> explicitlyDefinedModules) {
-        Validate.notNull(configHybrisModuleDescriptor);
         for (ModuleDescriptor yModuleDescriptor : foundModules) {
             if (explicitlyDefinedModules.contains(yModuleDescriptor.getName())
                 && yModuleDescriptor instanceof final YRegularModuleDescriptor yRegularModuleDescriptor
@@ -381,7 +379,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor,
         @Nullable final TaskProgressProcessor<List<File>> errorsProcessor
     ) throws InterruptedException, IOException {
-        Validate.notNull(rootDirectory);
 
         this.foundModules.clear();
 
@@ -622,9 +619,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         @NotNull final File rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
-        Validate.notNull(moduleRootMap);
-        Validate.notNull(rootProjectDirectory);
-
         if (null != progressListenerProcessor) {
             if (!progressListenerProcessor.shouldContinue(rootProjectDirectory)) {
                 LOG.error("Modules scanning has been interrupted.");
@@ -759,8 +753,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     protected void buildDependencies(@NotNull final Collection<ModuleDescriptor> moduleDescriptors) {
-        Validate.notNull(moduleDescriptors);
-
         final var moduleDescriptorsMap = moduleDescriptors.stream()
             .filter(distinctByKey(ModuleDescriptor::getName))
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
@@ -841,8 +833,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @Override
     public void setModulesChosenForImport(@NotNull final List<ModuleDescriptor> moduleDescriptors) {
-        Validate.notNull(moduleDescriptors);
-
         this.modulesChosenForImport.clear();
         this.modulesChosenForImport.addAll(moduleDescriptors);
         moduleDescriptors.forEach(module -> {
@@ -962,8 +952,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor,
         @Nullable final TaskProgressProcessor<List<File>> errorsProcessor
     ) {
-        Validate.notNull(rootDirectory);
-
         this.rootDirectory = rootDirectory;
 
         try {
@@ -1119,8 +1107,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     @NotNull
     protected Set<ModuleDescriptor> getAlreadyOpenedModules(@NotNull final Project project) {
-        Validate.notNull(project);
-
         final Set<ModuleDescriptor> existingModules = new HashSet<>();
 
         for (Module module : ModuleManager.getInstance(project).getModules()) {

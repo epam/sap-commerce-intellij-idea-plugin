@@ -23,7 +23,6 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiMethod;
 import com.intellij.psi.tree.IElementType;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,8 +50,6 @@ public final class CommonPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static PsiElement getNextNonWhitespaceElement(@NotNull final PsiElement element) {
-        Validate.notNull(element);
-
         PsiElement nextSibling = element.getNextSibling();
 
         while (null != nextSibling && ImpexPsiUtils.isWhiteSpace(nextSibling)) {
@@ -68,9 +65,6 @@ public final class CommonPsiUtils {
         @NotNull final PsiElement element,
         @NotNull final IElementType elementType
     ) {
-        Validate.notNull(element);
-        Validate.notNull(elementType);
-
         List<PsiElement> result = Collections.emptyList();
         ASTNode child = element.getNode().getFirstChildNode();
 
@@ -89,8 +83,6 @@ public final class CommonPsiUtils {
 
     @Contract(pure = true)
     public static boolean isSetter(@NotNull final PsiMethod psiMethod) {
-        Validate.notNull(psiMethod);
-
         return !isBlank(psiMethod.getName()) && startsWith(psiMethod.getName(), SETTER_PREFIX);
     }
 

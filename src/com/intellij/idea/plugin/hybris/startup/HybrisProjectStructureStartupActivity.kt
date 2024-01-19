@@ -34,7 +34,6 @@ import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.spring.settings.SpringGeneralSettings
 import org.apache.commons.io.IOUtils
-import org.apache.commons.lang3.Validate
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -109,7 +108,6 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     }
 
     private fun fixBackOfficeJRebelSupport(project: Project) {
-        Validate.notNull(project)
         val jRebelPlugin = PluginManagerCore.getPlugin(PluginId.getId(PluginCommon.JREBEL_PLUGIN_ID))
 
         if (jRebelPlugin == null || !jRebelPlugin.isEnabled) return

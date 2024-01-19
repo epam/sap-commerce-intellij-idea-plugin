@@ -203,8 +203,6 @@ public final class ImpexPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static boolean nextElementIsHeaderLine(@NotNull final PsiElement element) {
-        Validate.notNull(element);
-
         PsiElement nextSibling = element.getNextSibling();
 
         while (null != nextSibling) {
@@ -226,8 +224,6 @@ public final class ImpexPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static boolean nextElementIsUserRightsMacros(@NotNull final PsiElement element) {
-        Validate.notNull(element);
-
         PsiElement nextSibling = element.getNextSibling();
 
         while (null != nextSibling) {
@@ -249,8 +245,6 @@ public final class ImpexPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static boolean prevElementIsUserRightsMacros(@NotNull final PsiElement element) {
-        Validate.notNull(element);
-
         final Class[] skipClasses = {ImpexValueLine.class, PsiComment.class, PsiWhiteSpace.class};
         PsiElement prevElement = PsiTreeUtil.skipSiblingsBackward(element, skipClasses);
 
@@ -270,8 +264,6 @@ public final class ImpexPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static PsiElement getPrevNonWhitespaceElement(@NotNull final PsiElement element) {
-        Validate.notNull(element);
-
         PsiElement prevSibling = element.getPrevSibling();
 
         while (null != prevSibling && (isWhiteSpace(prevSibling) || isLineBreak(prevSibling))) {
@@ -284,8 +276,6 @@ public final class ImpexPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static PsiElement getNextNonWhitespaceElement(@NotNull final PsiElement element) {
-        Validate.notNull(element);
-
         PsiElement nextSibling = element.getNextSibling();
 
         while (null != nextSibling && (isWhiteSpace(nextSibling) || isLineBreak(nextSibling))) {
@@ -299,8 +289,6 @@ public final class ImpexPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static PsiElement getPrevValueLine(@NotNull final PsiElement element) {
-        Validate.notNull(element);
-
         PsiElement prevSibling = element.getPrevSibling();
 
         while (null != prevSibling && !isImpexValueLine(prevSibling)) {
@@ -313,8 +301,6 @@ public final class ImpexPsiUtils {
 
     @Nullable
     public static PsiElement getHeaderOfValueGroupUnderCaret(@NotNull final Editor editor) {
-        Validate.notNull(editor);
-
         final var psiElementUnderCaret = PsiUtilBase.getElementAtCaret(editor);
         if (null == psiElementUnderCaret) return null;
 
@@ -411,8 +397,6 @@ public final class ImpexPsiUtils {
     public static ImpexValueGroup skipAllExceptLineBreaksAndGetImpexValueGroup(
         @NotNull final PsiElement psiElement
     ) {
-        Validate.notNull(psiElement);
-
         if (isLineBreak(psiElement.getPrevSibling())) {
             return null;
         }
@@ -435,8 +419,6 @@ public final class ImpexPsiUtils {
 
     @Contract(pure = true)
     public static int getColumnNumber(@NotNull final ImpexValueGroup valueGroup) {
-        Validate.notNull(valueGroup);
-
         final List<ImpexValueGroup> valueGroups = PsiTreeUtil.getChildrenOfTypeAsList(valueGroup.getValueLine(), ImpexValueGroup.class);
 
         int columnNumber = 0;
@@ -476,8 +458,6 @@ public final class ImpexPsiUtils {
         @NotNull final ImpexHeaderLine impexHeaderLine
     ) {
         Validate.isTrue(columnNumber >= 0);
-        Validate.notNull(impexHeaderLine);
-
         final var columnSeparator = getHeaderParametersSeparatorFromHeaderLineByNumber(
             columnNumber,
             impexHeaderLine
@@ -502,7 +482,6 @@ public final class ImpexPsiUtils {
         @NotNull final ImpexHeaderLine impexHeaderLine
     ) {
         Validate.isTrue(columnNumber >= 0);
-        Validate.notNull(impexHeaderLine);
 
         final List<PsiElement> parameterSeparators = CommonPsiUtils.findChildrenByIElementType(
             impexHeaderLine, ImpexTypes.PARAMETERS_SEPARATOR

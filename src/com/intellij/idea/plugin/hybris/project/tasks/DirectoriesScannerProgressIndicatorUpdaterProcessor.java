@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.tasks;
 
 import com.intellij.openapi.progress.ProgressIndicator;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -29,8 +28,6 @@ public class DirectoriesScannerProgressIndicatorUpdaterProcessor implements Task
     protected final ProgressIndicator progressIndicator;
 
     public DirectoriesScannerProgressIndicatorUpdaterProcessor(@NotNull final ProgressIndicator indicator) {
-        Validate.notNull(indicator);
-
         this.progressIndicator = indicator;
     }
 

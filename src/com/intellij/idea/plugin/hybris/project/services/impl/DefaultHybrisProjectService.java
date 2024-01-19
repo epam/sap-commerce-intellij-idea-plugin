@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisUtil;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
 
@@ -34,16 +33,12 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
 
     @Override
     public boolean isConfigModule(@NotNull final File file) {
-        Validate.notNull(file);
-
         return new File(file, HybrisConstants.LOCAL_EXTENSIONS_XML).isFile()
                && new File(file, HybrisConstants.LOCAL_PROPERTIES_FILE).isFile();
     }
 
     @Override
     public boolean isCCv2Module(@NotNull final File file) {
-        Validate.notNull(file);
-
         return
             (
                 file.getAbsolutePath().contains(HybrisConstants.CCV2_CORE_CUSTOMIZE_NAME)
@@ -55,16 +50,12 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
 
     @Override
     public boolean isPlatformModule(@NotNull final File file) {
-        Validate.notNull(file);
-
         return file.getName().equals(HybrisConstants.EXTENSION_NAME_PLATFORM)
                && new File(file, HybrisConstants.EXTENSIONS_XML).isFile();
     }
 
     @Override
     public boolean isPlatformExtModule(@NotNull final File file) {
-        Validate.notNull(file);
-
         return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
                && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile()
                && !isCoreExtModule(file);
@@ -72,8 +63,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
 
     @Override
     public boolean isCoreExtModule(@NotNull final File file) {
-        Validate.notNull(file);
-
         return file.getAbsolutePath().contains(HybrisConstants.PLATFORM_EXT_MODULE_PREFIX)
                && file.getName().equals(HybrisConstants.EXTENSION_NAME_CORE)
                && new File(file, HybrisConstants.EXTENSION_INFO_XML).isFile();
@@ -86,7 +75,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
 
     @Override
     public boolean isOutOfTheBoxModule(@NotNull final File file, final HybrisProjectDescriptor rootProjectDescriptor) {
-        Validate.notNull(file);
         final File extDir = rootProjectDescriptor.getExternalExtensionsDirectory();
         if (extDir != null) {
             if (VirtualFileSystemService.getInstance().fileContainsAnother(extDir, file)) {
@@ -102,7 +90,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
 
     @Override
     public boolean isMavenModule(final File rootProjectDirectory) {
-        Validate.notNull(rootProjectDirectory);
         if (rootProjectDirectory.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
         }
@@ -111,7 +98,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
 
     @Override
     public boolean isEclipseModule(final File rootProjectDirectory) {
-        Validate.notNull(rootProjectDirectory);
         if (rootProjectDirectory.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
         }
@@ -120,7 +106,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
 
     @Override
     public boolean isGradleModule(final File file) {
-        Validate.notNull(file);
         if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
         }
@@ -130,7 +115,6 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
 
     @Override
     public boolean isGradleKtsModule(final File file) {
-        Validate.notNull(file);
         if (file.getAbsolutePath().contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) {
             return false;
         }
