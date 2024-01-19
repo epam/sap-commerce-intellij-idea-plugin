@@ -31,10 +31,12 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDes
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.JDOMUtil
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.spring.facet.SpringFacet
+import com.intellij.spring.settings.SpringGeneralSettings
 import org.apache.commons.lang3.StringUtils
 import org.jdom.Element
 import org.jdom.JDOMException
@@ -89,6 +91,13 @@ class DefaultSpringConfigurator : SpringConfigurator {
 
         moduleDescriptors.values
             .forEach { configureFacetDependencies(it, facetModels, it.getDirectDependencies()) }
+    }
+
+    override fun resetSpringGeneralSettings(project: Project) {
+        with(SpringGeneralSettings.getInstance(project)) {
+            isShowMultipleContextsPanel = false
+            isShowProfilesPanel = false
+        }
     }
 
     private fun configureFacetDependencies(

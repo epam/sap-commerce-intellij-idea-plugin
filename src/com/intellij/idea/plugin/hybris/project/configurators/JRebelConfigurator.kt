@@ -19,28 +19,74 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.facet.FacetType
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
+import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.io.FileUtil
+import com.intellij.openapi.util.io.FileUtilRt
 import com.zeroturnaround.javarebel.idea.plugin.actions.ToggleRebelFacetAction
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacet
 import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacetType
+import com.zeroturnaround.javarebel.idea.plugin.xml.RebelXML
+import org.apache.commons.io.IOUtils
+import org.zeroturnaround.jrebel.client.config.JRebelConfiguration
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.charset.StandardCharsets
 
 class JRebelConfigurator {
 
-    fun configureAfterImport(project: Project, moduleDescriptors: List<ModuleDescriptor>) = moduleDescriptors
-        .filter {
-            it is YCustomRegularModuleDescriptor
-                || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
-        }
-        .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
-        .mapNotNull { configure(it) }
+    private val logger = Logger.getInstance(JRebelConfigurator::class.java)
 
-    private fun configure(javaModule: Module): (() -> Unit)? {
+    fun configureAfterImport(project: Project, moduleDescriptors: List<ModuleDescriptor>): List<() -> Unit> {
+        val projectSettings = HybrisProjectSettingsComponent.getInstance(project).state
+        return moduleDescriptors
+            .filter {
+                it is YCustomRegularModuleDescriptor
+                    || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
+            }
+            .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
+            .mapNotNull { configure(it, projectSettings) }
+    }
+
+    fun fixBackOfficeJRebelSupport(project: Project) {
+        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
+        val compilingXml = File(
+            FileUtilRt.toSystemDependentName(
+                project.basePath + "/" + hybrisProjectSettings.hybrisDirectory
+                    + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
+            )
+        )
+        if (!compilingXml.isFile) return
+
+        var content = try {
+            IOUtils.toString(FileInputStream(compilingXml), StandardCharsets.UTF_8)
+        } catch (e: IOException) {
+            logger.error(e)
+            return
+        }
+        if (!content.contains("excludes=\"**/rebel.xml\"")) {
+            return
+        }
+        content = content.replace("excludes=\"**/rebel.xml\"", "")
+        try {
+            IOUtils.write(content, FileOutputStream(compilingXml), StandardCharsets.UTF_8)
+        } catch (e: IOException) {
+            logger.error(e)
+        }
+    }
+
+    private fun configure(javaModule: Module, projectSettings: HybrisProjectSettings): (() -> Unit)? {
         val facet = JRebelFacet.getInstance(javaModule)
 
         if (facet != null) return null
@@ -49,7 +95,19 @@ class JRebelConfigurator {
 
         if (!facetType.isSuitableModuleType(ModuleType.get(javaModule))) return null
 
-        return { ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false) }
+        return {
+            // To ensure regeneration of the rebel.xml,
+            // we may need to remove backup created by the JRebel plugin on module removal during the Project Refresh.
+            val xml = RebelXML.getInstance(javaModule)
+            val backupHash = xml.backupHash()
+
+            val backupDirectory = File(JRebelConfiguration.getUserHomeDir(), "xml-backups/$backupHash")
+            if (backupDirectory.exists() && backupDirectory.isDirectory) {
+                FileUtil.deleteRecursively(backupDirectory.toPath())
+            }
+
+            ToggleRebelFacetAction.conditionalEnableJRebelFacet(javaModule, false, false)
+        }
     }
 
 }

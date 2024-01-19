@@ -7,6 +7,7 @@
 - Make code generation timeout configurable [#954](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/954)
 - Do not unlink gradle projects during the project refresh [#956](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/956)
 - Changed output directory for custom modules to `classes` [#958](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/958)
+- Re-generate `jrebel.xml` on project refresh [#960](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/960)
 
 ### Other
 - Updated project libraries [#959](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/959)

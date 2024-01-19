@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.project.Project
 
 @Service
 class DummySpringConfigurator : SpringConfigurator {
@@ -39,5 +40,7 @@ class DummySpringConfigurator : SpringConfigurator {
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) = Unit
+
+    override fun resetSpringGeneralSettings(project: Project) = Unit
 
 }

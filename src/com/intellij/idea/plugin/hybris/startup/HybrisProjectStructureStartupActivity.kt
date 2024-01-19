@@ -24,21 +24,13 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
-import com.intellij.openapi.util.io.FileUtilRt
-import com.intellij.spring.settings.SpringGeneralSettings
-import org.apache.commons.io.IOUtils
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
-import java.nio.charset.StandardCharsets
 
 class HybrisProjectStructureStartupActivity : ProjectActivity {
 
@@ -95,46 +87,11 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     private fun continueOpening(project: Project) {
         if (project.isDisposed) return
 
-        resetSpringGeneralSettings(project)
-        fixBackOfficeJRebelSupport(project)
-    }
-
-    private fun resetSpringGeneralSettings(project: Project) {
-        if (HybrisProjectSettingsComponent.getInstance(project).isHybrisProject() && PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) {
-            val springGeneralSettings = SpringGeneralSettings.getInstance(project)
-            springGeneralSettings.isShowMultipleContextsPanel = false
-            springGeneralSettings.isShowProfilesPanel = false
-        }
-    }
-
-    private fun fixBackOfficeJRebelSupport(project: Project) {
-        val jRebelPlugin = PluginManagerCore.getPlugin(PluginId.getId(PluginCommon.JREBEL_PLUGIN_ID))
-
-        if (jRebelPlugin == null || !jRebelPlugin.isEnabled) return
-
-        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
-        val compilingXml = File(
-            FileUtilRt.toSystemDependentName(
-                project.basePath + "/" + hybrisProjectSettings.hybrisDirectory
-                    + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
-            )
-        )
-        if (!compilingXml.isFile) return
-
-        var content = try {
-            IOUtils.toString(FileInputStream(compilingXml), StandardCharsets.UTF_8)
-        } catch (e: IOException) {
-            logger.error(e)
-            return
-        }
-        if (!content.contains("excludes=\"**/rebel.xml\"")) {
-            return
-        }
-        content = content.replace("excludes=\"**/rebel.xml\"", "")
-        try {
-            IOUtils.write(content, FileOutputStream(compilingXml), StandardCharsets.UTF_8)
-        } catch (e: IOException) {
-            logger.error(e)
+        with(ConfiguratorFactory.getInstance()) {
+            getSpringConfigurator()
+                .resetSpringGeneralSettings(project)
+            getJRebelConfigurator()
+                ?.fixBackOfficeJRebelSupport(project)
         }
     }
 

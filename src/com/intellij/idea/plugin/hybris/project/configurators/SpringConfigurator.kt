@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescript
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.project.Project
 
 interface SpringConfigurator {
 
@@ -37,5 +38,7 @@ interface SpringConfigurator {
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     )
+
+    fun resetSpringGeneralSettings(project: Project)
 
 }
