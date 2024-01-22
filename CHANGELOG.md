@@ -4,7 +4,7 @@
 - Pre-load project properties on project startup [#957](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/957)
 
 ### `Project Import` enhancements
-- Added possibility to exlude directories from the project scanning during the Project Refresh [#961](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/961)
+- Added possibility to exlude directories from the project scanning during the Project Refresh [#962](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/962)
 
 ### `Project Build` enhancements
 - Make code generation timeout configurable [#954](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/954)
