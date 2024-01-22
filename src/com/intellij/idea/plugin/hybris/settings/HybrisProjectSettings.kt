@@ -48,5 +48,6 @@ class HybrisProjectSettings : BaseState() {
     var unusedExtensions by stringSet()
     var modulesOnBlackList by stringSet()
     var availableExtensions by property(TreeMap<String, ExtensionDescriptor> { a, b -> a.compareTo(b, true) }) { it.isEmpty() }
+    var excludedFromScanning by stringSet()
 
 }

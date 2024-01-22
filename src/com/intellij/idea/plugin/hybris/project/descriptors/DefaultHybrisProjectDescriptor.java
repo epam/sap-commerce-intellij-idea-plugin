@@ -385,21 +385,23 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final var settings = HybrisApplicationSettingsComponent.getInstance().getState();
 
         final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = newModuleRootMap();
-        LOG.info("Scanning for modules");
-        this.findModuleRoots(moduleRootMap, false, rootDirectory, progressListenerProcessor);
+        final var excludedFromScanning = getExcludedFromScanning();
 
+        LOG.info("Scanning for modules");
+        findModuleRoots(moduleRootMap, excludedFromScanning, false, rootDirectory, progressListenerProcessor);
 
         if (externalExtensionsDirectory != null && !FileUtils.isFileUnder(externalExtensionsDirectory, rootDirectory)) {
             LOG.info("Scanning for external modules");
-            this.findModuleRoots(moduleRootMap, false, externalExtensionsDirectory, progressListenerProcessor);
+            findModuleRoots(moduleRootMap, excludedFromScanning, false, externalExtensionsDirectory, progressListenerProcessor);
         }
 
         if (hybrisDistributionDirectory != null && !FileUtils.isFileUnder(hybrisDistributionDirectory, rootDirectory)) {
             LOG.info("Scanning for hybris modules out of the project");
-            this.findModuleRoots(moduleRootMap, false, hybrisDistributionDirectory, progressListenerProcessor);
+            findModuleRoots(moduleRootMap, excludedFromScanning, false, hybrisDistributionDirectory, progressListenerProcessor);
         }
         final var moduleRootDirectories = processDirectoriesByTypePriority(
             moduleRootMap,
+            excludedFromScanning,
             isScanThroughExternalModule(),
             progressListenerProcessor
         );
@@ -447,6 +449,17 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         removeHmcSubModules(moduleDescriptors);
 
         foundModules.addAll(moduleDescriptors);
+    }
+
+    private Set<File> getExcludedFromScanning() {
+        if (project != null) {
+            return HybrisProjectSettingsComponent.getInstance(project).getState().getExcludedFromScanning().stream()
+                .map(it -> new File(rootDirectory, it))
+                .filter(File::exists)
+                .filter(File::isDirectory)
+                .collect(Collectors.toSet());
+        }
+        return Set.of();
     }
 
     private List<YAcceleratorAddonSubModuleDescriptor> processAddons(final List<ModuleDescriptor> moduleDescriptors) {
@@ -521,6 +534,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     // scan through eclipse module for hybris custom mudules in its subdirectories
     private Set<File> processDirectoriesByTypePriority(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
+        final Set<File> excludedFromScanning,
         final boolean scanThroughExternalModule,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
@@ -532,7 +546,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             LOG.info("Scanning for higher priority modules");
             for (final File nonHybrisDir : moduleRootMap.get(NON_HYBRIS)) {
                 final Map<DIRECTORY_TYPE, Set<File>> nonHybrisModuleRootMap = newModuleRootMap();
-                scanSubdirectories(nonHybrisModuleRootMap, true, nonHybrisDir.toPath(), progressListenerProcessor);
+                scanSubdirectories(nonHybrisModuleRootMap, excludedFromScanning, true, nonHybrisDir.toPath(), progressListenerProcessor);
                 final Set<File> hybrisModuleSet = nonHybrisModuleRootMap.get(HYBRIS);
                 if (hybrisModuleSet.isEmpty()) {
                     LOG.info("Confirmed module " + nonHybrisDir);
@@ -615,6 +629,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     private void findModuleRoots(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
+        final Set<File> excludedFromScanning,
         final boolean acceptOnlyHybrisModules,
         @NotNull final File rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
@@ -627,7 +642,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         if (rootProjectDirectory.isHidden()) {
-            LOG.debug("Skipping hidden folder: ", rootProjectDirectory);
+            LOG.debug("Skipping hidden directory: ", rootProjectDirectory);
+            return;
+        }
+        if (excludedFromScanning.contains(rootProjectDirectory)) {
+            LOG.debug("Skipping excluded directory: ", rootProjectDirectory);
             return;
         }
 
@@ -692,6 +711,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         scanSubdirectories(
             moduleRootMap,
+            excludedFromScanning,
             acceptOnlyHybrisModules,
             rootProjectDirectory.toPath(),
             progressListenerProcessor
@@ -701,7 +721,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     private void scanSubdirectories(
         @NotNull final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap,
-        final boolean acceptOnlyHybrisModules, @NotNull final Path rootProjectDirectory,
+        final Set<File> excludedFromScanning,
+        final boolean acceptOnlyHybrisModules,
+        @NotNull final Path rootProjectDirectory,
         @Nullable final TaskProgressProcessor<File> progressListenerProcessor
     ) throws InterruptedException, IOException {
         if (!Files.isDirectory(rootProjectDirectory)) {
@@ -722,7 +744,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         });
         if (files != null) {
             for (final var file : files) {
-                findModuleRoots(moduleRootMap, acceptOnlyHybrisModules, file.toFile(), progressListenerProcessor);
+                findModuleRoots(moduleRootMap, excludedFromScanning, acceptOnlyHybrisModules, file.toFile(), progressListenerProcessor);
             }
             files.close();
         }

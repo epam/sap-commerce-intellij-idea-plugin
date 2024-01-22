@@ -18,7 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -37,6 +39,13 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
 
         private val state = HybrisProjectSettingsComponent.getInstance(project).state
         private lateinit var generateCodeOnRebuildCheckBox: JCheckBox
+
+        private val excludedFromScanning = CRUDListPanel(
+            "hybris.import.settings.excludedFromScanning.directory.popup.add.title",
+            "hybris.import.settings.excludedFromScanning.directory.popup.add.text",
+            "hybris.import.settings.excludedFromScanning.directory.popup.edit.title",
+            "hybris.import.settings.excludedFromScanning.directory.popup.edit.text",
+        )
 
         override fun createPanel() = panel {
             group(message("hybris.settings.project.details.title")) {
@@ -115,6 +124,19 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                 row {
                     checkBox(message("hybris.project.import.importCustomAntBuildFiles"))
                         .bindSelected(state::importCustomAntBuildFiles)
+                }
+            }
+
+            group("Directories excluded from the project scanning", false) {
+                row {
+                    comment("Specify directories related to the project root, use '/' separator for sub-directories.")
+                }
+                row {
+                    cell(excludedFromScanning)
+                        .align(AlignX.FILL)
+                        .onApply { state.excludedFromScanning = excludedFromScanning.data.toMutableSet() }
+                        .onReset { excludedFromScanning.data = state.excludedFromScanning.toList() }
+                        .onIsModified { excludedFromScanning.data.equalsIgnoreOrder(state.excludedFromScanning.toList()).not() }
                 }
             }
         }
