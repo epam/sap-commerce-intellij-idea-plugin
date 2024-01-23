@@ -23,6 +23,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.io.FileUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,11 +67,11 @@ public final class FileUtils {
         return reversePath;
     }
 
-    public static File toFile(final String path) {
+    public static @Nullable File toFile(final String path) {
         return toFile(path, false);
     }
 
-    public static File toFile(String path, final boolean checkExists) {
+    public static @Nullable File toFile(String path, final boolean checkExists) {
         if (path == null) {
             return null;
         }

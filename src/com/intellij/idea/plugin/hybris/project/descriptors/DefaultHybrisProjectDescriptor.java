@@ -85,6 +85,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected final Set<ModuleDescriptor> alreadyOpenedModules = new HashSet<>();
     protected final Lock lock = new ReentrantLock();
     private final Set<File> vcs = new HashSet<>();
+    private final Set<String> excludedFromScanning = new HashSet<>();
     @Nullable
     protected Project project;
     @Nullable
@@ -385,7 +386,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         final var settings = HybrisApplicationSettingsComponent.getInstance().getState();
 
         final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = newModuleRootMap();
-        final var excludedFromScanning = getExcludedFromScanning();
+        final var excludedFromScanning = getExcludedFromScanningDirectories();
 
         LOG.info("Scanning for modules");
         findModuleRoots(moduleRootMap, excludedFromScanning, false, rootDirectory, progressListenerProcessor);
@@ -451,15 +452,24 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         foundModules.addAll(moduleDescriptors);
     }
 
-    private Set<File> getExcludedFromScanning() {
-        if (project != null) {
-            return HybrisProjectSettingsComponent.getInstance(project).getState().getExcludedFromScanning().stream()
-                .map(it -> new File(rootDirectory, it))
-                .filter(File::exists)
-                .filter(File::isDirectory)
-                .collect(Collectors.toSet());
-        }
-        return Set.of();
+    @Override
+    public void setExcludedFromScanning(final Collection<String> excludedFromScanning) {
+        this.excludedFromScanning.clear();
+        this.excludedFromScanning.addAll(excludedFromScanning);
+    }
+
+    @Override
+    public Set<String> getExcludedFromScanning() {
+        return Collections.unmodifiableSet(excludedFromScanning);
+    }
+
+    @Override
+    public Set<File> getExcludedFromScanningDirectories() {
+        return this.excludedFromScanning.stream()
+            .map(it -> new File(rootDirectory, it))
+            .filter(File::exists)
+            .filter(File::isDirectory)
+            .collect(Collectors.toSet());
     }
 
     private List<YAcceleratorAddonSubModuleDescriptor> processAddons(final List<ModuleDescriptor> moduleDescriptors) {

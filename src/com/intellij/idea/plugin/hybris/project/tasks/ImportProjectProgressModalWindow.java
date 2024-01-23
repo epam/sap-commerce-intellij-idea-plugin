@@ -145,16 +145,23 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final var appSettings = HybrisApplicationSettingsComponent.getInstance().getState();
 
         final var projectSettingsComponent = HybrisProjectSettingsComponent.getInstance(project);
-        final var hybrisProjectSettings = projectSettingsComponent.getState();
-        this.initializeHybrisProjectSettings(project, hybrisProjectSettings);
+        final var projectSettings = projectSettingsComponent.getState();
+
+        final var modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
+        if (modulesFilesDirectory != null && !modulesFilesDirectory.exists()) {
+            modulesFilesDirectory.mkdirs();
+        }
+
+        this.initializeHybrisProjectSettings(project, projectSettings);
         this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
         this.selectSdk(project);
 
         if (!refresh) {
-            this.saveCustomDirectoryLocation(project, hybrisProjectSettings);
+            this.saveCustomDirectoryLocation(project, projectSettings);
+            projectSettings.setExcludedFromScanning(hybrisProjectDescriptor.getExcludedFromScanning());
         }
 
-        this.saveImportedSettings(project, hybrisProjectSettings, appSettings, projectSettingsComponent);
+        this.saveImportedSettings(project, projectSettings, appSettings, projectSettingsComponent);
         this.disableWrapOnType(ImpexLanguage.INSTANCE);
 
         PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);

@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module
@@ -48,16 +47,13 @@ class JRebelConfigurator {
 
     private val logger = Logger.getInstance(JRebelConfigurator::class.java)
 
-    fun configureAfterImport(project: Project, moduleDescriptors: List<ModuleDescriptor>): List<() -> Unit> {
-        val projectSettings = HybrisProjectSettingsComponent.getInstance(project).state
-        return moduleDescriptors
-            .filter {
-                it is YCustomRegularModuleDescriptor
-                    || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
-            }
-            .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
-            .mapNotNull { configure(it, projectSettings) }
-    }
+    fun configureAfterImport(project: Project, moduleDescriptors: List<ModuleDescriptor>): List<() -> Unit> = moduleDescriptors
+        .filter {
+            it is YCustomRegularModuleDescriptor
+                || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
+        }
+        .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
+        .mapNotNull { configure(it) }
 
     fun fixBackOfficeJRebelSupport(project: Project) {
         val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
@@ -86,7 +82,7 @@ class JRebelConfigurator {
         }
     }
 
-    private fun configure(javaModule: Module, projectSettings: HybrisProjectSettings): (() -> Unit)? {
+    private fun configure(javaModule: Module): (() -> Unit)? {
         val facet = JRebelFacet.getInstance(javaModule)
 
         if (facet != null) return null

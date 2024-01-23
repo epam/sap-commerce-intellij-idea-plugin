@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -147,4 +148,10 @@ public interface HybrisProjectDescriptor {
     boolean isWithStandardProvidedSources();
 
     void setWithStandardProvidedSources(boolean withStandardProvidedSources);
+
+    void setExcludedFromScanning(Collection<String> excludedFromScanning);
+
+    Set<String> getExcludedFromScanning();
+
+    Set<File> getExcludedFromScanningDirectories();
 }
