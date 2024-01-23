@@ -51,7 +51,7 @@ abstract class AbstractHybrisFileToolbarInstaller(
         rightToolbar.targetComponent = editor.contentComponent
         headerComponent.add(leftToolbar.component, "Center")
         headerComponent.add(rightToolbar.component, "East")
-        leftToolbar.updateActionsImmediately()
+        leftToolbar.updateActionsAsync()
         editor.permanentHeaderComponent = headerComponent
         editor.headerComponent = headerComponent
 

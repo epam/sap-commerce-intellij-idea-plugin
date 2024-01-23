@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess.actions
 
 import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.uml.core.actions.ShowDiagram
 
@@ -35,5 +34,4 @@ class ShowBusinessProcessDiagramAction : ShowDiagram() {
         e.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(e)
     }
 
-    override fun getForcedProvider(e: AnActionEvent) = BpDiagramProvider()
 }

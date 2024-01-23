@@ -39,7 +39,6 @@ import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.util.Objects;
 
-import static com.intellij.openapi.ui.DialogWrapper.IdeModalityType.PROJECT;
 
 public class RemoteSolrConnectionDialog extends DialogWrapper {
 
@@ -71,7 +70,7 @@ public class RemoteSolrConnectionDialog extends DialogWrapper {
             @Nullable final Component parentComponent,
             @NotNull final HybrisRemoteConnectionSettings settings
     ) {
-        super(project, parentComponent, false, PROJECT);
+        super(project, parentComponent, false, IdeModalityType.IDE);
         myProject = project;
         mySettings = settings;
 

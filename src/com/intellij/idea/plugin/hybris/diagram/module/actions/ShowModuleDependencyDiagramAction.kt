@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.diagram.module.actions
 
 import com.intellij.idea.plugin.hybris.actions.ActionUtils
-import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramProvider
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.uml.core.actions.ShowDiagram
 
@@ -27,7 +26,5 @@ class ShowModuleDependencyDiagramAction : ShowDiagram() {
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(e)
     }
-
-    override fun getForcedProvider(e: AnActionEvent) = ModuleDepDiagramProvider()
 
 }
