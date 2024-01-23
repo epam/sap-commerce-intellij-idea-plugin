@@ -1,7 +1,7 @@
 ## [2024.0.0]
 
 ### Other
-- IntelliJ IDEA API compatibility [#965](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/965)
+- IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966)
 
 ## [2023.3.4]
 
