@@ -25,11 +25,14 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.facet.YFacet
+import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
 import java.io.File
@@ -76,17 +79,62 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             .filter { isNodeVisible(parent, it) }
             .toMutableList()
 
-        if (parent is JunkProjectViewNode) {
+        if (parent is JunkProjectViewNode || parent is ExternalProjectViewNode) {
             return if (isCompactEmptyMiddleFoldersEnabled(settings)) compactEmptyMiddlePackages(parent, newChildren)
             else newChildren
         }
 
         if (parent is ExternalLibrariesNode) return modifyExternalLibrariesNodes(newChildren)
-
-        val childrenWithProcessedJunkFiles = processJunkFiles(newChildren, settings)
+        val externalModules = processExternalModules(parent, newChildren, settings)
+        val childrenWithProcessedJunkFiles = processJunkFiles(externalModules, settings)
 
         return if (isCompactEmptyMiddleFoldersEnabled(settings)) compactEmptyMiddlePackages(parent, childrenWithProcessedJunkFiles)
         else childrenWithProcessedJunkFiles
+    }
+
+    private fun processExternalModules(
+        parent: AbstractTreeNode<*>,
+        children: Collection<AbstractTreeNode<*>>,
+        settings: ViewSettings?
+    ): Collection<AbstractTreeNode<*>> {
+        if (!hybrisApplicationSettings.groupExternalModules || isExternalModuleParent(parent)) return children
+
+        val otherNodes = mutableListOf<AbstractTreeNode<*>>()
+        val treeNodes = mutableListOf<AbstractTreeNode<*>>()
+
+        val projectService = ApplicationManager.getApplication().getService(HybrisProjectService::class.java)
+        for (child in children) {
+            if (child is PsiDirectoryNode) {
+                val virtualFile = child.virtualFile
+                    ?: continue
+                val file = VfsUtil.virtualToIoFile(virtualFile)
+
+                if (!projectService.isHybrisModule(file)
+                    && !projectService.isPlatformModule(file)
+                    && !projectService.isPlatformExtModule(file)
+                    && (projectService.isGradleModule(file)
+                        || projectService.isEclipseModule(file)
+                        || projectService.isGradleKtsModule(file)
+                        || projectService.isMavenModule(file))
+                ) {
+                    otherNodes.add(child)
+                } else {
+                    treeNodes.add(child)
+                }
+            } else {
+                treeNodes.add(child)
+            }
+        }
+        if (otherNodes.isNotEmpty()) {
+            treeNodes.add(ExternalProjectViewNode(project, otherNodes, settings))
+        }
+        return treeNodes
+    }
+
+    private fun isExternalModuleParent(child: AbstractTreeNode<*>): Boolean {
+        return if (child is ExternalProjectViewNode) true
+        else if (child.parent != null) isExternalModuleParent(child.parent)
+        else false
     }
 
     private fun replaceModuleGroupNodes(children: MutableCollection<AbstractTreeNode<*>>) {
@@ -230,6 +278,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
     ): AbstractTreeNode<*> {
         if (children.isEmpty()) return parent
         if (parent is JunkProjectViewNode) return parent
+        if (parent is ExternalProjectViewNode) return parent
         if (parent !is PsiDirectoryNode) return parent
 
         val onlyChild = children

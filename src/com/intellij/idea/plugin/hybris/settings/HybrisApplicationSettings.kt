@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 data class HybrisApplicationSettings(
 
     var groupModules: Boolean = true,
+    var groupExternalModules: Boolean = true,
     var hideEmptyMiddleFolders: Boolean = true,
     var defaultPlatformInReadOnly: Boolean = true,
     var followSymlink: Boolean = true,
@@ -40,6 +41,7 @@ data class HybrisApplicationSettings(
     var groupOtherCustom: String = "Custom/Unused",
     var groupPlatform: String = "Platform",
     var groupCCv2: String = "CCv2",
+    var groupNameExternalModules: String = "External Modules",
     var externalDbDriversDirectory: String = "",
     var sourceCodeDirectory: String = "",
     var junkDirectoryList: List<String> = HybrisConstants.DEFAULT_JUNK_FILE_NAMES,

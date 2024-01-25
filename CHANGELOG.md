@@ -1,5 +1,8 @@
 ## [2024.0.0]
 
+### Features
+- Group all non-hybris gradle, ant, eclipse and maven modules in project view panel[#967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/967)
+
 ### `Remote Connection` enhancements
 - Redesign HAC connection settings and rely on `PasswordSafe` to store passwords [#968](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/968)
 
