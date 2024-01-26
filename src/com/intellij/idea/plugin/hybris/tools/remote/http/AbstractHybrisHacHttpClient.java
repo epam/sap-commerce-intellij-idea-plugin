@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -52,6 +51,7 @@ import org.jsoup.Connection;
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
+import org.jsoup.helper.ValidationException;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
@@ -100,7 +100,7 @@ public abstract class AbstractHybrisHacHttpClient {
     private final Map<HybrisRemoteConnectionSettings, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
 
     public String login(@NotNull final Project project, @NotNull final HybrisRemoteConnectionSettings settings) {
-        final var hostHacURL = getHostHacURL(project, settings);
+        final var hostHacURL = settings.getGeneratedURL();
         retrieveCookies(hostHacURL, project, settings);
         final var sessionId = Optional.ofNullable(cookiesPerSettings.get(settings))
             .map(it -> it.get(COOKIE_JSESSIONID))
@@ -146,17 +146,6 @@ public abstract class AbstractHybrisHacHttpClient {
         @NotNull final Project project,
         @NotNull final String actionUrl,
         @NotNull final List<BasicNameValuePair> params,
-        final boolean canReLoginIfNeeded
-    ) {
-        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
-        return post(project, actionUrl, params, canReLoginIfNeeded, DEFAULT_HAC_TIMEOUT, settings);
-    }
-
-    @NotNull
-    public final HttpResponse post(
-        @NotNull final Project project,
-        @NotNull final String actionUrl,
-        @NotNull final List<BasicNameValuePair> params,
         final boolean canReLoginIfNeeded,
         final long timeout,
         final HybrisRemoteConnectionSettings settings
@@ -170,7 +159,7 @@ public abstract class AbstractHybrisHacHttpClient {
         }
         cookies = cookiesPerSettings.get(settings);
         final var sessionId = cookies.get(COOKIE_JSESSIONID);
-        final String csrfToken = getCsrfToken(getHostHacURL(project), sessionId, project, settings);
+        final String csrfToken = getCsrfToken(settings.getGeneratedURL(), sessionId, project, settings);
         if (csrfToken == null) {
             cookiesPerSettings.remove(settings);
 
@@ -229,19 +218,11 @@ public abstract class AbstractHybrisHacHttpClient {
         return new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, HttpStatus.SC_SERVICE_UNAVAILABLE, reasonPhrase));
     }
 
-    public String getHostHacURL(final Project project) {
-        return CommonIdeaService.getInstance().getActiveHacUrl(project);
-    }
-
     public String getSslProtocol(
         final Project project,
         final @Nullable HybrisRemoteConnectionSettings settings
     ) {
         return CommonIdeaService.getInstance().getActiveSslProtocol(project, settings);
-    }
-
-    public String getHostHacURL(final Project project, final HybrisRemoteConnectionSettings settings) {
-        return CommonIdeaService.getInstance().getHostHacUrl(project, settings);
     }
 
     protected CloseableHttpClient createAllowAllClient(final long timeout) {
@@ -296,7 +277,7 @@ public abstract class AbstractHybrisHacHttpClient {
             return connect(hacURL, sslProtocol).method(Method.GET).execute();
         } catch (ConnectException ce) {
             return null;
-        } catch (NoSuchAlgorithmException | IOException | KeyManagementException e) {
+        } catch (NoSuchAlgorithmException | IOException | KeyManagementException | ValidationException e) {
             LOG.warn(e.getMessage(), e);
             return null;
         }

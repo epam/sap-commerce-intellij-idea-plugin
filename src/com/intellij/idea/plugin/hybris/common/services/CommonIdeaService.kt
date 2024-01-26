@@ -68,34 +68,17 @@ class CommonIdeaService {
         .foundModules
         .firstNotNullOfOrNull { it as? PlatformModuleDescriptor }
 
-    fun getActiveHacUrl(project: Project) = getUrl(getActiveHacRemoteConnectionSettings(project))
+    fun getActiveHacUrl(project: Project) = getActiveHacRemoteConnectionSettings(project).generatedURL
 
     fun getActiveSslProtocol(project: Project, settings: HybrisRemoteConnectionSettings?) = getProjectSettings(project, settings)
         ?.sslProtocol
         ?: HybrisConstants.DEFAULT_SSL_PROTOCOL
-
-    fun getHostHacUrl(project: Project, settings: HybrisRemoteConnectionSettings?) = getProjectSettings(project, settings)
-        .let(::getUrl)
 
     private fun getProjectSettings(project: Project, settings: HybrisRemoteConnectionSettings?) = settings
         ?: getActiveHacRemoteConnectionSettings(project)
 
     private fun getActiveHacRemoteConnectionSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
         .getActiveHacRemoteConnectionSettings(project)
-
-    fun getSolrUrl(project: Project, settings: HybrisRemoteConnectionSettings?): String {
-        val currentSettings = settings ?: HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-            .getActiveSolrRemoteConnectionSettings(project)
-
-        return buildString {
-            if (currentSettings.isSsl) append(HybrisConstants.HTTPS_PROTOCOL) else append(HybrisConstants.HTTP_PROTOCOL)
-            append(currentSettings.hostIP)
-            append(":")
-            append(currentSettings.port)
-            append("/")
-            append(currentSettings.solrWebroot)
-        }
-    }
 
     fun fixRemoteConnectionSettings(project: Project) {
         val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
@@ -120,41 +103,18 @@ class CommonIdeaService {
 
     private fun prepareSslRemoteConnectionSettings(connectionSettings: HybrisRemoteConnectionSettings) {
         connectionSettings.isSsl = connectionSettings.generatedURL
-            ?.startsWith(HybrisConstants.HTTPS_PROTOCOL)
-            ?: false
+            .startsWith(HybrisConstants.HTTPS_PROTOCOL)
 
         cleanUpRemoteConnectionSettingsHostIp(connectionSettings)
     }
 
     private fun cleanUpRemoteConnectionSettingsHostIp(connectionSettings: HybrisRemoteConnectionSettings) {
         connectionSettings.hostIP = connectionSettings.hostIP
-            ?.replace(regex, "")
+            .replace(regex, "")
     }
 
     private fun matchModuleName(pattern: String, moduleNames: Collection<String>) = moduleNames
         .any { it.matches(Regex("\\Q$pattern\\E".replace("*", "\\E.*\\Q"))) }
-
-    private fun getUrl(settings: HybrisRemoteConnectionSettings) = buildString {
-        if (settings.isSsl) append(HybrisConstants.HTTPS_PROTOCOL) else append(HybrisConstants.HTTP_PROTOCOL)
-        append(settings.hostIP)
-
-        settings.port
-            ?.takeIf { it.isNotBlank() }
-            ?.let {
-                append(HybrisConstants.URL_PORT_DELIMITER)
-                append(settings.port)
-            }
-
-        settings.hacWebroot
-            ?.takeUnless { it.isBlank() }
-            ?.let {
-                append('/')
-                append(
-                    it.trimStart(' ', '/')
-                        .trimEnd(' ', '/')
-                )
-            }
-    }
 
     companion object {
         private val regex = "https?://".toRegex()

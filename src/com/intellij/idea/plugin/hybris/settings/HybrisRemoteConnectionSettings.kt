@@ -18,32 +18,65 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
-import java.io.Serial
-import java.io.Serializable
+import com.intellij.credentialStore.CredentialAttributes
+import com.intellij.ide.passwordSafe.PasswordSafe
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
+import com.intellij.util.xmlb.Accessor
+import com.intellij.util.xmlb.SerializationFilter
+import java.util.*
 
-class HybrisRemoteConnectionSettings : Serializable {
+class HybrisRemoteConnectionSettings : SerializationFilter {
 
-    var isSsl: Boolean = false
-    var uuid: String? = null
+    var shared: Boolean = false
+    var isSsl: Boolean = true
+    var uuid: String = UUID.randomUUID().toString()
     var displayName: String? = null
-    var hostIP: String? = null
+    var hostIP: String = HybrisConstants.DEFAULT_HOST_URL
     var port: String? = null
     var adminLogin: String? = null
-    var adminPassword: String? = null
+    var adminPassword: String?
+        set(value) {
+            val credentialAttributes = CredentialAttributes("SAP CX - SOLR - $uuid", hacLogin)
+            PasswordSafe.instance.setPassword(credentialAttributes, value)
+        }
+        get() {
+            val credentialAttributes = CredentialAttributes("SAP CX - HAC - $uuid", hacLogin)
+            return PasswordSafe.instance.getPassword(credentialAttributes)
+                ?: "nimda"
+        }
     var sslProtocol: String? = null
-    var generatedURL: String? = null
-    var solrWebroot: String? = null
-    var hacWebroot: String? = null
-    var hacLogin: String? = null
-    var hacPassword: String? = null
+    var solrWebroot: String = "solr"
+    var hacWebroot: String = ""
+    var hacLogin: String = "admin"
+    var hacPassword: String
+        set(value) {
+            val credentialAttributes = CredentialAttributes("SAP CX - HAC - $uuid", hacLogin)
+            PasswordSafe.instance.setPassword(credentialAttributes, value)
+        }
+        get() {
+            val credentialAttributes = CredentialAttributes("SAP CX - HAC - $uuid", hacLogin)
+            return PasswordSafe.instance.getPassword(credentialAttributes)
+                ?: "nimda"
+        }
     var type: Type = Type.Hybris
-
+    val generatedURL: String
+        get() {
+            return when (type) {
+                Type.Hybris -> RemoteConnectionUtil.generateUrl(isSsl, hostIP, port, hacWebroot)
+                Type.SOLR -> RemoteConnectionUtil.generateUrl(isSsl, hostIP, port, solrWebroot)
+            }
+        }
 
     override fun toString() = displayName
         ?.takeIf { it.isNotBlank() }
         ?: generatedURL
-            ?.takeIf { it.isNotBlank() }
+            .takeIf { it.isNotBlank() }
         ?: super.toString()
+
+    override fun accepts(accessor: Accessor, bean: Any) = accessor.name != "adminPassword"
+        && accessor.name != "hacPassword"
+        && accessor.name != "shared"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -54,14 +87,7 @@ class HybrisRemoteConnectionSettings : Serializable {
         return true
     }
 
-    override fun hashCode(): Int {
-        return uuid?.hashCode() ?: 0
-    }
-
-    companion object {
-        @Serial
-        private val serialVersionUID: Long = -5898943547737648391L
-    }
+    override fun hashCode() = uuid.hashCode()
 
     enum class Type {
         Hybris, SOLR

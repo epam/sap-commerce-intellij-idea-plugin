@@ -106,7 +106,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 
     ) {
         final List<BasicNameValuePair> params = createParamsList(requestParams);
-        final String actionUrl = getHostHacURL(project) + urlSuffix;
+        final String actionUrl = settings.getGeneratedURL() + urlSuffix;
         return post(project, actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings);
     }
 
@@ -174,7 +174,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 //            new BasicNameValuePair("locale", "en")
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
-        final String actionUrl = getHostHacURL(project) + "/console/flexsearch/execute";
+        final String actionUrl = settings.getGeneratedURL() + "/console/flexsearch/execute";
 
         final HttpResponse response = post(project, actionUrl, params, true, DEFAULT_HAC_TIMEOUT, settings);
         final StatusLine statusLine = response.getStatusLine();
@@ -223,7 +223,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             new BasicNameValuePair("script", content)
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
-        final String actionUrl = getHostHacURL(project) + "/console/scripting/execute";
+        final String actionUrl = settings.getGeneratedURL() + "/console/scripting/execute";
 
         final HttpResponse response = post(project, actionUrl, params, true, timeout, settings);
         final StatusLine statusLine = response.getStatusLine();

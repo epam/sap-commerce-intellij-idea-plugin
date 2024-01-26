@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow;
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
@@ -150,9 +149,7 @@ public class RemoteSolrConnectionDialog extends DialogWrapper {
         mySettings.setSolrWebroot(solrWebrootTextField.getText());
         mySettings.setAdminLogin(loginTextField.getText());
         mySettings.setAdminPassword(new String(passwordField.getPassword()));
-        final String previewUrl = CommonIdeaService.getInstance().getSolrUrl(myProject, mySettings);
-        projectUrlPreviewValueLabel.setText(previewUrl);
-        mySettings.setGeneratedURL(previewUrl);
+        projectUrlPreviewValueLabel.setText(mySettings.getGeneratedURL());
     }
 
     private void validateParams() {

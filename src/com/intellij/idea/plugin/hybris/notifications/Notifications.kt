@@ -87,8 +87,6 @@ class Notifications private constructor(type: NotificationType, title: String, c
         }
 
         @JvmStatic
-        fun create(type: NotificationType, title: String, content: String): Notifications {
-            return Notifications(type, title, content)
-        }
+        fun create(type: NotificationType, title: String, content: String) = Notifications(type, title, content)
     }
 }

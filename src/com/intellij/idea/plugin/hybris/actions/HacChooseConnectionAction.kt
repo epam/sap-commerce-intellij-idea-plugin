@@ -27,7 +27,6 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.impl.ActionButton
-import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.ListSeparator
@@ -67,7 +66,7 @@ class HacChooseConnectionAction : ActionGroup() {
         presentation.description = createHTML().div {
             p { +"Switch active connection" }
             hacSettings.generatedURL
-                ?.let { p { +it } }
+                .let { p { +it } }
         }
     }
 
@@ -150,24 +149,19 @@ class HacChooseConnectionAction : ActionGroup() {
         private val connectionItems = items
             .filterIsInstance<ConnectionItem>()
 
-        override fun onChosen(selectedValue: ListItem?, finalChoice: Boolean): PopupStep<*>? {
-            invokeLater {
-                when (selectedValue) {
-                    is CreateConnectionItem -> consumeConnectionSettings(devSettings.getDefaultHacRemoteConnectionSettings(project))
-                    is EditConnectionItem -> consumeConnectionSettings(devSettings.getActiveHacRemoteConnectionSettings(project))
-                    is ConnectionSettingsItem -> ShowSettingsUtil.getInstance()
-                        .showSettingsDialog(project, HybrisProjectRemoteInstancesSettingsConfigurableProvider.SettingsConfigurable::class.java)
+        override fun onChosen(selectedValue: ListItem?, finalChoice: Boolean): PopupStep<*>? = super.doFinalStep() {
+            when (selectedValue) {
+                is CreateConnectionItem -> consumeConnectionSettings(devSettings.getDefaultHacRemoteConnectionSettings(project))
+                is EditConnectionItem -> consumeConnectionSettings(devSettings.getActiveHacRemoteConnectionSettings(project))
+                is ConnectionSettingsItem -> ShowSettingsUtil.getInstance()
+                    .showSettingsDialog(project, HybrisProjectRemoteInstancesSettingsConfigurableProvider.SettingsConfigurable::class.java)
 
-                    is ConnectionItem -> devSettings.setActiveHacRemoteConnectionSettings(selectedValue.settings)
-                }
+                is ConnectionItem -> devSettings.setActiveHacRemoteConnectionSettings(selectedValue.settings)
             }
-
-            return FINAL_CHOICE
         }
 
         private fun consumeConnectionSettings(connection: HybrisRemoteConnectionSettings) {
-            val dialog = RemoteHacConnectionDialog(project, owner, connection)
-            if (dialog.showAndGet()) {
+            if (RemoteHacConnectionDialog(project, owner, connection).showAndGet()) {
                 val connections = HashSet(devSettings.hacRemoteConnectionSettings)
                 connections.add(connection)
                 devSettings.saveRemoteConnectionSettingsList(HybrisRemoteConnectionSettings.Type.Hybris, connections.toList())

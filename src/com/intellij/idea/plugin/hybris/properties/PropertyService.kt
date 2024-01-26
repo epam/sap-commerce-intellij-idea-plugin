@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.Module
@@ -114,28 +115,33 @@ class PropertyService(val project: Project) {
 
     fun findProperty(query: String): String? = findAllProperties()[query]
 
-    fun findAutoCompleteProperties(query: String): List<IProperty> = findAllIProperties()
-        .filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
+    fun findAutoCompleteProperties(query: String): List<IProperty> = ApplicationManager.getApplication()
+        .runReadAction<List<IProperty>> {
+            findAllIProperties()
+                .filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
+        }
 
-    fun findMacroProperty(query: String): IProperty? {
-        val filteredProps = findAllIProperties()
-            .takeIf { it.isNotEmpty() }
-            ?.filter { it.key != null && query.contains(it.key!!) || query.isBlank() }
-            ?.takeIf { it.isNotEmpty() }
-            ?: return null
+    fun findMacroProperty(query: String): IProperty? = ApplicationManager.getApplication()
+        .runReadAction<IProperty?> {
+            findAllIProperties()
+                .takeIf { it.isNotEmpty() }
+                ?.filter { it.key != null && query.contains(it.key!!) || query.isBlank() }
+                ?.takeIf { it.isNotEmpty() }
+                ?.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
+        }
 
-        return filteredProps.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
-    }
-
-    fun findAllProperties(): LinkedHashMap<String, String> = findAllIProperties()
-        .filter { it.value != null && it.key != null }
-        .associateTo(LinkedHashMap()) { it.key!! to it.value!! }
-        .let { properties ->
-            addEnvironmentProperties(properties)
-            properties
-                .filter { it.value.contains(nestedPropertyPrefix) }
-                .forEach { replacePlaceholder(properties, it.key, HashSet<String>()) }
-            return properties
+    fun findAllProperties(): Map<String, String> = ApplicationManager.getApplication()
+        .runReadAction<Map<String, String>> {
+            findAllIProperties()
+                .filter { it.value != null && it.key != null }
+                .associateTo(LinkedHashMap()) { it.key!! to it.value!! }
+                .let { properties ->
+                    addEnvironmentProperties(properties)
+                    properties
+                        .filter { it.value.contains(nestedPropertyPrefix) }
+                        .forEach { replacePlaceholder(properties, it.key, HashSet<String>()) }
+                    return@let properties
+                }
         }
 
     fun initCache() = ReadAction

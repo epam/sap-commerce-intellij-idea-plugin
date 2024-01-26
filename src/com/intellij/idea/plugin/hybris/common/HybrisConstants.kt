@@ -183,6 +183,7 @@ object HybrisConstants {
     const val DEBUG_PORT = "8000"
 
     const val PROPERTY_HAC_WEBROOT = "hac.webroot"
+    const val PROPERTY_ADMIN_INITIAL_PASSWORD = "initialpassword.admin"
     const val PROPERTY_TOMCAT_SSL_PORT = "tomcat.ssl.port"
     const val PROPERTY_SOLR_DEFAULT_PORT = "solrserver.instances.default.port"
     const val PROPERTY_SOLR_DEFAULT_USER = "solrserver.instances.default.user"

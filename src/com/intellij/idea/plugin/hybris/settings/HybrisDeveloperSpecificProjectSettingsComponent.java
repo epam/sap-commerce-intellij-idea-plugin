@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.settings;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.properties.PropertyService;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings.Type;
 import com.intellij.openapi.components.*;
@@ -115,15 +114,11 @@ public final class HybrisDeveloperSpecificProjectSettingsComponent implements Pe
     public HybrisRemoteConnectionSettings getDefaultHacRemoteConnectionSettings(final Project project) {
         final HybrisRemoteConnectionSettings item = new HybrisRemoteConnectionSettings();
         item.setType(HybrisRemoteConnectionSettings.Type.Hybris);
-        item.setUuid(UUID.randomUUID().toString());
-        item.setHostIP(HybrisConstants.DEFAULT_HOST_URL);
         item.setPort(getPropertyOrDefault(project, HybrisConstants.PROPERTY_TOMCAT_SSL_PORT, "9002"));
         item.setHacWebroot(getPropertyOrDefault(project, HybrisConstants.PROPERTY_HAC_WEBROOT, ""));
         item.setHacLogin("admin");
-        item.setHacPassword("nimda");
-        item.setSsl(true);
+        item.setHacPassword(getPropertyOrDefault(project, HybrisConstants.PROPERTY_ADMIN_INITIAL_PASSWORD, "nimda"));
         item.setSslProtocol(HybrisConstants.DEFAULT_SSL_PROTOCOL);
-        item.setGeneratedURL(CommonIdeaService.getInstance().getHostHacUrl(project, item));
         return item;
     }
 
@@ -131,15 +126,10 @@ public final class HybrisDeveloperSpecificProjectSettingsComponent implements Pe
     public HybrisRemoteConnectionSettings getDefaultSolrRemoteConnectionSettings(final Project project) {
         final HybrisRemoteConnectionSettings item = new HybrisRemoteConnectionSettings();
         item.setType(HybrisRemoteConnectionSettings.Type.SOLR);
-        item.setUuid(UUID.randomUUID().toString());
-        item.setHostIP(HybrisConstants.DEFAULT_HOST_URL);
-
         item.setPort(getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PORT, "8983"));
         item.setSolrWebroot("solr");
         item.setAdminLogin(getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver"));
         item.setAdminPassword(getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123"));
-        item.setSsl(true);
-        item.setGeneratedURL(CommonIdeaService.getInstance().getSolrUrl(project, item));
         return item;
     }
 
