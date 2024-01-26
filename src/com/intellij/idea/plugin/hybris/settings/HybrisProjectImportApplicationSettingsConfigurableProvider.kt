@@ -105,6 +105,7 @@ class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableP
                 row {
                     externalModulesCheckBox = checkBox("Group external modules")
                         .bindSelected(state::groupExternalModules)
+                        .comment(message("hybris.project.view.external.module.tooltip"))
                         .component
 
                 }
