@@ -98,7 +98,6 @@ class HybrisRemoteConnectionSettings : BaseState(), Comparable<HybrisRemoteConne
     override fun hashCode(): Int {
         var result = super.hashCode()
         result = 31 * result + (uuid?.hashCode() ?: 0)
-        result = 31 * result + generatedURL.hashCode()
         return result
     }
 
