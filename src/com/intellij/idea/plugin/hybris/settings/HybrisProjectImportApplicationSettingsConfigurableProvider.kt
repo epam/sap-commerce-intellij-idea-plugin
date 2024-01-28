@@ -115,6 +115,7 @@ class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableP
                         textField()
                             .label("External modules:")
                             .bindText(state::groupNameExternalModules)
+                            .addValidationRule("Name cannot be blank.") { it.text.isBlank() }
                             .enabledIf(externalModulesCheckBox.selected)
                     }
                 }

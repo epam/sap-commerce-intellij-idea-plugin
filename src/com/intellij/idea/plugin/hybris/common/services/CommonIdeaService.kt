@@ -21,8 +21,9 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.components.Service
@@ -68,49 +69,28 @@ class CommonIdeaService {
         .foundModules
         .firstNotNullOfOrNull { it as? PlatformModuleDescriptor }
 
-    fun getActiveHacUrl(project: Project) = getActiveHacRemoteConnectionSettings(project).generatedURL
-
-    fun getActiveSslProtocol(project: Project, settings: HybrisRemoteConnectionSettings?) = getProjectSettings(project, settings)
-        ?.sslProtocol
-        ?: HybrisConstants.DEFAULT_SSL_PROTOCOL
-
-    private fun getProjectSettings(project: Project, settings: HybrisRemoteConnectionSettings?) = settings
-        ?: getActiveHacRemoteConnectionSettings(project)
-
-    private fun getActiveHacRemoteConnectionSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-        .getActiveHacRemoteConnectionSettings(project)
-
     fun fixRemoteConnectionSettings(project: Project) {
-        val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project)
-        val state = settings.state
-        val connectionList = state.remoteConnectionSettingsList
-        connectionList.forEach {
-            prepareSslRemoteConnectionSettings(it)
-        }
+        listOf(
+            RemoteConnectionType.Hybris,
+            RemoteConnectionType.SOLR
+        ).forEach {
+            val remoteConnections = RemoteConnectionUtil.getRemoteConnections(project, it)
 
-        if (settings.hacRemoteConnectionSettings.isEmpty()) {
-            val newSettings = settings.getDefaultHacRemoteConnectionSettings(project)
-            connectionList.add(newSettings)
-            state.activeRemoteConnectionID = newSettings.uuid
-        }
-
-        if (settings.solrRemoteConnectionSettings.isEmpty()) {
-            val newSettings = settings.getDefaultSolrRemoteConnectionSettings(project)
-            connectionList.add(newSettings)
-            state.activeSolrConnectionID = newSettings.uuid
+            if (remoteConnections.isEmpty()) {
+                val settings = RemoteConnectionUtil.getDefaultRemoteConnectionSettings(project, it)
+                RemoteConnectionUtil.addRemoteConnection(project, settings)
+                RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, settings)
+            } else {
+                fixSslRemoteConnectionSettings(remoteConnections)
+            }
         }
     }
 
-    private fun prepareSslRemoteConnectionSettings(connectionSettings: HybrisRemoteConnectionSettings) {
-        connectionSettings.isSsl = connectionSettings.generatedURL
-            .startsWith(HybrisConstants.HTTPS_PROTOCOL)
-
-        cleanUpRemoteConnectionSettingsHostIp(connectionSettings)
-    }
-
-    private fun cleanUpRemoteConnectionSettingsHostIp(connectionSettings: HybrisRemoteConnectionSettings) {
-        connectionSettings.hostIP = connectionSettings.hostIP
-            .replace(regex, "")
+    private fun fixSslRemoteConnectionSettings(connectionSettings: Collection<HybrisRemoteConnectionSettings>) {
+        connectionSettings.forEach {
+            it.isSsl = it.generatedURL.startsWith(HybrisConstants.HTTPS_PROTOCOL)
+            it.hostIP = it.hostIP?.replace(regex, "")
+        }
     }
 
     private fun matchModuleName(pattern: String, moduleNames: Collection<String>) = moduleNames

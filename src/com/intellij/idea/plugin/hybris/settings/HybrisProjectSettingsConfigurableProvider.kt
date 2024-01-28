@@ -83,7 +83,7 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                         .bindSelected(state::generateCodeOnRebuild)
                         .component
                 }
-                row("Code generation timeout (in seconds)") {
+                row("Code generation timeout (in seconds):") {
                     spinner(1..10000, 1)
                         .bindIntValue(state::generateCodeTimeoutSeconds)
                         .enabledIf(generateCodeOnRebuildCheckBox.selected)

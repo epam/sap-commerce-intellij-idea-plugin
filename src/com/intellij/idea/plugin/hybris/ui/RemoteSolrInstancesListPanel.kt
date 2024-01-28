@@ -18,13 +18,18 @@
 package com.intellij.idea.plugin.hybris.ui
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteSolrConnectionDialog
 import com.intellij.openapi.project.Project
 import java.io.Serial
+import javax.swing.event.ListDataEvent
 
-class RemoteSolrInstancesListPanel(project: Project) : RemoteInstancesListPanel(project) {
+class RemoteSolrInstancesListPanel(
+    project: Project,
+    private val onDataChanged: (ListDataEvent, Set<HybrisRemoteConnectionSettings>) -> Unit = { _, _ -> }
+) : RemoteInstancesListPanel(project, RemoteConnectionType.SOLR, HybrisIcons.CONSOLE_SOLR) {
 
     override fun editSelectedItem(item: HybrisRemoteConnectionSettings): HybrisRemoteConnectionSettings? {
         val ok = RemoteSolrConnectionDialog(myProject, this, item).showAndGet()
@@ -32,19 +37,18 @@ class RemoteSolrInstancesListPanel(project: Project) : RemoteInstancesListPanel(
         else null
     }
 
-    public override fun getCellIcon() = HybrisIcons.CONSOLE_SOLR
-
-    public override fun saveSettings() {
-        HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).saveRemoteConnectionSettingsList(HybrisRemoteConnectionSettings.Type.SOLR, getData())
-    }
-
     public override fun addItem() {
-        val item = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getDefaultSolrRemoteConnectionSettings(myProject)
+        val item = RemoteConnectionUtil.getDefaultRemoteConnectionSettings(myProject, RemoteConnectionType.SOLR)
         val dialog = RemoteSolrConnectionDialog(myProject, this, item)
         if (dialog.showAndGet()) {
             addElement(item)
         }
     }
+
+    override fun onDataChanged(
+        e: ListDataEvent,
+        data: Set<HybrisRemoteConnectionSettings>
+    ) = onDataChanged.invoke(e, data)
 
     companion object {
         @Serial

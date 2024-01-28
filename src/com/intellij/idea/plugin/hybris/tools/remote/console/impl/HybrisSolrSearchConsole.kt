@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
@@ -41,7 +41,6 @@ import com.intellij.util.asSafely
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import com.jetbrains.rd.swing.selectedItemProperty
 import com.jetbrains.rd.util.reactive.adviseEternal
-import org.apache.solr.client.solrj.SolrServerException
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JButton
@@ -91,7 +90,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         ConsoleHistoryController(MyConsoleRootType, "hybris.solr.search.shell", this).install()
     }
 
-    override fun connectionType() = HybrisRemoteConnectionSettings.Type.SOLR
+    override fun connectionType() = RemoteConnectionType.SOLR
 
     override fun printDefaultText() {
         this.setInputText("*:*")
@@ -113,7 +112,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
     private fun retrieveListOfCores() = try {
         SolrHttpClient.getInstance(project).coresData(project).toList()
-    } catch (e: SolrServerException) {
+    } catch (e: Exception) {
         Notifications.create(
             NotificationType.WARNING,
             message("hybris.notification.toolwindow.hac.test.connection.title"),

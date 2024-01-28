@@ -19,18 +19,17 @@
 package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
@@ -38,7 +37,6 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.layout.selected
 import com.intellij.util.ui.JBUI
 import java.awt.Component
 import java.awt.event.ActionEvent
@@ -46,11 +44,12 @@ import java.io.Serial
 import javax.swing.Action
 import javax.swing.JLabel
 
-class RemoteHacConnectionDialog(
+class RemoteSolrConnectionDialog(
     private val project: Project,
     parentComponent: Component,
     private val settings: HybrisRemoteConnectionSettings
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE) {
+
 
     private val originalScope = settings.scope
     private val testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
@@ -64,27 +63,25 @@ class RemoteHacConnectionDialog(
                 hostIP = hostTextField.text
                 port = portTextField.text
                 isSsl = sslProtocolCheckBox.isSelected
-                sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: ""
-                hacWebroot = webrootTextField.text
-                hacLogin = usernameTextField.text
-                hacPassword = String(passwordTextField.password)
+                solrWebroot = webrootTextField.text
+                adminLogin = usernameTextField.text
+                adminPassword = String(passwordTextField.password)
                 this
             }
 
-            val httpClient = HybrisHacHttpClient.getInstance(project)
-            val errorMessage = httpClient.login(project, testSettings)
+            var type: NotificationType
+            var message: String
 
-            val type: NotificationType
-            val message: String
-            if (errorMessage.isEmpty()) {
-                message = message("hybris.toolwindow.hac.test.connection.success", "hac", testSettings.generatedURL)
+            try {
+                SolrHttpClient.getInstance(project).listOfCores(testSettings)
+                message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", "SOLR", testSettings.generatedURL)
                 type = NotificationType.INFORMATION
-            } else {
+            } catch (e: Exception) {
                 type = NotificationType.WARNING
-                message = message("hybris.toolwindow.hac.test.connection.fail", testSettings.generatedURL, errorMessage)
+                message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", testSettings.generatedURL, e.message ?: "")
             }
 
-            Notifications.create(type, message("hybris.notification.toolwindow.hac.test.connection.title"), message)
+            Notifications.create(type, HybrisI18NBundleUtils.message("hybris.notification.toolwindow.hac.test.connection.title"), message)
                 .notify(project)
         }
     }
@@ -93,7 +90,6 @@ class RemoteHacConnectionDialog(
     private lateinit var hostTextField: JBTextField
     private lateinit var portTextField: JBTextField
     private lateinit var sslProtocolCheckBox: JBCheckBox
-    private lateinit var sslProtocolComboBox: ComboBox<String>
     private lateinit var webrootTextField: JBTextField
     private lateinit var usernameTextField: JBTextField
     private lateinit var passwordTextField: JBPasswordField
@@ -149,21 +145,9 @@ class RemoteHacConnectionDialog(
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                sslProtocolCheckBox = checkBox("SSL:")
+                sslProtocolCheckBox = checkBox("SSL")
                     .selected(settings.isSsl)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
-                    .component
-                sslProtocolComboBox = comboBox(
-                    listOf(
-                        "TLSv1",
-                        "TLSv1.1",
-                        "TLSv1.2"
-                    ),
-                    renderer = SimpleListCellRenderer.create("?") { it }
-                )
-                    .enabledIf(sslProtocolCheckBox.selected)
-                    .bindItem(settings::sslProtocol.toNullableProperty())
-                    .align(AlignX.FILL)
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
@@ -171,7 +155,7 @@ class RemoteHacConnectionDialog(
                 label("Webroot:")
                 webrootTextField = textField()
                     .align(AlignX.FILL)
-                    .bindText(settings::hacWebroot.toNonNullableProperty(""))
+                    .bindText(settings::solrWebroot.toNonNullableProperty(""))
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -182,7 +166,7 @@ class RemoteHacConnectionDialog(
                 label("Username:")
                 usernameTextField = textField()
                     .align(AlignX.FILL)
-                    .bindText(settings::hacLogin.toNonNullableProperty("admin"))
+                    .bindText(settings::adminLogin.toNonNullableProperty("admin"))
                     .addValidationRule("Username cannot be blank.") { it.text.isNullOrBlank() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -196,7 +180,7 @@ class RemoteHacConnectionDialog(
                         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving password", false) {
                             private var password: String? = null
                             override fun run(indicator: ProgressIndicator) {
-                                password = settings.hacPassword
+                                password = settings.adminPassword
                                 passwordTextField.text = password
                                 passwordTextField.isEnabled = true
                             }
@@ -205,7 +189,7 @@ class RemoteHacConnectionDialog(
                     .onApply {
                         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Persisting password", false) {
                             override fun run(indicator: ProgressIndicator) {
-                                settings.hacPassword = String(passwordTextField.password)
+                                settings.adminPassword = String(passwordTextField.password)
                             }
                         })
                     }
@@ -216,7 +200,7 @@ class RemoteHacConnectionDialog(
     }
 
     init {
-        title = "Remote SAP Commerce Instance"
+        title = "Remote SOLR Instance"
         super.init()
     }
 
@@ -224,7 +208,7 @@ class RemoteHacConnectionDialog(
         super.applyFields()
 
         // change of the scope
-        if (settings.uuid != null && originalScope != settings.scope) {
+        if (originalScope != settings.scope) {
             RemoteConnectionUtil.changeRemoteConnectionScope(project, settings, originalScope)
         }
     }
@@ -243,5 +227,4 @@ class RemoteHacConnectionDialog(
         portTextField.text,
         webrootTextField.text
     )
-
 }

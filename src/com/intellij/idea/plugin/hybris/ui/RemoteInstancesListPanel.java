@@ -19,9 +19,10 @@
 package com.intellij.idea.plugin.hybris.ui;
 
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.AddEditDeleteListPanel;
-import com.intellij.ui.ListUtil;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.util.ui.JBEmptyBorder;
 import org.jetbrains.annotations.Nullable;
@@ -31,62 +32,73 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.awt.*;
 import java.io.Serial;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<HybrisRemoteConnectionSettings> {
 
     @Serial
     private static final long serialVersionUID = -1932103943790251488L;
     private ListCellRenderer myListCellRenderer;
-    private boolean triggerSave = false;
+    private final RemoteConnectionType type;
+    private final Icon icon;
     final Project myProject;
 
-    abstract Icon getCellIcon();
-    abstract void saveSettings();
     abstract void addItem();
 
-    public RemoteInstancesListPanel(final Project project) {
+    public RemoteInstancesListPanel(final Project project, final RemoteConnectionType type, final Icon icon) {
         super(null, Collections.emptyList());
         this.myProject = project;
+        this.type = type;
+        this.icon = icon;
         myList.getModel().addListDataListener(new ListDataListener() {
 
             @Override
             public void intervalAdded(final ListDataEvent e) {
-                trySaveSettings();
+                onDataChanged(e, getData());
             }
 
             @Override
             public void intervalRemoved(final ListDataEvent e) {
-                trySaveSettings();
+                RemoteConnectionUtil.INSTANCE.saveRemoteConnections(myProject, RemoteInstancesListPanel.this.type, getData());
+                onDataChanged(e, getData());
             }
 
             @Override
             public void contentsChanged(final ListDataEvent e) {
-                trySaveSettings();
+                onDataChanged(e, getData());
             }
         });
     }
 
-    public void setInitialList(final List<HybrisRemoteConnectionSettings> remoteConnectionSettingsList) {
+    public void setData(final Collection<HybrisRemoteConnectionSettings> remoteConnectionSettingsList) {
         myListModel.clear();
-        remoteConnectionSettingsList.forEach(this::addElement);
-        triggerSave = true;
+        myListModel.addAll(remoteConnectionSettingsList);
     }
 
-    public List<HybrisRemoteConnectionSettings> getData() {
-        final List<HybrisRemoteConnectionSettings> remoteConnectionSettingsList = new ArrayList<>();
+    public Set<HybrisRemoteConnectionSettings> getData() {
+        final var remoteConnectionSettingsList = new LinkedHashSet<HybrisRemoteConnectionSettings>();
         for (int index = 0; index < myList.getModel().getSize(); index++) {
             remoteConnectionSettingsList.add(myList.getModel().getElementAt(index));
         }
         return remoteConnectionSettingsList;
     }
 
+    abstract protected void onDataChanged(ListDataEvent e, final Set<HybrisRemoteConnectionSettings> data);
+
     @Nullable
     @Override
     protected HybrisRemoteConnectionSettings findItemToAdd() {
         return null;
+    }
+
+    @Override
+    protected void addElement(@Nullable final HybrisRemoteConnectionSettings itemToAdd) {
+        super.addElement(itemToAdd);
+
+        if (itemToAdd != null) RemoteConnectionUtil.INSTANCE.addRemoteConnection(myProject, itemToAdd);
     }
 
     @Override
@@ -105,7 +117,7 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Hy
                     final var comp = super.getListCellRendererComponent(list, value.toString(), index, isSelected, cellHasFocus);
                     ((JComponent) comp).setBorder(new JBEmptyBorder(5));
 
-                    setIcon(getCellIcon());
+                    setIcon(RemoteInstancesListPanel.this.icon);
                     return comp;
                 }
             };
@@ -117,12 +129,9 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Hy
     protected void customizeDecorator(final ToolbarDecorator decorator) {
         super.customizeDecorator(decorator);
         decorator.setAddAction(button -> addItem());
-        decorator.setMoveUpAction(button -> ListUtil.moveSelectedItemsUp(myList));
-        decorator.setMoveDownAction(button -> ListUtil.moveSelectedItemsDown(myList));
-    }
-
-    protected void trySaveSettings() {
-        if (triggerSave) saveSettings();
+//        decorator.setMoveUpAction(button -> ListUtil.moveSelectedItemsUp(myList));
+//        decorator.setMoveDownAction(button -> ListUtil.moveSelectedItemsDown(myList));
+        decorator.setRemoveActionUpdater(e -> myListModel.size() > 1 && myListModel.size() != myList.getSelectedIndices().length);
     }
 
 }

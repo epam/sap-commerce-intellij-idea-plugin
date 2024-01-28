@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
-import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService;
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -77,7 +76,6 @@ import static org.apache.http.HttpVersion.HTTP_1_1;
 public abstract class AbstractHybrisHacHttpClient {
 
     private static final Logger LOG = Logger.getInstance(AbstractHybrisHacHttpClient.class);
-    private static final String COOKIE_ROUTE = "ROUTE";
     private static final String COOKIE_JSESSIONID = "JSESSIONID";
     public static final int DEFAULT_HAC_TIMEOUT = 6000;
     private static final X509TrustManager X_509_TRUST_MANAGER = new X509TrustManager() {
@@ -108,7 +106,7 @@ public abstract class AbstractHybrisHacHttpClient {
         if (sessionId == null) {
             return "Unable to obtain sessionId for " + hostHacURL;
         }
-        final var csrfToken = getCsrfToken(hostHacURL, sessionId, project, settings);
+        final var csrfToken = getCsrfToken(hostHacURL, sessionId, settings);
         final var params = List.of(
             new BasicNameValuePair("j_username", settings.getHacLogin()),
             new BasicNameValuePair("j_password", settings.getHacPassword()),
@@ -159,7 +157,7 @@ public abstract class AbstractHybrisHacHttpClient {
         }
         cookies = cookiesPerSettings.get(settings);
         final var sessionId = cookies.get(COOKIE_JSESSIONID);
-        final String csrfToken = getCsrfToken(settings.getGeneratedURL(), sessionId, project, settings);
+        final String csrfToken = getCsrfToken(settings.getGeneratedURL(), sessionId, settings);
         if (csrfToken == null) {
             cookiesPerSettings.remove(settings);
 
@@ -218,13 +216,6 @@ public abstract class AbstractHybrisHacHttpClient {
         return new BasicHttpResponse(new BasicStatusLine(HTTP_1_1, HttpStatus.SC_SERVICE_UNAVAILABLE, reasonPhrase));
     }
 
-    public String getSslProtocol(
-        final Project project,
-        final @Nullable HybrisRemoteConnectionSettings settings
-    ) {
-        return CommonIdeaService.getInstance().getActiveSslProtocol(project, settings);
-    }
-
     protected CloseableHttpClient createAllowAllClient(final long timeout) {
         final SSLContext sslcontext;
         try {
@@ -260,7 +251,7 @@ public abstract class AbstractHybrisHacHttpClient {
         final var cookies = cookiesPerSettings.computeIfAbsent(settings, _settings -> new HashMap<>());
         cookies.clear();
 
-        final var res = getResponseForUrl(hacURL, project, settings);
+        final var res = getResponseForUrl(hacURL, settings);
 
         if (res == null) return;
 
@@ -269,11 +260,10 @@ public abstract class AbstractHybrisHacHttpClient {
 
     protected Response getResponseForUrl(
         final String hacURL,
-        final @NotNull Project project,
         final @NotNull HybrisRemoteConnectionSettings settings
     ) {
         try {
-            final String sslProtocol = getSslProtocol(project, settings);
+            final String sslProtocol = settings.getSslProtocol();
             return connect(hacURL, sslProtocol).method(Method.GET).execute();
         } catch (ConnectException ce) {
             return null;
@@ -286,11 +276,10 @@ public abstract class AbstractHybrisHacHttpClient {
     protected String getCsrfToken(
         final @NotNull String hacURL,
         final @NotNull String sessionId,
-        final @NotNull Project project,
-        final @Nullable HybrisRemoteConnectionSettings settings
+        final @NotNull HybrisRemoteConnectionSettings settings
     ) {
         try {
-            final String sslProtocol = getSslProtocol(project, settings);
+            final String sslProtocol = settings.getSslProtocol();
 
             final Document doc = connect(hacURL, sslProtocol).cookie("JSESSIONID", sessionId).get();
             final Elements csrfMetaElt = doc.select("meta[name=_csrf]");

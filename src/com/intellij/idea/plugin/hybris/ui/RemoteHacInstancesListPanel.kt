@@ -18,33 +18,34 @@
 package com.intellij.idea.plugin.hybris.ui
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
 import com.intellij.openapi.project.Project
 import java.io.Serial
+import javax.swing.event.ListDataEvent
 
-class RemoteHacInstancesListPanel(project: Project) : RemoteInstancesListPanel(project) {
-
-    public override fun getCellIcon() = HybrisIcons.Y_REMOTE
-
-    public override fun saveSettings() {
-        HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).saveRemoteConnectionSettingsList(HybrisRemoteConnectionSettings.Type.Hybris, getData())
-    }
+class RemoteHacInstancesListPanel(
+    project: Project,
+    private val onDataChanged: (ListDataEvent, Set<HybrisRemoteConnectionSettings>) -> Unit
+) : RemoteInstancesListPanel(project, RemoteConnectionType.Hybris, HybrisIcons.Y_REMOTE) {
 
     public override fun addItem() {
-        val item = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(myProject).getDefaultHacRemoteConnectionSettings(myProject)
-        val dialog = RemoteHacConnectionDialog(myProject, this, item)
+        val settings = RemoteConnectionUtil.getDefaultRemoteConnectionSettings(myProject, RemoteConnectionType.Hybris)
+        val dialog = RemoteHacConnectionDialog(myProject, this, settings)
         if (dialog.showAndGet()) {
-            addElement(item)
+            addElement(settings)
         }
     }
 
-    override fun editSelectedItem(item: HybrisRemoteConnectionSettings): HybrisRemoteConnectionSettings? {
-        val ok = RemoteHacConnectionDialog(myProject, this, item).showAndGet()
-        return if (ok) item
-        else null
-    }
+    override fun onDataChanged(
+        e: ListDataEvent,
+        data: Set<HybrisRemoteConnectionSettings>
+    ) = onDataChanged.invoke(e, data)
+
+    override fun editSelectedItem(item: HybrisRemoteConnectionSettings) = if (RemoteHacConnectionDialog(myProject, this, item).showAndGet()) item
+    else null
 
     companion object {
         @Serial

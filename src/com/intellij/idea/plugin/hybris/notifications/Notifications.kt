@@ -37,7 +37,14 @@ class Notifications private constructor(type: NotificationType, title: String, c
     private val notification: Notification = NotificationGroupManager.getInstance()
         .getNotificationGroup(NOTIFICATION_GROUP_HYBRIS)
         .createNotification(title, content, type)
-        .setIcon(HybrisIcons.Y_LOGO_BLUE)
+        .setIcon(
+            when (type) {
+                NotificationType.WARNING,
+                NotificationType.ERROR -> HybrisIcons.Y_LOGO_ORANGE
+
+                else -> HybrisIcons.Y_LOGO_BLUE
+            }
+        )
 
     private var delay: Long? = null
 

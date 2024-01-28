@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console
 
 import com.intellij.execution.console.LanguageConsoleImpl
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
@@ -48,7 +48,7 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
 
     open fun printDefaultText() = setInputText("")
 
-    open fun connectionType() = HybrisRemoteConnectionSettings.Type.Hybris
+    open fun connectionType() = RemoteConnectionType.Hybris
 
     open fun onSelection() {
         //NOP

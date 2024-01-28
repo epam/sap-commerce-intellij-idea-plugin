@@ -21,7 +21,6 @@ import com.intellij.ide.util.RunOnceUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsListener
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.openapi.project.Project
@@ -37,7 +36,6 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
             project.getUserData(HybrisConstants.KEY_FINALIZE_PROJECT_IMPORT)
                 ?.let {
                     project.removeUserData(HybrisConstants.KEY_FINALIZE_PROJECT_IMPORT)
-                    syncProjectSettingsForProject(project)
 
                     PostImportConfigurator.getInstance(project).configure(
                         it.first,
@@ -48,15 +46,8 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
 
             HybrisToolWindowService.getInstance(project).activateToolWindow()
         }
-    }
 
-    private fun syncProjectSettingsForProject(project: Project) {
         CommonIdeaService.getInstance().fixRemoteConnectionSettings(project)
-
-        with(project.messageBus.syncPublisher(HybrisDeveloperSpecificProjectSettingsListener.TOPIC)) {
-            hacConnectionSettingsChanged()
-            solrConnectionSettingsChanged()
-        }
     }
 
 }

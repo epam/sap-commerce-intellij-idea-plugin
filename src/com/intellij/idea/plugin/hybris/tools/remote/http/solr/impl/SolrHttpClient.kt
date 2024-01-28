@@ -18,8 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl
 
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
@@ -111,7 +112,7 @@ class SolrHttpClient {
     }
 
     // active or default
-    private fun solrConnectionSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveSolrRemoteConnectionSettings(project)
+    private fun solrConnectionSettings(project: Project) = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.SOLR)
 
     companion object {
         @JvmStatic
