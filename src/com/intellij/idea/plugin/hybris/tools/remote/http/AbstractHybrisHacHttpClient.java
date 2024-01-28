@@ -157,7 +157,7 @@ public abstract class AbstractHybrisHacHttpClient {
         }
         cookies = cookiesPerSettings.get(settings);
         final var sessionId = cookies.get(COOKIE_JSESSIONID);
-        final String csrfToken = getCsrfToken(settings.getGeneratedURL(), sessionId, settings);
+        final var csrfToken = getCsrfToken(settings.getGeneratedURL(), sessionId, settings);
         if (csrfToken == null) {
             cookiesPerSettings.remove(settings);
 
@@ -263,7 +263,7 @@ public abstract class AbstractHybrisHacHttpClient {
         final @NotNull HybrisRemoteConnectionSettings settings
     ) {
         try {
-            final String sslProtocol = settings.getSslProtocol();
+            final var sslProtocol = settings.getSslProtocol();
             return connect(hacURL, sslProtocol).method(Method.GET).execute();
         } catch (ConnectException ce) {
             return null;
@@ -279,7 +279,7 @@ public abstract class AbstractHybrisHacHttpClient {
         final @NotNull HybrisRemoteConnectionSettings settings
     ) {
         try {
-            final String sslProtocol = settings.getSslProtocol();
+            final var sslProtocol = settings.getSslProtocol();
 
             final Document doc = connect(hacURL, sslProtocol).cookie("JSESSIONID", sessionId).get();
             final Elements csrfMetaElt = doc.select("meta[name=_csrf]");
