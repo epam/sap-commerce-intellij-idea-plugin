@@ -58,7 +58,7 @@ class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
         }
     }
 
-    private fun getPlaceholder(element: ImpexUserRightsPermissionValue) = when (element.firstLeaf.elementType) {
+    private fun getPlaceholder(element: ImpexUserRightsPermissionValue) = when (element.firstLeaf().elementType) {
         ImpexTypes.PERMISSION_DENIED -> "❌"
         ImpexTypes.PERMISSION_ALLOWED -> "✅"
         else -> StringUtils.EMPTY

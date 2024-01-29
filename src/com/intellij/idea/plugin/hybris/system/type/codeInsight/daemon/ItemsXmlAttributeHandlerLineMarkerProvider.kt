@@ -49,7 +49,7 @@ class ItemsXmlAttributeHandlerLineMarkerProvider : AbstractItemsXmlLineMarkerPro
             .setTargets(springBeanDeclaration)
             .setTooltipText(message("hybris.editor.gutter.ts.items.item.attributeHandler.tooltip.text"))
             .setAlignment(GutterIconRenderer.Alignment.RIGHT)
-            .createLineMarkerInfo(psi.firstLeaf)
+            .createLineMarkerInfo(psi.firstLeaf())
         return listOf(marker)
     }
 

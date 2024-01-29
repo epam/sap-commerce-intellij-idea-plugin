@@ -15,6 +15,10 @@
 - Updated gradle wrapper to 8.5 [#969](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/969)
 - Redesigned SAP Commerce facet dialog layout [#974](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/974)
 
+### Fixes
+
+- `config` module identified as an external module [#975](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/975)
+
 ## [2023.3.4]
 
 ### Features

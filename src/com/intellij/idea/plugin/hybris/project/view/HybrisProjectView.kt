@@ -25,14 +25,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
 import java.io.File
@@ -105,21 +102,14 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         val otherNodes = mutableListOf<AbstractTreeNode<*>>()
         val treeNodes = mutableListOf<AbstractTreeNode<*>>()
 
-        val projectService = ApplicationManager.getApplication().getService(HybrisProjectService::class.java)
+        val projectRootManager = ProjectRootManager.getInstance(project)
         for (child in children) {
             if (child is PsiDirectoryNode) {
-                val virtualFile = child.virtualFile
-                    ?: continue
-                val file = VfsUtil.virtualToIoFile(virtualFile)
+                val yFacet = child.virtualFile
+                    ?.let { projectRootManager.fileIndex.getModuleForFile(it) }
+                    ?.let { YFacet.get(it) }
 
-                if (!projectService.isHybrisModule(file)
-                    && !projectService.isPlatformModule(file)
-                    && !projectService.isPlatformExtModule(file)
-                    && (projectService.isGradleModule(file)
-                        || projectService.isEclipseModule(file)
-                        || projectService.isGradleKtsModule(file)
-                        || projectService.isMavenModule(file))
-                ) {
+                if (yFacet == null) {
                     otherNodes.add(child)
                 } else {
                     treeNodes.add(child)

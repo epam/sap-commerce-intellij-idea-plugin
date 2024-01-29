@@ -40,7 +40,7 @@ class ImpExDoubleQuotedStringAsModifierInspection : LocalInspectionTool() {
         override fun visitAnyAttributeValue(element: ImpexAnyAttributeValue) {
             element.stringList
                 .firstOrNull()
-                ?.takeIf { it.firstLeaf.elementType == ImpexTypes.DOUBLE_STRING }
+                ?.takeIf { it.firstLeaf().elementType == ImpexTypes.DOUBLE_STRING }
                 ?.let {
                     problemsHolder.registerProblem(
                         it,
