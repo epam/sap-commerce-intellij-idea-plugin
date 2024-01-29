@@ -17,6 +17,7 @@
 
 ### Fixes
 
+- IDE error when running FlexibleSearch query [#976](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/976)
 - `config` module identified as an external module [#975](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/975)
 
 ## [2023.3.4]

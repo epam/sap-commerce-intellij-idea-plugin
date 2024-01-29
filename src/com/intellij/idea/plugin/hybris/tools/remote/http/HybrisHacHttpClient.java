@@ -194,22 +194,30 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         if (fsResultStatus == null) {
             return resultBuilder.errorMessage("No data in response").build();
         }
-        final HashMap json = new Gson().fromJson(fsResultStatus.text(), HashMap.class);
+        final Map json = parseResponse(fsResultStatus);
+
+        if (json == null) {
+            return createResult()
+                .errorMessage("Cannot parse response from the server...")
+                .build();
+        }
+
         if (json.get("exception") != null) {
             return createResult()
                 .errorMessage(((Map<String, Object>) json.get("exception")).get("message").toString())
                 .build();
-        } else {
-            final TableBuilder tableBuilder = new TableBuilder();
-
-            final List<String> headers = (List<String>) json.get("headers");
-            final List<List<String>> resultList = (List<List<String>>) json.get("resultList");
-
-            tableBuilder.addRow(headers.toArray(new String[]{}));
-            resultList.forEach(row -> tableBuilder.addRow(row.toArray(new String[]{})));
-
-            return resultBuilder.output(tableBuilder.toString()).build();
         }
+
+
+        final TableBuilder tableBuilder = new TableBuilder();
+
+        final List<String> headers = (List<String>) json.get("headers");
+        final List<List<String>> resultList = (List<List<String>>) json.get("resultList");
+
+        tableBuilder.addRow(headers.toArray(new String[]{}));
+        resultList.forEach(row -> tableBuilder.addRow(row.toArray(new String[]{})));
+
+        return resultBuilder.output(tableBuilder.toString()).build();
     }
 
     public @NotNull
@@ -243,20 +251,27 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         if (fsResultStatus == null) {
             return resultBuilder.errorMessage("No data in response").build();
         }
-        final HashMap json = new Gson().fromJson(fsResultStatus.text(), HashMap.class);
+        final Map json = parseResponse(fsResultStatus);
+
+        if (json == null) {
+            return createResult()
+                .errorMessage("Cannot parse response from the server...")
+                .build();
+        }
+
         if (json.get("stacktraceText") != null && isNotEmpty(json.get("stacktraceText").toString())) {
             return createResult()
                 .errorMessage(json.get("stacktraceText").toString())
                 .build();
-        } else {
-            if (json.get("outputText") != null) {
-                resultBuilder.output(json.get("outputText").toString());
-            }
-            if (json.get("executionResult") != null) {
-                resultBuilder.result(json.get("executionResult").toString());
-            }
-            return resultBuilder.build();
         }
+
+        if (json.get("outputText") != null) {
+            resultBuilder.output(json.get("outputText").toString());
+        }
+        if (json.get("executionResult") != null) {
+            resultBuilder.result(json.get("executionResult").toString());
+        }
+        return resultBuilder.build();
     }
 
     @NotNull
@@ -270,5 +285,14 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             .httpCode(HttpStatus.SC_BAD_GATEWAY)
             .errorMessage("Unable to connect to Solr server. Please, check connection configuration")
             .build();
+    }
+
+    private static @Nullable Map parseResponse(final Elements fsResultStatus) {
+        try {
+            return new Gson().fromJson(fsResultStatus.text(), HashMap.class);
+        } catch (final Exception e) {
+            LOG.error("Cannot parse response", e);
+            return null;
+        }
     }
 }
