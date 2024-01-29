@@ -20,12 +20,13 @@ package com.intellij.idea.plugin.hybris.facet
 
 import com.intellij.facet.ui.FacetEditorContext
 import com.intellij.facet.ui.FacetEditorTab
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 import com.intellij.openapi.module.ModuleManager
+import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
+import com.intellij.ui.dsl.builder.text
 
 class YFacetEditorTab(
     val state: ExtensionDescriptor,
@@ -42,39 +43,25 @@ class YFacetEditorTab(
                 .bold()
         }
         group("Details") {
-            row("Name:") {
+            row {
+                label("Name:")
                 label(state.name)
                     .bold()
-            }
-            row("Type:") {
-                icon(
-                    when (state.type) {
-                        ModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
-                        ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
-                        ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
-                        ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
-                        ModuleDescriptorType.CONFIG -> HybrisIcons.EXTENSION_CONFIG
-                        ModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
-                        else -> HybrisIcons.Y_LOGO_BLUE
-                    }
-                )
+            }.layout(RowLayout.PARENT_GRID)
+
+            row {
+                label("Type:")
                 label(state.type.name)
-            }
+                icon(state.type.icon)
+            }.layout(RowLayout.PARENT_GRID)
+
             state.subModuleType
                 ?.let {
-                    row("Sub-type:") {
-                        icon(
-                            when (it) {
-                                SubModuleDescriptorType.HAC -> HybrisIcons.EXTENSION_HAC
-                                SubModuleDescriptorType.HMC -> HybrisIcons.EXTENSION_HMC
-                                SubModuleDescriptorType.BACKOFFICE -> HybrisIcons.EXTENSION_BACKOFFICE
-                                SubModuleDescriptorType.ADDON -> HybrisIcons.EXTENSION_ADDON
-                                SubModuleDescriptorType.COMMON_WEB -> HybrisIcons.EXTENSION_COMMON_WEB
-                                SubModuleDescriptorType.WEB -> HybrisIcons.EXTENSION_WEB
-                            }
-                        )
+                    row {
+                        label("Sub-type:")
                         label(it.name)
-                    }
+                        icon(it.icon)
+                    }.layout(RowLayout.PARENT_GRID)
                 }
         }
 
@@ -86,14 +73,7 @@ class YFacetEditorTab(
                     .filter { state.installedIntoExtensions.contains(it.name) }
                     .map {
                         row {
-                            icon(
-                                when (it.type) {
-                                    ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
-                                    ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
-                                    ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
-                                    else -> HybrisIcons.Y_LOGO_BLUE
-                                }
-                            )
+                            icon(it.type.icon)
                             label(it.name)
                                 .bold()
                         }
@@ -103,74 +83,94 @@ class YFacetEditorTab(
 
         if (state.subModuleType == null && state.type != ModuleDescriptorType.PLATFORM && state.type != ModuleDescriptorType.CCV2) {
             group("Settings") {
-                row("Read only:") {
+                row {
                     checkBox("")
                         .enabled(false)
                         .selected(state.readonly)
-                }
-                row("Deprecated:") {
+                    label("Read only")
+                }.layout(RowLayout.PARENT_GRID)
+
+                row {
                     checkBox("")
                         .enabled(false)
                         .selected(state.deprecated)
-                }
-                row("External dependencies:") {
+                    label("Deprecated")
+                }.layout(RowLayout.PARENT_GRID)
+
+                row {
                     checkBox("")
                         .enabled(false)
                         .selected(state.useMaven)
-                }
-                    .comment(
-                        """Represents <strong>usemaven</strong> flag of the <strong>extensioninfo.xml</strong> file.</br>
-                        If enabled, dependencies declared in the <strong>external-dependencies.xml</strong> will be retrieved during the build.
+                    label("External dependencies")
+                        .comment(
+                            """Represents <strong>usemaven</strong> flag of the <strong>extensioninfo.xml</strong> file.</br>
+                                If enabled, dependencies declared in the <strong>external-dependencies.xml</strong> will be retrieved during the build.
                         """.trimIndent()
-                    )
-                row("Template extension") {
+                        )
+                }.layout(RowLayout.PARENT_GRID)
+
+                row {
                     checkBox("")
                         .enabled(false)
                         .selected(state.extGenTemplateExtension)
-                }
-                row("ModuleGen name") {
-                    label(state.moduleGenName ?: "")
+                    label("Template extension")
+                }.layout(RowLayout.PARENT_GRID)
+
+                row {
+                    label("ModuleGen name:")
+                    textField()
+                        .text(state.moduleGenName ?: "")
+                        .enabled(false)
                 }
             }
             group("Extensibility") {
-                row("Core module") {
+                row {
                     checkBox("")
                         .enabled(false)
                         .selected(state.coreModule)
-                }
-                    .comment(
-                        """
+                    label("Core module")
+                        .comment(
+                            """
                         Configures a core module for the extension.<br>
                         A core module consists of an items.xml file (and therefore allows to add new types to the system), a manager class, classes for the JaLo Layer and the ServiceLayer and JUnit test classes.<br>
                         The following directories are required: /src, /resources, /testsrc.
                     """.trimIndent()
-                    )
-                row("Backoffice module") {
+                        )
+                }.layout(RowLayout.PARENT_GRID)
+
+                row {
                     checkBox("")
                         .enabled(false)
                         .selected(state.backofficeModule)
-                }
-                    .comment(
-                        "If <strong>extensioninfo.xml</strong> has enabled meta <strong>backoffice-module</strong> " +
-                            "Backoffice will be available for customization via sub-module."
-                    )
-                row("Web module") {
+                    label("Backoffice module")
+                        .comment(
+                            "If <strong>extensioninfo.xml</strong> has enabled meta <strong>backoffice-module</strong> " +
+                                "Backoffice will be available for customization via sub-module."
+                        )
+                }.layout(RowLayout.PARENT_GRID)
+
+                row {
                     checkBox("")
                         .enabled(false)
                         .selected(state.webModule)
-                }
-                    .comment("Configures a web module for the extension. Required directory: <code>/web</code>.")
-                row("HAC module") {
+                    label("Web module")
+                        .comment("Configures a web module for the extension. Required directory: <code>/web</code>.")
+                }.layout(RowLayout.PARENT_GRID)
+
+                row {
                     checkBox("")
                         .enabled(false)
                         .selected(state.hacModule)
-                }
-                row("HMC module") {
+                    label("HAC module")
+                }.layout(RowLayout.PARENT_GRID)
+
+                row {
                     checkBox("")
                         .enabled(false)
                         .selected(state.hmcModule)
-                }
-                    .comment("Configures an hMC module for the extension. Required directory: <code>/hmc</code>.")
+                    label("HMC module")
+                        .comment("Configures an hMC module for the extension. Required directory: <code>/hmc</code>.")
+                }.layout(RowLayout.PARENT_GRID)
             }
         }
     }

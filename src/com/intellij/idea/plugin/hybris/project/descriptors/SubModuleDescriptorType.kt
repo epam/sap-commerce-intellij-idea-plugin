@@ -17,11 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors
 
-enum class SubModuleDescriptorType {
-    WEB,
-    COMMON_WEB,
-    ADDON,
-    BACKOFFICE,
-    HAC,
-    HMC,
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import javax.swing.Icon
+
+enum class SubModuleDescriptorType(val icon: Icon) {
+    HAC(HybrisIcons.EXTENSION_HAC),
+    HMC(HybrisIcons.EXTENSION_HMC),
+    BACKOFFICE(HybrisIcons.EXTENSION_BACKOFFICE),
+    ADDON(HybrisIcons.EXTENSION_ADDON),
+    COMMON_WEB(HybrisIcons.EXTENSION_COMMON_WEB),
+    WEB(HybrisIcons.EXTENSION_WEB),
 }

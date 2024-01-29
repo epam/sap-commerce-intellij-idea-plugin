@@ -17,15 +17,18 @@
  */
 package com.intellij.idea.plugin.hybris.project.descriptors
 
-enum class ModuleDescriptorType {
-    CONFIG,
-    CUSTOM,
-    EXT,
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import javax.swing.Icon
+
+enum class ModuleDescriptorType(val icon: Icon = HybrisIcons.Y_LOGO_BLUE) {
+    CONFIG(HybrisIcons.EXTENSION_CONFIG),
+    CUSTOM(HybrisIcons.EXTENSION_CUSTOM),
+    EXT(HybrisIcons.EXTENSION_EXT),
     NONE,
-    OOTB,
-    PLATFORM,
+    OOTB(HybrisIcons.EXTENSION_OOTB),
+    PLATFORM(HybrisIcons.EXTENSION_PLATFORM),
     ECLIPSE,
     MAVEN,
     GRADLE,
-    CCV2
+    CCV2(HybrisIcons.EXTENSION_CLOUD)
 }
