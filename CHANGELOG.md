@@ -1,7 +1,8 @@
 ## [2024.1.0]
 
 ### Features
-- Group all non-hybris gradle, ant, eclipse and maven modules in project view panel[#967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/967)
+- Group all non-hybris gradle, ant, eclipse and maven modules in project view panel [#967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/967)
+- Use blue logo for custom module groups in the project view [#973](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/973)
 
 ### `Remote Connection` enhancements
 - Introduced `Project` and `Personal` scope for remote connections [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971)

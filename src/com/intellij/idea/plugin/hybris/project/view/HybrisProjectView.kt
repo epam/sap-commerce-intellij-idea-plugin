@@ -48,7 +48,10 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         .firstOrNull()
     private val ccv2GroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupCCv2)
         .firstOrNull()
+    private val customGroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupCustom)
+        .firstOrNull()
     private val groupToIcon = mapOf(
+        customGroupName to HybrisIcons.MODULE_CUSTOM_GROUP,
         platformGroupName to HybrisIcons.MODULE_PLATFORM_GROUP,
         commerceGroupName to HybrisIcons.MODULE_COMMERCE_GROUP,
         ccv2GroupName to HybrisIcons.MODULE_CCV2_GROUP,

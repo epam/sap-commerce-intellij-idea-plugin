@@ -75,6 +75,7 @@ object HybrisIcons {
     val MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg")
     val MODULE_COMMERCE_GROUP = Y_LOGO_GREEN
     val MODULE_PLATFORM_GROUP = Y_LOGO_ORANGE
+    val MODULE_CUSTOM_GROUP = Y_LOGO_BLUE
     val MODULE_EXTERNAL_GROUP = AllIcons.Nodes.ModuleGroup
 
     val EXTENSION_CONFIG = AllIcons.Nodes.ConfigFolder
