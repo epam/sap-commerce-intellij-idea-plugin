@@ -208,7 +208,7 @@ class RemoteSolrConnectionDialog(
         super.applyFields()
 
         // change of the scope
-        if (originalScope != settings.scope) {
+        if (settings.uuid != null && originalScope != settings.scope) {
             RemoteConnectionUtil.changeRemoteConnectionScope(project, settings, originalScope)
         }
     }
