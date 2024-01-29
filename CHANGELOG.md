@@ -1,4 +1,4 @@
-## [2024.0.0]
+## [2024.1.0]
 
 ### Features
 - Group all non-hybris gradle, ant, eclipse and maven modules in project view panel[#967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/967)
@@ -7,6 +7,7 @@
 - Introduced `Project` and `Personal` scope for remote connections [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971)
 - Redesign HAC connection settings and rely on `PasswordSafe` to store passwords [#968](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/968)
 - Redesign SOLR connection settings and rely on `PasswordSafe` to store passwords [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971)
+- Focus connection name field on dialog show [#972](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/972)
 
 ### Other
 - IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966)

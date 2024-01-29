@@ -220,6 +220,7 @@ class RemoteSolrConnectionDialog(
 
     override fun createLeftSideActions() = arrayOf(testConnectionButton)
     override fun getStyle() = DialogStyle.COMPACT
+    override fun getPreferredFocusedComponent() = connectionNameTextField
 
     private fun generateUrl() = RemoteConnectionUtil.generateUrl(
         sslProtocolCheckBox.isSelected,
