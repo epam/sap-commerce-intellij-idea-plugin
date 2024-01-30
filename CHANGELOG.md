@@ -1,7 +1,7 @@
 ## [2024.1.0]
 
 ### Features
-- Group all non-hybris gradle, ant, eclipse and maven modules in project view panel [#967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/967)
+- Group all non-hybris gradle, ant, eclipse and maven modules in project view panel [#967](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/967) | [#975](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/975) | [#980](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/980)
 - Use blue logo for custom module groups in the project view [#973](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/973)
 
 ### `Remote Connection` enhancements
@@ -18,7 +18,6 @@
 ### Fixes
 
 - IDE error when running FlexibleSearch query [#976](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/976)
-- `config` module identified as an external module [#975](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/975)
 - SOLR connection settings are not properly changed [#977](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/977)
 - Fixed code generation on Windows [#979](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/979)
 
