@@ -36,7 +36,7 @@ class HybrisProjectSettings : BaseState() {
     var ideModulesFilesDirectory by string(null)
     var hybrisProject by property(false)
     var generateCodeOnRebuild by property(true)
-    var generateCodeTimeoutSeconds by property(20)
+    var generateCodeTimeoutSeconds by property(60)
     var importOotbModulesInReadOnlyMode by property(false)
     var followSymlink by property(false)
     var scanThroughExternalModule by property(true)
