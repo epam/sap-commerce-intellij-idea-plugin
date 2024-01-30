@@ -20,7 +20,7 @@
 - IDE error when running FlexibleSearch query [#976](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/976)
 - `config` module identified as an external module [#975](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/975)
 - SOLR connection settings are not properly changed [#977](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/977)
-- Fixed code generation on Windows [#978](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/978)
+- Fixed code generation on Windows [#979](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/979)
 
 ## [2023.3.4]
 
