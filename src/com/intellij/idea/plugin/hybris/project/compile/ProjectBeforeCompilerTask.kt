@@ -109,7 +109,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         cleanDirectory(context, pathToBeDeleted)
 
         val classpath = setOf(
-            coreModuleRoot.resolve("lib").toString() + File.separator + "*",
+            coreModuleRoot.resolve("lib").toString() + "/*",
             bootstrapDirectory.resolve(HybrisConstants.BIN_DIRECTORY).resolve("ybootstrap.jar").toString()
         )
         val gcl = GeneralCommandLine()
@@ -120,7 +120,7 @@ class ProjectBeforeCompilerTask : CompileTask {
             .withParameters(
                 "-Dfile.encoding=UTF-8",
                 "-cp",
-                classpath.joinToString(":"),
+                classpath.joinToString(File.pathSeparator),
                 HybrisConstants.CLASS_FQN_CODE_GENERATOR,
                 platformModuleRoot.toString()
             )
