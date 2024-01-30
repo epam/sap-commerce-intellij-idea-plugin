@@ -109,7 +109,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         cleanDirectory(context, pathToBeDeleted)
 
         val classpath = setOf(
-            coreModuleRoot.resolve("lib").toString() + File.pathSeparator + "*",
+            coreModuleRoot.resolve("lib").toString() + File.separator + "*",
             bootstrapDirectory.resolve(HybrisConstants.BIN_DIRECTORY).resolve("ybootstrap.jar").toString()
         )
         val gcl = GeneralCommandLine()
