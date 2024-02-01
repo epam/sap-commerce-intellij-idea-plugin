@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.wizard
 
+import com.intellij.ide.BrowserUtil
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.util.projectWizard.WizardContext
@@ -26,14 +27,17 @@ import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.openapi.application.ApplicationNamesInfo
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.projectImport.ProjectImportWizardStep
-import com.intellij.ui.CollectionListModel
-import com.intellij.ui.ColorUtil
-import com.intellij.ui.JBColor
+import com.intellij.ui.*
 import com.intellij.ui.components.JBList
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
+import java.io.Serial
 import javax.swing.JButton
+import javax.swing.JList
+import javax.swing.ListModel
 
 class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWizardStep(context) {
 
@@ -50,14 +54,46 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
     }
     private val excludedIdPrefix = "com.intellij.modules"
 
+    private val cellRenderer = object : ColoredListCellRenderer<PluginId>() {
+        @Serial
+        private val serialVersionUID: Long = -7396769063069852812L
+
+        override fun customizeCellRenderer(list: JList<out PluginId>, value: PluginId, index: Int, selected: Boolean, hasFocus: Boolean) {
+            PluginCommon.PLUGINS[value.idString]
+                ?.takeIf { it.url != null }
+                ?.let {
+                    append(value.idString, SimpleTextAttributes.LINK_ATTRIBUTES);
+                }
+                ?: append(value.idString)
+        }
+    }
     private val notInstalledModel = CollectionListModel<PluginId>()
     private val notEnabledModel = CollectionListModel<PluginId>()
     private val notInstalledList = JBList(notInstalledModel).also {
         it.isEnabled = true
+        it.cellRenderer = cellRenderer
+        it.addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent) = openPluginUrl(e, it, notEnabledModel)
+        })
     }
     private val notEnabledList = JBList(notEnabledModel).also {
         it.isEnabled = true
+        it.cellRenderer = cellRenderer
+        it.addMouseListener(object : MouseAdapter() {
+            override fun mouseClicked(e: MouseEvent) = openPluginUrl(e, it, notEnabledModel)
+        })
     }
+
+    private fun openPluginUrl(e: MouseEvent, list: JBList<PluginId>, model: ListModel<PluginId>) {
+        if (e.clickCount != 1) return
+        val index = list.locationToIndex(e.point)
+        if (index == -1) return
+        val element = model.getElementAt(index)
+        PluginCommon.PLUGINS[element.idString]
+            ?.url
+            ?.let { BrowserUtil.browse(it) }
+    }
+
     private lateinit var enablePlugins: JButton
 
     override fun updateDataModel() = Unit
@@ -83,7 +119,12 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
                 cell(notEnabledList)
             }
             row {
-                enablePlugins = button("Enable and Restart") { _ -> PluginCommon.enablePlugins(notEnabledModel.items) }
+                enablePlugins = button("Enable and Restart") { _ ->
+                    if (!enablePlugins.isEnabled) return@button
+                    enablePlugins.isEnabled = false
+                    enablePlugins.text = "Enabling ${notEnabledModel.items.size} plugins, IDE will restart automatically.."
+                    PluginCommon.enablePlugins(notEnabledModel.items)
+                }
                     .component
             }
         }
@@ -98,11 +139,9 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
     override fun isStepVisible(): Boolean {
         validateDependencies()
 
-        if (!isAnyMissing()) return false
-
         enablePlugins.isEnabled = !notEnabledModel.isEmpty
 
-        return true
+        return isAnyMissing()
     }
 
     private fun validateDependencies() {
@@ -115,15 +154,14 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
             .filter { it.isOptional }
             .map { it.pluginId }
             .filterNot { it.idString.startsWith(excludedIdPrefix) }
-            .map {
-                if (!PluginManager.isPluginInstalled(it)) {
-                    notInstalledModel.add(it)
+            .map { pluginId ->
+                if (!PluginManager.isPluginInstalled(pluginId)) {
+                    notInstalledModel.add(pluginId)
                     return@map
                 }
-                val plugin = PluginManagerCore.getPlugin(it)
-                if (plugin != null && !plugin.isEnabled) {
-                    notEnabledModel.add(it)
-                }
+                PluginManagerCore.getPlugin(pluginId)
+                    ?.takeUnless { it.isEnabled }
+                    ?.let { notEnabledModel.add(pluginId) }
             }
     }
 
