@@ -380,7 +380,7 @@ class AntConfigurator {
         private val PATTERN_APACHE_ANT: Pattern = Pattern.compile("apache-ant.*")
 
         fun getInstance(): AntConfigurator? =
-            if (PluginCommon.isPluginActive(PluginCommon.ANT_SUPPORT_PLUGIN_ID)) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
+            if (PluginCommon.isPluginActive(PluginCommon.PLUGIN_ANT_SUPPORT)) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
             else null
     }
 }

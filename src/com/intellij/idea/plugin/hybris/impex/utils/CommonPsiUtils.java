@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.impex.utils;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiMethod;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -30,10 +29,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.intellij.idea.plugin.hybris.common.JavaConstants.SETTER_PREFIX;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.startsWith;
 
 public final class CommonPsiUtils {
 
@@ -79,11 +74,6 @@ public final class CommonPsiUtils {
         }
 
         return result;
-    }
-
-    @Contract(pure = true)
-    public static boolean isSetter(@NotNull final PsiMethod psiMethod) {
-        return !isBlank(psiMethod.getName()) && startsWith(psiMethod.getName(), SETTER_PREFIX);
     }
 
 }

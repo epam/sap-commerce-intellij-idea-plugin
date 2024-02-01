@@ -10,6 +10,9 @@
 - Redesign SOLR connection settings and rely on `PasswordSafe` to store passwords [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971)
 - Focus connection name field on dialog show [#972](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/972)
 
+### `Project Import` enhancements
+- Redesigned `check required plugins` import step [#983](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/983)
+
 ### Other
 - IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966)
 - Updated gradle wrapper to 8.5 [#969](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/969)
@@ -1230,8 +1233,8 @@
 [#63](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/63),
 [#66](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/66),
 [#60](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60)
-- Added support for the Enum completion in ImpEx/FSQ
-- Added support for the Relation completion in ImpEx/FSQ
+- Added support for the Enum completion in ImpEx/FlexibleSearc
+- Added support for the Relation completion in ImpEx/FlexibleSearc
 - Added MapType support for `items.xml`
 - Added postgresql DB mapping
 - Added next `typecode` suggestion via `items.xml` Inspection

@@ -43,7 +43,7 @@ import com.intellij.spring.el.contextProviders.SpringElContextsExtension
 class CngSpringELContextsExtension : SpringElContextsExtension() {
 
     override fun getContextVariables(spelFile: PsiElement): MutableCollection<out PsiVariable> {
-        if (!PluginCommon.isPluginActive(PluginCommon.JAVAEE_EL_PLUGIN_ID)) return mutableListOf()
+        if (!PluginCommon.isPluginActive(PluginCommon.PLUGIN_JAVAEE_EL)) return mutableListOf()
 
         val context = spelFile.context ?: return mutableListOf()
         val project = spelFile.project

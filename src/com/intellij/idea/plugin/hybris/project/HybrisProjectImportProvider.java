@@ -42,7 +42,7 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
         final ProjectWizardStepFactory stepFactory = ProjectWizardStepFactory.getInstance();
 
         return new ModuleWizardStep[]{
-            new CheckRequiredPluginsStep(context),
+            new CheckRequiredPluginsWizardStep(context),
             new InformationStep(context),
             new ProjectImportWizardRootStep(context),
             new SelectHybrisModulesToImportStep(context),

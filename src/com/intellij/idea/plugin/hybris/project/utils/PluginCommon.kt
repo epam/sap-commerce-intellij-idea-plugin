@@ -17,26 +17,45 @@
  */
 package com.intellij.idea.plugin.hybris.project.utils
 
+import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.extensions.PluginId
 
 object PluginCommon {
 
-    const val JREBEL_PLUGIN_ID = "JRebelPlugin"
-    const val ANT_SUPPORT_PLUGIN_ID = "AntSupport"
-    const val MAVEN_PLUGIN_ID = "org.jetbrains.idea.maven"
-    const val JAVAEE_PLUGIN_ID = "com.intellij.javaee"
-    const val JAVAEE_WEB_PLUGIN_ID = "com.intellij.javaee.web"
-    const val JAVAEE_EL_PLUGIN_ID = "com.intellij.javaee.el"
-    const val SPRING_PLUGIN_ID = "com.intellij.spring"
-    const val KOTLIN_PLUGIN_ID = "org.jetbrains.kotlin"
-    const val GROOVY_PLUGIN_ID = "org.intellij.groovy"
-    const val GRADLE_PLUGIN_ID = "org.jetbrains.plugins.gradle"
+    val PLUGIN_ID_JREBEL = Plugin("JRebelPlugin", "https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel")
+    val PLUGIN_ANT_SUPPORT = Plugin("AntSupport", "https://plugins.jetbrains.com/plugin/23025-ant")
+    val PLUGIN_MAVEN = Plugin("org.jetbrains.idea.maven")
+    @JvmStatic
+    val PLUGIN_JAVAEE = Plugin("com.intellij.javaee", "https://plugins.jetbrains.com/plugin/20207-jakarta-ee-platform")
+    @JvmStatic
+    val PLUGIN_JAVAEE_WEB = Plugin("com.intellij.javaee.web", "https://plugins.jetbrains.com/plugin/20216-jakarta-ee-web-servlets")
+    @JvmStatic
+    val PLUGIN_JAVAEE_EL = Plugin("com.intellij.javaee.el", "https://plugins.jetbrains.com/plugin/20208-jakarta-ee-expression-language-el-")
+    @JvmStatic
+    val PLUGIN_SPRING = Plugin("com.intellij.spring", "https://plugins.jetbrains.com/plugin/20221-spring")
+    val PLUGIN_KOTLIN = Plugin("org.jetbrains.kotlin", "https://plugins.jetbrains.com/plugin/6954-kotlin")
+    val PLUGIN_GROOVY = Plugin("org.intellij.groovy", "https://plugins.jetbrains.com/plugin/1524-groovy")
+    val PLUGIN_GRADLE = Plugin("org.jetbrains.plugins.gradle")
+    val PLUGIN_DATABASE = Plugin("com.intellij.database", "https://plugins.jetbrains.com/plugin/10925-database-tools-and-sql-for-webstorm")
+    val PLUGIN_DIAGRAM = Plugin("com.intellij.diagram")
+    val PLUGIN_PROPERTIES = Plugin("com.intellij.properties", "https://plugins.jetbrains.com/plugin/11594-properties")
+    val PLUGIN_COPYRIGHT = Plugin("com.intellij.copyright", "https://plugins.jetbrains.com/plugin/13114-copyright")
     const val SHOW_UNLINKED_GRADLE_POPUP = "show.inlinked.gradle.project.popup"
 
     @JvmStatic
-    fun isPluginActive(id: String) = PluginManagerCore.getPlugin(PluginId.getId(id))
+    fun isPluginActive(plugin: Plugin) = PluginManagerCore.getPlugin(PluginId.getId(plugin.id))
         ?.isEnabled
         ?: false
 
+    fun enablePlugins(pluginIds: Collection<PluginId>) {
+        val pluginManager = PluginManager.getInstance()
+        pluginIds.forEach { pluginManager.enablePlugin(it) }
+
+        ApplicationManager.getApplication()
+            .let { it as? ApplicationEx }
+            ?.restart(true)
+    }
 }

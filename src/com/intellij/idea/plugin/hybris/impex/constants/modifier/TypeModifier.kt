@@ -52,7 +52,7 @@ enum class TypeModifier(
     },
     DISABLE_INTERCEPTOR_BEANS("disable.interceptor.beans") {
         override fun getLookupElements(project: Project): Set<LookupElement> {
-            if (!PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) return emptySet()
+            if (!PluginCommon.isPluginActive(PluginCommon.PLUGIN_SPRING)) return emptySet()
 
             val interceptorClass = JavaPsiFacade.getInstance(project)
                 .findClass(HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING, GlobalSearchScope.allScope(project))

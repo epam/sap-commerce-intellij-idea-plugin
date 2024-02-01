@@ -95,8 +95,6 @@ import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
-import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_PLUGIN_ID;
-import static com.intellij.idea.plugin.hybris.project.utils.PluginCommon.JAVAEE_WEB_PLUGIN_ID;
 
 public class ImportProjectProgressModalWindow extends Task.Modal {
     private static final Logger LOG = Logger.getInstance(ImportProjectProgressModalWindow.class);
@@ -255,13 +253,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private void processUltimateEdition(final @NotNull ProgressIndicator indicator) {
         if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
             indicator.setText(message("hybris.project.import.facets"));
-            if (PluginCommon.isPluginActive(PluginCommon.SPRING_PLUGIN_ID)) {
+            if (PluginCommon.isPluginActive(PluginCommon.getPLUGIN_SPRING())) {
                 this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
             }
-            if (PluginCommon.isPluginActive(JAVAEE_PLUGIN_ID)) {
+            if (PluginCommon.isPluginActive(PluginCommon.getPLUGIN_JAVAEE())) {
                 this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
             }
-            if (PluginCommon.isPluginActive(JAVAEE_WEB_PLUGIN_ID)) {
+            if (PluginCommon.isPluginActive(PluginCommon.getPLUGIN_JAVAEE_WEB())) {
                 this.excludeFrameworkDetection(project, WebFacet.ID);
             }
         }

@@ -68,15 +68,13 @@ object HybrisConstants {
 
     const val IMPEX_CONFIG_PREFIX = "\$config"
     const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
-    const val IMPEX_CATALOG_VERSION_ONLINE = "Online"
-    const val IMPEX_CATALOG_VERSION_STAGED = "Staged"
     const val IMPEX = "ImpEx"
     const val IMPEX_FILE_EXTENSION = "impex"
 
     const val CONSOLE_TITLE_IMPEX = "[y] ImpEx Console"
     const val CONSOLE_TITLE_IMPEX_MONITOR = "[y] Monitor Console"
     const val CONSOLE_TITLE_GROOVY = "[y] Groovy Console"
-    const val CONSOLE_TITLE_FLEXIBLE_SEARCH = "[y] FS Console"
+    const val CONSOLE_TITLE_FLEXIBLE_SEARCH = "[y] FxS Console"
     const val CONSOLE_TITLE_SOLR_SEARCH = "[y] Solr search"
     const val CONSOLE_TITLE_POLYGLOT_QUERY = "[y] PolyglotQuery"
 
