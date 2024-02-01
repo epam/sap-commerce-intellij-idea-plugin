@@ -1233,8 +1233,8 @@
 [#63](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/63),
 [#66](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/66),
 [#60](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60)
-- Added support for the Enum completion in ImpEx/FlexibleSearc
-- Added support for the Relation completion in ImpEx/FlexibleSearc
+- Added support for the Enum completion in ImpEx/FlexibleSearch
+- Added support for the Relation completion in ImpEx/FlexibleSearch
 - Added MapType support for `items.xml`
 - Added postgresql DB mapping
 - Added next `typecode` suggestion via `items.xml` Inspection
