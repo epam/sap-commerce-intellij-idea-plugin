@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.configurators.impl
+package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.database.access.DatabaseCredentials
 import com.intellij.database.autoconfig.DataSourceConfigUtil

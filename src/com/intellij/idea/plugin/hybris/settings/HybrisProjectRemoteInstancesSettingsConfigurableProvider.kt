@@ -54,7 +54,9 @@ class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Proj
             if (!isReset) updateModel(activeHacServerModel, activeHacServerModel.selectedItem as HybrisRemoteConnectionSettings?, data)
         }
 
-        private val solrInstances = RemoteSolrInstancesListPanel(project)
+        private val solrInstances = RemoteSolrInstancesListPanel(project) { _, data ->
+            if (!isReset) updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as HybrisRemoteConnectionSettings?, data)
+        }
 
         override fun createPanel() = panel {
             row {
