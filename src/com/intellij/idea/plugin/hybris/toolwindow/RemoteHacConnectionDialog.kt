@@ -141,10 +141,16 @@ class RemoteHacConnectionDialog(
 
             row {
                 label("Port:")
-                portTextField = intTextField(1..65535)
+                portTextField = textField()
                     .align(AlignX.FILL)
                     .bindText(settings::port.toNonNullableProperty(""))
                     .onChanged { urlPreviewLabel.text = generateUrl() }
+                    .addValidationRule("Port should be blank or in a range of 1..65535.") {
+                        if (it.text.isNullOrBlank()) return@addValidationRule false
+
+                        val intValue = it.text.toIntOrNull() ?: return@addValidationRule true
+                        return@addValidationRule intValue !in 1..65535
+                    }
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
