@@ -71,7 +71,7 @@ class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Proj
                             ?.let { settings -> RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, settings) }
                     }
                     .onIsModified {
-                        (activeSolrServerModel.selectedItem as HybrisRemoteConnectionSettings?)
+                        (activeHacServerModel.selectedItem as HybrisRemoteConnectionSettings?)
                             ?.let { it.uuid != RemoteConnectionUtil.getActiveRemoteConnectionId(project, it.type) }
                             ?: false
                     }
