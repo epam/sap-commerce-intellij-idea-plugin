@@ -18,6 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow
 
+import com.intellij.credentialStore.CredentialAttributes
+import com.intellij.credentialStore.Credentials
+import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
@@ -66,8 +69,7 @@ class RemoteHacConnectionDialog(
                 isSsl = sslProtocolCheckBox.isSelected
                 sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: ""
                 hacWebroot = webrootTextField.text
-                hacLogin = usernameTextField.text
-                hacPassword = String(passwordTextField.password)
+                credentials = Credentials(usernameTextField.text, String(passwordTextField.password))
                 this
             }
 
@@ -188,7 +190,7 @@ class RemoteHacConnectionDialog(
                 label("Username:")
                 usernameTextField = textField()
                     .align(AlignX.FILL)
-                    .bindText(settings::hacLogin.toNonNullableProperty("admin"))
+                    .enabled(false)
                     .addValidationRule("Username cannot be blank.") { it.text.isNullOrBlank() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -198,23 +200,6 @@ class RemoteHacConnectionDialog(
                 passwordTextField = passwordField()
                     .align(AlignX.FILL)
                     .enabled(false)
-                    .applyToComponent {
-                        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving password", false) {
-                            private var password: String? = null
-                            override fun run(indicator: ProgressIndicator) {
-                                password = settings.hacPassword
-                                passwordTextField.text = password
-                                passwordTextField.isEnabled = true
-                            }
-                        })
-                    }
-                    .onApply {
-                        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Persisting password", false) {
-                            override fun run(indicator: ProgressIndicator) {
-                                settings.hacPassword = String(passwordTextField.password)
-                            }
-                        })
-                    }
                     .addValidationRule("Password cannot be blank.") { it.password.isEmpty() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -229,6 +214,13 @@ class RemoteHacConnectionDialog(
     override fun applyFields() {
         super.applyFields()
 
+        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Persisting credentials", false) {
+            override fun run(indicator: ProgressIndicator) {
+                val credentialAttributes = CredentialAttributes("SAP CX - ${settings.uuid}")
+                PasswordSafe.instance.set(credentialAttributes, Credentials(usernameTextField.text, String(passwordTextField.password)))
+            }
+        })
+
         // change of the scope
         if (settings.uuid != null && originalScope != settings.scope) {
             RemoteConnectionUtil.changeRemoteConnectionScope(project, settings, originalScope)
@@ -237,7 +229,20 @@ class RemoteHacConnectionDialog(
 
     override fun createCenterPanel() = with(panel) {
         border = JBUI.Borders.empty(16)
+        loadCredentials()
         this
+    }
+
+    private fun loadCredentials() {
+        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving credentials", false) {
+            override fun run(indicator: ProgressIndicator) {
+                passwordTextField.text = settings.password
+                passwordTextField.isEnabled = true
+
+                usernameTextField.text = settings.username
+                usernameTextField.isEnabled = true
+            }
+        })
     }
 
     override fun createLeftSideActions() = arrayOf(testConnectionButton)

@@ -148,7 +148,7 @@ class HacChooseConnectionAction : ActionGroup() {
         override fun onChosen(selectedValue: ListItem?, finalChoice: Boolean): PopupStep<*>? = super.doFinalStep() {
             when (selectedValue) {
                 is CreateConnectionItem -> {
-                    val settings = RemoteConnectionUtil.getDefaultRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+                    val settings = RemoteConnectionUtil.createDefaultRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
                     if (RemoteHacConnectionDialog(project, owner, settings).showAndGet()) {
                         RemoteConnectionUtil.addRemoteConnection(project, settings)
                     }

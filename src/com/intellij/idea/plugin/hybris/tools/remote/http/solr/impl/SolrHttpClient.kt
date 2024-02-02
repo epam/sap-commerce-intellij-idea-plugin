@@ -50,12 +50,12 @@ class SolrHttpClient {
 
     fun executeSolrQuery(project: Project, queryObject: SolrQueryObject) = executeSolrQuery(solrConnectionSettings(project), queryObject)
 
-    private fun coresData(solrConnectionSettings: HybrisRemoteConnectionSettings) = CoreAdminRequest()
+    private fun coresData(settings: HybrisRemoteConnectionSettings) = CoreAdminRequest()
         .apply {
             setAction(CoreAdminParams.CoreAdminAction.STATUS)
-            setBasicAuthCredentials(solrConnectionSettings.adminLogin, solrConnectionSettings.adminPassword)
+            setBasicAuthCredentials(settings.username, settings.password)
         }
-        .runCatching { process(buildHttpSolrClient(solrConnectionSettings.generatedURL)) }
+        .runCatching { process(buildHttpSolrClient(settings.generatedURL)) }
         .map { parseCoreResponse(it) }
         .getOrElse {
             throw it
@@ -98,7 +98,7 @@ class SolrHttpClient {
     private fun resultBuilder() = HybrisHttpResult.HybrisHttpResultBuilder.createResult()
 
     private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: HybrisRemoteConnectionSettings) = QueryRequest(solrQuery).apply {
-        setBasicAuthCredentials(solrConnectionSettings.adminLogin, solrConnectionSettings.adminPassword)
+        setBasicAuthCredentials(solrConnectionSettings.username, solrConnectionSettings.password)
         method = SolrRequest.METHOD.POST
         // https://issues.apache.org/jira/browse/SOLR-5530
         // https://stackoverflow.com/questions/28374428/return-solr-response-in-json-format/37212234#37212234

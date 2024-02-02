@@ -108,8 +108,8 @@ public abstract class AbstractHybrisHacHttpClient {
         }
         final var csrfToken = getCsrfToken(hostHacURL, sessionId, settings);
         final var params = List.of(
-            new BasicNameValuePair("j_username", settings.getHacLogin()),
-            new BasicNameValuePair("j_password", settings.getHacPassword()),
+            new BasicNameValuePair("j_username", settings.getUsername()),
+            new BasicNameValuePair("j_password", settings.getPassword()),
             new BasicNameValuePair("_csrf", csrfToken)
         );
         final var loginURL = hostHacURL + "/j_spring_security_check";

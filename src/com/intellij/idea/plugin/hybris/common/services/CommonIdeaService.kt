@@ -77,7 +77,7 @@ class CommonIdeaService {
             val remoteConnections = RemoteConnectionUtil.getRemoteConnections(project, it)
 
             if (remoteConnections.isEmpty()) {
-                val settings = RemoteConnectionUtil.getDefaultRemoteConnectionSettings(project, it)
+                val settings = RemoteConnectionUtil.createDefaultRemoteConnectionSettings(project, it)
                 RemoteConnectionUtil.addRemoteConnection(project, settings)
                 RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, settings)
             } else {

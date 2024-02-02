@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.credentialStore.CredentialAttributes
+import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
@@ -26,10 +27,13 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.openapi.components.BaseState
 import com.intellij.util.xmlb.Accessor
+import com.intellij.util.xmlb.annotations.Transient
 
 class HybrisRemoteConnectionSettings : BaseState(), Comparable<HybrisRemoteConnectionSettings> {
 
     var uuid by string(null)
+    @Transient
+    var credentials: Credentials? = null
     var displayName by string(null)
     var scope by property(RemoteConnectionScope.PROJECT_PERSONAL) { false }
     var type by property(RemoteConnectionType.Hybris) { false }
@@ -37,31 +41,23 @@ class HybrisRemoteConnectionSettings : BaseState(), Comparable<HybrisRemoteConne
     var port by string(null)
     var isSsl by property(true)
     var sslProtocol by string(HybrisConstants.DEFAULT_SSL_PROTOCOL)
-    var adminLogin by string(null)
-    var adminPassword: String?
-        set(value) {
-            val credentialAttributes = CredentialAttributes("SAP CX - $uuid", hacLogin)
-            PasswordSafe.instance.setPassword(credentialAttributes, value)
-        }
-        get() {
-            val credentialAttributes = CredentialAttributes("SAP CX - $uuid", hacLogin)
-            return PasswordSafe.instance.getPassword(credentialAttributes)
-                ?: if (type == RemoteConnectionType.Hybris) "nimda"
-                else "server123"
-        }
+
     var solrWebroot by string("solr")
     var hacWebroot by string("")
-    var hacLogin by string("admin")
-    var hacPassword: String
-        set(value) {
-            val credentialAttributes = CredentialAttributes("SAP CX - $uuid", hacLogin)
-            PasswordSafe.instance.setPassword(credentialAttributes, value)
-        }
-        get() {
-            val credentialAttributes = CredentialAttributes("SAP CX - $uuid", hacLogin)
-            return PasswordSafe.instance.getPassword(credentialAttributes)
-                ?: "nimda"
-        }
+
+    val username: String
+        get() = credentials?.userName
+            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+                ?.userName
+            ?: if (type == RemoteConnectionType.Hybris) "admin"
+            else "solrserver"
+    val password: String
+        get() = credentials?.getPasswordAsString()
+            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+                ?.getPasswordAsString()
+            ?: if (type == RemoteConnectionType.Hybris) "nimda"
+            else "server123"
+
     val generatedURL: String
         get() {
             return when (type) {
@@ -78,8 +74,9 @@ class HybrisRemoteConnectionSettings : BaseState(), Comparable<HybrisRemoteConne
         )
         .let { scope.shortTitle + " : " + it }
 
-    override fun accepts(accessor: Accessor, bean: Any) = accessor.name != "adminPassword"
-        && accessor.name != "hacPassword"
+    override fun accepts(accessor: Accessor, bean: Any) = accessor.name != "credentials"
+        && accessor.name != "username"
+        && accessor.name != "password"
         && accessor.name != "scope"
 
     override fun compareTo(other: HybrisRemoteConnectionSettings) = uuid

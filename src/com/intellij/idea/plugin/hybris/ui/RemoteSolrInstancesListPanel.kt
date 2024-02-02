@@ -38,7 +38,7 @@ class RemoteSolrInstancesListPanel(
     }
 
     public override fun addItem() {
-        val item = RemoteConnectionUtil.getDefaultRemoteConnectionSettings(myProject, RemoteConnectionType.SOLR)
+        val item = RemoteConnectionUtil.createDefaultRemoteConnectionSettings(myProject, RemoteConnectionType.SOLR)
         val dialog = RemoteSolrConnectionDialog(myProject, this, item)
         if (dialog.showAndGet()) {
             addElement(item)

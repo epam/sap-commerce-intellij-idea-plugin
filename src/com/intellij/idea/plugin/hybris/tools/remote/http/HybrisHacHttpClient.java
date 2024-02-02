@@ -170,7 +170,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             new BasicNameValuePair("flexibleSearchQuery", isPlainSQL ? "" : content),
             new BasicNameValuePair("sqlQuery", isPlainSQL ? content : ""),
             new BasicNameValuePair("maxCount", maxRows),
-            new BasicNameValuePair("user", settings.getHacLogin())
+            new BasicNameValuePair("user", settings.getUsername())
 //            new BasicNameValuePair("dataSource", "master"),
 //            new BasicNameValuePair("locale", "en")
         );

@@ -9,6 +9,7 @@
 - Redesign HAC connection settings and rely on `PasswordSafe` to store passwords [#968](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/968) | [#986](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/986) | [#987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/987)
 - Redesign SOLR connection settings and rely on `PasswordSafe` to store passwords [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971) | [#985](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/985)
 - Focus connection name field on dialog show [#972](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/972)
+- Store connection credentials in the [Sensitive Storage](https://plugins.jetbrains.com/docs/intellij/persisting-sensitive-data.html#storage) [#988](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/988)
 
 ### `Project Import` enhancements
 - Redesigned `check required plugins` import step [#983](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/983)

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote
 
 import ai.grazie.utils.toLinkedSet
+import com.intellij.credentialStore.Credentials
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
@@ -57,7 +58,7 @@ object RemoteConnectionUtil {
 
     fun getActiveRemoteConnectionSettings(project: Project, type: RemoteConnectionType): HybrisRemoteConnectionSettings {
         val instances = getRemoteConnections(project, type)
-        if (instances.isEmpty()) return getDefaultRemoteConnectionSettings(project, type)
+        if (instances.isEmpty()) return createDefaultRemoteConnectionSettings(project, type)
 
         val id = getActiveRemoteConnectionId(project, type)
 
@@ -74,21 +75,26 @@ object RemoteConnectionUtil {
             }
         }
 
-    fun getDefaultRemoteConnectionSettings(project: Project, type: RemoteConnectionType) = HybrisRemoteConnectionSettings()
+    fun createDefaultRemoteConnectionSettings(project: Project, type: RemoteConnectionType) = HybrisRemoteConnectionSettings()
         .also {
             it.type = type
             when (type) {
                 RemoteConnectionType.Hybris -> {
                     it.port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_TOMCAT_SSL_PORT, "9002")
                     it.hacWebroot = getPropertyOrDefault(project, HybrisConstants.PROPERTY_HAC_WEBROOT, "")
-                    it.hacPassword = getPropertyOrDefault(project, HybrisConstants.PROPERTY_ADMIN_INITIAL_PASSWORD, "nimda")
                     it.sslProtocol = HybrisConstants.DEFAULT_SSL_PROTOCOL
+                    it.credentials = Credentials(
+                        "admin",
+                        getPropertyOrDefault(project, HybrisConstants.PROPERTY_ADMIN_INITIAL_PASSWORD, "nimda")
+                    )
                 }
 
                 RemoteConnectionType.SOLR -> {
                     it.port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PORT, "8983")
-                    it.adminLogin = getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver")
-                    it.adminPassword = getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123")
+                    it.credentials = Credentials(
+                        getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_USER, "solrserver"),
+                        getPropertyOrDefault(project, HybrisConstants.PROPERTY_SOLR_DEFAULT_PASSWORD, "server123")
+                    )
                 }
             }
         }
@@ -127,7 +133,7 @@ object RemoteConnectionUtil {
             .remoteConnectionSettingsList
             .removeIf { it.type == type }
 
-        if (settings.isEmpty()) addRemoteConnection(project, getDefaultRemoteConnectionSettings(project, type))
+        if (settings.isEmpty()) addRemoteConnection(project, createDefaultRemoteConnectionSettings(project, type))
         else settings.forEach { addRemoteConnection(project, it) }
     }
 
