@@ -16,6 +16,7 @@
 ### `Project Import` enhancements
 - Redesigned `check required plugins` import step [#983](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/983)
 - Added web links to missing plugins on `check required plugins` import step [#984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/984)
+- Update platform and javadoc version on project refresh [#991](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/991)
 
 ### Other
 - IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966)

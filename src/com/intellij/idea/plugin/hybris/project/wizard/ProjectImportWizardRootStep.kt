@@ -32,6 +32,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBScrollPane
@@ -440,8 +441,14 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         context.cleanup()
 
         with(context.getHybrisProjectDescriptor()) {
-            this.javadocUrl = settings.javadocUrl
-            this.hybrisVersion = settings.hybrisVersion
+            this.hybrisVersion = project?.basePath
+                ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), false) }
+                ?: settings.hybrisVersion
+            this.javadocUrl = project?.basePath
+                ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), true) }
+                ?.let { getDefaultJavadocUrl(it) }
+                ?.takeIf { it.isNotBlank() }
+                ?: settings.javadocUrl
             this.sourceCodeFile = FileUtils.toFile(settings.sourceCodeFile, true)
             this.externalExtensionsDirectory = FileUtils.toFile(settings.externalExtensionsDirectory, true)
             this.externalConfigDirectory = FileUtils.toFile(settings.externalConfigDirectory, true)
