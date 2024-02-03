@@ -25,9 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.ui.ColorUtil
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
@@ -52,25 +50,8 @@ class RemoteHacConnectionDialog(
         this
     }
 
-    override fun testConnection(testSettings: HybrisRemoteConnectionSettings) {
-        val httpClient = HybrisHacHttpClient.getInstance(project)
-        val errorMessage = httpClient.login(project, testSettings)
-
-        with(testConnectionLabel) {
-            if (errorMessage.isEmpty()) {
-                component.text = "Successfully connected to remote host with provided details."
-                component.foreground = ColorUtil.darker(JBColor.GREEN, 5)
-            } else {
-                component.text = "The host cannot be reached. Check the address and credentials."
-                component.foreground = ColorUtil.darker(JBColor.RED, 3)
-
-                with(testConnectionComment) {
-                    text(errorMessage)
-                    visible(true)
-                }
-            }
-        }
-    }
+    override fun testConnection(testSettings: HybrisRemoteConnectionSettings): String = HybrisHacHttpClient.getInstance(project)
+        .login(project, testSettings)
 
     override fun panel() = panel {
         row {

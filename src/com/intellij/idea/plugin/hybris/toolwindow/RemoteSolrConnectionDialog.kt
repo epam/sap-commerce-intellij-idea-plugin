@@ -24,9 +24,7 @@ import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
 import com.intellij.openapi.project.Project
-import com.intellij.ui.ColorUtil
 import com.intellij.ui.EnumComboBoxModel
-import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
 import java.awt.Component
@@ -149,25 +147,12 @@ class RemoteSolrConnectionDialog(
         this
     }
 
-    override fun testConnection(testSettings: HybrisRemoteConnectionSettings) {
-        with(testConnectionLabel) {
-            try {
-                SolrHttpClient.getInstance(project).listOfCores(testSettings)
+    override fun testConnection(testSettings: HybrisRemoteConnectionSettings): String? = try {
+        SolrHttpClient.getInstance(project).listOfCores(testSettings)
 
-                component.text = "Successfully connected to remote host with provided details."
-                component.foreground = ColorUtil.darker(JBColor.GREEN, 5)
-            } catch (e: Exception) {
-                component.text = "The host cannot be reached. Check the address and credentials."
-                component.foreground = ColorUtil.darker(JBColor.RED, 3)
-
-                e.message?.let {
-                    with(testConnectionComment) {
-                        text(it)
-                        visible(true)
-                    }
-                }
-            }
-        }
+        null
+    } catch (e: Exception) {
+        e.message ?: ""
     }
 
 }

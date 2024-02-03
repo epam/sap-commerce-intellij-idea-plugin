@@ -31,10 +31,13 @@ import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.ColorUtil
+import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.Cell
+import com.intellij.ui.dsl.builder.text
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.ui.JBUI
 import java.awt.Component
@@ -80,10 +83,25 @@ abstract class AbstractRemoteConnectionDialog(
             }
 
             ReadAction
-                .nonBlocking<Unit> {
+                .nonBlocking<String?> {
                     testConnection(createTestSettings())
                 }
                 .finishOnUiThread(ModalityState.defaultModalityState()) {
+                    with(testConnectionLabel) {
+                        if (it.isNullOrBlank()) {
+                            component.text = "Successfully connected to remote host with provided details."
+                            component.foreground = ColorUtil.darker(JBColor.GREEN, 5)
+                        } else {
+                            component.text = "The host cannot be reached. Check the address and credentials."
+                            component.foreground = ColorUtil.darker(JBColor.RED, 3)
+
+                            with(testConnectionComment) {
+                                text(it)
+                                visible(true)
+                            }
+                        }
+                    }
+
                     this.isEnabled = true
                 }
                 .submit(AppExecutorUtil.getAppExecutorService())
@@ -91,7 +109,7 @@ abstract class AbstractRemoteConnectionDialog(
     }
 
     protected abstract fun createTestSettings(): HybrisRemoteConnectionSettings
-    protected abstract fun testConnection(testSettings: HybrisRemoteConnectionSettings)
+    protected abstract fun testConnection(testSettings: HybrisRemoteConnectionSettings): String?
     protected abstract fun panel(): DialogPanel
 
     init {
