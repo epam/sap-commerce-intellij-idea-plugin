@@ -22,20 +22,19 @@ import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.ColorUtil
 import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBPasswordField
@@ -47,6 +46,7 @@ import java.awt.Component
 import java.awt.event.ActionEvent
 import java.io.Serial
 import javax.swing.Action
+import javax.swing.JEditorPane
 import javax.swing.JLabel
 
 class RemoteHacConnectionDialog(
@@ -62,6 +62,17 @@ class RemoteHacConnectionDialog(
         private val serialVersionUID: Long = 7851071514284300449L
 
         override fun doAction(e: ActionEvent?) {
+            this.isEnabled = false
+            with(testConnectionLabel) {
+                visible(true)
+
+                component.text = "Executing test connection to remote host..."
+                component.foreground = JBColor.LIGHT_GRAY
+            }
+            with(testConnectionComment) {
+                visible(false)
+            }
+
             val testSettings = with(HybrisRemoteConnectionSettings()) {
                 type = settings.type
                 hostIP = hostTextField.text
@@ -76,18 +87,22 @@ class RemoteHacConnectionDialog(
             val httpClient = HybrisHacHttpClient.getInstance(project)
             val errorMessage = httpClient.login(project, testSettings)
 
-            val type: NotificationType
-            val message: String
-            if (errorMessage.isEmpty()) {
-                message = message("hybris.toolwindow.hac.test.connection.success", "hac", testSettings.generatedURL)
-                type = NotificationType.INFORMATION
-            } else {
-                type = NotificationType.WARNING
-                message = message("hybris.toolwindow.hac.test.connection.fail", testSettings.generatedURL, errorMessage)
+            with(testConnectionLabel) {
+                if (errorMessage.isEmpty()) {
+                    component.text = "Successfully connected to remote host with provided details."
+                    component.foreground = ColorUtil.darker(JBColor.GREEN, 5)
+                } else {
+                    component.text = "The host cannot be reached. Check the address and credentials."
+                    component.foreground = ColorUtil.darker(JBColor.RED, 3)
+
+                    with(testConnectionComment) {
+                        text(errorMessage)
+                        visible(true)
+                    }
+                }
             }
 
-            Notifications.create(type, message("hybris.notification.toolwindow.hac.test.connection.title"), message)
-                .notify(project)
+            this.isEnabled = true
         }
     }
 
@@ -100,6 +115,9 @@ class RemoteHacConnectionDialog(
     private lateinit var usernameTextField: JBTextField
     private lateinit var passwordTextField: JBPasswordField
     private lateinit var urlPreviewLabel: JLabel
+    private lateinit var testConnectionLabel: Cell<JLabel>
+    private lateinit var testConnectionComment: Cell<JEditorPane>
+
     private val panel = panel {
         row {
             label("Connection name:")
@@ -126,6 +144,14 @@ class RemoteHacConnectionDialog(
                     .bold()
                     .align(AlignX.FILL)
                     .component
+            }
+            row {
+                testConnectionLabel = label("")
+                    .visible(false)
+            }
+            row {
+                testConnectionComment = comment("")
+                    .visible(false)
             }
         }
 
