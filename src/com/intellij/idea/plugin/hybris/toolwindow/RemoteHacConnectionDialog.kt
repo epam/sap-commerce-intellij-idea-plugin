@@ -18,107 +18,61 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow
 
-import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
-import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBPasswordField
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
-import com.intellij.util.ui.JBUI
 import java.awt.Component
-import java.awt.event.ActionEvent
-import java.io.Serial
-import javax.swing.Action
-import javax.swing.JEditorPane
-import javax.swing.JLabel
 
 class RemoteHacConnectionDialog(
-    private val project: Project,
+    project: Project,
     parentComponent: Component,
-    private val settings: HybrisRemoteConnectionSettings
-) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE) {
+    settings: HybrisRemoteConnectionSettings
+) : AbstractRemoteConnectionDialog(project, parentComponent, settings, "Remote SAP Commerce Instance") {
 
-    private val originalScope = settings.scope
-    private val testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
+    private lateinit var sslProtocolComboBox: ComboBox<String>
 
-        @Serial
-        private val serialVersionUID: Long = 7851071514284300449L
+    override fun createTestSettings() = with(HybrisRemoteConnectionSettings()) {
+        type = settings.type
+        hostIP = hostTextField.text
+        port = portTextField.text
+        isSsl = sslProtocolCheckBox.isSelected
+        sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: ""
+        hacWebroot = webrootTextField.text
+        credentials = Credentials(usernameTextField.text, String(passwordTextField.password))
+        this
+    }
 
-        override fun doAction(e: ActionEvent?) {
-            this.isEnabled = false
-            with(testConnectionLabel) {
-                visible(true)
+    override fun testConnection(testSettings: HybrisRemoteConnectionSettings) {
+        val httpClient = HybrisHacHttpClient.getInstance(project)
+        val errorMessage = httpClient.login(project, testSettings)
 
-                component.text = "Executing test connection to remote host..."
-                component.foreground = JBColor.LIGHT_GRAY
-            }
-            with(testConnectionComment) {
-                visible(false)
-            }
+        with(testConnectionLabel) {
+            if (errorMessage.isEmpty()) {
+                component.text = "Successfully connected to remote host with provided details."
+                component.foreground = ColorUtil.darker(JBColor.GREEN, 5)
+            } else {
+                component.text = "The host cannot be reached. Check the address and credentials."
+                component.foreground = ColorUtil.darker(JBColor.RED, 3)
 
-            val testSettings = with(HybrisRemoteConnectionSettings()) {
-                type = settings.type
-                hostIP = hostTextField.text
-                port = portTextField.text
-                isSsl = sslProtocolCheckBox.isSelected
-                sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: ""
-                hacWebroot = webrootTextField.text
-                credentials = Credentials(usernameTextField.text, String(passwordTextField.password))
-                this
-            }
-
-            val httpClient = HybrisHacHttpClient.getInstance(project)
-            val errorMessage = httpClient.login(project, testSettings)
-
-            with(testConnectionLabel) {
-                if (errorMessage.isEmpty()) {
-                    component.text = "Successfully connected to remote host with provided details."
-                    component.foreground = ColorUtil.darker(JBColor.GREEN, 5)
-                } else {
-                    component.text = "The host cannot be reached. Check the address and credentials."
-                    component.foreground = ColorUtil.darker(JBColor.RED, 3)
-
-                    with(testConnectionComment) {
-                        text(errorMessage)
-                        visible(true)
-                    }
+                with(testConnectionComment) {
+                    text(errorMessage)
+                    visible(true)
                 }
             }
-
-            this.isEnabled = true
         }
     }
 
-    private lateinit var connectionNameTextField: JBTextField
-    private lateinit var hostTextField: JBTextField
-    private lateinit var portTextField: JBTextField
-    private lateinit var sslProtocolCheckBox: JBCheckBox
-    private lateinit var sslProtocolComboBox: ComboBox<String>
-    private lateinit var webrootTextField: JBTextField
-    private lateinit var usernameTextField: JBTextField
-    private lateinit var passwordTextField: JBPasswordField
-    private lateinit var urlPreviewLabel: JLabel
-    private lateinit var testConnectionLabel: Cell<JLabel>
-    private lateinit var testConnectionComment: Cell<JEditorPane>
-
-    private val panel = panel {
+    override fun panel() = panel {
         row {
             label("Connection name:")
                 .bold()
@@ -231,55 +185,5 @@ class RemoteHacConnectionDialog(
             }.layout(RowLayout.PARENT_GRID)
         }
     }
-
-    init {
-        title = "Remote SAP Commerce Instance"
-        super.init()
-    }
-
-    override fun applyFields() {
-        super.applyFields()
-
-        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Persisting credentials", false) {
-            override fun run(indicator: ProgressIndicator) {
-                val credentialAttributes = CredentialAttributes("SAP CX - ${settings.uuid}")
-                PasswordSafe.instance.set(credentialAttributes, Credentials(usernameTextField.text, String(passwordTextField.password)))
-            }
-        })
-
-        // change of the scope
-        if (settings.uuid != null && originalScope != settings.scope) {
-            RemoteConnectionUtil.changeRemoteConnectionScope(project, settings, originalScope)
-        }
-    }
-
-    override fun createCenterPanel() = with(panel) {
-        border = JBUI.Borders.empty(16)
-        loadCredentials()
-        this
-    }
-
-    private fun loadCredentials() {
-        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving credentials", false) {
-            override fun run(indicator: ProgressIndicator) {
-                passwordTextField.text = settings.password
-                passwordTextField.isEnabled = true
-
-                usernameTextField.text = settings.username
-                usernameTextField.isEnabled = true
-            }
-        })
-    }
-
-    override fun createLeftSideActions() = arrayOf(testConnectionButton)
-    override fun getStyle() = DialogStyle.COMPACT
-    override fun getPreferredFocusedComponent() = connectionNameTextField
-
-    private fun generateUrl() = RemoteConnectionUtil.generateUrl(
-        sslProtocolCheckBox.isSelected,
-        hostTextField.text,
-        portTextField.text,
-        webrootTextField.text
-    )
 
 }

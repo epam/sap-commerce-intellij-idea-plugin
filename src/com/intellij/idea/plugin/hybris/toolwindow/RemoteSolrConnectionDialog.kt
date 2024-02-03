@@ -18,85 +18,26 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow
 
-import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
-import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
-import com.intellij.notification.NotificationType
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.ColorUtil
 import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBPasswordField
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
-import com.intellij.util.ui.JBUI
 import java.awt.Component
-import java.awt.event.ActionEvent
-import java.io.Serial
-import javax.swing.Action
-import javax.swing.JLabel
 
 class RemoteSolrConnectionDialog(
-    private val project: Project,
+    project: Project,
     parentComponent: Component,
-    private val settings: HybrisRemoteConnectionSettings
-) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE) {
+    settings: HybrisRemoteConnectionSettings
+) : AbstractRemoteConnectionDialog(project, parentComponent, settings, "Remote SOLR Instance") {
 
-
-    private val originalScope = settings.scope
-    private val testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
-
-        @Serial
-        private val serialVersionUID: Long = 7851071514284300449L
-
-        override fun doAction(e: ActionEvent?) {
-            val testSettings = with(HybrisRemoteConnectionSettings()) {
-                type = settings.type
-                hostIP = hostTextField.text
-                port = portTextField.text
-                isSsl = sslProtocolCheckBox.isSelected
-                solrWebroot = webrootTextField.text
-                credentials = Credentials(usernameTextField.text, String(passwordTextField.password))
-                this
-            }
-
-            var type: NotificationType
-            var message: String
-
-            try {
-                SolrHttpClient.getInstance(project).listOfCores(testSettings)
-                message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.success", "SOLR", testSettings.generatedURL)
-                type = NotificationType.INFORMATION
-            } catch (e: Exception) {
-                type = NotificationType.WARNING
-                message = HybrisI18NBundleUtils.message("hybris.toolwindow.hac.test.connection.fail", testSettings.generatedURL, e.message ?: "")
-            }
-
-            Notifications.create(type, HybrisI18NBundleUtils.message("hybris.notification.toolwindow.hac.test.connection.title"), message)
-                .notify(project)
-        }
-    }
-
-    private lateinit var connectionNameTextField: JBTextField
-    private lateinit var hostTextField: JBTextField
-    private lateinit var portTextField: JBTextField
-    private lateinit var sslProtocolCheckBox: JBCheckBox
-    private lateinit var webrootTextField: JBTextField
-    private lateinit var usernameTextField: JBTextField
-    private lateinit var passwordTextField: JBPasswordField
-    private lateinit var urlPreviewLabel: JLabel
-    private val panel = panel {
+    override fun panel() = panel {
         row {
             label("Connection name:")
                 .bold()
@@ -122,6 +63,14 @@ class RemoteSolrConnectionDialog(
                     .bold()
                     .align(AlignX.FILL)
                     .component
+            }
+            row {
+                testConnectionLabel = label("")
+                    .visible(false)
+            }
+            row {
+                testConnectionComment = comment("")
+                    .visible(false)
             }
         }
 
@@ -190,53 +139,35 @@ class RemoteSolrConnectionDialog(
         }
     }
 
-    init {
-        title = "Remote SOLR Instance"
-        super.init()
-    }
-
-    override fun applyFields() {
-        super.applyFields()
-
-        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Persisting credentials", false) {
-            override fun run(indicator: ProgressIndicator) {
-                val credentialAttributes = CredentialAttributes("SAP CX - ${settings.uuid}")
-                PasswordSafe.instance.set(credentialAttributes, Credentials(usernameTextField.text, String(passwordTextField.password)))
-            }
-        })
-
-        // change of the scope
-        if (settings.uuid != null && originalScope != settings.scope) {
-            RemoteConnectionUtil.changeRemoteConnectionScope(project, settings, originalScope)
-        }
-    }
-
-    override fun createCenterPanel() = with(panel) {
-        border = JBUI.Borders.empty(16)
-        loadCredentials()
+    override fun createTestSettings() = with(HybrisRemoteConnectionSettings()) {
+        type = settings.type
+        hostIP = hostTextField.text
+        port = portTextField.text
+        isSsl = sslProtocolCheckBox.isSelected
+        solrWebroot = webrootTextField.text
+        credentials = Credentials(usernameTextField.text, String(passwordTextField.password))
         this
     }
 
-    private fun loadCredentials() {
-        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving credentials", false) {
-            override fun run(indicator: ProgressIndicator) {
-                passwordTextField.text = settings.password
-                passwordTextField.isEnabled = true
+    override fun testConnection(testSettings: HybrisRemoteConnectionSettings) {
+        with(testConnectionLabel) {
+            try {
+                SolrHttpClient.getInstance(project).listOfCores(testSettings)
 
-                usernameTextField.text = settings.username
-                usernameTextField.isEnabled = true
+                component.text = "Successfully connected to remote host with provided details."
+                component.foreground = ColorUtil.darker(JBColor.GREEN, 5)
+            } catch (e: Exception) {
+                component.text = "The host cannot be reached. Check the address and credentials."
+                component.foreground = ColorUtil.darker(JBColor.RED, 3)
+
+                e.message?.let {
+                    with(testConnectionComment) {
+                        text(it)
+                        visible(true)
+                    }
+                }
             }
-        })
+        }
     }
 
-    override fun createLeftSideActions() = arrayOf(testConnectionButton)
-    override fun getStyle() = DialogStyle.COMPACT
-    override fun getPreferredFocusedComponent() = connectionNameTextField
-
-    private fun generateUrl() = RemoteConnectionUtil.generateUrl(
-        sslProtocolCheckBox.isSelected,
-        hostTextField.text,
-        portTextField.text,
-        webrootTextField.text
-    )
 }
