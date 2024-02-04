@@ -13,7 +13,7 @@
 
 - Alexander Bartash
 - Vlad Bozhenok
-- Martin Zdarsky--Jones 
+- Martin Zdarsky-Jones 
 - Alexander Nosov 
 - Eugene Kudelevsky
 - Cristian Caprar 
@@ -42,3 +42,4 @@
 - Andrei Lisetskii
 - Eugeni Kalenchuk
 - Stefan Kruk
+- Yury Bich

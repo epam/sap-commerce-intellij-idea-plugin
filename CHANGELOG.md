@@ -18,6 +18,9 @@
 - Added web links to missing plugins on `check required plugins` import step [#984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/984)
 - Update platform and javadoc version on project refresh [#991](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/991)
 
+### `ImpEx` enhancements
+- Inject `FlexibleSearch` language into suitable ImpExValue elements [#992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/992)
+
 ### Other
 - IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966)
 - Updated gradle wrapper to 8.5 [#969](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/969)

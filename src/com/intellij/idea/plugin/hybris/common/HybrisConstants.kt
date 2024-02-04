@@ -554,8 +554,6 @@ object HybrisConstants {
     @JvmField
     val BACKOFFICE_JAR_PATH = FileUtilRt.toSystemDependentName("resources/backoffice")
 
-    const val QUERY_STORAGE_FOLDER_PATH = "consolestorage"
-
     @JvmField
     val SRC_DIR_NAMES = listOf(SRC_DIRECTORY, GROOVY_SRC_DIRECTORY, KOTLIN_SRC_DIRECTORY, SCALA_SRC_DIRECTORY)
 

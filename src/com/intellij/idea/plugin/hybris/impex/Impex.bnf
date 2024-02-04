@@ -240,6 +240,10 @@ value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
 
 value ::= (MULTILINE_SEPARATOR? value_dec)+
     | (FIELD_VALUE_IGNORE | FIELD_VALUE_NULL)
+{
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexValueMixin"
+    methods=[getValueGroup]
+}
 
 private value_dec ::= FIELD_VALUE
     | FIELD_VALUE_PASSWORD_ENCODING_PREFIX

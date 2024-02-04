@@ -33,4 +33,7 @@ public interface ImpexValue extends PsiElement {
   @NotNull
   List<ImpexString> getStringList();
 
+  @Nullable
+  ImpexValueGroup getValueGroup();
+
 }

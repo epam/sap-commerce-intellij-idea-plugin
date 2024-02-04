@@ -22,10 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
+import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjectorProvider
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
 import com.intellij.lang.Language
@@ -46,14 +43,30 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        if (host !is ImpexString) return
+        val valueGroup: ImpexValueGroup?
+        val expression: String
+        val quoteLength: Int
 
-        val expression = StringUtil.unquoteString(host.getText()).lowercase(Locale.getDefault())
+        when (host) {
+            is ImpexString -> {
+                valueGroup = host.valueGroup
+                expression = StringUtil.unquoteString(host.getText()).lowercase(Locale.getDefault())
+                quoteLength = 1
+            }
+
+            is ImpexValue -> {
+                valueGroup = host.valueGroup
+                expression = host.getText().lowercase(Locale.getDefault())
+                quoteLength = 0
+            }
+
+            else -> return
+        }
 
         // do not inject executable statement
-        if (expression.startsWith("#%")) return
+        if (expression.trim().startsWith("#%")) return
 
-        val valueLine = host.valueGroup
+        val valueLine = valueGroup
             ?.valueLine
 
         valueLine
@@ -64,17 +77,18 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
                     ?.textMatches(HybrisConstants.TS_TYPE_SEARCH_RESTRICTION)
                     ?: false
             }
-            ?.let { tryInjectSearchRestriction(valueLine, it, injectionPlacesRegistrar, host, expression) }
-            ?: injectSimple(injectionPlacesRegistrar, host, expression)
+            ?.let { tryInjectSearchRestriction(valueLine, it, injectionPlacesRegistrar, host, expression, quoteLength) }
+            ?: injectSimple(injectionPlacesRegistrar, host, expression, quoteLength)
     }
 
     private fun injectSimple(
         injectionPlacesRegistrar: InjectedLanguagePlaces,
         host: PsiLanguageInjectionHost,
-        expression: String
+        expression: String,
+        quoteLength: Int
     ) {
         if (FxSUtils.isFlexibleSearchQuery(expression)) {
-            registerInjectionPlace(injectionPlacesRegistrar, host)
+            registerInjectionPlace(injectionPlacesRegistrar, host, quoteLength = quoteLength)
         }
     }
 
@@ -83,7 +97,8 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
         headerLine: ImpexHeaderLine,
         injectionPlacesRegistrar: InjectedLanguagePlaces,
         host: PsiLanguageInjectionHost,
-        expression: String
+        expression: String,
+        quoteLength: Int
     ) {
         // inject only into `query` column
         host.parentOfType<ImpexValueGroup>()
@@ -93,10 +108,10 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
             ?: return
 
         val restrictedTypeParameter = headerLine.getFullHeaderParameter("restrictedType")
-            ?: return injectSimple(injectionPlacesRegistrar, host, expression)
+            ?: return injectSimple(injectionPlacesRegistrar, host, expression, quoteLength = quoteLength)
         val restrictedType = valueLine.getValueGroup(restrictedTypeParameter.columnNumber)
             ?.computeValue()
-            ?: return injectSimple(injectionPlacesRegistrar, host, expression)
+            ?: return injectSimple(injectionPlacesRegistrar, host, expression, quoteLength = quoteLength)
 
         val alias = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(host.project)
             .state
@@ -107,7 +122,7 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
             ?: ""
 
         val prefix = "SELECT * FROM {${restrictedType} $alias} WHERE "
-        registerInjectionPlace(injectionPlacesRegistrar, host, prefix = prefix)
+        registerInjectionPlace(injectionPlacesRegistrar, host, prefix = prefix, quoteLength = quoteLength)
     }
 
     companion object {

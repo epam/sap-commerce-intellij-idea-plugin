@@ -28,10 +28,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexValueImpl extends ASTWrapperPsiElement implements ImpexValue {
+public class ImpexValueImpl extends ImpexValueMixin implements ImpexValue {
 
   public ImpexValueImpl(@NotNull ASTNode node) {
     super(node);
@@ -57,6 +56,12 @@ public class ImpexValueImpl extends ASTWrapperPsiElement implements ImpexValue {
   @NotNull
   public List<ImpexString> getStringList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexString.class);
+  }
+
+  @Override
+  @Nullable
+  public ImpexValueGroup getValueGroup() {
+    return ImpexPsiUtil.getValueGroup(this);
   }
 
 }

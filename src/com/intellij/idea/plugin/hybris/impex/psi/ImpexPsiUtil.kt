@@ -47,6 +47,9 @@ fun getHeaderLine(element: ImpexValueLine): ImpexHeaderLine? = PsiTreeUtil
 fun getValueGroup(element: ImpexString): ImpexValueGroup? = PsiTreeUtil
     .getParentOfType(element, ImpexValueGroup::class.java)
 
+fun getValueGroup(element: ImpexValue): ImpexValueGroup? = PsiTreeUtil
+    .getParentOfType(element, ImpexValueGroup::class.java)
+
 fun getColumnNumber(element: ImpexValueGroup): Int = ImpexPsiUtils
     .getColumnNumber(element)
 
