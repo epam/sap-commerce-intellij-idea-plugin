@@ -31,6 +31,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import java.util.*
 
@@ -55,6 +56,7 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
             }
 
             is ImpexValue -> {
+                if (host.childrenOfType<ImpexString>().isNotEmpty()) return
                 valueGroup = host.valueGroup
                 expression = host.getText().lowercase(Locale.getDefault())
                 quoteLength = 0

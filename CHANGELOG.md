@@ -19,7 +19,7 @@
 - Update platform and javadoc version on project refresh [#991](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/991)
 
 ### `ImpEx` enhancements
-- Inject `FlexibleSearch` language into suitable ImpExValue elements [#992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/992)
+- Inject `FlexibleSearch` language into suitable ImpExValue elements [#992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/992) | [#994](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/994)
 
 ### `FlexibleSearch` enhancements
 - Improved language parser to support bind parameters in the `IN` expression [#993](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/993)
