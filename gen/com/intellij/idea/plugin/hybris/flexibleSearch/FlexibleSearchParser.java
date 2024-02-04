@@ -3,8 +3,8 @@
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
  * ----------------------------------------------------------------
  *
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -316,7 +316,7 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // NAMED_PARAMETER (',' NAMED_PARAMETER)* | expression ( ',' expression )* | from_clause_subqueries_statement
+  // bind_parameter (',' bind_parameter)* | expression ( ',' expression )* | from_clause_subqueries_statement
   static boolean expression_in_subquery(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expression_in_subquery")) return false;
     boolean r;
@@ -328,18 +328,18 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // NAMED_PARAMETER (',' NAMED_PARAMETER)*
+  // bind_parameter (',' bind_parameter)*
   private static boolean expression_in_subquery_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expression_in_subquery_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, NAMED_PARAMETER);
+    r = bind_parameter(b, l + 1);
     r = r && expression_in_subquery_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // (',' NAMED_PARAMETER)*
+  // (',' bind_parameter)*
   private static boolean expression_in_subquery_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expression_in_subquery_0_1")) return false;
     while (true) {
@@ -350,12 +350,13 @@ public class FlexibleSearchParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ',' NAMED_PARAMETER
+  // ',' bind_parameter
   private static boolean expression_in_subquery_0_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expression_in_subquery_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, COMMA, NAMED_PARAMETER);
+    r = consumeToken(b, COMMA);
+    r = r && bind_parameter(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

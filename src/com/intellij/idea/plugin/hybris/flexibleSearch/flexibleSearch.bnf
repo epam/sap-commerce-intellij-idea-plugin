@@ -180,7 +180,7 @@ private aliased_column_ref_expression ::= selected_table_name column_separator c
 
 private exists_expression_name ::= EXISTS '('
 private function_call_expression_name ::= function_name '('
-private expression_in_subquery ::= NAMED_PARAMETER (',' NAMED_PARAMETER)* | expression ( ',' expression )* | from_clause_subqueries_statement
+private expression_in_subquery ::= bind_parameter (',' bind_parameter)* | expression ( ',' expression )* | from_clause_subqueries_statement
 
 bind_parameter ::= NUMBERED_PARAMETER | (NAMED_PARAMETER ( '.' ext_parameter_name)*)
 
