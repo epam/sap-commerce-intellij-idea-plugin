@@ -29,7 +29,7 @@
 - Improved language parser to support bind parameters in the `IN` expression [#993](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/993)
 
 ### Other
-- IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966)
+- IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966) | [#998](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/998)
 - Updated gradle wrapper to 8.5 [#969](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/969)
 - Redesigned SAP Commerce facet dialog layout [#974](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/974)
 
