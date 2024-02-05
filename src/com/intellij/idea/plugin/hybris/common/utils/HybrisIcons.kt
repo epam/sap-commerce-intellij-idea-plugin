@@ -44,6 +44,7 @@ object HybrisIcons {
 
     val DECLARATION = getIcon("/icons/declaration.svg")
 
+    val Y_LICENCE = getIcon("/icons/hybrisLicenceIcon.svg")
     val Y_LOGO_BLUE = getIcon("/icons/hybrisIcon.svg")
     val Y_LOGO_ORANGE = getIcon("/icons/hybrisIconOrange.svg")
     val Y_LOGO_GREEN = getIcon("/icons/hybrisIconGreen.svg")

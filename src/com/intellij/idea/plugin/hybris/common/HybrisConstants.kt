@@ -94,6 +94,7 @@ object HybrisConstants {
     const val EXTENSION_INFO_XML = "extensioninfo.xml"
     const val EXTENSIONS_XML = "extensions.xml"
     const val COCKPIT_NG_DEFINITION_XML = "definition.xml"
+    const val HYBRIS_LICENCE_JAR = "hybrislicence.jar"
 
     const val HYBRIS_DIRECTORY = "hybris"
     const val HYBRIS_DATA_DIRECTORY = "data"

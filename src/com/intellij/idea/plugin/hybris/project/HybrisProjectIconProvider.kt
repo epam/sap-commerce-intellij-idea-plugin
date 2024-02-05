@@ -32,6 +32,7 @@ class HybrisProjectIconProvider : IconProvider() {
             file.name == HybrisConstants.BUILD_CALLBACKS_XML -> HybrisIcons.BUILD_CALLBACKS
             file.name == HybrisConstants.UNMANAGED_DEPENDENCIES_TXT -> HybrisIcons.UNMANAGED_DEPENDENCIES
             file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML -> HybrisIcons.EXTERNAL_DEPENDENCIES
+            file.name == HybrisConstants.HYBRIS_LICENCE_JAR -> HybrisIcons.Y_LICENCE
             file.name.endsWith(HybrisConstants.IMPORT_OVERRIDE_FILENAME) -> HybrisIcons.PLUGIN_SETTINGS
             else -> null
         }
