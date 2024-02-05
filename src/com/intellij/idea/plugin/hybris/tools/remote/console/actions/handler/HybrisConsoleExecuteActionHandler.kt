@@ -23,6 +23,8 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
@@ -64,6 +66,9 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                             }
                             is HybrisSolrSearchConsole -> {
                                 console.clear()
+
+                                printCurrentHost(console, RemoteConnectionType.SOLR)
+
                                 if (httpResult.hasError()) {
                                     printSyntaxText(console, httpResult.errorMessage, PlainTextFileType.INSTANCE)
                                 } else {
@@ -71,19 +76,34 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                                 }
 
                             }
-                            else -> printPlainText(console, httpResult)
+                            else -> {
+                                printCurrentHost(console, RemoteConnectionType.Hybris)
+
+                                printPlainText(console, httpResult)
+                            }
                         }
                     } finally {
                         isProcessRunning = false
                         setEditorEnabled(console, true)
                     }
                 }
+
             })
         }
     }
 
+    private fun printCurrentHost(console: HybrisConsole, remoteConnectionType: RemoteConnectionType) {
+        val activeConnectionSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, remoteConnectionType)
+        console.print("Host ${activeConnectionSettings.displayName?.let { "($it)" } ?: ""}: ${activeConnectionSettings.generatedURL}\n", LOG_INFO_OUTPUT)
+    }
+
     private fun printPlainText(console: HybrisConsole, httpResult: HybrisHttpResult?) {
-        val result = createResult().errorMessage(httpResult?.errorMessage).output(httpResult?.output).result(httpResult?.result).detailMessage(httpResult?.detailMessage).build()
+        val result = createResult()
+            .errorMessage(httpResult?.errorMessage)
+            .output(httpResult?.output)
+            .result(httpResult?.result)
+            .detailMessage(httpResult?.detailMessage)
+            .build()
         val detailMessage = result.detailMessage
         val output = result.output
         val res = result.result
