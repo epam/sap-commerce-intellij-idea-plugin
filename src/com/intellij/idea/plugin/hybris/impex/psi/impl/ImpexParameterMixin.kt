@@ -42,17 +42,6 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
             myReferences.clear()
         }
 
-        val leafType = firstChild
-            ?.node
-            ?.elementType
-
-//        if (ImpexTypes.DOCUMENT_ID == leafType) {
-//            if (myReferences.isEmpty()) {
-//                myReferences.add(ImpexDocumentIdReference(this))
-//            }
-//            return myReferences.toTypedArray()
-//        }
-
         if (myReferences.isEmpty() || previousText == null) {
             if (inlineTypeName != null) {
                 myReferences.add(ImpexFunctionTSAttributeReference(this))

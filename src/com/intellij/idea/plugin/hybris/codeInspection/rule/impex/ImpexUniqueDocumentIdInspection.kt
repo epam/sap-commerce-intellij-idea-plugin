@@ -43,8 +43,8 @@ class ImpexUniqueDocumentIdInspection : LocalInspectionTool() {
             ImpexPsiUtils.getColumnForHeader(impexFullHeaderParameter)
                 .forEach {
                     if (!set.add(it.text)) {
-                        val qualifier = (it as ImpexValueGroup)
-                            .value?.text
+                        val qualifier = (it as ImpexValueGroup).value
+                            ?.text
                             ?: it.text
 
                         holder.registerProblem(
