@@ -70,7 +70,12 @@ object TSLookupElementFactory {
 
     fun build(meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute) = LookupElementBuilder.create(meta.name)
         .withStrikeoutness(meta.isDeprecated)
-        .withTypeText(meta.flattenType, true)
+        .withTypeText(meta.flattenType,
+            if (meta.isLocalized) HybrisIcons.LOCALIZED
+            else null,
+            true
+        )
+        .withTypeIconRightAligned(true)
         .withIcon(HybrisIcons.TS_ATTRIBUTE)
         .withCaseSensitivity(false)
 
@@ -117,7 +122,12 @@ object TSLookupElementFactory {
         .withIcon(HybrisIcons.TS_ATTRIBUTE)
         .withTailText(if (attribute.isDynamic) " (" + message("hybris.ts.type.dynamic") + ')' else "", true)
         .withStrikeoutness(attribute.isDeprecated)
-        .withTypeText(attribute.flattenType, true)
+        .withTypeText(attribute.flattenType,
+            if (attribute.isLocalized) HybrisIcons.LOCALIZED
+            else null,
+            true
+        )
+        .withTypeIconRightAligned(true)
         .withCaseSensitivity(false)
 
     fun build(type: String?, lookupString: String) = LookupElementBuilder.create(lookupString)
