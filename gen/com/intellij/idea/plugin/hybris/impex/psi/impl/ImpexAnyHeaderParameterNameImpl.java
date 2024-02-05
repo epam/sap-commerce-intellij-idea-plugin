@@ -48,6 +48,12 @@ public class ImpexAnyHeaderParameterNameImpl extends ImpexAnyHeaderParameterName
 
   @Override
   @Nullable
+  public ImpexDocumentIdDec getDocumentIdDec() {
+    return findChildByClass(ImpexDocumentIdDec.class);
+  }
+
+  @Override
+  @Nullable
   public ImpexMacroUsageDec getMacroUsageDec() {
     return findChildByClass(ImpexMacroUsageDec.class);
   }

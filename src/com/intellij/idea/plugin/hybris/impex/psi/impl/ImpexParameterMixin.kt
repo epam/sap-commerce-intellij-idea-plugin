@@ -21,8 +21,6 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexDocumentIdReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSAttributeReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSItemReference
 import com.intellij.lang.ASTNode
@@ -48,12 +46,12 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
             ?.node
             ?.elementType
 
-        if (ImpexTypes.DOCUMENT_ID == leafType) {
-            if (myReferences.isEmpty()) {
-                myReferences.add(ImpexDocumentIdReference(this))
-            }
-            return myReferences.toTypedArray()
-        }
+//        if (ImpexTypes.DOCUMENT_ID == leafType) {
+//            if (myReferences.isEmpty()) {
+//                myReferences.add(ImpexDocumentIdReference(this))
+//            }
+//            return myReferences.toTypedArray()
+//        }
 
         if (myReferences.isEmpty() || previousText == null) {
             if (inlineTypeName != null) {

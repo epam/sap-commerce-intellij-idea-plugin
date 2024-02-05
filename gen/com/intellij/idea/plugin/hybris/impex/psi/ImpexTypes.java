@@ -35,6 +35,8 @@ public interface ImpexTypes {
   IElementType ATTRIBUTE = new ImpexElementType("ATTRIBUTE");
   IElementType BEANSHELL_SCRIPT_BODY = new ImpexElementType("BEANSHELL_SCRIPT_BODY");
   IElementType COMMENT = new ImpexElementType("COMMENT");
+  IElementType DOCUMENT_ID_DEC = new ImpexElementType("DOCUMENT_ID_DEC");
+  IElementType DOCUMENT_ID_USAGE = new ImpexElementType("DOCUMENT_ID_USAGE");
   IElementType FULL_HEADER_PARAMETER = new ImpexElementType("FULL_HEADER_PARAMETER");
   IElementType FULL_HEADER_TYPE = new ImpexElementType("FULL_HEADER_TYPE");
   IElementType GROOVY_SCRIPT_BODY = new ImpexElementType("GROOVY_SCRIPT_BODY");
@@ -157,6 +159,12 @@ public interface ImpexTypes {
       }
       else if (type == COMMENT) {
         return new ImpexCommentImpl(node);
+      }
+      else if (type == DOCUMENT_ID_DEC) {
+        return new ImpexDocumentIdDecImpl(node);
+      }
+      else if (type == DOCUMENT_ID_USAGE) {
+        return new ImpexDocumentIdUsageImpl(node);
       }
       else if (type == FULL_HEADER_PARAMETER) {
         return new ImpexFullHeaderParameterImpl(node);

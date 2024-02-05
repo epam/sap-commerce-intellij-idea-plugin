@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,21 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
+package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-public interface ImpexAnyHeaderParameterName extends PsiElement {
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexDocumentIdReference
+import com.intellij.lang.ASTNode
+import java.io.Serial
 
-  @Nullable
-  ImpexDocumentIdDec getDocumentIdDec();
+abstract class ImpexDocumentIdUsageMixin(node: ASTNode) : ASTWrapperPsiElement(node) {
 
-  @Nullable
-  ImpexMacroUsageDec getMacroUsageDec();
+    override fun getReference() = references.firstOrNull()
 
-  @Nullable
-  ImpexHeaderTypeName getHeaderItemTypeName();
+    override fun getReferences() = arrayOf(ImpexDocumentIdReference(this))
 
+    companion object {
+        @Serial
+        private val serialVersionUID: Long = 8683829637167829949L
+    }
 }

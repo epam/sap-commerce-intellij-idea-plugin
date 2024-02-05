@@ -25,33 +25,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ImpexParameter extends PsiElement {
-
-  @Nullable
-  ImpexDocumentIdUsage getDocumentIdUsage();
-
-  @NotNull
-  List<ImpexMacroUsageDec> getMacroUsageDecList();
-
-  @NotNull
-  List<ImpexModifiers> getModifiersList();
-
-  @Nullable
-  ImpexSubParameters getSubParameters();
-
-  @Nullable
-  String getReferenceItemTypeName();
-
-  @Nullable
-  String getReferenceName();
-
-  @Nullable
-  String getItemTypeName();
-
-  @Nullable
-  String getInlineTypeName();
-
-  @NotNull
-  String getAttributeName();
+public interface ImpexDocumentIdDec extends ImpexPsiNamedElement {
 
 }

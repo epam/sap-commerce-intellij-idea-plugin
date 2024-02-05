@@ -12,7 +12,7 @@
 - Store connection credentials in the [Sensitive Storage](https://plugins.jetbrains.com/docs/intellij/persisting-sensitive-data.html#storage) [#988](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/988) | [#995](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/995)
 - Show inline test HAC connection results in the dialog [#989](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/989)
 - Show inline test SOLR connection results and unify both dialogs [#990](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/990)
-- Show current host details for each request in the Console [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
+- Show current host details for each request in the Console [#996](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/996)
 
 ### `Project Import` enhancements
 - Redesigned `check required plugins` import step [#983](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/983)
@@ -21,6 +21,9 @@
 
 ### `ImpEx` enhancements
 - Inject `FlexibleSearch` language into suitable ImpExValue elements [#992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/992) | [#994](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/994)
+- Improved reference resolution for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
+- Added find usages for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
+- Added inline renaming capabilities for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
 
 ### `FlexibleSearch` enhancements
 - Improved language parser to support bind parameters in the `IN` expression [#993](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/993)

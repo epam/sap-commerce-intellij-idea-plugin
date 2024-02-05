@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +19,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
 import com.intellij.idea.plugin.hybris.impex.psi.util.setName
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -29,36 +30,20 @@ class ImpexDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<P
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val originalFile = element.containingFile
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = PsiTreeUtil
+        .collectElementsOfType(element.containingFile, ImpexDocumentIdDec::class.java)
+        .filter { element.textMatches(it.text) }
+        .takeIf { it.isNotEmpty() }
+        ?.let { PsiElementResolveResult.createResults(it) }
+        ?: ResolveResult.EMPTY_ARRAY
 
-        val documentRefs = PsiTreeUtil.collectElements(originalFile) { psiElement -> psiElement.node.elementType == ImpexTypes.DOCUMENT_ID }
-
-        if (documentRefs.isNotEmpty()) {
-            val references = ArrayList<PsiElement>()
-            for (docID in documentRefs) {
-                if (element.firstChild != docID && element.textMatches(docID.text)) {
-                    references.add(docID)
-                }
-            }
-            return PsiElementResolveResult.createResults(references)
-        }
-        return ResolveResult.EMPTY_ARRAY
-    }
-
-
-    override fun getRangeInElement(): TextRange {
-        return TextRange.from(0, element.textLength)
-    }
+    override fun getRangeInElement() = TextRange.from(0, element.textLength)
 
     @Throws(IncorrectOperationException::class)
-    override fun handleElementRename(newElementName: String): PsiElement? {
-        return getManipulator().handleContentChange(myElement, rangeInElement, newElementName)
-    }
+    override fun handleElementRename(newElementName: String) = getManipulator()
+        .handleContentChange(myElement, rangeInElement, newElementName)
 
-    private fun getManipulator(): ElementManipulator<PsiElement> {
-        return object : AbstractElementManipulator<PsiElement>() {
-            override fun handleContentChange(element: PsiElement, range: TextRange, newContent: String) = setName(element, newContent)
-        }
+    private fun getManipulator() = object : AbstractElementManipulator<PsiElement>() {
+        override fun handleContentChange(element: PsiElement, range: TextRange, newContent: String) = setName(element, newContent)
     }
 }

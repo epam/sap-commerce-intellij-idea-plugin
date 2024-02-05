@@ -57,7 +57,7 @@ abstract class ImpexAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
 
         when {
             ImpexTypes.MACRO_USAGE == leafType -> return arrayOf(ImpexMacroReference(this))
-            ImpexTypes.DOCUMENT_ID == leafType -> return arrayOf(ImpexDocumentIdReference(this))
+//            ImpexTypes.DOCUMENT_ID == leafType -> return arrayOf(ImpexDocumentIdReference(this))
 
             //optimisation: don't even try for macro's and documents
             ImpexTypes.HEADER_PARAMETER_NAME != leafType

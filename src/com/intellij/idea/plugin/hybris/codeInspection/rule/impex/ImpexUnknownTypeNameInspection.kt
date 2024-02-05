@@ -25,13 +25,12 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdUsage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderTypeName
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.impl.source.tree.LeafPsiElement
 
 class ImpexUnknownTypeNameInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
@@ -50,7 +49,7 @@ class ImpexUnknownTypeNameInspection : LocalInspectionTool() {
         }
 
         private fun validateReference(parameter: PsiElement) {
-            if (isDocumentId(parameter.firstChild)) return
+            if (parameter.firstChild is ImpexDocumentIdUsage) return
 
             val firstReference = parameter.references.firstOrNull() ?: return
             if (firstReference !is TSReferenceBase<*>) return
@@ -64,7 +63,5 @@ class ImpexUnknownTypeNameInspection : LocalInspectionTool() {
                 ProblemHighlightType.ERROR
             )
         }
-
-        private fun isDocumentId(element: PsiElement) = (element as LeafPsiElement).elementType == ImpexTypes.DOCUMENT_ID
     }
 }

@@ -23,45 +23,38 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.DOCUMENT_ID
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.psi.util.parentOfType
 
 class ImpexUniqueDocumentIdInspection : LocalInspectionTool() {
-    override fun getDefaultLevel(): HighlightDisplayLevel {
-        return HighlightDisplayLevel.ERROR
-    }
 
-    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = ImpexDocumentIdVisitor(holder)
-}
+    override fun getDefaultLevel() = HighlightDisplayLevel.ERROR
 
-private class ImpexDocumentIdVisitor(private val problemsHolder: ProblemsHolder) : ImpexVisitor() {
-    override fun visitAnyHeaderParameterName(parameter: ImpexAnyHeaderParameterName) {
-        if (!isDocumentId(parameter.firstChild)) return
+    override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor = object : ImpexVisitor() {
+        override fun visitDocumentIdDec(parameter: ImpexDocumentIdDec) {
+            val impexFullHeaderParameter = parameter.parentOfType<ImpexFullHeaderParameter>() ?: return
+            val set = HashSet<String>()
 
-        val set = HashSet<String>()
-        val impexFullHeaderParameter = parameter.parent as? ImpexFullHeaderParameter ?: return
-        ImpexPsiUtils.getColumnForHeader(impexFullHeaderParameter)
-            .forEach {
-                if (!set.add(it.text)) {
-                    val qualifier = (it as ImpexValueGroup)
-                        .value?.text
-                        ?: it.text
+            ImpexPsiUtils.getColumnForHeader(impexFullHeaderParameter)
+                .forEach {
+                    if (!set.add(it.text)) {
+                        val qualifier = (it as ImpexValueGroup)
+                            .value?.text
+                            ?: it.text
 
-                    problemsHolder.registerProblem(
-                        it,
-                        message("hybris.inspections.impex.ImpexUniqueDocumentIdInspection.key", qualifier, parameter.text),
-                        ProblemHighlightType.ERROR
-                    )
+                        holder.registerProblem(
+                            it,
+                            message("hybris.inspections.impex.ImpexUniqueDocumentIdInspection.key", qualifier, parameter.text),
+                            ProblemHighlightType.ERROR
+                        )
+                    }
                 }
-            }
-    }
 
-    private fun isDocumentId(element: PsiElement) = element is LeafPsiElement && element.elementType == DOCUMENT_ID
+        }
+    }
 }

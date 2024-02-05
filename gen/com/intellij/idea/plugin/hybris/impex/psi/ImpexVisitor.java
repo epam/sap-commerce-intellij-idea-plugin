@@ -55,6 +55,14 @@ public class ImpexVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitDocumentIdDec(@NotNull ImpexDocumentIdDec o) {
+    visitPsiNamedElement(o);
+  }
+
+  public void visitDocumentIdUsage(@NotNull ImpexDocumentIdUsage o) {
+    visitPsiElement(o);
+  }
+
   public void visitFullHeaderParameter(@NotNull ImpexFullHeaderParameter o) {
     visitPsiElement(o);
   }

@@ -30,74 +30,20 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexParameterImpl extends ImpexParameterMixin implements ImpexParameter {
+public class ImpexDocumentIdDecImpl extends ImpexDocumentIdDecMixin implements ImpexDocumentIdDec {
 
-  public ImpexParameterImpl(@NotNull ASTNode node) {
+  public ImpexDocumentIdDecImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
-    visitor.visitParameter(this);
+    visitor.visitDocumentIdDec(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public ImpexDocumentIdUsage getDocumentIdUsage() {
-    return findChildByClass(ImpexDocumentIdUsage.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ImpexMacroUsageDec> getMacroUsageDecList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexMacroUsageDec.class);
-  }
-
-  @Override
-  @NotNull
-  public List<ImpexModifiers> getModifiersList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexModifiers.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexSubParameters getSubParameters() {
-    return findChildByClass(ImpexSubParameters.class);
-  }
-
-  @Override
-  @Nullable
-  public String getReferenceItemTypeName() {
-    return ImpexPsiUtil.getReferenceItemTypeName(this);
-  }
-
-  @Override
-  @Nullable
-  public String getReferenceName() {
-    return ImpexPsiUtil.getReferenceName(this);
-  }
-
-  @Override
-  @Nullable
-  public String getItemTypeName() {
-    return ImpexPsiUtil.getItemTypeName(this);
-  }
-
-  @Override
-  @Nullable
-  public String getInlineTypeName() {
-    return ImpexPsiUtil.getInlineTypeName(this);
-  }
-
-  @Override
-  @NotNull
-  public String getAttributeName() {
-    return ImpexPsiUtil.getAttributeName(this);
   }
 
 }

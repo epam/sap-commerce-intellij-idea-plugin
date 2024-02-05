@@ -137,7 +137,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | macro_usage_dec | DOCUMENT_ID | FUNCTION
+  // HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | macro_usage_dec | document_id_dec | FUNCTION
   public static boolean any_header_parameter_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "any_header_parameter_name")) return false;
     boolean r;
@@ -145,7 +145,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, HEADER_PARAMETER_NAME);
     if (!r) r = consumeToken(b, HEADER_SPECIAL_PARAMETER_NAME);
     if (!r) r = macro_usage_dec(b, l + 1);
-    if (!r) r = consumeToken(b, DOCUMENT_ID);
+    if (!r) r = document_id_dec(b, l + 1);
     if (!r) r = consumeToken(b, FUNCTION);
     exit_section_(b, l, m, r, false, ImpexParser::recover_parameter_name);
     return r;
@@ -185,6 +185,30 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, LINE_COMMENT);
     exit_section_(b, m, COMMENT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // DOCUMENT_ID
+  public static boolean document_id_dec(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "document_id_dec")) return false;
+    if (!nextTokenIs(b, DOCUMENT_ID)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOCUMENT_ID);
+    exit_section_(b, m, DOCUMENT_ID_DEC, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // DOCUMENT_ID
+  public static boolean document_id_usage(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "document_id_usage")) return false;
+    if (!nextTokenIs(b, DOCUMENT_ID)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOCUMENT_ID);
+    exit_section_(b, m, DOCUMENT_ID_USAGE, r);
     return r;
   }
 
@@ -587,7 +611,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (HEADER_PARAMETER_NAME | macro_usage_dec | DOCUMENT_ID | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec))? modifiers*
+  // (HEADER_PARAMETER_NAME | macro_usage_dec | document_id_usage | FUNCTION) (sub_parameters | ((DOT)? macro_usage_dec))? modifiers*
   public static boolean parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter")) return false;
     boolean r, p;
@@ -600,13 +624,13 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // HEADER_PARAMETER_NAME | macro_usage_dec | DOCUMENT_ID | FUNCTION
+  // HEADER_PARAMETER_NAME | macro_usage_dec | document_id_usage | FUNCTION
   private static boolean parameter_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parameter_0")) return false;
     boolean r;
     r = consumeToken(b, HEADER_PARAMETER_NAME);
     if (!r) r = macro_usage_dec(b, l + 1);
-    if (!r) r = consumeToken(b, DOCUMENT_ID);
+    if (!r) r = document_id_usage(b, l + 1);
     if (!r) r = consumeToken(b, FUNCTION);
     return r;
   }
