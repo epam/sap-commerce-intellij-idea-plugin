@@ -43,6 +43,7 @@ import com.intellij.util.ui.JBUI
 import java.awt.Component
 import java.awt.event.ActionEvent
 import java.io.Serial
+import java.util.*
 import javax.swing.Action
 import javax.swing.JEditorPane
 import javax.swing.JLabel
@@ -119,6 +120,11 @@ abstract class AbstractRemoteConnectionDialog(
 
     override fun applyFields() {
         super.applyFields()
+
+        settings.credentials = null
+        if (settings.uuid == null) {
+            settings.uuid = UUID.randomUUID().toString()
+        }
 
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Persisting credentials", false) {
             override fun run(indicator: ProgressIndicator) {
