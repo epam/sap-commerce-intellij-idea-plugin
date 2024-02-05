@@ -31,12 +31,10 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBPanel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.textFieldWithBrowseButton
 import com.intellij.ui.dsl.builder.AlignX
@@ -47,11 +45,11 @@ import com.intellij.ui.layout.selected
 import com.intellij.ui.scale.JBUIScale
 import org.apache.commons.lang3.StringUtils
 import org.intellij.images.fileTypes.impl.SvgFileType
+import java.awt.Dimension
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.util.*
-import javax.swing.JComponent
 import javax.swing.JTextField
 import javax.swing.ScrollPaneConstants
 
@@ -280,14 +278,10 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             .expanded = true
     }
 
-    override fun getComponent(): JComponent {
-        val jbPanel = JBPanel<DialogPanel>()
-            .withPreferredHeight(JBUIScale.scale(600))
-            .withMaximumHeight(JBUIScale.scale(600))
-        return JBScrollPane(jbPanel)
-            .also {
-                it.horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
-            }
+    override fun getComponent() = with(JBScrollPane(panel)) {
+        horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
+        preferredSize = Dimension(preferredSize.width,  JBUIScale.scale(600))
+        this
     }
 
     override fun updateDataModel() {
