@@ -65,8 +65,8 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         return project.getService(HybrisHacHttpClient.class);
     }
 
-    public @NotNull
-    HybrisHttpResult validateImpex(final Project project, final Map<String, String> requestParams) {
+    @NotNull
+    public HybrisHttpResult validateImpex(final Project project, final Map<String, String> requestParams) {
         final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
         final HttpResponse response = getHttpResponse(project, "/console/impex/import/validate", requestParams, settings);
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
@@ -117,8 +117,8 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             .collect(Collectors.toList());
     }
 
-    public @NotNull
-    HybrisHttpResult importImpex(final Project project, final Map<String, String> requestParams) {
+    @NotNull
+    public HybrisHttpResult importImpex(final Project project, final Map<String, String> requestParams) {
         final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
         final HttpResponse response = getHttpResponse(project, "/console/impex/import", requestParams, settings);
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
@@ -155,8 +155,8 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         return resultBuilder.errorMessage("No data in response").build();
     }
 
-    public @NotNull
-    HybrisHttpResult executeFlexibleSearch(
+    @NotNull
+    public HybrisHttpResult executeFlexibleSearch(
         final Project project,
         final boolean shouldCommit,
         final boolean isPlainSQL,

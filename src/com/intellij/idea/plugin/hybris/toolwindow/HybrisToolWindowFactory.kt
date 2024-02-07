@@ -71,7 +71,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
     }
 
     companion object {
-        const val ID = "SAP Commerce"
+        const val ID = "SAP CX"
         const val CONSOLES_ID = "Consoles"
         const val TS_ID = "Type System"
         const val BS_ID = "Bean System"

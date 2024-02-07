@@ -27,8 +27,8 @@ import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.util.minimumHeight
 import com.intellij.util.ui.JBUI
+import java.awt.Dimension
 
 class HybrisProjectDiagramTSSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
@@ -48,7 +48,7 @@ class HybrisProjectDiagramTSSettingsConfigurableProvider(val project: Project) :
             .createPanel()
 
         init {
-            excludedTypeNamesPane.minimumHeight = 400
+            excludedTypeNamesPane.minimumSize = Dimension(excludedTypeNamesPane.width, 400)
         }
 
         override fun createPanel() = panel {

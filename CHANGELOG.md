@@ -23,7 +23,7 @@
 
 ### `ImpEx` enhancements
 - Inject `FlexibleSearch` language into suitable ImpExValue elements [#992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/992) | [#994](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/994)
-- Improved reference resolution for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
+- Improved reference resolution for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997) | [#1001](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1001)
 - Added find usages for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
 - Added inline renaming capabilities for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
 
@@ -36,7 +36,6 @@
 - Redesigned SAP Commerce facet dialog layout [#974](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/974)
 
 ### Fixes
-
 - IDE error when running FlexibleSearch query [#976](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/976)
 - SOLR connection settings are not properly changed [#977](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/977)
 - Fixed code generation on Windows [#979](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/979)
