@@ -34,6 +34,7 @@
 - IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966) | [#998](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/998)
 - Updated gradle wrapper to 8.5 [#969](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/969)
 - Redesigned SAP Commerce facet dialog layout [#974](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/974)
+- Slow operation in the After Compiler Task [#1003](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1003)
 
 ### Fixes
 - IDE error when running FlexibleSearch query [#976](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/976)
