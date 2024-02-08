@@ -21,27 +21,30 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
 
 class ProjectAfterCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext): Boolean {
-        val modules = context.compileScope.affectedModules
-        val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
-            ?: return true
+        return ApplicationManager.getApplication().runReadAction<Boolean> {
+            val modules = context.compileScope.affectedModules
+            val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+                ?: return@runReadAction true
 
-        val settings = HybrisProjectSettingsComponent.getInstance(context.project)
-        if (!settings.isHybrisProject()) return true
-        if (!settings.state.generateCodeOnRebuild) return true
+            val settings = HybrisProjectSettingsComponent.getInstance(context.project)
+            if (!settings.isHybrisProject()) return@runReadAction true
+            if (!settings.state.generateCodeOnRebuild) return@runReadAction true
 
-        val bootstrapDirectory = platformModule
-            .root()
-            ?.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
-            ?: return true
+            val bootstrapDirectory = platformModule
+                .root()
+                ?.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
+                ?: return@runReadAction true
 
-        ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
+            ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
 
-        return true
+            return@runReadAction true
+        }
     }
 }
