@@ -35,7 +35,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.refactoring.suggested.startOffset
-import org.jetbrains.kotlin.idea.codeinsight.utils.findExistingEditor
 
 class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstance()) {
 
@@ -88,30 +87,30 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
                     }
             }
 
-            ImpexTypes.VALUE_LINE,
-            ImpexTypes.USER_RIGHTS_VALUE_LINE -> {
-                element.findExistingEditor()
-                    ?.let { editor ->
-                        when (element) {
-                            is ImpexValueLine -> {
-                                element.headerLine
-                                    ?.valueLines
-                                    ?.indexOf(element)
-                                    ?.let { highlightLine(editor, it, element.textOffset) }
-                            }
-
-                            is ImpexUserRightsValueLine -> {
-                                element.parent
-                                    .let { it as? ImpexUserRights }
-                                    ?.userRightsValueLineList
-                                    ?.indexOf(element)
-                                    ?.let { highlightLine(editor, it, element.textOffset) }
-                            }
-
-                            else -> return
-                        }
-                    }
-            }
+//            ImpexTypes.VALUE_LINE,
+//            ImpexTypes.USER_RIGHTS_VALUE_LINE -> {
+//                element.findExistingEditor()
+//                    ?.let { editor ->
+//                        when (element) {
+//                            is ImpexValueLine -> {
+//                                element.headerLine
+//                                    ?.valueLines
+//                                    ?.indexOf(element)
+//                                    ?.let { highlightLine(editor, it, element.textOffset) }
+//                            }
+//
+//                            is ImpexUserRightsValueLine -> {
+//                                element.parent
+//                                    .let { it as? ImpexUserRights }
+//                                    ?.userRightsValueLineList
+//                                    ?.indexOf(element)
+//                                    ?.let { highlightLine(editor, it, element.textOffset) }
+//                            }
+//
+//                            else -> return
+//                        }
+//                    }
+//            }
 
             ImpexTypes.USER_RIGHTS_HEADER_PARAMETER -> {
                 val headerParameter = element as? ImpexUserRightsHeaderParameter ?: return

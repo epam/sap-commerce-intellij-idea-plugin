@@ -26,6 +26,7 @@
 - Improved reference resolution for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997) | [#1001](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1001)
 - Added find usages for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
 - Added inline renaming capabilities for `Document ID` [#997](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/997)
+- Temporary disabled `odd` / `even` lines coloring as it affect performance [#1004](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1004)
 
 ### `FlexibleSearch` enhancements
 - Improved language parser to support bind parameters in the `IN` expression [#993](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/993)
