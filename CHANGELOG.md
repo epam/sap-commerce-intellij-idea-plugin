@@ -42,6 +42,7 @@
 - SOLR connection settings are not properly changed [#977](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/977)
 - Fixed code generation on Windows [#979](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/979)
 - Fixed request param cast issue for ImpEx execution [#1002](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1002)
+- Fixed duplicated remote connections settings [#1005](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1005)
 
 ## [2023.3.4]
 

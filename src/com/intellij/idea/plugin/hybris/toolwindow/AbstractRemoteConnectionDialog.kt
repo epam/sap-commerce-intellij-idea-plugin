@@ -124,6 +124,11 @@ abstract class AbstractRemoteConnectionDialog(
         settings.credentials = null
         if (settings.uuid == null) {
             settings.uuid = UUID.randomUUID().toString()
+        } else {
+            // change of the scope
+            if (originalScope != settings.scope) {
+                RemoteConnectionUtil.changeRemoteConnectionScope(project, settings, originalScope)
+            }
         }
 
         ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Persisting credentials", false) {
@@ -132,11 +137,6 @@ abstract class AbstractRemoteConnectionDialog(
                 PasswordSafe.instance.set(credentialAttributes, Credentials(usernameTextField.text, String(passwordTextField.password)))
             }
         })
-
-        // change of the scope
-        if (settings.uuid != null && originalScope != settings.scope) {
-            RemoteConnectionUtil.changeRemoteConnectionScope(project, settings, originalScope)
-        }
     }
 
     override fun createCenterPanel() = with(panel()) {
