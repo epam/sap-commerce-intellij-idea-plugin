@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.all
@@ -62,20 +63,13 @@ class TSTypeNameMustPointToExistingType : AbstractTSInspection() {
         // If type code is Primitive - skip, it is not registered via TS, but available in Service Layer
         if (HybrisConstants.TS_PRIMITIVE_TYPES.contains(typeCode)) return
 
-        val metaModel = TSMetaModelAccess.getInstance(project).getMetaModel()
-
-        val meta = metaModel.getMetaAtomic(typeCode)
-            ?: metaModel.getMetaEnum(typeCode)
-            ?: metaModel.getMetaCollection(typeCode)
-            ?: metaModel.getMetaRelation(typeCode)
-            ?: metaModel.getMetaMap(typeCode)
-            ?: metaModel.getMetaItem(typeCode)
+        val meta = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(typeCode)
 
         if (meta == null) {
             holder.createProblem(
                 dom,
                 severity,
-                displayName
+                HybrisI18NBundleUtils.message("hybris.inspections.ts.TypeNameMustPointToExistingType.details.key", typeCode)
             )
         }
     }

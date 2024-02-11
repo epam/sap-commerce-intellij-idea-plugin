@@ -34,6 +34,9 @@
 ### `Cockpit NG` enhancements
 - Inject spring bean reference into `n:dynamic-node`:`populator-bean-id` [#1006](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1006)
 
+### `items.xml` inspection rules
+- Show details for attribute type validation message [#1007](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1007)
+
 ### Other
 - IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966) | [#998](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/998)
 - Updated gradle wrapper to 8.5 [#969](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/969)
