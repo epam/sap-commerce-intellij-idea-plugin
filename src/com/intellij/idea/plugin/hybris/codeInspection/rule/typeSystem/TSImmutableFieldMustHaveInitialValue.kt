@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
@@ -52,7 +53,12 @@ class TSImmutableFieldMustHaveInitialValue : AbstractTSInspection() {
         val defaultValue = it.defaultValue.stringValue
 
         if (persistenceType != PersistenceType.DYNAMIC && !write && (!initial || defaultValue == null)) {
-            holder.createProblem(it, severity, displayName)
+            holder.createProblem(
+                it,
+                severity,
+                it.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.ImmutableFieldMustHaveInitialValue.details.key", it) }
+                    ?: displayName,
+                )
         }
     }
 }

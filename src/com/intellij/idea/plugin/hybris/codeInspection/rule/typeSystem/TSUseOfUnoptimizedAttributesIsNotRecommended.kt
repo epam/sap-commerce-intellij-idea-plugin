@@ -19,9 +19,8 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteAttributeQuickFix
-import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.model.Modifiers
-import com.intellij.idea.plugin.hybris.system.type.model.modifiers
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -48,10 +47,18 @@ class TSUseOfUnoptimizedAttributesIsNotRecommended : AbstractTSInspection() {
         val doNotOptimize = dom.doNotOptimize.value
 
         if (doNotOptimizeXmlElement != null && doNotOptimize) {
+            val id = (dom.getParentOfType(Attribute::class.java, false)
+                ?.qualifier?.stringValue
+                ?: dom.getParentOfType(Relation::class.java, false)
+                    ?.code?.stringValue)
+
+            val name = id?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.UseOfUnoptimizedAttributesIsNotRecommended.details.key", it) }
+                ?: displayName
+
             holder.createProblem(
                 dom.doNotOptimize,
                 severity,
-                displayName,
+                name,
                 XmlDeleteAttributeQuickFix(Modifiers.DONT_OPTIMIZE)
             )
         }

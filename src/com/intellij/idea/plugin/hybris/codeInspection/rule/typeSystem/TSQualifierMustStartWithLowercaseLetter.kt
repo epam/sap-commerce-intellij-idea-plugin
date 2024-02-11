@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.all
@@ -59,7 +60,7 @@ class TSQualifierMustStartWithLowercaseLetter : AbstractTSInspection() {
             holder.createProblem(
                 attribute,
                 severity,
-                displayName,
+                HybrisI18NBundleUtils.message("hybris.inspections.ts.QualifierMustStartWithLowercaseLetter.details.key", name),
                 XmlUpdateAttributeQuickFix(Attribute.QUALIFIER, newName)
             )
         }

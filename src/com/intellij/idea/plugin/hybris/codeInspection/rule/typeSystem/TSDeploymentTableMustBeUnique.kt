@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.PsiNavigateToDomFix
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 import com.intellij.idea.plugin.hybris.system.type.model.Items
@@ -55,7 +56,8 @@ class TSDeploymentTableMustBeUnique : AbstractTSInspection() {
         holder.createProblem(
             dom.table,
             severity,
-            displayName,
+            dom.typeCode.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.DeploymentTableMustBeUnique.details.key", it) }
+                ?: displayName,
             PsiNavigateToDomFix(deployment.domAnchor)
         )
     }

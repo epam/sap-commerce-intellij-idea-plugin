@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteAttributeQuickFix
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
@@ -51,7 +52,8 @@ class TSOrderingOfRelationShouldBeAvoided : AbstractTSInspection() {
             holder.createProblem(
                 relation.ordered,
                 severity,
-                displayName,
+                relation.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.OrderingOfRelationShouldBeAvoided.details.key", it) }
+                    ?: displayName,
                 XmlDeleteAttributeQuickFix(RelationElement.ORDERED)
             )
         }

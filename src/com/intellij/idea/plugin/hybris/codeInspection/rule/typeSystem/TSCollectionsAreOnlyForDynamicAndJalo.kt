@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.annotation.HighlightSeverity
@@ -54,7 +55,8 @@ class TSCollectionsAreOnlyForDynamicAndJalo : AbstractTSInspection() {
             holder.createProblem(
                 attribute.persistence.type,
                 severity,
-                displayName,
+                attribute.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.CollectionsAreOnlyForDynamicAndJalo.details.key", it) }
+                    ?: displayName,
                 XmlUpdateAttributeQuickFix(
                     Persistence.TYPE,
                     PersistenceType.DYNAMIC.value

@@ -36,6 +36,6 @@ class TSDeploymentTypeCodeReservedInspection : AbstractTSDeploymentTypeCodeInspe
             ?: return null
         val reservedType = TSMetaModelAccess.getInstance(project).getReservedTypeCodes()[typeCodeInt]
             ?: return null
-        return message("hybris.inspections.ts.TSDeploymentTypeCodeReservedInspection.text", typeCode, reservedType)
+        return message("hybris.inspections.ts.TSDeploymentTypeCodeReservedInspection.details.key", typeCode, reservedType)
     }
 }

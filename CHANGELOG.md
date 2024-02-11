@@ -36,6 +36,7 @@
 
 ### `items.xml` inspection rules
 - Show details for attribute type validation message [#1007](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1007)
+- Show details for various validation messages [#1008](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1008)
 
 ### Other
 - IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966) | [#998](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/998)

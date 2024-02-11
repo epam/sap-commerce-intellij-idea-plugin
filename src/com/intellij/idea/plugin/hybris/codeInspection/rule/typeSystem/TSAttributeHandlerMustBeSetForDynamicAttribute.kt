@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlAddAttributeQuickFix
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
@@ -50,7 +51,8 @@ class TSAttributeHandlerMustBeSetForDynamicAttribute : AbstractTSInspection() {
             holder.createProblem(
                 dom.persistence,
                 severity,
-                displayName,
+                dom.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.AttributeHandlerMustBeSetForDynamicAttribute.details.key", it) }
+                    ?: displayName,
                 XmlAddAttributeQuickFix(Persistence.ATTRIBUTE_HANDLER)
             )
         }

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteAttributeQuickFix
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
@@ -48,7 +49,8 @@ class TSListsInRelationShouldBeAvoided : AbstractTSInspection() {
             holder.createProblem(
                 relation.collectionType,
                 severity,
-                displayName,
+                relation.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.ListsInRelationShouldBeAvoided.details.key", it) }
+                    ?: displayName,
                 XmlDeleteAttributeQuickFix(RelationElement.COLLECTION_TYPE),
                 XmlUpdateAttributeQuickFix(
                     RelationElement.COLLECTION_TYPE,

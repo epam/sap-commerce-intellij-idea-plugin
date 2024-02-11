@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Items
@@ -31,25 +32,25 @@ import com.intellij.util.xml.highlighting.DomHighlightingHelper
 class TSMetaTypeNameMustPointToValidMetaType : AbstractTSInspection() {
 
     override fun inspect(
-            project: Project,
-            dom: Items,
-            holder: DomElementAnnotationHolder,
-            helper: DomHighlightingHelper,
-            severity: HighlightSeverity
+        project: Project,
+        dom: Items,
+        holder: DomElementAnnotationHolder,
+        helper: DomHighlightingHelper,
+        severity: HighlightSeverity
     ) {
         val attributeMetaTypes = dom.itemTypes.all
-                .flatMap { it.attributes.attributes }
-                .map { it.metaType }
+            .flatMap { it.attributes.attributes }
+            .map { it.metaType }
 
         (attributeMetaTypes)
-                .forEach { check(it, holder, severity, project) }
+            .forEach { check(it, holder, severity, project) }
     }
 
     private fun check(
-            dom: GenericAttributeValue<String>,
-            holder: DomElementAnnotationHolder,
-            severity: HighlightSeverity,
-            project: Project
+        dom: GenericAttributeValue<String>,
+        holder: DomElementAnnotationHolder,
+        severity: HighlightSeverity,
+        project: Project
     ) {
         val typeCode = dom.stringValue ?: return
 
@@ -59,9 +60,9 @@ class TSMetaTypeNameMustPointToValidMetaType : AbstractTSInspection() {
 
         if (meta == null || !TSMetaHelper.isAttributeDescriptor(meta)) {
             holder.createProblem(
-                    dom,
-                    severity,
-                    displayName
+                dom,
+                severity,
+                HybrisI18NBundleUtils.message("hybris.inspections.ts.MetaTypeNameMustPointToValidMetaType.details.key", typeCode)
             )
         }
     }

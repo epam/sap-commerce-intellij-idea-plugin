@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteAttributeQuickFix
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.all
@@ -48,7 +49,8 @@ class TSJaloClassIsNotAllowedWhenAddingFieldsToExistingClass : AbstractTSInspect
             holder.createProblem(
                 dom,
                 severity,
-                displayName,
+                dom.code.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass.details.key", it) }
+                    ?: displayName,
                 getTextRange(dom),
                 XmlDeleteAttributeQuickFix(ItemType.AUTO_CREATE),
                 XmlDeleteAttributeQuickFix(ItemType.GENERATE),

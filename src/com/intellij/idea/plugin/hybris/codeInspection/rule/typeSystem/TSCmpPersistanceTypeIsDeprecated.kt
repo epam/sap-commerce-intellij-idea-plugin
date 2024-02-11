@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
@@ -50,7 +51,8 @@ class TSCmpPersistanceTypeIsDeprecated : AbstractTSInspection() {
             holder.createProblem(
                 dom.persistence.type,
                 severity,
-                displayName,
+                dom.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.CmpPersistanceTypeIsDeprecated.details.key", it) }
+                    ?: displayName,
                 XmlUpdateAttributeQuickFix(
                     Persistence.TYPE,
                     PersistenceType.PROPERTY.value
