@@ -31,6 +31,9 @@
 ### `FlexibleSearch` enhancements
 - Improved language parser to support bind parameters in the `IN` expression [#993](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/993)
 
+### `Cockpit NG` enhancements
+- Inject spring bean reference into `n:dynamic-node`:`populator-bean-id` [#1006](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1006)
+
 ### Other
 - IntelliJ IDEA API compatibility [#966](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/966) | [#998](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/998)
 - Updated gradle wrapper to 8.5 [#969](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/969)
