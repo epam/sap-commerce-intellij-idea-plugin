@@ -25,11 +25,13 @@ import com.intellij.idea.plugin.hybris.system.type.settings.TypeSystemFoldingSet
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
 import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
+import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 
 class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSettings, Items>(Items::class.java), DumbAware {
 
@@ -148,13 +150,24 @@ class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSett
 
             Attributes.ATTRIBUTE -> psi.getAttributeValue(Attribute.QUALIFIER)
                 ?.let { tablify(psi, it, getCachedFoldingSettings(psi)?.tablifyItemAttributes, Attributes.ATTRIBUTE, Attribute.QUALIFIER) } +
-                TYPE_SEPARATOR + psi.getAttributeValue(Attribute.TYPE)
+                TYPE_SEPARATOR + psi.getAttributeValue(Attribute.TYPE) + mandatory(psi)
 
             else -> FALLBACK_PLACEHOLDER
         }
 
         else -> FALLBACK_PLACEHOLDER
     }
+
+    private fun mandatory(psi: PsiElement) = psi.getChildrenOfType<XmlTag>().firstOrNull { it.name == Attribute.MODIFIERS }
+        ?.getAttribute(Modifiers.OPTIONAL)
+        ?.value
+        ?.let {
+            when (it) {
+                "false" -> "!"
+                else -> ""
+            }
+        }
+        ?: ""
 
     override fun isCollapsedByDefault(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
@@ -179,12 +192,13 @@ class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSett
     }
 
     private fun tablifyRelationElement(psi: XmlTag): String {
-        val value = psi.getAttributeValue(RelationElement.TYPE) ?: ""
+        val value = psi.getAttributeValue(RelationElement.TYPE)?.let { it + mandatory(psi) } ?: ""
         if (getCachedFoldingSettings(psi)?.tablifyRelations != true) return value
 
         val longestLength = psi.parent.childrenOfType<XmlTag>()
             .filter { it.localName == Relation.TARGET_ELEMENT || it.localName == Relation.SOURCE_ELEMENT }
-            .mapNotNull { it.getAttributeValue(RelationElement.TYPE) }
+            .mapNotNull { it.getAttributeValue(RelationElement.TYPE)
+                ?.let { relType -> relType + mandatory(it) }}
             .maxOfOrNull { it.length }
             ?: value.length
         return value + " ".repeat(longestLength - value.length)

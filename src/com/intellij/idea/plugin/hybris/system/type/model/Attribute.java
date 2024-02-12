@@ -48,6 +48,7 @@ public interface Attribute extends DomElement {
     String GENERATE = "generate";
     String IS_SELECTION_OF = "isSelectionOf";
     String PERSISTENCE = "persistence";
+    String MODIFIERS = "modifiers";
 
     /**
      * Returns the value of the redeclare child.

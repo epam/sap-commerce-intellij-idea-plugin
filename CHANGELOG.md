@@ -6,6 +6,9 @@
 - Show globe icon for localized attributes in the code completion pane [#999](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/999)
 - Added custom icon for `hybrislicence.jar` [#1000](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1000)
 
+### `items.xml` enhancements
+- Improved folding, show '!' for mandatory properties and relations [#1009](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009)
+
 ### `Remote Connection` enhancements
 - Introduced `Project` and `Personal` scope for remote connections [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971)
 - Redesign HAC connection settings and rely on `PasswordSafe` to store passwords [#968](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/968) | [#986](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/986) | [#987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/987)
