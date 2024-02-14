@@ -10,7 +10,7 @@
 - Added ability to change the output directory for custom modules from `classes` to `eclipsebin` [#1012](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1012)
 
 ### `items.xml` enhancements
-- Improved folding, show '!' for mandatory properties and relations [#1009](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009)
+- Improved folding, show '!' for mandatory properties and relations [#1009](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009) | [#1010](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1010)
 
 ### `Remote Connection` enhancements
 - Introduced `Project` and `Personal` scope for remote connections [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971)

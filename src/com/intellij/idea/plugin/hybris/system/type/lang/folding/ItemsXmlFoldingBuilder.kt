@@ -163,7 +163,7 @@ class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSett
         ?.value
         ?.let {
             when (it) {
-                "false" -> "!"
+                "false" -> " [!]"
                 else -> ""
             }
         }
