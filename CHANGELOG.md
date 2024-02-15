@@ -1,3 +1,7 @@
+## [2023.3.6]
+### `Project Build` enhancements
+- Added ability to change the output directory for custom modules from `classes` to `eclipsebin` [#1021](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1021)
+
 ## [2023.3.5]
 
 ### Fixes

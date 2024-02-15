@@ -116,6 +116,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     protected boolean scanThroughExternalModule;
     private boolean withStandardProvidedSources;
     private boolean ignoreNonExistingSourceDirectories;
+    private boolean useFakeOutputPathForCustomExtensions;
+
     @NotNull
     private ConfigModuleDescriptor configHybrisModuleDescriptor;
     @NotNull
@@ -1079,6 +1081,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setIgnoreNonExistingSourceDirectories(final boolean ignoreNonExistingSourceDirectories) {
         this.ignoreNonExistingSourceDirectories = ignoreNonExistingSourceDirectories;
+    }
+
+    @Override
+    public boolean isUseFakeOutputPathForCustomExtensions() {
+        return useFakeOutputPathForCustomExtensions;
+    }
+
+    @Override
+    public void setUseFakeOutputPathForCustomExtensions(final boolean useFakeOutputPathForCustomExtensions) {
+        this.useFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensions;
     }
 
     @Nullable

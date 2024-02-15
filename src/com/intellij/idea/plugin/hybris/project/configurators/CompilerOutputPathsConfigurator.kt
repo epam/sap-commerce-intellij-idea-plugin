@@ -37,10 +37,14 @@ class CompilerOutputPathsConfigurator {
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor
     ) {
+
         indicator.text2 = HybrisI18NBundleUtils.message("hybris.project.import.module.outputpath")
 
-        val outputDirectory = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM) File(moduleDescriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH)
-        else File(moduleDescriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_FAKE_OUTPUT_PATH)
+        val useFakeOutputPathForCustomExtensions = moduleDescriptor.rootProjectDescriptor.isUseFakeOutputPathForCustomExtensions
+        val outputDirectory = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM && !useFakeOutputPathForCustomExtensions)
+            File(moduleDescriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_OUTPUT_PATH)
+        else
+            File(moduleDescriptor.moduleRootDirectory, HybrisConstants.JAVA_COMPILER_FAKE_OUTPUT_PATH)
 
         with (modifiableRootModel.getModuleExtension(CompilerModuleExtension::class.java)) {
             setCompilerOutputPath(VfsUtilCore.pathToUrl(outputDirectory.absolutePath))

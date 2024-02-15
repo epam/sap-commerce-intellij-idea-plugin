@@ -78,6 +78,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     private lateinit var sourceCodeCheckBox: JBCheckBox
     private lateinit var storeModuleFilesInCheckBox: JBCheckBox
     private lateinit var excludedFromScanningCheckBox: JBCheckBox
+    private lateinit var useFakeOutputPathForCustomExtensionsCheckbox: JBCheckBox
 
     private val excludedFromScanningList = CRUDListPanel(
         "hybris.import.settings.excludedFromScanning.directory.popup.add.title",
@@ -191,9 +192,13 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     .enabledIf(sourceCodeCheckBox.selected)
                     .component
             }.layout(RowLayout.PARENT_GRID)
-
             row {
-                importOotbModulesInReadOnlyModeCheckBox = checkBox("Import OOTB modules in read-only mode")
+                useFakeOutputPathForCustomExtensionsCheckbox = checkBox("Use fake output path for custom extensions")
+                    .comment("When enabled the `eclipsebin’ folder will be used as an output path for both custom and OOTB extensions")
+                    .component
+            }.layout(RowLayout.PARENT_GRID)
+            row {
+                importOotbModulesInReadOnlyModeCheckBox = checkBox("Import OOTB modules in read-only mode test")
                     .component
             }.layout(RowLayout.PARENT_GRID)
 
@@ -304,6 +309,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isExcludeTestSources = excludeTestSourcesCheckBox.isSelected
             this.isImportCustomAntBuildFiles = importCustomAntBuildFilesCheckBox.isSelected
             this.isScanThroughExternalModule = scanThroughExternalModuleCheckbox.isSelected
+            this.isUseFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensionsCheckbox.isSelected
 
             this.setExcludedFromScanning(excludedFromScanningList.data)
 
@@ -451,6 +457,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isExcludeTestSources = settings.excludeTestSources
             this.isImportCustomAntBuildFiles = settings.importCustomAntBuildFiles
             this.isScanThroughExternalModule = settings.scanThroughExternalModule
+            this.isUseFakeOutputPathForCustomExtensions = settings.useFakeOutputPathForCustomExtensions
 
             val appSettings = HybrisApplicationSettingsComponent.getInstance().state
             this.isIgnoreNonExistingSourceDirectories = appSettings.ignoreNonExistingSourceDirectories
