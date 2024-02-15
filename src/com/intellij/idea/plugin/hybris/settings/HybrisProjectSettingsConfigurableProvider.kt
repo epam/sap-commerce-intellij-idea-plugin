@@ -105,6 +105,11 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                         .bindSelected(state::removeExternalModulesOnRefresh)
                 }
                 row {
+                    checkBox("Use fake output path for custom extensions")
+                        .comment("When enabled the ‘eclipsebin’ folder will be used as an output path for both custom and OOTB extensions.")
+                        .bindSelected(state::useFakeOutputPathForCustomExtensions)
+                }
+                row {
                     checkBox(message("hybris.import.wizard.import.ootb.modules.read.only.label"))
                         .comment(message("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
                         .bindSelected(state::importOotbModulesInReadOnlyMode)

@@ -6,6 +6,9 @@
 - Show globe icon for localized attributes in the code completion pane [#999](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/999)
 - Added custom icon for `hybrislicence.jar` [#1000](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1000)
 
+### `Project Build` enhancements
+- Added ability to change the output directory for custom modules from `classes` to `eclipsebin` [#1012](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1012)
+
 ### `items.xml` enhancements
 - Improved folding, show '!' for mandatory properties and relations [#1009](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009)
 

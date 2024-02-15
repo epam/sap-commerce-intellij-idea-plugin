@@ -119,6 +119,10 @@ public interface HybrisProjectDescriptor {
 
     void setIgnoreNonExistingSourceDirectories(boolean ignoreNonExistingSourceDirectories);
 
+    boolean isUseFakeOutputPathForCustomExtensions();
+
+    void setUseFakeOutputPathForCustomExtensions(boolean useFakeOutputPathForCustomExtensions);
+
     @Nullable
     String getJavadocUrl();
 
