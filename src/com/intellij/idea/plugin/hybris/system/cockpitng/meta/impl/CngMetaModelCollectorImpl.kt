@@ -69,13 +69,12 @@ class CngMetaModelCollectorImpl(private val myProject: Project) : CngMetaModelCo
         return Collections.unmodifiableSet(files)
     }
 
-    private fun <T : DomElement> getDescriptor(clazz: Class<T>): String {
-        if (Config::class.java == clazz) return "Configuration"
-        if (ActionDefinition::class.java == clazz) return "Configuration"
-        if (WidgetDefinition::class.java == clazz) return "Action Definition"
-        if (EditorDefinition::class.java == clazz) return "Widget Definition"
-        if (Widgets::class.java == clazz) return "Editor Definition"
-        if (Config::class.java == clazz) return "Widgets"
-        return "Other"
+    private fun <T : DomElement> getDescriptor(clazz: Class<T>) = when (clazz) {
+        Config::class.java -> "Configuration"
+        ActionDefinition::class.java -> "Action Definition"
+        WidgetDefinition::class.java -> "Widget Definition"
+        EditorDefinition::class.java -> "Editor Definition"
+        Widgets::class.java -> "Widgets"
+        else -> "Other"
     }
 }

@@ -42,6 +42,7 @@
 
 ### `Cockpit NG` enhancements
 - Inject spring bean reference into `n:dynamic-node`:`populator-bean-id` [#1006](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1006)
+- Register `backoffice-widgets.xml` as `Widgets` [#1014](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1014)
 
 ### `items.xml` inspection rules
 - Show details for attribute type validation message [#1007](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1007)

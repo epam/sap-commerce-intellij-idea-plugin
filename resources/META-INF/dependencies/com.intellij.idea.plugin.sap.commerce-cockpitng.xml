@@ -22,7 +22,7 @@
                       extenderClass="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomExtender"/>
         <dom.fileMetaData rootTagName="config" stubVersion="3"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription"/>
-        <dom.fileMetaData rootTagName="widgets" stubVersion="3"
+        <dom.fileMetaData rootTagName="widgets" stubVersion="4"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngWidgetsDomFileDescription"/>
         <dom.fileMetaData rootTagName="action-definition" stubVersion="3"
                           implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngActionDefinitionDomFileDescription"/>
