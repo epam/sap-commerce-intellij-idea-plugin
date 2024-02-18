@@ -55,6 +55,7 @@ object HybrisConstants {
     )
     val CCV2_COMMERCE_EXTENSION_PACKS = arrayOf(
         "hybris-commerce-integrations",
+        "hybris-datahub-integration-suite",
         "cx-commerce-crm-integrations",
         "media-telco"
     )

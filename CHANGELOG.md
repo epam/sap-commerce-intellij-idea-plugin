@@ -6,8 +6,8 @@
 - Show globe icon for localized attributes in the code completion pane [#999](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/999)
 - Added custom icon for `hybrislicence.jar` [#1000](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1000)
 
-### `Project Build` enhancements
-- Added ability to change the output directory for custom modules from `classes` to `eclipsebin` [#1012](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1012)
+### `CCv2` enhancements
+- Added new extension pack `hybris-datahub-integration-suite` [#1013](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009) | [#1010](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1013)
 
 ### `items.xml` enhancements
 - Improved folding, show '!' for mandatory properties and relations [#1009](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1009) | [#1010](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1010)
@@ -26,6 +26,9 @@
 - Redesigned `check required plugins` import step [#983](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/983)
 - Added web links to missing plugins on `check required plugins` import step [#984](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/984)
 - Update platform and javadoc version on project refresh [#991](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/991)
+
+### `Project Build` enhancements
+- Added ability to change the output directory for custom modules from `classes` to `eclipsebin` [#1012](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1012)
 
 ### `ImpEx` enhancements
 - Inject `FlexibleSearch` language into suitable ImpExValue elements [#992](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/992) | [#994](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/994)
