@@ -1,3 +1,8 @@
+## [2023.3.5]
+
+### Fixes
+- Fixed request param cast issue for ImpEx execution [#1018](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1018)
+
 ## [2023.3.4]
 
 ### Features

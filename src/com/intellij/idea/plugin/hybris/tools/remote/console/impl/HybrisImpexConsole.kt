@@ -95,7 +95,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
             "scriptContent" to query,
             "validationEnum" to importModeComboBox.selectedItem as String,
             "encoding" to "UTF-8",
-            "maxThreads" to maxThreadsSpinner.value as String,
+            "maxThreads" to maxThreadsSpinner.value.toString(),
             "_legacyMode" to "on", // Legacy Mode
             "_enableCodeExecution" to "on",
             "_distributedMode" to "on", // Distributed mode
