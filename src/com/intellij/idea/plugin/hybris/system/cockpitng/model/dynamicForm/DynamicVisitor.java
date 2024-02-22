@@ -22,7 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.dynamicForm;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Positioned;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpitng/component/dynamicForms:dynamicVisitor interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface DynamicVisitor extends DomElement, Positioned {
+public interface DynamicVisitor extends DomElement, Positioned, Mergeable {
 
 	/**
 	 * Returns the value of the id child.
@@ -41,15 +41,6 @@ public interface DynamicVisitor extends DomElement, Positioned {
 	@com.intellij.util.xml.Attribute ("id")
 	@Required
 	GenericAttributeValue<String> getId();
-
-
-	/**
-	 * Returns the value of the merge-mode child.
-	 * @return the value of the merge-mode child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
-	GenericAttributeValue<MergeMode> getMergeMode();
 
 
 	/**

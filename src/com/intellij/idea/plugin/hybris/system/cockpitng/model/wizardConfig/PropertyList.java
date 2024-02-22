@@ -22,7 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Namespace;
@@ -33,13 +33,12 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpitng/config/wizard-config:PropertyListType interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface PropertyList extends DomElement {
+public interface PropertyList extends DomElement, Mergeable {
 
 	String ROOT = "root";
 	String READONLY = "readonly";
 	String VALIDATE = "validate";
 	String ID = "id";
-	String MERGE_MODE = "merge-mode";
 	String POSITION = "position";
 	String INCLUDE_NON_DECLARED_MANDATORY = "include-non-declared-mandatory";
 	String INCLUDE_NON_DECLARED_UNIQUE = "include-non-declared-unique";
@@ -81,15 +80,6 @@ public interface PropertyList extends DomElement {
 	@NotNull
 	@com.intellij.util.xml.Attribute (ID)
 	GenericAttributeValue<String> getId();
-
-
-	/**
-	 * Returns the value of the merge-mode child.
-	 * @return the value of the merge-mode child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute (MERGE_MODE)
-	GenericAttributeValue<MergeMode> getMergeMode();
 
 
 	/**

@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpit/config/hybris:editor-property interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface EditorProperty extends DomElement {
+public interface EditorProperty extends DomElement, Mergeable {
 
     /**
      * Returns the value of the qualifier child.
@@ -70,16 +70,6 @@ public interface EditorProperty extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("editor")
     GenericAttributeValue<String> getEditor();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<MergeMode> getMergeMode();
 
 
     /**

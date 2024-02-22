@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpit/config/hybris:action-group interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface ActionGroup extends DomElement, Positioned {
+public interface ActionGroup extends DomElement, Positioned, Mergeable {
 
     /**
      * Returns the value of the qualifier child.
@@ -59,16 +59,6 @@ public interface ActionGroup extends DomElement, Positioned {
     @NotNull
     @com.intellij.util.xml.Attribute("show-separator")
     GenericAttributeValue<Boolean> getShowSeparator();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<MergeMode> getMergeMode();
 
 
     /**

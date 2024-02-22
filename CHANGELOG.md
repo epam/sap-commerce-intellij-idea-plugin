@@ -2,6 +2,7 @@
 
 ### `Cockpit NG` enhancements
 - Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)
+- Ignore case of the `merge-mode` attribute [#1023](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1023)
 
 ## [2024.1.0]
 

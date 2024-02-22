@@ -22,7 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpitng/config/notifications:NotificationReference interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface NotificationReference extends DomElement {
+public interface NotificationReference extends DomElement, Mergeable {
 
     /**
      * Returns the value of the index child.
@@ -81,16 +81,6 @@ public interface NotificationReference extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("message")
     GenericAttributeValue<String> getMessage();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<MergeMode> getMergeMode();
 
 
     /**

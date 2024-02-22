@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpit/config/hybris:action interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface Action extends DomElement, Positioned {
+public interface Action extends DomElement, Positioned, Mergeable {
 
     /**
      * Returns the value of the id child.
@@ -82,16 +82,6 @@ public interface Action extends DomElement, Positioned {
     @NotNull
     @com.intellij.util.xml.Attribute("triggerOnKeys")
     GenericAttributeValue<String> getTriggerOnKeys();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<MergeMode> getMergeMode();
 
 
     /**

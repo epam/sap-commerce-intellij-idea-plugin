@@ -22,7 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Namespace;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpitng/component/editorArea:abstractSection interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface AbstractSection extends DomElement, AbstractPositioned {
+public interface AbstractSection extends DomElement, AbstractPositioned, Mergeable {
 
 	/**
 	 * Returns the value of the name child.
@@ -61,15 +61,6 @@ public interface AbstractSection extends DomElement, AbstractPositioned {
 	@NotNull
 	@com.intellij.util.xml.Attribute ("initiallyOpened")
 	GenericAttributeValue<Boolean> getInitiallyOpened();
-
-
-	/**
-	 * Returns the value of the merge-mode child.
-	 * @return the value of the merge-mode child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
-	GenericAttributeValue<MergeMode> getMergeMode();
 
 
 }

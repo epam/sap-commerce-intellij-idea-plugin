@@ -21,7 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/component/valuechooser:value interface.
  */
-public interface Value extends DomElement {
+public interface Value extends DomElement, Mergeable {
 
     /**
      * Returns the value of the id child.
@@ -82,16 +82,6 @@ public interface Value extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("factory-method")
     GenericAttributeValue<String> getFactoryMethod();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<MergeMode> getMergeMode();
 
 
 }

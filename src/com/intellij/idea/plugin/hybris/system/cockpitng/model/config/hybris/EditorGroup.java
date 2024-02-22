@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpit/config/hybris:editor-group interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface EditorGroup extends DomElement {
+public interface EditorGroup extends DomElement, Mergeable {
 
     /**
      * Returns the value of the qualifier child.
@@ -60,16 +60,6 @@ public interface EditorGroup extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("position")
     GenericAttributeValue<Integer> getPosition();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<MergeMode> getMergeMode();
 
 
     /**

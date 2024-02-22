@@ -22,7 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.listView;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Positioned;
 import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
 import com.intellij.util.xml.DomElement;
@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpitng/component/listView:list-column interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface ListColumn extends DomElement, Positioned {
+public interface ListColumn extends DomElement, Positioned, Mergeable {
 
 	String QUALIFIER = "qualifier";
 	String AUTO_EXTRACT = "auto-extract";
@@ -46,7 +46,6 @@ public interface ListColumn extends DomElement, Positioned {
 	String WIDTH = "width";
 	String HFLEX = "hflex";
 	String SPRING_BEAN = "spring-bean";
-	String MERGE_MODE = "merge-mode";
 	String MAX_CHAR = "maxChar";
 	String LINK = "link";
 	String LINK_VALUE = "link-value";
@@ -131,15 +130,6 @@ public interface ListColumn extends DomElement, Positioned {
 	@com.intellij.util.xml.Attribute (SPRING_BEAN)
 	@Referencing(SpringBeanReferenceConverter.class)
 	GenericAttributeValue<String> getSpringBean();
-
-
-	/**
-	 * Returns the value of the merge-mode child.
-	 * @return the value of the merge-mode child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute (MERGE_MODE)
-	GenericAttributeValue<MergeMode> getMergeMode();
 
 
 	/**

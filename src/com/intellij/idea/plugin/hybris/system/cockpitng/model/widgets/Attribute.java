@@ -21,7 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -31,17 +31,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/component/compareview:attribute interface.
  */
-public interface Attribute extends DomElement, Positioned {
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<MergeMode> getMergeModeAttr();
-
+public interface Attribute extends DomElement, Positioned, Mergeable {
 
     /**
      * Returns the value of the label child.
@@ -150,16 +140,6 @@ public interface Attribute extends DomElement, Positioned {
     @NotNull
     @com.intellij.util.xml.Attribute("editor")
     GenericAttributeValue<String> getEditor();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode> getMergeMode();
 
 
     /**
