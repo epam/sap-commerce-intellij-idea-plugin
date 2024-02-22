@@ -1,3 +1,8 @@
+## [2024.1.1]
+
+### `Cockpit NG` enhancements
+- Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)
+
 ## [2024.1.0]
 
 ### Features

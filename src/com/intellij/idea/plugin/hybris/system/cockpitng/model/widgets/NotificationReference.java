@@ -22,11 +22,8 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**

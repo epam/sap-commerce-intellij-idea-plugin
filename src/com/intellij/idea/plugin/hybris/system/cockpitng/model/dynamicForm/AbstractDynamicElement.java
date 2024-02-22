@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.dynamicForm;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Positioned;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +49,7 @@ public interface AbstractDynamicElement extends DomElement, Positioned {
 	 */
 	@NotNull
 	@com.intellij.util.xml.Attribute ("merge-mode")
-	GenericAttributeValue<String> getMergeMode();
+	GenericAttributeValue<MergeMode> getMergeMode();
 
 
 	/**

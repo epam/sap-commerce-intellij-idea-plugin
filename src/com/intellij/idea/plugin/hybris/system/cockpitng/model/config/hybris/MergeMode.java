@@ -25,7 +25,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris;
  * http://www.hybris.com/cockpitng/config/common:merge-mode enumeration.
  * <pre>
  * <h3>Enumeration http://www.hybris.com/cockpitng/config/common:merge-mode documentation</h3>
- * This type is deprecated since version 2005. Please use mergeMode instead
+ * A general purpose type defining merge mode of configuration element
  * </pre>
  */
 public enum MergeMode implements com.intellij.util.xml.NamedEnum {

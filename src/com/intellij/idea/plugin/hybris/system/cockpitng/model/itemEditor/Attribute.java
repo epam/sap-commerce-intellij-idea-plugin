@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
 import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.*;
@@ -90,7 +91,7 @@ public interface Attribute extends DomElement, AbstractPositioned {
 	 */
 	@NotNull
 	@com.intellij.util.xml.Attribute (MERGE_MODE)
-	GenericAttributeValue<String> getMergeMode();
+	GenericAttributeValue<MergeMode> getMergeMode();
 
 
 	/**

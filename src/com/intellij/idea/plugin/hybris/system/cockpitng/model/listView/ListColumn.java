@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.listView;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Positioned;
 import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
 import com.intellij.util.xml.DomElement;
@@ -138,7 +139,7 @@ public interface ListColumn extends DomElement, Positioned {
 	 */
 	@NotNull
 	@com.intellij.util.xml.Attribute (MERGE_MODE)
-	GenericAttributeValue<String> getMergeMode();
+	GenericAttributeValue<MergeMode> getMergeMode();
 
 
 	/**

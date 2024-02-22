@@ -91,7 +91,7 @@ public interface Action extends DomElement, Positioned {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<String> getMergeMode();
+    GenericAttributeValue<MergeMode> getMergeMode();
 
 
     /**

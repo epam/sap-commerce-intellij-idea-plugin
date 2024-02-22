@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.ImagePreview;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;

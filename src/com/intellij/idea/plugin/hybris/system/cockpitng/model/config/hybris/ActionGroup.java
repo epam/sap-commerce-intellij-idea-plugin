@@ -22,11 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.GenericDomValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -72,7 +68,7 @@ public interface ActionGroup extends DomElement, Positioned {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<String> getMergeMode();
+    GenericAttributeValue<MergeMode> getMergeMode();
 
 
     /**

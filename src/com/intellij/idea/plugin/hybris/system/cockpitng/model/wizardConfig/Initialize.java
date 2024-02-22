@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
 import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
@@ -72,7 +73,7 @@ public interface Initialize extends DomElement {
 	 */
 	@NotNull
 	@com.intellij.util.xml.Attribute (MERGE_MODE)
-	GenericAttributeValue<String> getMergeMode();
+	GenericAttributeValue<MergeMode> getMergeMode();
 
 
 }

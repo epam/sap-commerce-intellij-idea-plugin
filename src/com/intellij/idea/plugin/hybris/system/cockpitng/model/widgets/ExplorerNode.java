@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,7 +63,7 @@ public interface ExplorerNode extends DomElement, Positioned {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(MERGE_MODE)
-    GenericAttributeValue<String> getMergeMode();
+    GenericAttributeValue<MergeMode> getMergeMode();
 
 
     /**
