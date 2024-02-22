@@ -29,9 +29,9 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris;
  * </pre>
  */
 public enum MergeMode implements com.intellij.util.xml.NamedEnum {
-    MERGE("merge"),
-    REMOVE("remove"),
-    REPLACE("replace");
+    MERGE("MERGE"),
+    REMOVE("REMOVE"),
+    REPLACE("REPLACE");
 
     private final String value;
 

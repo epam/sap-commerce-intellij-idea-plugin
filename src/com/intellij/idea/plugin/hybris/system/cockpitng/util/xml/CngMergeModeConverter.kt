@@ -18,17 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.util.xml
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.CngUtils
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.ResolvingConverter
 import java.util.*
 
 class CngMergeModeConverter : ResolvingConverter<String>() {
 
-    override fun toString(t: String?, context: ConvertContext?) = t?.lowercase(Locale.ROOT)
+    override fun toString(t: String?, context: ConvertContext?) = t?.uppercase(Locale.ROOT)
 
-    override fun fromString(s: String?, context: ConvertContext?) = s?.lowercase(Locale.ROOT)
-    override fun getVariants(context: ConvertContext?) = MergeMode.entries.map { it.value }
+    override fun fromString(s: String?, context: ConvertContext?) = s?.uppercase(Locale.ROOT)
 
+    override fun getVariants(context: ConvertContext?) = CngUtils.getValidMergeModes()
 
 }

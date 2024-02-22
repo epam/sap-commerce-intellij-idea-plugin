@@ -37,7 +37,6 @@ public interface Attribute extends DomElement, AbstractPositioned, Mergeable {
 	String QUALIFIER = "qualifier";
 	String READONLY = "readonly";
 	String VISIBLE = "visible";
-	String MERGE_MODE = "merge-mode";
 
 	/**
 	 * Returns the value of the qualifier child.

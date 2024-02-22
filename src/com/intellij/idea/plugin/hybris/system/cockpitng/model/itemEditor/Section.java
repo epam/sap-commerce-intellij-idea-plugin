@@ -22,7 +22,6 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Namespace;
@@ -82,13 +81,13 @@ public interface Section extends DomElement, AbstractSection {
 	 */
 	@NotNull
 	@SubTagList (ATTRIBUTE)
-	java.util.List<com.intellij.util.xml.Attribute> getAttributes();
+	java.util.List<Attribute> getAttributes();
 	/**
 	 * Adds new child to the list of attribute children.
 	 * @return created child
 	 */
 	@SubTagList (ATTRIBUTE)
-    Attribute addAttribute();
+	Attribute addAttribute();
 
 
 	/**
