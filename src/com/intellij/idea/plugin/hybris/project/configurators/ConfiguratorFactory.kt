@@ -43,6 +43,7 @@ class ConfiguratorFactory {
     fun getCompilerOutputPathsConfigurator(): CompilerOutputPathsConfigurator = ApplicationManager.getApplication().getService(CompilerOutputPathsConfigurator::class.java)
     fun getLibRootsConfigurator(): LibRootsConfigurator = ApplicationManager.getApplication().getService(LibRootsConfigurator::class.java)
     fun getGroupModuleConfigurator(): GroupModuleConfigurator = ApplicationManager.getApplication().getService(GroupModuleConfigurator::class.java)
+    fun getJavadocSettingsConfigurator(): JavadocSettingsConfigurator = ApplicationManager.getApplication().getService(JavadocSettingsConfigurator::class.java)
     fun getModuleSettingsConfigurator(): ModuleSettingsConfigurator = ApplicationManager.getApplication().getService(ModuleSettingsConfigurator::class.java)
     fun getVersionControlSystemConfigurator(): VersionControlSystemConfigurator = ApplicationManager.getApplication().getService(VersionControlSystemConfigurator::class.java)
     fun getSearchScopeConfigurator(): SearchScopeConfigurator = ApplicationManager.getApplication().getService(SearchScopeConfigurator::class.java)
