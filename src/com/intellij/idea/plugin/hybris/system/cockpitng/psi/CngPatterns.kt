@@ -73,8 +73,25 @@ object CngPatterns {
             CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_LIST_VIEW
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
-            .inFile(cngConfigFile)
+            .inFile(cngConfigFile),
 
+        attributeValue(
+            "class",
+            "custom-section",
+            "summary-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "class",
+            "custom-attribute",
+            "summary-view",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile)
     )
 
     val EDITOR_DEFINITION = XmlPatterns.or(
