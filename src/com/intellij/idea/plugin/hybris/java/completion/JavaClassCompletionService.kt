@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.completion
+package com.intellij.idea.plugin.hybris.java.completion
 
+import com.intellij.codeInsight.completion.JavaLookupElementBuilder
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
@@ -26,7 +26,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ClassInheritorsSearch
 
 @Service(Service.Level.PROJECT)
-class ImpexImplementationClassCompletionContributor(val myProject: Project) {
+class JavaClassCompletionService(val myProject: Project) {
 
     fun getImplementationsForClasses(vararg qualifiedNames: String): Set<LookupElement> {
         val psiFacade = JavaPsiFacade.getInstance(myProject)
@@ -41,13 +41,15 @@ class ImpexImplementationClassCompletionContributor(val myProject: Project) {
             .filterNot { it.isInterface }
             .mapNotNull {
                 val presentableText = it.name ?: return@mapNotNull null
-                ImpExLookupElementFactory.buildJavaClass(it, presentableText)
+                val lookupString = it.qualifiedName ?: return@mapNotNull null
+                JavaLookupElementBuilder.forClass(it, lookupString, true)
+                    .withPresentableText(presentableText)
             }
             .toSet()
     }
 
     companion object {
-        fun getInstance(project: Project): ImpexImplementationClassCompletionContributor = project.getService(ImpexImplementationClassCompletionContributor::class.java)
+        fun getInstance(project: Project): JavaClassCompletionService = project.getService(JavaClassCompletionService::class.java)
     }
 
 }

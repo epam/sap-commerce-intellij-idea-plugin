@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.impex.codeInsight.lookup
 
-import com.intellij.codeInsight.completion.JavaLookupElementBuilder
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -27,7 +26,6 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.settings.ImpexCompletionSettings
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType
@@ -39,10 +37,8 @@ object ImpExLookupElementFactory {
 
     fun build(element: PsiElement, modifier: AttributeModifier, completionSettings: ImpexCompletionSettings) = build(element, modifier.modifierName, completionSettings)
 
-    fun buildJavaClass(psiClass: PsiClass, presentableText: String) = JavaLookupElementBuilder.forClass(psiClass, psiClass.qualifiedName, true)
-        .withPresentableText(presentableText)
-
     fun buildModifierValue(lookupElement: String) = LookupElementBuilder.create(lookupElement)
+
     fun buildModifierValue(lookupElement: String, typeText: String, presentableText: String = lookupElement) = LookupElementBuilder.create(lookupElement)
         .withPresentableText(presentableText)
         .withTypeText(typeText, true)
