@@ -5,6 +5,9 @@
 - Ignore case of the `merge-mode` attribute [#1023](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1023)
 - Improved xsd mapping for `ea:attribute` [#1024](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1024)
 
+### `BugFix` enhancements
+- Configure SAP CX JavaDoc for OOTB Modules [#1027](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1026)
+
 ## [2024.1.0]
 
 ### Features
