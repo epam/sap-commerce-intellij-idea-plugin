@@ -33,7 +33,7 @@ class DefaultJavadocSettingsConfigurator : JavadocSettingsConfigurator {
 
         moduleDescriptor.rootProjectDescriptor.getJavadocUrl()
             ?.takeUnless { moduleDescriptor is YCustomRegularModuleDescriptor }
-             ?.takeUnless { moduleDescriptor is CCv2ModuleDescriptor }
+            ?.takeUnless { moduleDescriptor is CCv2ModuleDescriptor }
             ?.takeUnless { moduleDescriptor is ConfigModuleDescriptor }
             ?.let { javadocRefList.add(it) }
 
