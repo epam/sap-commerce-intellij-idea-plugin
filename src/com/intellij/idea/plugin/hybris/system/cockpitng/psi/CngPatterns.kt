@@ -91,6 +91,33 @@ object CngPatterns {
             CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW
         )
             .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "class",
+            "customSection",
+            "editorArea",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "class",
+            "customPanel",
+            "editorArea",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "class",
+            "customTab",
+            "editorArea",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
             .inFile(cngConfigFile)
     )
 

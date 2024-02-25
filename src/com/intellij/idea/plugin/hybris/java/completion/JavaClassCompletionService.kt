@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.java.completion
 
+import ai.grazie.utils.toLinkedSet
 import com.intellij.codeInsight.completion.JavaLookupElementBuilder
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.components.Service
@@ -45,7 +46,9 @@ class JavaClassCompletionService(val myProject: Project) {
                 JavaLookupElementBuilder.forClass(it, lookupString, true)
                     .withPresentableText(presentableText)
             }
-            .toSet()
+            .distinctBy { it.lookupString }
+            .sortedBy { it.lookupString }
+            .toLinkedSet()
     }
 
     companion object {

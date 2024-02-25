@@ -4,8 +4,9 @@
 - Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)
 - Ignore case of the `merge-mode` attribute [#1023](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1023)
 - Improved xsd mapping for `ea:attribute` [#1024](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1024)
-- Added code completion for `list-view:column`:`class` [#1028](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1028)
-- Added code completion for `custom-section` & `custom-attribute`:`class` [#1029](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1029)
+- Added code completion for `lv:column`:`class` [#1028](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1028)
+- Added code completion for `sv`:`custom-section`|`custom-attribute`:`class` [#1029](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1029)
+- Added code completion for `ea`:`customPanel`|`customTab`|`customSection`:`class` [#1030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1030)
 
 ## [2024.1.0]
 
