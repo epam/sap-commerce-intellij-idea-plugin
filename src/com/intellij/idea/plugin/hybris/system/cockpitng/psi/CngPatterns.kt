@@ -65,7 +65,7 @@ object CngPatterns {
         .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
         .inFile(cngConfigFile)
 
-    val LIST_VIEW_CLASS = attributeValue(
+    val WIDGET_COMPONENT_RENDERER_CLASS = attributeValue(
         "class",
         "column",
         "list-view",
