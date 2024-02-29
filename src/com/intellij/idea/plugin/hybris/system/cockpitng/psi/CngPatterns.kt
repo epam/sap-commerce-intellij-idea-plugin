@@ -218,6 +218,15 @@ object CngPatterns {
             .inFile(cngConfigFile),
 
         attributeValue(
+            "name",
+            "sort-field",
+            "simple-search",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_SEARCH
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
             "qualifier",
             "attribute",
             "compare-view",

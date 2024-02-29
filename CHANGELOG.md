@@ -7,6 +7,7 @@
 - Added code completion for `lv:column`:`class` [#1028](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1028)
 - Added code completion for `sv`:`custom-section`|`custom-attribute`:`class` [#1029](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1029)
 - Added code completion for `ea`:`customPanel`|`customTab`|`customSection`:`class` [#1030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1030)
+- Added code completion and reference resolution for `ss`:`sort-field`:`name` [#1032](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1032)
 
 ### Fixes
 - Configure SAP CX JavaDoc for OOTB Modules [#1027](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1026)
