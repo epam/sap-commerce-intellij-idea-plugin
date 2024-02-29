@@ -210,6 +210,15 @@ object CngPatterns {
 
         attributeValue(
             "name",
+            "sort-field",
+            "advanced-search",
+            CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_ADVANCED_SEARCH
+        )
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT))
+            .inFile(cngConfigFile),
+
+        attributeValue(
+            "name",
             "field",
             "simple-search",
             CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_SEARCH
