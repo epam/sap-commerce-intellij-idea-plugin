@@ -53,11 +53,6 @@ class CngCompletionContributor : CompletionContributor() {
         )
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.ITEM_ATTRIBUTE),
-            CngItemAttributeCodeCompletionProvider.instance
-        )
-        extend(
-            CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_DEFINITION),
             CngEditorDefinitionCodeCompletionProvider.instance
         )
