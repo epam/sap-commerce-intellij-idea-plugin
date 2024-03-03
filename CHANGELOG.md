@@ -9,6 +9,7 @@
 - Added code completion for `ea`:`customPanel`|`customTab`|`customSection`:`class` [#1030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1030)
 - Added code completion and reference resolution for `ss`:`sort-field`:`name` [#1033](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1033)
 - Added code completion and reference resolution for `as`:`sort-field`:`name` [#1034](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1034)
+- Added reference resolution for `y`:`labels`:`beanId` [#1035](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1035)
 
 ### Fixes
 - Configure SAP CX JavaDoc for OOTB Modules [#1027](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1026)

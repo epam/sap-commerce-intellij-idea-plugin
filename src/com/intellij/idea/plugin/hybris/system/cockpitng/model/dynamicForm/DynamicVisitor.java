@@ -24,6 +24,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.model.dynamicForm;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Positioned;
+import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,6 +51,7 @@ public interface DynamicVisitor extends DomElement, Positioned, Mergeable {
 	@NotNull
 	@com.intellij.util.xml.Attribute ("beanId")
 	@Required
+	@Referencing(SpringBeanReferenceConverter.class)
 	GenericAttributeValue<String> getBeanId();
 
 
