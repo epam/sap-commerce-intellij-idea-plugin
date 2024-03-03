@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Labels
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Preview
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.AbstractAction
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.javaee.el.util.ELImplicitVariable
@@ -53,7 +54,11 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
         return when {
             context is XmlText
                 && tag.localName == Labels.LABEL
-                && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> process(context, project)
+                && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
+
+            context is XmlAttributeValue
+                && context.parentOfType<XmlAttribute>()?.localName == Preview.URL_QUALIFIER
+                && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
 
             context is XmlAttributeValue
                 && context.parentOfType<XmlAttribute>()?.localName == AbstractAction.VISIBLE
@@ -63,8 +68,7 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
         }
     }
 
-    private fun process(context: XmlText, project: Project) = context
-        .let { CngPsiHelper.resolveContextType(it) }
+    private fun process(type: String?, project: Project) = type
         ?.let { findClassByHybrisTypeName(project, it) }
         ?.let { process(it) }
         ?.toMutableList()

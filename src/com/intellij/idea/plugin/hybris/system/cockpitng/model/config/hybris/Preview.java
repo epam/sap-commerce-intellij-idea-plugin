@@ -33,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Preview extends DomElement {
 
+    String URL_QUALIFIER = "urlQualifier";
+
     /**
      * Returns the value of the fallbackToIcon child.
      *
@@ -49,7 +51,7 @@ public interface Preview extends DomElement {
      * @return the value of the urlQualifier child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("urlQualifier")
+    @com.intellij.util.xml.Attribute(URL_QUALIFIER)
     GenericAttributeValue<String> getUrlQualifier();
 
 
