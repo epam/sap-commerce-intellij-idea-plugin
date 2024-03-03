@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Labels extends DomElement {
 
     String LABEL = "label";
+    String DESCRIPTION = "description";
 
     /**
      * Returns the value of the beanId child.
@@ -71,7 +72,7 @@ public interface Labels extends DomElement {
      * @return the value of the description child.
      */
     @NotNull
-    @SubTag("description")
+    @SubTag(DESCRIPTION)
     GenericDomValue<String> getDescription();
 
 

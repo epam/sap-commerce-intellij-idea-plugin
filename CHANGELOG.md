@@ -11,6 +11,7 @@
 - Added code completion and reference resolution for `as`:`sort-field`:`name` [#1034](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1034)
 - Added reference resolution for `y`:`labels`:`beanId` [#1035](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1035)
 - Added `Spring EL` language injection into the `y:preview`:`urlQualifier` attribute [#1036](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1036)
+- Added `Spring EL` language injection into the `y:preview`:`description` tag body [#1037](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1037)
 
 ### Fixes
 - Configure SAP CX JavaDoc for OOTB Modules [#1027](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1026)
