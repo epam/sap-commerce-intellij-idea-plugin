@@ -17,6 +17,9 @@
 ### Fixes
 - Configure SAP CX JavaDoc for OOTB Modules [#1027](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1026)
 
+### Other
+- Added JetBrains Marketplace error reporting [#1039](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1039)
+
 ## [2024.1.0]
 
 ### Features
