@@ -132,6 +132,7 @@ object HybrisConstants {
 
     const val GEN_SRC_DIRECTORY = "gensrc"
     const val TEST_SRC_DIRECTORY = "testsrc"
+    const val IDE_CONSOLES_PATH = "consoles/ide/"
     const val GROOVY_TEST_SRC_DIRECTORY = "groovytestsrc"
     const val KOTLIN_TEST_SRC_DIRECTORY = "kotlintestsrc"
     const val SCALA_TEST_SRC_DIRECTORY = "scalatestsrc"
