@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Namespace;
@@ -32,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpitng/config/wizard-config:NavigationType interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface Navigation extends DomElement {
+public interface Navigation extends DomElement, Mergeable {
 
 	/**
 	 * Returns the value of the id child.
@@ -41,15 +42,6 @@ public interface Navigation extends DomElement {
 	@NotNull
 	@com.intellij.util.xml.Attribute ("id")
 	GenericAttributeValue<String> getId();
-
-
-	/**
-	 * Returns the value of the merge-mode child.
-	 * @return the value of the merge-mode child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
-	GenericAttributeValue<String> getMergeMode();
 
 
 	/**

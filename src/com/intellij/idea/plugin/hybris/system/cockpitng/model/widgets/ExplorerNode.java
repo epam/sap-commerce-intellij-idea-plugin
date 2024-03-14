@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,10 +30,9 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpitng/config/explorertree:explorer-node interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface ExplorerNode extends DomElement, Positioned {
+public interface ExplorerNode extends DomElement, Positioned, Mergeable {
 
     String ID = "id";
-    String MERGE_MODE = "merge-mode";
 
     /**
      * Returns the value of the id child.
@@ -53,16 +53,6 @@ public interface ExplorerNode extends DomElement, Positioned {
     @NotNull
     @com.intellij.util.xml.Attribute("expanded-by-default")
     GenericAttributeValue<Boolean> getExpandedByDefault();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute(MERGE_MODE)
-    GenericAttributeValue<String> getMergeMode();
 
 
     /**

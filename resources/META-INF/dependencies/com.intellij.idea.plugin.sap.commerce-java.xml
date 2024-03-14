@@ -46,6 +46,9 @@
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultLibRootsConfigurator"/>
 
+        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavadocSettingsConfigurator"
+                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavadocSettingsConfigurator"/>
+
         <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ModuleDependenciesConfigurator"
                             serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultModuleDependenciesConfigurator"/>
 

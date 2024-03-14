@@ -22,7 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Positioned;
 import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngOperatorConverter;
 import com.intellij.util.xml.*;
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpitng/config/advancedsearch:FieldType interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface Field extends DomElement, Positioned {
+public interface Field extends DomElement, Positioned, Mergeable {
 
 	String NAME = "name";
 	String OPERATOR = "operator";
@@ -41,7 +41,6 @@ public interface Field extends DomElement, Positioned {
 	String SORTABLE = "sortable";
 	String DISABLED = "disabled";
 	String MANDATORY = "mandatory";
-	String MERGE_MODE = "merge-mode";
 	String EDITOR_PARAMETER = "editor-parameter";
 
 	/**
@@ -107,15 +106,6 @@ public interface Field extends DomElement, Positioned {
 	@NotNull
 	@com.intellij.util.xml.Attribute (MANDATORY)
 	GenericAttributeValue<Boolean> getMandatory();
-
-
-	/**
-	 * Returns the value of the merge-mode child.
-	 * @return the value of the merge-mode child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute (MERGE_MODE)
-	GenericAttributeValue<MergeMode> getMergeMode();
 
 
 	/**

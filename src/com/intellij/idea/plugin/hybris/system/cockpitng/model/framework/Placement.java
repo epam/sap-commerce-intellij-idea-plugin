@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.framework;
 
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/config/dashboard:placement interface.
  */
-public interface Placement extends DomElement {
+public interface Placement extends DomElement, Mergeable {
 
     /**
      * Returns the value of the widgetId child.
@@ -80,16 +81,6 @@ public interface Placement extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute("y")
     GenericAttributeValue<Integer> getY();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<String> getMergeMode();
 
 
 }

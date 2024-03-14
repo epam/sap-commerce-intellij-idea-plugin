@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.util
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
@@ -49,6 +50,7 @@ object CngUtils {
         "and",
         "match",
     )
+    private val mergeModes = MergeMode.entries.map { it.value }
 
     fun isConfigFile(file: XmlFile) = DomManager.getDomManager(file.project).getFileElement(file, Config::class.java) != null
 
@@ -57,6 +59,8 @@ object CngUtils {
         .keys
         // exclude itself
         .filter { Context.MERGE_BY != it }
+
+    fun getValidMergeModes() = mergeModes
 
     fun getOperatorValues() = operatorValues
 }

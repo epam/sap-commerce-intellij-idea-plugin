@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -30,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/config/fulltextsearch:FieldType interface.
  */
-public interface Field extends DomElement, Positioned {
+public interface Field extends DomElement, Positioned, Mergeable {
 
     /**
      * Returns the value of the name child.
@@ -81,16 +82,6 @@ public interface Field extends DomElement, Positioned {
     @NotNull
     @com.intellij.util.xml.Attribute("editor")
     GenericAttributeValue<String> getEditor();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<String> getMergeMode();
 
 
     /**

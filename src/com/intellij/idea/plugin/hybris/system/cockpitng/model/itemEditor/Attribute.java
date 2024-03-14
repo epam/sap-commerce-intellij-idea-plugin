@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.*;
@@ -31,12 +32,11 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpitng/component/editorArea:attribute interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface Attribute extends DomElement, AbstractPositioned {
+public interface Attribute extends DomElement, AbstractPositioned, Mergeable {
 
 	String QUALIFIER = "qualifier";
 	String READONLY = "readonly";
 	String VISIBLE = "visible";
-	String MERGE_MODE = "merge-mode";
 
 	/**
 	 * Returns the value of the qualifier child.
@@ -82,15 +82,6 @@ public interface Attribute extends DomElement, AbstractPositioned {
 	@NotNull
 	@com.intellij.util.xml.Attribute ("editor")
 	GenericAttributeValue<String> getEditor();
-
-
-	/**
-	 * Returns the value of the merge-mode child.
-	 * @return the value of the merge-mode child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute (MERGE_MODE)
-	GenericAttributeValue<String> getMergeMode();
 
 
 	/**

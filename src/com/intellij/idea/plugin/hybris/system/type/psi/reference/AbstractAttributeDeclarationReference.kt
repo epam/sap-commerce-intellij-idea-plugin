@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.system.type.psi.reference
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -35,25 +36,36 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import org.jetbrains.kotlin.idea.base.codeInsight.handlers.fixers.start
 
 abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<PsiElement>, HighlightedReference {
 
     constructor(element: PsiElement) : super(element, false)
     constructor(element: PsiElement, textRange: TextRange) : super(element, textRange, false)
 
+    private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AbstractAttributeDeclarationReference>>("HYBRIS_TS_CACHED_REFERENCE_${rangeInElement.start}")
+
     override fun calculateDefaultRangeInElement(): TextRange =
         if (element.textLength == 0) super.calculateDefaultRangeInElement()
         else TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
-        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+        .getParameterizedCachedValue(element, cacheKey, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
+
+
+    override fun getVariants(): Array<Any> {
+        val type = resolveType(element) ?: return emptyArray()
+        val project = element.project
+
+        return TSCompletionService.getInstance(project)
+            .getCompletions(type)
+            .toTypedArray()
+    }
 
     protected abstract fun resolveType(element: PsiElement): String?
 
     companion object {
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AbstractAttributeDeclarationReference>>("HYBRIS_TS_CACHED_REFERENCE")
-
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AbstractAttributeDeclarationReference> { ref ->
             val project = ref.element.project
             val metaModelAccess = TSMetaModelAccess.getInstance(project)

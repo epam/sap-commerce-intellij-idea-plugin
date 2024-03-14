@@ -21,7 +21,10 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListColum
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngTSItemAttributeReference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
@@ -33,13 +36,36 @@ class CngTSItemAttributeReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ) = element.parentOfType<XmlTag>()
+    ): Array<PsiReference> = element.parentOfType<XmlTag>()
         ?.let { DomManager.getDomManager(element.project).getDomElement(it) }
         ?.let { it as? ListColumn }
         ?.springBean
         ?.takeUnless { it.stringValue == null }
         ?.let { emptyArray() }
-        ?: arrayOf(CngTSItemAttributeReference(element))
+        ?: createReferences(element)
+
+    private fun createReferences(element: PsiElement): Array<PsiReference> {
+        var from = 1
+        var previousReference: CngTSItemAttributeReference? = null
+
+        val value = StringUtil.unquoteString(element.text)
+        return value
+            .takeIf { it.isNotBlank() }
+            ?.split('.')
+            ?.map {
+                val textRange = TextRange.from(from + it.length - it.trimStart().length, it.trim().length)
+                from += it.length + 1
+                textRange
+            }
+            ?.map {
+                val nextReference = CngTSItemAttributeReference(element, it, previousReference)
+                previousReference = nextReference
+                nextReference
+            }
+            ?.takeIf { it.isNotEmpty() }
+            ?.toTypedArray()
+            ?: arrayOf(CngTSItemAttributeReference(element, TextRange.from(from, value.length)))
+    }
 
     companion object {
         val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngTSItemAttributeReferenceProvider::class.java)

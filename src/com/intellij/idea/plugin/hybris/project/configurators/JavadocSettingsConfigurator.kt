@@ -1,6 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,21 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.project.configurators
 
-// Generated on Wed Jan 18 00:35:36 CET 2023
-// DTD/Schema  :    http://www.hybris.com/cockpitng/config/common
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.roots.ModifiableRootModel
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
+interface JavadocSettingsConfigurator {
 
-/**
- * http://www.hybris.com/cockpitng/config/common:MergeMode enumeration.
- * <pre>
- * <h3>Enumeration http://www.hybris.com/cockpitng/config/common:MergeMode documentation</h3>
- * This type is deprecated since version 2005. Please use mergeMode instead
- * </pre>
- */
-public enum MergeMode {
-    MERGE,
-    REMOVE,
-    REPLACE
+    fun configure(
+        modifiableRootModel: ModifiableRootModel, moduleDescriptor: ModuleDescriptor
+    )
 }

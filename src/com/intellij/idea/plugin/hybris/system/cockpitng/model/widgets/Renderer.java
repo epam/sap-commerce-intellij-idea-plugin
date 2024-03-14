@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/component/compareview:renderer interface.
  */
-public interface Renderer extends DomElement, Positioned {
+public interface Renderer extends DomElement, Positioned, Mergeable {
 
     /**
      * Returns the value of the spring-bean child.
@@ -40,16 +41,6 @@ public interface Renderer extends DomElement, Positioned {
     @Referencing(SpringBeanReferenceConverter.class)
     @Required
     GenericAttributeValue<String> getSpringBean();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<MergeMode> getMergeMode();
 
 
     /**

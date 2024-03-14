@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/component/summaryview:abstractSection interface.
  */
-public interface AbstractSection extends DomElement, Positioned {
+public interface AbstractSection extends DomElement, Positioned, Mergeable {
 
     /**
      * Returns the value of the name child.
@@ -38,16 +39,6 @@ public interface AbstractSection extends DomElement, Positioned {
     @NotNull
     @com.intellij.util.xml.Attribute("name")
     GenericAttributeValue<String> getName();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<String> getMergeMode();
 
 
 }

@@ -22,19 +22,15 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.com/cockpitng/config/wizard-config:AbstractFlowType interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface AbstractFlow extends DomElement {
+public interface AbstractFlow extends DomElement, Mergeable {
 
 	/**
 	 * Returns the value of the id child.
@@ -53,15 +49,6 @@ public interface AbstractFlow extends DomElement {
 	@NotNull
 	@com.intellij.util.xml.Attribute ("model")
 	GenericAttributeValue<String> getModel();
-
-
-	/**
-	 * Returns the value of the merge-mode child.
-	 * @return the value of the merge-mode child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
-	GenericAttributeValue<String> getMergeMode();
 
 
 	/**

@@ -22,18 +22,14 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.GenericDomValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.com/cockpit/config/hybris:action-group interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface ActionGroup extends DomElement, Positioned {
+public interface ActionGroup extends DomElement, Positioned, Mergeable {
 
     /**
      * Returns the value of the qualifier child.
@@ -63,16 +59,6 @@ public interface ActionGroup extends DomElement, Positioned {
     @NotNull
     @com.intellij.util.xml.Attribute("show-separator")
     GenericAttributeValue<Boolean> getShowSeparator();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<String> getMergeMode();
 
 
     /**

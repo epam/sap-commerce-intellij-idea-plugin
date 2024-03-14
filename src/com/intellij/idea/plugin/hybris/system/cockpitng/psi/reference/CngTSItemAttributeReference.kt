@@ -20,10 +20,28 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.AbstractAttributeDeclarationReference
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 
-class CngTSItemAttributeReference(element: PsiElement) : AbstractAttributeDeclarationReference(element) {
+class CngTSItemAttributeReference(
+    element: PsiElement,
+    textRange: TextRange,
+    private val previousReference: CngTSItemAttributeReference? = null
+) : AbstractAttributeDeclarationReference(element, textRange) {
 
-    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextType(element)
+    override fun resolveType(element: PsiElement): String? {
+        if (previousReference == null || previousReference == this) return CngPsiHelper.resolveContextType(element)
 
+        return previousReference.multiResolve(true)
+            .firstOrNull()
+            ?.let {
+                when (it) {
+                    is AttributeResolveResult -> it.meta.type
+                    is RelationEndResolveResult -> it.meta.type
+                    else -> null
+                }
+            }
+    }
 }

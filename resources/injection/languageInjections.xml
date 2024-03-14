@@ -41,5 +41,6 @@
     <injection language="SpEL" injector-id="xml">
         <display-name>[y] SpEl - CockpitNG</display-name>
         <place><![CDATA[xmlAttribute("visible").withParent(xmlTag().withNamespace("http://www.hybris.com/cockpitng/config/wizard-config"))]]></place>
+        <place><![CDATA[xmlAttribute("urlQualifier").withParent(xmlTag().withLocalName("preview").withNamespace("http://www.hybris.com/cockpit/config/hybris"))]]></place>
     </injection>
 </component>

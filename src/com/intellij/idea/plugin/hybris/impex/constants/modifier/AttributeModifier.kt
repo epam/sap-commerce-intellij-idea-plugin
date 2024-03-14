@@ -21,9 +21,9 @@ package com.intellij.idea.plugin.hybris.impex.constants.modifier
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
-import com.intellij.idea.plugin.hybris.impex.completion.ImpexImplementationClassCompletionContributor
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
+import com.intellij.idea.plugin.hybris.java.completion.JavaClassCompletionService
 import com.intellij.openapi.project.Project
 
 /**
@@ -60,11 +60,11 @@ enum class AttributeModifier(
     PATH_DELIMITER("path-delimiter"),
     POS("pos"),
     CELL_DECORATOR("cellDecorator") {
-        override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
+        override fun getLookupElements(project: Project) = JavaClassCompletionService.getInstance(project)
             .getImplementationsForClasses(HybrisConstants.CLASS_FQN_IMPEX_CELL_DECORATOR)
     },
     TRANSLATOR("translator") {
-        override fun getLookupElements(project: Project) = ImpexImplementationClassCompletionContributor.getInstance(project)
+        override fun getLookupElements(project: Project) = JavaClassCompletionService.getInstance(project)
             .getImplementationsForClasses(*HybrisConstants.CLASS_FQN_IMPEX_TRANSLATORS)
     },
     EXPR("expr"),

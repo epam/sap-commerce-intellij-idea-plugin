@@ -1,7 +1,27 @@
 ## [2024.1.1]
-### `Groovy` enhancements
-- Disable actions toolbar for Groovy IDE Scripts [#1040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1040)
 
+### `Cockpit NG` enhancements
+- Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)
+- Ignore case of the `merge-mode` attribute [#1023](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1023)
+- Improved xsd mapping for `ea:attribute` [#1024](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1024)
+- Added code completion for `lv:column`:`class` [#1028](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1028)
+- Added code completion for `sv`:`custom-section`|`custom-attribute`:`class` [#1029](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1029)
+- Added code completion for `ea`:`customPanel`|`customTab`|`customSection`:`class` [#1030](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1030)
+- Added code completion and reference resolution for `ss`:`sort-field`:`name` [#1033](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1033)
+- Added code completion and reference resolution for `as`:`sort-field`:`name` [#1034](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1034)
+- Added reference resolution for `y`:`labels`:`beanId` [#1035](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1035)
+- Added `Spring EL` language injection into the `y:preview`:`urlQualifier` attribute [#1036](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1036)
+- Added `Spring EL` language injection into the `y:preview`:`description` tag body [#1037](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1037)
+- Added reference resolution and code completion for nested references [#1038](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1038)
+
+### `Groovy` enhancements
+- Actions toolbar for disabled for Groovy IDE Scripts by default [#1040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1040)
+
+### Fixes
+- Configure SAP CX JavaDoc for OOTB Modules [#1027](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1026)
+
+### Other
+- Added JetBrains Marketplace error reporting [#1039](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1039)
 
 ## [2024.1.0]
 
@@ -224,8 +244,8 @@
 - Do not scan `hidden` directories for extensions [#862](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/862)
 
 ### `ImpEx` enhancements
-- Inject `ImpEx` language into `header` property of the `DefaultImpexConverter` spring bean declaration [#858](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/858) 
-- Inject `ImpEx` language into `header` property of the `abstractDefaultImpexConverter` spring bean declaration [#859](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/859) 
+- Inject `ImpEx` language into `header` property of the `DefaultImpexConverter` spring bean declaration [#858](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/858)
+- Inject `ImpEx` language into `header` property of the `abstractDefaultImpexConverter` spring bean declaration [#859](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/859)
 
 ### Other
 - Made `java`, `properties` and `xdebugger` mandatory dependencies [#855](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/855)
@@ -521,10 +541,10 @@
 ## [2023.2.7]
 
 ### `items.xml` enhancements
-- Added configurable table-like folding for various tags [#660](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/660) 
+- Added configurable table-like folding for various tags [#660](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/660)
 
 ### `beans.xml` enhancements
-- Added configurable table-like folding for Bean properties [#659](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/659) 
+- Added configurable table-like folding for Bean properties [#659](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/659)
 
 ### `ImpEx` inspection rules
 - Add missing value groups for value lines [#641](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/641)
@@ -552,7 +572,7 @@
 
 ### `OCC` enhancements
 - Added code completion and references of Bean properties in the Level Mapping tags [#578](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/578)
-- Display a flatten type for an item in the code completion menu for Level Mapping tags [#592](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/592) 
+- Display a flatten type for an item in the code completion menu for Level Mapping tags [#592](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/592)
 
 ### `Groovy` enhancements
 - Introduced actions toolbar for `.groovy` files [#564](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/564)
@@ -646,24 +666,24 @@
 - Bean System enhanced with support of the properties defined in parent beans [#571](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/571)
 
 ### Fixes
-- Type and Bean System preview is not always displayed [#611](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/611) 
-- Type is not detected for Cockpit NG Wizard when there is no `initialize` section [#602](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/602) 
+- Type and Bean System preview is not always displayed [#611](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/611)
+- Type is not detected for Cockpit NG Wizard when there is no `initialize` section [#602](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/602)
 - Inject `FlexibleSearch` into Kotlin String template [#535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/535)
 - Readonly mode is broken in IDEA 2023.2 [#533](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/533)
-- `ImpEx` Code Style Formatter is not configurable [#540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/540) 
-- `ImpEx` functional reference type validation does not work [#546](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/546) 
-- Fixed `ImpEx` context actions [#551](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/551) 
-- Reset `ImpEx` highlighting cache on moving columns [#567](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/567) 
-- Fixed Compact Middle Packages in the Project View [#568](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/568) 
-- Fixed `commonweb` sources attaching [#572](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/572), [#573](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/573) 
-- Added `hmc` sub-module dependency on `hmc.web` [#574](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/574) 
-- Improved detection of the Gradle modules [#575](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/575) 
+- `ImpEx` Code Style Formatter is not configurable [#540](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/540)
+- `ImpEx` functional reference type validation does not work [#546](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/546)
+- Fixed `ImpEx` context actions [#551](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/551)
+- Reset `ImpEx` highlighting cache on moving columns [#567](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/567)
+- Fixed Compact Middle Packages in the Project View [#568](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/568)
+- Fixed `commonweb` sources attaching [#572](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/572), [#573](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/573)
+- Added `hmc` sub-module dependency on `hmc.web` [#574](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/574)
+- Improved detection of the Gradle modules [#575](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/575)
 - Use main config folder during project import [#576](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/576)
 - Fixed header text for Other modules step of the Project Import Wizard [#580](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/580)
-- Register Web Facet for `commonweb` [#581](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/581) 
-- Register Web Facet for `acceleratoraddon` [#583](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/583) 
-- Do not register `hmc` sub-modules if there is no `hmc` extension [#582](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/582) 
-- DB Datasource cannot be configured due backslash [#584](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/584) 
+- Register Web Facet for `commonweb` [#581](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/581)
+- Register Web Facet for `acceleratoraddon` [#583](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/583)
+- Do not register `hmc` sub-modules if there is no `hmc` extension [#582](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/582)
+- DB Datasource cannot be configured due backslash [#584](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/584)
 - Some classes are not visible from `storefrontcommons` if searchable class is in read-only storefrontcommons [#579](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/579)
 - Properties defined in the `advanced.properties` are not available [#612](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/612)
 - Dependant modules are not imported [#614](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/614)
@@ -693,7 +713,7 @@
 ### Other
 - Added custom icon for `hybris4intellij.properties` file [#525](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/525)
 - Do not mark `ExtensibleItem`, `LocalizableItem` & `GenericItem` as not generated in `items.xml` [#522](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/522)
-- Improve performance of the inlay for `DynamicAttributeHandler` [#521](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/521) 
+- Improve performance of the inlay for `DynamicAttributeHandler` [#521](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/521)
 - Improve performance of the widely used `ModelsUtils` [#520](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/520)
 
 ## [2023.2.4]
@@ -723,16 +743,16 @@
 ## [2023.2.3]
 
 ### Features
-- Automatically configure Database based on project settings during project import/refresh [#509](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/509) 
+- Automatically configure Database based on project settings during project import/refresh [#509](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/509)
 - Show modifiers and persistence information for Items in the Type System preview [#505](psi_https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/505)
 - Import CCv2 `core-customize` as a separate module [#498](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/498)
-- Don't scan CCv2 `js-storefront` and `datahub` sub-folders during project import/refresh [#497](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/497) 
+- Don't scan CCv2 `js-storefront` and `datahub` sub-folders during project import/refresh [#497](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/497)
 
 ### `ImpEx` enhancements
 - Added documentation for Header type name [#506](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/506)
 - Added documentation for sub-type in the Value line [#507](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/507)
 - Improved substitution of the `$config-xxx` properties [#496](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/496)
-- New documentation settings added to the Project Settings 
+- New documentation settings added to the Project Settings
 
 ### `FlexibleSearch` enhancements
 - Added documentation for type name in the `FROM` statement [#508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/508)
@@ -771,10 +791,10 @@
 - Added folding for `items.xml` files [#478](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/478)
 - Added folding for `-backoffice-config.xml` files [#479](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/479)
 
-### `Project Import 2.0` 
+### `Project Import 2.0`
 - Due mass API changes it is required to re-import the Project
 - Create new IDEA modules for each extension sub-module: `backoffice`, `acceleratoraddon`, `web`, `commonweb`, `hmc`, `hac`
-- Introduced new **SAP Commerce** module facet, which will contains all extension settings 
+- Introduced new **SAP Commerce** module facet, which will contains all extension settings
 - Module-type specific icons in the Project View
 - Module groups will always have correct custom icons
 - Show mandatory _Ext_ and _Platform_ extensions at the end of the Import Project Wizard
@@ -1053,7 +1073,7 @@
 - Improved performance of the Global Meta Model and TS Line Marker [#257](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/257)
 - IDEA modules by default will be stored in the `/.idea/idea-modules` [#259](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/259)
 
-### Introduced `Type System Diagram` 
+### Introduced `Type System Diagram`
 - [Legend](https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/docs%2FLEGEND_TYPE_SYSTEM_DIAGRAM.md)
 - Initial version [#270](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/270)
 - Added nodes removal &amp; Reset Exclusions Action [#271](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/271)
@@ -1074,8 +1094,8 @@
 - Added edge coloring [#265](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/265)
 - Added cycle edges coloring [#266](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/266)
 - Added Context Parameters node [#287](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/287)
- 
-### `FlexibleSearch` inspection rules 
+
+### `FlexibleSearch` inspection rules
 - `Item Type` is not defined [#264](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/264)
 - `Attribute` is not defined
 
@@ -1208,20 +1228,20 @@
 - Added `extensioninfo.xml` DOM model and custom Icon [#147](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/147)
 - Added `process.xml` DOM model and custom Icon [#148](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/148)
 - Added Cockpit NG files (widgets, config, definition) support, Model, completion and navigation [#165](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/165),
-[#174](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/174),
-[#169](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/169),
-[#172](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/172),
-[#173](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/173),
-[#175](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/175),
-[#176](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/176),
-[#177](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/177),
-[#182](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/182),
-[#178](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/178),
-[#179](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/179),
-[#180](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/180),
-[#181](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/181),
-[#185](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/185),
-[#186](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/186)
+  [#174](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/174),
+  [#169](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/169),
+  [#172](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/172),
+  [#173](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/173),
+  [#175](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/175),
+  [#176](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/176),
+  [#177](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/177),
+  [#182](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/182),
+  [#178](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/178),
+  [#179](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/179),
+  [#180](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/180),
+  [#181](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/181),
+  [#185](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/185),
+  [#186](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/186)
 
 ### `localextensions.xml` inspection rules
 - Unknown Extension declared as dependency [#156](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/156)
@@ -1252,36 +1272,36 @@
 
 ### Deprecated
 - Decreased usage of the Deprecated API [#107](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/107),
-[#106](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/106),
-[#101](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/101),
-[#94](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/94),
-[#91](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/91),
-[#89](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/89),
-[#134](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/134),
-[#135](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/135),
-[#136](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/136),
-[#137](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/137),
-[#138](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/138),
-[#139](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/139),
-[#140](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/140),
-[#83](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/83),
-[#81](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/81),
-[#146](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/146)
+  [#106](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/106),
+  [#101](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/101),
+  [#94](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/94),
+  [#91](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/91),
+  [#89](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/89),
+  [#134](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/134),
+  [#135](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/135),
+  [#136](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/136),
+  [#137](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/137),
+  [#138](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/138),
+  [#139](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/139),
+  [#140](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/140),
+  [#83](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/83),
+  [#81](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/81),
+  [#146](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/146)
 
 ## [2022.3.0]
 
 ### Features
 - Added 2022.3 IntelliJ IDEA support
 - Introduction the Type System Management - the powerful tool to observe SAP Commerce type system [#62](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/62),
-[#63](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/63),
-[#66](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/66),
-[#60](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60)
+  [#63](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/63),
+  [#66](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/66),
+  [#60](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/60)
 - Added support for the Enum completion in ImpEx/FlexibleSearch
 - Added support for the Relation completion in ImpEx/FlexibleSearch
 - Added MapType support for `items.xml`
 - Added postgresql DB mapping
 - Added next `typecode` suggestion via `items.xml` Inspection
-- Added possibility to change [y] `items.xml` Inspection levels (previously they were hardcoded in ruleset.xml) 
+- Added possibility to change [y] `items.xml` Inspection levels (previously they were hardcoded in ruleset.xml)
 - Improved performance of the `items.xml` inspection
 - Extended/refactored type system inspection rules
 - Merged ToolsWindows "Hybris" (as Remote Instances) and "Hybris Console" (as Consoles) altogether with "Type system" into "Hybris" as a single entry point for all [y] related actions

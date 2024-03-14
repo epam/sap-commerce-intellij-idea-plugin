@@ -53,11 +53,6 @@ class CngCompletionContributor : CompletionContributor() {
         )
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(CngPatterns.ITEM_ATTRIBUTE),
-            CngItemAttributeCodeCompletionProvider.instance
-        )
-        extend(
-            CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_DEFINITION),
             CngEditorDefinitionCodeCompletionProvider.instance
         )
@@ -85,6 +80,11 @@ class CngCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_SETTING),
             CngWidgetSettingCompletionProvider.instance
+        )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_COMPONENT_RENDERER_CLASS),
+            CngWidgetComponentRendererClassCompletionProvider.instance
         )
     }
 }

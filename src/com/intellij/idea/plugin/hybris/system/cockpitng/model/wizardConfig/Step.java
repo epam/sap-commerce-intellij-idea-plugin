@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
  * http://www.hybris.com/cockpitng/config/wizard-config:StepType interface.
  */
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
-public interface Step extends DomElement {
+public interface Step extends DomElement, Mergeable {
 
 	/**
 	 * Returns the value of the id child.
@@ -57,15 +58,6 @@ public interface Step extends DomElement {
 	@NotNull
 	@com.intellij.util.xml.Attribute ("sublabel")
 	GenericAttributeValue<String> getSublabel();
-
-
-	/**
-	 * Returns the value of the merge-mode child.
-	 * @return the value of the merge-mode child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("merge-mode")
-	GenericAttributeValue<String> getMergeMode();
 
 
 	/**

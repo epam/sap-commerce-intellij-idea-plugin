@@ -295,6 +295,7 @@ object HybrisConstants {
     const val CLASS_FQN_IMPEX_SPECIAL_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.SpecialValueTranslator"
     const val CLASS_FQN_IMPEX_HEADER_TRANSLATOR = "de.hybris.platform.impex.jalo.translators.HeaderCellTranslator"
     const val CLASS_FQN_IMPEX_CELL_DECORATOR = "de.hybris.platform.util.CSVCellDecorator"
+    const val CLASS_FQN_CNG_WIDGET_COMPONENT_RENDERER = "com.hybris.cockpitng.widgets.common.WidgetComponentRenderer"
     const val CLASS_FQN_FLEXIBLE_SEARCH_QUERY = "de.hybris.platform.servicelayer.search.FlexibleSearchQuery"
     const val CLASS_FQN_CODE_GENERATOR = "de.hybris.bootstrap.codegenerator.CodeGenerator"
     const val CLASS_NAME_FLEXIBLE_SEARCH_QUERY = "FlexibleSearchQuery"

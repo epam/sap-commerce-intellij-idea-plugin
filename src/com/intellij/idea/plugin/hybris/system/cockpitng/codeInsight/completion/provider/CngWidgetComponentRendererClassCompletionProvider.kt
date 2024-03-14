@@ -19,17 +19,31 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
-import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.java.completion.JavaClassCompletionService
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.psi.PsiElement
+import com.intellij.openapi.components.Service
+import com.intellij.util.ProcessingContext
 
-open class CngItemAttributeCodeCompletionProvider : AttributeDeclarationCompletionProvider() {
+@Service(Service.Level.APP)
+class CngWidgetComponentRendererClassCompletionProvider : CompletionProvider<CompletionParameters>() {
 
-    override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextType(element)
+    public override fun addCompletions(
+        parameters: CompletionParameters,
+        context: ProcessingContext,
+        result: CompletionResultSet
+    ) {
+        val project = parameters.editor.project ?: return
+
+        val elements = JavaClassCompletionService.getInstance(project).getImplementationsForClasses(
+            HybrisConstants.CLASS_FQN_CNG_WIDGET_COMPONENT_RENDERER
+        )
+        result.addAllElements(elements)
+    }
 
     companion object {
-        val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(CngItemAttributeCodeCompletionProvider::class.java)
+        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(CngWidgetComponentRendererClassCompletionProvider::class.java)
     }
+
 }

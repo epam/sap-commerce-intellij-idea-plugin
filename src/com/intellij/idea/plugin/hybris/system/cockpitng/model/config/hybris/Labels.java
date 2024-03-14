@@ -22,6 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.util.xml.SpringBeanReferenceConverter;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 public interface Labels extends DomElement {
 
     String LABEL = "label";
+    String DESCRIPTION = "description";
 
     /**
      * Returns the value of the beanId child.
@@ -40,6 +42,7 @@ public interface Labels extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("beanId")
+    @Referencing(SpringBeanReferenceConverter.class)
     GenericAttributeValue<String> getBeanId();
 
 
@@ -69,7 +72,7 @@ public interface Labels extends DomElement {
      * @return the value of the description child.
      */
     @NotNull
-    @SubTag("description")
+    @SubTag(DESCRIPTION)
     GenericDomValue<String> getDescription();
 
 

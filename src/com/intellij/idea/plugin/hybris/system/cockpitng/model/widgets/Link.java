@@ -21,6 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Mergeable;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
 import com.intellij.util.xml.Required;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * http://www.hybris.com/cockpitng/config/links:link interface.
  */
-public interface Link extends DomElement, Positioned {
+public interface Link extends DomElement, Positioned, Mergeable {
 
     /**
      * Returns the value of the label child.
@@ -70,16 +71,6 @@ public interface Link extends DomElement, Positioned {
     @NotNull
     @com.intellij.util.xml.Attribute("target")
     GenericAttributeValue<Target> getTarget();
-
-
-    /**
-     * Returns the value of the merge-mode child.
-     *
-     * @return the value of the merge-mode child.
-     */
-    @NotNull
-    @com.intellij.util.xml.Attribute("merge-mode")
-    GenericAttributeValue<MergeMode> getMergeMode();
 
 
 }
