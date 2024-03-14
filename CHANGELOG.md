@@ -1,3 +1,8 @@
+## [2024.1.1]
+### `Groovy` enhancements
+- Disable actions toolbar for Groovy IDE Scripts [#1040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1040)
+
+
 ## [2024.1.0]
 
 ### Features

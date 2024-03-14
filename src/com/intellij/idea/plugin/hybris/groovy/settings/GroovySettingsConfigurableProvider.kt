@@ -59,6 +59,13 @@ class GroovySettingsConfigurableProvider(val project: Project) : ConfigurablePro
                         .enabledIf(enableActionToolbar.selected)
                         .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }
                 }
+                row {
+                    checkBox("Enable actions toolbar for a IDE Groovy scripts")
+                        .bindSelected(developerSettings::enableActionsToolbarForGroovyIdeConsole)
+                        .comment("Enables Actions toolbar for the groovy files located in the <strong>${HybrisConstants.IDE_CONSOLES_PATH}</strong> (In Project View, Scratches and Consoles -> IDE Consoles).")
+                        .enabledIf(enableActionToolbar.selected)
+                        .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }
+                }
             }
         }
     }

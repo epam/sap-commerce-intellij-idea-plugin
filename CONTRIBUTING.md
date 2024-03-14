@@ -43,3 +43,4 @@
 - Eugeni Kalenchuk
 - Stefan Kruk
 - Yury Bich
+- Vitalii Ivanov

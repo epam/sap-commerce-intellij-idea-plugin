@@ -21,4 +21,5 @@ package com.intellij.idea.plugin.hybris.groovy.settings
 data class GroovySettings(
     var enableActionsToolbar: Boolean = true,
     var enableActionsToolbarForGroovyTest: Boolean = false,
+    var enableActionsToolbarForGroovyIdeConsole: Boolean = false,
 )
