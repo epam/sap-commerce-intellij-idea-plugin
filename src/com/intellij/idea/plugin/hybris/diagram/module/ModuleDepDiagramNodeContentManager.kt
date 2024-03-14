@@ -20,9 +20,20 @@ package com.intellij.idea.plugin.hybris.diagram.module
 import com.intellij.diagram.AbstractDiagramNodeContentManager
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramCategory
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphField
 
 class ModuleDepDiagramNodeContentManager : AbstractDiagramNodeContentManager() {
 
-    override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?) = false
-    override fun getContentCategories(): Array<DiagramCategory> = DiagramCategory.EMPTY_ARRAY
+    override fun getContentCategories() = CATEGORIES
+
+    override fun isInCategory(nodeElement: Any?, item: Any?, category: DiagramCategory, builder: DiagramBuilder?) = when (item) {
+        is ModuleDepGraphField -> category == PARAMETERS
+        else -> false
+    }
+
+    companion object {
+        val PARAMETERS = DiagramCategory({ "Parameters" }, HybrisIcons.MODULE_DEP_DIAGRAM_PROPERTY, true, false)
+        val CATEGORIES = arrayOf(PARAMETERS)
+    }
 }

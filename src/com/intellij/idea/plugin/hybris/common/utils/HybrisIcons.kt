@@ -181,6 +181,12 @@ object HybrisIcons {
     val BP_DIAGRAM_PARAMETER_OPTIONAL = AllIcons.Nodes.Pluginobsolete
     val BP_DIAGRAM_PROPERTIES = AllIcons.Nodes.Property
 
+    val MODULE_DEP_DIAGRAM_PROPERTY = BS_PROPERTY
+    val MODULE_DEP_DIAGRAM_DESCRIPTION = AllIcons.Windows.Help
+    val MODULE_DEP_DIAGRAM_MAVEN_ENABLED = MODULE_MAVEN
+    val MODULE_DEP_DIAGRAM_DEPRECATED = AllIcons.General.ExclMark
+    val MODULE_DEP_DIAGRAM_JALO_LOGIC_FREE = getIcon("/icons/flexibleSearch/star.svg")
+
     val TS_DIAGRAM_PROPERTY = AllIcons.Nodes.Property
     val TS_DIAGRAM_DEPLOYMENT = AllIcons.Debugger.Db_db_object
     val TS_DIAGRAM_RESET_VIEW = getIcon("/icons/typeSystem/diagram/resetView.svg")

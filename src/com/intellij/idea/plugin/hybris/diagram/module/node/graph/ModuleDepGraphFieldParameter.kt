@@ -18,23 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.diagram.module.node.graph
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-
-data class ModuleDepGraphNodeRoot(
-    override val name: String = HybrisI18NBundleUtils.message("hybris.diagram.module.dependencies.provider.name"),
-    override val properties: Array<ModuleDepGraphField> = emptyArray()
-) : ModuleDepGraphNode {
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ModuleDepGraphNodeRoot) return false
-
-        if (name != other.name) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return name.hashCode()
-    }
-}
+data class ModuleDepGraphFieldParameter(
+    override val name: String,
+) : ModuleDepGraphField

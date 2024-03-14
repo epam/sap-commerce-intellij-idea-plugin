@@ -14,6 +14,9 @@
 - Added `Spring EL` language injection into the `y:preview`:`description` tag body [#1037](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1037)
 - Added reference resolution and code completion for nested references [#1038](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1038)
 
+### `Module Dependencies Diagram` enhancements
+- Added possibility to display extension details within the Module node [#1041](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1041)
+
 ### `Groovy` enhancements
 - Actions toolbar for disabled for Groovy IDE Scripts by default [#1040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1040)
 

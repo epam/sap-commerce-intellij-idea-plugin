@@ -20,4 +20,5 @@ package com.intellij.idea.plugin.hybris.diagram.module.node.graph
 
 interface ModuleDepGraphNode {
     val name: String
+    val properties: Array<ModuleDepGraphField>
 }

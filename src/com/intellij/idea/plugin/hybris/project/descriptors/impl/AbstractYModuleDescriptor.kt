@@ -37,6 +37,7 @@ abstract class AbstractYModuleDescriptor(
     private val myExtensionDescriptor by lazy {
         ExtensionDescriptor(
             name = name,
+            description = extensionInfo.extension.description,
             readonly = readonly,
             useMaven = "true".equals(extensionInfo.extension.usemaven, true),
             type = descriptorType,
@@ -48,6 +49,7 @@ abstract class AbstractYModuleDescriptor(
             hacModule = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_HAC_MODULE),
             deprecated = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_DEPRECATED),
             extGenTemplateExtension = isMetaKeySetToTrue(HybrisConstants.EXTENSION_META_KEY_EXT_GEN),
+            jaloLogicFree = extensionInfo.extension.isJaloLogicFree,
             classPathGen = metas[HybrisConstants.EXTENSION_META_KEY_CLASSPATHGEN],
             moduleGenName = metas[HybrisConstants.EXTENSION_META_KEY_MODULE_GEN],
             addon = getRequiredExtensionNames().contains(HybrisConstants.EXTENSION_NAME_ADDONSUPPORT)

@@ -19,6 +19,9 @@ package com.intellij.idea.plugin.hybris.diagram.module
 
 import com.intellij.diagram.BaseDiagramProvider
 import com.intellij.diagram.DiagramPresentationModel
+import com.intellij.diagram.extras.DiagramExtras
+import com.intellij.diagram.settings.DiagramConfigElement
+import com.intellij.diagram.settings.DiagramConfigGroup
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.module.node.ModuleDepDiagramDataModel
@@ -46,4 +49,17 @@ class ModuleDepDiagramProvider : BaseDiagramProvider<ModuleDepGraphNode>() {
         file: VirtualFile?,
         model: DiagramPresentationModel
     ) = ModuleDepDiagramDataModel(project, this)
+
+
+    override fun getExtras(): DiagramExtras<ModuleDepGraphNode> {
+        return object : DiagramExtras<ModuleDepGraphNode>() {
+            override fun getAdditionalDiagramSettings() = with(DiagramConfigGroup("Categories")) {
+                ModuleDepDiagramNodeContentManager.CATEGORIES
+                    .map { DiagramConfigElement(it.name, true) }
+                    .forEach { addElement(it) }
+
+                arrayOf(this)
+            }
+        }
+    }
 }

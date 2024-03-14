@@ -22,7 +22,7 @@ import com.intellij.util.xml.DomElement
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 
-open class BpGraphNodeDefault(
+class BpGraphNodeDefault(
     override val name: String,
     override val navigableElement: DomElement,
     override val virtualFileUrl: String,

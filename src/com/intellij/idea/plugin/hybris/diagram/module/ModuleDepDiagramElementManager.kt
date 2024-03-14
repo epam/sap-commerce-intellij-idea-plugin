@@ -20,10 +20,11 @@ package com.intellij.idea.plugin.hybris.diagram.module
 import com.intellij.diagram.AbstractDiagramElementManager
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.idea.plugin.hybris.actions.ActionUtils
-import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
-import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNodeRoot
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.diagram.module.node.graph.*
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.ui.SimpleColoredText
+import com.intellij.ui.SimpleTextAttributes
 
 class ModuleDepDiagramElementManager : AbstractDiagramElementManager<ModuleDepGraphNode>() {
 
@@ -33,10 +34,31 @@ class ModuleDepDiagramElementManager : AbstractDiagramElementManager<ModuleDepGr
 
     override fun isAcceptableAsNode(element: Any?) = element is ModuleDepGraphNode
     override fun getElementTitle(node: ModuleDepGraphNode) = node.name
+    override fun getNodeItems(parent: ModuleDepGraphNode?): Array<out Any> = parent?.properties ?: emptyArray()
 
-    override fun getItemName(nodeElement: ModuleDepGraphNode?, nodeItem: Any?, builder: DiagramBuilder) = if (nodeElement != null)
-        SimpleColoredText(nodeElement.name, DEFAULT_TITLE_ATTR)
-    else null
+    override fun getItemName(nodeElement: ModuleDepGraphNode?, nodeItem: Any?, builder: DiagramBuilder) = when (nodeItem) {
+        is ModuleDepGraphField -> SimpleColoredText(nodeItem.name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        else -> if (nodeElement != null)
+            SimpleColoredText(nodeElement.name, DEFAULT_TITLE_ATTR)
+        else null
+    }
+
+    override fun getItemType(nodeElement: ModuleDepGraphNode?, nodeItem: Any?, builder: DiagramBuilder?) = when (nodeItem) {
+        is ModuleDepGraphFieldSubModuleType -> SimpleColoredText(nodeItem.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        else -> null
+    }
+
+    override fun getItemIcon(nodeElement: ModuleDepGraphNode?, nodeItem: Any?, builder: DiagramBuilder?) = when (nodeItem) {
+        is ModuleDepGraphFieldDescription -> HybrisIcons.MODULE_DEP_DIAGRAM_DESCRIPTION
+        is ModuleDepGraphField -> when (nodeItem.name) {
+            "Maven Enabled" -> HybrisIcons.MODULE_DEP_DIAGRAM_MAVEN_ENABLED
+            "Jalo Logic Free" -> HybrisIcons.MODULE_DEP_DIAGRAM_JALO_LOGIC_FREE
+            "Deprecated" -> HybrisIcons.MODULE_DEP_DIAGRAM_DEPRECATED
+            else -> HybrisIcons.MODULE_DEP_DIAGRAM_PROPERTY
+        }
+
+        else -> null
+    }
 
     override fun getNodeTooltip(element: ModuleDepGraphNode) = element.name
 }

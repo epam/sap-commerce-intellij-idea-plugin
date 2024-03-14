@@ -24,9 +24,30 @@ import com.intellij.openapi.module.Module
 
 object ModuleDepGraphFactory {
 
-    fun buildNode(module: Module) = ModuleDepGraphNodeModule(
-        module,
-        HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module).type,
-        module.yExtensionName()
-    )
+    fun buildNode(module: Module): ModuleDepGraphNodeModule {
+        val properties = mutableListOf<ModuleDepGraphField>()
+
+        val moduleSettings = HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module)
+
+        if (moduleSettings.description != null) properties.add(ModuleDepGraphFieldDescription(moduleSettings.description!!))
+        if (moduleSettings.subModuleType != null) properties.add(ModuleDepGraphFieldSubModuleType("Sub-module Type", moduleSettings.subModuleType!!.name))
+        if (moduleSettings.deprecated) properties.add(ModuleDepGraphFieldParameter("Deprecated"))
+        if (moduleSettings.useMaven) properties.add(ModuleDepGraphFieldParameter("Maven Enabled"))
+        if (moduleSettings.jaloLogicFree) properties.add(ModuleDepGraphFieldParameter("Jalo Logic Free"))
+        if (moduleSettings.extGenTemplateExtension) properties.add(ModuleDepGraphFieldParameter("Template Extension"))
+        if (moduleSettings.moduleGenName != null) properties.add(ModuleDepGraphFieldParameter("Module Generation Name"))
+        if (moduleSettings.hacModule) properties.add(ModuleDepGraphFieldParameter("HAC module"))
+        if (moduleSettings.webModule) properties.add(ModuleDepGraphFieldParameter("Web module"))
+        if (moduleSettings.hmcModule) properties.add(ModuleDepGraphFieldParameter("HMC module"))
+        if (moduleSettings.backofficeModule) properties.add(ModuleDepGraphFieldParameter("Backoffice module"))
+        if (moduleSettings.addon) properties.add(ModuleDepGraphFieldParameter("Addon"))
+        if (moduleSettings.classPathGen != null) properties.add(ModuleDepGraphFieldParameter("Classpath Generation"))
+
+        return ModuleDepGraphNodeModule(
+            module,
+            moduleSettings.type,
+            module.yExtensionName(),
+            properties.toTypedArray()
+        )
+    }
 }
