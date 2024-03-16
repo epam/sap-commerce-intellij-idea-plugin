@@ -25,10 +25,10 @@ import java.io.Serial
 
 // TODO: improve static fields usage
 class ModuleDepDiagramEdge(
-    from: ModuleDepDiagramNode,
-    to: ModuleDepDiagramNode,
+    source: ModuleDepDiagramNode,
+    target: ModuleDepDiagramNode,
     relationship: DiagramRelationshipInfo
-) : DiagramEdgeBase<ModuleDepGraphNode>(from, to, relationship) {
+) : DiagramEdgeBase<ModuleDepGraphNode>(source, target, relationship) {
 
     @JvmField
     var circleNumber = -1

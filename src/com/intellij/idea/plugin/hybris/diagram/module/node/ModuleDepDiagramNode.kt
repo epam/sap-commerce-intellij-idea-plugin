@@ -53,7 +53,7 @@ class ModuleDepDiagramNode(private val graphNode: ModuleDepGraphNode, provider: 
             when (it) {
                 ModuleDescriptorType.CUSTOM -> ModuleDepDiagramColors.NODE_HEADER_CUSTOM_COLOR
                 ModuleDescriptorType.OOTB -> ModuleDepDiagramColors.NODE_HEADER_OOTB_COLOR
-                ModuleDescriptorType.PLATFORM -> ModuleDepDiagramColors.NODE_HEADER_CORE_COLOR
+                ModuleDescriptorType.PLATFORM,
                 ModuleDescriptorType.EXT -> ModuleDepDiagramColors.NODE_HEADER_CORE_COLOR
                 else -> null
             }

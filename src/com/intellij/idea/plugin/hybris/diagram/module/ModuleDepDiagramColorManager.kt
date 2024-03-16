@@ -21,7 +21,6 @@ import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramColorManagerBase
 import com.intellij.diagram.DiagramEdge
 import com.intellij.diagram.DiagramNode
-import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramColors.EDGE_CIRCULAR
 import com.intellij.idea.plugin.hybris.diagram.module.node.ModuleDepDiagramEdge
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNodeModule
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
@@ -31,10 +30,27 @@ class ModuleDepDiagramColorManager : DiagramColorManagerBase() {
 
     override fun getNodeHeaderBackground(builder: DiagramBuilder, node: DiagramNode<*>, graphNode: Any) = when (graphNode) {
         is ModuleDepGraphNodeModule -> when (graphNode.type) {
-            ModuleDescriptorType.CUSTOM -> getColor(builder, graphNode, ModuleDepDiagramColors.NODE_HEADER_CUSTOM_BACKGROUND, ModuleDepDiagramColors.NODE_HEADER_CUSTOM_SUB_MODULE_BACKGROUND)
-            ModuleDescriptorType.OOTB -> getColor(builder, graphNode, ModuleDepDiagramColors.NODE_HEADER_OOTB_BACKGROUND, ModuleDepDiagramColors.NODE_HEADER_OOTB_SUB_MODULE_BACKGROUND)
+            ModuleDescriptorType.CUSTOM -> getColor(
+                builder,
+                graphNode,
+                ModuleDepDiagramColors.NODE_HEADER_CUSTOM_BACKGROUND,
+                ModuleDepDiagramColors.NODE_HEADER_CUSTOM_SUB_MODULE_BACKGROUND
+            )
+
+            ModuleDescriptorType.OOTB -> getColor(
+                builder,
+                graphNode,
+                ModuleDepDiagramColors.NODE_HEADER_OOTB_BACKGROUND,
+                ModuleDepDiagramColors.NODE_HEADER_OOTB_SUB_MODULE_BACKGROUND
+            )
+
             ModuleDescriptorType.PLATFORM,
-            ModuleDescriptorType.EXT -> getColor(builder, graphNode, ModuleDepDiagramColors.NODE_HEADER_CORE_BACKGROUND, ModuleDepDiagramColors.NODE_HEADER_CORE_SUB_MODULE_BACKGROUND)
+            ModuleDescriptorType.EXT -> getColor(
+                builder,
+                graphNode,
+                ModuleDepDiagramColors.NODE_HEADER_CORE_BACKGROUND,
+                ModuleDepDiagramColors.NODE_HEADER_CORE_SUB_MODULE_BACKGROUND
+            )
 
             else -> super.getNodeHeaderBackground(builder, node, graphNode)
         }
@@ -42,20 +58,51 @@ class ModuleDepDiagramColorManager : DiagramColorManagerBase() {
         else -> super.getNodeHeaderBackground(builder, node, graphNode)
     }
 
-    override fun getEdgeColorKey(builder: DiagramBuilder, edge: DiagramEdge<*>) = if (edge is ModuleDepDiagramEdge && edge.isCircular()) {
-        // TODO: instead of color use tooltip with exact # of circles
-//            val redFragment = 128 / edge.numberOfCircles
-//            val redDelta = redFragment * edge.circleNumber
-//            val red = 127 + redDelta
-        EDGE_CIRCULAR
-    } else super.getEdgeColorKey(builder, edge)
+    override fun getEdgeColorKey(builder: DiagramBuilder, edge: DiagramEdge<*>) = when (edge) {
+        is ModuleDepDiagramEdge -> if (edge.isCircular()) ModuleDepDiagramColors.EDGE_CIRCULAR
+
+        else when (val targetGraphNode = edge.target.identifyingElement) {
+            is ModuleDepGraphNodeModule -> when (targetGraphNode.type) {
+                ModuleDescriptorType.CUSTOM -> getColorKey(
+                    targetGraphNode,
+                    ModuleDepDiagramColors.EDGE_TO_CUSTOM,
+                    ModuleDepDiagramColors.EDGE_TO_CUSTOM_SUB_MODULE
+                )
+
+                ModuleDescriptorType.OOTB -> getColorKey(
+                    targetGraphNode,
+                    ModuleDepDiagramColors.EDGE_TO_OOTB,
+                    ModuleDepDiagramColors.EDGE_TO_OOTB_SUB_MODULE
+                )
+
+                ModuleDescriptorType.PLATFORM,
+                ModuleDescriptorType.EXT -> getColorKey(
+                    targetGraphNode,
+                    ModuleDepDiagramColors.EDGE_TO_CORE,
+                    ModuleDepDiagramColors.EDGE_TO_CORE_SUB_MODULE
+                )
+
+                else -> super.getEdgeColorKey(builder, edge)
+            }
+
+            else -> super.getEdgeColorKey(builder, edge)
+        }
+
+        else -> super.getEdgeColorKey(builder, edge)
+    }
 
     private fun getColor(
         builder: DiagramBuilder,
         graphNode: ModuleDepGraphNodeModule,
         primaryColorKey: ColorKey,
         secondaryColorKey: ColorKey
-    ) = if (graphNode.subModuleType == null) getColorFromScheme(builder, primaryColorKey)
-    else getColorFromScheme(builder, secondaryColorKey)
+    ) = getColorFromScheme(builder, getColorKey(graphNode, primaryColorKey, secondaryColorKey))
+
+    private fun getColorKey(
+        graphNode: ModuleDepGraphNodeModule,
+        primaryColorKey: ColorKey,
+        secondaryColorKey: ColorKey
+    ) = if (graphNode.subModuleType == null) primaryColorKey
+    else secondaryColorKey
 
 }

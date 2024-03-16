@@ -18,6 +18,12 @@
         <!-- EDGES -->
 
         <option name="MODULE_DEP_DIAGRAM_EDGE_CIRCULAR" value="FF0000"/>
+        <option name="MODULE_DEP_DIAGRAM_EDGE_TO_CUSTOM" value="BFE7FD"/>
+        <option name="MODULE_DEP_DIAGRAM_EDGE_TO_CUSTOM_SUB_MODULE" value="87D5FF"/>
+        <option name="MODULE_DEP_DIAGRAM_EDGE_TO_OOTB" value="CCFFD6"/>
+        <option name="MODULE_DEP_DIAGRAM_EDGE_TO_OOTB_SUB_MODULE" value="A8FFB9"/>
+        <option name="MODULE_DEP_DIAGRAM_EDGE_TO_CORE" value="FFEFD6"/>
+        <option name="MODULE_DEP_DIAGRAM_EDGE_TO_CORE_SUB_MODULE" value="FFDBA1"/>
 
         <!-- HEADERS -->
 
