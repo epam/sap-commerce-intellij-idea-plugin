@@ -37,7 +37,11 @@ class ExtensionDescriptor(
     var extGenTemplateExtension: Boolean = false,
     var jaloLogicFree: Boolean = false,
     var addon: Boolean = false,
+    var requiredByAll: Boolean = false,
     var classPathGen: String? = null,
     var moduleGenName: String? = null,
+    var packageRoot: String? = null,
+    var webRoot: String? = null,
+    var version: String? = null,
     var installedIntoExtensions: Set<String> = emptySet(),
 )

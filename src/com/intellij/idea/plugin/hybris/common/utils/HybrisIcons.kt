@@ -185,6 +185,7 @@ object HybrisIcons {
     val MODULE_DEP_DIAGRAM_DESCRIPTION = AllIcons.Windows.Help
     val MODULE_DEP_DIAGRAM_MAVEN_ENABLED = MODULE_MAVEN
     val MODULE_DEP_DIAGRAM_DEPRECATED = AllIcons.General.ExclMark
+    val MODULE_DEP_DIAGRAM_TEMPLATE = AllIcons.Nodes.Template
     val MODULE_DEP_DIAGRAM_JALO_LOGIC_FREE = getIcon("/icons/flexibleSearch/star.svg")
 
     val TS_DIAGRAM_PROPERTY = AllIcons.Nodes.Property

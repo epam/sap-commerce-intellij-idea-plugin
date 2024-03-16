@@ -52,6 +52,10 @@ abstract class AbstractYModuleDescriptor(
             jaloLogicFree = extensionInfo.extension.isJaloLogicFree,
             classPathGen = metas[HybrisConstants.EXTENSION_META_KEY_CLASSPATHGEN],
             moduleGenName = metas[HybrisConstants.EXTENSION_META_KEY_MODULE_GEN],
+            packageRoot = extensionInfo.extension.coremodule?.packageroot,
+            webRoot = extensionInfo.extension.webmodule?.webroot,
+            version = extensionInfo.extension.version,
+            requiredByAll = extensionInfo.extension.isRequiredbyall,
             addon = getRequiredExtensionNames().contains(HybrisConstants.EXTENSION_NAME_ADDONSUPPORT)
         )
     }

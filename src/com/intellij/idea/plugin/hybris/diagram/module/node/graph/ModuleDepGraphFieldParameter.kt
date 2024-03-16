@@ -20,4 +20,5 @@ package com.intellij.idea.plugin.hybris.diagram.module.node.graph
 
 data class ModuleDepGraphFieldParameter(
     override val name: String,
+    val type: String? = null,
 ) : ModuleDepGraphField

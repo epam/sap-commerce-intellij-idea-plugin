@@ -44,7 +44,9 @@ class ModuleDepDiagramElementManager : AbstractDiagramElementManager<ModuleDepGr
     }
 
     override fun getItemType(nodeElement: ModuleDepGraphNode?, nodeItem: Any?, builder: DiagramBuilder?) = when (nodeItem) {
-        is ModuleDepGraphFieldSubModuleType -> SimpleColoredText(nodeItem.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        is ModuleDepGraphFieldParameter -> nodeItem.type
+            ?.let { SimpleColoredText(it, SimpleTextAttributes.GRAYED_BOLD_ATTRIBUTES) }
+
         else -> null
     }
 
@@ -53,6 +55,7 @@ class ModuleDepDiagramElementManager : AbstractDiagramElementManager<ModuleDepGr
         is ModuleDepGraphField -> when (nodeItem.name) {
             "Maven Enabled" -> HybrisIcons.MODULE_DEP_DIAGRAM_MAVEN_ENABLED
             "Jalo Logic Free" -> HybrisIcons.MODULE_DEP_DIAGRAM_JALO_LOGIC_FREE
+            "Template Extension" -> HybrisIcons.MODULE_DEP_DIAGRAM_TEMPLATE
             "Deprecated" -> HybrisIcons.MODULE_DEP_DIAGRAM_DEPRECATED
             else -> HybrisIcons.MODULE_DEP_DIAGRAM_PROPERTY
         }
