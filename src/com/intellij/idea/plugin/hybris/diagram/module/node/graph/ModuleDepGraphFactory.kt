@@ -46,6 +46,7 @@ object ModuleDepGraphFactory {
         return ModuleDepGraphNodeModule(
             module,
             moduleSettings.type,
+            moduleSettings.subModuleType,
             module.yExtensionName(),
             properties.toTypedArray()
         )

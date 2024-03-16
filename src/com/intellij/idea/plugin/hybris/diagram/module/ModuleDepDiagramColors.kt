@@ -19,10 +19,18 @@
 package com.intellij.idea.plugin.hybris.diagram.module
 
 import com.intellij.diagram.DiagramColors
-import com.intellij.openapi.editor.colors.ColorKey
 import com.intellij.openapi.editor.colors.ColorKey.createColorKeyWithFallback
 
 object ModuleDepDiagramColors {
 
-    val EDGE_CIRCULAR: ColorKey = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_EDGE_CIRCULAR", DiagramColors.BAD_EDGE)
+    val EDGE_CIRCULAR = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_EDGE_CIRCULAR", DiagramColors.BAD_EDGE)
+    val NODE_HEADER_CUSTOM_BACKGROUND = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_CUSTOM_BACKGROUND", DiagramColors.NODE_HEADER)
+    val NODE_HEADER_CUSTOM_SUB_MODULE_BACKGROUND = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_CUSTOM_SUB_MODULE_BACKGROUND", DiagramColors.NODE_HEADER)
+    val NODE_HEADER_CUSTOM_COLOR = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_CUSTOM_COLOR", DiagramColors.NODE_HEADER)
+    val NODE_HEADER_OOTB_BACKGROUND = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_OOTB_BACKGROUND", DiagramColors.NODE_HEADER)
+    val NODE_HEADER_OOTB_SUB_MODULE_BACKGROUND = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_OOTB_SUB_MODULE_BACKGROUND", DiagramColors.NODE_HEADER)
+    val NODE_HEADER_OOTB_COLOR = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_OOTB_COLOR", DiagramColors.NODE_HEADER)
+    val NODE_HEADER_CORE_BACKGROUND = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_CORE_BACKGROUND", DiagramColors.NODE_HEADER)
+    val NODE_HEADER_CORE_SUB_MODULE_BACKGROUND = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_CORE_SUB_MODULE_BACKGROUND", DiagramColors.NODE_HEADER)
+    val NODE_HEADER_CORE_COLOR = createColorKeyWithFallback("MODULE_DEP_DIAGRAM_HEADER_CORE_COLOR", DiagramColors.NODE_HEADER)
 }

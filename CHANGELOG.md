@@ -16,6 +16,7 @@
 
 ### `Module Dependencies Diagram` enhancements
 - Added possibility to display extension details within the Module node [#1041](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1041)
+- Added nodes colorization based on the extension type [#1042](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1042)
 
 ### `Groovy` enhancements
 - Actions toolbar for disabled for Groovy IDE Scripts by default [#1040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1040)

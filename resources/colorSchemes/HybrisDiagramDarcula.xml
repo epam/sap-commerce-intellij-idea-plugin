@@ -21,8 +21,15 @@
 
         <!-- HEADERS -->
 
-        <option name="MODULE_DEP_DIAGRAM_HEADER_CUSTOM" value="C9E4EE"/>
-        <option name="MODULE_DEP_DIAGRAM_HEADER_NON_CUSTOM" value="C9E4EE"/>
+        <option name="MODULE_DEP_DIAGRAM_HEADER_CUSTOM_BACKGROUND" value="005888"/>
+        <option name="MODULE_DEP_DIAGRAM_HEADER_CUSTOM_SUB_MODULE_BACKGROUND" value="00334f"/>
+        <option name="MODULE_DEP_DIAGRAM_HEADER_CUSTOM_COLOR" value="FFFFFF"/>
+        <option name="MODULE_DEP_DIAGRAM_HEADER_OOTB_BACKGROUND" value="007918"/>
+        <option name="MODULE_DEP_DIAGRAM_HEADER_OOTB_SUB_MODULE_BACKGROUND" value="005711"/>
+        <option name="MODULE_DEP_DIAGRAM_HEADER_OOTB_COLOR" value="FFFFFF"/>
+        <option name="MODULE_DEP_DIAGRAM_HEADER_CORE_BACKGROUND" value="925900"/>
+        <option name="MODULE_DEP_DIAGRAM_HEADER_CORE_SUB_MODULE_BACKGROUND" value="573500"/>
+        <option name="MODULE_DEP_DIAGRAM_HEADER_CORE_COLOR" value="FFFFFF"/>
 
         <!-- Type System Diagram -->
         <!-- EDGES -->

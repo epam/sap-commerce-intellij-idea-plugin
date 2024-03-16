@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
 
 /**
- * `transitiveNode` can be true in following cases:
+ * `transitiveNode` can be true in the following cases:
  *  - non-custom Extends Node (will be taken into account only in case of "Custom + Extends" or "All" current Scope
  *  - non-custom Dependency Node (will be taken into account only in combination with `model.isShowDependencies == true`
  */

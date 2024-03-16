@@ -20,9 +20,12 @@ package com.intellij.idea.plugin.hybris.diagram.module.node
 import com.intellij.diagram.DiagramNodeBase
 import com.intellij.diagram.DiagramProvider
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramColors
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNodeModule
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
+import com.intellij.openapi.editor.colors.EditorColorsManager
+import java.awt.Color
 import java.io.Serial
 import javax.swing.Icon
 
@@ -42,6 +45,20 @@ class ModuleDepDiagramNode(private val graphNode: ModuleDepGraphNode, provider: 
                 else -> null
             }
         }
+
+    override fun getFileTabForeground(): Color? = graphNode
+        .takeIf { it is ModuleDepGraphNodeModule }
+        ?.let { (it as ModuleDepGraphNodeModule).type }
+        ?.let {
+            when (it) {
+                ModuleDescriptorType.CUSTOM -> ModuleDepDiagramColors.NODE_HEADER_CUSTOM_COLOR
+                ModuleDescriptorType.OOTB -> ModuleDepDiagramColors.NODE_HEADER_OOTB_COLOR
+                ModuleDescriptorType.PLATFORM -> ModuleDepDiagramColors.NODE_HEADER_CORE_COLOR
+                ModuleDescriptorType.EXT -> ModuleDepDiagramColors.NODE_HEADER_CORE_COLOR
+                else -> null
+            }
+        }
+        ?.let { EditorColorsManager.getInstance().schemeForCurrentUITheme.getColor(it) }
 
     companion object {
         @Serial
