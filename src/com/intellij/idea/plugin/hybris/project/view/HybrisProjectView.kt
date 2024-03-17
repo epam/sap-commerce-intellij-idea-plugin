@@ -44,13 +44,13 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
     private val hybrisProject = hybrisProjectSettingsComponent.state.hybrisProject
     private val hybrisApplicationSettings = HybrisApplicationSettingsComponent.getInstance().state
     private val commerceGroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupHybris)
-        .firstOrNull()
+        ?.firstOrNull()
     private val platformGroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupPlatform)
-        .firstOrNull()
+        ?.firstOrNull()
     private val ccv2GroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupCCv2)
-        .firstOrNull()
+        ?.firstOrNull()
     private val customGroupName = HybrisApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupCustom)
-        .firstOrNull()
+        ?.firstOrNull()
     private val groupToIcon = mapOf(
         customGroupName to HybrisIcons.MODULE_CUSTOM_GROUP,
         platformGroupName to HybrisIcons.MODULE_PLATFORM_GROUP,

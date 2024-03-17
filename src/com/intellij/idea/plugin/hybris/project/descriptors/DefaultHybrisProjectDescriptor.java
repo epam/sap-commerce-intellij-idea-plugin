@@ -95,6 +95,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File sapCLIDirectory;
     @Nullable
+    protected String sapCLIToken;
+    @Nullable
     protected File sourceCodeFile;
     @Nullable
     protected File projectIconFile;
@@ -952,13 +954,23 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public @Nullable File getSapCLIDirectory() {
+    public @Nullable File getSAPCLIDirectory() {
         return sapCLIDirectory;
     }
 
     @Override
-    public void setSapCLIDirectory(@Nullable final File sapCLIDirectory) {
+    public void setSAPCLIDirectory(@Nullable final File sapCLIDirectory) {
         this.sapCLIDirectory = sapCLIDirectory;
+    }
+
+    @Override
+    public @Nullable String getSAPCLIToken() {
+        return sapCLIToken;
+    }
+
+    @Override
+    public void setSAPCLIToken(@Nullable final String sapCLIToken) {
+        this.sapCLIToken = sapCLIToken;
     }
 
     @Nullable

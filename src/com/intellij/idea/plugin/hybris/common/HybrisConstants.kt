@@ -363,6 +363,8 @@ object HybrisConstants {
 
     const val ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
 
+    const val SECURE_STORAGE_SERVICE_NAME_SAP_CX_CLI_TOKEN = "SAP CX CLI Token"
+
     val DEFAULT_JUNK_FILE_NAMES = listOf(
         ".classpath",
         ".directory",

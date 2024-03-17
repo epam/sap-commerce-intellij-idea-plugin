@@ -19,6 +19,7 @@
 
 package com.intellij.idea.plugin.hybris.project.tasks;
 
+import com.intellij.credentialStore.CredentialAttributes;
 import com.intellij.facet.FacetType;
 import com.intellij.facet.FacetTypeId;
 import com.intellij.facet.FacetTypeRegistry;
@@ -26,6 +27,7 @@ import com.intellij.facet.ModifiableFacetModel;
 import com.intellij.framework.FrameworkType;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
+import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.ide.util.PropertiesComponent;
@@ -491,10 +493,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisProjectSettings.setScanThroughExternalModule(hybrisProjectDescriptor.isScanThroughExternalModule());
         hybrisProjectSettings.setModulesOnBlackList(createModulesOnBlackList());
         hybrisProjectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
-        final var sapCLIDirectory = hybrisProjectDescriptor.getSapCLIDirectory();
+
+
+        final var sapCLIDirectory = hybrisProjectDescriptor.getSAPCLIDirectory();
         if (sapCLIDirectory != null && sapCLIDirectory.isDirectory()) {
             appSettings.setSapCLIDirectory(FileUtil.toSystemIndependentName(sapCLIDirectory.getPath()));
         }
+
+        final var credentialAttributes = new CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CLI_TOKEN);
+        PasswordSafe.getInstance().setPassword(credentialAttributes, hybrisProjectDescriptor.getSAPCLIToken());
+
         hybrisProjectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
         final var completeSetOfHybrisModules = hybrisProjectDescriptor.getFoundModules().stream()
             .filter(e -> !(e instanceof MavenModuleDescriptor)

@@ -35,6 +35,7 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.textFieldWithBrowseButton
 import com.intellij.ui.dsl.builder.AlignX
@@ -60,6 +61,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     private lateinit var projectNameTextField: JTextField
     private lateinit var hybrisVersionTextField: JTextField
     private lateinit var javadocUrlTextField: JTextField
+    private lateinit var sapCLITokenTextField: JBPasswordField
     private lateinit var hybrisDistributionDirectoryFilesInChooser: TextFieldWithBrowseButton
     private lateinit var sourceCodeFilesInChooser: TextFieldWithBrowseButton
     private lateinit var storeModuleFilesInChooser: TextFieldWithBrowseButton
@@ -133,15 +135,15 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
-        collapsibleGroup("CCv2 CLI") {
+        collapsibleGroup("CCv2 SAP CX CLI") {
+            row {}.comment(
+                """
+                These settings are non-project specific and shared across all Projects and IntelliJ IDEA instances.<br>
+                All details on using SAP CCM can be found in official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9116f1cfd16049c3a531bfb6a681ff77/8acde53272c64efb908b9f0745498015.html">help.sap.com - Command Line Interface</a>.
+            """.trimIndent()
+            )
             row {
-                label("SAP CX CLI Directory:")
-                    .comment(
-                        """
-                        SAP Commerce Cloud command line interface installation directory. Choose directory extracted from the <strong>CXCOMMCLI00P_*.zip</strong> file to enable CCv2 CLI integration.<br> 
-                        All details on using SAP CCM can be found in official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9116f1cfd16049c3a531bfb6a681ff77/8acde53272c64efb908b9f0745498015.html?locale=en-US">help.sap.com</a>.
-                    """.trimIndent()
-                    )
+                label("CLI directory:")
                 sapCLIDirChooser = cell(
                     textFieldWithBrowseButton(
                         null,
@@ -149,6 +151,25 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
                     )
                 )
+                    .comment(
+                        """
+                        SAP Commerce Cloud command line interface installation directory.<br>
+                        Choose directory extracted from the <strong>CXCOMMCLI00P_*.zip</strong> file to enable CCv2 CLI integration.
+                    """.trimIndent()
+                    )
+                    .align(AlignX.FILL)
+                    .component
+            }.layout(RowLayout.PARENT_GRID)
+
+            row {
+                label("CLI token:")
+                sapCLITokenTextField = passwordField()
+                    .comment(
+                        """
+                        Specify developer specific Token for CCv2 CLI, it will be stored in the OS specific secure storage under <strong>SAP CX CLI Token</strong> alias.<br>
+                        Official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/b5d4d851cbd54469906a089bb8dd58d8.html">help.sap.com - Generating API Tokens</a>.
+                    """.trimIndent()
+                    )
                     .align(AlignX.FILL)
                     .component
             }.layout(RowLayout.PARENT_GRID)
@@ -309,6 +330,14 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     override fun getComponent() = with(JBScrollPane(panel)) {
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         preferredSize = Dimension(preferredSize.width, JBUIScale.scale(600))
+
+        val appSettings = HybrisApplicationSettingsComponent.getInstance()
+
+        sapCLIDirChooser.text = appSettings.state.sapCLIDirectory ?: ""
+        appSettings.loadSAPCLIToken {
+            sapCLITokenTextField.text = it
+        }
+
         this
     }
 
@@ -355,7 +384,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 .takeIf { it.isEnabled }
                 ?.let { this.modulesFilesDirectory = FileUtils.toFile(storeModuleFilesInChooser.text) }
 
-            this.sapCLIDirectory = FileUtils.toFile(sapCLIDirChooser.text)
+            this.sapcliDirectory = FileUtils.toFile(sapCLIDirChooser.text, true)
+            this.sapcliToken = sapCLITokenTextField.text
 
             logger.info("importing a project with the following settings: $this")
         }
@@ -489,9 +519,10 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isScanThroughExternalModule = settings.scanThroughExternalModule
             this.isUseFakeOutputPathForCustomExtensions = settings.useFakeOutputPathForCustomExtensions
 
-            val appSettings = HybrisApplicationSettingsComponent.getInstance().state
-            this.isIgnoreNonExistingSourceDirectories = appSettings.ignoreNonExistingSourceDirectories
-            this.isWithStandardProvidedSources = appSettings.withStandardProvidedSources
+            val appSettings = HybrisApplicationSettingsComponent.getInstance()
+            val appSettingsState = appSettings.state
+            this.isIgnoreNonExistingSourceDirectories = appSettingsState.ignoreNonExistingSourceDirectories
+            this.isWithStandardProvidedSources = appSettingsState.withStandardProvidedSources
 
             this.modulesFilesDirectory = settings.ideModulesFilesDirectory
                 ?.let { File(it) }
@@ -500,8 +531,9 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
                 )
 
-            this.sapCLIDirectory = appSettings.sapCLIDirectory
+            this.sapcliDirectory = appSettingsState.sapCLIDirectory
                 ?.let { File(it) }
+            this.sapcliToken = appSettings.sapCLIToken
 
             val hybrisDirectory = settings.hybrisDirectory
             if (hybrisDirectory != null) {

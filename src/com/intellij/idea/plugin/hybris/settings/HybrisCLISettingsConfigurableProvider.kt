@@ -21,6 +21,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.util.SystemInfo
+import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.textFieldWithBrowseButton
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
@@ -38,17 +39,21 @@ class HybrisCLISettingsConfigurableProvider : ConfigurableProvider() {
         "CCv2 CLI", "[y] SAP Commerce Cloud CLI configuration."
     ) {
 
-        private val state = HybrisApplicationSettingsComponent.getInstance().state
+        private lateinit var sapCLITokenTextField: JBPasswordField
+        private var originalSAPCLIToken: String? = ""
+
+        private val appSettings = HybrisApplicationSettingsComponent.getInstance()
+        private val state = appSettings.state
 
         override fun createPanel() = panel {
+            row {}.comment(
+                """
+                All details on using SAP CCM can be found in official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9116f1cfd16049c3a531bfb6a681ff77/8acde53272c64efb908b9f0745498015.html">help.sap.com - Command Line Interface</a>.
+            """.trimIndent()
+            )
+
             row {
-                label("SAP CX CLI Directory:")
-                    .comment(
-                        """
-                        SAP Commerce Cloud command line interface installation directory. Choose directory extracted from the <strong>CXCOMMCLI00P_*.zip</strong> file to enable CCv2 CLI integration.<br> 
-                        All details on using SAP CCM can be found in official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9116f1cfd16049c3a531bfb6a681ff77/8acde53272c64efb908b9f0745498015.html?locale=en-US">help.sap.com</a>.
-                    """.trimIndent()
-                    )
+                label("CLI directory:")
                 cell(
                     textFieldWithBrowseButton(
                         null,
@@ -56,6 +61,12 @@ class HybrisCLISettingsConfigurableProvider : ConfigurableProvider() {
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
                     )
                 )
+                    .comment(
+                        """
+                        SAP Commerce Cloud command line interface installation directory.<br>
+                        Choose directory extracted from the <strong>CXCOMMCLI00P_*.zip</strong> file to enable CCv2 CLI integration. 
+                    """.trimIndent()
+                    )
                     .bindText(
                         { state.sapCLIDirectory ?: "" },
                         { state.sapCLIDirectory = it }
@@ -72,6 +83,36 @@ class HybrisCLISettingsConfigurableProvider : ConfigurableProvider() {
                             this.error("Invalid SAP CCM directory, cannot find <strong>bin/$executable</strong> executable file.")
                         } else {
                             null
+                        }
+                    }
+                    .align(AlignX.FILL)
+            }.layout(RowLayout.PARENT_GRID)
+
+            row {
+                label("CLI token:")
+                sapCLITokenTextField = passwordField()
+                    .comment(
+                        """
+                        Specify developer specific Token for CCv2 CLI, it will be stored in the OS specific secure storage under <strong>SAP CX CLI Token</strong> alias.<br>
+                        Official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/b5d4d851cbd54469906a089bb8dd58d8.html">help.sap.com - Generating API Tokens</a>.
+                    """.trimIndent()
+                    )
+                    .align(AlignX.RIGHT)
+                    .onIsModified { originalSAPCLIToken != String(sapCLITokenTextField.password) }
+                    .onReset {
+                        sapCLITokenTextField.isEnabled = false
+
+                        appSettings.loadSAPCLIToken {
+                            val sapCLIToken = appSettings.sapCLIToken
+                            originalSAPCLIToken = sapCLIToken
+
+                            sapCLITokenTextField.text = sapCLIToken
+                            sapCLITokenTextField.isEnabled = true
+                        }
+                    }
+                    .onApply {
+                        appSettings.saveSAPCLIToken(String(sapCLITokenTextField.password)) {
+                            originalSAPCLIToken = it
                         }
                     }
                     .align(AlignX.FILL)
