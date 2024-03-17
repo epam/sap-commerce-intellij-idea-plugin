@@ -1,5 +1,8 @@
 ## [2024.1.1]
 
+### `Project Import` enhancements
+- Persist DB password forever during auto-configuration [#1046](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1046)
+
 ### `Cockpit NG` enhancements
 - Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)
 - Ignore case of the `merge-mode` attribute [#1023](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1023)

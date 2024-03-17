@@ -58,6 +58,7 @@ class DataSourcesConfigurator {
             .withCallback(object : DataSourceDetector.Callback() {
                 override fun onCreated(dataSource: DasDataSource) {
                     if (dataSource is LocalDataSource) {
+                        dataSource.passwordStorage = LocalDataSource.Storage.PERSIST
                         dataSources += dataSource
                     }
                 }
