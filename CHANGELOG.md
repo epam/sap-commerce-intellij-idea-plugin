@@ -5,7 +5,7 @@
 - Unescape DB url during auto-configuration [#1047](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1047)
 
 ### `CCv2 CLI` enhancements
-- Added possibility to specify directory with SAP CX CLI [#1048](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1048)
+- Added possibility to specify directory of the SAP CX CLI [#1048](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1048)
 
 ### `Cockpit NG` enhancements
 - Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)
