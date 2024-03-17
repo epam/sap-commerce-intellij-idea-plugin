@@ -17,6 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
+import com.intellij.idea.plugin.hybris.ui.CCv2SubscriptionListPanel
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -39,11 +41,12 @@ class HybrisCLISettingsConfigurableProvider : ConfigurableProvider() {
         "CCv2 CLI", "[y] SAP Commerce Cloud CLI configuration."
     ) {
 
-        private lateinit var sapCLITokenTextField: JBPasswordField
         private var originalSAPCLIToken: String? = ""
-
         private val appSettings = HybrisApplicationSettingsComponent.getInstance()
         private val state = appSettings.state
+
+        private lateinit var sapCLITokenTextField: JBPasswordField
+        private val ccv2SubscriptionListPanel = CCv2SubscriptionListPanel(state.ccv2Subscriptions)
 
         override fun createPanel() = panel {
             row {}.comment(
@@ -118,6 +121,16 @@ class HybrisCLISettingsConfigurableProvider : ConfigurableProvider() {
                     .align(AlignX.FILL)
                     .component
             }.layout(RowLayout.PARENT_GRID)
+
+            group("CCv2 Subscriptions", false) {
+                row {
+                    cell(ccv2SubscriptionListPanel)
+                        .align(AlignX.FILL)
+                        .onApply { state.ccv2Subscriptions = ccv2SubscriptionListPanel.data }
+                        .onReset { ccv2SubscriptionListPanel.data = state.ccv2Subscriptions }
+                        .onIsModified { ccv2SubscriptionListPanel.data.equalsIgnoreOrder(state.ccv2Subscriptions.toList()).not() }
+                }
+            }
         }
     }
 }

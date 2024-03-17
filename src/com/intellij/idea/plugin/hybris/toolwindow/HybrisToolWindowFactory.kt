@@ -38,6 +38,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
             createTSContent(toolWindow, TSView(project)),
             createBSContent(toolWindow, BSView(project)),
             createConsolesContent(toolWindow, project, HybrisConsolesView(project)),
+//            createCCv2CLIContent(toolWindow, project, HybrisConsolesView(project)),
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
@@ -75,5 +76,6 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         const val CONSOLES_ID = "Consoles"
         const val TS_ID = "Type System"
         const val BS_ID = "Bean System"
+        const val CI_CD = "CCv2 CLI"
     }
 }

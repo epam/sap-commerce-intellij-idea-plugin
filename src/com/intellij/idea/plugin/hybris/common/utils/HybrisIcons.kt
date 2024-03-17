@@ -244,6 +244,8 @@ object HybrisIcons {
 
     val NODE_JUNK = AllIcons.Modules.ExcludedGeneratedRoot
 
+    val CI_CD = getIcon("/icons/cicd.svg")
+
     private fun getIcon(path: String) = ReflectionUtil.getGrandCallerClass()
         ?.let { IconLoader.getIcon(path, it) }
         ?: error(path)

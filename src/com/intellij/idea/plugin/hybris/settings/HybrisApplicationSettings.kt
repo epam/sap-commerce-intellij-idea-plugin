@@ -48,5 +48,6 @@ data class HybrisApplicationSettings(
     var junkDirectoryList: List<String> = HybrisConstants.DEFAULT_JUNK_FILE_NAMES,
     var extensionsResourcesToExclude: List<String> = HybrisConstants.DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE,
     var excludedFromIndexList: List<String> = HybrisConstants.DEFAULT_EXCLUDED_FROM_INDEX,
+    var ccv2Subscriptions: List<CCv2Subscription> = emptyList()
 
 )
