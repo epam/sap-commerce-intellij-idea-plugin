@@ -4,8 +4,8 @@
 - Persist DB password forever during auto-configuration [#1046](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1046)
 - Unescape DB url during auto-configuration [#1047](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1047)
 
-### `SAP CLI` enhancements
-- Added possibility to specify directory with SAP CLI [#1048](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1048)
+### `CCv2 CLI` enhancements
+- Added possibility to specify directory with SAP CX CLI [#1048](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1048)
 
 ### `Cockpit NG` enhancements
 - Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)
