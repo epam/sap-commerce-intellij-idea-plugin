@@ -23,6 +23,7 @@ import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.idea.plugin.hybris.codeInsight.hints.AbstractSystemAwareInlayHintsCollector
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
@@ -77,7 +78,7 @@ class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
             attribute == null && parent.localName == Enum.VALUE -> parent.parentOfType<XmlTag>()
                 ?.takeIf { it.name == Beans.ENUM }
                 ?.getAttributeValue(Enum.CLASS)
-                ?.let { finEnumClass(project, it) }
+                ?.let { finEnumClass(project, element.text) }
                 ?.allFields
                 ?.find { it.name.equals(element.text, true) }
                 ?.let { arrayOf(it) }
@@ -91,13 +92,19 @@ class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
 
             parent.localName == Beans.BEAN && attribute?.name == Bean.CLASS -> findItemClass(project, element.text)
                 ?.let { arrayOf(it) }
-                ?.let { inlayPresentation(HybrisIcons.BS_BEAN, it) }
+                ?.let {
+                    val icon = BSMetaModelAccess.getInstance(project).findMetaBeanByName(element.text)
+                        ?.metaType
+                        ?.icon
+                        ?: HybrisIcons.BS_BEAN
+                    inlayPresentation(icon, it)
+                }
                 ?: unknown
 
             parent.localName == Bean.PROPERTY && attribute?.name == Property.NAME -> element.parentOfType<XmlTag>()
                 ?.getParentOfType<XmlTag>(true)
                 ?.getAttributeValue(Bean.CLASS)
-                ?.let { findItemClass(project, it) }
+                ?.let { findItemClass(project, cleanupFqn(it)) }
                 ?.allFields
                 ?.find { it.name == parent.getAttributeValue(Property.NAME) }
                 ?.let { arrayOf(it) }
@@ -109,11 +116,11 @@ class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
     }
 
     private fun findItemClass(project: Project, classFqn: String) = JavaPsiFacade.getInstance(project)
-        .findClass(cleanupFqn(classFqn), GlobalSearchScope.allScope(project))
+        .findClass(classFqn, GlobalSearchScope.allScope(project))
         ?.takeIf { inBootstrap(it) }
 
     private fun finEnumClass(project: Project, classFqn: String) = JavaPsiFacade.getInstance(project)
-        .findClass(cleanupFqn(classFqn), GlobalSearchScope.allScope(project))
+        .findClass(classFqn, GlobalSearchScope.allScope(project))
         ?.takeIf { it.isEnum && inBootstrap(it) }
 
     private fun cleanupFqn(classFqn: String) = classFqn

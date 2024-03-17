@@ -23,6 +23,9 @@
 ### `Groovy` enhancements
 - Actions toolbar for disabled for Groovy IDE Scripts by default [#1040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1040)
 
+### `Bean System` enhancements
+- Show bean type specific inline navigable icon [#1045](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1045)
+
 ### Fixes
 - Configure SAP CX JavaDoc for OOTB Modules [#1027](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1026)
 

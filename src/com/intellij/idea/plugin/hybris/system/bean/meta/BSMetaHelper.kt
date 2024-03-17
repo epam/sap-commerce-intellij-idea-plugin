@@ -19,6 +19,10 @@
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.BS_SIGN_GREATER_THAN
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.BS_SIGN_LESS_THAN
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.util.xml.DomElement
 import java.util.*
@@ -54,7 +58,7 @@ object BSMetaHelper {
         ?.map { it.trim() }
 
     fun getBeanName(name: String) = getUnescapedName(name)
-        .substringBefore("<")
+        .substringBefore(BS_SIGN_LESS_THAN)
 
     fun getAllExtends(metaModel: BSGlobalMetaModel, meta: BSGlobalMetaBean): Set<BSGlobalMetaBean> {
         val tempParents = LinkedHashSet<BSGlobalMetaBean>()
@@ -68,8 +72,8 @@ object BSMetaHelper {
     }
 
     fun getEscapedName(name: String) = name
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
+        .replace(BS_SIGN_LESS_THAN, BS_SIGN_LESS_THAN_ESCAPED)
+        .replace(BS_SIGN_GREATER_THAN, BS_SIGN_GREATER_THAN_ESCAPED)
 
     private fun getExtendsMetaItem(metaModel: BSGlobalMetaModel, meta: BSGlobalMetaBean): BSGlobalMetaBean? {
         val extendsName = meta.extends
@@ -83,13 +87,13 @@ object BSMetaHelper {
     }
 
     private fun getUnescapedName(name: String) = name
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
+        .replace(BS_SIGN_LESS_THAN_ESCAPED, BS_SIGN_LESS_THAN)
+        .replace(BS_SIGN_GREATER_THAN_ESCAPED, BS_SIGN_GREATER_THAN)
 
     fun flattenType(type: String?) = type
         ?.replace(flattenTypeRegex, "")
-        ?.replace("&lt;", "<")
-        ?.replace("&gt;", ">")
+        ?.replace(BS_SIGN_LESS_THAN_ESCAPED, BS_SIGN_LESS_THAN)
+        ?.replace(BS_SIGN_GREATER_THAN_ESCAPED, BS_SIGN_GREATER_THAN)
         ?.replace(" ", "")
         ?.replace(",", ", ")
 }

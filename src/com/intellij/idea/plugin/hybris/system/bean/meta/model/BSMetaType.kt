@@ -15,9 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.system.bean.meta.model
 
-package com.intellij.idea.plugin.hybris.system.bean.meta.model;
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import javax.swing.Icon
 
-public enum BSMetaType {
-    META_WS_BEAN, META_BEAN, META_EVENT, META_ENUM
+enum class BSMetaType(val icon: Icon) {
+    META_WS_BEAN(HybrisIcons.BS_WS_BEAN),
+    META_BEAN(HybrisIcons.BS_BEAN),
+    META_EVENT(HybrisIcons.BS_EVENT_BEAN),
+    META_ENUM(HybrisIcons.BS_ENUM)
 }
