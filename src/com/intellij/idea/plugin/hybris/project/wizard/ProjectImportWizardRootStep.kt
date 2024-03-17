@@ -133,24 +133,27 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
-        row {
-            label("SAP CX CLI Directory:")
-                .comment(
-                    """
+        collapsibleGroup("CCv2 CLI") {
+            row {
+                label("SAP CX CLI Directory:")
+                    .comment(
+                        """
                         SAP Commerce Cloud command line interface installation directory. Choose directory extracted from the <strong>CXCOMMCLI00P_*.zip</strong> file to enable CCv2 CLI integration.<br> 
                         All details on using SAP CCM can be found in official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9116f1cfd16049c3a531bfb6a681ff77/8acde53272c64efb908b9f0745498015.html?locale=en-US">help.sap.com</a>.
                     """.trimIndent()
+                    )
+                sapCLIDirChooser = cell(
+                    textFieldWithBrowseButton(
+                        null,
+                        "Select SAP CX CLI Directory",
+                        FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                    )
                 )
-            sapCLIDirChooser = cell(
-                textFieldWithBrowseButton(
-                    null,
-                    "Select SAP CX CLI Directory",
-                    FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                )
-            )
-                .align(AlignX.FILL)
-                .component
-        }.layout(RowLayout.PARENT_GRID)
+                    .align(AlignX.FILL)
+                    .component
+            }.layout(RowLayout.PARENT_GRID)
+        }
+            .expanded = true
 
         collapsibleGroup("Scanning Settings") {
             row {
