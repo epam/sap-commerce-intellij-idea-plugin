@@ -159,7 +159,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             projectSettings.setExcludedFromScanning(hybrisProjectDescriptor.getExcludedFromScanning());
         }
 
-        this.saveImportedSettings(project, projectSettings, appSettings, projectSettingsComponent);
+        this.saveImportedSettings(projectSettings, appSettings, projectSettingsComponent);
         this.disableWrapOnType(ImpexLanguage.INSTANCE);
 
         PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);
@@ -444,7 +444,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
-    private void saveImportedSettings(final Project project, @NotNull final HybrisProjectSettings hybrisProjectSettings,
+    private void saveImportedSettings(@NotNull final HybrisProjectSettings hybrisProjectSettings,
                                       @NotNull final HybrisApplicationSettings appSettings,
                                       @NotNull final HybrisProjectSettingsComponent hybrisSettingsComponent) {
         hybrisProjectSettings.setImportOotbModulesInReadOnlyMode(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
@@ -491,6 +491,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisProjectSettings.setScanThroughExternalModule(hybrisProjectDescriptor.isScanThroughExternalModule());
         hybrisProjectSettings.setModulesOnBlackList(createModulesOnBlackList());
         hybrisProjectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
+        final var sapCLIDirectory = hybrisProjectDescriptor.getSapCLIDirectory();
+        if (sapCLIDirectory != null && sapCLIDirectory.isDirectory()) {
+            appSettings.setSapCLIDirectory(FileUtil.toSystemIndependentName(sapCLIDirectory.getPath()));
+        }
         hybrisProjectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
         final var completeSetOfHybrisModules = hybrisProjectDescriptor.getFoundModules().stream()
             .filter(e -> !(e instanceof MavenModuleDescriptor)

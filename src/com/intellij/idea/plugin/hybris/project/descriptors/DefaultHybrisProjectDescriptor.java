@@ -93,6 +93,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File modulesFilesDirectory;
     @Nullable
+    protected File sapCLIDirectory;
+    @Nullable
     protected File sourceCodeFile;
     @Nullable
     protected File projectIconFile;
@@ -947,6 +949,16 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Override
     public void setModulesFilesDirectory(@Nullable final File modulesFilesDirectory) {
         this.modulesFilesDirectory = modulesFilesDirectory;
+    }
+
+    @Override
+    public @Nullable File getSapCLIDirectory() {
+        return sapCLIDirectory;
+    }
+
+    @Override
+    public void setSapCLIDirectory(@Nullable final File sapCLIDirectory) {
+        this.sapCLIDirectory = sapCLIDirectory;
     }
 
     @Nullable

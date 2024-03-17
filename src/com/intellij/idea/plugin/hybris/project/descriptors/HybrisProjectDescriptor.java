@@ -72,6 +72,11 @@ public interface HybrisProjectDescriptor {
     void setModulesFilesDirectory(@Nullable File modulesFilesDirectory);
 
     @Nullable
+    File getSapCLIDirectory();
+
+    void setSapCLIDirectory(@Nullable File sapCLIDirectory);
+
+    @Nullable
     File getSourceCodeFile();
 
     void setSourceCodeFile(@Nullable File sourceCodeFile);
