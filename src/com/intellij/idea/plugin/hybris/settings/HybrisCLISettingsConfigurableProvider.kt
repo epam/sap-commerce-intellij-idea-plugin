@@ -41,12 +41,14 @@ class HybrisCLISettingsConfigurableProvider : ConfigurableProvider() {
         "CCv2 CLI", "[y] SAP Commerce Cloud CLI configuration."
     ) {
 
-        private var originalSAPCLIToken: String? = ""
         private val appSettings = HybrisApplicationSettingsComponent.getInstance()
         private val state = appSettings.state
+        private var originalSAPCLIToken: String? = ""
+        private var originalCCv2Subscriptions = state.ccv2Subscriptions
+            .map { it.clone() }
 
         private lateinit var sapCLITokenTextField: JBPasswordField
-        private val ccv2SubscriptionListPanel = CCv2SubscriptionListPanel(state.ccv2Subscriptions)
+        private val ccv2SubscriptionListPanel = CCv2SubscriptionListPanel(originalCCv2Subscriptions)
 
         override fun createPanel() = panel {
             row {}.comment(
@@ -127,8 +129,12 @@ class HybrisCLISettingsConfigurableProvider : ConfigurableProvider() {
                     cell(ccv2SubscriptionListPanel)
                         .align(AlignX.FILL)
                         .onApply { state.ccv2Subscriptions = ccv2SubscriptionListPanel.data }
-                        .onReset { ccv2SubscriptionListPanel.data = state.ccv2Subscriptions }
-                        .onIsModified { ccv2SubscriptionListPanel.data.equalsIgnoreOrder(state.ccv2Subscriptions.toList()).not() }
+                        .onReset {
+                            originalCCv2Subscriptions = state.ccv2Subscriptions
+                                .map { it.clone() }
+                            ccv2SubscriptionListPanel.data = originalCCv2Subscriptions
+                        }
+                        .onIsModified { ccv2SubscriptionListPanel.data.equalsIgnoreOrder(state.ccv2Subscriptions).not() }
                 }
             }
         }

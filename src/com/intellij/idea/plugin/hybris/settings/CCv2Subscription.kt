@@ -19,9 +19,16 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.openapi.components.BaseState
 
-class CCv2Subscription : BaseState() {
+class CCv2Subscription : BaseState(), Cloneable {
     var id by string()
     var name by string(null)
+
+    public override fun clone(): CCv2Subscription {
+        val clone = CCv2Subscription()
+        clone.id = id
+        clone.name = name
+        return clone
+    }
 
     override fun toString() = name
         ?: id

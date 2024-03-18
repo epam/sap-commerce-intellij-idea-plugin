@@ -17,16 +17,22 @@
  */
 package com.intellij.idea.plugin.hybris.ui
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.AddEditDeleteListPanel
 import com.intellij.ui.ListSpeedSearch
-import com.intellij.ui.dsl.builder.*
+import com.intellij.util.ui.JBEmptyBorder
 import java.awt.Component
 import java.io.Serial
 import java.util.*
+import javax.swing.DefaultListCellRenderer
+import javax.swing.JComponent
+import javax.swing.JList
+import javax.swing.ListCellRenderer
 
 class CCv2SubscriptionListPanel(initialList: List<CCv2Subscription>) : AddEditDeleteListPanel<CCv2Subscription>(null, initialList) {
+
+    private var myListCellRenderer: ListCellRenderer<*>? = null
 
     init {
         ListSpeedSearch.installOn(myList) { it.name }
@@ -42,6 +48,25 @@ class CCv2SubscriptionListPanel(initialList: List<CCv2Subscription>) : AddEditDe
     override fun editSelectedItem(item: CCv2Subscription) = if (CCv2SubscriptionDialog(this, item, "Edit CCv2 Subscription").showAndGet()) item
     else null
 
+    override fun getListCellRenderer(): ListCellRenderer<*> {
+        if (myListCellRenderer == null) {
+            myListCellRenderer = object : DefaultListCellRenderer() {
+
+                override fun getListCellRendererComponent(list: JList<*>, value: Any, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
+                    val comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
+                    (comp as JComponent).border = JBEmptyBorder(5)
+                    icon = HybrisIcons.MODULE_CCV2
+
+                    return comp
+                }
+
+                @Serial
+                private val serialVersionUID: Long = -7680459678226925362L
+            }
+        }
+        return myListCellRenderer!!
+    }
+
     var data: List<CCv2Subscription>
         get() = Collections.list(myListModel.elements())
         set(itemList) {
@@ -54,35 +79,6 @@ class CCv2SubscriptionListPanel(initialList: List<CCv2Subscription>) : AddEditDe
     companion object {
         @Serial
         private val serialVersionUID: Long = 3757468168747276336L
-    }
-
-    class CCv2SubscriptionDialog(
-        parentComponent: Component,
-        private val subscription: CCv2Subscription,
-        dialogTitle: String
-    ) : DialogWrapper(null, parentComponent, false, IdeModalityType.IDE) {
-
-        init {
-            title = dialogTitle
-            super.init()
-        }
-
-        override fun createCenterPanel() = panel {
-            row {
-                textField()
-                    .label("ID:")
-                    .align(AlignX.FILL)
-                    .addValidationRule("ID cannot be blank.") { it.text.isBlank() }
-                    .bindText(subscription::id.toNonNullableProperty(""))
-            }.layout(RowLayout.PARENT_GRID)
-
-            row {
-                textField()
-                    .label("Name:")
-                    .align(AlignX.FILL)
-                    .bindText(subscription::name.toNonNullableProperty(""))
-            }.layout(RowLayout.PARENT_GRID)
-        }
     }
 
 }

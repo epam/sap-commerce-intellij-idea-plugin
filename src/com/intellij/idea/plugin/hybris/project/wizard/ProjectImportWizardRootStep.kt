@@ -385,7 +385,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 ?.let { this.modulesFilesDirectory = FileUtils.toFile(storeModuleFilesInChooser.text) }
 
             this.sapcliDirectory = FileUtils.toFile(sapCLIDirChooser.text, true)
-            this.sapcliToken = sapCLITokenTextField.text
+            this.sapcliToken = String(sapCLITokenTextField.password)
 
             logger.info("importing a project with the following settings: $this")
         }

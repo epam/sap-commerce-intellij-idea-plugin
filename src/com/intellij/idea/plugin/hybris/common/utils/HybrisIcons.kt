@@ -216,6 +216,8 @@ object HybrisIcons {
     val CONSOLE_SUSPEND = AllIcons.Actions.Suspend
     val CONSOLE_EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg")
 
+    val CCV2_CLI = getIcon("/icons/ccv2_cli.svg")
+
     val CONNECTION_ADD = AllIcons.General.Add
     val CONNECTION_EDIT = AllIcons.Actions.Edit
 
@@ -243,8 +245,6 @@ object HybrisIcons {
     val SCOPE_LOCAL = AllIcons.Ide.LocalScope
 
     val NODE_JUNK = AllIcons.Modules.ExcludedGeneratedRoot
-
-    val CI_CD = getIcon("/icons/cicd.svg")
 
     private fun getIcon(path: String) = ReflectionUtil.getGrandCallerClass()
         ?.let { IconLoader.getIcon(path, it) }
