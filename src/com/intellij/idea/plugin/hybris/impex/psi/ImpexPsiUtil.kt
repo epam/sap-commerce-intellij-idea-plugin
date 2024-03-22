@@ -36,7 +36,6 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.siblings
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
-import org.jetbrains.kotlin.utils.addToStdlib.indexOfOrNull
 
 fun getHeaderLine(element: ImpexFullHeaderParameter): ImpexHeaderLine? = PsiTreeUtil
     .getParentOfType(element, ImpexHeaderLine::class.java)
@@ -191,7 +190,8 @@ fun getInlineTypeName(element: ImpexParameter): String? = element.text
     .substringBefore("(")
     .substringBefore("[")
     .trim()
-    .indexOfOrNull('.')
+    .indexOf('.')
+    .takeIf { it >= 0 }
     ?.let { element.text.substring(0, it).trim() }
 
 fun getAttributeName(element: ImpexParameter): String = element.text

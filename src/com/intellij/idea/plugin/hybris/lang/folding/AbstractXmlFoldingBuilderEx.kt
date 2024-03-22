@@ -32,11 +32,11 @@ import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomManager
-import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 
 abstract class AbstractXmlFoldingBuilderEx<S : FoldingSettings, T : DomElement>(private val clazz: Class<T>) : FoldingBuilderEx() {
 
@@ -69,7 +69,7 @@ abstract class AbstractXmlFoldingBuilderEx<S : FoldingSettings, T : DomElement>(
     }
 
     internal abstract fun initSettings(project: Project): S
-    internal fun getCachedFoldingSettings(psi: PsiElement) = psi.getParentOfType<XmlFile>(false)
+    internal fun getCachedFoldingSettings(psi: PsiElement) = psi.parentOfType<XmlFile>(false)
         ?.getUserData(cachedFoldingSettings)
 
     fun tablify(psi: PsiElement, value: String, tablify: Boolean?, tagName: String, attributeName: String, prepend: Boolean = false) = if (tablify == true) {

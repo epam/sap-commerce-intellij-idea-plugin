@@ -27,7 +27,6 @@ import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
 import com.intellij.openapi.vfs.VfsUtil
-import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 import java.io.File
 
 object YModuleLibDescriptorUtil {
@@ -75,7 +74,8 @@ object YModuleLibDescriptorUtil {
         addRootLib(descriptor, libs)
 
         if (descriptor.hasBackofficeModule) {
-            descriptor.getSubModules().firstIsInstanceOrNull<YBackofficeSubModuleDescriptor>()
+            descriptor.getSubModules()
+                .firstOrNull { it is YBackofficeSubModuleDescriptor }
                 ?.let { yModule ->
                     val attachSources = descriptor.descriptorType == ModuleDescriptorType.CUSTOM || !descriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
                     val sourceFiles = (HybrisConstants.ALL_SRC_DIR_NAMES + HybrisConstants.TEST_SRC_DIR_NAMES)

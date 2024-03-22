@@ -36,14 +36,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import org.jetbrains.kotlin.idea.base.codeInsight.handlers.fixers.start
 
 abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<PsiElement>, HighlightedReference {
 
     constructor(element: PsiElement) : super(element, false)
     constructor(element: PsiElement, textRange: TextRange) : super(element, textRange, false)
 
-    private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AbstractAttributeDeclarationReference>>("HYBRIS_TS_CACHED_REFERENCE_${rangeInElement.start}")
+    private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AbstractAttributeDeclarationReference>>("HYBRIS_TS_CACHED_REFERENCE_${rangeInElement.startOffset}")
 
     override fun calculateDefaultRangeInElement(): TextRange =
         if (element.textLength == 0) super.calculateDefaultRangeInElement()

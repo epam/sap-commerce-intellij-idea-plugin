@@ -31,18 +31,15 @@ import com.intellij.idea.plugin.hybris.system.bean.model.Property
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiElement
+import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.refactoring.suggested.startOffset
-import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
-import org.jetbrains.kotlin.psi.psiUtil.getPrevSiblingIgnoringWhitespaceAndComments
 
 /**
  * use com.intellij.codeInsight.hints.presentation.PresentationFactory#referenceOnHover and show popup from clickListener
@@ -56,7 +53,7 @@ class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
         if (element.tokenType != XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN && element.tokenType != XmlTokenType.XML_DATA_CHARACTERS) return true
         val parent = element.parentOfType<XmlTag>() ?: return true
 
-        val previousSibling = element.getPrevSiblingIgnoringWhitespaceAndComments()
+        val previousSibling = PsiTreeUtil.skipSiblingsBackward(element, PsiComment::class.java, PsiWhiteSpace::class.java)
             ?.text
             ?: ""
         if (previousSibling == HybrisConstants.BS_SIGN_LESS_THAN || previousSibling == HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED) {
@@ -102,7 +99,7 @@ class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
                 ?: unknown
 
             parent.localName == Bean.PROPERTY && attribute?.name == Property.NAME -> element.parentOfType<XmlTag>()
-                ?.getParentOfType<XmlTag>(true)
+                ?.parentOfType<XmlTag>(false)
                 ?.getAttributeValue(Bean.CLASS)
                 ?.let { findItemClass(project, cleanupFqn(it)) }
                 ?.allFields

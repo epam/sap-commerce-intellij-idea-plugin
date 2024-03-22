@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.childrenOfType
-import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 
 object ImpExElementFactory {
 
@@ -39,12 +38,14 @@ object ImpExElementFactory {
         ?.lastChild
 
     fun createMacroName(project: Project, value: String) = createFile(project, "$value = dummy")
-        .getChildOfType<ImpexMacroDeclaration>()
-        ?.getChildOfType<ImpexMacroNameDec>()
+        .childrenOfType<ImpexMacroDeclaration>().firstOrNull()
+        ?.childrenOfType<ImpexMacroNameDec>()
+        ?.firstOrNull()
 
     fun createSingleQuotedString(project: Project, value: String) = createFile(project, "\$macro = '$value'")
-        .getChildOfType<ImpexMacroDeclaration>()
-        ?.getChildOfType<ImpexString>()
+        .childrenOfType<ImpexMacroDeclaration>().firstOrNull()
+        ?.childrenOfType<ImpexString>()
+        ?.firstOrNull()
 
     fun createValueGroup(project: Project, value: String? = "") = createFile(project, """
      INSERT Product;

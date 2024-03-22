@@ -27,9 +27,9 @@ import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.parents
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
-import org.jetbrains.kotlin.psi.psiUtil.parents
 
 class OccLevelMappingReference(
     private val meta: BSGlobalMetaBean,
@@ -44,7 +44,7 @@ class OccLevelMappingReference(
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val levelMapping = value
 
-        return element.parents
+        return element.parents(false)
             .mapNotNull { it as? XmlTag }
             .filter { it.localName == "bean" }
             .firstOrNull()

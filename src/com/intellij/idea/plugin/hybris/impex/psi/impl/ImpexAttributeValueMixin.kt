@@ -33,7 +33,7 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.SpringReference
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiReference
-import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
+import com.intellij.psi.util.parentOfType
 import java.io.Serial
 import javax.lang.model.SourceVersion
 
@@ -52,7 +52,7 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
 
     override fun getReference() = references.firstOrNull()
 
-    private fun computeReference() = if (getParentOfType<ImpexFullHeaderTypeImpl>(false) != null) {
+    private fun computeReference() = if (parentOfType<ImpexFullHeaderTypeImpl>(false) != null) {
         computeTypeModifierReference()
     } else {
         computeAttributeModifierReference()

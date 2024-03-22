@@ -30,10 +30,10 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.concurrency.AppExecutorUtil
-import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 
 /**
  * Incredibly simple handling of the Spring beans.
@@ -70,7 +70,7 @@ class SimpleSpringService(val project: Project) {
     private fun processBeans(xmlFiles: List<XmlFile>) = xmlFiles
         .mapNotNull { it.rootTag }
         .flatMap {
-            it.getChildrenOfType<XmlTag>()
+            it.childrenOfType<XmlTag>()
                 .filter { tag -> tag.localName == "bean" }
                 .mapNotNull { tag ->
                     val id = tag.getAttributeValue("id") ?: return@mapNotNull null

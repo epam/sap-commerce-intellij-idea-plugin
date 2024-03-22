@@ -40,7 +40,6 @@ import com.intellij.spring.settings.SpringGeneralSettings
 import org.apache.commons.lang3.StringUtils
 import org.jdom.Element
 import org.jdom.JDOMException
-import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -68,7 +67,8 @@ class DefaultSpringConfigurator : SpringConfigurator {
             }
         }
 
-        moduleDescriptors.values.firstIsInstanceOrNull<YCoreExtModuleDescriptor>()
+        moduleDescriptors.values
+            .firstOrNull { it is YCoreExtModuleDescriptor }
             ?.let { moduleDescriptor ->
                 val advancedProperties = File(hybrisProjectDescriptor.platformHybrisModuleDescriptor.moduleRootDirectory, HybrisConstants.ADVANCED_PROPERTIES)
                 moduleDescriptor.addSpringFile(advancedProperties.absolutePath)

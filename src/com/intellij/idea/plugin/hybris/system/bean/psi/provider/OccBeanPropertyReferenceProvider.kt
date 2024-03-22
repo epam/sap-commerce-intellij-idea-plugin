@@ -30,11 +30,11 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.parents
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
-import org.jetbrains.kotlin.psi.psiUtil.parents
 import java.util.*
 
 @Service
@@ -47,7 +47,7 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
     ): Array<out PsiReference> {
         val attributeValue = element as? XmlAttributeValue ?: return emptyArray()
 
-        val propertyXmlTags = element.parents
+        val propertyXmlTags = element.parents(false)
             .mapNotNull { it as? XmlTag }
             .filter { it.localName == "bean" }
             .firstOrNull()

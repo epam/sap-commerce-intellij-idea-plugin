@@ -24,7 +24,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.codeStyle.CodeStyleManager
-import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
+import com.intellij.psi.util.childrenOfType
 
 class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
 
@@ -81,7 +81,7 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
         )
 
         // grab header lines from both cloned future left and right tables
-        val cloneLeftHeaderLine = cloneTableLeft.getChildOfType<ImpexHeaderLine>() ?: return
+        val cloneLeftHeaderLine = cloneTableLeft.childrenOfType<ImpexHeaderLine>().firstOrNull() ?: return
 
         // before the actual split, we have to ensure that we have enough value groups
         cloneLeftHeaderLine.valueLines
@@ -94,7 +94,7 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
         // and clone right
         val cloneTableRight = cloneTableLeft.copy()
 
-        val cloneRightHeaderLine = cloneTableRight.getChildOfType<ImpexHeaderLine>() ?: return
+        val cloneRightHeaderLine = cloneTableLeft.childrenOfType<ImpexHeaderLine>().firstOrNull() ?: return
 
         // before deletion of the header params, we have to remove value groups
         // delete value groups from the left table

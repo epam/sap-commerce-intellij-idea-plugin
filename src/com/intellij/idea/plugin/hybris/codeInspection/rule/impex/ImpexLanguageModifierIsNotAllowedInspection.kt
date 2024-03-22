@@ -30,7 +30,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.psi.PsiPolyVariantReference
-import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
+import com.intellij.psi.util.parentOfType
 
 class ImpexLanguageModifierIsNotAllowedInspection : LocalInspectionTool() {
 
@@ -40,8 +40,8 @@ class ImpexLanguageModifierIsNotAllowedInspection : LocalInspectionTool() {
         override fun visitAnyAttributeName(psi: ImpexAnyAttributeName) {
             if (psi.text != AttributeModifier.LANG.modifierName) return
 
-            val attribute = psi.getParentOfType<ImpexAttribute>(false) ?: return
-            val meta = psi.getParentOfType<ImpexFullHeaderParameter>(false)
+            val attribute = psi.parentOfType<ImpexAttribute>(false) ?: return
+            val meta = psi.parentOfType<ImpexFullHeaderParameter>(false)
                 ?.anyHeaderParameterName
                 ?.reference
                 ?.let { it as PsiPolyVariantReference }
