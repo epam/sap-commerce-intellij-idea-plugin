@@ -42,4 +42,5 @@ class HybrisDeveloperSpecificProjectSettings : BaseState() {
     var polyglotQuerySettings by property(PolyglotQuerySettings()) { false }
     var impexSettings by property(ImpexSettings()) { false }
     var groovySettings by property(GroovySettings()) { false }
+    var activeCCv2Subscription by string(null)
 }

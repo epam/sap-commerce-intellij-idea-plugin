@@ -226,9 +226,9 @@ class ProjectBeforeCompilerTask : CompileTask {
     private fun invokeModelsJarCreation(context: CompileContext, bootstrapDirectory: Path): Boolean {
         context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started creation of the models.jar file...", null, -1, -1)
 
-        val bootstrapDir = (System.getenv(HybrisConstants.ENV_HYBRIS_BOOTSTRAP_BIN_DIR)
+        val bootstrapDir = System.getenv(HybrisConstants.ENV_HYBRIS_BOOTSTRAP_BIN_DIR)
             ?.let { Paths.get(it) }
-            ?: bootstrapDirectory.resolve(HybrisConstants.BIN_DIRECTORY))
+            ?: bootstrapDirectory.resolve(HybrisConstants.BIN_DIRECTORY)
 
         val modelsFile = bootstrapDir.resolve(HybrisConstants.JAR_MODELS).toFile()
         if (modelsFile.exists()) modelsFile.delete()

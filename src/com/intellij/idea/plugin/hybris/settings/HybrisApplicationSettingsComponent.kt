@@ -69,6 +69,9 @@ class HybrisApplicationSettingsComponent : PersistentStateComponent<HybrisApplic
         })
     }
 
+    fun getCCv2Subscription(id: String) = state.ccv2Subscriptions
+        .find { it.id == id }
+
     companion object {
         @JvmStatic
         fun getInstance(): HybrisApplicationSettingsComponent = ApplicationManager.getApplication().getService(HybrisApplicationSettingsComponent::class.java)

@@ -217,6 +217,12 @@ object HybrisIcons {
     val CONSOLE_EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg")
 
     val CCV2_CLI = getIcon("/icons/ccv2_cli.svg")
+    val CCV2_CLI_FETCH = AllIcons.Vcs.Fetch
+    val CCV2_CLI_ENVIRONMENTS = EXTENSION_CLOUD
+    val CCV2_CLI_BUILDS = BUILD_CALLBACKS
+    val CCV2_CLI_DEPLOYMENTS = AllIcons.Nodes.Deploy
+    val CCV2_CLI_BACKUPS = AllIcons.Nodes.Undeploy
+    val CCV2_CLI_ENDPOINTS = AllIcons.General.Web
 
     val CONNECTION_ADD = AllIcons.General.Add
     val CONNECTION_EDIT = AllIcons.Actions.Edit

@@ -51,4 +51,5 @@ class HybrisProjectSettings : BaseState() {
     var excludedFromScanning by stringSet()
     var remoteConnectionSettingsList by list<HybrisRemoteConnectionSettings>()
     var useFakeOutputPathForCustomExtensions by property(false)
+    var activeCCv2Subscription by string(null)
 }

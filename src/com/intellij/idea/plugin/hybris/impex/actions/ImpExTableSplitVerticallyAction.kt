@@ -94,7 +94,7 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
         // and clone right
         val cloneTableRight = cloneTableLeft.copy()
 
-        val cloneRightHeaderLine = cloneTableLeft.childrenOfType<ImpexHeaderLine>().firstOrNull() ?: return
+        val cloneRightHeaderLine = cloneTableRight.childrenOfType<ImpexHeaderLine>().firstOrNull() ?: return
 
         // before deletion of the header params, we have to remove value groups
         // delete value groups from the left table

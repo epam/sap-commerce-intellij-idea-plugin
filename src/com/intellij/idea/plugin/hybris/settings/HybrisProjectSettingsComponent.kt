@@ -82,6 +82,9 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
         .map { ExtensionDescriptor(name = it, type = ModuleDescriptorType.CCV2) }
         .forEach { state.availableExtensions[it.name] = it }
 
+    fun getProjectCCv2Subscription() = state.activeCCv2Subscription
+        ?.let { HybrisApplicationSettingsComponent.getInstance().getCCv2Subscription(it) }
+
     companion object {
         @JvmStatic
         fun getInstance(project: Project): HybrisProjectSettingsComponent = project.getService(HybrisProjectSettingsComponent::class.java)
