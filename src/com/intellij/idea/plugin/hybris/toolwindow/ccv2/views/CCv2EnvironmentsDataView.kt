@@ -22,46 +22,30 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.dsl.builder.*
-import com.intellij.util.ui.JBEmptyBorder
+import com.intellij.ui.dsl.builder.Panel
+import com.intellij.ui.dsl.builder.RightGap
+import com.intellij.ui.dsl.builder.RowLayout
+import com.intellij.ui.dsl.builder.panel
 
-object CCv2EnvironmentsDataView : CCv2DataView() {
+object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
 
     override val tab: CCv2Tab
         get() = CCv2Tab.ENVIRONMENTS
 
-    fun dataPanel(environments: Map<CCv2Subscription, Collection<CCv2Environment>>): DialogPanel {
-        if (environments.isEmpty()) return noDataPanel()
-
-        val content = panel {
-            environments.forEach { (subscription, environments) ->
-                collapsibleGroup(subscription.toString()) {
-                    if (environments.isEmpty()) {
-                        noData()
-                    } else {
-                        environments.forEach { it ->
-                            environment(it)
-                        }
-                    }
+    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2Environment>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    else panel {
+        data.forEach { (subscription, environments) ->
+            collapsibleGroup(subscription.toString()) {
+                if (environments.isEmpty()) {
+                    noData()
+                } else {
+                    environments.forEach { environment(it) }
                 }
-                    .expanded = true
             }
-        }
-
-        return panel {
-            row {
-                scrollCell(content)
-                    .align(Align.FILL)
-                    .resizableColumn()
-                    .applyToComponent {
-                        (this.parent.parent as? JBScrollPane)
-                            ?.border = JBEmptyBorder(0)
-                    }
-
-            }.resizableRow()
+                .expanded = true
         }
     }
+        .let { scrollPanel(it) }
 
     private fun Panel.environment(environment: CCv2Environment) {
         row {

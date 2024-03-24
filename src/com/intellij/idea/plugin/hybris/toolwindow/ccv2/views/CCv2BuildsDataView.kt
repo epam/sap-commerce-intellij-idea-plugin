@@ -18,10 +18,86 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
+import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.dsl.builder.Panel
+import com.intellij.ui.dsl.builder.RightGap
+import com.intellij.ui.dsl.builder.RowLayout
+import com.intellij.ui.dsl.builder.panel
 
-object CCv2BuildsDataView : CCv2DataView() {
+object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
     override val tab: CCv2Tab
         get() = CCv2Tab.BUILDS
+
+    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2Build>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    else panel {
+        data.forEach { (subscription, builds) ->
+            collapsibleGroup(subscription.toString()) {
+                if (builds.isEmpty()) {
+                    noData()
+                } else {
+                    builds.forEach { build(it) }
+                }
+            }
+                .expanded = true
+        }
+    }
+        .let { scrollPanel(it) }
+
+    private fun Panel.build(build: CCv2Build) {
+        row {
+            panel {
+                row {
+                    label(build.name)
+                        .comment(build.code)
+                        .bold()
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    label(build.branch)
+                        .comment("Branch")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    label(build.status)
+                        .comment("Status")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    label(build.createdBy)
+                        .comment("Created by")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    label(build.startTime)
+                        .comment("Start time")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    label(build.endTime)
+                        .comment("End time")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    label(build.buildVersion)
+                        .comment("Build")
+                }
+            }
+        }.layout(RowLayout.PARENT_GRID)
+    }
 }

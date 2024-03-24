@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.*
 import javax.swing.Icon
 
-enum class CCv2Tab(val title: String, val icon: Icon, val view: CCv2DataView) {
+enum class CCv2Tab(val title: String, val icon: Icon, val view: AbstractCCv2DataView<*>) {
     ENVIRONMENTS("Environments", HybrisIcons.CCV2_ENVIRONMENTS, CCv2EnvironmentsDataView),
     BUILDS("Builds", HybrisIcons.CCV2_BUILDS, CCv2BuildsDataView),
     DEPLOYMENTS("Deployments", HybrisIcons.CCV2_DEPLOYMENTS, CCv2DeploymentsDataView),

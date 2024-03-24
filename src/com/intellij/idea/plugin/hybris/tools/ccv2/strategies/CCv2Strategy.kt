@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
@@ -26,6 +27,7 @@ import com.intellij.openapi.project.Project
 interface CCv2Strategy {
 
     fun fetchEnvironments(project: Project, ccv2Token: String, subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Environment>>
+    fun fetchBuilds(project: Project, ccv2Token: String, subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Build>>
 
     companion object {
         fun getSAPCCMCCv2Strategy(): SAPCCMCCv2Strategy = ApplicationManager.getApplication().getService(SAPCCMCCv2Strategy::class.java)

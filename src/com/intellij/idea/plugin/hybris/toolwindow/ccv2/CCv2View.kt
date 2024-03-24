@@ -20,9 +20,12 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2EnvironmentListener
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2BuildsListener
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2EnvironmentsListener
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildsDataView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2EnvironmentsDataView
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -53,14 +56,6 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
         CCv2Tab.entries.forEach { tab ->
             it.addTab(tab.title, tab.icon, tab.view.noDataPanel())
         }
-
-        it.addChangeListener { event ->
-            val selectedIndex = event.source.asSafely<JBTabbedPane>()
-                ?.selectedIndex
-
-            //TODO: show data loading text and get data right away
-            println(selectedIndex)
-        }
     }
 
     init {
@@ -70,8 +65,11 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
 
         add(rootPanel())
         installToolbar()
-        installDataListeners()
+        installListeners()
     }
+
+    fun getActiveTab() = CCv2Tab.entries
+        .find { it.ordinal == tabbedPane.selectedIndex }
 
     private fun rootPanel() = panel {
         indent {
@@ -93,31 +91,65 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
 
     private fun installToolbar() {
         val toolbar = with(DefaultActionGroup()) {
-            add(RetrieveEnvironmentsAction())
+            add(FetchEnvironmentsAction())
+            add(FetchBuildsAction())
             ActionManager.getInstance().createActionToolbar("SAP_CX_CCv2_View", this, false)
         }
         toolbar.targetComponent = this
         setToolbar(toolbar.component)
     }
 
+    private fun installListeners() {
+        installComponentsListeners()
+        installDataListeners()
+    }
+
+    private fun installComponentsListeners() {
+        tabbedPane.addChangeListener { event ->
+            val selectedIndex = event.source.asSafely<JBTabbedPane>()
+                ?.selectedIndex
+
+            //TODO: show data loading text and get data right away
+            println(selectedIndex)
+        }
+    }
+
     private fun installDataListeners() {
         with(project.messageBus.connect(this)) {
             // Environments data listeners
-            subscribe(CCv2Service.TOPIC_ENVIRONMENT, object : CCv2EnvironmentListener {
+            subscribe(CCv2Service.TOPIC_ENVIRONMENT, object : CCv2EnvironmentsListener {
                 override fun fetchingStarted() {
                     if (tabsLoadedState[CCv2Tab.ENVIRONMENTS]!!) return
                     tabsLoadedState[CCv2Tab.ENVIRONMENTS] = true
 
-                    val index = getTabIndex(CCv2Tab.ENVIRONMENTS)
-
-                    tabbedPane.setComponentAt(index, CCv2EnvironmentsDataView.fetchingInProgress())
+                    tabbedPane.setComponentAt(
+                        getTabIndex(CCv2Tab.ENVIRONMENTS),
+                        CCv2EnvironmentsDataView.fetchingInProgress()
+                    )
                 }
 
-                override fun fetchingCompleted(environments: Map<CCv2Subscription, Collection<CCv2Environment>>) {
-                    val index = getTabIndex(CCv2Tab.ENVIRONMENTS)
+                override fun fetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = tabbedPane.setComponentAt(
+                    getTabIndex(CCv2Tab.ENVIRONMENTS),
+                    CCv2EnvironmentsDataView.dataPanel(data)
+                )
+            })
 
-                    tabbedPane.setComponentAt(index, CCv2EnvironmentsDataView.dataPanel(environments))
+            // Builds data listeners
+            subscribe(CCv2Service.TOPIC_BUILDS, object : CCv2BuildsListener {
+                override fun fetchingStarted() {
+                    if (tabsLoadedState[CCv2Tab.BUILDS]!!) return
+                    tabsLoadedState[CCv2Tab.BUILDS] = true
+
+                    tabbedPane.setComponentAt(
+                        getTabIndex(CCv2Tab.BUILDS),
+                        CCv2BuildsDataView.fetchingInProgress()
+                    )
                 }
+
+                override fun fetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Build>>) = tabbedPane.setComponentAt(
+                    getTabIndex(CCv2Tab.BUILDS),
+                    CCv2BuildsDataView.dataPanel(data)
+                )
             })
         }
     }

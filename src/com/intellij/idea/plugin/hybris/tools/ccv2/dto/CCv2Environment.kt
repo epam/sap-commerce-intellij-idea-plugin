@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 data class CCv2Environment(
-    val name: String,
     val code: String,
+    val name: String,
     val type: CCv2EnvironmentType,
     val status: String,
     val deploymentStatus: String,
-)
+) : CCv2DTO

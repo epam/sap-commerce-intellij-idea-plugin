@@ -16,13 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.ccv2
+package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
-
-interface CCv2EnvironmentListener {
-
-    fun fetchingStarted() = Unit
-    fun fetchingCompleted(environments: Map<CCv2Subscription, Collection<CCv2Environment>>) = Unit
-}
+interface CCv2DTO

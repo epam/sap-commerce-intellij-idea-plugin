@@ -16,33 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
+package com.intellij.idea.plugin.hybris.tools.ccv2
 
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
-import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 
-abstract class CCv2DataView {
-
-    abstract val tab: CCv2Tab
-
-    fun fetchingInProgress(): DialogPanel = panel {
-        row {
-            label("Fetching ${tab.title} data, Please wait...")
-                .align(Align.FILL)
-        }
-    }
-
-    fun noDataPanel(): DialogPanel = panel {
-        noData()
-    }
-
-    protected fun Panel.noData() {
-        row {
-            label("No ${CCv2EnvironmentsDataView.tab.title} data available...")
-                .align(Align.FILL)
-        }
-    }
+sealed interface CCv2Listener<T : CCv2DTO> {
+    fun fetchingStarted() = Unit
+    fun fetchingCompleted(data: Map<CCv2Subscription, Collection<T>>) = Unit
 }
+
+interface CCv2EnvironmentsListener : CCv2Listener<CCv2Environment>
+interface CCv2BuildsListener : CCv2Listener<CCv2Build>

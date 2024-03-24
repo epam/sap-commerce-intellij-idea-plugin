@@ -16,19 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
+package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
-import com.intellij.openapi.ui.DialogPanel
-
-object CCv2BackupsDataView : AbstractCCv2DataView<CCv2DTO>() {
-
-    override val tab: CCv2Tab
-        get() = CCv2Tab.BACKUPS
-
-    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2DTO>>): DialogPanel {
-        TODO("Not yet implemented")
-    }
-}
+data class CCv2Build(
+    val code: String,
+    val name: String,
+    val branch: String,
+    val status: String,
+    val appCode: String,
+    val appDefVersion: String,
+    val createdBy: String,
+    val startTime: String,
+    val endTime: String,
+    val buildVersion: String,
+) : CCv2DTO

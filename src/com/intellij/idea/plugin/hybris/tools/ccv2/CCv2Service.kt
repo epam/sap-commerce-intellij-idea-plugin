@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2SettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2Strategy
 import com.intellij.notification.NotificationType
@@ -40,23 +41,8 @@ class CCv2Service(val project: Project) {
     fun fetchEnvironments(subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Environment>> {
         messageBus.syncPublisher(TOPIC_ENVIRONMENT).fetchingStarted()
 
-        val appSettings = HybrisApplicationSettingsComponent.getInstance()
-        val ccv2Token = appSettings.ccv2Token
-
+        val ccv2Token = getCCv2Token()
         if (ccv2Token == null) {
-            Notifications
-                .create(
-                    NotificationType.WARNING,
-                    "CCv2: API Token is not set",
-                    "Please, specify CCv2 API token via corresponding application settings."
-                )
-                .addAction("Open Settings") { _, _ ->
-                    ShowSettingsUtil.getInstance().showSettingsDialog(project, CCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
-                }
-                .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
-                .hideAfter(10)
-                .notify(project)
-
             messageBus.syncPublisher(TOPIC_ENVIRONMENT).fetchingCompleted(emptyMap())
             return emptyMap()
         }
@@ -65,9 +51,44 @@ class CCv2Service(val project: Project) {
             .also { messageBus.syncPublisher(TOPIC_ENVIRONMENT).fetchingCompleted(it) }
     }
 
+    fun fetchBuilds(subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Build>> {
+        messageBus.syncPublisher(TOPIC_BUILDS).fetchingStarted()
+
+        val ccv2Token = getCCv2Token()
+        if (ccv2Token == null) {
+            messageBus.syncPublisher(TOPIC_BUILDS).fetchingCompleted(emptyMap())
+            return emptyMap()
+        }
+
+        return CCv2Strategy.getSAPCCMCCv2Strategy().fetchBuilds(project, ccv2Token, subscriptions)
+            .also { messageBus.syncPublisher(TOPIC_BUILDS).fetchingCompleted(it) }
+    }
+
+    private fun getCCv2Token(): String? {
+        val appSettings = HybrisApplicationSettingsComponent.getInstance()
+        val ccv2Token = appSettings.ccv2Token
+
+        if (ccv2Token != null) return ccv2Token
+
+        Notifications
+            .create(
+                NotificationType.WARNING,
+                "CCv2: API Token is not set",
+                "Please, specify CCv2 API token via corresponding application settings."
+            )
+            .addAction("Open Settings") { _, _ ->
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, CCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+            }
+            .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
+            .hideAfter(10)
+            .notify(project)
+        return null
+    }
+
     companion object {
 
-        val TOPIC_ENVIRONMENT = Topic("HYBRIS_CCV2_ENVIRONMENT_LISTENER", CCv2EnvironmentListener::class.java)
+        val TOPIC_ENVIRONMENT = Topic("HYBRIS_CCV2_ENVIRONMENTS_LISTENER", CCv2EnvironmentsListener::class.java)
+        val TOPIC_BUILDS = Topic("HYBRIS_CCV2_BUILDS_LISTENER", CCv2BuildsListener::class.java)
         fun getInstance(project: Project): CCv2Service = project.getService(CCv2Service::class.java)
     }
 }

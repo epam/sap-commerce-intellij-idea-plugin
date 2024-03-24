@@ -72,7 +72,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         this
     }
 
-    private fun createCCv2CLIContent(toolWindow: ToolWindow, project: Project, panel: CCv2View) = with(toolWindow.contentManager.factory.createContent(panel, CCv2, true)) {
+    private fun createCCv2CLIContent(toolWindow: ToolWindow, project: Project, panel: CCv2View) = with(toolWindow.contentManager.factory.createContent(panel, CCV2, true)) {
         Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
         Disposer.register(toolWindow.disposable, panel)
 
@@ -87,6 +87,6 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         const val CONSOLES_ID = "Consoles"
         const val TS_ID = "Type System"
         const val BS_ID = "Bean System"
-        const val CCv2 = "CCv2"
+        const val CCV2 = "CCv2"
     }
 }
