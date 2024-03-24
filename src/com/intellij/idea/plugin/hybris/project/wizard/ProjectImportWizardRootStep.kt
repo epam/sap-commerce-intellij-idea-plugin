@@ -533,7 +533,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
             this.sapcliDirectory = appSettingsState.sapCLIDirectory
                 ?.let { File(it) }
-            this.sapcliToken = appSettings.sapCLIToken
+            this.sapcliToken = appSettings.ccv2Token
 
             val hybrisDirectory = settings.hybrisDirectory
             if (hybrisDirectory != null) {
@@ -639,8 +639,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         else Character.getNumericValue(firstDigit)
     }
 
-    private fun getDefaultJavadocUrl(hybrisApiVersion: String?) = if (hybrisApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.JAVADOC_URL, hybrisApiVersion)
-    else HybrisConstants.JAVADOC_FALLBACK_URL
+    private fun getDefaultJavadocUrl(hybrisApiVersion: String?) = if (hybrisApiVersion?.isNotEmpty() == true) String.format(HybrisConstants.URL_HELP_JAVADOC, hybrisApiVersion)
+    else HybrisConstants.URL_HELP_JAVADOC_FALLBACK
 
     private fun context() = builder as AbstractHybrisProjectImportBuilder
 }

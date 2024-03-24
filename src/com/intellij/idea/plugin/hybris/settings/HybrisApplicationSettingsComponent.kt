@@ -39,8 +39,8 @@ import org.apache.commons.lang3.StringUtils
 class HybrisApplicationSettingsComponent : PersistentStateComponent<HybrisApplicationSettings> {
 
     private val hybrisApplicationSettings = HybrisApplicationSettings()
-    val sapCLIToken: String?
-        get() = PasswordSafe.instance.get(CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CLI_TOKEN))
+    val ccv2Token: String?
+        get() = PasswordSafe.instance.get(CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN))
             ?.getPasswordAsString()
 
     override fun getState() = this.hybrisApplicationSettings
@@ -50,17 +50,17 @@ class HybrisApplicationSettingsComponent : PersistentStateComponent<HybrisApplic
     }
 
     fun loadSAPCLIToken(callback: (String?) -> Unit) {
-        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CLI Token", false) {
+        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Token", false) {
             override fun run(indicator: ProgressIndicator) {
-                callback.invoke(sapCLIToken)
+                callback.invoke(ccv2Token)
             }
         })
     }
 
     fun saveSAPCLIToken(token: String, callback: ((String?) -> Unit)? = null) {
-        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Persisting SAP CLI Token", false) {
+        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Persisting SAP CCv2 Token", false) {
             override fun run(indicator: ProgressIndicator) {
-                val credentialAttributes = CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CLI_TOKEN)
+                val credentialAttributes = CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
 
                 callback?.invoke(token)
 

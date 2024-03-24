@@ -16,15 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.cli
+package com.intellij.idea.plugin.hybris.tools.ccv2
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import javax.swing.Icon
+import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 
-enum class CCv2CLITab(val title: String, val icon: Icon) {
-    ENVIRONMENTS("Environments", HybrisIcons.CCV2_CLI_ENVIRONMENTS),
-    BUILDS("Builds", HybrisIcons.CCV2_CLI_BUILDS),
-    DEPLOYMENTS("Deployments", HybrisIcons.CCV2_CLI_DEPLOYMENTS),
-    BACKUPS("Backups", HybrisIcons.CCV2_CLI_BACKUPS),
-    ENDPOINTS("Endpoints", HybrisIcons.CCV2_CLI_ENDPOINTS),
+interface CCv2EnvironmentListener {
+
+    fun fetchingStarted() = Unit
+    fun fetchingCompleted(environments: Map<CCv2Subscription, Collection<CCv2Environment>>) = Unit
 }

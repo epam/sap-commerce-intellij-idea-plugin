@@ -22,6 +22,7 @@ This plugin provides [SAP Commerce](https://www.sap.com/products/crm/e-commerce-
 ## Features
 
 - Import of SAP Commerce extensions to IntelliJ IDEA with automatic dependency resolution and classpath configuration optimized for fast compilation.
+- Integration with SAP CCv2 CI/CD via [SAP CCM](https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9116f1cfd16049c3a531bfb6a681ff77/8acde53272c64efb908b9f0745498015.html).
 - Automatic configuration of Spring, Web, Ant, Database Connector IntelliJ IDEA plugins.
 - Import your custom Eclipse, Maven and Gradle extensions together with SAP Commerce platform.
 - Tight integration with [kotlinnature](https://github.com/mlytvyn/kotlinnature) which will enhance SAP Commerce with **Kotlin** language support

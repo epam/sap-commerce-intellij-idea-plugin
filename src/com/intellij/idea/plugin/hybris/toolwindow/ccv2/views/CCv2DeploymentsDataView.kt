@@ -16,13 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.cli
+package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
-import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.cli.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 
-interface CCv2CLIEnvironmentListener {
+object CCv2DeploymentsDataView : CCv2DataView() {
 
-    fun fetchingStarted() = Unit
-    fun fetchingCompleted(environments: Map<CCv2Subscription, Collection<CCv2Environment>>) = Unit
+    override val tab: CCv2Tab
+        get() = CCv2Tab.DEPLOYMENTS
 }

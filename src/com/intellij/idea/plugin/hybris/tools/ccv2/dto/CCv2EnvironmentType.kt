@@ -16,12 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.cli.dto
+package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-data class CCv2Environment(
-    val name: String,
-    val code: String,
-    val type: CCv2EnvironmentType,
-    val status: String,
-    val deploymentStatus: String,
-)
+enum class CCv2EnvironmentType(val title: String) {
+    DEV("Development"),
+    STG("Staging"),
+    PROD("Production"),
+    UNKNOWN("Unknown");
+
+    companion object {
+        fun tryValueOf(name: String) = entries
+            .find { it.name == name }
+            ?: UNKNOWN
+    }
+}

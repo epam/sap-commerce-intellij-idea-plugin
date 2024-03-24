@@ -10,6 +10,7 @@
 - Added possibility to save CCv2 subscriptions to be used with SAP CX CLI [#1050](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1050)
 - Show cloud icon for CCv2 subscription [#1051](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1051)
 - Fetch and show CCv2 environments details [#1055](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1055)
+- Added timeout configuration for SAP CCM [#1056](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1056)
 
 ### `Cockpit NG` enhancements
 - Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)

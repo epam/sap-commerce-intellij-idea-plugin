@@ -344,8 +344,9 @@ object HybrisConstants {
 
     const val HYBRIS_API_VERSION_KEY = "version.api"
     const val HYBRIS_VERSION_KEY = "version"
-    const val JAVADOC_FALLBACK_URL = "https://help.sap.com/docs/SAP_COMMERCE/c5613bd3cc9942efb74d017b40eb0892/179bbc9b35274d7ca784e46b3beb40b2.html"
-    const val JAVADOC_URL = "https://help.sap.com/doc/9fef7037b3304324b8891e84f19f2bf3/%s/en-US"
+    const val URL_HELP_JAVADOC_FALLBACK = "https://help.sap.com/docs/SAP_COMMERCE/c5613bd3cc9942efb74d017b40eb0892/179bbc9b35274d7ca784e46b3beb40b2.html"
+    const val URL_HELP_JAVADOC = "https://help.sap.com/doc/9fef7037b3304324b8891e84f19f2bf3/%s/en-US"
+    const val URL_HELP_GENERATING_API_TOKENS = "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/b5d4d851cbd54469906a089bb8dd58d8.html"
 
     const val SPRING_NAMESPACE = "http://www.springframework.org/schema/beans"
 
@@ -363,7 +364,7 @@ object HybrisConstants {
 
     const val ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
 
-    const val SECURE_STORAGE_SERVICE_NAME_SAP_CX_CLI_TOKEN = "SAP CX CLI Token"
+    const val SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN = "SAP CX CCv2 Token"
 
     val DEFAULT_JUNK_FILE_NAMES = listOf(
         ".classpath",

@@ -500,7 +500,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             appSettings.setSapCLIDirectory(FileUtil.toSystemIndependentName(sapCLIDirectory.getPath()));
         }
 
-        final var credentialAttributes = new CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CLI_TOKEN);
+        final var credentialAttributes = new CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN);
         PasswordSafe.getInstance().setPassword(credentialAttributes, hybrisProjectDescriptor.getSAPCLIToken());
 
         hybrisProjectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());

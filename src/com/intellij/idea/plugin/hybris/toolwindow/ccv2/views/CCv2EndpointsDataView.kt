@@ -16,17 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.cli.dto
+package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
-enum class CCv2EnvironmentType(val title: String) {
-    DEV("Development"),
-    STG("Staging"),
-    PROD("Production"),
-    UNKNOWN("Unknown");
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 
-    companion object {
-        fun tryValueOf(name: String) = entries
-            .find { it.name == name }
-            ?: UNKNOWN
-    }
+object CCv2EndpointsDataView : CCv2DataView() {
+
+    override val tab: CCv2Tab
+        get() = CCv2Tab.ENDPOINTS
 }

@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.cli
+package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.cli.CCv2CLIService
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -70,11 +70,10 @@ abstract class FetchAction(
 class RetrieveEnvironmentsAction() : FetchAction(
     "Fetch Environments",
     "Fetching CCv2 Environments...",
-    HybrisIcons.CCV2_CLI_FETCH
+    HybrisIcons.CCV2_FETCH
 ) {
 
     override fun fetch(project: Project, ccv2Subscriptions: List<CCv2Subscription>) {
-        CCv2CLIService.getInstance(project)
-            .fetchEnvironments(ccv2Subscriptions)
+        CCv2Service.getInstance(project).fetchEnvironments(ccv2Subscriptions)
     }
 }

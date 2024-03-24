@@ -44,10 +44,12 @@ data class HybrisApplicationSettings(
     var groupNameExternalModules: String = "External Modules",
     var externalDbDriversDirectory: String = "",
     var sourceCodeDirectory: String = "",
-    var sapCLIDirectory: String? = null,
     var junkDirectoryList: List<String> = HybrisConstants.DEFAULT_JUNK_FILE_NAMES,
     var extensionsResourcesToExclude: List<String> = HybrisConstants.DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE,
     var excludedFromIndexList: List<String> = HybrisConstants.DEFAULT_EXCLUDED_FROM_INDEX,
+
+    var sapCLIDirectory: String? = null,
+    var sapCLITimeout: Int = 60,
     var ccv2Subscriptions: List<CCv2Subscription> = emptyList()
 
 )

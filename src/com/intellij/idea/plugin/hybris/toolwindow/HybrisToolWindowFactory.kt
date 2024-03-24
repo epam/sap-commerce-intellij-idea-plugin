@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
-import com.intellij.idea.plugin.hybris.toolwindow.cli.CCv2CLIView
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSView
 import com.intellij.openapi.project.DumbAware
@@ -39,7 +39,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
             createTSContent(toolWindow, TSView(project)),
             createBSContent(toolWindow, BSView(project)),
             createConsolesContent(toolWindow, project, HybrisConsolesView(project)),
-            createCCv2CLIContent(toolWindow, project, CCv2CLIView(project)),
+            createCCv2CLIContent(toolWindow, project, CCv2View(project)),
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
@@ -72,11 +72,11 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         this
     }
 
-    private fun createCCv2CLIContent(toolWindow: ToolWindow, project: Project, panel: CCv2CLIView) = with(toolWindow.contentManager.factory.createContent(panel, CCv2_CLI, true)) {
+    private fun createCCv2CLIContent(toolWindow: ToolWindow, project: Project, panel: CCv2View) = with(toolWindow.contentManager.factory.createContent(panel, CCv2, true)) {
         Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
         Disposer.register(toolWindow.disposable, panel)
 
-        icon = HybrisIcons.CCV2_CLI
+        icon = HybrisIcons.CCV2
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
 
         this
@@ -87,6 +87,6 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         const val CONSOLES_ID = "Consoles"
         const val TS_ID = "Type System"
         const val BS_ID = "Bean System"
-        const val CCv2_CLI = "CCv2 CLI"
+        const val CCv2 = "CCv2"
     }
 }
