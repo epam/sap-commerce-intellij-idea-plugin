@@ -44,3 +44,4 @@
 - Stefan Kruk
 - Yury Bich
 - Vitalii Ivanov
+- Maria Bogdanovich

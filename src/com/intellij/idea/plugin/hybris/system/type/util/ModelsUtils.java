@@ -90,7 +90,7 @@ public final class ModelsUtils {
         final @NotNull VirtualFile virtualFile,
         final @NotNull String extension
     ) {
-        if (extension.equals("java") && !virtualFile.getPath().contains(HybrisConstants.PL_BOOTSTRAP_GEN_SRC_PATH)) return false;
+        if (extension.equals("java") && !virtualFile.getPath().contains(HybrisConstants.BOOTSTRAP_GEN_SRC_PATH)) return false;
         if (extension.equals("class") && !virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)) return false;
 
         final var className = psiClass.getName();
@@ -108,7 +108,7 @@ public final class ModelsUtils {
         final @NotNull VirtualFile virtualFile,
         final @NotNull String extension
     ) {
-        if (extension.equals("java") && !virtualFile.getPath().contains(HybrisConstants.PL_BOOTSTRAP_GEN_SRC_PATH)) return false;
+        if (extension.equals("java") && !virtualFile.getPath().contains(HybrisConstants.BOOTSTRAP_GEN_SRC_PATH)) return false;
         if (extension.equals("class") && !virtualFile.getPath().contains(HybrisConstants.JAR_MODELS)) return false;
 
         for (final var implementsListType : psiClass.getImplementsListTypes()) {

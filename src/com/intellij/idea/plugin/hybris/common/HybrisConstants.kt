@@ -136,6 +136,7 @@ object HybrisConstants {
     const val GROOVY_TEST_SRC_DIRECTORY = "groovytestsrc"
     const val KOTLIN_TEST_SRC_DIRECTORY = "kotlintestsrc"
     const val SCALA_TEST_SRC_DIRECTORY = "scalatestsrc"
+    const val BOOTSTRAP_GEN_SRC_PATH = "bootstrap/gensrc"
 
     const val HMC_MODULE_DIRECTORY = "hmc"
     const val HAC_MODULE_DIRECTORY = "hac"
