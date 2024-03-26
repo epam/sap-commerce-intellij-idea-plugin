@@ -18,7 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import javax.swing.Icon
 
@@ -34,7 +36,18 @@ data class CCv2Build(
     val endTime: ZonedDateTime?,
     val buildVersion: String,
     val version: String,
-) : CCv2DTO
+) : CCv2DTO {
+    val startTimeFormatted
+        get() = startTime
+            ?.withZoneSameInstant(ZoneId.systemDefault())
+            ?.format(HybrisConstants.CCV2_DATE_FORMAT)
+            ?: "N/A"
+    val endTimeFormatted
+        get() = endTime
+            ?.withZoneSameInstant(ZoneId.systemDefault())
+            ?.format(HybrisConstants.CCV2_DATE_FORMAT)
+            ?: "N/A"
+}
 
 enum class CCv2BuildStatus(val title: String, val icon: Icon) {
     UNKNOWN("Unknown", HybrisIcons.CCV2_BUILD_STATUS_UNKNOWN),

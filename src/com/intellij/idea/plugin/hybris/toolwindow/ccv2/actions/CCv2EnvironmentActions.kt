@@ -16,21 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.ccv2
+package com.intellij.idea.plugin.hybris.toolwindow.ccv2.actions
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.openapi.project.Project
 
-sealed interface CCv2Listener<T : CCv2DTO> {
-    fun fetchingStarted() = Unit
-    fun fetchingCompleted(data: Map<CCv2Subscription, Collection<T>>) = Unit
+class FetchEnvironmentsAction() : AbstractFetchAction(
+    tab = CCv2Tab.ENVIRONMENTS,
+    taskTitle = "Fetching CCv2 Environments...",
+    text = "Fetch Environments",
+    icon = HybrisIcons.CCV2_FETCH
+) {
+
+    override fun fetch(project: Project, ccv2Subscriptions: List<CCv2Subscription>) {
+        CCv2Service.getInstance(project).fetchEnvironments(ccv2Subscriptions)
+    }
 }
 
-interface CCv2EnvironmentsListener : CCv2Listener<CCv2Environment>
-
-interface CCv2BuildsListener : CCv2Listener<CCv2Build> {
-    fun buildStarted() = Unit
-    fun buildRequested(subscription: CCv2Subscription, build: CCv2Build?) = Unit
-}

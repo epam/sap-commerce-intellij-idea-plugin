@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.options.ApplicationCCv2SettingsConfigurableProvider
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
@@ -116,4 +117,29 @@ object SAPCCM {
             return null
         }
     }
+
+    // the first row is a header, second+ rows are data rows
+    // we need to identify start position for each column by corresponding Column header
+    fun <T : CCv2DTO> transformResult(
+        headers: List<String>,
+        result: List<String>,
+        transform: (String, Map<String, Int>) -> T,
+    ): List<T> {
+        val processOutput = result
+            .takeIf { it.size > 1 }
+            ?: return emptyList()
+
+        return columnsToRange(processOutput[0], headers)
+            ?.let { columns ->
+                processOutput
+                    .subList(1, processOutput.size)
+                    .map { transform(it, columns) }
+            }
+            ?: emptyList()
+    }
+
+    private fun columnsToRange(headerRow: String, columnNames: List<String>): Map<String, Int>? = columnNames
+        .associateWith { headerRow.indexOf(it) }
+        .filter { it.value != -1 }
+        .takeIf { it.size == columnNames.size }
 }

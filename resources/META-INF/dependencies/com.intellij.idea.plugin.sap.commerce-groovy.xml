@@ -26,7 +26,7 @@
         <projectConfigurable id="hybris.project.groovy.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.groovy.title"
-                             provider="com.intellij.idea.plugin.hybris.groovy.settings.GroovySettingsConfigurableProvider"/>
+                             provider="com.intellij.idea.plugin.hybris.settings.options.ProjectGroovySettingsConfigurableProvider"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller"/>
     </extensions>

@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchGroupByClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchOrderClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
-import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.settings.FlexibleSearchSettings
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.*
 import com.intellij.psi.impl.JavaConstantExpressionEvaluator

@@ -28,6 +28,7 @@ interface CCv2Strategy {
 
     fun fetchEnvironments(project: Project, ccv2Token: String, subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Environment>>
     fun fetchBuilds(project: Project, ccv2Token: String, subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Build>>
+    fun createBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, name: String, branch: String): CCv2Build?
 
     companion object {
         fun getSAPCCMCCv2Strategy(): SAPCCMCCv2Strategy = ApplicationManager.getApplication().getService(SAPCCMCCv2Strategy::class.java)

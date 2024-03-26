@@ -21,7 +21,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
-import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.settings.FlexibleSearchSettings
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction

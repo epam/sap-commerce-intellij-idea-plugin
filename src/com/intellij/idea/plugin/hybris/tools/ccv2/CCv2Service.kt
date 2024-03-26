@@ -64,6 +64,32 @@ class CCv2Service(val project: Project) {
             .also { messageBus.syncPublisher(TOPIC_BUILDS).fetchingCompleted(it) }
     }
 
+    fun createBuild(subscription: CCv2Subscription, name: String, branch: String): CCv2Build? {
+        messageBus.syncPublisher(TOPIC_BUILDS).buildStarted()
+
+        val ccv2Token = getCCv2Token() ?: return null
+
+        return CCv2Strategy.getSAPCCMCCv2Strategy().createBuild(project, ccv2Token, subscription, name, branch)
+            .also {
+                messageBus.syncPublisher(TOPIC_BUILDS).buildRequested(subscription, it)
+                if (it != null) {
+                    Notifications.create(
+                        NotificationType.INFORMATION,
+                        "CCv2: New Build has been scheduled.",
+                        """
+                            Code: ${it.code}<br>
+                            Name: ${it.name}<br>
+                            Branch: ${it.branch}<br>
+                            Created by: ${it.createdBy}<br>
+                            Started time: ${it.startTimeFormatted}<br>
+                        """.trimIndent()
+                    )
+                        .hideAfter(10)
+                        .notify(project)
+                }
+            }
+    }
+
     private fun getCCv2Token(): String? {
         val appSettings = ApplicationSettingsComponent.getInstance()
         val ccv2Token = appSettings.ccv2Token

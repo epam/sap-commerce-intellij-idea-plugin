@@ -233,6 +233,7 @@ object HybrisIcons {
     val CCV2_BUILD_STATUS_SUCCESS = ExpUiIcons.Run.TestPassed
     val CCV2_BUILD_STATUS_FAIL = ExpUiIcons.Run.TestFailed
     val CCV2_BUILD_STATUS_DELETED = ExpUiIcons.Run.KillProcess
+    val CCV2_BUILD_CREATE = AllIcons.Actions.BuildAutoReloadChanges
 
     val CCV2_ENV_DEPLOYMENT_STATUS_SCHEDULED = ExpUiIcons.Run.Profile
     val CCV2_ENV_DEPLOYMENT_STATUS_DEPLOYING = ExpUiIcons.Run.TestCustom

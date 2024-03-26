@@ -95,24 +95,14 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
             panel {
                 row {
-                    label(
-                        build.startTime
-                            ?.withZoneSameInstant(localTimeZone)
-                            ?.format(dateFormat)
-                            ?: "N/A"
-                    )
+                    label(build.startTimeFormatted)
                         .comment("Start time")
                 }
             }.gap(RightGap.COLUMNS)
 
             panel {
                 row {
-                    label(
-                        build.endTime
-                            ?.withZoneSameInstant(localTimeZone)
-                            ?.format(dateFormat)
-                            ?: "N/A"
-                    )
+                    label(build.endTimeFormatted)
                         .comment("End time")
                 }
             }

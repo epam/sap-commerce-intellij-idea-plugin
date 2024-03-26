@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.forms;
 
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*;
 import com.intellij.idea.plugin.hybris.system.type.psi.TSPsiHelper;
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.*;
+import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.PopupHandler;

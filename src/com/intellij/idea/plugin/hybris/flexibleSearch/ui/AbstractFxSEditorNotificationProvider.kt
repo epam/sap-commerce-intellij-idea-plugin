@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.ui
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
-import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.settings.FlexibleSearchSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.fileEditor.FileEditor

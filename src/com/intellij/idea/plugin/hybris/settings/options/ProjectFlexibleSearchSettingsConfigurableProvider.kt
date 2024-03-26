@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.settings
+package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider
@@ -34,7 +34,7 @@ import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class FlexibleSearchSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = ProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)

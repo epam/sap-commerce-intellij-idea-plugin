@@ -21,7 +21,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
-import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
+import com.intellij.idea.plugin.hybris.settings.PolyglotQuerySettings
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent

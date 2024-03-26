@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.components
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaHint
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
+import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 import java.io.Serial

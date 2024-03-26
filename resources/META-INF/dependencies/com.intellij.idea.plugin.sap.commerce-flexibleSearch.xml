@@ -63,7 +63,7 @@
         <projectConfigurable id="hybris.project.fxs.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.fxs.title"
-                             provider="com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettingsConfigurableProvider"/>
+                             provider="com.intellij.idea.plugin.hybris.settings.options.ProjectFlexibleSearchSettingsConfigurableProvider"/>
     </extensions>
 
     <projectListeners>

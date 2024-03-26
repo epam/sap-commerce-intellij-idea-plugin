@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.settings.ui
 
 import com.intellij.idea.plugin.hybris.settings.TypeSystemDiagramSettings
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
+import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 import java.io.Serial

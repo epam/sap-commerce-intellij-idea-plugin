@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.components
+package com.intellij.idea.plugin.hybris.toolwindow.ui
 
 import com.intellij.ide.ui.search.SearchUtil
 import com.intellij.openapi.project.Project

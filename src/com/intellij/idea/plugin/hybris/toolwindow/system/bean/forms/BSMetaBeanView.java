@@ -20,11 +20,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms;
 
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.*;
 import com.intellij.idea.plugin.hybris.system.bean.psi.BSPsiHelper;
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaAnnotationsTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaHintsTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaImportsTable;
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSMetaPropertiesTable;
+import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.PopupHandler;

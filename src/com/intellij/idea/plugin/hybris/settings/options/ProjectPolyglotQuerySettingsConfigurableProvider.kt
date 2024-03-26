@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.polyglotQuery.settings
+package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider
@@ -37,7 +37,7 @@ import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class PolyglotQuerySettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class ProjectPolyglotQuerySettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = ProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)

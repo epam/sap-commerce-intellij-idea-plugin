@@ -50,6 +50,13 @@ class SAPCCMCCv2Strategy : CCv2Strategy {
         return SAPCCMBuildCommands.list(project, appSettings, subscriptions)
     }
 
+    override fun createBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, name: String, branch: String): CCv2Build? {
+        val appSettings = ApplicationSettingsComponent.getInstance()
+        authCredentials(project, appSettings, ccv2Token) ?: return null
+
+        return SAPCCMBuildCommands.create(project, appSettings, subscription, name, branch)
+    }
+
     fun validateSAPCCMDirectory(directory: String): String? {
         val executable = if (SystemInfo.isWindows) "sapccm.bat"
         else "sapccm"

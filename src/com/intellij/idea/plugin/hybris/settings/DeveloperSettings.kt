@@ -18,9 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
-import com.intellij.idea.plugin.hybris.groovy.settings.GroovySettings
-import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
 import com.intellij.openapi.components.BaseState
 import com.intellij.util.xmlb.annotations.Tag
 

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,10 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.groovy.settings
+package com.intellij.idea.plugin.hybris.settings
 
-data class GroovySettings(
-    var enableActionsToolbar: Boolean = true,
-    var enableActionsToolbarForGroovyTest: Boolean = false,
-    var enableActionsToolbarForGroovyIdeConsole: Boolean = false,
+import com.intellij.openapi.components.BaseState
+
+data class PolyglotQuerySettings(
+    var verifyCaseForReservedWords: Boolean = true,
+    var defaultCaseForReservedWords: ReservedWordsCase = ReservedWordsCase.UPPERCASE,
+
+    var folding: PolyglotQueryFoldingSettings = PolyglotQueryFoldingSettings(),
 )
+
+class PolyglotQueryFoldingSettings : BaseState() {
+    var enabled by property(true)
+    var showLanguage by property(true)
+}

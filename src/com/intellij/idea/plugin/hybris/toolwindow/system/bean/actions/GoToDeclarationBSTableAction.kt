@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.actions.AbstractGoToDeclarationAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier
 import com.intellij.idea.plugin.hybris.system.bean.model.*
-import com.intellij.idea.plugin.hybris.toolwindow.components.AbstractTable
+import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil

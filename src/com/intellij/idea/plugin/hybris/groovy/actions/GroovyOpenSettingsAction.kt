@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.groovy.settings.GroovySettingsConfigurableProvider
+import com.intellij.idea.plugin.hybris.settings.options.ProjectGroovySettingsConfigurableProvider
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.options.ShowSettingsUtil
@@ -37,6 +37,6 @@ class GroovyOpenSettingsAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        ShowSettingsUtil.getInstance().showSettingsDialog(project, GroovySettingsConfigurableProvider.SettingsConfigurable::class.java)
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, ProjectGroovySettingsConfigurableProvider.SettingsConfigurable::class.java)
     }
 }

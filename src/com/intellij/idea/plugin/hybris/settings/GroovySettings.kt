@@ -16,19 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.polyglotQuery.settings
+package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
-import com.intellij.openapi.components.BaseState
-
-data class PolyglotQuerySettings(
-    var verifyCaseForReservedWords: Boolean = true,
-    var defaultCaseForReservedWords: ReservedWordsCase = ReservedWordsCase.UPPERCASE,
-
-    var folding: PolyglotQueryFoldingSettings = PolyglotQueryFoldingSettings(),
+data class GroovySettings(
+    var enableActionsToolbar: Boolean = true,
+    var enableActionsToolbarForGroovyTest: Boolean = false,
+    var enableActionsToolbarForGroovyIdeConsole: Boolean = false,
 )
-
-class PolyglotQueryFoldingSettings : BaseState() {
-    var enabled by property(true)
-    var showLanguage by property(true)
-}
