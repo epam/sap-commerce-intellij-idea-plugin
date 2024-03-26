@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.ccv2.actions
+package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
@@ -30,10 +30,10 @@ import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
 import com.intellij.openapi.project.Project
 import javax.swing.Icon
 
-abstract class AbstractFetchAction(
+abstract class AbstractCCv2FetchAction(
     tab: CCv2Tab,
     private val taskTitle: String,
-    text: String,
+    private val text: String,
     description: String? = null,
     icon: Icon
 ) : AbstractCCv2Action(tab, text, description, icon) {
@@ -57,6 +57,12 @@ abstract class AbstractFetchAction(
             }
         }
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
+    }
+
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        e.presentation.text = if (fetching) "Fetching..."
+        else text
     }
 
     override fun isEnabled() = !fetching && super.isEnabled()

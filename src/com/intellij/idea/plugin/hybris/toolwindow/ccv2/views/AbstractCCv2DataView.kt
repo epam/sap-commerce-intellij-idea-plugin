@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
@@ -31,7 +32,7 @@ import com.intellij.util.ui.JBEmptyBorder
 abstract class AbstractCCv2DataView<T : CCv2DTO> {
 
     abstract val tab: CCv2Tab
-    abstract fun dataPanel(data: Map<CCv2Subscription, Collection<T>>): DialogPanel
+    abstract fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<T>>): DialogPanel
 
     fun fetchingInProgress(): DialogPanel = panel {
         row {

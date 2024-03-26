@@ -25,10 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2EnvironmentsListener
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModel
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.actions.CreateBuildAction
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.actions.FetchBuildsAction
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.actions.FetchEnvironmentsAction
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildsDataView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2EnvironmentsDataView
 import com.intellij.openapi.Disposable
@@ -53,7 +50,11 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
         .toMutableMap()
 
     // TODO: add new TOPIC for CCv2Subscriptions
-    private val ccv2SubscriptionsModel = CCv2SubscriptionsComboBoxModel(project, true)
+    private val ccv2SubscriptionsModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true) {
+        if (it == null) {
+            DeveloperSettingsComponent.getInstance(project).state.activeCCv2SubscriptionID = null
+        }
+    }
 
     private val tabbedPane = JBTabbedPane().also {
         CCv2Tab.entries.forEach { tab ->
@@ -98,10 +99,12 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
 
     private fun installToolbar() {
         val toolbar = with(DefaultActionGroup()) {
-            add(FetchEnvironmentsAction())
-            add(FetchBuildsAction())
-            add(CreateBuildAction())
-            ActionManager.getInstance().createActionToolbar("SAP_CX_CCv2_View", this, false)
+            val actionManager = ActionManager.getInstance()
+
+            add(actionManager.getAction("ccv2.action.environment.fetch"))
+            add(actionManager.getAction("ccv2.action.build.fetch"))
+            add(actionManager.getAction("ccv2.action.build.create"))
+            actionManager.createActionToolbar("SAP_CX_CCv2_View", this, false)
         }
         toolbar.targetComponent = this
         setToolbar(toolbar.component)
@@ -127,7 +130,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
 
                 override fun fetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = tabbedPane.setComponentAt(
                     getTabIndex(CCv2Tab.ENVIRONMENTS),
-                    CCv2EnvironmentsDataView.dataPanel(data)
+                    CCv2EnvironmentsDataView.dataPanel(project, data)
                 )
             })
 
@@ -145,7 +148,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
 
                 override fun fetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Build>>) = tabbedPane.setComponentAt(
                     getTabIndex(CCv2Tab.BUILDS),
-                    CCv2BuildsDataView.dataPanel(data)
+                    CCv2BuildsDataView.dataPanel(project, data)
                 )
             })
         }

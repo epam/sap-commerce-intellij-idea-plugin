@@ -20,31 +20,34 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CreateBuildAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
-    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
-    private val localTimeZone = ZoneId.systemDefault()
     override val tab: CCv2Tab
         get() = CCv2Tab.BUILDS
 
-    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2Build>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    override fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<CCv2Build>>): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, builds) ->
             collapsibleGroup(subscription.toString()) {
                 if (builds.isEmpty()) {
                     noData()
                 } else {
-                    builds.forEach { build(it) }
+                    builds.forEach { build(project, subscription, it) }
                 }
             }
                 .expanded = true
@@ -52,8 +55,23 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
     }
         .let { scrollPanel(it) }
 
-    private fun Panel.build(build: CCv2Build) {
+    private fun Panel.build(project: Project, subscription: CCv2Subscription, build: CCv2Build) {
         row {
+            panel {
+                row {
+                    button("Redo") {
+                        val anAction = ActionManager.getInstance().getAction("ccv2.action.build.create")
+                        val dataContext = SimpleDataContext.builder()
+                            .add(CreateBuildAction.subscriptionKey, subscription)
+                            .add(CreateBuildAction.buildKey, build)
+                            .add(CommonDataKeys.PROJECT, project)
+                            .build()
+                        ActionUtil.invokeAction(anAction, dataContext, ActionPlaces.TOOLWINDOW_CONTENT, null, null)
+                    }
+                        .comment("")
+                }
+            }.gap(RightGap.COLUMNS)
+
             panel {
                 row {
                     label(build.name)

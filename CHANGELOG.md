@@ -11,6 +11,7 @@
 - Added possibility to set developer-specific and project-aware CCv2 subscription [#1058](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1058)
 - Added possibility to set CCv2 subscriptions to be used with SAP CX CLI [#1050](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1050)
 - Added possibility to schedule new build for CCv2 subscription [#1060](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1060)
+- Added possibility to redo existing build for CCv2 subscription [#1061](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1061)
 - Show cloud icon for CCv2 subscription [#1051](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1051)
 - Fetch and show CCv2 environments details [#1055](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1055)
 - Fetch and show CCv2 builds details [#1057](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1057)

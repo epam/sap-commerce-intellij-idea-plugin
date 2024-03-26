@@ -32,5 +32,5 @@ interface CCv2EnvironmentsListener : CCv2Listener<CCv2Environment>
 
 interface CCv2BuildsListener : CCv2Listener<CCv2Build> {
     fun buildStarted() = Unit
-    fun buildRequested(subscription: CCv2Subscription, build: CCv2Build?) = Unit
+    fun buildRequested(subscription: CCv2Subscription, build: CCv2Build? = null) = Unit
 }

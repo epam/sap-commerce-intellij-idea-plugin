@@ -26,26 +26,33 @@ import java.io.Serial
 import javax.swing.DefaultComboBoxModel
 
 class CCv2SubscriptionsComboBoxModel(
-    private val project: Project,
-    allowBlank: Boolean = false
+    private val onSelectedItem: ((Any?) -> Unit)? = null
 ) : DefaultComboBoxModel<CCv2Subscription>() {
-
-    init {
-        if (allowBlank) addElement(null)
-        addAll(ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions)
-
-        selectedItem = DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
-    }
 
     override fun setSelectedItem(anObject: Any?) {
         super.setSelectedItem(anObject)
-        if (anObject == null) {
-            DeveloperSettingsComponent.getInstance(project).state.activeCCv2SubscriptionID = null
-        }
+        onSelectedItem?.invoke(anObject)
     }
 
     companion object {
         @Serial
         private val serialVersionUID: Long = 4646717472092758251L
     }
+}
+
+
+object CCv2SubscriptionsComboBoxModelFactory {
+
+    fun create(
+        project: Project,
+        subscription: CCv2Subscription? = null,
+        allowBlank: Boolean = false,
+        onSelectedItem: ((Any?) -> Unit)? = null
+    ) = CCv2SubscriptionsComboBoxModel(onSelectedItem)
+        .also {
+            if (allowBlank) it.addElement(null)
+            it.addAll(ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions)
+            it.selectedItem = subscription
+                ?: DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
+        }
 }

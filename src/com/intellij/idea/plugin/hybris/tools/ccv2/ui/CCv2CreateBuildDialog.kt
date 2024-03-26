@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -33,8 +34,10 @@ import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 
-class CreateBuildDialog(
-    private val project: Project
+class CCv2CreateBuildDialog(
+    private val project: Project,
+    private val subscription: CCv2Subscription?,
+    private val build: CCv2Build?
 ) : DialogWrapper(project) {
 
     init {
@@ -48,7 +51,7 @@ class CreateBuildDialog(
 
     override fun createCenterPanel() = panel {
         row {
-            subscriptionComboBox = comboBox(CCv2SubscriptionsComboBoxModel(project))
+            subscriptionComboBox = comboBox(CCv2SubscriptionsComboBoxModelFactory.create(project, subscription))
                 .label("Subscription:")
                 .align(AlignX.FILL)
                 .component
@@ -60,6 +63,7 @@ class CreateBuildDialog(
                 .align(AlignX.FILL)
                 .addValidationRule("Please specify name for a build.") { it.text.isBlank() }
                 .component
+                .also { it.text = build?.name }
         }.layout(RowLayout.PARENT_GRID)
 
         row {
@@ -68,6 +72,7 @@ class CreateBuildDialog(
                 .align(AlignX.FILL)
                 .addValidationRule("Please specify a branch for a build.") { it.text.isBlank() }
                 .component
+                .also { it.text = build?.branch }
         }.layout(RowLayout.PARENT_GRID)
     }.also {
         it.border = JBUI.Borders.empty(16)

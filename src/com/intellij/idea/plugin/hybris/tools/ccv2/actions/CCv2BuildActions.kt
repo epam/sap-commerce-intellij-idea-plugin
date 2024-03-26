@@ -16,14 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.ccv2.actions
+package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CreateBuildDialog
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2CreateBuildDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.project.Project
 
 class CreateBuildAction : AbstractCCv2Action(
@@ -32,13 +34,20 @@ class CreateBuildAction : AbstractCCv2Action(
     icon = HybrisIcons.CCV2_BUILD_CREATE
 ) {
     override fun actionPerformed(e: AnActionEvent) {
+        val subscription = e.dataContext.getData(subscriptionKey)
+        val build = e.dataContext.getData(buildKey)
         e.project
-            ?.let { CreateBuildDialog(it) }
+            ?.let { CCv2CreateBuildDialog(it, subscription, build) }
             ?.showAndGet()
+    }
+
+    companion object {
+        val subscriptionKey = DataKey.create<CCv2Subscription>("subscription")
+        val buildKey = DataKey.create<CCv2Build>("build")
     }
 }
 
-class FetchBuildsAction : AbstractFetchAction(
+class FetchBuildsAction : AbstractCCv2FetchAction(
     tab = CCv2Tab.BUILDS,
     taskTitle = "Fetching CCv2 Builds...",
     text = "Fetch Builds",

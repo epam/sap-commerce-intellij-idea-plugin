@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.ccv2.actions
+package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory

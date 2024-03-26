@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.ccv2.actions
+package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.project.Project
 
-class FetchEnvironmentsAction() : AbstractFetchAction(
+class FetchEnvironmentsAction() : AbstractCCv2FetchAction(
     tab = CCv2Tab.ENVIRONMENTS,
     taskTitle = "Fetching CCv2 Environments...",
     text = "Fetch Environments",

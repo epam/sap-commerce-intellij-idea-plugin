@@ -67,11 +67,16 @@ class CCv2Service(val project: Project) {
     fun createBuild(subscription: CCv2Subscription, name: String, branch: String): CCv2Build? {
         messageBus.syncPublisher(TOPIC_BUILDS).buildStarted()
 
-        val ccv2Token = getCCv2Token() ?: return null
+        val ccv2Token = getCCv2Token()
+        if (ccv2Token == null) {
+            messageBus.syncPublisher(TOPIC_BUILDS).buildRequested(subscription)
+            return null
+        }
 
         return CCv2Strategy.getSAPCCMCCv2Strategy().createBuild(project, ccv2Token, subscription, name, branch)
             .also {
                 messageBus.syncPublisher(TOPIC_BUILDS).buildRequested(subscription, it)
+
                 if (it != null) {
                     Notifications.create(
                         NotificationType.INFORMATION,

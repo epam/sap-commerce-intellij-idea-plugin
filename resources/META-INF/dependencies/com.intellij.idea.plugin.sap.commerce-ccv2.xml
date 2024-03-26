@@ -26,4 +26,13 @@
         <completion.contributor language="JSON" id="CCv2ManifestCompletionContributor"
                                 implementationClass="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.ManifestJsonCompletionProvider"/>
     </extensions>
+
+    <actions>
+        <action id="ccv2.action.environment.fetch"
+                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.FetchEnvironmentsAction"/>
+        <action id="ccv2.action.build.fetch"
+                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.FetchBuildsAction"/>
+        <action id="ccv2.action.build.create"
+                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CreateBuildAction"/>
+    </actions>
 </idea-plugin>
