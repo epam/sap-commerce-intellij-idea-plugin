@@ -62,7 +62,12 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 DeveloperSettingsComponent.getInstance(project).state.activeCCv2SubscriptionID = null
             }
         }
+    }.also {
+        it.addElement(null)
+        it.addAll(ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions)
+        it.selectedItem = DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
     }
+
     private val tabbedPane = JBTabbedPane().also {
         CCv2Tab.entries.forEach { tab ->
             it.addTab(tab.title, tab.icon, tab.view.noDataPanel())
@@ -70,10 +75,6 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
     }
 
     init {
-        val ccv2Subscriptions = ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
-        ccv2SubscriptionsModel.addElement(null)
-        ccv2SubscriptionsModel.addAll(ccv2Subscriptions)
-
         add(rootPanel())
         installToolbar()
         installListeners()

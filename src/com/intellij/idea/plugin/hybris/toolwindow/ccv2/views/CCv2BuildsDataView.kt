@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
@@ -67,7 +66,6 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.CCV2_BRANCH)
                     label(build.branch)
                         .comment("Branch")
                 }
