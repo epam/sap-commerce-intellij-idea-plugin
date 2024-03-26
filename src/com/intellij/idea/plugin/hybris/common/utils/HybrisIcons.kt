@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.common.utils
 
 import com.intellij.icons.AllIcons
+import com.intellij.icons.ExpUiIcons
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.openapi.util.IconLoader
 import com.intellij.util.ReflectionUtil
@@ -223,7 +224,29 @@ object HybrisIcons {
     val CCV2_DEPLOYMENTS = AllIcons.Nodes.Deploy
     val CCV2_BACKUPS = AllIcons.Nodes.Undeploy
     val CCV2_ENDPOINTS = AllIcons.General.Web
-    val CCV2_BRANCH = AllIcons.Vcs.Branch
+
+    val CCV2_BUILD_BRANCH = AllIcons.Vcs.Branch
+    val CCV2_BUILD_CREATED_BY = AllIcons.General.User
+    val CCV2_BUILD_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
+    val CCV2_BUILD_STATUS_SCHEDULED = ExpUiIcons.Run.Profile
+    val CCV2_BUILD_STATUS_BUILDING = ExpUiIcons.Run.TestCustom
+    val CCV2_BUILD_STATUS_SUCCESS = ExpUiIcons.Run.TestPassed
+    val CCV2_BUILD_STATUS_FAIL = ExpUiIcons.Run.TestFailed
+    val CCV2_BUILD_STATUS_DELETED = ExpUiIcons.Run.KillProcess
+
+    val CCV2_ENV_DEPLOYMENT_STATUS_SCHEDULED = ExpUiIcons.Run.Profile
+    val CCV2_ENV_DEPLOYMENT_STATUS_DEPLOYING = ExpUiIcons.Run.TestCustom
+    val CCV2_ENV_DEPLOYMENT_STATUS_DEPLOYED = ExpUiIcons.Run.TestPassed
+    val CCV2_ENV_DEPLOYMENT_STATUS_UNDEPLOYED = ExpUiIcons.Run.TestSkipped
+    val CCV2_ENV_DEPLOYMENT_STATUS_FAIL = ExpUiIcons.Run.TestError
+    val CCV2_ENV_DEPLOYMENT_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
+
+    val CCV2_ENV_STATUS_PROVISIONING = AllIcons.Actions.ProfileYellow
+    val CCV2_ENV_STATUS_AVAILABLE = AllIcons.Actions.ProjectWideAnalysisOn
+    val CCV2_ENV_STATUS_TERMINATING = AllIcons.Actions.ProfileRed
+    val CCV2_ENV_STATUS_TERMINATED = AllIcons.Actions.ProjectWideAnalysisOff
+    val CCV2_ENV_STATUS_READY_FOR_DEPLOYMENT = AllIcons.Actions.ShowReadAccess
+    val CCV2_ENV_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
 
     val CONNECTION_ADD = AllIcons.General.Add
     val CONNECTION_EDIT = AllIcons.Actions.Edit

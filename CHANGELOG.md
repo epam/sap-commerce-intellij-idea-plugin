@@ -4,7 +4,8 @@
 - Persist DB password forever during auto-configuration [#1046](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1046)
 - Unescape DB url during auto-configuration [#1047](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1047)
 
-### `CCv2 CLI` enhancements
+### `CCv2 CI/CD` enhancements
+- Brand new `CCv2` tool window for integration with Cloud Portal CI/CD
 - Added possibility to specify directory of the SAP CX CLI [#1048](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1048)
 - Added possibility to set developer-specific SAP CX CLI token in the secure storage [#1049](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1049)
 - Added possibility to set developer-specific and project-aware CCv2 subscription [#1058](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1058)
@@ -13,6 +14,7 @@
 - Fetch and show CCv2 environments details [#1055](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1055)
 - Fetch and show CCv2 builds details [#1057](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1057)
 - Added timeout configuration for SAP CCM [#1056](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1056)
+- Improved visual representation of the environments and builds [#1059](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1059)
 
 ### `Cockpit NG` enhancements
 - Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)

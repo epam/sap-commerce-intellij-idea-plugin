@@ -66,14 +66,16 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
 
             panel {
                 row {
-                    label(environment.status)
+                    icon(environment.status.icon)
+                    label(environment.status.title)
                         .comment("Status")
                 }
             }.gap(RightGap.COLUMNS)
 
             panel {
                 row {
-                    label(environment.deploymentStatus)
+                    icon(environment.deploymentStatus.icon)
+                    label(environment.deploymentStatus.title)
                         .comment("Deployment status")
                 }
             }

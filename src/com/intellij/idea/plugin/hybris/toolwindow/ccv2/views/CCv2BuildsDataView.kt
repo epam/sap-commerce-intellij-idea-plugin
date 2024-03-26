@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
@@ -26,9 +27,13 @@ import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
+    private val localTimeZone = ZoneId.systemDefault()
     override val tab: CCv2Tab
         get() = CCv2Tab.BUILDS
 
@@ -66,6 +71,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
             panel {
                 row {
+                    icon(HybrisIcons.CCV2_BUILD_BRANCH)
                     label(build.branch)
                         .comment("Branch")
                 }
@@ -73,6 +79,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
             panel {
                 row {
+                    icon(build.status.icon)
                     label(build.status.title)
                         .comment("Status")
                 }
@@ -80,6 +87,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
             panel {
                 row {
+                    icon(HybrisIcons.CCV2_BUILD_CREATED_BY)
                     label(build.createdBy)
                         .comment("Created by")
                 }
@@ -87,14 +95,24 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
             panel {
                 row {
-                    label(build.startTime)
+                    label(
+                        build.startTime
+                            ?.withZoneSameInstant(localTimeZone)
+                            ?.format(dateFormat)
+                            ?: "N/A"
+                    )
                         .comment("Start time")
                 }
             }.gap(RightGap.COLUMNS)
 
             panel {
                 row {
-                    label(build.endTime)
+                    label(
+                        build.endTime
+                            ?.withZoneSameInstant(localTimeZone)
+                            ?.format(dateFormat)
+                            ?: "N/A"
+                    )
                         .comment("End time")
                 }
             }

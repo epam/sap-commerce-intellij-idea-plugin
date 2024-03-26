@@ -23,18 +23,22 @@ import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsCo
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 open class SAPCCMCommand<T : CCv2DTO>(
     protected val name: String,
     protected val command: String,
     private val headers: List<String>,
 ) {
-// TODO: use Kotlin coroutines for parallel processing
+    // TODO: use Kotlin coroutines for parallel processing
     fun list(
-    project: Project,
-    appSettings: ApplicationSettingsComponent,
-    subscriptions: Collection<CCv2Subscription>,
-    transform: (String, Map<String, Int>) -> T,
+        project: Project,
+        appSettings: ApplicationSettingsComponent,
+        subscriptions: Collection<CCv2Subscription>,
+        transform: (String, Map<String, Int>) -> T,
     ) = subscriptions
         .associateWith { subscription ->
             val parameters = arrayOf(command, "list", "--subscription-code=${subscription.id}")
@@ -76,14 +80,17 @@ object SAPCCMEnvironmentCommands {
         CCv2Environment(
             code = row.substring(0..<columns["NAME"]!!).trim(),
             name = row.substring(columns["NAME"]!!..<columns["STATUS"]!!).trim(),
-            status = row.substring(columns["STATUS"]!!..<columns["TYPE"]!!).trim(),
+            status = CCv2EnvironmentStatus.tryValueOf(row.substring(columns["STATUS"]!!..<columns["TYPE"]!!).trim()),
             type = CCv2EnvironmentType.tryValueOf(row.substring(columns["TYPE"]!!..<columns["DEPLOYMENT STATUS"]!!).trim()),
-            deploymentStatus = row.substring(columns["DEPLOYMENT STATUS"]!!).trim(),
+            deploymentStatus = CCv2EnvironmentDeploymentStatus.tryValueOf(row.substring(columns["DEPLOYMENT STATUS"]!!).trim()),
         )
     }
 }
 
 object SAPCCMBuildCommands {
+    private val gmtZone = ZoneId.of("GMT")
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+
     private const val command = "build"
     private val listCommand = object : SAPCCMCommand<CCv2Build>(
         "Builds", command,
@@ -104,10 +111,19 @@ object SAPCCMBuildCommands {
             appCode = row.substring(columns["APP. CODE"]!!..<columns["APP. DEF. VERSION"]!!).trim(),
             appDefVersion = row.substring(columns["APP. DEF. VERSION"]!!..<columns["CREATED BY"]!!).trim(),
             createdBy = row.substring(columns["CREATED BY"]!!..<columns["START TIME"]!!).trim(),
-            startTime = row.substring(columns["START TIME"]!!..<columns["END TIME"]!!).trim(),
-            endTime = row.substring(columns["END TIME"]!!..<columns["BUILD VERSION"]!!).trim(),
+            startTime = row.substring(columns["START TIME"]!!..<columns["END TIME"]!!).trim()
+                .takeIf { it.isNotBlank() }
+                ?.let { LocalDateTime.parse(it, dateFormat) }
+                ?.let { ZonedDateTime.of(it, gmtZone) },
+            endTime = row.substring(columns["END TIME"]!!..<columns["BUILD VERSION"]!!).trim()
+                .takeIf { it.isNotBlank() }
+                ?.let { LocalDateTime.parse(it, dateFormat) }
+                ?.let { ZonedDateTime.of(it, gmtZone) },
             buildVersion = buildVersion,
-            version = buildVersion.split("-").firstOrNull() ?: ""
+            version = buildVersion.split("-")
+                .firstOrNull()
+                ?.takeIf { it.isNotBlank() }
+                ?: "N/A"
         )
     }
 }

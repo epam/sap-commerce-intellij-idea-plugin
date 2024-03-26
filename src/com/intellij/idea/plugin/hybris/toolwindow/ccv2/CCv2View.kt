@@ -39,7 +39,6 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.util.asSafely
 import java.io.Serial
 import javax.swing.DefaultComboBoxModel
 
@@ -121,18 +120,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
     }
 
     private fun installListeners() {
-        installComponentsListeners()
         installDataListeners()
-    }
-
-    private fun installComponentsListeners() {
-        tabbedPane.addChangeListener { event ->
-            val selectedIndex = event.source.asSafely<JBTabbedPane>()
-                ?.selectedIndex
-
-            //TODO: show data loading text and get data right away
-            println(selectedIndex)
-        }
     }
 
     private fun installDataListeners() {
