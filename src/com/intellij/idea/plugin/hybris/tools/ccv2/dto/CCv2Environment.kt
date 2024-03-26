@@ -30,10 +30,10 @@ data class CCv2Environment(
 ) : CCv2DTO
 
 enum class CCv2EnvironmentType(val title: String, val icon: Icon) {
-    DEV("Development", HybrisIcons.TYPE_SYSTEM),
-    STG("Staging", HybrisIcons.TYPE_SYSTEM),
-    PROD("Production", HybrisIcons.TYPE_SYSTEM),
-    UNKNOWN("Unknown", HybrisIcons.TYPE_SYSTEM);
+    DEV("Development", HybrisIcons.CCV2_ENV_ENVIRONMENT_TYPE_DEV),
+    STG("Staging", HybrisIcons.CCV2_ENV_ENVIRONMENT_TYPE_STG),
+    PROD("Production", HybrisIcons.CCV2_ENV_ENVIRONMENT_TYPE_PROD),
+    UNKNOWN("Unknown", HybrisIcons.CCV2_ENV_ENVIRONMENT_TYPE_UNKNOWN);
 
     companion object {
         fun tryValueOf(name: String) = entries

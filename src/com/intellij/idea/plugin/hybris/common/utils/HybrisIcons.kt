@@ -248,6 +248,11 @@ object HybrisIcons {
     val CCV2_ENV_STATUS_READY_FOR_DEPLOYMENT = AllIcons.Actions.ShowReadAccess
     val CCV2_ENV_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
 
+    val CCV2_ENV_ENVIRONMENT_TYPE_DEV = AllIcons.Nodes.AnonymousClass
+    val CCV2_ENV_ENVIRONMENT_TYPE_STG = AllIcons.Nodes.Type
+    val CCV2_ENV_ENVIRONMENT_TYPE_PROD = AllIcons.Nodes.AbstractException
+    val CCV2_ENV_ENVIRONMENT_TYPE_UNKNOWN = AllIcons.Nodes.ErrorIntroduction
+
     val CONNECTION_ADD = AllIcons.General.Add
     val CONNECTION_EDIT = AllIcons.Actions.Edit
 

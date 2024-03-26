@@ -59,6 +59,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
 
             panel {
                 row {
+                    icon(environment.type.icon)
                     label(environment.type.title)
                         .comment("Type")
                 }
