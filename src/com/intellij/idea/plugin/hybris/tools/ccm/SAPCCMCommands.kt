@@ -19,11 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.ccm
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentType
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 
@@ -34,10 +31,10 @@ open class SAPCCMCommand<T : CCv2DTO>(
 ) {
 // TODO: use Kotlin coroutines for parallel processing
     fun list(
-        project: Project,
-        appSettings: HybrisApplicationSettingsComponent,
-        subscriptions: Collection<CCv2Subscription>,
-        transform: (String, Map<String, Int>) -> T,
+    project: Project,
+    appSettings: ApplicationSettingsComponent,
+    subscriptions: Collection<CCv2Subscription>,
+    transform: (String, Map<String, Int>) -> T,
     ) = subscriptions
         .associateWith { subscription ->
             val parameters = arrayOf(command, "list", "--subscription-code=${subscription.id}")
@@ -73,15 +70,15 @@ object SAPCCMEnvironmentCommands {
 
     fun list(
         project: Project,
-        appSettings: HybrisApplicationSettingsComponent,
+        appSettings: ApplicationSettingsComponent,
         subscriptions: Collection<CCv2Subscription>
-    ) = listCommand.list(project, appSettings, subscriptions) { it, columns ->
+    ) = listCommand.list(project, appSettings, subscriptions) { row, columns ->
         CCv2Environment(
-            code = it.substring(0..<columns["NAME"]!!).trim(),
-            name = it.substring(columns["NAME"]!!..<columns["STATUS"]!!).trim(),
-            status = it.substring(columns["STATUS"]!!..<columns["TYPE"]!!).trim(),
-            type = CCv2EnvironmentType.tryValueOf(it.substring(columns["TYPE"]!!..<columns["DEPLOYMENT STATUS"]!!).trim()),
-            deploymentStatus = it.substring(columns["DEPLOYMENT STATUS"]!!).trim(),
+            code = row.substring(0..<columns["NAME"]!!).trim(),
+            name = row.substring(columns["NAME"]!!..<columns["STATUS"]!!).trim(),
+            status = row.substring(columns["STATUS"]!!..<columns["TYPE"]!!).trim(),
+            type = CCv2EnvironmentType.tryValueOf(row.substring(columns["TYPE"]!!..<columns["DEPLOYMENT STATUS"]!!).trim()),
+            deploymentStatus = row.substring(columns["DEPLOYMENT STATUS"]!!).trim(),
         )
     }
 }
@@ -95,20 +92,22 @@ object SAPCCMBuildCommands {
 
     fun list(
         project: Project,
-        appSettings: HybrisApplicationSettingsComponent,
+        appSettings: ApplicationSettingsComponent,
         subscriptions: Collection<CCv2Subscription>
-    ) = listCommand.list(project, appSettings, subscriptions) { it, columns ->
+    ) = listCommand.list(project, appSettings, subscriptions) { row, columns ->
+        val buildVersion = row.substring(columns["BUILD VERSION"]!!).trim()
         CCv2Build(
-            code = it.substring(0..<columns["NAME"]!!).trim(),
-            name = it.substring(columns["NAME"]!!..<columns["BRANCH"]!!).trim(),
-            branch = it.substring(columns["BRANCH"]!!..<columns["STATUS"]!!).trim(),
-            status = it.substring(columns["STATUS"]!!..<columns["APP. CODE"]!!).trim(),
-            appCode = it.substring(columns["APP. CODE"]!!..<columns["APP. DEF. VERSION"]!!).trim(),
-            appDefVersion = it.substring(columns["APP. DEF. VERSION"]!!..<columns["CREATED BY"]!!).trim(),
-            createdBy = it.substring(columns["CREATED BY"]!!..<columns["START TIME"]!!).trim(),
-            startTime = it.substring(columns["START TIME"]!!..<columns["END TIME"]!!).trim(),
-            endTime = it.substring(columns["END TIME"]!!..<columns["BUILD VERSION"]!!).trim(),
-            buildVersion = it.substring(columns["BUILD VERSION"]!!).trim(),
+            code = row.substring(0..<columns["NAME"]!!).trim(),
+            name = row.substring(columns["NAME"]!!..<columns["BRANCH"]!!).trim(),
+            branch = row.substring(columns["BRANCH"]!!..<columns["STATUS"]!!).trim(),
+            status = CCv2BuildStatus.tryValueOf(row.substring(columns["STATUS"]!!..<columns["APP. CODE"]!!).trim()),
+            appCode = row.substring(columns["APP. CODE"]!!..<columns["APP. DEF. VERSION"]!!).trim(),
+            appDefVersion = row.substring(columns["APP. DEF. VERSION"]!!..<columns["CREATED BY"]!!).trim(),
+            createdBy = row.substring(columns["CREATED BY"]!!..<columns["START TIME"]!!).trim(),
+            startTime = row.substring(columns["START TIME"]!!..<columns["END TIME"]!!).trim(),
+            endTime = row.substring(columns["END TIME"]!!..<columns["BUILD VERSION"]!!).trim(),
+            buildVersion = buildVersion,
+            version = buildVersion.split("-").firstOrNull() ?: ""
         )
     }
 }

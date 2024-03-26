@@ -16,10 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -28,16 +29,16 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class HybrisProjectSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class ProjectSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
-    override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override fun canCreateConfigurable() = ProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
         message("hybris.settings.project.title"), "hybris.project.settings"
     ) {
 
-        private val state = HybrisProjectSettingsComponent.getInstance(project).state
+        private val projectSettings = ProjectSettingsComponent.getInstance(project).state
         private lateinit var generateCodeOnRebuildCheckBox: JCheckBox
 
         private val excludedFromScanning = CRUDListPanel(
@@ -52,19 +53,19 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                 row(message("hybris.settings.project.details.platform_version.title")) {
                     textField()
                         .enabled(false)
-                        .text(state.hybrisVersion ?: "")
+                        .text(projectSettings.hybrisVersion ?: "")
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
                 row(message("hybris.import.wizard.hybris.distribution.directory.label")) {
                     textField()
                         .enabled(false)
-                        .text(state.hybrisDirectory ?: "")
+                        .text(projectSettings.hybrisDirectory ?: "")
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
                 row(message("hybris.import.wizard.javadoc.url.label")) {
                     textField()
                         .enabled(false)
-                        .text(state.javadocUrl ?: "")
+                        .text(projectSettings.javadocUrl ?: "")
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
             }
@@ -80,21 +81,21 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                             As a final step, project compilation will continue.
                         """.trimIndent()
                         )
-                        .bindSelected(state::generateCodeOnRebuild)
+                        .bindSelected(projectSettings::generateCodeOnRebuild)
                         .component
                 }
                 row("Code generation timeout (in seconds):") {
                     spinner(1..10000, 1)
-                        .bindIntValue(state::generateCodeTimeoutSeconds)
+                        .bindIntValue(projectSettings::generateCodeTimeoutSeconds)
                         .enabledIf(generateCodeOnRebuildCheckBox.selected)
                 }
             }
 
             group(message("hybris.settings.project.common.title")) {
                 row {
-                    checkBox("Show complete Module name in the Project View")
+                    checkBox("Show full Module name in the Project View")
                         .comment("If checked, complete module name will be represented as <code>[Platform.core]</code> instead of <code>core</code>.")
-                        .bindSelected(state::showFullModuleName)
+                        .bindSelected(projectSettings::showFullModuleName)
                 }
             }
 
@@ -102,33 +103,33 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                 row {
                     checkBox("Remove external modules")
                         .comment("If checked, non SAP Commerce external modules will be removed during the project refresh.")
-                        .bindSelected(state::removeExternalModulesOnRefresh)
+                        .bindSelected(projectSettings::removeExternalModulesOnRefresh)
                 }
                 row {
                     checkBox("Use fake output path for custom extensions")
                         .comment("When enabled the ‘eclipsebin’ folder will be used as an output path for both custom and OOTB extensions.")
-                        .bindSelected(state::useFakeOutputPathForCustomExtensions)
+                        .bindSelected(projectSettings::useFakeOutputPathForCustomExtensions)
                 }
                 row {
                     checkBox(message("hybris.import.wizard.import.ootb.modules.read.only.label"))
                         .comment(message("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
-                        .bindSelected(state::importOotbModulesInReadOnlyMode)
+                        .bindSelected(projectSettings::importOotbModulesInReadOnlyMode)
                 }
                 row {
                     checkBox(message("hybris.import.wizard.exclude.test.sources.label"))
-                        .bindSelected(state::excludeTestSources)
+                        .bindSelected(projectSettings::excludeTestSources)
                 }
                 row {
                     checkBox(message("hybris.project.import.followSymlink"))
-                        .bindSelected(state::followSymlink)
+                        .bindSelected(projectSettings::followSymlink)
                 }
                 row {
                     checkBox(message("hybris.project.import.scanExternalModules"))
-                        .bindSelected(state::scanThroughExternalModule)
+                        .bindSelected(projectSettings::scanThroughExternalModule)
                 }
                 row {
                     checkBox(message("hybris.project.import.importCustomAntBuildFiles"))
-                        .bindSelected(state::importCustomAntBuildFiles)
+                        .bindSelected(projectSettings::importCustomAntBuildFiles)
                 }
             }
 
@@ -139,9 +140,9 @@ class HybrisProjectSettingsConfigurableProvider(val project: Project) : Configur
                 row {
                     cell(excludedFromScanning)
                         .align(AlignX.FILL)
-                        .onApply { state.excludedFromScanning = excludedFromScanning.data.toMutableSet() }
-                        .onReset { excludedFromScanning.data = state.excludedFromScanning.toList() }
-                        .onIsModified { excludedFromScanning.data.equalsIgnoreOrder(state.excludedFromScanning.toList()).not() }
+                        .onApply { projectSettings.excludedFromScanning = excludedFromScanning.data.toMutableSet() }
+                        .onReset { excludedFromScanning.data = projectSettings.excludedFromScanning.toList() }
+                        .onIsModified { excludedFromScanning.data.equalsIgnoreOrder(projectSettings.excludedFromScanning.toList()).not() }
                 }
             }
         }

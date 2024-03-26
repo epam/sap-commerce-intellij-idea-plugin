@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.settings
+package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -29,16 +29,16 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class CngConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class ProjectBeanSystemConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
-    override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override fun canCreateConfigurable() = ProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.cng.title"), "[y] SAP Commerce plugin Cockpit NG configuration."
+        message("hybris.settings.project.bs.title"), "[y] SAP CX Bean System configuration."
     ) {
 
-        private val settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.cngSettings
+        private val settings = DeveloperSettingsComponent.getInstance(project).state.beanSystemSettings
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
@@ -51,22 +51,8 @@ class CngConfigurableProvider(val project: Project) : ConfigurableProvider() {
                 }
                 group("Table-Like Folding", true) {
                     row {
-                        checkBox("Wizard properties")
-                            .bindSelected(settings.folding::tablifyWizardProperties)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Navigation nodes")
-                            .bindSelected(settings.folding::tablifyNavigationNodes)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Search fields")
-                            .bindSelected(settings.folding::tablifySearchFields)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                    }
-                    row {
-                        checkBox("List columns")
-                            .bindSelected(settings.folding::tablifyListColumns)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Parameters")
-                            .bindSelected(settings.folding::tablifyParameters)
+                        checkBox("Properties")
+                            .bindSelected(settings.folding::tablifyProperties)
                             .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }

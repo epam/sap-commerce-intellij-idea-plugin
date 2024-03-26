@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,12 +16,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.settings.components
 
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.ProgressIndicator
@@ -36,16 +37,16 @@ import org.apache.commons.lang3.StringUtils
     storages = [Storage(value = STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service
-class HybrisApplicationSettingsComponent : PersistentStateComponent<HybrisApplicationSettings> {
+class ApplicationSettingsComponent : PersistentStateComponent<ApplicationSettings> {
 
-    private val hybrisApplicationSettings = HybrisApplicationSettings()
+    private val hybrisApplicationSettings = ApplicationSettings()
     val ccv2Token: String?
         get() = PasswordSafe.instance.get(CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN))
             ?.getPasswordAsString()
 
     override fun getState() = this.hybrisApplicationSettings
 
-    override fun loadState(state: HybrisApplicationSettings) {
+    override fun loadState(state: ApplicationSettings) {
         XmlSerializerUtil.copyBean(state, this.hybrisApplicationSettings)
     }
 
@@ -74,7 +75,7 @@ class HybrisApplicationSettingsComponent : PersistentStateComponent<HybrisApplic
 
     companion object {
         @JvmStatic
-        fun getInstance(): HybrisApplicationSettingsComponent = ApplicationManager.getApplication().getService(HybrisApplicationSettingsComponent::class.java)
+        fun getInstance(): ApplicationSettingsComponent = ApplicationManager.getApplication().getService(ApplicationSettingsComponent::class.java)
 
         @JvmStatic
         fun toIdeaGroup(group: String?): Array<String>? {

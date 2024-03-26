@@ -25,8 +25,8 @@ import com.intellij.execution.process.ProcessEvent
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.compiler.*
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.projectRoots.JavaSdk
@@ -58,7 +58,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
             ?: return true
 
-        val settings = HybrisProjectSettingsComponent.getInstance(context.project)
+        val settings = ProjectSettingsComponent.getInstance(context.project)
         if (!settings.isHybrisProject()) return true
         if (!settings.state.generateCodeOnRebuild) {
             context.addMessage(CompilerMessageCategory.WARNING, "[y] Code generation is disabled, to enable it adjust SAP Commerce Project specific settings.", null, -1, -1)
@@ -103,7 +103,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         bootstrapDirectory: Path,
         coreModuleRoot: Path,
         vmExecutablePath: String,
-        settings: HybrisProjectSettings,
+        settings: ProjectSettings,
     ): Boolean {
         val pathToBeDeleted = bootstrapDirectory.resolve(HybrisConstants.GEN_SRC_DIRECTORY)
         cleanDirectory(context, pathToBeDeleted)

@@ -23,7 +23,7 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.TimeOption
 import com.intellij.idea.plugin.hybris.tools.remote.http.monitorImpexFiles
@@ -82,7 +82,7 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
     }
 
     private fun obtainDataFolder(project: Project): String {
-        val settings = HybrisProjectSettingsComponent.getInstance(project).state
+        val settings = ProjectSettingsComponent.getInstance(project).state
         return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
     }
 

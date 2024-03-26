@@ -22,7 +22,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.lookup.EiSLookupElementFactory
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
@@ -37,7 +37,7 @@ open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParame
             .forEach { result.addElement(it) }
     }
 
-    open fun getExtensionDescriptors(parameters: CompletionParameters, project: Project): Collection<ExtensionDescriptor> = HybrisProjectSettingsComponent.getInstance(project)
+    open fun getExtensionDescriptors(parameters: CompletionParameters, project: Project): Collection<ExtensionDescriptor> = ProjectSettingsComponent.getInstance(project)
         .getAvailableExtensions()
         .values
 

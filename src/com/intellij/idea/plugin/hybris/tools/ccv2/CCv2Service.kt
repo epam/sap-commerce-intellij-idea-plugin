@@ -21,9 +21,9 @@ package com.intellij.idea.plugin.hybris.tools.ccv2
 import com.intellij.ide.BrowserUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.CCv2SettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.options.ApplicationCCv2SettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2Strategy
@@ -65,7 +65,7 @@ class CCv2Service(val project: Project) {
     }
 
     private fun getCCv2Token(): String? {
-        val appSettings = HybrisApplicationSettingsComponent.getInstance()
+        val appSettings = ApplicationSettingsComponent.getInstance()
         val ccv2Token = appSettings.ccv2Token
 
         if (ccv2Token != null) return ccv2Token
@@ -77,7 +77,7 @@ class CCv2Service(val project: Project) {
                 "Please, specify CCv2 API token via corresponding application settings."
             )
             .addAction("Open Settings") { _, _ ->
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, CCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
             }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(10)

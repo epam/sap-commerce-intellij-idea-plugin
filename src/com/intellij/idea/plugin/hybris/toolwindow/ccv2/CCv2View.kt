@@ -19,7 +19,8 @@
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2BuildsListener
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2EnvironmentsListener
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
@@ -51,7 +52,17 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
         .toMutableMap()
 
     // TODO: add new TOPIC for CCv2Subscriptions
-    private val ccv2SubscriptionsModel = DefaultComboBoxModel<CCv2Subscription>()
+    private val ccv2SubscriptionsModel = object : DefaultComboBoxModel<CCv2Subscription>() {
+        @Serial
+        private val serialVersionUID: Long = -7978280099808704031L
+
+        override fun setSelectedItem(anObject: Any?) {
+            super.setSelectedItem(anObject)
+            if (anObject == null) {
+                DeveloperSettingsComponent.getInstance(project).state.activeCCv2SubscriptionID = null
+            }
+        }
+    }
     private val tabbedPane = JBTabbedPane().also {
         CCv2Tab.entries.forEach { tab ->
             it.addTab(tab.title, tab.icon, tab.view.noDataPanel())
@@ -59,7 +70,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
     }
 
     init {
-        val ccv2Subscriptions = HybrisApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
+        val ccv2Subscriptions = ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
         ccv2SubscriptionsModel.addElement(null)
         ccv2SubscriptionsModel.addAll(ccv2Subscriptions)
 
@@ -79,6 +90,15 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                     renderer = SimpleListCellRenderer.create("-- all subscriptions --") { it.toString() }
                 )
                     .label("Subscription:")
+                    .onChanged {
+                        val devSettings = DeveloperSettingsComponent.getInstance(project).state
+
+                        when (val element = it.selectedItem) {
+                            is CCv2Subscription -> devSettings.activeCCv2SubscriptionID = element.id
+                            else -> devSettings.activeCCv2SubscriptionID = null
+                        }
+                    }
+                    .component
             }
                 .topGap(TopGap.SMALL)
                 .bottomGap(BottomGap.SMALL)

@@ -22,7 +22,7 @@ import com.intellij.ide.projectView.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
@@ -43,7 +43,7 @@ class ExternalProjectViewNode(
     public override fun update(presentation: PresentationData) {
         with(presentation) {
             setIcon(HybrisIcons.MODULE_EXTERNAL_GROUP)
-            val groupNameExternalModules = HybrisApplicationSettingsComponent.getInstance().state.groupNameExternalModules
+            val groupNameExternalModules = ApplicationSettingsComponent.getInstance().state.groupNameExternalModules
                 .takeIf { it.isNotBlank() }
                 ?: message("hybris.project.view.external.module.directory.name")
             addText(groupNameExternalModules, SimpleTextAttributes.REGULAR_ATTRIBUTES)

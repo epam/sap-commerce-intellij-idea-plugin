@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl
 
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
@@ -44,13 +44,13 @@ class SolrHttpClient {
 
     fun coresData(project: Project): Array<SolrCoreData> = coresData(solrConnectionSettings(project))
 
-    fun listOfCores(solrConnectionSettings: HybrisRemoteConnectionSettings) = coresData(solrConnectionSettings)
+    fun listOfCores(solrConnectionSettings: RemoteConnectionSettings) = coresData(solrConnectionSettings)
         .map { it.core }
         .toTypedArray()
 
     fun executeSolrQuery(project: Project, queryObject: SolrQueryObject) = executeSolrQuery(solrConnectionSettings(project), queryObject)
 
-    private fun coresData(settings: HybrisRemoteConnectionSettings) = CoreAdminRequest()
+    private fun coresData(settings: RemoteConnectionSettings) = CoreAdminRequest()
         .apply {
             setAction(CoreAdminParams.CoreAdminAction.STATUS)
             setBasicAuthCredentials(settings.username, settings.password)
@@ -78,7 +78,7 @@ class SolrHttpClient {
     private fun buildHttpSolrClient(url: String) = HttpSolrClient.Builder(url).build()
 
     private fun executeSolrQuery(
-        solrConnectionSettings: HybrisRemoteConnectionSettings,
+        solrConnectionSettings: RemoteConnectionSettings,
         queryObject: SolrQueryObject
     ): HybrisHttpResult = executeSolrRequest(
         solrConnectionSettings,
@@ -89,7 +89,7 @@ class SolrHttpClient {
         )
     )
 
-    private fun executeSolrRequest(solrConnectionSettings: HybrisRemoteConnectionSettings, queryObject: SolrQueryObject, queryRequest: QueryRequest): HybrisHttpResult =
+    private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryObject, queryRequest: QueryRequest): HybrisHttpResult =
         buildHttpSolrClient("${solrConnectionSettings.generatedURL}/${queryObject.core}")
             .runCatching { request(queryRequest) }
             .map { resultBuilder().output(it["response"] as String?).build() }
@@ -97,7 +97,7 @@ class SolrHttpClient {
 
     private fun resultBuilder() = HybrisHttpResult.HybrisHttpResultBuilder.createResult()
 
-    private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: HybrisRemoteConnectionSettings) = QueryRequest(solrQuery).apply {
+    private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: RemoteConnectionSettings) = QueryRequest(solrQuery).apply {
         setBasicAuthCredentials(solrConnectionSettings.username, solrConnectionSettings.password)
         method = SolrRequest.METHOD.POST
         // https://issues.apache.org/jira/browse/SOLR-5530

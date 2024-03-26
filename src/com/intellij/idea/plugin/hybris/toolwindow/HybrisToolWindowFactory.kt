@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
@@ -43,8 +43,8 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
-    override suspend fun isApplicableAsync(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
-    override fun shouldBeAvailable(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override suspend fun isApplicableAsync(project: Project) = ProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override fun shouldBeAvailable(project: Project) = ProjectSettingsComponent.getInstance(project).isHybrisProject()
 
     private fun createTSContent(toolWindow: ToolWindow, panel: TSView) = with(toolWindow.contentManager.factory.createContent(panel, TS_ID, true)) {
         Disposer.register(toolWindow.disposable, panel)

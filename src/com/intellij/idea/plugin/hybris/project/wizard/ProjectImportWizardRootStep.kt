@@ -24,8 +24,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
@@ -331,7 +331,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         preferredSize = Dimension(preferredSize.width, JBUIScale.scale(600))
 
-        val appSettings = HybrisApplicationSettingsComponent.getInstance()
+        val appSettings = ApplicationSettingsComponent.getInstance()
 
         sapCLIDirChooser.text = appSettings.state.sapCLIDirectory ?: ""
         appSettings.loadSAPCLIToken {
@@ -395,7 +395,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     }
 
     override fun updateStep() {
-        val appSettings = HybrisApplicationSettingsComponent.getInstance().state
+        val appSettings = ApplicationSettingsComponent.getInstance().state
         storeModuleFilesInChooser.text = File(
             builder.fileToImport, HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
         ).absolutePath
@@ -490,12 +490,12 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         }
     }
 
-    override fun open(settings: HybrisProjectSettings) {
+    override fun open(settings: ProjectSettings) {
         updateStep()
         updateDataModel()
     }
 
-    override fun refresh(settings: HybrisProjectSettings) {
+    override fun refresh(settings: ProjectSettings) {
         val context = context()
         context.cleanup()
 
@@ -519,7 +519,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isScanThroughExternalModule = settings.scanThroughExternalModule
             this.isUseFakeOutputPathForCustomExtensions = settings.useFakeOutputPathForCustomExtensions
 
-            val appSettings = HybrisApplicationSettingsComponent.getInstance()
+            val appSettings = ApplicationSettingsComponent.getInstance()
             val appSettingsState = appSettings.state
             this.isIgnoreNonExistingSourceDirectories = appSettingsState.ignoreNonExistingSourceDirectories
             this.isWithStandardProvidedSources = appSettingsState.withStandardProvidedSources

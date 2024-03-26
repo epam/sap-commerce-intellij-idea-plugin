@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.impex.lang.documentation
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.DocumentationTargetProvider
 import com.intellij.psi.PsiFile
@@ -34,11 +34,11 @@ class ImpexDocumentationTargetProvider : DocumentationTargetProvider {
         if (file !is ImpexFile) return emptyList()
 
         val element = file.findElementAt(offset) ?: return emptyList()
-        val projectSettings = HybrisProjectSettingsComponent.getInstance(file.project)
+        val projectSettings = ProjectSettingsComponent.getInstance(file.project)
 
         if (!projectSettings.isHybrisProject()) return emptyList()
 
-        val developerSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(file.project).state
+        val developerSettings = DeveloperSettingsComponent.getInstance(file.project).state
         val documentationSettings = developerSettings.impexSettings.documentation
         if (!documentationSettings.enabled) return emptyList()
 

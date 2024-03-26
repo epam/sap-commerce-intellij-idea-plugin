@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementFactory
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -63,7 +63,7 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
     ): FlexibleSearchQueryLineMarkerInfo? {
         val parent = element.parent
         if (parent !is PsiVariable || parent.nameIdentifier == null) return null
-        if (!HybrisProjectSettingsComponent.getInstance(element.project).isHybrisProject()) return null
+        if (!ProjectSettingsComponent.getInstance(element.project).isHybrisProject()) return null
 
         val expression = expressionProvider.invoke()
         if (!FxSUtils.isFlexibleSearchQuery(expression)) return null

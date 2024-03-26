@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.settings.components
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.XmlSerializerUtil
@@ -27,18 +28,18 @@ import com.intellij.util.xmlb.XmlSerializerUtil
     storages = [Storage(value = STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service(Service.Level.PROJECT)
-class HybrisDeveloperSpecificProjectSettingsComponent(private val project: Project) : PersistentStateComponent<HybrisDeveloperSpecificProjectSettings> {
+class DeveloperSettingsComponent(private val project: Project) : PersistentStateComponent<DeveloperSettings> {
 
-    private val state = HybrisDeveloperSpecificProjectSettings()
+    private val state = DeveloperSettings()
 
     override fun getState() = state
-    override fun loadState(state: HybrisDeveloperSpecificProjectSettings) = XmlSerializerUtil.copyBean(state, this.state)
+    override fun loadState(state: DeveloperSettings) = XmlSerializerUtil.copyBean(state, this.state)
 
-    fun getActiveCCv2Subscription() = state.activeCCv2Subscription
-        ?.let { HybrisApplicationSettingsComponent.getInstance().getCCv2Subscription(it) }
+    fun getActiveCCv2Subscription() = state.activeCCv2SubscriptionID
+        ?.let { ApplicationSettingsComponent.getInstance().getCCv2Subscription(it) }
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): HybrisDeveloperSpecificProjectSettingsComponent = project.getService(HybrisDeveloperSpecificProjectSettingsComponent::class.java)
+        fun getInstance(project: Project): DeveloperSettingsComponent = project.getService(DeveloperSettingsComponent::class.java)
     }
 }

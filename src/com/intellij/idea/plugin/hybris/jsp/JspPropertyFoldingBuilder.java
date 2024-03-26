@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.jsp;
 
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -119,7 +119,7 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
     }
 
     private boolean isFoldingEnabled(final @NotNull Project project) {
-        return HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getState()
+        return DeveloperSettingsComponent.getInstance(project).getState()
             .getImpexSettings()
             .getFolding()
             .getEnabled();

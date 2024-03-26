@@ -53,22 +53,22 @@
 
         <applicationConfigurable id="hybris.settings" parentId="root"
                                  displayName="[y] SAP CX"
-                                 provider="com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsConfigurableProvider"/>
+                                 provider="com.intellij.idea.plugin.hybris.settings.options.ApplicationSettingsConfigurableProvider"/>
         <applicationConfigurable id="hybris.settings.ccv2" parentId="hybris.settings"
                                  displayName="CCv2"
-                                 provider="com.intellij.idea.plugin.hybris.settings.CCv2SettingsConfigurableProvider"/>
+                                 provider="com.intellij.idea.plugin.hybris.settings.options.ApplicationCCv2SettingsConfigurableProvider"/>
         <applicationConfigurable id="hybris.project.import.settings" parentId="hybris.settings"
                                  key="hybris.settings.application.project_import.title"
-                                 provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectImportApplicationSettingsConfigurableProvider"/>
+                                 provider="com.intellij.idea.plugin.hybris.settings.options.ApplicationProjectImportSettingsConfigurableProvider"/>
 
         <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true"
                              dynamic="true"
                              key="hybris.settings.project.title"
-                             provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsConfigurableProvider"/>
+                             provider="com.intellij.idea.plugin.hybris.settings.options.ProjectSettingsConfigurableProvider"/>
         <projectConfigurable id="hybris.project.remote_instances.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              key="hybris.settings.project.remote_instances.title"
-                             provider="com.intellij.idea.plugin.hybris.settings.HybrisProjectRemoteInstancesSettingsConfigurableProvider"/>
+                             provider="com.intellij.idea.plugin.hybris.settings.options.ProjectRemoteInstancesSettingsConfigurableProvider"/>
 
         <toolWindow id="SAP CX" icon="/icons/toolWindow.svg" anchor="bottom" doNotActivateOnStart="true"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>

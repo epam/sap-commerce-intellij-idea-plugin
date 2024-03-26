@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.settings
+package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -29,16 +29,16 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class ImpexSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class ProjectImpExSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
-    override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override fun canCreateConfigurable() = ProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
         message("hybris.settings.project.impex.title"), "hybris.impex.settings"
     ) {
 
-        private val projectSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.impexSettings
+        private val projectSettings = DeveloperSettingsComponent.getInstance(project).state.impexSettings
 
         private lateinit var foldingEnableCheckBox: JCheckBox
         private lateinit var documentationEnableCheckBox: JCheckBox

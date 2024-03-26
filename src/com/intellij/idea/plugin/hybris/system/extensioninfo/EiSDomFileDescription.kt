@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.system.extensioninfo
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil
@@ -36,6 +36,6 @@ class EiSDomFileDescription : DomFileDescription<ExtensionInfo>(ExtensionInfo::c
         && file.virtualFile != null
         && file.name == HybrisConstants.EXTENSION_INFO_XML
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()
+        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
 
 }

@@ -30,7 +30,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -115,7 +115,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     If cursor placed at the end of the literal, in addition to table aliases, we will add allowed separators
      */
     private fun getSuitablePrefixes(): Array<LookupElementBuilder> {
-        val fxsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
+        val fxsSettings = DeveloperSettingsComponent.getInstance(element.project).state.flexibleSearchSettings
         val aliasText = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
 
         val separators: Array<LookupElementBuilder> = element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER)
@@ -139,7 +139,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     fun isAliasedReference() = PsiTreeUtilExt
         .getPrevSiblingOfElementType(element, FlexibleSearchTypes.SELECTED_TABLE_NAME) != null
 
-    fun canFallbackToTableName() = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(element.project)
+    fun canFallbackToTableName() = DeveloperSettingsComponent.getInstance(element.project)
         .state
         .flexibleSearchSettings
         .fallbackToTableNameIfNoAliasProvided

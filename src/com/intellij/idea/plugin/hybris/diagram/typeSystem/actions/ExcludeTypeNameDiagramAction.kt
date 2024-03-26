@@ -21,7 +21,7 @@ import com.intellij.diagram.DiagramAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramNode
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 
@@ -38,7 +38,7 @@ class ExcludeTypeNameDiagramAction : DiagramAction(
             .map { it.graphNode.name }
 
         if (excludedTypeNames.isNotEmpty()) {
-            HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+            DeveloperSettingsComponent.getInstance(project).state
                 .typeSystemDiagramSettings
                 .excludedTypeNames
                 .addAll(excludedTypeNames)

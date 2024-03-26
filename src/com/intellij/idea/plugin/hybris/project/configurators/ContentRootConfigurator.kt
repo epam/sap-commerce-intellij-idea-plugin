@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.ModifiableRootModel
 
@@ -29,7 +29,7 @@ interface ContentRootConfigurator {
         indicator: ProgressIndicator,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
-        appSettings: HybrisApplicationSettings
+        appSettings: ApplicationSettings
     )
 
 }

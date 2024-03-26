@@ -23,7 +23,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.util.ProcessingContext
@@ -37,7 +37,7 @@ class ImpexHeaderAttributeModifierNameCompletionProvider : CompletionProvider<Co
         result: CompletionResultSet
     ) {
         val element = parameters.position
-        val completionSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(element.project).state
+        val completionSettings = DeveloperSettingsComponent.getInstance(element.project).state
             .impexSettings
             .completion
         AttributeModifier.entries

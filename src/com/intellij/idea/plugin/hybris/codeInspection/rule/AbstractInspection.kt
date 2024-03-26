@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule
 
 import com.intellij.codeInsight.daemon.HighlightDisplayKey
 import com.intellij.codeInspection.ex.InspectionProfileWrapper
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -40,7 +40,7 @@ abstract class AbstractInspection<T : DomElement>(domClass: Class<T>) : DomEleme
     override fun checkFileElement(domFileElement: DomFileElement<T>, holder: DomElementAnnotationHolder) {
         val file = domFileElement.file
         val project = file.project
-        if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
+        if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) return
         if (!canProcess(project, file)) return
 
         val helper = DomElementAnnotationsManager.getInstance(project).highlightingHelper

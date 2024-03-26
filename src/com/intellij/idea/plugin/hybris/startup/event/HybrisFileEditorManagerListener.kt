@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
@@ -37,7 +37,7 @@ class HybrisFileEditorManagerListener(private val project: Project) : FileEditor
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
         if (SingleRootFileViewProvider.isTooLargeForIntelligence(file)) return
-        val projectSettings = HybrisProjectSettingsComponent.getInstance(project)
+        val projectSettings = ProjectSettingsComponent.getInstance(project)
         if (!projectSettings.isHybrisProject()) return
 
         val toolbarInstaller = when (file.fileType) {

@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.gotoClass
 
 import com.intellij.ide.util.gotoByName.DefaultClassNavigationContributor
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.navigation.GotoClassContributor
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
@@ -71,5 +71,5 @@ class CustomGotoClassContributor : GotoClassContributor {
     }
 
     private fun shouldNotBeProcessed(includeNonProjectItems: Boolean, project: Project) = includeNonProjectItems
-        || !HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+        || !ProjectSettingsComponent.getInstance(project).isHybrisProject()
 }

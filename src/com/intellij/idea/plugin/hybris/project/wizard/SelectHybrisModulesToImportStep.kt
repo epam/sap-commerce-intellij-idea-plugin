@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImpor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.ui.table.JBTable
 import org.apache.commons.lang3.BooleanUtils
@@ -121,11 +121,11 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
         context.setHybrisModulesToImport(allElements)
     }
 
-    override fun open(settings: HybrisProjectSettings) {
+    override fun open(settings: ProjectSettings) {
         refresh(settings)
     }
 
-    override fun refresh(settings: HybrisProjectSettings) {
+    override fun refresh(settings: ProjectSettings) {
         try {
             val filteredModuleToImport = context.getBestMatchingExtensionsToImport(settings)
             context.setList(filteredModuleToImport)

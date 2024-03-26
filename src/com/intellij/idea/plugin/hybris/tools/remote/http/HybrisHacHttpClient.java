@@ -20,7 +20,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.google.gson.Gson;
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil;
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.TableBuilder;
@@ -103,7 +103,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final Project project,
         final String urlSuffix,
         final Map<String, String> requestParams,
-        final HybrisRemoteConnectionSettings settings
+        final RemoteConnectionSettings settings
 
     ) {
         final List<BasicNameValuePair> params = createParamsList(requestParams);

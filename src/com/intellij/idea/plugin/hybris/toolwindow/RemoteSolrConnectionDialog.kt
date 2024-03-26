@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.credentialStore.Credentials
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
 import com.intellij.openapi.project.Project
@@ -32,7 +32,7 @@ import java.awt.Component
 class RemoteSolrConnectionDialog(
     project: Project,
     parentComponent: Component,
-    settings: HybrisRemoteConnectionSettings
+    settings: RemoteConnectionSettings
 ) : AbstractRemoteConnectionDialog(project, parentComponent, settings, "Remote SOLR Instance") {
 
     override fun panel() = panel {
@@ -137,7 +137,7 @@ class RemoteSolrConnectionDialog(
         }
     }
 
-    override fun createTestSettings() = with(HybrisRemoteConnectionSettings()) {
+    override fun createTestSettings() = with(RemoteConnectionSettings()) {
         type = settings.type
         hostIP = hostTextField.text
         port = portTextField.text
@@ -147,7 +147,7 @@ class RemoteSolrConnectionDialog(
         this
     }
 
-    override fun testConnection(testSettings: HybrisRemoteConnectionSettings): String? = try {
+    override fun testConnection(testSettings: RemoteConnectionSettings): String? = try {
         SolrHttpClient.getInstance(project).listOfCores(testSettings)
 
         null

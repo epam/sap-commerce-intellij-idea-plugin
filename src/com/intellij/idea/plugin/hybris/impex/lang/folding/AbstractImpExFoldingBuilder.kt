@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.folding
 
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
@@ -29,7 +29,7 @@ abstract class AbstractImpExFoldingBuilder : FoldingBuilderEx() {
     abstract fun buildFoldRegionsInternal(psi: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor>
 
     override fun buildFoldRegions(psi: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingEnabled = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(psi.project).getState()
+        val foldingEnabled = DeveloperSettingsComponent.getInstance(psi.project).getState()
             .impexSettings
             .folding
             .enabled

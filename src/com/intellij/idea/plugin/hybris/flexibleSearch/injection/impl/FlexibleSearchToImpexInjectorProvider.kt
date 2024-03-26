@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjectorProvider
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.lang.Language
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -115,7 +115,7 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
             ?.computeValue()
             ?: return injectSimple(injectionPlacesRegistrar, host, expression, quoteLength = quoteLength)
 
-        val alias = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(host.project)
+        val alias = DeveloperSettingsComponent.getInstance(host.project)
             .state
             .flexibleSearchSettings
             .fallbackToTableNameIfNoAliasProvided

@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSimpleFoldingBlocksFilter;
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSmartFoldingBlocksFilter;
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.util.PsiElementFilter;
@@ -39,7 +39,7 @@ public final class ImpExPsiElementFilterFactory {
     }
 
     private static boolean isUseSmartFolding(final @NotNull Project project) {
-        return HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getState()
+        return DeveloperSettingsComponent.getInstance(project).getState()
             .getImpexSettings()
             .getFolding()
             .getUseSmartFolding();

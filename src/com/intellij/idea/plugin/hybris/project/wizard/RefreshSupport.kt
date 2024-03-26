@@ -18,10 +18,10 @@
  */
 package com.intellij.idea.plugin.hybris.project.wizard
 
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.options.ConfigurationException
 
 interface RefreshSupport {
     @Throws(ConfigurationException::class)
-    fun refresh(settings: HybrisProjectSettings)
+    fun refresh(settings: ProjectSettings)
 }

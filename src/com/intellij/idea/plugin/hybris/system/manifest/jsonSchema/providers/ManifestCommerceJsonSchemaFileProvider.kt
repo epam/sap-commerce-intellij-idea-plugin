@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -32,7 +32,7 @@ class ManifestCommerceJsonSchemaFileProvider(val project: Project) : JsonSchemaF
 
     override fun isAvailable(file: VirtualFile) = HybrisConstants.CCV2_MANIFEST_NAME == file.name
             && HybrisConstants.CCV2_CORE_CUSTOMIZE_NAME == file.parent?.name
-            && HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+            && ProjectSettingsComponent.getInstance(project).isHybrisProject()
 
     override fun getName() = "SAP Commerce Manifest"
     override fun getSchemaFile() = JsonSchemaProviderFactory.getResourceFile(javaClass, "/schemas/manifest-commerce.schema.json")

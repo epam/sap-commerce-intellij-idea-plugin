@@ -25,14 +25,14 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnRefExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.ProcessingContext
 
 class FxSHybrisColumnCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val fxsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(parameters.position.project).state.flexibleSearchSettings
+        val fxsSettings = DeveloperSettingsComponent.getInstance(parameters.position.project).state.flexibleSearchSettings
         val addComma = FxSUtils.shouldAddCommaAfterExpression(parameters.position, fxsSettings)
 
         val parent = parameters.position.parentOfType<FlexibleSearchColumnRefExpression>()

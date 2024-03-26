@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectRemoteInstancesSettingsConfigurableProvider
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.options.ProjectRemoteInstancesSettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
@@ -126,12 +126,12 @@ class HacChooseConnectionAction : ActionGroup() {
         override fun getIcon(): Icon = HybrisIcons.SETTINGS
     }
 
-    open class ConnectionItem(val settings: HybrisRemoteConnectionSettings) : ListItem() {
+    open class ConnectionItem(val settings: RemoteConnectionSettings) : ListItem() {
         override fun getText() = settings.toString()
         override fun getIcon(): Icon = HybrisIcons.Y_REMOTE
     }
 
-    class ActiveConnectionItem(settings: HybrisRemoteConnectionSettings) : ConnectionItem(settings) {
+    class ActiveConnectionItem(settings: RemoteConnectionSettings) : ConnectionItem(settings) {
         override fun getIcon(): Icon = HybrisIcons.Y_REMOTE_GREEN
     }
 
@@ -159,7 +159,7 @@ class HacChooseConnectionAction : ActionGroup() {
                     RemoteHacConnectionDialog(project, owner, settings).showAndGet()
                 }
                 is ConnectionSettingsItem -> ShowSettingsUtil.getInstance()
-                    .showSettingsDialog(project, HybrisProjectRemoteInstancesSettingsConfigurableProvider.SettingsConfigurable::class.java)
+                    .showSettingsDialog(project, ProjectRemoteInstancesSettingsConfigurableProvider.SettingsConfigurable::class.java)
 
                 is ConnectionItem -> RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, selectedValue.settings)
             }

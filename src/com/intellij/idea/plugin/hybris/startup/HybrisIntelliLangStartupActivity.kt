@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.startup
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.project.Project
@@ -41,7 +41,7 @@ import org.intellij.plugins.intelliLang.inject.java.JavaLanguageInjectionSupport
 class HybrisIntelliLangStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
+        if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) return
 
         registerJavaInjections(project)
     }

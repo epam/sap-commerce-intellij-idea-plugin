@@ -25,3 +25,16 @@ data class CCv2Environment(
     val status: String,
     val deploymentStatus: String,
 ) : CCv2DTO
+
+enum class CCv2EnvironmentType(val title: String) {
+    DEV("Development"),
+    STG("Staging"),
+    PROD("Production"),
+    UNKNOWN("Unknown");
+
+    companion object {
+        fun tryValueOf(name: String) = entries
+            .find { it.name == name }
+            ?: UNKNOWN
+    }
+}

@@ -18,14 +18,14 @@
  */
 package com.intellij.idea.plugin.hybris.project.providers
 
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.WritingAccessProvider
 
 class HybrisWritingAccessProvider(myProject: Project) : WritingAccessProvider() {
 
-    private val ootbReadOnlyMode = HybrisProjectSettingsComponent.getInstance(myProject).state.importOotbModulesInReadOnlyMode
+    private val ootbReadOnlyMode = ProjectSettingsComponent.getInstance(myProject).state.importOotbModulesInReadOnlyMode
 
     override fun requestWriting(files: Collection<VirtualFile>) = files
         .filter { isFileReadOnly(it) }

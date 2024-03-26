@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 import javax.swing.JPanel
@@ -41,6 +41,6 @@ class ItemsXmlInlayHintsProvider : InlayHintsProvider<NoSettings> {
 
     override fun getCollectorFor(
         file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink
-    ) = if (file.name.endsWith(name) && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()) ItemsXmlInlayHintsCollector(editor)
+    ) = if (file.name.endsWith(name) && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()) ItemsXmlInlayHintsCollector(editor)
     else null
 }

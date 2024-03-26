@@ -23,7 +23,7 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.EiSModelAccess
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.modules
@@ -49,7 +49,7 @@ abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerPro
             .find { it.tokenType == XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN }
             ?: return emptyList()
         if (PsiTreeUtil.getParentOfType(psi, XmlTag::class.java)?.localName != getParentTagName()) return emptyList()
-        val descriptor = HybrisProjectSettingsComponent.getInstance(psi.project).getAvailableExtensions()[psi.value]
+        val descriptor = ProjectSettingsComponent.getInstance(psi.project).getAvailableExtensions()[psi.value]
             ?: return emptyList()
         val extensionInfoName = psi.project.modules
             .find { it.yExtensionName() == psi.value }

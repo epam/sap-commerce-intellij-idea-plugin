@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -45,7 +45,7 @@ class RequiredExtensionsNameCompletionProvider : ExtensionNameCompletionProvider
                 ?.filter { it.isNotBlank() }
                 ?.map { it.lowercase() } ?: emptyList()
 
-        return HybrisProjectSettingsComponent.getInstance(project)
+        return ProjectSettingsComponent.getInstance(project)
                 .getAvailableExtensions()
                 .entries
                 .filterNot { currentNames.contains(it.key) }

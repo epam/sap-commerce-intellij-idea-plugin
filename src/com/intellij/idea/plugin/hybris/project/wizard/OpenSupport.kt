@@ -18,10 +18,10 @@
  */
 package com.intellij.idea.plugin.hybris.project.wizard
 
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.options.ConfigurationException
 
 interface OpenSupport {
     @Throws(ConfigurationException::class)
-    fun open(settings: HybrisProjectSettings)
+    fun open(settings: ProjectSettings)
 }

@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSimpleFoldingPlaceholderBuilder
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSmartFoldingPlaceholderBuilder
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.openapi.project.Project
 
 object ImpexFoldingPlaceholderBuilderFactory {
@@ -27,7 +27,7 @@ object ImpexFoldingPlaceholderBuilderFactory {
     fun getPlaceholderBuilder(project: Project) = if (isUseSmartFolding(project)) ImpExSmartFoldingPlaceholderBuilder.getInstance()
     else ImpExSimpleFoldingPlaceholderBuilder.getInstance()
 
-    private fun isUseSmartFolding(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getState()
+    private fun isUseSmartFolding(project: Project) = DeveloperSettingsComponent.getInstance(project).getState()
         .impexSettings
         .folding
         .useSmartFolding

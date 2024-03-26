@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigur
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -62,7 +62,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final ProgressIndicator indicator,
         @NotNull final ModifiableRootModel modifiableRootModel,
         @NotNull final ModuleDescriptor moduleDescriptor,
-        @NotNull final HybrisApplicationSettings appSettings
+        @NotNull final ApplicationSettings appSettings
     ) {
         indicator.setText2(message("hybris.project.import.module.content"));
         final var contentEntry = modifiableRootModel.addContentEntry(VfsUtil.pathToUrl(
@@ -96,7 +96,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore,
-        @NotNull final HybrisApplicationSettings appSettings
+        @NotNull final ApplicationSettings appSettings
     ) {
         final var rootProjectDescriptor = moduleDescriptor.getRootProjectDescriptor();
         final var customModuleDescriptor = isCustomModuleDescriptor(moduleDescriptor);
@@ -128,7 +128,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final ContentEntry contentEntry,
         @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final List<File> dirsToIgnore,
-        @NotNull final HybrisApplicationSettings appSettings
+        @NotNull final ApplicationSettings appSettings
     ) {
         final var resourcesDirectory = new File(moduleDescriptor.getModuleRootDirectory(), RESOURCES_DIRECTORY);
 
@@ -180,7 +180,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
     protected void configureWebRoots(
         @NotNull final YWebSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
-        @NotNull final HybrisApplicationSettings appSettings
+        @NotNull final ApplicationSettings appSettings
     ) {
         configureWebModuleRoots(moduleDescriptor, contentEntry);
 
@@ -195,7 +195,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
     private static void configureExternalModuleRoot(
         final @NotNull YWebSubModuleDescriptor moduleDescriptor,
         final @NotNull ContentEntry contentEntry,
-        final @NotNull HybrisApplicationSettings appSettings,
+        final @NotNull ApplicationSettings appSettings,
         final String sourceRoot,
         final JavaSourceRootType type
     ) {
@@ -228,7 +228,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final PlatformModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         final List<File> dirsToIgnore,
-        final HybrisApplicationSettings appSettings
+        final ApplicationSettings appSettings
     ) {
         final var rootDirectory = moduleDescriptor.getModuleRootDirectory();
         final var platformBootstrapDirectory = new File(rootDirectory, PLATFORM_BOOTSTRAP_DIRECTORY);
@@ -272,7 +272,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final ContentEntry contentEntry,
         @NotNull final File dir,
         @NotNull final List<File> dirsToIgnore,
-        @NotNull final HybrisApplicationSettings appSettings,
+        @NotNull final ApplicationSettings appSettings,
         final List<String> directories,
         final JavaSourceRootType scope
     ) {
@@ -291,7 +291,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final File testSrcDir,
         @NotNull final JpsModuleSourceRootType<P> rootType,
         @NotNull final List<File> dirsToIgnore,
-        @NotNull final HybrisApplicationSettings appSettings
+        @NotNull final ApplicationSettings appSettings
     ) {
         addSourceFolderIfNotIgnored(
             contentEntry,
@@ -311,7 +311,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         @NotNull final JpsModuleSourceRootType<P> rootType,
         @NotNull final P properties,
         @NotNull final List<File> dirsToIgnore,
-        @NotNull final HybrisApplicationSettings applicationSettings
+        @NotNull final ApplicationSettings applicationSettings
     ) {
         if (dirsToIgnore.stream().noneMatch(it -> FileUtil.isAncestor(it, srcDir, false))) {
             final boolean ignoreEmpty = applicationSettings.getIgnoreNonExistingSourceDirectories();

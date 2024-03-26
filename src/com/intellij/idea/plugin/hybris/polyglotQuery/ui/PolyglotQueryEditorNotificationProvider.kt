@@ -22,9 +22,9 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -48,11 +48,11 @@ import javax.swing.JComponent
 class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, DumbAware {
 
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        val projectSettings = HybrisProjectSettingsComponent.getInstance(project)
+        val projectSettings = ProjectSettingsComponent.getInstance(project)
         if (!projectSettings.isHybrisProject()) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, PolyglotQueryFileType)) return null
 
-        val developerSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+        val developerSettings = DeveloperSettingsComponent.getInstance(project).state
 
         val pgqSettings = developerSettings.polyglotQuerySettings
         if (!pgqSettings.verifyCaseForReservedWords) return null

@@ -19,7 +19,7 @@
 
 package com.intellij.idea.plugin.hybris.actions
 
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
@@ -33,5 +33,5 @@ object ActionUtils {
         ?.let { isHybrisContext(it) }
         ?: false
 
-    fun isHybrisContext(project: Project) = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+    fun isHybrisContext(project: Project) = ProjectSettingsComponent.getInstance(project).isHybrisProject()
 }

@@ -22,7 +22,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
 import com.intellij.json.psi.*
 import com.intellij.psi.PsiElement
@@ -43,7 +43,7 @@ class ManifestCommerceExtensionInspection : LocalInspectionTool() {
 
         override fun visitStringLiteral(o: JsonStringLiteral) {
             val parent = o.parent
-            if (isApplicable(parent, o) && !HybrisProjectSettingsComponent.getInstance(o.project).getAvailableExtensions().contains(o.value)) {
+            if (isApplicable(parent, o) && !ProjectSettingsComponent.getInstance(o.project).getAvailableExtensions().contains(o.value)) {
                 holder.registerProblem(
                     o,
                     HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownExtensionInspection.message", o.value)

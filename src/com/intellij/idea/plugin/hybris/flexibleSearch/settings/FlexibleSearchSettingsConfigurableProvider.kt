@@ -20,9 +20,9 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.settings
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -36,14 +36,14 @@ import javax.swing.JCheckBox
 
 class FlexibleSearchSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
-    override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override fun canCreateConfigurable() = ProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
         message("hybris.settings.project.fxs.title"), "hybris.fxs.settings"
     ) {
 
-        private val state = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.flexibleSearchSettings
+        private val state = DeveloperSettingsComponent.getInstance(project).state.flexibleSearchSettings
 
         private lateinit var verifyCaseCheckBox: JCheckBox
 

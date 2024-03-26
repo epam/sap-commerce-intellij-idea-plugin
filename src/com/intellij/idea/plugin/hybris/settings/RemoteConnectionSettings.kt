@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,9 +27,11 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.openapi.components.BaseState
 import com.intellij.util.xmlb.Accessor
+import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.Transient
 
-class HybrisRemoteConnectionSettings : BaseState(), Comparable<HybrisRemoteConnectionSettings> {
+@Tag("HybrisRemoteConnectionSettings")
+class RemoteConnectionSettings : BaseState(), Comparable<RemoteConnectionSettings> {
 
     var uuid by string(null)
     @Transient
@@ -79,13 +81,13 @@ class HybrisRemoteConnectionSettings : BaseState(), Comparable<HybrisRemoteConne
         && accessor.name != "password"
         && accessor.name != "scope"
 
-    override fun compareTo(other: HybrisRemoteConnectionSettings) = uuid
+    override fun compareTo(other: RemoteConnectionSettings) = uuid
         ?.compareTo(other.uuid ?: "")
         ?: -1
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is HybrisRemoteConnectionSettings) return false
+        if (other !is RemoteConnectionSettings) return false
 
         if (uuid != other.uuid) return false
 

@@ -18,7 +18,8 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.lang.folding
 
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.CngFoldingSettings
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.Field
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.FieldList
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
@@ -34,7 +35,6 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.Addit
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.ComposedHandler
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.Property
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.PropertyList
-import com.intellij.idea.plugin.hybris.system.cockpitng.settings.CngFoldingSettings
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -63,7 +63,7 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
         }
     }
 
-    override fun initSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+    override fun initSettings(project: Project) = DeveloperSettingsComponent.getInstance(project).state
         .cngSettings
         .folding
 

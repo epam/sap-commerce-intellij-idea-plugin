@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import org.apache.commons.lang3.ArrayUtils;
@@ -49,7 +49,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         @NotNull final List<? extends ModuleDescriptor> modulesChosenForImport
     ) {
         indicator.setText2(message("hybris.project.import.module.groups"));
-        final var applicationSettings = HybrisApplicationSettingsComponent.getInstance().getState();
+        final var applicationSettings = ApplicationSettingsComponent.getInstance().getState();
         if (!applicationSettings.getGroupModules()) {
             return;
         }
@@ -65,13 +65,13 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             });
 
         final var groups = Map.of(
-            "groupCustom", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupCustom()),
-            "groupNonHybris", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupNonHybris()),
-            "groupOtherCustom", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupOtherCustom()),
-            "groupHybris", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupHybris()),
-            "groupOtherHybris", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupOtherHybris()),
-            "groupPlatform", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupPlatform()),
-            "groupCCv2", HybrisApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupCCv2())
+            "groupCustom", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupCustom()),
+            "groupNonHybris", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupNonHybris()),
+            "groupOtherCustom", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupOtherCustom()),
+            "groupHybris", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupHybris()),
+            "groupOtherHybris", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupOtherHybris()),
+            "groupPlatform", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupPlatform()),
+            "groupCCv2", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupCCv2())
         );
         modulesChosenForImport.forEach(it -> {
             final @Nullable String[] groupNames = getGroupName(it, requiredYModuleDescriptorList, groups);
@@ -157,7 +157,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         if (rawGroupText == null) {
             rawGroupText = properties.getProperty(moduleName + '.' + GROUP_OVERRIDE_KEY);
         }
-        return HybrisApplicationSettingsComponent.toIdeaGroup(rawGroupText);
+        return ApplicationSettingsComponent.toIdeaGroup(rawGroupText);
     }
 
     private String[] getGroupPath(@NotNull final ModuleDescriptor moduleDescriptor, final Set<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {

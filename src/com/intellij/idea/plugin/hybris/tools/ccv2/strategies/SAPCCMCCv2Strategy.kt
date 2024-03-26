@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCMBuildCommands
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCMEnvironmentCommands
@@ -37,14 +37,14 @@ import kotlin.io.path.isExecutable
 class SAPCCMCCv2Strategy : CCv2Strategy {
 
     override fun fetchEnvironments(project: Project, ccv2Token: String, subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Environment>> {
-        val appSettings = HybrisApplicationSettingsComponent.getInstance()
+        val appSettings = ApplicationSettingsComponent.getInstance()
         authCredentials(project, appSettings, ccv2Token) ?: return emptyMap()
 
         return SAPCCMEnvironmentCommands.list(project, appSettings, subscriptions)
     }
 
     override fun fetchBuilds(project: Project, ccv2Token: String, subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Build>> {
-        val appSettings = HybrisApplicationSettingsComponent.getInstance()
+        val appSettings = ApplicationSettingsComponent.getInstance()
         authCredentials(project, appSettings, ccv2Token) ?: return emptyMap()
 
         return SAPCCMBuildCommands.list(project, appSettings, subscriptions)
@@ -64,7 +64,7 @@ class SAPCCMCCv2Strategy : CCv2Strategy {
 
     private fun authCredentials(
         project: Project,
-        appSettings: HybrisApplicationSettingsComponent,
+        appSettings: ApplicationSettingsComponent,
         ccv2Token: String
     ): List<String>? {
         ProgressManager.getInstance().progressIndicator.text2 = "Authenticating with the provided token..."

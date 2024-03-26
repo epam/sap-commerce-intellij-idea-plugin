@@ -20,20 +20,17 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
 import com.intellij.idea.plugin.hybris.groovy.settings.GroovySettings
-import com.intellij.idea.plugin.hybris.impex.settings.ImpexSettings
 import com.intellij.idea.plugin.hybris.polyglotQuery.settings.PolyglotQuerySettings
-import com.intellij.idea.plugin.hybris.system.bean.settings.BeanSystemSettings
-import com.intellij.idea.plugin.hybris.system.businessProcess.settings.BpSettings
-import com.intellij.idea.plugin.hybris.system.cockpitng.settings.CngSettings
-import com.intellij.idea.plugin.hybris.system.type.settings.TSDiagramSettings
-import com.intellij.idea.plugin.hybris.system.type.settings.TypeSystemSettings
 import com.intellij.openapi.components.BaseState
+import com.intellij.util.xmlb.annotations.Tag
 
-class HybrisDeveloperSpecificProjectSettings : BaseState() {
+@Tag("HybrisDeveloperSpecificProjectSettings")
+class DeveloperSettings : BaseState() {
     var activeRemoteConnectionID by string(null)
     var activeSolrConnectionID by string(null)
-    var remoteConnectionSettingsList by list<HybrisRemoteConnectionSettings>()
-    var typeSystemDiagramSettings by property(TSDiagramSettings()) { false }
+    var activeCCv2SubscriptionID by string(null)
+    var remoteConnectionSettingsList by list<RemoteConnectionSettings>()
+    var typeSystemDiagramSettings by property(TypeSystemDiagramSettings()) { false }
     var beanSystemSettings by property(BeanSystemSettings()) { false }
     var typeSystemSettings by property(TypeSystemSettings()) { false }
     var cngSettings by property(CngSettings()) { false }
@@ -42,5 +39,4 @@ class HybrisDeveloperSpecificProjectSettings : BaseState() {
     var polyglotQuerySettings by property(PolyglotQuerySettings()) { false }
     var impexSettings by property(ImpexSettings()) { false }
     var groovySettings by property(GroovySettings()) { false }
-    var activeCCv2Subscription by string(null)
 }

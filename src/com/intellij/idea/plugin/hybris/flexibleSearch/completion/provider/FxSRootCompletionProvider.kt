@@ -22,7 +22,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.psi.PsiErrorElement
 import com.intellij.util.ProcessingContext
 
@@ -32,7 +32,7 @@ class FxSRootCompletionProvider : CompletionProvider<CompletionParameters>() {
         val psiErrorElement = parameters.position.parent as? PsiErrorElement
             ?: return
 
-        val fxsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(parameters.position.project).state.flexibleSearchSettings
+        val fxsSettings = DeveloperSettingsComponent.getInstance(parameters.position.project).state.flexibleSearchSettings
         // FlexibleSearchTokenType.toString()
         when (psiErrorElement.errorDescription.substringBefore(">") + ">") {
             "<statement>" -> result.addAllElements(

@@ -6,8 +6,9 @@
 
 ### `CCv2 CLI` enhancements
 - Added possibility to specify directory of the SAP CX CLI [#1048](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1048)
-- Added possibility to save developer-specific SAP CX CLI token in the secure storage [#1049](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1049)
-- Added possibility to save CCv2 subscriptions to be used with SAP CX CLI [#1050](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1050)
+- Added possibility to set developer-specific SAP CX CLI token in the secure storage [#1049](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1049)
+- Added possibility to set developer-specific and project-aware CCv2 subscription [#1058](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1058)
+- Added possibility to set CCv2 subscriptions to be used with SAP CX CLI [#1050](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1050)
 - Show cloud icon for CCv2 subscription [#1051](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1051)
 - Fetch and show CCv2 environments details [#1055](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1055)
 - Fetch and show CCv2 builds details [#1057](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1057)

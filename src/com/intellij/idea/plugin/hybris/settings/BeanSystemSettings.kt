@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,17 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.businessProcess.settings
+package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.settings.FoldingSettings
-
-data class BpSettings(
-    var folding: BpFoldingSettings = BpFoldingSettings(),
+data class BeanSystemSettings(
+    var folding: BeanSystemFoldingSettings = BeanSystemFoldingSettings(),
 )
 
-data class BpFoldingSettings(
+data class BeanSystemFoldingSettings(
     override var enabled: Boolean = true,
-    var tablifyActionTransitions: Boolean = true,
-    var tablifyEnds: Boolean = true,
-    var tablifyCaseChoices: Boolean = true,
-): FoldingSettings
+    var tablifyProperties: Boolean = true,
+) : FoldingSettings

@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.utils
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.psi.PsiElement
 
@@ -27,7 +27,7 @@ object ModuleUtils {
 
     fun isHybrisModule(psi: PsiElement): Boolean {
         val module = ModuleUtilCore.findModuleForPsiElement(psi) ?: return false
-        val descriptorType = HybrisProjectSettingsComponent.getInstance(psi.project)
+        val descriptorType = ProjectSettingsComponent.getInstance(psi.project)
             .getModuleSettings(module).type
         return descriptorType == ModuleDescriptorType.PLATFORM
             || descriptorType == ModuleDescriptorType.EXT

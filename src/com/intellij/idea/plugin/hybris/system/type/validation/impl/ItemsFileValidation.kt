@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.system.type.validation.impl
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation
@@ -44,7 +44,7 @@ import org.apache.commons.collections4.map.CaseInsensitiveMap
 class ItemsFileValidation(private val project: Project) : ItemsXmlFileValidation {
 
     override fun isFileOutOfDate(file: VirtualFile): Boolean {
-        if (!HybrisApplicationSettingsComponent.getInstance().state.warnIfGeneratedItemsAreOutOfDate) return false
+        if (!ApplicationSettingsComponent.getInstance().state.warnIfGeneratedItemsAreOutOfDate) return false
         if (!file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)) return false
         if (!ModuleUtil.projectContainsFile(project, file, false)) return false
         if (DumbService.isDumb(project)) return false

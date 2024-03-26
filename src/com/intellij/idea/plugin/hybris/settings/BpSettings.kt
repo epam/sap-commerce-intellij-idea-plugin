@@ -16,17 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.ccv2.dto
+package com.intellij.idea.plugin.hybris.settings
 
-enum class CCv2EnvironmentType(val title: String) {
-    DEV("Development"),
-    STG("Staging"),
-    PROD("Production"),
-    UNKNOWN("Unknown");
+data class BpSettings(
+    var folding: BpFoldingSettings = BpFoldingSettings(),
+)
 
-    companion object {
-        fun tryValueOf(name: String) = entries
-            .find { it.name == name }
-            ?: UNKNOWN
-    }
-}
+data class BpFoldingSettings(
+    override var enabled: Boolean = true,
+    var tablifyActionTransitions: Boolean = true,
+    var tablifyEnds: Boolean = true,
+    var tablifyCaseChoices: Boolean = true,
+): FoldingSettings

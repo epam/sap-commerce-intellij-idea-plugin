@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_VALUE
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.properties.PropertyService
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
@@ -84,7 +84,7 @@ class TSCompletionService(private val project: Project) {
     }
 
     fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElement> {
-        val completion = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.impexSettings.completion
+        val completion = DeveloperSettingsComponent.getInstance(project).state.impexSettings.completion
         if (!completion.showInlineTypes) return emptyList()
 
         val referenceItemTypeName = element.referenceItemTypeName ?: return emptyList()

@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectDiagramTSSettingsConfigurableProvider
+import com.intellij.idea.plugin.hybris.settings.options.ProjectTypeSystemConfigurableProvider
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.options.ShowSettingsUtil
@@ -31,6 +31,6 @@ class OpenSettingsDiagramAction : AnAction(
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        ShowSettingsUtil.getInstance().showSettingsDialog(project, HybrisProjectDiagramTSSettingsConfigurableProvider.SettingsConfigurable::class.java)
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, ProjectTypeSystemConfigurableProvider.SettingsConfigurable::class.java)
     }
 }

@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifie
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.idea.plugin.hybris.impex.settings.ImpexCompletionSettings
+import com.intellij.idea.plugin.hybris.settings.ImpexCompletionSettings
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType

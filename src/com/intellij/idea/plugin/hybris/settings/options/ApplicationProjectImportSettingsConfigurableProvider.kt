@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -27,15 +28,15 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class HybrisProjectImportApplicationSettingsConfigurableProvider : ConfigurableProvider() {
+class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvider() {
 
     override fun createConfigurable() = SettingsConfigurable()
 
     class SettingsConfigurable : BoundSearchableConfigurable(
-        message("hybris.settings.application.project_import.title"), "[y] SAP Commerce plugin project import configuration."
+        message("hybris.settings.application.project_import.title"), "[y] SAP CX project import configuration."
     ) {
 
-        private val state = HybrisApplicationSettingsComponent.getInstance().state
+        private val state = ApplicationSettingsComponent.getInstance().state
 
         private lateinit var groupModulesCheckBox: JCheckBox
         private lateinit var externalModulesCheckBox: JCheckBox

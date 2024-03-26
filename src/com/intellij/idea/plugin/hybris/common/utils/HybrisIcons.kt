@@ -223,6 +223,7 @@ object HybrisIcons {
     val CCV2_DEPLOYMENTS = AllIcons.Nodes.Deploy
     val CCV2_BACKUPS = AllIcons.Nodes.Undeploy
     val CCV2_ENDPOINTS = AllIcons.General.Web
+    val CCV2_BRANCH = AllIcons.Vcs.Branch
 
     val CONNECTION_ADD = AllIcons.General.Add
     val CONNECTION_EDIT = AllIcons.Actions.Edit

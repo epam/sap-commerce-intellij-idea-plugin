@@ -47,7 +47,7 @@ abstract class AbstractCCv2DataView<T : CCv2DTO> {
 
     protected fun Panel.noData() {
         row {
-            label("No ${CCv2EnvironmentsDataView.tab.title} data available. Try re-fetching remote data...")
+            label("No ${tab.title} data available. Try re-fetching remote data...")
                 .align(Align.CENTER)
                 .resizableColumn()
         }.resizableRow()

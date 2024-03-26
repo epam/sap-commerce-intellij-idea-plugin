@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -52,9 +52,9 @@ abstract class FetchAction(
         val task = object : Task.Backgroundable(project, taskTitle) {
             override fun run(indicator: ProgressIndicator) {
                 fetching = true
-                val ccv2Subscriptions = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveCCv2Subscription()
+                val ccv2Subscriptions = DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
                     ?.let { listOf(it) }
-                    ?: HybrisApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
+                    ?: ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
                         .sortedBy { it.toString() }
 
                 fetch(project, ccv2Subscriptions)
@@ -66,7 +66,7 @@ abstract class FetchAction(
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabled = !fetching && HybrisApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
+        e.presentation.isEnabled = !fetching && ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
         e.presentation.isVisible = e.project
             ?.let { getActiveTab(it) == tab }
             ?: false

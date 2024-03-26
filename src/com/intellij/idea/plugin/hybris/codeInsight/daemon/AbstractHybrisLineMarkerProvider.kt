@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 
@@ -44,7 +44,7 @@ abstract class AbstractHybrisLineMarkerProvider<T : PsiElement> : LineMarkerProv
     protected open fun canProcess(elements: MutableList<out PsiElement>): Boolean {
         val psiFile = elements.firstOrNull()?.containingFile
             ?: return false
-        if (!HybrisProjectSettingsComponent.getInstance(psiFile.project).isHybrisProject()) return false
+        if (!ProjectSettingsComponent.getInstance(psiFile.project).isHybrisProject()) return false
         return canProcess(psiFile)
     }
 }

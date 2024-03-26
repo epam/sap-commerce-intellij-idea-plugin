@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.impex.codeInsight.hints
 
 import com.intellij.codeInsight.hints.declarative.InlayHintsProvider
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 
@@ -28,6 +28,6 @@ class ImpExDefaultValueDeclarativeInlayProvider : InlayHintsProvider {
         ImpExDefaultValueDeclarativeInlayHintsCollector()
     }
 
-    override fun createCollector(file: PsiFile, editor: Editor) = if (HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()) collector
+    override fun createCollector(file: PsiFile, editor: Editor) = if (ProjectSettingsComponent.getInstance(file.project).isHybrisProject()) collector
     else null
 }

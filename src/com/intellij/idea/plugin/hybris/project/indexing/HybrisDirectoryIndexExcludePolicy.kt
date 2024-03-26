@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.project.indexing
 
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootModel
 import com.intellij.openapi.roots.impl.DirectoryIndexExcludePolicy
@@ -49,7 +49,7 @@ class HybrisDirectoryIndexExcludePolicy(val project: Project) : DirectoryIndexEx
     }
 
     private fun getExcludedFromIndexList(): List<String> {
-        return HybrisApplicationSettingsComponent.getInstance()
+        return ApplicationSettingsComponent.getInstance()
                 .state
                 .excludedFromIndexList
     }

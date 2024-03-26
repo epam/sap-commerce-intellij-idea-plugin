@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.diagram.module.node
 import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramVisibilityManager
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphFactory
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.roots.ModuleRootManager
@@ -46,7 +46,7 @@ object ModuleDepDiagramRefresher {
     private fun modulesToShow(model: ModuleDepDiagramDataModel): Collection<Module> {
         val visibilityLevel = model.visibilityManager.currentVisibilityLevel
         val allModules = ModuleManager.getInstance(model.project).modules
-        val projectSettings = HybrisProjectSettingsComponent.getInstance(model.project)
+        val projectSettings = ProjectSettingsComponent.getInstance(model.project)
 
         if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules

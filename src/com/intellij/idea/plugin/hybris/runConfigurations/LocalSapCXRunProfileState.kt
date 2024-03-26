@@ -27,7 +27,7 @@ import com.intellij.execution.process.ProcessHandlerFactory
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.SystemUtils
 import java.nio.file.Paths
@@ -40,7 +40,7 @@ class LocalSapCXRunProfileState(
 
     private fun getScriptPath(): String {
         val basePath = project.basePath ?: ""
-        val settings = HybrisProjectSettingsComponent.getInstance(project).state
+        val settings = ProjectSettingsComponent.getInstance(project).state
         val hybrisDirectory = settings.hybrisDirectory ?: ""
         val script = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
 
@@ -49,7 +49,7 @@ class LocalSapCXRunProfileState(
 
     private fun getWorkDirectory(): String {
         val basePath = project.basePath ?: ""
-        val settings = HybrisProjectSettingsComponent.getInstance(project).state
+        val settings = ProjectSettingsComponent.getInstance(project).state
         val hybrisDirectory = settings.hybrisDirectory ?: ""
 
         return Paths.get(basePath, hybrisDirectory, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()

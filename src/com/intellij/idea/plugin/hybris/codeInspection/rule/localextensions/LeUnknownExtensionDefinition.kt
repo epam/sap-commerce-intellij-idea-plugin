@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.localextensions
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Extension
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Hybrisconfig
 import com.intellij.lang.annotation.HighlightSeverity
@@ -49,7 +49,7 @@ class LeUnknownExtensionDefinition : AbstractLeInspection() {
         project: Project
     ) {
         val extensionName = dom.name.stringValue ?: return
-        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project)
+        val hybrisProjectSettings = ProjectSettingsComponent.getInstance(project)
         val found = hybrisProjectSettings.getAvailableExtensions().keys
             .firstOrNull { extensionName.equals(it, true) }
 

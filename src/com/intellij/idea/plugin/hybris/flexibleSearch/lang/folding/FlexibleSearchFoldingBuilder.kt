@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -40,7 +40,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private val filter = FlexibleSearchFoldingBlocksFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(root.project).state.flexibleSearchSettings.folding
+        val foldingSettings = DeveloperSettingsComponent.getInstance(root.project).state.flexibleSearchSettings.folding
         if (!foldingSettings.enabled) return emptyArray()
 
         return CachedValuesManager.getCachedValue(root) {
@@ -121,7 +121,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
         ?: FALLBACK_PLACEHOLDER
 
     private fun getColumnPlaceholderText(node: ASTNode, columnNameType: IElementType, tableAliasType: IElementType): String {
-        val fxsSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(node.psi.project).state.flexibleSearchSettings
+        val fxsSettings = DeveloperSettingsComponent.getInstance(node.psi.project).state.flexibleSearchSettings
         val columnName = node.findChildByType(columnNameType)
             ?.text
             ?.trim()

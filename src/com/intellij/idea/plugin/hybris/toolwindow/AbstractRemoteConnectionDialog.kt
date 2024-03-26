@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
@@ -51,7 +51,7 @@ import javax.swing.JLabel
 abstract class AbstractRemoteConnectionDialog(
     protected val project: Project,
     parentComponent: Component,
-    protected val settings: HybrisRemoteConnectionSettings,
+    protected val settings: RemoteConnectionSettings,
     dialogTitle: String
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE) {
 
@@ -109,8 +109,8 @@ abstract class AbstractRemoteConnectionDialog(
         }
     }
 
-    protected abstract fun createTestSettings(): HybrisRemoteConnectionSettings
-    protected abstract fun testConnection(testSettings: HybrisRemoteConnectionSettings): String?
+    protected abstract fun createTestSettings(): RemoteConnectionSettings
+    protected abstract fun testConnection(testSettings: RemoteConnectionSettings): String?
     protected abstract fun panel(): DialogPanel
 
     init {

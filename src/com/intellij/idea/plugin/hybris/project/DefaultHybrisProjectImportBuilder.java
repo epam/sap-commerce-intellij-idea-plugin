@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettings;
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -231,7 +231,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
     }
 
     @Override
-    public List<ModuleDescriptor> getBestMatchingExtensionsToImport(final @Nullable HybrisProjectSettings settings) {
+    public List<ModuleDescriptor> getBestMatchingExtensionsToImport(final @Nullable ProjectSettings settings) {
         final List<ModuleDescriptor> allModules = this.getHybrisProjectDescriptor().getFoundModules();
         final List<ModuleDescriptor> moduleToImport = new ArrayList<>();
         final Set<ModuleDescriptor> moduleToCheck = new HashSet<>();

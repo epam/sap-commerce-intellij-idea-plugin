@@ -35,7 +35,7 @@
         <projectConfigurable id="hybris.project.bs.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.bs.title"
-                             provider="com.intellij.idea.plugin.hybris.system.bean.settings.BeanSystemConfigurableProvider"/>
+                             provider="com.intellij.idea.plugin.hybris.settings.options.ProjectBeanSystemConfigurableProvider"/>
 
         <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider.BSClassCompletionProvider"/>
     </extensions>

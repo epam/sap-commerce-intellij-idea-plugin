@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.impex.settings.ImpexSettingsConfigurableProvider
+import com.intellij.idea.plugin.hybris.settings.options.ProjectImpExSettingsConfigurableProvider
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.options.ShowSettingsUtil
@@ -37,6 +37,6 @@ class ImpExOpenSettingsAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        ShowSettingsUtil.getInstance().showSettingsDialog(project, ImpexSettingsConfigurableProvider.SettingsConfigurable::class.java)
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, ProjectImpExSettingsConfigurableProvider.SettingsConfigurable::class.java)
     }
 }

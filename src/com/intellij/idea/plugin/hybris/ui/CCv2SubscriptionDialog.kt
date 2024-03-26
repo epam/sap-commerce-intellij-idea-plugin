@@ -41,7 +41,7 @@ class CCv2SubscriptionDialog(
     override fun createCenterPanel() = panel {
         row {
             idTextField = textField()
-                .label("ID:")
+                .label("Subscription code:")
                 .align(AlignX.FILL)
                 .addValidationRule("ID cannot be blank.") { it.text.isBlank() }
                 .bindText(subscription::id.toNonNullableProperty(""))

@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.idea.plugin.hybris.properties.PropertyService
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
@@ -31,7 +31,7 @@ import com.intellij.openapi.startup.ProjectActivity
 class PreLoadSystemsStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        if (!HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) return
+        if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) return
 
         refreshSystem(project) { TSMetaModelAccess.getInstance(project).initMetaModel() }
         refreshSystem(project) { BSMetaModelAccess.getInstance(project).initMetaModel() }

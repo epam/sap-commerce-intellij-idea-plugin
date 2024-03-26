@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.compile
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
@@ -33,7 +33,7 @@ class ProjectAfterCompilerTask : CompileTask {
             val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
                 ?: return@runReadAction true
 
-            val settings = HybrisProjectSettingsComponent.getInstance(context.project)
+            val settings = ProjectSettingsComponent.getInstance(context.project)
             if (!settings.isHybrisProject()) return@runReadAction true
             if (!settings.state.generateCodeOnRebuild) return@runReadAction true
 

@@ -19,8 +19,8 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.ui
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.FlexibleSearchSettings
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.project.DumbAware
@@ -37,11 +37,11 @@ import javax.swing.JComponent
 abstract class AbstractFxSEditorNotificationProvider : EditorNotificationProvider, DumbAware {
 
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        val projectSettings = HybrisProjectSettingsComponent.getInstance(project)
+        val projectSettings = ProjectSettingsComponent.getInstance(project)
         if (!projectSettings.isHybrisProject()) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, FlexibleSearchFileType)) return null
 
-        val developerSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+        val developerSettings = DeveloperSettingsComponent.getInstance(project).state
         val fxsSettings = developerSettings.flexibleSearchSettings
         if (!shouldCollect(fxsSettings)) return null
 

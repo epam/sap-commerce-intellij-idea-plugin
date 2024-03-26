@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DATA_DIRECT
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JDKMODULESEXPORTS
 import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil
 import com.intellij.idea.plugin.hybris.properties.PropertyService
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.util.io.FileUtil
 import java.io.File
 import java.util.*
@@ -40,7 +40,7 @@ private val PATTERN = Pattern.compile("\"")
 class HybrisJUnitExtension : RunConfigurationExtension() {
 
     override fun isApplicableFor(configuration: RunConfigurationBase<*>) = if (configuration !is JUnitConfiguration) false
-    else HybrisProjectSettingsComponent.getInstance(configuration.getProject()).isHybrisProject()
+    else ProjectSettingsComponent.getInstance(configuration.getProject()).isHybrisProject()
 
     override fun <T : RunConfigurationBase<*>?> updateJavaParameters(configuration: T & Any, params: JavaParameters, runnerSettings: RunnerSettings?) {
         if (runnerSettings != null || !isApplicableFor(configuration)) return
@@ -57,7 +57,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
         }
 
         if (!params.env.containsKey(ENV_HYBRIS_DATA_DIR)) {
-            val settings = HybrisProjectSettingsComponent.getInstance(project).state
+            val settings = ProjectSettingsComponent.getInstance(project).state
             val hybrisDataDirPath = FileUtil.toCanonicalPath(
                 "${project.basePath}/${settings.hybrisDirectory}/$HYBRIS_DATA_DIRECTORY"
             )

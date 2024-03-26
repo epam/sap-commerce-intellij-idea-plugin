@@ -22,11 +22,27 @@ data class CCv2Build(
     val code: String,
     val name: String,
     val branch: String,
-    val status: String,
+    val status: CCv2BuildStatus,
     val appCode: String,
     val appDefVersion: String,
     val createdBy: String,
     val startTime: String,
     val endTime: String,
     val buildVersion: String,
+    val version: String,
 ) : CCv2DTO
+
+enum class CCv2BuildStatus(val title: String) {
+    UNKNOWN("Unknown"),
+    SCHEDULED("Scheduled"),
+    BUILDING("Building"),
+    SUCCESS("Success"),
+    FAIL("Fail"),
+    DELETED("Deleted");
+
+    companion object {
+        fun tryValueOf(name: String) = CCv2BuildStatus.entries
+            .find { it.name == name }
+            ?: UNKNOWN
+    }
+}

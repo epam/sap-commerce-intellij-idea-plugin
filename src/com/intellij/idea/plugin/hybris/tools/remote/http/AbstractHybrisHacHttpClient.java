@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.lang3.StringUtils;
@@ -95,9 +95,9 @@ public abstract class AbstractHybrisHacHttpClient {
         }
     };
 
-    private final Map<HybrisRemoteConnectionSettings, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
+    private final Map<RemoteConnectionSettings, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
 
-    public String login(@NotNull final Project project, @NotNull final HybrisRemoteConnectionSettings settings) {
+    public String login(@NotNull final Project project, @NotNull final RemoteConnectionSettings settings) {
         final var hostHacURL = settings.getGeneratedURL();
         retrieveCookies(hostHacURL, project, settings);
         final var sessionId = Optional.ofNullable(cookiesPerSettings.get(settings))
@@ -146,7 +146,7 @@ public abstract class AbstractHybrisHacHttpClient {
         @NotNull final List<BasicNameValuePair> params,
         final boolean canReLoginIfNeeded,
         final long timeout,
-        final HybrisRemoteConnectionSettings settings
+        final RemoteConnectionSettings settings
     ) {
         var cookies = cookiesPerSettings.get(settings);
         if (cookies == null || !cookies.containsKey(COOKIE_JSESSIONID)) {
@@ -246,7 +246,7 @@ public abstract class AbstractHybrisHacHttpClient {
     protected void retrieveCookies(
         final String hacURL,
         final @NotNull Project project,
-        final @NotNull HybrisRemoteConnectionSettings settings
+        final @NotNull RemoteConnectionSettings settings
     ) {
         final var cookies = cookiesPerSettings.computeIfAbsent(settings, _settings -> new HashMap<>());
         cookies.clear();
@@ -260,7 +260,7 @@ public abstract class AbstractHybrisHacHttpClient {
 
     protected Response getResponseForUrl(
         final String hacURL,
-        final @NotNull HybrisRemoteConnectionSettings settings
+        final @NotNull RemoteConnectionSettings settings
     ) {
         try {
             final var sslProtocol = settings.getSslProtocol();
@@ -276,7 +276,7 @@ public abstract class AbstractHybrisHacHttpClient {
     protected String getCsrfToken(
         final @NotNull String hacURL,
         final @NotNull String sessionId,
-        final @NotNull HybrisRemoteConnectionSettings settings
+        final @NotNull RemoteConnectionSettings settings
     ) {
         try {
             final var sslProtocol = settings.getSslProtocol();

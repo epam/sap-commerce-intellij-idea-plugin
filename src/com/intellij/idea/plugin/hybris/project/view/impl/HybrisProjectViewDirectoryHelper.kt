@@ -22,7 +22,7 @@ import com.intellij.ide.projectView.impl.JavaProjectViewDirectoryHelper
 import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper
 import com.intellij.ide.projectView.impl.nodes.PsiFileSystemItemFilter
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.roots.ProjectRootManager
@@ -69,7 +69,7 @@ class HybrisProjectViewDirectoryHelper(project: Project) : ProjectViewDirectoryH
 
     override fun getTopLevelRoots(): MutableList<VirtualFile> {
         val topLevelContentRoots = super.getTopLevelRoots()
-        if (HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()) {
+        if (ProjectSettingsComponent.getInstance(project).isHybrisProject()) {
             val prm = ProjectRootManager.getInstance(project)
 
             for (root in prm.contentRoots) {

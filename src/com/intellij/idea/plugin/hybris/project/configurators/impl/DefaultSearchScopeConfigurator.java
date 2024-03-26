@@ -24,7 +24,7 @@ import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettings;
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -49,7 +49,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     public void configure(
         final @NotNull ProgressIndicator indicator,
         final @NotNull Project project,
-        final @NotNull HybrisApplicationSettings applicationSettings,
+        final @NotNull ApplicationSettings applicationSettings,
         final @NotNull ModifiableModuleModel model
     ) {
         indicator.setText(message("hybris.project.import.search.scope"));
@@ -113,7 +113,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
     }
 
     @NotNull
-    public static PackageSet createCustomTsImpexBeansFilesPattern(final @NotNull HybrisApplicationSettings appSettings) {
+    public static PackageSet createCustomTsImpexBeansFilesPattern(final @NotNull ApplicationSettings appSettings) {
         final String customGroupName = appSettings.getGroupCustom();
         final FilePatternPackageSet tsFilePatternPackageSet = new FilePatternPackageSet(
             customGroupName + '*',

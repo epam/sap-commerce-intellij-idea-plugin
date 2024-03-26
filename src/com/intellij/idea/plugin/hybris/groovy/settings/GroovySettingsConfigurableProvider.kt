@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.groovy.settings
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -33,14 +33,14 @@ import javax.swing.JCheckBox
 
 class GroovySettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
-    override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override fun canCreateConfigurable() = ProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
         message("hybris.settings.project.groovy.title"), "hybris.groovy.settings"
     ) {
 
-        private val developerSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.groovySettings
+        private val developerSettings = DeveloperSettingsComponent.getInstance(project).state.groovySettings
         private lateinit var enableActionToolbar: JCheckBox
 
         override fun createPanel() = panel {

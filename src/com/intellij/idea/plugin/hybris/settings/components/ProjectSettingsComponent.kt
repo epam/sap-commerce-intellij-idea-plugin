@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.settings.components
 
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.components.*
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.module.Module
@@ -35,11 +36,11 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "HybrisProjectSettings", storages = [Storage(STORAGE_HYBRIS_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)])
 @Service(Service.Level.PROJECT)
-class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSettings> {
-    private val hybrisProjectSettings = HybrisProjectSettings()
+class ProjectSettingsComponent : PersistentStateComponent<ProjectSettings> {
+    private val hybrisProjectSettings = ProjectSettings()
 
     override fun getState() = hybrisProjectSettings
-    override fun loadState(state: HybrisProjectSettings) = XmlSerializerUtil.copyBean(state, hybrisProjectSettings)
+    override fun loadState(state: ProjectSettings) = XmlSerializerUtil.copyBean(state, hybrisProjectSettings)
 
     // TODO: improve this logic for initially non-hybris projects
     fun isHybrisProject() = state.hybrisProject
@@ -83,10 +84,10 @@ class HybrisProjectSettingsComponent : PersistentStateComponent<HybrisProjectSet
         .forEach { state.availableExtensions[it.name] = it }
 
     fun getProjectCCv2Subscription() = state.activeCCv2Subscription
-        ?.let { HybrisApplicationSettingsComponent.getInstance().getCCv2Subscription(it) }
+        ?.let { ApplicationSettingsComponent.getInstance().getCCv2Subscription(it) }
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): HybrisProjectSettingsComponent = project.getService(HybrisProjectSettingsComponent::class.java)
+        fun getInstance(project: Project): ProjectSettingsComponent = project.getService(ProjectSettingsComponent::class.java)
     }
 }

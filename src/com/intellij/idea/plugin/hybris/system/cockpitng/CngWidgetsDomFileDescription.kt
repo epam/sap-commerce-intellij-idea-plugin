@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.openapi.module.Module
@@ -36,7 +36,7 @@ class CngWidgetsDomFileDescription : DomFileDescription<Widgets>(Widgets::class.
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
         && (hasNamespace(file) || "backoffice-widgets.xml" == file.name)
-        && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()
+        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
 
     private fun hasNamespace(file: XmlFile) = file.rootTag
         ?.attributes

@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellire IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,9 +20,11 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.openapi.components.BaseState
+import com.intellij.util.xmlb.annotations.Tag
 import java.util.*
 
-class HybrisProjectSettings : BaseState() {
+@Tag("HybrisProjectSettings")
+class ProjectSettings : BaseState() {
     var customDirectory by string(null)
     var hybrisDirectory by string(null)
     var configDirectory by string(null)
@@ -49,7 +51,7 @@ class HybrisProjectSettings : BaseState() {
     var modulesOnBlackList by stringSet()
     var availableExtensions by property(TreeMap<String, ExtensionDescriptor> { a, b -> a.compareTo(b, true) }) { it.isEmpty() }
     var excludedFromScanning by stringSet()
-    var remoteConnectionSettingsList by list<HybrisRemoteConnectionSettings>()
+    var remoteConnectionSettingsList by list<RemoteConnectionSettings>()
     var useFakeOutputPathForCustomExtensions by property(false)
     var activeCCv2Subscription by string(null)
 }

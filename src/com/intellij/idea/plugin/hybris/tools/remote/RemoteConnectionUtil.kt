@@ -22,9 +22,9 @@ import ai.grazie.utils.toLinkedSet
 import com.intellij.credentialStore.Credentials
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.properties.PropertyService
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.project.Project
 import java.util.*
 
@@ -56,7 +56,7 @@ object RemoteConnectionUtil {
             ?: ""
     }
 
-    fun getActiveRemoteConnectionSettings(project: Project, type: RemoteConnectionType): HybrisRemoteConnectionSettings {
+    fun getActiveRemoteConnectionSettings(project: Project, type: RemoteConnectionType): RemoteConnectionSettings {
         val instances = getRemoteConnections(project, type)
         if (instances.isEmpty()) return createDefaultRemoteConnectionSettings(project, type)
 
@@ -67,7 +67,7 @@ object RemoteConnectionUtil {
             ?: instances.first()
     }
 
-    fun getActiveRemoteConnectionId(project: Project, type: RemoteConnectionType) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+    fun getActiveRemoteConnectionId(project: Project, type: RemoteConnectionType) = DeveloperSettingsComponent.getInstance(project).state
         .let {
             when (type) {
                 RemoteConnectionType.Hybris -> it.activeRemoteConnectionID
@@ -75,7 +75,7 @@ object RemoteConnectionUtil {
             }
         }
 
-    fun createDefaultRemoteConnectionSettings(project: Project, type: RemoteConnectionType) = HybrisRemoteConnectionSettings()
+    fun createDefaultRemoteConnectionSettings(project: Project, type: RemoteConnectionType) = RemoteConnectionSettings()
         .also {
             it.type = type
             when (type) {
@@ -99,7 +99,7 @@ object RemoteConnectionUtil {
             }
         }
 
-    fun getRemoteConnections(project: Project, type: RemoteConnectionType): Collection<HybrisRemoteConnectionSettings> {
+    fun getRemoteConnections(project: Project, type: RemoteConnectionType): Collection<RemoteConnectionSettings> {
         val projectLevelSettings = getProjectLevelSettings(project, type)
         val projectPersonalLevelSettings = getProjectPersonalLevelSettings(project, type)
 
@@ -107,29 +107,29 @@ object RemoteConnectionUtil {
             .toLinkedSet()
     }
 
-    fun addRemoteConnection(project: Project, settings: HybrisRemoteConnectionSettings) {
+    fun addRemoteConnection(project: Project, settings: RemoteConnectionSettings) {
         if (settings.uuid == null) {
             settings.uuid = UUID.randomUUID().toString()
         }
 
         when (settings.scope) {
             RemoteConnectionScope.PROJECT_PERSONAL -> {
-                val state = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+                val state = DeveloperSettingsComponent.getInstance(project).state
                 state.remoteConnectionSettingsList.add(settings)
             }
 
             RemoteConnectionScope.PROJECT -> {
-                val state = HybrisProjectSettingsComponent.getInstance(project).state
+                val state = ProjectSettingsComponent.getInstance(project).state
                 state.remoteConnectionSettingsList.add(settings)
             }
         }
     }
 
-    fun saveRemoteConnections(project: Project, type: RemoteConnectionType, settings: Collection<HybrisRemoteConnectionSettings>) {
-        HybrisProjectSettingsComponent.getInstance(project).state
+    fun saveRemoteConnections(project: Project, type: RemoteConnectionType, settings: Collection<RemoteConnectionSettings>) {
+        ProjectSettingsComponent.getInstance(project).state
             .remoteConnectionSettingsList
             .removeIf { it.type == type }
-        HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+        DeveloperSettingsComponent.getInstance(project).state
             .remoteConnectionSettingsList
             .removeIf { it.type == type }
 
@@ -137,8 +137,8 @@ object RemoteConnectionUtil {
         else settings.forEach { addRemoteConnection(project, it) }
     }
 
-    fun setActiveRemoteConnectionSettings(project: Project, settings: HybrisRemoteConnectionSettings) {
-        val developerSettings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+    fun setActiveRemoteConnectionSettings(project: Project, settings: RemoteConnectionSettings) {
+        val developerSettings = DeveloperSettingsComponent.getInstance(project).state
 
         when (settings.type) {
             RemoteConnectionType.Hybris -> {
@@ -151,10 +151,10 @@ object RemoteConnectionUtil {
         }
     }
 
-    fun changeRemoteConnectionScope(project: Project, settings: HybrisRemoteConnectionSettings, originalScope: RemoteConnectionScope) {
+    fun changeRemoteConnectionScope(project: Project, settings: RemoteConnectionSettings, originalScope: RemoteConnectionScope) {
         val remoteConnectionSettings = when (originalScope) {
-            RemoteConnectionScope.PROJECT_PERSONAL -> HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
-            RemoteConnectionScope.PROJECT -> HybrisProjectSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
+            RemoteConnectionScope.PROJECT_PERSONAL -> DeveloperSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
+            RemoteConnectionScope.PROJECT -> ProjectSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
         }
         remoteConnectionSettings.remove(settings)
         addRemoteConnection(project, settings)
@@ -166,7 +166,7 @@ object RemoteConnectionUtil {
     ) = getRemoteConnectionSettings(
         type,
         RemoteConnectionScope.PROJECT_PERSONAL,
-        HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
+        DeveloperSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
     )
 
     private fun getProjectLevelSettings(
@@ -175,13 +175,13 @@ object RemoteConnectionUtil {
     ) = getRemoteConnectionSettings(
         type,
         RemoteConnectionScope.PROJECT,
-        HybrisProjectSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
+        ProjectSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
     )
 
     private fun getRemoteConnectionSettings(
         type: RemoteConnectionType,
         scope: RemoteConnectionScope,
-        settings: MutableList<HybrisRemoteConnectionSettings>
+        settings: MutableList<RemoteConnectionSettings>
     ) = settings
         .filter { it.type == type }
         .filter { it.uuid?.isNotBlank() ?: false }

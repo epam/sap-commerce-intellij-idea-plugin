@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,10 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.ui.RemoteHacInstancesListPanel
@@ -34,9 +36,9 @@ import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import javax.swing.DefaultComboBoxModel
 
-class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Project) : ConfigurableProvider(), Disposable {
+class ProjectRemoteInstancesSettingsConfigurableProvider(val project: Project) : ConfigurableProvider(), Disposable {
 
-    override fun canCreateConfigurable() = HybrisProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override fun canCreateConfigurable() = ProjectSettingsComponent.getInstance(project).isHybrisProject()
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
@@ -48,14 +50,14 @@ class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Proj
         private val currentActiveHybrisConnection = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
         private val currentActiveSolrConnection = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.SOLR)
 
-        private val activeHacServerModel = DefaultComboBoxModel<HybrisRemoteConnectionSettings>()
-        private val activeSolrServerModel = DefaultComboBoxModel<HybrisRemoteConnectionSettings>()
+        private val activeHacServerModel = DefaultComboBoxModel<RemoteConnectionSettings>()
+        private val activeSolrServerModel = DefaultComboBoxModel<RemoteConnectionSettings>()
         private val hacInstances = RemoteHacInstancesListPanel(project) { _, data ->
-            if (!isReset) updateModel(activeHacServerModel, activeHacServerModel.selectedItem as HybrisRemoteConnectionSettings?, data)
+            if (!isReset) updateModel(activeHacServerModel, activeHacServerModel.selectedItem as RemoteConnectionSettings?, data)
         }
 
         private val solrInstances = RemoteSolrInstancesListPanel(project) { _, data ->
-            if (!isReset) updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as HybrisRemoteConnectionSettings?, data)
+            if (!isReset) updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as RemoteConnectionSettings?, data)
         }
 
         override fun createPanel() = panel {
@@ -67,11 +69,11 @@ class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Proj
                 )
                     .label(message("hybris.settings.project.remote_instances.hac.active.title"))
                     .onApply {
-                        (activeHacServerModel.selectedItem as HybrisRemoteConnectionSettings?)
+                        (activeHacServerModel.selectedItem as RemoteConnectionSettings?)
                             ?.let { settings -> RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, settings) }
                     }
                     .onIsModified {
-                        (activeHacServerModel.selectedItem as HybrisRemoteConnectionSettings?)
+                        (activeHacServerModel.selectedItem as RemoteConnectionSettings?)
                             ?.let { it.uuid != RemoteConnectionUtil.getActiveRemoteConnectionId(project, it.type) }
                             ?: false
                     }
@@ -86,11 +88,11 @@ class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Proj
                 )
                     .label(message("hybris.settings.project.remote_instances.solr.active.title"))
                     .onApply {
-                        (activeSolrServerModel.selectedItem as HybrisRemoteConnectionSettings?)
+                        (activeSolrServerModel.selectedItem as RemoteConnectionSettings?)
                             ?.let { settings -> RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, settings) }
                     }
                     .onIsModified {
-                        (activeSolrServerModel.selectedItem as HybrisRemoteConnectionSettings?)
+                        (activeSolrServerModel.selectedItem as RemoteConnectionSettings?)
                             ?.let { it.uuid != RemoteConnectionUtil.getActiveRemoteConnectionId(project, it.type) }
                             ?: false
                     }
@@ -125,9 +127,9 @@ class HybrisProjectRemoteInstancesSettingsConfigurableProvider(val project: Proj
         }
 
         private fun updateModel(
-            model: DefaultComboBoxModel<HybrisRemoteConnectionSettings>,
-            activeConnection: HybrisRemoteConnectionSettings?,
-            connectionSettings: Collection<HybrisRemoteConnectionSettings>
+            model: DefaultComboBoxModel<RemoteConnectionSettings>,
+            activeConnection: RemoteConnectionSettings?,
+            connectionSettings: Collection<RemoteConnectionSettings>
         ) {
             model.removeAllElements()
             model.addAll(connectionSettings)

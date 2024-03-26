@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -37,7 +37,7 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private val filter = PolyglotQueryFoldingBlocksFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingSetting = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(root.project).state.polyglotQuerySettings.folding
+        val foldingSetting = DeveloperSettingsComponent.getInstance(root.project).state.polyglotQuerySettings.folding
 
         if (!foldingSetting.enabled) return emptyArray()
 
@@ -77,7 +77,7 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 ?.trim()
                 ?: "?"
 
-            if (HybrisDeveloperSpecificProjectSettingsComponent.getInstance(node.psi.project).state.polyglotQuerySettings.folding.showLanguage) {
+            if (DeveloperSettingsComponent.getInstance(node.psi.project).state.polyglotQuerySettings.folding.showLanguage) {
                 val language = node.findChildByType(PolyglotQueryTypes.LOCALIZED)
                     ?.let {
                         it.findChildByType(PolyglotQueryTypes.LOCALIZED_NAME)

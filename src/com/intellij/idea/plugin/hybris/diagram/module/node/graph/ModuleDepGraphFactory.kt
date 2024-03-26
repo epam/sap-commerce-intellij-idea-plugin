@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.diagram.module.node.graph
 
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.module.Module
 
 object ModuleDepGraphFactory {
 
-    fun buildNode(module: Module) = with(HybrisProjectSettingsComponent.getInstance(module.project).getModuleSettings(module)) {
+    fun buildNode(module: Module) = with(ProjectSettingsComponent.getInstance(module.project).getModuleSettings(module)) {
         val properties = mutableListOf<ModuleDepGraphField>()
 
         if (description != null) properties.add(ModuleDepGraphFieldDescription(description!!))

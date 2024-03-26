@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryUtils
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotElementFactory
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -62,7 +62,7 @@ class PolyglotQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
     ): PolyglotQueryLineMarkerInfo? {
         val parent = element.parent
         if (parent !is PsiVariable || parent.nameIdentifier == null) return null
-        if (!HybrisProjectSettingsComponent.getInstance(element.project).isHybrisProject()) return null
+        if (!ProjectSettingsComponent.getInstance(element.project).isHybrisProject()) return null
 
         val expression = expressionProvider.invoke()
         if (!PolyglotQueryUtils.isPolyglotQuery(expression)) return null

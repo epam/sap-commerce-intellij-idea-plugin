@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.ui;
 
-import com.intellij.idea.plugin.hybris.settings.HybrisRemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil;
 import com.intellij.openapi.project.Project;
@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<HybrisRemoteConnectionSettings> {
+abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<RemoteConnectionSettings> {
 
     @Serial
     private static final long serialVersionUID = -1932103943790251488L;
@@ -73,29 +73,29 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Hy
         });
     }
 
-    public void setData(final Collection<HybrisRemoteConnectionSettings> remoteConnectionSettingsList) {
+    public void setData(final Collection<RemoteConnectionSettings> remoteConnectionSettingsList) {
         myListModel.clear();
         myListModel.addAll(remoteConnectionSettingsList);
     }
 
-    public Set<HybrisRemoteConnectionSettings> getData() {
-        final var remoteConnectionSettingsList = new LinkedHashSet<HybrisRemoteConnectionSettings>();
+    public Set<RemoteConnectionSettings> getData() {
+        final var remoteConnectionSettingsList = new LinkedHashSet<RemoteConnectionSettings>();
         for (int index = 0; index < myList.getModel().getSize(); index++) {
             remoteConnectionSettingsList.add(myList.getModel().getElementAt(index));
         }
         return remoteConnectionSettingsList;
     }
 
-    abstract protected void onDataChanged(ListDataEvent e, final Set<HybrisRemoteConnectionSettings> data);
+    abstract protected void onDataChanged(ListDataEvent e, final Set<RemoteConnectionSettings> data);
 
     @Nullable
     @Override
-    protected HybrisRemoteConnectionSettings findItemToAdd() {
+    protected RemoteConnectionSettings findItemToAdd() {
         return null;
     }
 
     @Override
-    protected void addElement(@Nullable final HybrisRemoteConnectionSettings itemToAdd) {
+    protected void addElement(@Nullable final RemoteConnectionSettings itemToAdd) {
         super.addElement(itemToAdd);
 
         if (itemToAdd != null) RemoteConnectionUtil.INSTANCE.addRemoteConnection(myProject, itemToAdd);

@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
@@ -56,7 +56,7 @@ class JRebelConfigurator {
         .mapNotNull { configure(it) }
 
     fun fixBackOfficeJRebelSupport(project: Project) {
-        val hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project).state
+        val hybrisProjectSettings = ProjectSettingsComponent.getInstance(project).state
         val compilingXml = File(
             FileUtilRt.toSystemDependentName(
                 project.basePath + "/" + hybrisProjectSettings.hybrisDirectory

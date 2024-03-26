@@ -31,8 +31,8 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Obj
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ScanType;
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
-import com.intellij.idea.plugin.hybris.settings.HybrisApplicationSettingsComponent;
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -389,7 +389,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         this.foundModules.clear();
 
-        final var settings = HybrisApplicationSettingsComponent.getInstance().getState();
+        final var settings = ApplicationSettingsComponent.getInstance().getState();
 
         final Map<DIRECTORY_TYPE, Set<File>> moduleRootMap = newModuleRootMap();
         final var excludedFromScanning = getExcludedFromScanningDirectories();
@@ -848,11 +848,11 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return;
         }
         // the project may not be hybris based project.
-        final HybrisProjectSettingsComponent hybrisProjectSettings = HybrisProjectSettingsComponent.getInstance(project);
-        if (hybrisProjectSettings == null) {
+        final ProjectSettingsComponent projectSettingsComponent = ProjectSettingsComponent.getInstance(project);
+        if (projectSettingsComponent == null) {
             return;
         }
-        if (hybrisProjectSettings.isHybrisProject()) {
+        if (projectSettingsComponent.isHybrisProject()) {
             setHybrisProject(project);
         }
     }

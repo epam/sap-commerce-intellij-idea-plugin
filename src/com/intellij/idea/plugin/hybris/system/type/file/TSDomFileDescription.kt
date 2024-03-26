@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.system.type.file
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtil
@@ -34,7 +34,7 @@ class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, Hybris
         file: XmlFile, module: Module?
     ) = super.isMyFile(file, module)
         && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && HybrisProjectSettingsComponent.getInstance(file.project).isHybrisProject()
+        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
         && file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)
         && file.rootTag
         ?.attributes

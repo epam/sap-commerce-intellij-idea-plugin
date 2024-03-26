@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.lang.folding
 
 import com.intellij.idea.plugin.hybris.settings.FoldingSettings
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
@@ -45,7 +45,7 @@ abstract class AbstractXmlFoldingBuilderEx<S : FoldingSettings, T : DomElement>(
     private val cachedFoldingSettings: Key<S> = Key.create("hybris_folding_settings_" + clazz.simpleName)
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (!HybrisProjectSettingsComponent.getInstance(root.project).isHybrisProject()) return emptyArray()
+        if (!ProjectSettingsComponent.getInstance(root.project).isHybrisProject()) return emptyArray()
         if (root !is XmlFile) return emptyArray()
         DomManager.getDomManager(root.project).getFileElement(root, clazz)
             ?: return emptyArray()

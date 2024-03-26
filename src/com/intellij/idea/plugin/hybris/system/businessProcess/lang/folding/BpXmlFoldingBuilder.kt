@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.system.businessProcess.lang.folding
 
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.BpFoldingSettings
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
-import com.intellij.idea.plugin.hybris.system.businessProcess.settings.BpFoldingSettings
 import com.intellij.idea.plugin.hybris.system.businessProcess.util.BpHelper
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
@@ -50,7 +50,7 @@ class BpXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<BpFoldingSettings, Proce
         }
     }
 
-    override fun initSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+    override fun initSettings(project: Project) = DeveloperSettingsComponent.getInstance(project).state
         .bpSettings
         .folding
 

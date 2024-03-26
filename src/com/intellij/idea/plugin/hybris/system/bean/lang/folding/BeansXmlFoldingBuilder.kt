@@ -19,11 +19,11 @@ package com.intellij.idea.plugin.hybris.system.bean.lang.folding
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
-import com.intellij.idea.plugin.hybris.settings.HybrisDeveloperSpecificProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.BeanSystemFoldingSettings
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
-import com.intellij.idea.plugin.hybris.system.bean.settings.BeanSystemFoldingSettings
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -60,7 +60,7 @@ class BeansXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<BeanSystemFoldingSett
         }
     }
 
-    override fun initSettings(project: Project) = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).state
+    override fun initSettings(project: Project) = DeveloperSettingsComponent.getInstance(project).state
         .beanSystemSettings
         .folding
 

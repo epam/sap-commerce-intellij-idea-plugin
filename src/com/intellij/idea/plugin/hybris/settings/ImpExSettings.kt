@@ -16,19 +16,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
+package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
-import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.components.BaseState
 
-object CCv2BackupsDataView : AbstractCCv2DataView<CCv2DTO>() {
+data class ImpexSettings(
+    var folding: ImpexFoldingSettings = ImpexFoldingSettings(),
+    var completion: ImpexCompletionSettings = ImpexCompletionSettings(),
+    var documentation: ImpexDocumentationSettings = ImpexDocumentationSettings(),
+)
 
-    override val tab: CCv2Tab
-        get() = CCv2Tab.BACKUPS
+data class ImpexFoldingSettings(
+    var enabled: Boolean = true,
+    var useSmartFolding: Boolean = true,
+)
 
-    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2DTO>>): DialogPanel {
-        TODO("Not yet implemented")
-    }
+data class ImpexDocumentationSettings(
+    var enabled: Boolean = true,
+    var showTypeDocumentation: Boolean = true,
+    var showModifierDocumentation: Boolean = true,
+)
+
+class ImpexCompletionSettings : BaseState() {
+    var showInlineTypes by property(true)
+    var addCommaAfterInlineType by property(true)
+    var addEqualsAfterModifier by property(true)
 }

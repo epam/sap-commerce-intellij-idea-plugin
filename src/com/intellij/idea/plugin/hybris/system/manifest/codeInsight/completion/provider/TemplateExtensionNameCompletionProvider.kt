@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.p
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider
-import com.intellij.idea.plugin.hybris.settings.HybrisProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
@@ -29,7 +29,7 @@ import com.intellij.openapi.project.Project
 @Service
 class TemplateExtensionNameCompletionProvider : ExtensionNameCompletionProvider() {
 
-    override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project) = HybrisProjectSettingsComponent.getInstance(project)
+    override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project) = ProjectSettingsComponent.getInstance(project)
         .getAvailableExtensions()
         .values
         .filter { it.extGenTemplateExtension }
