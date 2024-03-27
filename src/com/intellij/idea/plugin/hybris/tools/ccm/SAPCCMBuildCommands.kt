@@ -23,17 +23,10 @@ import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsCo
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.openapi.project.Project
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 object SAPCCMBuildCommands {
     private const val command = "build"
     private val headers = listOf("CODE", "NAME", "BRANCH", "STATUS", "APP. CODE", "APP. DEF. VERSION", "CREATED BY", "START TIME", "END TIME", "BUILD VERSION")
-
-    private val gmtZone = ZoneId.of("GMT")
-    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
 
     private val listCommand = object : AbstractSAPCCMListCommand<CCv2Build>("Builds", command, headers) {}
 
@@ -57,6 +50,22 @@ object SAPCCMBuildCommands {
             ?.firstOrNull()
     }
 
+    fun delete(
+        project: Project,
+        appSettings: ApplicationSettingsComponent,
+        subscription: CCv2Subscription,
+        build: CCv2Build
+    ) {
+
+        val parameters = arrayOf(
+            command, "delete",
+            "--build-code=${build.code}",
+            "--subscription-code=${subscription.id}"
+        )
+
+        SAPCCM.execute(project, appSettings, *parameters)
+    }
+
     fun list(
         project: Project,
         appSettings: ApplicationSettingsComponent,
@@ -74,13 +83,9 @@ object SAPCCMBuildCommands {
             appDefVersion = row.substring(columns["APP. DEF. VERSION"]!!..<columns["CREATED BY"]!!).trim(),
             createdBy = row.substring(columns["CREATED BY"]!!..<columns["START TIME"]!!).trim(),
             startTime = row.substring(columns["START TIME"]!!..<columns["END TIME"]!!).trim()
-                .takeIf { it.isNotBlank() }
-                ?.let { LocalDateTime.parse(it, dateFormat) }
-                ?.let { ZonedDateTime.of(it, gmtZone) },
+                .takeIf { it.isNotBlank() },
             endTime = row.substring(columns["END TIME"]!!..<columns["BUILD VERSION"]!!).trim()
-                .takeIf { it.isNotBlank() }
-                ?.let { LocalDateTime.parse(it, dateFormat) }
-                ?.let { ZonedDateTime.of(it, gmtZone) },
+                .takeIf { it.isNotBlank() },
             buildVersion = buildVersion,
             version = buildVersion.split("-")
                 .firstOrNull()

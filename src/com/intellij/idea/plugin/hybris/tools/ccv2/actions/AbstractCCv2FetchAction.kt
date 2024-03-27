@@ -23,47 +23,42 @@ import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsCo
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
-import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import javax.swing.Icon
 
 abstract class AbstractCCv2FetchAction(
     tab: CCv2Tab,
-    private val taskTitle: String,
     private val text: String,
     description: String? = null,
-    icon: Icon
+    icon: Icon,
+    private val fetch: (Project, List<CCv2Subscription>, () -> Unit, () -> Unit) -> Unit
 ) : AbstractCCv2Action(tab, text, description, icon) {
 
     private var fetching = false
-    protected abstract fun fetch(project: Project, ccv2Subscriptions: List<CCv2Subscription>)
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val task = object : Task.Backgroundable(project, taskTitle) {
-            override fun run(indicator: ProgressIndicator) {
+
+        val subscriptions = DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
+            ?.let { listOf(it) }
+            ?: ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
+
+        fetch.invoke(
+            project, subscriptions,
+            {
                 fetching = true
-                val ccv2Subscriptions = DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
-                    ?.let { listOf(it) }
-                    ?: ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
-                        .sortedBy { it.toString() }
-
-                fetch(project, ccv2Subscriptions)
-
-                fetching = false
+                e.presentation.text = "Fetching..."
+            },
+            {
+                invokeLater {
+                    fetching = false
+                    e.presentation.text = text
+                }
             }
-        }
-        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
-    }
-
-    override fun update(e: AnActionEvent) {
-        super.update(e)
-        e.presentation.text = if (fetching) "Fetching..."
-        else text
+        )
     }
 
     override fun isEnabled() = !fetching && super.isEnabled()
+
 }

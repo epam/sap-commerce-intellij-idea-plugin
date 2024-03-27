@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2EnvironmentsDat
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.SimpleListCellRenderer
@@ -118,8 +119,8 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
         with(project.messageBus.connect(this)) {
             // Environments data listeners
             subscribe(CCv2Service.TOPIC_ENVIRONMENT, object : CCv2EnvironmentsListener {
-                override fun fetchingStarted() {
-                    if (tabsLoadedState[CCv2Tab.ENVIRONMENTS]!!) return
+                override fun fetchingStarted() = invokeLater {
+                    if (tabsLoadedState[CCv2Tab.ENVIRONMENTS]!!) return@invokeLater
                     tabsLoadedState[CCv2Tab.ENVIRONMENTS] = true
 
                     tabbedPane.setComponentAt(
@@ -128,16 +129,18 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                     )
                 }
 
-                override fun fetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = tabbedPane.setComponentAt(
-                    getTabIndex(CCv2Tab.ENVIRONMENTS),
-                    CCv2EnvironmentsDataView.dataPanel(project, data)
-                )
+                override fun fetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = invokeLater {
+                    tabbedPane.setComponentAt(
+                        getTabIndex(CCv2Tab.ENVIRONMENTS),
+                        CCv2EnvironmentsDataView.dataPanel(data)
+                    )
+                }
             })
 
             // Builds data listeners
             subscribe(CCv2Service.TOPIC_BUILDS, object : CCv2BuildsListener {
-                override fun fetchingStarted() {
-                    if (tabsLoadedState[CCv2Tab.BUILDS]!!) return
+                override fun fetchingStarted() = invokeLater {
+                    if (tabsLoadedState[CCv2Tab.BUILDS]!!) return@invokeLater
                     tabsLoadedState[CCv2Tab.BUILDS] = true
 
                     tabbedPane.setComponentAt(
@@ -146,10 +149,12 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                     )
                 }
 
-                override fun fetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Build>>) = tabbedPane.setComponentAt(
-                    getTabIndex(CCv2Tab.BUILDS),
-                    CCv2BuildsDataView.dataPanel(project, data)
-                )
+                override fun fetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Build>>) = invokeLater {
+                    tabbedPane.setComponentAt(
+                        getTabIndex(CCv2Tab.BUILDS),
+                        CCv2BuildsDataView.dataPanel(data)
+                    )
+                }
             })
         }
     }

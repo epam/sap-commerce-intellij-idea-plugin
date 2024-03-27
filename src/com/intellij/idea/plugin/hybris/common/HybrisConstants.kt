@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.psi.tree.IFileElementType
-import java.time.format.DateTimeFormatter
 
 object HybrisConstants {
 
@@ -411,8 +410,6 @@ object HybrisConstants {
     const val KOTLIN_COMPILER_VERSION_PROPERTY_KEY = "kotlinnature.compiler.version"
 
     val OCC_DEFAULT_LEVEL_MAPPINGS = setOf("BASIC", "DEFAULT", "FULL")
-
-    val CCV2_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
 
     @JvmField
     val IMPEX_MODIFIER_BOOLEAN_VALUES = setOf("true", "false")

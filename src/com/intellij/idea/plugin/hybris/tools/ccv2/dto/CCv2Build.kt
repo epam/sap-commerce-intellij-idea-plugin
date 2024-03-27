@@ -18,11 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import javax.swing.Icon
+
+private val CCV2_DATE_FORMAT_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
+private val CCV2_DATE_FORMAT_CCM_NANO: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+private val CCV2_DATE_FORMAT_CCM: DateTimeFormatter = DateTimeFormatter.ISO_DATE
+private val ZONE_GMT = ZoneId.of("GMT")
 
 data class CCv2Build(
     val code: String,
@@ -32,21 +39,33 @@ data class CCv2Build(
     val appCode: String,
     val appDefVersion: String,
     val createdBy: String,
-    val startTime: ZonedDateTime?,
-    val endTime: ZonedDateTime?,
+    val startTime: String?,
+    val endTime: String?,
     val buildVersion: String,
     val version: String,
 ) : CCv2DTO {
     val startTimeFormatted
-        get() = startTime
-            ?.withZoneSameInstant(ZoneId.systemDefault())
-            ?.format(HybrisConstants.CCV2_DATE_FORMAT)
-            ?: "N/A"
+        get() = formatTime(startTime)
     val endTimeFormatted
-        get() = endTime
-            ?.withZoneSameInstant(ZoneId.systemDefault())
-            ?.format(HybrisConstants.CCV2_DATE_FORMAT)
-            ?: "N/A"
+        get() = formatTime(endTime)
+
+    private fun formatTime(time: String?) = time
+        ?.let {
+            tryParse(it, CCV2_DATE_FORMAT_CCM_NANO)
+                ?: tryParse(it, CCV2_DATE_FORMAT_CCM)
+        }
+        ?.let { ZonedDateTime.of(it, ZONE_GMT) }
+        ?.withZoneSameInstant(ZoneId.systemDefault())
+        ?.format(CCV2_DATE_FORMAT_LOCAL)
+        ?: (time ?: "N/A")
+
+    private fun tryParse(time: String, formatter: DateTimeFormatter) = try {
+        LocalDateTime.parse(time, formatter)
+    } catch (e: DateTimeParseException) {
+        null
+    }
+
+    fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
 }
 
 enum class CCv2BuildStatus(val title: String, val icon: Icon) {

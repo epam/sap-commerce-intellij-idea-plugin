@@ -21,10 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
-import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
@@ -83,12 +79,7 @@ class CCv2CreateBuildDialog(
         val name = nameTextField.text!!
         val branch = branchTextField.text!!
 
-        val task = object : Task.Backgroundable(project, "Creating new CCv2 Build...") {
-            override fun run(indicator: ProgressIndicator) {
-                CCv2Service.getInstance(project).createBuild(subscription, name, branch)
-            }
-        }
-        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
+        CCv2Service.getInstance(project).createBuild(subscription, name, branch)
     }
 
     override fun getStyle() = DialogStyle.COMPACT

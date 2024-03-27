@@ -26,7 +26,10 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2CreateBuildDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKey
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.Messages
+
+val subscriptionKey = DataKey.create<CCv2Subscription>("subscription")
+val buildKey = DataKey.create<CCv2Build>("build")
 
 class CreateBuildAction : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
@@ -36,25 +39,53 @@ class CreateBuildAction : AbstractCCv2Action(
     override fun actionPerformed(e: AnActionEvent) {
         val subscription = e.dataContext.getData(subscriptionKey)
         val build = e.dataContext.getData(buildKey)
-        e.project
-            ?.let { CCv2CreateBuildDialog(it, subscription, build) }
-            ?.showAndGet()
-    }
+        val project = e.project ?: return
 
-    companion object {
-        val subscriptionKey = DataKey.create<CCv2Subscription>("subscription")
-        val buildKey = DataKey.create<CCv2Build>("build")
+        CCv2CreateBuildDialog(project, subscription, build).showAndGet()
+    }
+}
+
+class RedoBuildAction(
+    private val subscription: CCv2Subscription,
+    private val build: CCv2Build
+) : AbstractCCv2Action(
+    tab = CCv2Tab.BUILDS,
+    text = "Redo a Build",
+    icon = HybrisIcons.CCV2_BUILD_REDO
+) {
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+
+        CCv2CreateBuildDialog(project, subscription, build).showAndGet()
+    }
+}
+
+class DeleteBuildAction(
+    private val subscription: CCv2Subscription,
+    private val build: CCv2Build
+) : AbstractCCv2Action(
+    tab = CCv2Tab.BUILDS,
+    text = "Delete the Build",
+    icon = HybrisIcons.CCV2_BUILD_DELETE
+) {
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+
+        if (Messages.showYesNoDialog(
+                project,
+                "Are you sure you want to delete '${build.code}' build within the '$subscription' subscription?",
+                "Delete CCv2 Build",
+                HybrisIcons.CCV2_BUILD_DELETE
+            ) != Messages.YES
+        ) return
+
+        CCv2Service.getInstance(project).deleteBuild(project, subscription, build)
     }
 }
 
 class FetchBuildsAction : AbstractCCv2FetchAction(
     tab = CCv2Tab.BUILDS,
-    taskTitle = "Fetching CCv2 Builds...",
     text = "Fetch Builds",
-    icon = HybrisIcons.CCV2_FETCH
-) {
-
-    override fun fetch(project: Project, ccv2Subscriptions: List<CCv2Subscription>) {
-        CCv2Service.getInstance(project).fetchBuilds(ccv2Subscriptions)
-    }
-}
+    icon = HybrisIcons.CCV2_FETCH,
+    fetch = { project, subscriptions, onStart, onComplete -> CCv2Service.getInstance(project).fetchBuilds(subscriptions, onStart, onComplete) }
+)
