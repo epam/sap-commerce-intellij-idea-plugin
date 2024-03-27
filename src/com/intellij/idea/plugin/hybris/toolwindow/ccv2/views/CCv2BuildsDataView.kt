@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.actions.DeleteBuildAction
-import com.intellij.idea.plugin.hybris.tools.ccv2.actions.RedoBuildAction
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2DeleteBuildAction
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2RedoBuildAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -54,8 +54,8 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
                 row {
                     actionsButton(
                         actions = listOfNotNull(
-                            RedoBuildAction(subscription, build),
-                            if (build.canDelete()) DeleteBuildAction(subscription, build)
+                            CCv2RedoBuildAction(subscription, build),
+                            if (build.canDelete()) CCv2DeleteBuildAction(subscription, build)
                             else null
                         ).toTypedArray(),
                         ActionPlaces.TOOLWINDOW_CONTENT

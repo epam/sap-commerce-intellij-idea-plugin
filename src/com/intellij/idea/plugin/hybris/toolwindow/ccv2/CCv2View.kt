@@ -102,6 +102,9 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
         val toolbar = with(DefaultActionGroup()) {
             val actionManager = ActionManager.getInstance()
 
+            add(actionManager.getAction("ccv2.action.settings"))
+            addSeparator()
+
             add(actionManager.getAction("ccv2.action.environment.fetch"))
             add(actionManager.getAction("ccv2.action.build.fetch"))
             add(actionManager.getAction("ccv2.action.build.create"))

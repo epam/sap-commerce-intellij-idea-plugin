@@ -31,7 +31,7 @@ import com.intellij.openapi.ui.Messages
 val subscriptionKey = DataKey.create<CCv2Subscription>("subscription")
 val buildKey = DataKey.create<CCv2Build>("build")
 
-class CreateBuildAction : AbstractCCv2Action(
+class CCv2CreateBuildAction : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Schedule a Build",
     icon = HybrisIcons.CCV2_BUILD_CREATE
@@ -45,7 +45,7 @@ class CreateBuildAction : AbstractCCv2Action(
     }
 }
 
-class RedoBuildAction(
+class CCv2RedoBuildAction(
     private val subscription: CCv2Subscription,
     private val build: CCv2Build
 ) : AbstractCCv2Action(
@@ -60,7 +60,7 @@ class RedoBuildAction(
     }
 }
 
-class DeleteBuildAction(
+class CCv2DeleteBuildAction(
     private val subscription: CCv2Subscription,
     private val build: CCv2Build
 ) : AbstractCCv2Action(
@@ -83,7 +83,7 @@ class DeleteBuildAction(
     }
 }
 
-class FetchBuildsAction : AbstractCCv2FetchAction(
+class CCv2FetchBuildsAction : AbstractCCv2FetchAction(
     tab = CCv2Tab.BUILDS,
     text = "Fetch Builds",
     icon = HybrisIcons.CCV2_FETCH,

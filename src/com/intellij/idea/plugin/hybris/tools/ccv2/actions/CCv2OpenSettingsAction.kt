@@ -15,17 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.idea.plugin.hybris.settings.options.ApplicationCCv2SettingsConfigurableProvider
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.options.ShowSettingsUtil
 
-class CCv2FetchEnvironmentsAction() : AbstractCCv2FetchAction(
-    tab = CCv2Tab.ENVIRONMENTS,
-    text = "Fetch Environments",
-    icon = HybrisIcons.CCV2_FETCH,
-    fetch = { project, subscriptions, onStart, onComplete -> CCv2Service.getInstance(project).fetchEnvironments(subscriptions, onStart, onComplete) }
-)
+class CCv2OpenSettingsAction : AnAction(
+    "Open CCv2 Settings",
+    null,
+    HybrisIcons.SETTINGS
+) {
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+    }
+}
 

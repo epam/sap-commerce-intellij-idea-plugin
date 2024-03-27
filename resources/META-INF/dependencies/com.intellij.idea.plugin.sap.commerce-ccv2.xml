@@ -28,11 +28,13 @@
     </extensions>
 
     <actions>
+        <action id="ccv2.action.settings"
+                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2OpenSettingsAction"/>
         <action id="ccv2.action.environment.fetch"
-                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.FetchEnvironmentsAction"/>
+                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentsAction"/>
         <action id="ccv2.action.build.fetch"
-                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.FetchBuildsAction"/>
+                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchBuildsAction"/>
         <action id="ccv2.action.build.create"
-                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CreateBuildAction"/>
+                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2CreateBuildAction"/>
     </actions>
 </idea-plugin>
