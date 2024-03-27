@@ -35,6 +35,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
 import java.io.File
 import java.nio.charset.StandardCharsets
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 object SAPCCM {
 
@@ -138,8 +143,24 @@ object SAPCCM {
             ?: emptyList()
     }
 
+    fun formatTime(time: String?) = time
+        ?.let {
+            tryParse(it, HybrisConstants.CCV2_DATE_FORMAT_CCM_NANO)
+                ?: tryParse(it, HybrisConstants.CCV2_DATE_FORMAT_CCM)
+        }
+        ?.let { ZonedDateTime.of(it, HybrisConstants.ZONE_GMT) }
+        ?.withZoneSameInstant(ZoneId.systemDefault())
+        ?.format(HybrisConstants.CCV2_DATE_FORMAT_LOCAL)
+        ?: (time ?: "N/A")
+
     private fun columnsToRange(headerRow: String, columnNames: List<String>): Map<String, Int>? = columnNames
         .associateWith { headerRow.indexOf(it) }
         .filter { it.value != -1 }
         .takeIf { it.size == columnNames.size }
+
+    private fun tryParse(time: String, formatter: DateTimeFormatter) = try {
+        LocalDateTime.parse(time, formatter)
+    } catch (e: DateTimeParseException) {
+        null
+    }
 }

@@ -48,7 +48,7 @@ class CCv2Service(val project: Project) {
 
                 val ccv2Token = getCCv2Token()
                 if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).fetchingCompleted(emptyMap())
+                    project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).fetchingCompleted()
                     return
                 }
 
@@ -70,7 +70,7 @@ class CCv2Service(val project: Project) {
 
                 val ccv2Token = getCCv2Token()
                 if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_BUILDS).fetchingCompleted(emptyMap())
+                    project.messageBus.syncPublisher(TOPIC_BUILDS).fetchingCompleted()
                     return
                 }
 
@@ -78,6 +78,28 @@ class CCv2Service(val project: Project) {
 
                 onComplete.invoke()
                 project.messageBus.syncPublisher(TOPIC_BUILDS).fetchingCompleted(builds)
+            }
+        }
+        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
+    }
+
+    fun fetchDeployments(subscriptions: Collection<CCv2Subscription>, onStart: () -> Unit, onComplete: () -> Unit) {
+        onStart.invoke()
+
+        val task = object : Task.Backgroundable(project, "Fetching CCv2 Deployments...") {
+            override fun run(indicator: ProgressIndicator) {
+                project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).fetchingStarted()
+
+                val ccv2Token = getCCv2Token()
+                if (ccv2Token == null) {
+                    project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).fetchingCompleted()
+                    return
+                }
+
+                val builds = CCv2Strategy.getSAPCCMCCv2Strategy().fetchDeployments(project, ccv2Token, subscriptions)
+
+                onComplete.invoke()
+                project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).fetchingCompleted(builds)
             }
         }
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
@@ -177,6 +199,7 @@ class CCv2Service(val project: Project) {
 
         val TOPIC_ENVIRONMENT = Topic("HYBRIS_CCV2_ENVIRONMENTS_LISTENER", CCv2EnvironmentsListener::class.java)
         val TOPIC_BUILDS = Topic("HYBRIS_CCV2_BUILDS_LISTENER", CCv2BuildsListener::class.java)
+        val TOPIC_DEPLOYMENTS = Topic("HYBRIS_CCV2_DEPLOYMENTS_LISTENER", CCv2DeploymentsListener::class.java)
         fun getInstance(project: Project): CCv2Service = project.getService(CCv2Service::class.java)
     }
 }

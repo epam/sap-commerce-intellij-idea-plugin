@@ -32,6 +32,8 @@
                 class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2OpenSettingsAction"/>
         <action id="ccv2.action.environment.fetch"
                 class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentsAction"/>
+        <action id="ccv2.action.deployment.fetch"
+                class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchDeploymentsAction"/>
         <action id="ccv2.action.build.fetch"
                 class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchBuildsAction"/>
         <action id="ccv2.action.build.create"

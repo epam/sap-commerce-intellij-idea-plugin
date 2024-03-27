@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 
-class CCv2FetchEnvironmentsAction() : AbstractCCv2FetchAction(
+class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction(
     tab = CCv2Tab.ENVIRONMENTS,
     text = "Fetch Environments",
     icon = HybrisIcons.CCV2_FETCH,

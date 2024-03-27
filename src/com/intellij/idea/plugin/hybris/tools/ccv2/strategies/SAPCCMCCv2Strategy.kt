@@ -22,8 +22,10 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCMBuildCommands
+import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCMDeploymentCommands
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCMEnvironmentCommands
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressManager
@@ -48,6 +50,13 @@ class SAPCCMCCv2Strategy : CCv2Strategy {
         authCredentials(project, appSettings, ccv2Token) ?: return emptyMap()
 
         return SAPCCMBuildCommands.list(project, appSettings, subscriptions)
+    }
+
+    override fun fetchDeployments(project: Project, ccv2Token: String, subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Deployment>> {
+        val appSettings = ApplicationSettingsComponent.getInstance()
+        authCredentials(project, appSettings, ccv2Token) ?: return emptyMap()
+
+        return SAPCCMDeploymentCommands.list(project, appSettings, subscriptions)
     }
 
     override fun createBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, name: String, branch: String): CCv2Build? {

@@ -19,17 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
+import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
 import javax.swing.Icon
-
-private val CCV2_DATE_FORMAT_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
-private val CCV2_DATE_FORMAT_CCM_NANO: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-private val CCV2_DATE_FORMAT_CCM: DateTimeFormatter = DateTimeFormatter.ISO_DATE
-private val ZONE_GMT = ZoneId.of("GMT")
 
 data class CCv2Build(
     val code: String,
@@ -45,25 +36,9 @@ data class CCv2Build(
     val version: String,
 ) : CCv2DTO {
     val startTimeFormatted
-        get() = formatTime(startTime)
+        get() = SAPCCM.formatTime(startTime)
     val endTimeFormatted
-        get() = formatTime(endTime)
-
-    private fun formatTime(time: String?) = time
-        ?.let {
-            tryParse(it, CCV2_DATE_FORMAT_CCM_NANO)
-                ?: tryParse(it, CCV2_DATE_FORMAT_CCM)
-        }
-        ?.let { ZonedDateTime.of(it, ZONE_GMT) }
-        ?.withZoneSameInstant(ZoneId.systemDefault())
-        ?.format(CCV2_DATE_FORMAT_LOCAL)
-        ?: (time ?: "N/A")
-
-    private fun tryParse(time: String, formatter: DateTimeFormatter) = try {
-        LocalDateTime.parse(time, formatter)
-    } catch (e: DateTimeParseException) {
-        null
-    }
+        get() = SAPCCM.formatTime(endTime)
 
     fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
 }

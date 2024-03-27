@@ -21,14 +21,16 @@ package com.intellij.idea.plugin.hybris.tools.ccv2
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 
 sealed interface CCv2Listener<T : CCv2DTO> {
     fun fetchingStarted() = Unit
-    fun fetchingCompleted(data: Map<CCv2Subscription, Collection<T>>) = Unit
+    fun fetchingCompleted(data: Map<CCv2Subscription, Collection<T>> = emptyMap()) = Unit
 }
 
 interface CCv2EnvironmentsListener : CCv2Listener<CCv2Environment>
+interface CCv2DeploymentsListener : CCv2Listener<CCv2Deployment>
 
 interface CCv2BuildsListener : CCv2Listener<CCv2Build> {
     fun buildStarted() = Unit

@@ -21,12 +21,15 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2BuildsListener
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2DeploymentsListener
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2EnvironmentsListener
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildsDataView
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2DeploymentsDataView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2EnvironmentsDataView
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -106,6 +109,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
             addSeparator()
 
             add(actionManager.getAction("ccv2.action.environment.fetch"))
+            add(actionManager.getAction("ccv2.action.deployment.fetch"))
             add(actionManager.getAction("ccv2.action.build.fetch"))
             add(actionManager.getAction("ccv2.action.build.create"))
             actionManager.createActionToolbar("SAP_CX_CCv2_View", this, false)
@@ -156,6 +160,26 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                     tabbedPane.setComponentAt(
                         getTabIndex(CCv2Tab.BUILDS),
                         CCv2BuildsDataView.dataPanel(data)
+                    )
+                }
+            })
+
+            // Deployments data listeners
+            subscribe(CCv2Service.TOPIC_DEPLOYMENTS, object : CCv2DeploymentsListener {
+                override fun fetchingStarted() = invokeLater {
+                    if (tabsLoadedState[CCv2Tab.DEPLOYMENTS]!!) return@invokeLater
+                    tabsLoadedState[CCv2Tab.DEPLOYMENTS] = true
+
+                    tabbedPane.setComponentAt(
+                        getTabIndex(CCv2Tab.DEPLOYMENTS),
+                        CCv2DeploymentsDataView.fetchingInProgress()
+                    )
+                }
+
+                override fun fetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Deployment>>) = invokeLater {
+                    tabbedPane.setComponentAt(
+                        getTabIndex(CCv2Tab.DEPLOYMENTS),
+                        CCv2DeploymentsDataView.dataPanel(data)
                     )
                 }
             })

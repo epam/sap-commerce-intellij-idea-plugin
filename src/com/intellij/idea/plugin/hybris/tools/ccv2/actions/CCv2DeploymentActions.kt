@@ -16,17 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.ccv2
+package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.AbstractCCv2DataView
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildsDataView
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2DeploymentsDataView
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2EnvironmentsDataView
-import javax.swing.Icon
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 
-enum class CCv2Tab(val title: String, val icon: Icon, val view: AbstractCCv2DataView<*>) {
-    ENVIRONMENTS("Environments", HybrisIcons.CCV2_ENVIRONMENTS, CCv2EnvironmentsDataView),
-    BUILDS("Builds", HybrisIcons.CCV2_BUILDS, CCv2BuildsDataView),
-    DEPLOYMENTS("Deployments", HybrisIcons.CCV2_DEPLOYMENTS, CCv2DeploymentsDataView),
-}
+class CCv2FetchDeploymentsAction : AbstractCCv2FetchAction(
+    tab = CCv2Tab.DEPLOYMENTS,
+    text = "Fetch Deployments",
+    icon = HybrisIcons.CCV2_FETCH,
+    fetch = { project, subscriptions, onStart, onComplete -> CCv2Service.getInstance(project).fetchDeployments(subscriptions, onStart, onComplete) }
+)
+
