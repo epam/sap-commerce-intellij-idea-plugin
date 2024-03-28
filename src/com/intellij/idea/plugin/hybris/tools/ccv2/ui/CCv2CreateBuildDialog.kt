@@ -33,7 +33,7 @@ import com.intellij.util.ui.JBUI
 class CCv2CreateBuildDialog(
     private val project: Project,
     private val subscription: CCv2Subscription?,
-    private val build: CCv2Build?
+    private val build: CCv2Build?,
 ) : DialogWrapper(project) {
 
     init {

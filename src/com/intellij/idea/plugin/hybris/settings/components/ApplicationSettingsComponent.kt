@@ -23,11 +23,14 @@ import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
+import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
+import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil
 import org.apache.commons.lang3.StringUtils
 
@@ -73,7 +76,16 @@ class ApplicationSettingsComponent : PersistentStateComponent<ApplicationSetting
     fun getCCv2Subscription(id: String) = state.ccv2Subscriptions
         .find { it.id == id }
 
+    fun setCCv2Subscriptions(subscriptions: List<CCv2Subscription>) {
+        state.ccv2Subscriptions = subscriptions
+        ApplicationManager.getApplication().messageBus
+            .syncPublisher(TOPIC_CCV2_SETTINGS)
+            .subscriptionsChanged(subscriptions)
+    }
+
     companion object {
+        val TOPIC_CCV2_SETTINGS = Topic("HYBRIS_CCV2_SETTINGS", CCv2SettingsListener::class.java)
+
         @JvmStatic
         fun getInstance(): ApplicationSettingsComponent = ApplicationManager.getApplication().getService(ApplicationSettingsComponent::class.java)
 

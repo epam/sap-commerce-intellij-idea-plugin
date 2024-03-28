@@ -53,8 +53,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
         .associateWith { false }
         .toMutableMap()
 
-    // TODO: add new TOPIC for CCv2Subscriptions
-    private val ccv2SubscriptionsModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true) {
+    private val ccv2SubscriptionsModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true, disposable = this) {
         if (it == null) {
             DeveloperSettingsComponent.getInstance(project).state.activeCCv2SubscriptionID = null
         }

@@ -21,6 +21,8 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import java.io.Serial
 import javax.swing.DefaultComboBoxModel
@@ -45,14 +47,37 @@ object CCv2SubscriptionsComboBoxModelFactory {
 
     fun create(
         project: Project,
-        subscription: CCv2Subscription? = null,
+        selectedSubscription: CCv2Subscription? = null,
         allowBlank: Boolean = false,
+        disposable: Disposable? = null,
         onSelectedItem: ((Any?) -> Unit)? = null
     ) = CCv2SubscriptionsComboBoxModel(onSelectedItem)
         .also {
-            if (allowBlank) it.addElement(null)
-            it.addAll(ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions)
-            it.selectedItem = subscription
-                ?: DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
+            val currentSubscriptions = ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
+            initModel(project, it, selectedSubscription, currentSubscriptions, allowBlank)
+
+            if (disposable != null) {
+                with(project.messageBus.connect(disposable)) {
+                    subscribe(ApplicationSettingsComponent.TOPIC_CCV2_SETTINGS, object : CCv2SettingsListener {
+                        override fun subscriptionsChanged(subscriptions: List<CCv2Subscription>) {
+                            initModel(project, it, selectedSubscription, subscriptions, allowBlank)
+                        }
+                    })
+                }
+            }
         }
+
+    private fun initModel(
+        project: Project,
+        model: CCv2SubscriptionsComboBoxModel,
+        selectedSubscription: CCv2Subscription?,
+        subscriptions: List<CCv2Subscription>,
+        allowBlank: Boolean
+    ) {
+        model.removeAllElements()
+        if (allowBlank) model.addElement(null)
+        model.addAll(subscriptions)
+        model.selectedItem = selectedSubscription
+            ?: DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
+    }
 }

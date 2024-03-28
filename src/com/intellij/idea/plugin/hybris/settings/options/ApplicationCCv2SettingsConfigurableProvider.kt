@@ -125,7 +125,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
                 row {
                     cell(ccv2SubscriptionListPanel)
                         .align(AlignX.FILL)
-                        .onApply { state.ccv2Subscriptions = ccv2SubscriptionListPanel.data }
+                        .onApply { appSettings.setCCv2Subscriptions(ccv2SubscriptionListPanel.data) }
                         .onReset {
                             originalCCv2Subscriptions = state.ccv2Subscriptions
                                 .map { it.clone() }

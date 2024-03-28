@@ -29,6 +29,10 @@ sealed interface CCv2Listener<T : CCv2DTO> {
     fun fetchingCompleted(data: Map<CCv2Subscription, Collection<T>> = emptyMap()) = Unit
 }
 
+interface CCv2SettingsListener {
+    fun subscriptionsChanged(subscriptions: List<CCv2Subscription>) = Unit
+}
+
 interface CCv2EnvironmentsListener : CCv2Listener<CCv2Environment>
 interface CCv2DeploymentsListener : CCv2Listener<CCv2Deployment>
 
