@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2Strategy
+import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
 import com.intellij.idea.plugin.hybris.ui.CCv2SubscriptionListPanel
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -73,7 +73,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
                         { state.sapCLIDirectory = it }
                     )
                     .validationOnInput {
-                        CCv2Strategy.getSAPCCMCCv2Strategy().validateSAPCCMDirectory(it.text)
+                        SAPCCM.validateSAPCCMDirectory(it.text)
                             ?.let { message -> this.error(message) }
                     }
                     .align(AlignX.FILL)

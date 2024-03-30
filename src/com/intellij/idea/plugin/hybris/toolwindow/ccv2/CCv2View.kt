@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2BuildsListener
@@ -76,7 +77,14 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
             row {
                 comboBox(
                     ccv2SubscriptionsModel,
-                    renderer = SimpleListCellRenderer.create("-- all subscriptions --") { it.toString() }
+                    renderer = SimpleListCellRenderer.create { label, value, _ ->
+                        if (value != null) {
+                            label.icon = HybrisIcons.MODULE_CCV2
+                            label.text = value.toString()
+                        } else {
+                            label.text = "-- all subscriptions --"
+                        }
+                    }
                 )
                     .label("Subscription:")
                     .onChanged {

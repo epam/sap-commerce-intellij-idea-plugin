@@ -22,6 +22,7 @@
 - Open CCv2 settings pane from the toolbar [#1063](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1063)
 - Sync CCv2 subscriptions changes for all open projects [#1065](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1065)
 - Enhanced CCv2 deployments view [#1066](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1066)
+- Notify user on CCv2 settings validation errors [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)
 
 ### `Type System` enhancements
 - Show Item line marker for jalo classes [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)
@@ -50,7 +51,7 @@
 - Actions toolbar for disabled for Groovy IDE Scripts by default [#1040](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1040)
 
 ### `Bean System` enhancements
-- Show bean type specific inline navigable icon [#1045](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1045)
+- Show bean-type-specific inline navigable icon [#1045](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1045)
 
 ### Fixes
 - Configure SAP CX JavaDoc for OOTB Modules [#1027](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1026)

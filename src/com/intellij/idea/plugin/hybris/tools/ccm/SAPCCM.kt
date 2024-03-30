@@ -35,11 +35,14 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
 import java.io.File
 import java.nio.charset.StandardCharsets
+import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import kotlin.io.path.exists
+import kotlin.io.path.isExecutable
 
 object SAPCCM {
 
@@ -48,10 +51,38 @@ object SAPCCM {
         appSettings: ApplicationSettingsComponent,
         vararg parameters: String
     ): List<String>? {
-        val cliDirectory = appSettings.state.sapCLIDirectory
-            ?.let { File(it) }
-            ?.takeIf { it.exists() }
-            ?: return null
+        val sapCLIDirectory = appSettings.state.sapCLIDirectory
+            ?.takeIf { it.isNotBlank() }
+        if (sapCLIDirectory == null) {
+            Notifications.create(
+                NotificationType.ERROR,
+                "SAP CCM: Invalid Configuration",
+                "Directory for SAP CLI is not set, please specify it via corresponding application settings."
+            )
+                .addAction("Open Settings") { _, _ ->
+                    ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+                }
+                .hideAfter(10)
+                .notify(project)
+            return null
+        }
+
+        val validationError = validateSAPCCMDirectory(sapCLIDirectory)
+        if (validationError != null) {
+            Notifications.create(
+                NotificationType.ERROR,
+                "SAP CCM: Invalid Configuration",
+                validationError
+            )
+                .addAction("Open Settings") { _, _ ->
+                    ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+                }
+                .hideAfter(10)
+                .notify(project)
+            return null
+        }
+
+        val cliDirectory = File(sapCLIDirectory)
         val execPath = if (SystemInfo.isWindows) "bin/sapccm.bat"
         else "bin/sapccm"
 
@@ -152,6 +183,18 @@ object SAPCCM {
         ?.withZoneSameInstant(ZoneId.systemDefault())
         ?.format(HybrisConstants.CCV2_DATE_FORMAT_LOCAL)
         ?: "N/A"
+
+    fun validateSAPCCMDirectory(directory: String): String? {
+        val executable = if (SystemInfo.isWindows) "sapccm.bat"
+        else "sapccm"
+
+        val valid = Paths.get(directory, "bin", executable)
+            .takeIf { path -> path.exists() }
+            ?.isExecutable()
+            ?: false
+        return if (!valid) "Invalid SAP CCM directory, cannot find <strong>bin/$executable</strong> executable file."
+        else null
+    }
 
     private fun columnsToRange(headerRow: String, columnNames: List<String>): Map<String, Int>? = columnNames
         .associateWith { headerRow.indexOf(it) }

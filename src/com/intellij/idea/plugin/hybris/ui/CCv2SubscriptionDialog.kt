@@ -35,8 +35,7 @@ class CCv2SubscriptionDialog(
         super.init()
     }
 
-    lateinit var idTextField: JBTextField
-
+    private lateinit var idTextField: JBTextField
 
     override fun createCenterPanel() = panel {
         row {

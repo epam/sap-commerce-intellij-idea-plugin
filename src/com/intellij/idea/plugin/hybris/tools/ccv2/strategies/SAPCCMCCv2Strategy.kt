@@ -30,10 +30,6 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.SystemInfo
-import java.nio.file.Paths
-import kotlin.io.path.exists
-import kotlin.io.path.isExecutable
 
 @Service
 class SAPCCMCCv2Strategy : CCv2Strategy {
@@ -71,18 +67,6 @@ class SAPCCMCCv2Strategy : CCv2Strategy {
         authCredentials(project, appSettings, ccv2Token) ?: return
 
         SAPCCMBuildCommands.delete(project, appSettings, subscription, build)
-    }
-
-    fun validateSAPCCMDirectory(directory: String): String? {
-        val executable = if (SystemInfo.isWindows) "sapccm.bat"
-        else "sapccm"
-
-        val valid = Paths.get(directory, "bin", executable)
-            .takeIf { path -> path.exists() }
-            ?.isExecutable()
-            ?: false
-        return if (!valid) "Invalid SAP CCM directory, cannot find <strong>bin/$executable</strong> executable file."
-        else null
     }
 
     private fun authCredentials(

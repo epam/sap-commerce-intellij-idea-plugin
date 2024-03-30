@@ -76,7 +76,7 @@ object CCv2SubscriptionsComboBoxModelFactory {
     ) {
         model.removeAllElements()
         if (allowBlank) model.addElement(null)
-        model.addAll(subscriptions)
+        model.addAll(subscriptions.sortedBy { it.toString() })
         model.selectedItem = selectedSubscription
             ?: DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
     }

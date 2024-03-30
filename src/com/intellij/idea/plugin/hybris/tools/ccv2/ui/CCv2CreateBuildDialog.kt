@@ -18,12 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
@@ -47,9 +49,16 @@ class CCv2CreateBuildDialog(
 
     override fun createCenterPanel() = panel {
         row {
-            subscriptionComboBox = comboBox(CCv2SubscriptionsComboBoxModelFactory.create(project, subscription))
+            subscriptionComboBox = comboBox(
+                CCv2SubscriptionsComboBoxModelFactory.create(project, subscription),
+                renderer = SimpleListCellRenderer.create { label, value, _ ->
+                    label.icon = HybrisIcons.MODULE_CCV2
+                    label.text = value.toString()
+                }
+            )
                 .label("Subscription:")
                 .align(AlignX.FILL)
+                .addValidationRule("Please select a subscription for a build.") { it.selectedItem == null }
                 .component
         }.layout(RowLayout.PARENT_GRID)
 
