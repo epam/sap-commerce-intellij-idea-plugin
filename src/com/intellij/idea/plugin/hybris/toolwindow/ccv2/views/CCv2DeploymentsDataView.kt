@@ -60,7 +60,6 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.CCV2_DEPLOYMENT_ENVIRONMENT)
                     label(deployment.envCode)
                         .comment("Environment")
                 }
@@ -75,6 +74,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
 
             panel {
                 row {
+                    icon(deployment.strategy.icon)
                     label(deployment.strategy.title)
                         .comment("Strategy")
                 }
@@ -82,6 +82,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
 
             panel {
                 row {
+                    icon(deployment.updateMode.icon)
                     label(deployment.updateMode.title)
                         .comment("Mode")
                 }

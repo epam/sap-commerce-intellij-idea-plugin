@@ -26,6 +26,6 @@ class CCv2FetchDeploymentsAction : AbstractCCv2FetchAction(
     tab = CCv2Tab.DEPLOYMENTS,
     text = "Fetch Deployments",
     icon = HybrisIcons.CCV2_FETCH,
-    fetch = { project, subscriptions, onStart, onComplete -> CCv2Service.getInstance(project).fetchDeployments(subscriptions, onStart, onComplete) }
+    fetch = { project, subscriptions, onStartCallback, onCompleteCallback -> CCv2Service.getInstance(project).fetchDeployments(subscriptions, onStartCallback, onCompleteCallback) }
 )
 

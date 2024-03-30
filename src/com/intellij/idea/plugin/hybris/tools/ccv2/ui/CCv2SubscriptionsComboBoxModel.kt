@@ -59,7 +59,7 @@ object CCv2SubscriptionsComboBoxModelFactory {
             if (disposable != null) {
                 with(project.messageBus.connect(disposable)) {
                     subscribe(ApplicationSettingsComponent.TOPIC_CCV2_SETTINGS, object : CCv2SettingsListener {
-                        override fun subscriptionsChanged(subscriptions: List<CCv2Subscription>) {
+                        override fun onSubscriptionsChanged(subscriptions: List<CCv2Subscription>) {
                             initModel(project, it, selectedSubscription, subscriptions, allowBlank)
                         }
                     })

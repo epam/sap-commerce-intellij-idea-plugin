@@ -238,7 +238,14 @@ object HybrisIcons {
     val CCV2_BUILD_DELETE = ExpUiIcons.General.Delete
 
     val CCV2_DEPLOYMENT_CREATED_BY = AllIcons.General.User
-    val CCV2_DEPLOYMENT_ENVIRONMENT = EXTENSION_CLOUD
+    val CCV2_DEPLOYMENT_UPDATE_MODE_NONE = AllIcons.Diff.GutterCheckBox
+    val CCV2_DEPLOYMENT_UPDATE_MODE_UPDATE = ExpUiIcons.General.PluginUpdate
+    val CCV2_DEPLOYMENT_UPDATE_MODE_INIT = AllIcons.General.ExclMark
+    val CCV2_DEPLOYMENT_UPDATE_MODE_UNKNOWN = ExpUiIcons.Run.TestUnknown
+    val CCV2_DEPLOYMENT_STRATEGY_ROLLING_UPDATE = AllIcons.Gutter.RecursiveMethod
+    val CCV2_DEPLOYMENT_STRATEGY_RECREATE = AllIcons.Gutter.WriteAccess
+    val CCV2_DEPLOYMENT_STRATEGY_GREEN = AllIcons.Gutter.ReadAccess
+    val CCV2_DEPLOYMENT_STRATEGY_UNKNOWN = ExpUiIcons.Run.TestUnknown
 
     val CCV2_ENV_DEPLOYMENT_STATUS_SCHEDULED = ExpUiIcons.Run.Profile
     val CCV2_ENV_DEPLOYMENT_STATUS_DEPLOYING = ExpUiIcons.Run.TestCustom

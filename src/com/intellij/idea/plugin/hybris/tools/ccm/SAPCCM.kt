@@ -151,7 +151,7 @@ object SAPCCM {
         ?.let { ZonedDateTime.of(it, HybrisConstants.ZONE_GMT) }
         ?.withZoneSameInstant(ZoneId.systemDefault())
         ?.format(HybrisConstants.CCV2_DATE_FORMAT_LOCAL)
-        ?: (time ?: "N/A")
+        ?: "N/A"
 
     private fun columnsToRange(headerRow: String, columnNames: List<String>): Map<String, Int>? = columnNames
         .associateWith { headerRow.indexOf(it) }

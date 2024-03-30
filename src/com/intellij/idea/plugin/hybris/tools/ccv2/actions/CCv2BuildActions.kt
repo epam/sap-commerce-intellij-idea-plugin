@@ -87,5 +87,5 @@ class CCv2FetchBuildsAction : AbstractCCv2FetchAction(
     tab = CCv2Tab.BUILDS,
     text = "Fetch Builds",
     icon = HybrisIcons.CCV2_FETCH,
-    fetch = { project, subscriptions, onStart, onComplete -> CCv2Service.getInstance(project).fetchBuilds(subscriptions, onStart, onComplete) }
+    fetch = { project, subscriptions, onStartCallback, onCompleteCallback -> CCv2Service.getInstance(project).fetchBuilds(subscriptions, onStartCallback, onCompleteCallback) }
 )

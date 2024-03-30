@@ -26,6 +26,6 @@ class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction(
     tab = CCv2Tab.ENVIRONMENTS,
     text = "Fetch Environments",
     icon = HybrisIcons.CCV2_FETCH,
-    fetch = { project, subscriptions, onStart, onComplete -> CCv2Service.getInstance(project).fetchEnvironments(subscriptions, onStart, onComplete) }
+    fetch = { project, subscriptions, onStartCallback, onCompleteCallback -> CCv2Service.getInstance(project).fetchEnvironments(subscriptions, onStartCallback, onCompleteCallback) }
 )
 

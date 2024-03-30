@@ -43,20 +43,25 @@ abstract class AbstractCCv2FetchAction(
         val subscriptions = DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
             ?.let { listOf(it) }
             ?: ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
+                .sortedBy { it.toString() }
 
         fetch.invoke(
             project, subscriptions,
-            {
-                fetching = true
-                e.presentation.text = "Fetching..."
-            },
-            {
-                invokeLater {
-                    fetching = false
-                    e.presentation.text = text
-                }
-            }
+            onStartCallback(e),
+            onCompleteCallback(e)
         )
+    }
+
+    private fun onCompleteCallback(e: AnActionEvent): () -> Unit = {
+        invokeLater {
+            fetching = false
+            e.presentation.text = text
+        }
+    }
+
+    private fun onStartCallback(e: AnActionEvent): () -> Unit = {
+        fetching = true
+        e.presentation.text = "Fetching..."
     }
 
     override fun isEnabled() = !fetching && super.isEnabled()

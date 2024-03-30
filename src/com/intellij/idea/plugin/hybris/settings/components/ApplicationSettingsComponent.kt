@@ -80,7 +80,7 @@ class ApplicationSettingsComponent : PersistentStateComponent<ApplicationSetting
         state.ccv2Subscriptions = subscriptions
         ApplicationManager.getApplication().messageBus
             .syncPublisher(TOPIC_CCV2_SETTINGS)
-            .subscriptionsChanged(subscriptions)
+            .onSubscriptionsChanged(subscriptions)
     }
 
     companion object {

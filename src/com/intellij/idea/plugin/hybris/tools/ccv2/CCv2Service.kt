@@ -39,67 +39,64 @@ import com.intellij.util.messages.Topic
 @Service(Service.Level.PROJECT)
 class CCv2Service(val project: Project) {
 
-    fun fetchEnvironments(subscriptions: Collection<CCv2Subscription>, onStart: () -> Unit, onComplete: () -> Unit) {
-        onStart.invoke()
+    fun fetchEnvironments(subscriptions: Collection<CCv2Subscription>, onStartCallback: () -> Unit, onCompleteCallback: () -> Unit) {
+        onStartCallback.invoke()
+        project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingStarted(subscriptions)
 
         val task = object : Task.Backgroundable(project, "Fetching CCv2 Environments...") {
             override fun run(indicator: ProgressIndicator) {
-                project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).fetchingStarted()
-
                 val ccv2Token = getCCv2Token()
                 if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).fetchingCompleted()
+                    project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingCompleted(subscriptions.associateWith { emptyList() })
                     return
                 }
 
                 val environments = CCv2Strategy.getSAPCCMCCv2Strategy().fetchEnvironments(project, ccv2Token, subscriptions)
 
-                onComplete.invoke()
-                project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).fetchingCompleted(environments)
+                onCompleteCallback.invoke()
+                project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingCompleted(environments)
             }
         }
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
     }
 
-    fun fetchBuilds(subscriptions: Collection<CCv2Subscription>, onStart: () -> Unit, onComplete: () -> Unit) {
-        onStart.invoke()
+    fun fetchBuilds(subscriptions: Collection<CCv2Subscription>, onStartCallback: () -> Unit, onCompleteCallback: () -> Unit) {
+        onStartCallback.invoke()
+        project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingStarted(subscriptions)
 
         val task = object : Task.Backgroundable(project, "Fetching CCv2 Builds...") {
             override fun run(indicator: ProgressIndicator) {
-                project.messageBus.syncPublisher(TOPIC_BUILDS).fetchingStarted()
-
                 val ccv2Token = getCCv2Token()
                 if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_BUILDS).fetchingCompleted()
+                    project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingCompleted(subscriptions.associateWith { emptyList() })
                     return
                 }
 
                 val builds = CCv2Strategy.getSAPCCMCCv2Strategy().fetchBuilds(project, ccv2Token, subscriptions)
 
-                onComplete.invoke()
-                project.messageBus.syncPublisher(TOPIC_BUILDS).fetchingCompleted(builds)
+                onCompleteCallback.invoke()
+                project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingCompleted(builds)
             }
         }
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
     }
 
-    fun fetchDeployments(subscriptions: Collection<CCv2Subscription>, onStart: () -> Unit, onComplete: () -> Unit) {
-        onStart.invoke()
+    fun fetchDeployments(subscriptions: Collection<CCv2Subscription>, onStartCallback: () -> Unit, onCompleteCallback: () -> Unit) {
+        onStartCallback.invoke()
+        project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).onFetchingStarted(subscriptions)
 
         val task = object : Task.Backgroundable(project, "Fetching CCv2 Deployments...") {
             override fun run(indicator: ProgressIndicator) {
-                project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).fetchingStarted()
-
                 val ccv2Token = getCCv2Token()
                 if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).fetchingCompleted()
+                    project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).onFetchingCompleted(subscriptions.associateWith { emptyList() })
                     return
                 }
 
                 val builds = CCv2Strategy.getSAPCCMCCv2Strategy().fetchDeployments(project, ccv2Token, subscriptions)
 
-                onComplete.invoke()
-                project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).fetchingCompleted(builds)
+                onCompleteCallback.invoke()
+                project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).onFetchingCompleted(builds)
             }
         }
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
@@ -108,16 +105,16 @@ class CCv2Service(val project: Project) {
     fun createBuild(subscription: CCv2Subscription, name: String, branch: String) {
         val task = object : Task.Backgroundable(project, "Creating new CCv2 Build...") {
             override fun run(indicator: ProgressIndicator) {
-                project.messageBus.syncPublisher(TOPIC_BUILDS).buildStarted()
+                project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildStarted()
                 val ccv2Token = getCCv2Token()
                 if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_BUILDS).buildRequested(subscription)
+                    project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRequested(subscription)
                     return
                 }
 
                 CCv2Strategy.getSAPCCMCCv2Strategy().createBuild(project, ccv2Token, subscription, name, branch)
                     .also {
-                        project.messageBus.syncPublisher(TOPIC_BUILDS).buildRequested(subscription, it)
+                        project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRequested(subscription, it)
 
                         if (it != null) {
                             Notifications.create(
@@ -144,17 +141,17 @@ class CCv2Service(val project: Project) {
     fun deleteBuild(project: Project, subscription: CCv2Subscription, build: CCv2Build) {
         val task = object : Task.Backgroundable(project, "Deleting CCv2 Build - ${build.code}...") {
             override fun run(indicator: ProgressIndicator) {
-                project.messageBus.syncPublisher(TOPIC_BUILDS).buildRemovalStarted(subscription, build)
+                project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRemovalStarted(subscription, build)
 
                 val ccv2Token = getCCv2Token()
                 if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_BUILDS).buildRemovalRequested(subscription, build)
+                    project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRemovalRequested(subscription, build)
                     return
                 }
 
                 CCv2Strategy.getSAPCCMCCv2Strategy().deleteBuild(project, ccv2Token, subscription, build)
                     .also {
-                        project.messageBus.syncPublisher(TOPIC_BUILDS).buildRequested(subscription, build)
+                        project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRequested(subscription, build)
 
                         // TODO: it may fail due VARIOUS reasons, so
                         Notifications.create(

@@ -109,9 +109,8 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
         shouldCollect: (DomFileElement<D>) -> Boolean
     ): Pair<List<T>, Array<PsiFile>> {
         val localConfigMetaModels = CngMetaModelCollector.getInstance(myProject).collectDependencies(clazz, shouldCollect)
-            .filter { obj: PsiFile? -> Objects.nonNull(obj) }
-            .map { psiFile: PsiFile -> retrieveSingleMetaModelPerFile(psiFile, key, resultProcessor) }
-            .map { obj: CachedValue<T> -> obj.value }
+            .map { retrieveSingleMetaModelPerFile(it, key, resultProcessor) }
+            .map { it.value }
 
         val dependencies = localConfigMetaModels
             .map { it.psiFile }

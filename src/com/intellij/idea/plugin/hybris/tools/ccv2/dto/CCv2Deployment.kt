@@ -18,7 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
+import javax.swing.Icon
 
 data class CCv2Deployment(
     val code: String,
@@ -46,11 +48,11 @@ data class CCv2Deployment(
         get() = SAPCCM.formatTime(deployedTime)
 }
 
-enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String) {
-    NONE("None"),
-    UPDATE("Update"),
-    INITIALIZE("Initialize"),
-    UNKNOWN("Unknown");
+enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Icon) {
+    NONE("None", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_NONE),
+    UPDATE("Update", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_UPDATE),
+    INITIALIZE("Initialize", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_INIT),
+    UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_UNKNOWN);
 
     companion object {
         fun tryValueOf(name: String) = entries
@@ -59,11 +61,11 @@ enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String) {
     }
 }
 
-enum class CCv2DeploymentStrategyEnum(val title: String) {
-    ROLLING_UPDATE("Rolling update"),
-    RECREATE("Recreate"),
-    GREEN("Blue / Green"),
-    UNKNOWN("Unknown");
+enum class CCv2DeploymentStrategyEnum(val title: String, val icon: Icon) {
+    ROLLING_UPDATE("Rolling update", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_ROLLING_UPDATE),
+    RECREATE("Recreate", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_RECREATE),
+    GREEN("Blue / Green", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_GREEN),
+    UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_UNKNOWN);
 
     companion object {
         fun tryValueOf(name: String) = entries

@@ -33,13 +33,19 @@ abstract class AbstractCCv2DataView<T : CCv2DTO> {
     abstract val tab: CCv2Tab
     abstract fun dataPanel(data: Map<CCv2Subscription, Collection<T>>): DialogPanel
 
-    fun fetchingInProgress(): DialogPanel = panel {
-        row {
-            label("Fetching ${tab.title} data, Please wait...")
-                .align(Align.CENTER)
-                .resizableColumn()
-        }.resizableRow()
+    fun fetchingInProgressPanel(subscriptions: Collection<CCv2Subscription>): DialogPanel = panel {
+        subscriptions.forEach {
+            collapsibleGroup(it.toString()) {
+                row {
+                    label("Fetching ${tab.title} data, Please wait...")
+                        .align(Align.CENTER)
+                        .resizableColumn()
+                }.resizableRow()
+            }
+                .expanded = true
+        }
     }
+        .let { scrollPanel(it) }
 
     fun noDataPanel(): DialogPanel = panel {
         noData()

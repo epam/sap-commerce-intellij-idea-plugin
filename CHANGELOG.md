@@ -21,6 +21,7 @@
 - Improved visual representation of the environments and builds [#1059](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1059)
 - Open CCv2 settings pane from the toolbar [#1063](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1063)
 - Sync CCv2 subscriptions changes for all open projects [#1065](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1065)
+- Enhanced CCv2 deployments view [#1066](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1066)
 
 ### `Cockpit NG` enhancements
 - Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)
