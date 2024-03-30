@@ -23,6 +23,9 @@
 - Sync CCv2 subscriptions changes for all open projects [#1065](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1065)
 - Enhanced CCv2 deployments view [#1066](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1066)
 
+### `Type System` enhancements
+- Show Item line marker for jalo classes [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)
+
 ### `Cockpit NG` enhancements
 - Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)
 - Ignore case of the `merge-mode` attribute [#1023](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1023)

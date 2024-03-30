@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisClassLin
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.util.ModelsUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -34,7 +34,7 @@ class ModelEnumValueLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<P
 
     override fun getName() = message("hybris.editor.gutter.ts.model.enum.value.name")
     override fun getIcon(): Icon = HybrisIcons.TS_ENUM_VALUE
-    override fun canProcess(psi: PsiClass) = ModelsUtils.isEnumFile(psi)
+    override fun canProcess(psi: PsiClass) = TSUtils.isEnumFile(psi)
     override fun tryCast(psi: PsiElement) = psi as? PsiField
 
     override fun collectDeclarations(psi: PsiField) = TSMetaModelAccess.getInstance(psi.project).findMetaEnumByName(psi.containingClass!!.name)

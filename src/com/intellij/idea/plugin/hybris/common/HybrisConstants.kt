@@ -284,6 +284,7 @@ object HybrisConstants {
     const val IMPORT_OVERRIDE_FILENAME = "hybris4intellij.properties"
     const val GROUP_OVERRIDE_KEY = "group.override"
 
+    const val CLASS_FQN_JALO_ITEM_ROOT = "de.hybris.platform.jalo.Item"
     const val CLASS_FQN_ITEM_ROOT = "de.hybris.platform.core.model.ItemModel"
     const val CLASS_FQN_ENUM_ROOT = "de.hybris.platform.core.HybrisEnumValue"
     const val CLASS_NAME_ENUM = "HybrisEnumValue"

@@ -26,18 +26,20 @@ import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import javax.swing.Icon
 
-class ModelItemLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass>() {
+class JaloItemLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass>() {
 
-    override fun getName() = message("hybris.editor.gutter.ts.model.item.name")
+    override fun getName() = "Jalo - Item declaration(s)"
     override fun getIcon(): Icon = HybrisIcons.TS_ITEM
-    override fun canProcess(psi: PsiClass) = TSUtils.isItemModelFile(psi)
+    override fun canProcess(psi: PsiFile) = true
+    override fun canProcess(psi: PsiClass) = TSUtils.isItemJaloFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiClass)
         ?.takeIf { it.nameIdentifier != null }
 
     override fun collectDeclarations(psi: PsiClass) = TSMetaModelAccess.getInstance(psi.project)
-        .findMetaItemByName(TSUtils.cleanItemModelSearchName(psi.name))
+        .findMetaItemByName(psi.name)
         ?.retrieveAllDoms()
         ?.mapNotNull { it.code.xmlAttributeValue }
         ?.takeIf { it.isNotEmpty() }

@@ -26,7 +26,7 @@ import com.intellij.psi.PsiMember
 
 abstract class AbstractHybrisClassLineMarkerProvider<T : PsiElement> : AbstractHybrisLineMarkerProvider<T>() {
 
-    final override fun canProcess(psi: PsiFile) = ModuleUtils.isHybrisModule(psi)
+    override fun canProcess(psi: PsiFile) = ModuleUtils.isHybrisModule(psi)
     protected abstract fun canProcess(psi: PsiClass): Boolean
 
     override fun canProcess(elements: MutableList<out PsiElement>): Boolean {

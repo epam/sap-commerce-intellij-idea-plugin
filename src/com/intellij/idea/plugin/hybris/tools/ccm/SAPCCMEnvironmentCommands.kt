@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.tools.ccm
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDeploymentStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentType
 import com.intellij.openapi.project.Project
@@ -43,7 +43,7 @@ object SAPCCMEnvironmentCommands {
             name = row.substring(columns["NAME"]!!..<columns["STATUS"]!!).trim(),
             status = CCv2EnvironmentStatus.tryValueOf(row.substring(columns["STATUS"]!!..<columns["TYPE"]!!).trim()),
             type = CCv2EnvironmentType.tryValueOf(row.substring(columns["TYPE"]!!..<columns["DEPLOYMENT STATUS"]!!).trim()),
-            deploymentStatus = CCv2EnvironmentDeploymentStatus.tryValueOf(row.substring(columns["DEPLOYMENT STATUS"]!!).trim()),
+            deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(row.substring(columns["DEPLOYMENT STATUS"]!!).trim()),
         )
     }
 }

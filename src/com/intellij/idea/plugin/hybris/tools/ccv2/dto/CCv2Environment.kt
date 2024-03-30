@@ -26,7 +26,7 @@ data class CCv2Environment(
     val name: String,
     val type: CCv2EnvironmentType,
     val status: CCv2EnvironmentStatus,
-    val deploymentStatus: CCv2EnvironmentDeploymentStatus,
+    val deploymentStatus: CCv2DeploymentStatusEnum,
 ) : CCv2DTO
 
 enum class CCv2EnvironmentType(val title: String, val icon: Icon) {
@@ -52,21 +52,6 @@ enum class CCv2EnvironmentStatus(val title: String, val icon: Icon) {
 
     companion object {
         fun tryValueOf(name: String) = CCv2EnvironmentStatus.entries
-            .find { it.name == name }
-            ?: UNKNOWN
-    }
-}
-
-enum class CCv2EnvironmentDeploymentStatus(val title: String, val icon: Icon) {
-    SCHEDULED("Scheduled", HybrisIcons.CCV2_ENV_DEPLOYMENT_STATUS_SCHEDULED),
-    DEPLOYING("Deploying", HybrisIcons.CCV2_ENV_DEPLOYMENT_STATUS_DEPLOYING),
-    DEPLOYED("Deployed", HybrisIcons.CCV2_ENV_DEPLOYMENT_STATUS_DEPLOYED),
-    UNDEPLOYED("Undeployed", HybrisIcons.CCV2_ENV_DEPLOYMENT_STATUS_UNDEPLOYED),
-    FAIL("Fail", HybrisIcons.CCV2_ENV_DEPLOYMENT_STATUS_FAIL),
-    UNKNOWN("Unknown", HybrisIcons.CCV2_ENV_DEPLOYMENT_STATUS_UNKNOWN);
-
-    companion object {
-        fun tryValueOf(name: String) = CCv2EnvironmentDeploymentStatus.entries
             .find { it.name == name }
             ?: UNKNOWN
     }

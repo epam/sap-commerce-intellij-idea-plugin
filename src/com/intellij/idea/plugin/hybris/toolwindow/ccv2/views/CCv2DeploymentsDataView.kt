@@ -67,7 +67,8 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
 
             panel {
                 row {
-                    label(deployment.status)
+                    icon(deployment.status.icon)
+                    label(deployment.status.title)
                         .comment("Status")
                 }
             }.gap(RightGap.COLUMNS)

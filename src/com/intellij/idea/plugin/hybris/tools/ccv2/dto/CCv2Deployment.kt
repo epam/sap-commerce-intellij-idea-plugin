@@ -34,7 +34,7 @@ data class CCv2Deployment(
     val deployedTime: String,
     val failedTime: String,
     val undeployedTime: String,
-    val status: String,
+    val status: CCv2DeploymentStatusEnum,
     val cancelledBy: String,
     val cancelledTime: String,
     val cancelFinishedTime: String,
@@ -66,6 +66,21 @@ enum class CCv2DeploymentStrategyEnum(val title: String, val icon: Icon) {
     RECREATE("Recreate", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_RECREATE),
     GREEN("Blue / Green", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_GREEN),
     UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_UNKNOWN);
+
+    companion object {
+        fun tryValueOf(name: String) = entries
+            .find { it.name == name }
+            ?: UNKNOWN
+    }
+}
+
+enum class CCv2DeploymentStatusEnum(val title: String, val icon: Icon) {
+    SCHEDULED("Scheduled", HybrisIcons.CCV2_DEPLOYMENT_STATUS_SCHEDULED),
+    DEPLOYED("Deployed", HybrisIcons.CCV2_DEPLOYMENT_STATUS_DEPLOYED),
+    DEPLOYING("Deploying", HybrisIcons.CCV2_DEPLOYMENT_STATUS_DEPLOYING),
+    UNDEPLOYED("Undeployed", HybrisIcons.CCV2_DEPLOYMENT_STATUS_UNDEPLOYED),
+    FAIL("Fail", HybrisIcons.CCV2_DEPLOYMENT_STATUS_FAIL),
+    UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_STATUS_UNKNOWN);
 
     companion object {
         fun tryValueOf(name: String) = entries

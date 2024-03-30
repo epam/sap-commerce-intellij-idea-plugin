@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
 import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
-import com.intellij.idea.plugin.hybris.system.type.util.ModelsUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.psi.*
 
 class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
@@ -41,10 +41,10 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
             ?: return
 
         if (method !is PsiMethod) return
-        if (method.containingClass == null) return
-        if (!ModelsUtils.isItemModelFile(method.containingClass)) return
+        val psiClass = method.containingClass ?: return
+        if (!TSUtils.isItemModelFile(psiClass)) return
 
-        val meta = TSMetaModelAccess.getInstance(element.project).findMetaItemByName(cleanSearchName(method.containingClass?.name)) ?: return
+        val meta = TSMetaModelAccess.getInstance(element.project).findMetaItemByName(cleanSearchName(psiClass?.name)) ?: return
         val annotation = method.getAnnotation(HybrisConstants.CLASS_FQN_ANNOTATION_ACCESSOR) ?: return
 
         val qualifier = annotation.parameterList.attributes

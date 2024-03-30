@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation.RelationEnd
-import com.intellij.idea.plugin.hybris.system.type.util.ModelsUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -37,9 +37,9 @@ import javax.swing.Icon
 abstract class AbstractModelAttributeLineMarkerProvider<T : PsiElement> : AbstractHybrisClassLineMarkerProvider<T>() {
 
     override fun getIcon(): Icon = HybrisIcons.TYPE_SYSTEM
-    override fun canProcess(psi: PsiClass) = ModelsUtils.isItemModelFile(psi)
+    override fun canProcess(psi: PsiClass) = TSUtils.isItemModelFile(psi)
 
-    override fun collectDeclarations(psi: T) = TSMetaModelAccess.getInstance(psi.project).findMetaItemByName(ModelsUtils.cleanSearchName((psi.parent as PsiClass).name))
+    override fun collectDeclarations(psi: T) = TSMetaModelAccess.getInstance(psi.project).findMetaItemByName(TSUtils.cleanItemModelSearchName((psi.parent as PsiClass).name))
         ?.let { collect(it, psi) }
         ?: emptyList()
 

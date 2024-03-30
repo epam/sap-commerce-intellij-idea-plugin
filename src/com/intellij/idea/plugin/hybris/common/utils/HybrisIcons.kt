@@ -247,12 +247,12 @@ object HybrisIcons {
     val CCV2_DEPLOYMENT_STRATEGY_GREEN = AllIcons.Gutter.ReadAccess
     val CCV2_DEPLOYMENT_STRATEGY_UNKNOWN = ExpUiIcons.Run.TestUnknown
 
-    val CCV2_ENV_DEPLOYMENT_STATUS_SCHEDULED = ExpUiIcons.Run.Profile
-    val CCV2_ENV_DEPLOYMENT_STATUS_DEPLOYING = ExpUiIcons.Run.TestCustom
-    val CCV2_ENV_DEPLOYMENT_STATUS_DEPLOYED = ExpUiIcons.Run.TestPassed
-    val CCV2_ENV_DEPLOYMENT_STATUS_UNDEPLOYED = ExpUiIcons.Run.TestSkipped
-    val CCV2_ENV_DEPLOYMENT_STATUS_FAIL = ExpUiIcons.Run.TestError
-    val CCV2_ENV_DEPLOYMENT_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
+    val CCV2_DEPLOYMENT_STATUS_SCHEDULED = ExpUiIcons.Run.Profile
+    val CCV2_DEPLOYMENT_STATUS_DEPLOYING = ExpUiIcons.Run.TestCustom
+    val CCV2_DEPLOYMENT_STATUS_DEPLOYED = ExpUiIcons.Run.TestPassed
+    val CCV2_DEPLOYMENT_STATUS_UNDEPLOYED = ExpUiIcons.Run.TestSkipped
+    val CCV2_DEPLOYMENT_STATUS_FAIL = ExpUiIcons.Run.TestError
+    val CCV2_DEPLOYMENT_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
 
     val CCV2_ENV_STATUS_PROVISIONING = AllIcons.Actions.ProfileYellow
     val CCV2_ENV_STATUS_AVAILABLE = AllIcons.Actions.ProjectWideAnalysisOn

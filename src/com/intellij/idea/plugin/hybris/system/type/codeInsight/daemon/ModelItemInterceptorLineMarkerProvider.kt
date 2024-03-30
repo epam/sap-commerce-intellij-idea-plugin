@@ -18,11 +18,11 @@
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon
 
 import com.intellij.idea.plugin.hybris.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
+import com.intellij.idea.plugin.hybris.codeInsight.daemon.TSInterceptorSpringBuilderFactory
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.codeInsight.daemon.TSInterceptorSpringBuilderFactory
-import com.intellij.idea.plugin.hybris.system.type.util.ModelsUtils
+import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiField
@@ -34,7 +34,7 @@ class ModelItemInterceptorLineMarkerProvider : AbstractHybrisClassLineMarkerProv
 
     override fun getName() = message("hybris.editor.gutter.ts.model.item.interceptors.name")
     override fun getIcon(): Icon = HybrisIcons.INTERCEPTOR
-    override fun canProcess(psi: PsiClass) = ModelsUtils.isItemModelFile(psi)
+    override fun canProcess(psi: PsiClass) = TSUtils.isItemModelFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiField)
         ?.takeIf { it.name == HybrisConstants.TYPECODE_FIELD_NAME }
 

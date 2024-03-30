@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDatabaseUpdateModeEnum
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStrategyEnum
 import com.intellij.openapi.project.Project
 
@@ -71,7 +72,9 @@ object SAPCCMDeploymentCommands {
             deployedTime = row.substring(columns["DEPLOYED TIME"]!!..<columns["FAILED TIME"]!!).trim(),
             failedTime = row.substring(columns["FAILED TIME"]!!..<columns["UNDEPLOYED TIME"]!!).trim(),
             undeployedTime = row.substring(columns["UNDEPLOYED TIME"]!!..<columns["STATUS"]!!).trim(),
-            status = row.substring(columns["STATUS"]!!..<columns["CANCELED BY"]!!).trim(),
+            status = CCv2DeploymentStatusEnum.tryValueOf(
+                row.substring(columns["STATUS"]!!..<columns["CANCELED BY"]!!).trim()
+            ),
             cancelledBy = row.substring(columns["CANCELED BY"]!!..<columns["CANCELED TIME"]!!).trim(),
             cancelledTime = row.substring(columns["CANCELED TIME"]!!..<columns["CANCEL FINISHED TIME"]!!).trim(),
             cancelFinishedTime = row.substring(columns["CANCEL FINISHED TIME"]!!..<columns["CANCEL FAILED"]!!).trim(),
