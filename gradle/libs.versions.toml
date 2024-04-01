@@ -24,6 +24,10 @@ jaxbImpl = "4.0.4"
 # version 9.2.1 is already available but we stick to the version used by Hybris
 # see folder hybris\bin\modules\search-and-navigation\solrserver\resources\solr\
 solrSolrj = "8.11.2"
+# https://mvnrepository.com/artifact/com.squareup.moshi/moshi
+moshi = "1.15.1"
+# https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/
+okhttp = "4.12.0"
 
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
@@ -32,6 +36,8 @@ kotlin = "1.9.22"
 gradleIntelliJPlugin = "1.17.2"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
 changelog = "2.2.0"
+# https://plugins.gradle.org/plugin/org.openapi.generator
+openAPIGenerator = "7.4.0"
 
 [libraries]
 commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIO" }
@@ -45,12 +51,18 @@ maven-model = { group = "org.apache.maven", name = "maven-model", version.ref = 
 jakarta-xml-bind-api = { group = "jakarta.xml.bind", name = "jakarta.xml.bind-api", version.ref = "jakartaXmlBindApi" }
 jaxb-impl = { group = "com.sun.xml.bind", name = "jaxb-impl", version.ref = "jaxbImpl" }
 solr-solrj = { group = "org.apache.solr", name = "solr-solrj", version.ref = "solrSolrj" }
+moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+moshi-adapters = { group = "com.squareup.moshi", name = "moshi-adapters", version.ref = "moshi" }
+moshi-kotin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 
 [bundles]
 commons = ["commons-io", "commons-codec", "commons-lang3", "commons-collections4"]
 jaxb = ["jaxb-impl", "jakarta-xml-bind-api"]
+openapi = ["moshi", "moshi-adapters", "moshi-kotin", "okhttp"]
 
 [plugins]
 gradleIntelliJPlugin = { id = "org.jetbrains.intellij", version.ref = "gradleIntelliJPlugin" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
+openAPIGenerator = { id = "org.openapi.generator", version.ref = "openAPIGenerator" }

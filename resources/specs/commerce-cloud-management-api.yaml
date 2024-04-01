@@ -1,0 +1,1866 @@
+openapi: 3.0.2
+info:
+  version: 2.0.11
+  title: 'SAP Commerce Cloud - Management API'
+  description: 'The API to manage your SAP Commerce environments in the cloud, including provisioning, building releases, deploying, operating and more.'
+  license:
+    name: 'Use of this file is subject to the terms of your agreement with SAP SE or its affiliates respecting the use of the SAP product for which this file relates.'
+
+x-sap-api-type: REST
+x-sap-shortText: Manage Commerce Cloud Automation.
+x-sap-stateInfo:
+  state: Beta
+servers:
+  - url: https://{uri}/v2
+    description: Environment URL
+    variables:
+      uri:
+        default: 'portalrotapi.hana.ondemand.com'
+        description: Environment URI
+tags:
+  - name: build
+    description: Endpoints for managing builds
+  - name: deployment
+    description: Endpoints for managing deployments
+  - name: databackup
+    description: Endpoints for managing databackups and restores
+  - name: environment
+    description: Endpoints for managing environments
+  - name: endpoint
+    description: Endpoints for managing endpoints
+paths:
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/services/{serviceCode}/properties/{propertyCode}:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment created into the subscription
+        required: true
+        schema:
+          type: string
+      - name: serviceCode
+        in: path
+        description: Service code for an environment.
+        required: true
+        schema:
+          type: string
+      - name: propertyCode
+        in: path
+        description: Property code to get the property in a service
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - serviceProperties
+      description: Get specific property from a service
+      operationId: getProperty
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicePropertyDTO'
+        '403':
+          description: Forbidden, not allowed property
+        '404':
+          description: No property found for the service
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+    put:
+      tags:
+        - serviceProperties
+      description: Update or create a property into a service
+      operationId: putProperty
+      requestBody:
+        description: Property info
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicePropertyDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicePropertyDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/builds:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - build
+      description: Get builds
+      operationId: getBuilds
+      parameters:
+        - name: statusNot
+          in: query
+          description: Get all builds excluding provided status
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - $ref: '#/components/parameters/PaginationTop'
+        - $ref: '#/components/parameters/PaginationSkip'
+        - $ref: '#/components/parameters/OrderBy'
+        - $ref: '#/components/parameters/Count'
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildDetailsDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+    post:
+      tags:
+        - build
+      description: Create a build
+      operationId: createBuild
+      requestBody:
+        description: Create a new build
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBuildRequestDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBuildResponseDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/builds/{buildCode}:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: buildCode
+        in: path
+        description: Build code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - build
+      description: Get build details
+      operationId: getBuild
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildDetailDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+    delete:
+      tags:
+        - build
+      description: Delete build
+      operationId: deleteBuild
+      parameters:
+        - name: subscriptionCode
+          in: path
+          description: Customer subscription code
+          required: true
+          schema:
+            type: string
+        - name: buildCode
+          in: path
+          description: Build code
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Delete build operation started
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/builds/{buildCode}/progress:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: buildCode
+        in: path
+        description: Build code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - build
+      description: Get build progress
+      operationId: getBuildProgress
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildProgressDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/builds/{buildCode}/logs:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: buildCode
+        in: path
+        description: Build code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - build
+      description: Get build logs
+      operationId: getBuildLogs
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/deploymentmodes:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - deployment
+      description: Get list of environments and respective allowed deployment modes for a subscription
+      operationId: getDeploymentModes
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeploymentModesPerEnvironmentDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/deployments:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - deployment
+      description: Get deployments
+      operationId: getDeployments
+      parameters:
+        - name: buildCode
+          in: query
+          description: Finds all the deployments associated a build
+          required: false
+          schema:
+            type: string
+        - name: environmentCode
+          in: query
+          description: Finds all the deployments associated an environment
+          required: false
+          schema:
+            type: string
+        - $ref: '#/components/parameters/DeploymentStatusFilter'
+        - $ref: '#/components/parameters/PaginationTop'
+        - $ref: '#/components/parameters/PaginationSkip'
+        - $ref: '#/components/parameters/OrderBy'
+        - $ref: '#/components/parameters/Count'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploymentDetailsDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+    post:
+      tags:
+        - deployment
+      description: Start a new deployment
+      operationId: createDeployment
+      requestBody:
+        description: Data for a new deployment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeploymentRequestDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDeploymentResponseDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/deployments/{deploymentCode}:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: deploymentCode
+        in: path
+        description: Deployment code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - deployment
+      description: Get deployment details
+      operationId: getDeployment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploymentDetailDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/deployments/{deploymentCode}/decisions:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: deploymentCode
+        in: path
+        description: Deployment code
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - deployment
+      description: deployment decision request
+      operationId: createDeploymentDecision
+      requestBody:
+        description: Data to make a deployment decision a deployment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeploymentDecisionRequestDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDeploymentDecisionResponseDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+    get:
+      tags:
+        - deployment
+      description: Get deployment decisions
+      operationId: getDeploymentDecisions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploymentDecisionsDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/deployments/{deploymentCode}/trafficsplit:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: deploymentCode
+        in: path
+        description: Deployment code
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+        - deployment
+      description: Update deployment traffic split
+      operationId: updateTrafficSplit
+      requestBody:
+        description: Data to create/update traffic split of a deployment
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTrafficSplitRequestDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrafficSplitDetailDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+    get:
+      tags:
+        - deployment
+      description: Get deployment Traffic Split
+      operationId: getTrafficSplit
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrafficSplitDetailDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/deployments/{deploymentCode}/trafficsplit/history:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: deploymentCode
+        in: path
+        description: Deployment code
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/PaginationTop'
+      - $ref: '#/components/parameters/PaginationSkip'
+      - $ref: '#/components/parameters/OrderBy'
+      - $ref: '#/components/parameters/Count'
+    get:
+      tags:
+        - deployment
+      description: Get deployment Traffic Split Audit History
+      operationId: getTrafficSplitHistory
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrafficSplitHistoryListDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/deployments/{deploymentCode}/progress:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: deploymentCode
+        in: path
+        description: Deployment code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - deployment
+      description: Get deployment progress
+      operationId: getDeploymentProgress
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploymentProgressDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/deployments/{deploymentCode}/cancellationoptions:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: deploymentCode
+        in: path
+        description: Deployment code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - deployment
+      description: Get deployment cancellation options
+      operationId: getDeploymentCancellationOptions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploymentCancellationOptionsDetailDTO'
+        '404':
+          description: No cancelation options found for the deployment
+        '501':
+          description: This resource is currently disabled
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/deployments/{deploymentCode}/cancellation:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: deploymentCode
+        in: path
+        description: Deployment code
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - deployment
+      description: Create a deployment cancelation request
+      operationId: createDeploymentCancellation
+      requestBody:
+        description: Properties and flags for deployment cancelation request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeploymentCancellationRequestDTO'
+      responses:
+        '202':
+          description: The cancelation request was accepted
+        '501':
+          description: This resource is currently disabled
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Subscription code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - environment
+      description: Get environments for subscription
+      operationId: getEnvironments
+      parameters:
+        - $ref: '#/components/parameters/EnvironmentStatusFilter'
+        - $ref: '#/components/parameters/EnvironmentDeploymentStatusFilter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentDetailsDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/endpoints:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - endpoint
+      description: List endpoints for environment
+      operationId: getEndpoints
+      parameters:
+        - $ref: '#/components/parameters/EndpointWebProxyFilter'
+        - $ref: '#/components/parameters/EndpointServiceFilter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDetailsDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/databackups:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - databackup
+      description: List data backups
+      operationId: getDatabackups
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabackupDetailsDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+    post:
+      tags:
+        - databackup
+      description: Create a databackup
+      operationId: createDatabackup
+      requestBody:
+        description: Create a databackup
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDatabackupRequestDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDatabackupResponseDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/databackups/{databackupCode}:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+      - name: databackupCode
+        in: path
+        description: Databackup code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - databackup
+      description: Get databackup
+      operationId: getDatabackup
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabackupDetailDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+    delete:
+      tags:
+        - databackup
+      description: Delete databackup
+      operationId: deleteDatabackup
+      responses:
+        '204':
+          description: Delete databackup operation started
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/databackups/{databackupCode}/state:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+      - name: databackupCode
+        in: path
+        description: Databackup code
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+        - databackup
+      description: Change databackup state
+      operationId: changeDatabackupState
+      requestBody:
+        description: Change databackup state
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatabackupStateChangeDTO'
+      responses:
+        '200':
+          description: Databackup state change in progress
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/datarestores:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - databackup
+      description: List datarestores
+      operationId: getDatarestores
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatarestoreDetailsDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+    post:
+      tags:
+        - databackup
+      description: Create a datarestore from a databackup
+      operationId: createDatarestore
+      requestBody:
+        description: Create a databackup
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDatarestoreRequestDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDatarestoreResponseDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/datarestores/{datarestoreCode}:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+      - name: datarestoreCode
+        in: path
+        description: datarestore code
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - databackup
+      description: Get datarestore
+      operationId: getDatarestore
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatarestoreDetailDTO'
+        default:
+          $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/datarestores/{datarestoreCode}/state:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+      - name: datarestoreCode
+        in: path
+        description: datarestore code
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+        - databackup
+      description: Change datarestore state
+      operationId: changeDatarestoreState
+      requestBody:
+        description: Change datarestore state
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatarestoreStateChangeDTO'
+      responses:
+        '200':
+          description: Datarestore state change in progress
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
+security:
+  - OAuth2: []
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes:
+            {}
+          authorizationUrl: 'https://oauthasservices-a9f746d57.hana.ondemand.com/oauth2/api/v1/authorize'
+          tokenUrl: 'https://oauthasservices-a9f746d57.hana.ondemand.com/oauth2/api/v1/token'
+  parameters:
+    DeploymentStatusFilter:
+      name: status
+      in: query
+      description: The status by which to filter deployments, possible values are "SCHEDULED","DEPLOYING","DEPLOYED","UNDEPLOYED" or "FAIL"
+      required: false
+      schema:
+        type: string
+    EnvironmentStatusFilter:
+      name: status
+      in: query
+      description: The status by which to filter environments, possible values are "PROVISIONING","AVAILABLE","TERMINATING","TERMINATED" or "READY_FOR_DEPLOYMENT"
+      required: false
+      schema:
+        type: string
+    EnvironmentDeploymentStatusFilter:
+      name: deploymentStatus
+      in: query
+      description: The deployment status by which to filter environments, possible values are "SCHEDULED","DEPLOYING","DEPLOYED","UNDEPLOYED" or "FAIL"
+      required: false
+      schema:
+        type: string
+    EndpointWebProxyFilter:
+      name: webProxy
+      in: query
+      description: The web proxy by which to filter endpoints, possible values are "public", "private" or "nat"
+      required: false
+      schema:
+        type: string
+    EndpointServiceFilter:
+      name: service
+      in: query
+      description: The service by which to filter endpoints
+      required: false
+      schema:
+        type: string
+    PaginationTop:
+      name: $top
+      in: query
+      description: Number of items to be returned (page size)
+      schema:
+        type: integer
+        minimum: 1
+    PaginationSkip:
+      name: $skip
+      in: query
+      description: Number of items to be skipped (offset)
+      schema:
+        type: integer
+        minimum: 0
+    OrderBy:
+      name: $orderby
+      in: query
+      description: Comma separated list of attribute names, attributed with asc or desc
+      example: 'orderby=releaseDate asc,price desc'
+      schema:
+        type: string
+    Count:
+      name: $count
+      in: query
+      description: Flag to provide elements count in the response (if true, then the count is provided)
+      schema:
+        type: boolean
+  responses:
+    DefaultResponse:
+      description: Generic error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ErrorDTO'
+  schemas:
+    ErrorDTO:
+      description: Problem detail message (https://tools.ietf.org/html/rfc7807)
+      type: object
+      properties:
+        title:
+          description: Human-readable summary of the problem type
+          type: string
+          readOnly: true
+        detail:
+          description: Human-readable explanation specific to this occurrence of the problem
+          type: string
+          readOnly: true
+    BuildProgressDTO:
+      description: Build progress
+      type: object
+      properties:
+        subscriptionCode:
+          description: Code of the subscription
+          type: string
+        buildCode:
+          description: Code of the build
+          type: string
+        errorMessage:
+          description: Human readable error message
+          type: string
+        numberOfTasks:
+          description: Total number of tasks that will be executed
+          type: integer
+          format: int32
+        percentage:
+          description: Progress percentage
+          type: integer
+          format: int32
+        buildStatus:
+          description: Current status of the build , possible values are "BUILDING","SUCCESS","FAIL","SCHEDULED","DELETED" or "UNKNOWN"
+          type: string
+        startedTasks:
+          description: List of started tasks of this progress
+          type: array
+          items:
+            $ref: "#/components/schemas/BuildProgressStartedTaskDTO"
+    BuildProgressStartedTaskDTO:
+      description: Started task of a build progress
+      type: object
+      properties:
+        task:
+          description: Name of the task
+          type: string
+        name:
+          description: Business name of the task
+          type: string
+        startTimestamp:
+          description: Start timestamp of the task
+          type: string
+          format: date-time
+    CreateBuildRequestDTO:
+      description: Entity to be used to start new builds
+      type: object
+      required:
+        - branch
+        - name
+      properties:
+        applicationCode:
+          description: Code of the application
+          type: string
+        branch:
+          description: Branch name of the application
+          type: string
+        name:
+          description: Name of the build
+          type: string
+    CreateBuildResponseDTO:
+      description: Create build response
+      type: object
+      required:
+        - code
+      properties:
+        subscriptionCode:
+          description: Code of the subscription
+          type: string
+        code:
+          description: Build code
+          type: string
+    BuildDetailsDTO:
+      description: Collection of build details
+      type: object
+      properties:
+        value:
+          description: Array of build details
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildDetailDTO'
+        count:
+          description: The total number of builds
+          type: integer
+    BuildDetailDTO:
+      description: Details of a build
+      type: object
+      properties:
+        subscriptionCode:
+          description: Code of the subscription
+          type: string
+        applicationCode:
+          description: Application code
+          type: string
+        applicationDefinitionVersion:
+          description: Application definition version
+          type: string
+        branch:
+          description: Branch name
+          type: string
+        name:
+          description: Build name
+          type: string
+        code:
+          description: Build code
+          type: string
+        buildStartTimestamp:
+          description: Build start timestamp
+          type: string
+          format: date-time
+        buildEndTimestamp:
+          description: Build end timestamp
+          type: string
+          format: date-time
+        buildVersion:
+          description: Build version
+          type: string
+        createdBy:
+          description: Initiator of the build
+          type: string
+        status:
+          description: Current status of the build , possible values are "BUILDING","SUCCESS","FAIL","SCHEDULED","DELETED" or "UNKNOWN"
+          type: string
+        isPreview:
+          type: boolean
+        hasSnapshot:
+          description: Build has snapshot associated
+          type: boolean
+        deployed:
+          description: Build is deployed
+          type: boolean
+        properties:
+          description: Properties that are used for this build
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDTO'
+    DatabackupDetailsDTO:
+      description: Collection of databackup details
+      type: object
+      properties:
+        value:
+          description: Array of databackup details
+          type: array
+          items:
+            $ref: '#/components/schemas/DatabackupDetailDTO'
+        count:
+          description: The total number of databackups
+          type: integer
+    DatabackupDetailDTO:
+      description: Databackup
+      type: object
+      properties:
+        databackupCode:
+          description: Databackup Code
+          type: string
+        name:
+          description: Name
+          type: string
+        buildCode:
+          description: Build code
+          type: string
+        status:
+          description: Status
+          type: string
+        databackupType:
+          description: Type
+          type: string
+        description:
+          description: Description
+          type: string
+        createdBy:
+          description: User that created the databackup
+          type: string
+        createdTimestamp:
+          description: Databackup creation timestamp
+          type: string
+          format: date-time
+        canBeRestored:
+          description: Can be restored
+          type: boolean
+        canBeDeleted:
+          description: Can be deleted
+          type: boolean
+        canBeCanceled:
+          description: Can be canceled
+          type: boolean
+    CreateDatabackupRequestDTO:
+      description: Create Databackup request
+      type: object
+      properties:
+        description:
+          description: Description
+          type: string
+    CreateDatabackupResponseDTO:
+      description: Create databackup response
+      type: object
+      required:
+        - databackupCode
+      properties:
+        subscriptionCode:
+          description: Code of the subscription
+          type: string
+        environmentCode:
+          description: Code of the environment
+          type: string
+        databackupCode:
+          description: Databackup code
+          type: string
+    DatarestoreDetailsDTO:
+      description: Collection of datarestores
+      type: object
+      properties:
+        value:
+          description: Array of datarestores
+          type: array
+          items:
+            $ref: '#/components/schemas/DatarestoreDetailDTO'
+        count:
+          description: The total number of datarestores
+          type: integer
+    DatarestoreDetailDTO:
+      description: Datarestore
+      type: object
+      properties:
+        datarestoreCode:
+          description: Datarestore Code
+          type: string
+        name:
+          description: Name
+          type: string
+        status:
+          description: Status
+          type: string
+        databackupCode:
+          description: Databackup that is the source of the datarestore
+          type: string
+        createdBy:
+          description: User that started (created) the datarestore
+          type: string
+        createdTimestamp:
+          description: Datarestore creation timestamp
+          type: string
+          format: date-time
+        canBeCanceled:
+          description: Can be canceled
+          type: boolean
+    CreateDatarestoreRequestDTO:
+      description: Create datarestore request
+      type: object
+      properties:
+        databackupCode:
+          description: Databackup code
+          type: string
+        sourceEnvironmentCode:
+          description: Source environment (where the databackup was created)
+          type: string
+    CreateDatarestoreResponseDTO:
+      description: Create datarestore response
+      type: object
+      required:
+        - datarestoreCode
+      properties:
+        subscriptionCode:
+          description: Code of the subscription
+          type: string
+        environmentCode:
+          description: Code of the environment
+          type: string
+        datarestoreCode:
+          description: Datarestore code
+          type: string
+    DatabackupStateChangeDTO:
+      description: Change databackup state
+      type: object
+      properties:
+        action:
+          description: Perform this action on the databackup
+          type: string
+          enum:
+            - CANCEL
+    DatarestoreStateChangeDTO:
+      description: Change datarestore
+      type: object
+      properties:
+        action:
+          description: Perform this action on the datarestore
+          type: string
+          enum:
+            - CANCEL
+    PropertyDTO:
+      description: Property key and value pair
+      type: object
+      properties:
+        key:
+          description: Property key
+          type: string
+        value:
+          description: Property value
+    DeploymentModesPerEnvironmentDTO:
+      description: Details of a deploymentmodes per environment
+      type: object
+      properties:
+        environmentCode:
+          description: Environment code
+          type: string
+        deploymentModes:
+          description: List of deployment modes allowed for an environment
+          $ref: '#/components/schemas/DeploymentModeDTO'
+    DeploymentModeDTO:
+      description: Details of a deploymentmodes per environment
+      type: object
+      properties:
+        dataMigrationMode:
+          description: Data migration modes
+          type: array
+          items:
+            type: string
+            enum:
+              - NONE
+              - UPDATE
+              - INITIALIZE
+        deploymentMode:
+          description: deployment modes
+          type: array
+          items:
+            type: string
+            enum:
+              - ROLLING_UPDATE
+              - RECREATE
+              - GREEN
+    DeploymentDetailsDTO:
+      description: Collection of deployment details
+      type: object
+      properties:
+        value:
+          description: Array of deployment details
+          type: array
+          items:
+            $ref: '#/components/schemas/DeploymentDetailDTO'
+        count:
+          description: The total number of deployments
+          type: integer
+    DeploymentDetailDTO:
+      description: Details of a deployment
+      type: object
+      properties:
+        code:
+          description: Deployment code
+          type: string
+        subscriptionCode:
+          description: Code of the subscription
+          type: string
+        createdBy:
+          description: User that created the deployment
+          type: string
+        createdTimestamp:
+          description: Deployment creation timestamp
+          type: string
+          format: date-time
+        buildCode:
+          description: Code of the deployed build
+          type: string
+        environmentCode:
+          description: Code of the environment where the build will be deployed to
+          type: string
+        databaseUpdateMode:
+          description: Database action used in the deployment
+          type: string
+          enum:
+            - NONE
+            - UPDATE
+            - INITIALIZE
+        strategy:
+          description: Strategy for the deployment. Could be rolling-update or re-create
+          type: string
+          enum:
+            - ROLLING_UPDATE
+            - RECREATE
+            - GREEN
+        scheduledTimestamp:
+          description: Time the deployment is scheduled for. If not provided current timestamp is used.
+          type: string
+          format: date-time
+        deployedTimestamp:
+          description: Time the deployment was successful
+          type: string
+          format: date-time
+        failedTimestamp:
+          description: Time the deployment failed
+          type: string
+          format: date-time
+        undeployedTimestamp:
+          description: Time the deployment was un-deployed and replaced
+          type: string
+          format: date-time
+        status:
+          description: Status of the deployment, possible values are "SCHEDULED","DEPLOYING","DEPLOYED","UNDEPLOYED" or "FAIL"
+          type: string
+        canceledBy:
+          deprecated: true
+          description: User that canceled the deployment. This property was moved under `cancelation`.
+          type: string
+        canceledTimestamp:
+          deprecated: true
+          description: Time the cancelation was requested. This property was moved under `cancelation`.
+          type: string
+          format: date-time
+        cancellationFinishedTimestamp:
+          deprecated: true
+          description: Time the cancelation finished. This property was moved under `cancelation`.
+          type: string
+          format: date-time
+        cancellationFailed:
+          deprecated: true
+          description: Flag to indicate if the deployment cancelation failed. This property was moved under `cancelation`.
+          type: boolean
+        cancelation:
+          description: Details of the deployment cancelation
+          $ref: '#/components/schemas/DeploymentCancelationDetailDTO'
+        isCanaryAvailable:
+          description: true if canary is available
+          type: boolean
+        previousDeploymentCode:
+          description: Code of the previous deployment
+          type: string
+        expireAtTimestamp:
+          description: Time before which user can make decision on the deployment, after the given time deployment will be automatically rejected.
+          type: string
+          format: date-time
+        canaryStatus:
+          description: Deployment Canary status
+          type: string
+          enum:
+            - STARTED
+            - SUCCEEDED
+            - FAILED
+        trafficSplit:
+          description: traffic split of deployment
+          $ref: '#/components/schemas/DeploymentTrafficSplitDTO'
+    CreateDeploymentRequestDTO:
+      description: Entity to be used to start a new deployment
+      type: object
+      required:
+        - buildCode
+        - environmentCode
+        - databaseUpdateMode
+        - strategy
+      properties:
+        buildCode:
+          description: Code of the build to be deployed
+          type: string
+        environmentCode:
+          description: Code of the environment where the build will be deployed to
+          type: string
+        databaseUpdateMode:
+          description: Database action used in the deployment
+          type: string
+          enum:
+            - NONE
+            - UPDATE
+            - INITIALIZE
+        strategy:
+          description: Strategy for the deployment. Could be rolling-update or re-create
+          type: string
+          enum:
+            - ROLLING_UPDATE
+            - RECREATE
+            - GREEN
+    CreateDeploymentResponseDTO:
+      description: Create deployment response
+      type: object
+      required:
+        - code
+      properties:
+        subscriptionCode:
+          description: Code of the subscription
+          type: string
+        code:
+          description: Deployment code
+          type: string
+    CreateDeploymentDecisionRequestDTO:
+      description: Entity to be used to make decision on a green deployment
+      type: object
+      properties:
+        reason:
+          description: reason for deployment decision
+          type: string
+        decision:
+          description: Deployment decision
+          $ref: "#/components/schemas/DeploymentDecision"
+    CreateDeploymentDecisionResponseDTO:
+      description: Deployment decision response
+      type: object
+      properties:
+        newDeploymentCode:
+          description: Code of the new deployment, will have a value only when the decision is not REJECT.
+          type: string
+        decision:
+          description: Deployment decision
+          $ref: "#/components/schemas/DeploymentDecision"
+        decison:
+          deprecated: true
+          description: Deprecated. Use 'decision'
+          $ref: "#/components/schemas/DeploymentDecision"
+    DeploymentDecisionsDTO:
+      description: Deployment decisions
+      type: object
+      properties:
+        deploymentDecisions:
+          type: array
+          items:
+            $ref: "#/components/schemas/DeploymentDecisionDTO"
+    DeploymentDecisionDTO:
+      description: Deployment decision
+      type: object
+      properties:
+        reason:
+          description: reason for decision
+          type: string
+        type:
+          description: deployment decision type
+          $ref: "#/components/schemas/DeploymentDecision"
+        subscriptionCode:
+          description: subscription code
+          type: string
+        deploymentCode:
+          description: deployment code
+          type: string
+        createdTimestamp:
+          description: date time when decision was made
+          type: string
+          format: date-time
+        createdBy:
+          description: userId who made the decision
+          type: string
+    DeploymentDecision:
+      description: Deployment decisions ENUM
+      type: string
+      enum:
+        - ACCEPT
+        - REJECT
+        - PREPARE_CANARY
+    UpdateTrafficSplitRequestDTO:
+      description: Update Traffic Split request.
+      type: object
+      properties:
+        services:
+          description: Traffic Split for services
+          type: array
+          items:
+            $ref: "#/components/schemas/TrafficPercentageRequestDTO"
+        endpoints:
+          description: Traffic Split for endpoints
+          type: array
+          items:
+            $ref: "#/components/schemas/TrafficPercentageRequestDTO"
+    TrafficSplitDetailDTO:
+      description: Traffic Split detail DTO.
+      type: object
+      required:
+        - deploymentCode
+      properties:
+        services:
+          description: Traffic Split for services
+          type: array
+          items:
+            $ref: "#/components/schemas/TrafficPercentageDTO"
+        endpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrafficPercentageDTO"
+        lastModifiedTimestamp:
+          description: last Modified Timestamp
+          type: string
+          format: date-time
+        lastModifiedBy:
+          description: last Modified user
+          type: string
+        subscriptionCode:
+          description: Code of the subscription
+          type: string
+        deploymentCode:
+          description: Code of the deployment
+          type: string
+        code:
+          description: unique code of traffic split
+          type: string
+    DeploymentTrafficSplitDTO:
+      description: Traffic split DTO for deployment detail.
+      type: object
+      properties:
+        services:
+          description: Traffic Split for services
+          type: array
+          items:
+            $ref: "#/components/schemas/TrafficPercentageDTO"
+        endpoints:
+          description: Traffic Split for endpoints
+          type: array
+          items:
+            $ref: "#/components/schemas/TrafficPercentageDTO"
+    TrafficPercentageRequestDTO:
+      description: Traffic percentage Request DTO.
+      type: object
+      required:
+        - code
+        - percentage
+      properties:
+        code:
+          description: Code of the traffic split entity. eg. service code, endpoint code
+          type: string
+        percentage:
+          description: Percentage of the traffic split
+          type: integer
+          minimum: 0
+          maximum: 100
+    TrafficPercentageDTO:
+      description: Traffic percentage response DTO.
+      type: object
+      required:
+        - code
+        - percentage
+      properties:
+        code:
+          description: Code of the traffic split entity. eg. service code, endpoint code
+          type: string
+        name:
+          description: name of the traffic split entity. eg. service name, endpoint name
+          type: string
+        percentage:
+          description: Percentage of the traffic split
+          type: integer
+          minimum: 0
+          maximum: 100
+    TrafficSplitHistoryListDTO:
+      description: Traffic Split Audit History response DTO.
+      type: object
+      properties:
+        value:
+          description: Array of traffic split history detail
+          type: array
+          items:
+            $ref: '#/components/schemas/TrafficSplitDetailDTO'
+        count:
+          description: The total number of traffic split
+          type: integer
+    DeploymentProgressDTO:
+      description: Deployment progress insight with several stages
+      type: object
+      properties:
+        subscriptionCode:
+          description: Code of the subscription
+          type: string
+        deploymentCode:
+          description: Code of the deployment
+          type: string
+        deploymentStatus:
+          description: Status of the current deployment, possible values are "SCHEDULED","DEPLOYING","DEPLOYED","UNDEPLOYED" or "FAIL"
+          type: string
+        percentage:
+          description: Completion percentage calculated by checking how many items are now running/finished/failed
+          type: integer
+          format: int32
+        stages:
+          description: One or multiple deployment progress stages with individual steps
+          type: array
+          items:
+            $ref: "#/components/schemas/DeploymentProgressStageDTO"
+    DeploymentProgressStageDTO:
+      description: One deployment progress stage
+      type: object
+      properties:
+        name:
+          description: Name of the stage
+          type: string
+        type:
+          description: Type of the stage
+          type: string
+        startTimestamp:
+          description: Start timestamp of the stage
+          type: string
+          format: date-time
+        endTimestamp:
+          description: End timestamp of the stage
+          type: string
+          format: date-time
+        status:
+          description: Current status of the stage, possible values are "PENDING","RUNNING","DONE" or "FAIL"
+          type: string
+        logLink:
+          description: Link to logs of the stage
+          type: string
+        steps:
+          description: One or multiple deployment progress steps
+          type: array
+          items:
+            $ref: "#/components/schemas/DeploymentProgressStepDTO"
+    DeploymentProgressStepDTO:
+      description: One step in a deployment progress stage
+      type: object
+      properties:
+        code:
+          description: Unique code of the step
+          type: string
+        name:
+          description: Name of the step
+          type: string
+        startTimestamp:
+          description: Start timestamp of the step
+          type: string
+          format: date-time
+        endTimestamp:
+          description: End timestamp of the step
+          type: string
+          format: date-time
+        message:
+          description: Optional message for the step describing what happened
+          type: string
+        status:
+          description: Current status of the step, possible values are "PENDING","RUNNING","DONE" or "FAIL"
+          type: string
+        children:
+          description: One or multiple deployment progress steps
+          type: array
+          items:
+            $ref: "#/components/schemas/DeploymentProgressStepDTO"
+    DeploymentCancellationOptionsDetailDTO:
+      description: Deployment cancelation options detail
+      type: object
+      properties:
+        databaseRollbackRestoreTimestamp:
+          description: Time the database can be rolled back to
+          type: string
+          format: date-time
+    DeploymentCancellationRequestDTO:
+      description: Entity to be used to cancel a deployment
+      type: object
+      properties:
+        rollbackDatabase:
+          description: Optional flag to indicate if the database should be rolled back
+          type: boolean
+        cancelReason:
+          description: Reason for cancelling a deployment
+          type: string
+          minLength: 4
+          maxLength: 255
+    DeploymentCancelationDetailDTO:
+      description: Entity to be used describe a deployment cancelation
+      type: object
+      properties:
+        canceledBy:
+          description: User that canceled the deployment
+          type: string
+        startTimestamp:
+          description: Time the cancelation was requested
+          type: string
+          format: date-time
+        finishedTimestamp:
+          description: Time the cancelation finished
+          type: string
+          format: date-time
+        failed:
+          description: Flag to indicate if the deployment cancelation failed
+          type: boolean
+        rollbackDatabase:
+          description: Optional flag to indicate if the database should be rolled back
+          type: boolean
+        cancelReason:
+          description: Reason for cancelling a deployment
+          type: string
+    ServicePropertyDTO:
+      description: Entity to represent a property used by a service into an environment
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          description: Property name
+          type: string
+        value:
+          description: Property value
+          type: object
+        flags:
+          description: Array of build details
+          type: array
+          items:
+            type: string
+    EnvironmentDetailsDTO:
+      description: Collection of environments
+      type: object
+      properties:
+        value:
+          description: Array of environments
+          type: array
+          items:
+            $ref: '#/components/schemas/EnvironmentDetailDTO'
+        count:
+          description: The total number of environments
+          type: integer
+    EnvironmentDetailDTO:
+      description: Details of an environment
+      type: object
+      properties:
+        subscriptionCode:
+          description: Subscription code
+          type: string
+        name:
+          description: Environment name
+          type: string
+        code:
+          description: Environment code
+          type: string
+        type:
+          description: Environment type (persona)
+          type: string
+        status:
+          description: Environment status
+          type: string
+        deploymentStatus:
+          description: Deployment status of the environment
+          type: string
+    EndpointDetailsDTO:
+      description: Collection of endpoint details
+      type: object
+      properties:
+        value:
+          description: Array of endpoint details
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointDetailDTO'
+        count:
+          description: The total number of endpoints
+          type: integer
+    EndpointDetailDTO:
+      description: Entity to represent an endpoint
+      type: object
+      required:
+        - code
+        - name
+        - webProxy
+        - service
+        - url
+      properties:
+        code:
+          description: Endpoint code
+          type: string
+        name:
+          description: Endpoint name
+          type: string
+        webProxy:
+          description: Endpoint web proxy
+          type: string
+        service:
+          description: Endpoint service
+          type: string
+        url:
+          description: Endpoint url
+          type: string

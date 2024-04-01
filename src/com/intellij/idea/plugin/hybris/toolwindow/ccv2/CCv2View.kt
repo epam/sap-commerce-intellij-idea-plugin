@@ -21,10 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2BuildsListener
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2DeploymentsListener
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2EnvironmentsListener
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
+import com.intellij.idea.plugin.hybris.tools.ccv2.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
@@ -153,6 +150,12 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
 
                 override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Deployment>>) = onFetchingCompleted(CCv2Tab.DEPLOYMENTS)
                 { CCv2DeploymentsDataView.dataPanel(data) }
+            })
+
+            subscribe(CCv2Service.TOPIC_CCV2_SETTINGS, object : CCv2SettingsListener {
+                override fun onActiveSubscriptionChanged(subscription: CCv2Subscription?) {
+                    ccv2SubscriptionsModel.selectedItem = subscription
+                }
             })
         }
     }

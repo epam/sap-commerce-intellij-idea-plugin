@@ -31,6 +31,7 @@ sealed interface CCv2Listener<T : CCv2DTO> {
 
 interface CCv2SettingsListener {
     fun onSubscriptionsChanged(subscriptions: List<CCv2Subscription>) = Unit
+    fun onActiveSubscriptionChanged(subscription: CCv2Subscription?) = Unit
 }
 
 interface CCv2EnvironmentsListener : CCv2Listener<CCv2Environment>

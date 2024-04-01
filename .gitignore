@@ -31,4 +31,6 @@
 /.idea/.gitignore
 /.idea/hybrisProjectSettings.xml
 
+/ccv2
+
 jflex-*.jar

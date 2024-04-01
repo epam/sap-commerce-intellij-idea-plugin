@@ -6,10 +6,10 @@
 
 ### `CCv2 CI/CD` enhancements
 - Brand new `CCv2` tool window for integration with Cloud Portal CI/CD
-- Added possibility to specify directory of the SAP CX CLI [#1048](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1048)
-- Added possibility to set developer-specific SAP CX CLI token in the secure storage [#1049](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1049)
+- Added possibility to specify directory of the `SAP CCM` CLI [#1048](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1048)
+- Added possibility to set developer-specific `SAP CCM` CLI token in the secure storage [#1049](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1049)
 - Added possibility to set developer-specific and project-aware CCv2 subscription [#1058](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1058)
-- Added possibility to set CCv2 subscriptions to be used with SAP CX CLI [#1050](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1050)
+- Added possibility to set CCv2 subscriptions to be used with `SAP CCM` CLI [#1050](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1050)
 - Added possibility to **schedule** new build [#1060](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1060)
 - Added possibility to **redo** existing build [#1061](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1061)
 - Added possibility to **delete** existing build [#1062](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1062)
@@ -17,13 +17,14 @@
 - Fetch and show CCv2 environments details [#1055](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1055)
 - Fetch and show CCv2 builds details [#1057](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1057)
 - Fetch and show CCv2 deployments details [#1064](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1064)
-- Added timeout configuration for SAP CCM [#1056](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1056)
+- Added timeout configuration for `SAP CCM` [#1056](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1056)
 - Improved visual representation of the environments and builds [#1059](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1059)
 - Open CCv2 settings pane from the toolbar [#1063](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1063)
 - Sync CCv2 subscriptions changes for all open projects [#1065](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1065)
 - Enhanced CCv2 deployments view [#1066](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1066)
 - Notify user on CCv2 settings validation errors [#1068](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1068)
-- Migrated SAP CCM logic to Kotlin coroutines [#1069](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1069)
+- Migrated `SAP CCM` logic to Kotlin coroutines [#1069](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1069)
+- Introduced `Native` integration via OpenAPI [#1070](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1070)
 
 ### `Type System` enhancements
 - Show Item line marker for jalo classes [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)

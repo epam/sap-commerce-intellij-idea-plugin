@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
-import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
@@ -52,13 +51,9 @@ interface CCv2Strategy {
     suspend fun deleteBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, build: CCv2Build)
 
     companion object {
-        const val ID_CCM = "ccm"
-        const val ID_NATIVE = "native"
-
-        fun getStrategy(project: Project): CCv2Strategy = when (val strategyId = DeveloperSettingsComponent.getInstance(project).getCurrentCCv2StrategyId()) {
-            ID_CCM -> ApplicationManager.getApplication().getService(CCv2SAPCCMStrategy::class.java)
-//            ID_NATIVE -> ApplicationManager.getApplication().getService(CCv2NativeStrategy::class.java)
-            else -> throw HybrisConfigurationException("CCv2 strategy '$strategyId' is not supported. Allowed values are: 'native' and 'ccm'.")
+        fun getStrategy(project: Project): CCv2Strategy = when (DeveloperSettingsComponent.getInstance(project).state.currentCCv2IntegrationProtocol) {
+            CCv2IntegrationProtocolEnum.CCM -> ApplicationManager.getApplication().getService(CCv2SAPCCMStrategy::class.java)
+            CCv2IntegrationProtocolEnum.NATIVE -> ApplicationManager.getApplication().getService(CCv2NativeStrategy::class.java)
         }
     }
 }

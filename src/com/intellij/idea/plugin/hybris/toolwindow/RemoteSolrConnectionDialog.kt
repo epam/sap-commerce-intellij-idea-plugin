@@ -75,8 +75,8 @@ class RemoteSolrConnectionDialog(
         group("Host Settings") {
             row {
                 label("Address:")
-                    .comment("Host name or IP address")
                 hostTextField = textField()
+                    .comment("Host name or IP address")
                     .align(AlignX.FILL)
                     .bindText(settings::hostIP.toNonNullableProperty(HybrisConstants.DEFAULT_HOST_URL))
                     .onChanged { urlPreviewLabel.text = generateUrl() }

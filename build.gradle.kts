@@ -28,6 +28,7 @@ plugins {
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
     alias(libs.plugins.changelog) // Gradle IntelliJ Plugin
+    alias(libs.plugins.openAPIGenerator) // openapi Generator
 }
 
 repositories {
@@ -56,7 +57,7 @@ intellij {
 
 sourceSets {
     main {
-        java.srcDirs("src", "gen")
+        java.srcDirs("src", "gen", "ccv2")
         resources.srcDirs("resources")
     }
     test {
@@ -67,6 +68,7 @@ sourceSets {
 idea {
     module {
         generatedSourceDirs.add(file("gen"))
+        generatedSourceDirs.add(file("ccv2"))
     }
 }
 
@@ -74,6 +76,41 @@ changelog {
     version = properties("intellij.plugin.version")
     groups = listOf()
     headerParserRegex = """(\d+(.\d+)*)""".toRegex()
+}
+
+// OpenAPI - Gradle plugin
+// https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
+// OpenAPI - Kotlin generator
+// https://openapi-generator.tech/docs/generators/kotlin/
+openApiGenerate {
+    generatorName.set("kotlin")
+    inputSpec.set("$rootDir/resources/specs/commerce-cloud-management-api.yaml")
+    outputDir.set("$rootDir/ccv2")
+
+    apiPackage.set("com.intellij.idea.plugin.hybris.ccv2.api")
+    packageName.set("com.intellij.idea.plugin.hybris.ccv2.invoker")
+    modelPackage.set("com.intellij.idea.plugin.hybris.ccv2.model")
+
+    skipOperationExample.set(true)
+    cleanupOutput.set(true)
+    generateApiDocumentation.set(false)
+    generateApiTests.set(false)
+    generateModelTests.set(false)
+
+    globalProperties.set(
+        mapOf(
+            "modelDocs" to "false",
+        )
+    )
+    configOptions.set(
+        mapOf(
+            "useSettingsGradle" to "false",
+            "omitGradlePluginVersions" to "true",
+            "omitGradleWrapper" to "true",
+            "useCoroutines" to "true",
+            "sourceFolder" to "",
+        )
+    )
 }
 
 tasks {
@@ -144,14 +181,24 @@ tasks {
             delete("out")
         }
     }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    compileJava {
+        dependsOn(openApiGenerate)
+    }
+
+    compileKotlin {
+        dependsOn(openApiGenerate)
+    }
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
 
+    implementation(libs.bundles.openapi)
     implementation(libs.bundles.commons)
     implementation(libs.bundles.jaxb)
     implementation(libs.jsr305)
