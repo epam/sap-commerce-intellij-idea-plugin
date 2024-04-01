@@ -25,6 +25,8 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.options.ApplicationCCv2SettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2Strategy
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
@@ -34,6 +36,8 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.util.messages.Topic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
+import java.util.*
 
 @Service(Service.Level.PROJECT)
 class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
@@ -50,7 +54,12 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     return@withBackgroundProgress
                 }
 
-                val environments = CCv2Strategy.getStrategy(project).fetchEnvironments(project, ccv2Token, subscriptions)
+                var environments: SortedMap<CCv2Subscription, Collection<CCv2Environment>> = sortedMapOf()
+                try {
+                    environments = CCv2Strategy.getStrategy(project).fetchEnvironments(project, ccv2Token, subscriptions)
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout()
+                }
 
                 onCompleteCallback.invoke()
                 project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingCompleted(environments)
@@ -70,7 +79,12 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     return@withBackgroundProgress
                 }
 
-                val builds = CCv2Strategy.getStrategy(project).fetchBuilds(project, ccv2Token, subscriptions)
+                var builds: SortedMap<CCv2Subscription, Collection<CCv2Build>> = sortedMapOf()
+                try {
+                    builds = CCv2Strategy.getStrategy(project).fetchBuilds(project, ccv2Token, subscriptions)
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout()
+                }
 
                 onCompleteCallback.invoke()
                 project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingCompleted(builds)
@@ -90,7 +104,12 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     return@withBackgroundProgress
                 }
 
-                val deployments = CCv2Strategy.getStrategy(project).fetchDeployments(project, ccv2Token, subscriptions)
+                var deployments: SortedMap<CCv2Subscription, Collection<CCv2Deployment>> = sortedMapOf()
+                try {
+                    deployments = CCv2Strategy.getStrategy(project).fetchDeployments(project, ccv2Token, subscriptions)
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout()
+                }
 
                 onCompleteCallback.invoke()
                 project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).onFetchingCompleted(deployments)
@@ -108,8 +127,7 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     return@withBackgroundProgress
                 }
 
-                CCv2Strategy.getStrategy(project)
-                    .createBuild(project, ccv2Token, subscription, name, branch)
+                CCv2Strategy.getStrategy(project).createBuild(project, ccv2Token, subscription, name, branch)
                     .also {
                         project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRequested(subscription, it)
 
@@ -118,12 +136,12 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                                 NotificationType.INFORMATION,
                                 "CCv2: New Build has been scheduled.",
                                 """
-                            Code: ${it.code}<br>
-                            Name: ${it.name}<br>
-                            Branch: ${it.branch}<br>
-                            Created by: ${it.createdBy}<br>
-                            Started time: ${it.startTimeFormatted}<br>
-                        """.trimIndent()
+                                    Code: ${it.code}<br>
+                                    Name: ${it.name}<br>
+                                    Branch: ${it.branch}<br>
+                                    Created by: ${it.createdBy}<br>
+                                    Started time: ${it.startTimeFormatted}<br>
+                                """.trimIndent()
                             )
                                 .hideAfter(10)
                                 .notify(project)
@@ -163,6 +181,20 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     }
             }
         }
+    }
+
+    private fun notifyOnTimeout() {
+        Notifications
+            .create(
+                NotificationType.WARNING,
+                "CCv2 Integration: Interrupted on timeout",
+                "Exceeded current read timeout, it can be adjusted within CCv2 settings."
+            )
+            .addAction("Open Settings") { _, _ ->
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+            }
+            .hideAfter(10)
+            .notify(project)
     }
 
     private fun getCCv2Token(): String? {

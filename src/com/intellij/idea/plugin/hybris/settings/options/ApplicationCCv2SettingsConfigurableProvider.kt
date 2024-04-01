@@ -111,14 +111,14 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                label("Connection timeout:")
+                label("Read timeout:")
                 intTextField(10..Int.MAX_VALUE)
                     .comment(
                         """
-                            Indicates waiting time in seconds when invoking SAP CCM.
+                            Indicates read timeout in seconds when invoking Cloud Portal API.
                         """.trimIndent()
                     )
-                    .bindIntText(state::sapCLITimeout)
+                    .bindIntText(state::ccv2ReadTimeout)
             }
 
             group("CCv2 Subscriptions", false) {

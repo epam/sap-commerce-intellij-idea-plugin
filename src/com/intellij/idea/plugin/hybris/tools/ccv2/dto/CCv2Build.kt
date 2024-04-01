@@ -52,7 +52,7 @@ enum class CCv2BuildStatus(val title: String, val icon: Icon) {
     DELETED("Deleted", HybrisIcons.CCV2_BUILD_STATUS_DELETED);
 
     companion object {
-        fun tryValueOf(name: String) = CCv2BuildStatus.entries
+        fun tryValueOf(name: String?) = CCv2BuildStatus.entries
             .find { it.name == name }
             ?: UNKNOWN
     }

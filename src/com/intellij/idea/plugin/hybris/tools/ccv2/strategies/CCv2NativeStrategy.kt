@@ -18,9 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
+import com.intellij.idea.plugin.hybris.ccv2.api.BuildApi
 import com.intellij.idea.plugin.hybris.ccv2.api.EnvironmentApi
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
@@ -28,6 +30,7 @@ import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @Service
 class CCv2NativeStrategy : CCv2Strategy {
@@ -38,23 +41,26 @@ class CCv2NativeStrategy : CCv2Strategy {
         subscriptions: Collection<CCv2Subscription>
     ): SortedMap<CCv2Subscription, Collection<CCv2Environment>> {
         ApiClient.accessToken = ccv2Token
+        val client = createClient()
         val result = sortedMapOf<CCv2Subscription, Collection<CCv2Environment>>()
 
-        reportProgress(3) {
+        reportProgress(subscriptions.size) { progressReporter ->
             coroutineScope {
                 subscriptions.forEach {
                     launch {
-                        result[it] = EnvironmentApi().getEnvironments(it.id!!).value
-                            ?.map { environment ->
-                                CCv2Environment(
-                                    code = environment.code ?: "N/A",
-                                    name = environment.name ?: "N/A",
-                                    status = CCv2EnvironmentStatus.tryValueOf(environment.status),
-                                    type = CCv2EnvironmentType.tryValueOf(environment.type),
-                                    deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
-                                )
-                            }
-                            ?: emptyList()
+                        result[it] = progressReporter.sizedStep(1, "Fetching Environments for subscription: $it") {
+                            EnvironmentApi(client = client).getEnvironments(it.id!!).value
+                                ?.map { environment ->
+                                    CCv2Environment(
+                                        code = environment.code ?: "N/A",
+                                        name = environment.name ?: "N/A",
+                                        status = CCv2EnvironmentStatus.tryValueOf(environment.status),
+                                        type = CCv2EnvironmentType.tryValueOf(environment.type),
+                                        deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
+                                    )
+                                }
+                                ?: emptyList()
+                        }
                     }
                 }
             }
@@ -66,10 +72,49 @@ class CCv2NativeStrategy : CCv2Strategy {
     override suspend fun fetchBuilds(
         project: Project,
         ccv2Token: String,
-        subscriptions: Collection<CCv2Subscription>
+        subscriptions: Collection<CCv2Subscription>,
     ): SortedMap<CCv2Subscription, Collection<CCv2Build>> {
         ApiClient.accessToken = ccv2Token
-        return sortedMapOf()
+        val client = createClient()
+        val result = sortedMapOf<CCv2Subscription, Collection<CCv2Build>>()
+
+        reportProgress(subscriptions.size) { progressReporter ->
+            coroutineScope {
+                subscriptions.forEach {
+                    launch {
+                        result[it] = progressReporter.sizedStep(1, "Fetching Builds for subscription: $it") {
+                            BuildApi(client = client)
+                                .getBuilds(it.id!!, dollarTop = 20)
+                                .value
+                                ?.map { build ->
+                                    CCv2Build(
+                                        code = build.code ?: "N/A",
+                                        name = build.name ?: "N/A",
+                                        branch = build.branch ?: "N/A",
+                                        status = CCv2BuildStatus.tryValueOf(build.status),
+                                        appCode = build.applicationCode ?: "N/A",
+                                        appDefVersion = build.applicationDefinitionVersion ?: "N/A",
+                                        createdBy = build.createdBy ?: "N/A",
+                                        startTime = build.buildStartTimestamp
+                                            ?.toString(),
+                                        endTime = build.buildEndTimestamp
+                                            ?.toString(),
+                                        buildVersion = build.buildVersion ?: "N/A",
+                                        version = build.buildVersion
+                                            ?.split("-")
+                                            ?.firstOrNull()
+                                            ?.takeIf { it.isNotBlank() }
+                                            ?: "N/A"
+                                    )
+                                }
+                                ?: emptyList()
+                        }
+                    }
+                }
+            }
+        }
+
+        return result
     }
 
     override suspend fun fetchDeployments(
@@ -100,5 +145,9 @@ class CCv2NativeStrategy : CCv2Strategy {
     ) {
         ApiClient.accessToken = ccv2Token
     }
+
+    private fun createClient() = ApiClient.builder
+        .readTimeout(ApplicationSettingsComponent.getInstance().state.ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
+        .build()
 
 }

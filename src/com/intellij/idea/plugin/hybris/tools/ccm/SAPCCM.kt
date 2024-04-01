@@ -34,6 +34,7 @@ import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
 import java.io.File
+import java.net.SocketTimeoutException
 import java.nio.charset.StandardCharsets
 import java.nio.file.Paths
 import java.time.LocalDateTime
@@ -109,24 +110,12 @@ object SAPCCM {
 
             handler.startNotify()
 
-            val timeout = appSettings.state.sapCLITimeout * 1000L
+            val timeout = appSettings.state.ccv2ReadTimeout * 1000L
             val waitFor = handler.waitFor(timeout)
             if (!waitFor) {
                 handler.destroyProcess()
 
-                Notifications
-                    .create(
-                        NotificationType.WARNING,
-                        "SAP CCM: Interrupted on timeout",
-                        "Exceeded current timeout of $timeout seconds, it can be adjusted within CCv2 settings."
-                    )
-                    .addAction("Open Settings") { _, _ ->
-                        ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
-                    }
-                    .hideAfter(10)
-                    .notify(project)
-
-                return null
+                throw SocketTimeoutException()
             }
 
             return if (handler.exitCode != 0) {

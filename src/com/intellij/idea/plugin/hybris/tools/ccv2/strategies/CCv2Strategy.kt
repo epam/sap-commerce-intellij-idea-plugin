@@ -25,22 +25,26 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
+import java.net.SocketTimeoutException
 import java.util.*
 
 interface CCv2Strategy {
 
+    @Throws(SocketTimeoutException::class)
     suspend fun fetchEnvironments(
         project: Project,
         ccv2Token: String,
         subscriptions: Collection<CCv2Subscription>
     ): SortedMap<CCv2Subscription, Collection<CCv2Environment>>
 
+    @Throws(SocketTimeoutException::class)
     suspend fun fetchBuilds(
         project: Project,
         ccv2Token: String,
         subscriptions: Collection<CCv2Subscription>
     ): SortedMap<CCv2Subscription, Collection<CCv2Build>>
 
+    @Throws(SocketTimeoutException::class)
     suspend fun fetchDeployments(
         project: Project,
         ccv2Token: String,
