@@ -41,4 +41,7 @@ interface CCv2BuildsListener : CCv2Listener<CCv2Build> {
     fun onBuildStarted() = Unit
     fun onBuildRemovalStarted(subscription: CCv2Subscription, build: CCv2Build) = Unit
     fun onBuildRemovalRequested(subscription: CCv2Subscription, build: CCv2Build) = Unit
+
+    fun onBuildDeploymentStarted(subscription: CCv2Subscription, build: CCv2Build) = Unit
+    fun onBuildDeploymentRequested(subscription: CCv2Subscription, build: CCv2Build) = Unit
 }

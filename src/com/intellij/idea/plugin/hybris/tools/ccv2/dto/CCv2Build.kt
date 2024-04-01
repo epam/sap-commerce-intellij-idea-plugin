@@ -41,6 +41,7 @@ data class CCv2Build(
         get() = SAPCCM.formatTime(endTime)
 
     fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
+    fun canDeploy() = status == CCv2BuildStatus.SUCCESS
 }
 
 enum class CCv2BuildStatus(val title: String, val icon: Icon) {

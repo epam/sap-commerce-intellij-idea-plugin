@@ -24,9 +24,7 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.options.ApplicationCCv2SettingsConfigurableProvider
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2Strategy
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
@@ -40,9 +38,13 @@ import java.net.SocketTimeoutException
 import java.util.*
 
 @Service(Service.Level.PROJECT)
-class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
+class CCv2Service(val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun fetchEnvironments(subscriptions: Collection<CCv2Subscription>, onStartCallback: () -> Unit, onCompleteCallback: () -> Unit) {
+    fun fetchEnvironments(
+        subscriptions: Collection<CCv2Subscription>,
+        onStartCallback: () -> Unit,
+        onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2Environment>>) -> Unit
+    ) {
         onStartCallback.invoke()
         project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingStarted(subscriptions)
 
@@ -54,7 +56,7 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     return@withBackgroundProgress
                 }
 
-                var environments: SortedMap<CCv2Subscription, Collection<CCv2Environment>> = sortedMapOf()
+                var environments = sortedMapOf<CCv2Subscription, Collection<CCv2Environment>>()
                 try {
                     environments = CCv2Strategy.getStrategy(project).fetchEnvironments(project, ccv2Token, subscriptions)
                 } catch (e: SocketTimeoutException) {
@@ -63,13 +65,13 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     notifyOnException(e)
                 }
 
-                onCompleteCallback.invoke()
+                onCompleteCallback.invoke(environments)
                 project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingCompleted(environments)
             }
         }
     }
 
-    fun fetchBuilds(subscriptions: Collection<CCv2Subscription>, onStartCallback: () -> Unit, onCompleteCallback: () -> Unit) {
+    fun fetchBuilds(subscriptions: Collection<CCv2Subscription>, onStartCallback: () -> Unit, onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2Build>>) -> Unit) {
         onStartCallback.invoke()
         project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingStarted(subscriptions)
 
@@ -81,7 +83,7 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     return@withBackgroundProgress
                 }
 
-                var builds: SortedMap<CCv2Subscription, Collection<CCv2Build>> = sortedMapOf()
+                var builds = sortedMapOf<CCv2Subscription, Collection<CCv2Build>>()
                 try {
                     builds = CCv2Strategy.getStrategy(project).fetchBuilds(project, ccv2Token, subscriptions)
                 } catch (e: SocketTimeoutException) {
@@ -90,13 +92,17 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     notifyOnException(e)
                 }
 
-                onCompleteCallback.invoke()
+                onCompleteCallback.invoke(builds)
                 project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingCompleted(builds)
             }
         }
     }
 
-    fun fetchDeployments(subscriptions: Collection<CCv2Subscription>, onStartCallback: () -> Unit, onCompleteCallback: () -> Unit) {
+    fun fetchDeployments(
+        subscriptions: Collection<CCv2Subscription>,
+        onStartCallback: () -> Unit,
+        onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2Deployment>>) -> Unit
+    ) {
         onStartCallback.invoke()
         project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).onFetchingStarted(subscriptions)
 
@@ -108,7 +114,7 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     return@withBackgroundProgress
                 }
 
-                var deployments: SortedMap<CCv2Subscription, Collection<CCv2Deployment>> = sortedMapOf()
+                var deployments = sortedMapOf<CCv2Subscription, Collection<CCv2Deployment>>()
                 try {
                     deployments = CCv2Strategy.getStrategy(project).fetchDeployments(project, ccv2Token, subscriptions)
                 } catch (e: SocketTimeoutException) {
@@ -117,7 +123,7 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     notifyOnException(e)
                 }
 
-                onCompleteCallback.invoke()
+                onCompleteCallback.invoke(deployments)
                 project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).onFetchingCompleted(deployments)
             }
         }
@@ -127,10 +133,7 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Creating new CCv2 Build...") {
                 project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildStarted()
-                val ccv2Token = getCCv2Token()
-                if (ccv2Token == null) {
-                    return@withBackgroundProgress
-                }
+                val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
 
                 try {
                     CCv2Strategy.getStrategy(project).createBuild(project, ccv2Token, subscription, name, branch)
@@ -176,6 +179,48 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                             Notifications.create(
                                 NotificationType.INFORMATION,
                                 "CCv2: Build has been deleted.",
+                                """
+                                    Code: ${build.code}<br>
+                                    Subscription: $subscription<br>
+                                """.trimIndent()
+                            )
+                                .hideAfter(10)
+                                .notify(project)
+                        }
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout()
+                } catch (e: RuntimeException) {
+                    notifyOnException(e)
+                }
+            }
+        }
+    }
+
+    fun deployBuild(
+        project: Project,
+        subscription: CCv2Subscription,
+        environment: CCv2Environment,
+        build: CCv2Build,
+        mode: CCv2DeploymentDatabaseUpdateModeEnum,
+        strategy: CCv2DeploymentStrategyEnum
+    ) {
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Deploying CCv2 Build - ${build.code}...") {
+                project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildDeploymentStarted(subscription, build)
+
+                val ccv2Token = getCCv2Token()
+                if (ccv2Token == null) {
+                    project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildDeploymentRequested(subscription, build)
+                    return@withBackgroundProgress
+                }
+
+                try {
+                    CCv2Strategy.getStrategy(project)
+                        .deployBuild(project, ccv2Token, subscription, environment, build, mode, strategy)
+                        .also {
+                            Notifications.create(
+                                NotificationType.INFORMATION,
+                                "CCv2: Build deployment has been requested.",
                                 """
                                     Code: ${build.code}<br>
                                     Subscription: $subscription<br>

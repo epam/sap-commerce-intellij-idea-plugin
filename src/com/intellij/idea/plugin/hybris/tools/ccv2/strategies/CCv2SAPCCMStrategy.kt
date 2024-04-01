@@ -24,9 +24,7 @@ import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCMBuildCommands
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCMDeploymentCommands
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCMEnvironmentCommands
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.platform.util.progress.ProgressReporter
@@ -92,6 +90,18 @@ class CCv2SAPCCMStrategy : CCv2Strategy {
         it.sizedStep(1, "Waiting for API response...") {
             SAPCCMBuildCommands.delete(project, appSettings, subscription, build)
         }
+    }
+
+    override suspend fun deployBuild(
+        project: Project,
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2Environment,
+        build: CCv2Build,
+        mode: CCv2DeploymentDatabaseUpdateModeEnum,
+        strategy: CCv2DeploymentStrategyEnum
+    ): String? {
+        TODO("Not yet implemented")
     }
 
     private suspend fun authCredentials(project: Project, appSettings: ApplicationSettingsComponent, progressReporter: ProgressReporter, ccv2Token: String): List<String>? {

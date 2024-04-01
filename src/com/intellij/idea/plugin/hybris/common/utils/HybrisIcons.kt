@@ -238,6 +238,7 @@ object HybrisIcons {
     val CCV2_BUILD_STATUS_DELETED = ExpUiIcons.Run.KillProcess
     val CCV2_BUILD_CREATE = AllIcons.Actions.Execute
     val CCV2_BUILD_REDO = AllIcons.Actions.BuildAutoReloadChanges
+    val CCV2_BUILD_DEPLOY = AllIcons.Nodes.Deploy
     val CCV2_BUILD_DELETE = ExpUiIcons.General.Delete
 
     val CCV2_DEPLOYMENT_CREATED_BY = AllIcons.General.User

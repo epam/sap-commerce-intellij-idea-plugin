@@ -77,7 +77,7 @@ abstract class AbstractRemoteConnectionDialog(
                 visible(true)
 
                 component.text = "Executing test connection to remote host..."
-                component.foreground = com.intellij.ui.JBColor.LIGHT_GRAY
+                component.foreground = JBColor.LIGHT_GRAY
             }
             with(testConnectionComment) {
                 visible(false)

@@ -27,7 +27,10 @@ data class CCv2Environment(
     val type: CCv2EnvironmentType,
     val status: CCv2EnvironmentStatus,
     val deploymentStatus: CCv2DeploymentStatusEnum,
-) : CCv2DTO
+) : CCv2DTO, Comparable<CCv2Environment> {
+
+    override fun compareTo(other: CCv2Environment) = name.compareTo(other.name)
+}
 
 enum class CCv2EnvironmentType(val title: String, val icon: Icon) {
     DEV("Development", HybrisIcons.CCV2_ENV_ENVIRONMENT_TYPE_DEV),

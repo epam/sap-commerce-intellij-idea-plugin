@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
+import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentDetailDTO
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
@@ -45,11 +46,11 @@ data class CCv2Deployment(
         get() = SAPCCM.formatTime(deployedTime)
 }
 
-enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Icon) {
-    NONE("None", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_NONE),
-    UPDATE("Update", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_UPDATE),
-    INITIALIZE("Initialize", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_INIT),
-    UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_UNKNOWN);
+enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Icon, val apiMode: CreateDeploymentRequestDTO.DatabaseUpdateMode) {
+    NONE("None", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_NONE, CreateDeploymentRequestDTO.DatabaseUpdateMode.NONE),
+    UPDATE("Update", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_UPDATE, CreateDeploymentRequestDTO.DatabaseUpdateMode.UPDATE),
+    INITIALIZE("Initialize", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_INIT, CreateDeploymentRequestDTO.DatabaseUpdateMode.INITIALIZE),
+    UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_UNKNOWN, CreateDeploymentRequestDTO.DatabaseUpdateMode.NONE);
 
     companion object {
         fun tryValueOf(name: String?) = entries
@@ -62,11 +63,11 @@ enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Ico
     }
 }
 
-enum class CCv2DeploymentStrategyEnum(val title: String, val icon: Icon) {
-    ROLLING_UPDATE("Rolling update", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_ROLLING_UPDATE),
-    RECREATE("Recreate", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_RECREATE),
-    GREEN("Blue / Green", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_GREEN),
-    UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_UNKNOWN);
+enum class CCv2DeploymentStrategyEnum(val title: String, val icon: Icon, val apiStrategy: CreateDeploymentRequestDTO.Strategy) {
+    ROLLING_UPDATE("Rolling update", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_ROLLING_UPDATE, CreateDeploymentRequestDTO.Strategy.ROLLING_UPDATE),
+    RECREATE("Recreate", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_RECREATE, CreateDeploymentRequestDTO.Strategy.RECREATE),
+    GREEN("Blue / Green", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_GREEN, CreateDeploymentRequestDTO.Strategy.GREEN),
+    UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_UNKNOWN, CreateDeploymentRequestDTO.Strategy.ROLLING_UPDATE);
 
     companion object {
         fun tryValueOf(name: String?) = entries

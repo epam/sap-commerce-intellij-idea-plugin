@@ -20,12 +20,15 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 
-class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction(
+class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction<CCv2Environment>(
     tab = CCv2Tab.ENVIRONMENTS,
     text = "Fetch Environments",
     icon = HybrisIcons.CCV2_FETCH,
-    fetch = { project, subscriptions, onStartCallback, onCompleteCallback -> CCv2Service.getInstance(project).fetchEnvironments(subscriptions, onStartCallback, onCompleteCallback) }
+    fetch = { project, subscriptions, onStartCallback, onCompleteCallback ->
+        CCv2Service.getInstance(project).fetchEnvironments(subscriptions, onStartCallback, onCompleteCallback)
+    }
 )
 

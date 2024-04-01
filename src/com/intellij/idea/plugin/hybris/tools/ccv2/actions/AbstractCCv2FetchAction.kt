@@ -21,18 +21,20 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
+import java.util.*
 import javax.swing.Icon
 
-abstract class AbstractCCv2FetchAction(
+abstract class AbstractCCv2FetchAction<T : CCv2DTO>(
     tab: CCv2Tab,
     private val text: String,
     description: String? = null,
     icon: Icon,
-    private val fetch: (Project, List<CCv2Subscription>, () -> Unit, () -> Unit) -> Unit
+    private val fetch: (Project, List<CCv2Subscription>, () -> Unit, (SortedMap<CCv2Subscription, Collection<T>>) -> Unit) -> Unit
 ) : AbstractCCv2Action(tab, text, description, icon) {
 
     private var fetching = false
@@ -52,7 +54,7 @@ abstract class AbstractCCv2FetchAction(
         )
     }
 
-    private fun onCompleteCallback(e: AnActionEvent): () -> Unit = {
+    private fun onCompleteCallback(e: AnActionEvent): (SortedMap<CCv2Subscription, Collection<T>>) -> Unit = {
         invokeLater {
             fetching = false
             e.presentation.text = text

@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.ccv2.api.DeploymentApi
 import com.intellij.idea.plugin.hybris.ccv2.api.EnvironmentApi
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
+import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
@@ -187,6 +188,28 @@ class CCv2NativeStrategy : CCv2Strategy {
 
         BuildApi(client = createClient())
             .deleteBuild(subscription.id!!, build.code)
+    }
+
+    override suspend fun deployBuild(
+        project: Project,
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2Environment,
+        build: CCv2Build,
+        mode: CCv2DeploymentDatabaseUpdateModeEnum,
+        strategy: CCv2DeploymentStrategyEnum
+    ): String {
+        ApiClient.accessToken = ccv2Token
+
+        val request = CreateDeploymentRequestDTO(
+            buildCode = build.code,
+            environmentCode = environment.code,
+            databaseUpdateMode = mode.apiMode,
+            strategy = strategy.apiStrategy
+        )
+        return DeploymentApi(client = createClient())
+            .createDeployment(subscription.id!!, request)
+            .code
     }
 
     private fun createClient() = ApiClient.builder
