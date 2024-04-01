@@ -59,6 +59,8 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     environments = CCv2Strategy.getStrategy(project).fetchEnvironments(project, ccv2Token, subscriptions)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
+                } catch (e: RuntimeException) {
+                    notifyOnException(e)
                 }
 
                 onCompleteCallback.invoke()
@@ -84,6 +86,8 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     builds = CCv2Strategy.getStrategy(project).fetchBuilds(project, ccv2Token, subscriptions)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
+                } catch (e: RuntimeException) {
+                    notifyOnException(e)
                 }
 
                 onCompleteCallback.invoke()
@@ -109,6 +113,8 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     deployments = CCv2Strategy.getStrategy(project).fetchDeployments(project, ccv2Token, subscriptions)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
+                } catch (e: RuntimeException) {
+                    notifyOnException(e)
                 }
 
                 onCompleteCallback.invoke()
@@ -123,30 +129,31 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                 project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildStarted()
                 val ccv2Token = getCCv2Token()
                 if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRequested(subscription)
                     return@withBackgroundProgress
                 }
 
-                CCv2Strategy.getStrategy(project).createBuild(project, ccv2Token, subscription, name, branch)
-                    .also {
-                        project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRequested(subscription, it)
-
-                        if (it != null) {
-                            Notifications.create(
-                                NotificationType.INFORMATION,
-                                "CCv2: New Build has been scheduled.",
-                                """
-                                    Code: ${it.code}<br>
-                                    Name: ${it.name}<br>
-                                    Branch: ${it.branch}<br>
-                                    Created by: ${it.createdBy}<br>
-                                    Started time: ${it.startTimeFormatted}<br>
+                try {
+                    CCv2Strategy.getStrategy(project).createBuild(project, ccv2Token, subscription, name, branch)
+                        .also {
+                            if (it != null) {
+                                Notifications.create(
+                                    NotificationType.INFORMATION,
+                                    "CCv2: New Build has been scheduled.",
+                                    """
+                                    Code: ${it}<br>
+                                    Name: ${name}<br>
+                                    Branch: ${branch}<br>
                                 """.trimIndent()
-                            )
-                                .hideAfter(10)
-                                .notify(project)
+                                )
+                                    .hideAfter(10)
+                                    .notify(project)
+                            }
                         }
-                    }
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout()
+                } catch (e: RuntimeException) {
+                    notifyOnException(e)
+                }
             }
         }
     }
@@ -162,39 +169,29 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     return@withBackgroundProgress
                 }
 
-                CCv2Strategy.getStrategy(project)
-                    .deleteBuild(project, ccv2Token, subscription, build)
-                    .also {
-                        project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRequested(subscription, build)
-
-                        // TODO: it may fail due VARIOUS reasons, so
-                        Notifications.create(
-                            NotificationType.INFORMATION,
-                            "CCv2: Build has been deleted.",
-                            """
+                try {
+                    CCv2Strategy.getStrategy(project)
+                        .deleteBuild(project, ccv2Token, subscription, build)
+                        .also {
+                            // TODO: it may fail due VARIOUS reasons, so
+                            Notifications.create(
+                                NotificationType.INFORMATION,
+                                "CCv2: Build has been deleted.",
+                                """
                             Code: ${build.code}<br>
                             Subscription: $subscription<br>
                         """.trimIndent()
-                        )
-                            .hideAfter(10)
-                            .notify(project)
-                    }
+                            )
+                                .hideAfter(10)
+                                .notify(project)
+                        }
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout()
+                } catch (e: RuntimeException) {
+                    notifyOnException(e)
+                }
             }
         }
-    }
-
-    private fun notifyOnTimeout() {
-        Notifications
-            .create(
-                NotificationType.WARNING,
-                "CCv2 Integration: Interrupted on timeout",
-                "Exceeded current read timeout, it can be adjusted within CCv2 settings."
-            )
-            .addAction("Open Settings") { _, _ ->
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
-            }
-            .hideAfter(10)
-            .notify(project)
     }
 
     private fun getCCv2Token(): String? {
@@ -216,6 +213,35 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
             .hideAfter(10)
             .notify(project)
         return null
+    }
+
+    private fun notifyOnTimeout() {
+        Notifications
+            .create(
+                NotificationType.WARNING,
+                "CCv2: Interrupted on timeout",
+                "Exceeded current read timeout, it can be adjusted within CCv2 settings."
+            )
+            .addAction("Open Settings") { _, _ ->
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+            }
+            .hideAfter(10)
+            .notify(project)
+    }
+
+    private fun notifyOnException(e: RuntimeException) {
+        Notifications
+            .create(
+                NotificationType.WARNING,
+                "CCv2: Unable to process request",
+                e.message ?: ""
+            )
+            .addAction("Open Settings") { _, _ ->
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+            }
+            .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
+            .hideAfter(15)
+            .notify(project)
     }
 
     companion object {

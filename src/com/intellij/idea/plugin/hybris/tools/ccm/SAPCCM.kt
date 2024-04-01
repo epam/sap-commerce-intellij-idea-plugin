@@ -23,7 +23,6 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.JavaCommandLineStateUtil
 import com.intellij.execution.process.CapturingProcessAdapter
 import com.intellij.execution.process.ProcessEvent
-import com.intellij.ide.BrowserUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
@@ -120,23 +119,7 @@ object SAPCCM {
 
             return if (handler.exitCode != 0) {
                 val content = processOutput.joinToString(System.lineSeparator())
-                val notification = Notifications
-                    .create(
-                        NotificationType.WARNING,
-                        "SAP CCM: Unable to process request",
-                        content
-                    )
-                if (content.contains("UNAUTHORIZED")) {
-                    notification
-                        .addAction("Open Settings") { _, _ ->
-                            ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
-                        }
-                        .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
-                }
-                notification
-                    .notify(project)
-
-                return null
+                throw SAPCCMClientException(content)
             } else processOutput
         } catch (e: ExecutionException) {
             return null

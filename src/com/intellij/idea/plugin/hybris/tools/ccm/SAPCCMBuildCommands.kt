@@ -37,7 +37,7 @@ object SAPCCMBuildCommands {
         subscription: CCv2Subscription,
         name: String,
         branch: String
-    ): CCv2Build? {
+    ): String? {
         val parameters = arrayOf(
             COMMAND, "create",
             "--no-wait",
@@ -49,6 +49,7 @@ object SAPCCMBuildCommands {
         return SAPCCM.execute(project, appSettings, *parameters)
             ?.let { SAPCCM.transformResult(headers, it) { row, columns -> mapToDTO(row, columns) } }
             ?.firstOrNull()
+            ?.code
     }
 
     fun delete(

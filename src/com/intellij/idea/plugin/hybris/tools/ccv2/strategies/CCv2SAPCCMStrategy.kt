@@ -76,7 +76,7 @@ class CCv2SAPCCMStrategy : CCv2Strategy {
         subscription: CCv2Subscription,
         name: String,
         branch: String
-    ): CCv2Build? = reportProgress(2) {
+    ): String? = reportProgress(2) {
         val appSettings = ApplicationSettingsComponent.getInstance()
         authCredentials(project, appSettings, it, ccv2Token) ?: return@reportProgress null
 

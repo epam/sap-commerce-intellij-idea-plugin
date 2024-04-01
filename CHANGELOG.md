@@ -28,6 +28,7 @@
 - Added possibility to change Integration Protocol and current subscription [#1071](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1071)
 - Fetch CCv2 builds via `Native` integration [#1072](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1072)
 - Fetch CCv2 deployments via `Native` integration [#1073](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1073)
+- Schedule new build via `Native` integratione [#1074](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1074)
 
 ### `Type System` enhancements
 - Show Item line marker for jalo classes [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)

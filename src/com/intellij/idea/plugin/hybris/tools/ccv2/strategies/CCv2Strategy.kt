@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
+import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ClientException
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCMClientException
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import java.net.SocketTimeoutException
@@ -51,8 +51,17 @@ interface CCv2Strategy {
         subscriptions: Collection<CCv2Subscription>
     ): SortedMap<CCv2Subscription, Collection<CCv2Deployment>>
 
-    suspend fun createBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, name: String, branch: String): CCv2Build?
+    @Throws(ClientException::class, SAPCCMClientException::class)
+    suspend fun createBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, name: String, branch: String): String?
     suspend fun deleteBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, build: CCv2Build)
+//    suspend fun deployBuild(
+//        project: Project,
+//        ccv2Token: String,
+//        subscription: CCv2Subscription,
+//        environment: CCv2Environment,
+//        mode: CCv2DeploymentDatabaseUpdateModeEnum,
+//        strategy: CCv2DeploymentStrategyEnum
+//    )
 
     companion object {
         fun getStrategy(project: Project): CCv2Strategy = when (DeveloperSettingsComponent.getInstance(project).state.currentCCv2IntegrationProtocol) {

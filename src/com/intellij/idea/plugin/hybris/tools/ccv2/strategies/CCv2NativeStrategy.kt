@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.ccv2.api.BuildApi
 import com.intellij.idea.plugin.hybris.ccv2.api.DeploymentApi
 import com.intellij.idea.plugin.hybris.ccv2.api.EnvironmentApi
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
+import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
@@ -168,9 +169,12 @@ class CCv2NativeStrategy : CCv2Strategy {
         subscription: CCv2Subscription,
         name: String,
         branch: String
-    ): CCv2Build? {
+    ): String {
         ApiClient.accessToken = ccv2Token
-        return null
+
+        return BuildApi(client = createClient())
+            .createBuild(subscription.id!!, CreateBuildRequestDTO(branch, name))
+            .code
     }
 
     override suspend fun deleteBuild(
