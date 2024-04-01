@@ -22,7 +22,9 @@ import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ClientExcepti
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCMClientException
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import java.net.SocketTimeoutException
@@ -30,29 +32,31 @@ import java.util.*
 
 interface CCv2Strategy {
 
-    @Throws(SocketTimeoutException::class)
+    @Throws(SocketTimeoutException::class, ClientException::class, SAPCCMClientException::class)
     suspend fun fetchEnvironments(
         project: Project,
         ccv2Token: String,
         subscriptions: Collection<CCv2Subscription>
     ): SortedMap<CCv2Subscription, Collection<CCv2Environment>>
 
-    @Throws(SocketTimeoutException::class)
+    @Throws(SocketTimeoutException::class, ClientException::class, SAPCCMClientException::class)
     suspend fun fetchBuilds(
         project: Project,
         ccv2Token: String,
         subscriptions: Collection<CCv2Subscription>
     ): SortedMap<CCv2Subscription, Collection<CCv2Build>>
 
-    @Throws(SocketTimeoutException::class)
+    @Throws(SocketTimeoutException::class, ClientException::class, SAPCCMClientException::class)
     suspend fun fetchDeployments(
         project: Project,
         ccv2Token: String,
         subscriptions: Collection<CCv2Subscription>
     ): SortedMap<CCv2Subscription, Collection<CCv2Deployment>>
 
-    @Throws(ClientException::class, SAPCCMClientException::class)
+    @Throws(SocketTimeoutException::class, ClientException::class, SAPCCMClientException::class)
     suspend fun createBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, name: String, branch: String): String?
+
+    @Throws(SocketTimeoutException::class, ClientException::class, SAPCCMClientException::class)
     suspend fun deleteBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, build: CCv2Build)
 //    suspend fun deployBuild(
 //        project: Project,

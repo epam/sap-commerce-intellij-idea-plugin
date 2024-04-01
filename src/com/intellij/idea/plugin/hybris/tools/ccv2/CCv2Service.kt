@@ -173,14 +173,13 @@ class CCv2Service(val project: Project, val coroutineScope: CoroutineScope) {
                     CCv2Strategy.getStrategy(project)
                         .deleteBuild(project, ccv2Token, subscription, build)
                         .also {
-                            // TODO: it may fail due VARIOUS reasons, so
                             Notifications.create(
                                 NotificationType.INFORMATION,
                                 "CCv2: Build has been deleted.",
                                 """
-                            Code: ${build.code}<br>
-                            Subscription: $subscription<br>
-                        """.trimIndent()
+                                    Code: ${build.code}<br>
+                                    Subscription: $subscription<br>
+                                """.trimIndent()
                             )
                                 .hideAfter(10)
                                 .notify(project)

@@ -184,6 +184,9 @@ class CCv2NativeStrategy : CCv2Strategy {
         build: CCv2Build
     ) {
         ApiClient.accessToken = ccv2Token
+
+        BuildApi(client = createClient())
+            .deleteBuild(subscription.id!!, build.code)
     }
 
     private fun createClient() = ApiClient.builder
