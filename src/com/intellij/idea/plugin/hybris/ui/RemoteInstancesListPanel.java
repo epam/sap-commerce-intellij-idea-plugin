@@ -42,33 +42,34 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Re
     @Serial
     private static final long serialVersionUID = -1932103943790251488L;
     private ListCellRenderer myListCellRenderer;
-    private final RemoteConnectionType type;
     private final Icon icon;
     final Project myProject;
 
     abstract void addItem();
 
+    public enum EventType {
+        ADD, REMOVE, CHANGE
+    }
+
     public RemoteInstancesListPanel(final Project project, final RemoteConnectionType type, final Icon icon) {
         super(null, Collections.emptyList());
         this.myProject = project;
-        this.type = type;
         this.icon = icon;
         myList.getModel().addListDataListener(new ListDataListener() {
 
             @Override
             public void intervalAdded(final ListDataEvent e) {
-                onDataChanged(e, getData());
+                onDataChanged(EventType.ADD, getData());
             }
 
             @Override
             public void intervalRemoved(final ListDataEvent e) {
-                RemoteConnectionUtil.INSTANCE.saveRemoteConnections(myProject, RemoteInstancesListPanel.this.type, getData());
-                onDataChanged(e, getData());
+                onDataChanged(EventType.REMOVE, getData());
             }
 
             @Override
             public void contentsChanged(final ListDataEvent e) {
-                onDataChanged(e, getData());
+                onDataChanged(EventType.CHANGE, getData());
             }
         });
     }
@@ -86,7 +87,7 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Re
         return remoteConnectionSettingsList;
     }
 
-    abstract protected void onDataChanged(ListDataEvent e, final Set<RemoteConnectionSettings> data);
+    abstract protected void onDataChanged(EventType eventType, final Set<RemoteConnectionSettings> data);
 
     @Nullable
     @Override

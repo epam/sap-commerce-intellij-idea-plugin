@@ -65,10 +65,10 @@
                              dynamic="true"
                              key="hybris.settings.project.title"
                              provider="com.intellij.idea.plugin.hybris.settings.options.ProjectSettingsConfigurableProvider"/>
-        <projectConfigurable id="hybris.project.remote_instances.settings" parentId="hybris.project.settings"
+        <projectConfigurable id="hybris.project.integrations.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
-                             key="hybris.settings.project.remote_instances.title"
-                             provider="com.intellij.idea.plugin.hybris.settings.options.ProjectRemoteInstancesSettingsConfigurableProvider"/>
+                             displayName="Integrations"
+                             provider="com.intellij.idea.plugin.hybris.settings.options.ProjectIntegrationsSettingsConfigurableProvider"/>
 
         <toolWindow id="SAP CX" icon="/icons/toolWindow.svg" anchor="bottom" doNotActivateOnStart="true"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>

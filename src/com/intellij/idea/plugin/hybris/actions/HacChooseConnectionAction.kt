@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
-import com.intellij.idea.plugin.hybris.settings.options.ProjectRemoteInstancesSettingsConfigurableProvider
+import com.intellij.idea.plugin.hybris.settings.options.ProjectIntegrationsSettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
@@ -159,7 +159,7 @@ class HacChooseConnectionAction : ActionGroup() {
                     RemoteHacConnectionDialog(project, owner, settings).showAndGet()
                 }
                 is ConnectionSettingsItem -> ShowSettingsUtil.getInstance()
-                    .showSettingsDialog(project, ProjectRemoteInstancesSettingsConfigurableProvider.SettingsConfigurable::class.java)
+                    .showSettingsDialog(project, ProjectIntegrationsSettingsConfigurableProvider.SettingsConfigurable::class.java)
 
                 is ConnectionItem -> RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, selectedValue.settings)
             }
