@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
+import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentDetailDTO
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
 import javax.swing.Icon
@@ -35,10 +36,6 @@ data class CCv2Deployment(
     val failedTime: String,
     val undeployedTime: String,
     val status: CCv2DeploymentStatusEnum,
-    val cancelledBy: String,
-    val cancelledTime: String,
-    val cancelFinishedTime: String,
-    val cancelFailed: String,
 ) : CCv2DTO {
 
     val createdTimeFormatted
@@ -55,8 +52,12 @@ enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Ico
     UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_UNKNOWN);
 
     companion object {
-        fun tryValueOf(name: String) = entries
+        fun tryValueOf(name: String?) = entries
             .find { it.name == name }
+            ?: UNKNOWN
+
+        fun tryValueOf(mode: DeploymentDetailDTO.DatabaseUpdateMode?) = entries
+            .find { it.name == mode?.name }
             ?: UNKNOWN
     }
 }
@@ -68,8 +69,12 @@ enum class CCv2DeploymentStrategyEnum(val title: String, val icon: Icon) {
     UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_UNKNOWN);
 
     companion object {
-        fun tryValueOf(name: String) = entries
+        fun tryValueOf(name: String?) = entries
             .find { it.name == name }
+            ?: UNKNOWN
+
+        fun tryValueOf(strategy: DeploymentDetailDTO.Strategy?) = entries
+            .find { it.name == strategy?.name }
             ?: UNKNOWN
     }
 }

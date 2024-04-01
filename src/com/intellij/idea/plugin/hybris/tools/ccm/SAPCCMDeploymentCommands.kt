@@ -81,10 +81,6 @@ object SAPCCMDeploymentCommands {
         undeployedTime = row.substring(columns["UNDEPLOYED TIME"]!!..<columns["STATUS"]!!).trim(),
         status = CCv2DeploymentStatusEnum.tryValueOf(
             row.substring(columns["STATUS"]!!..<columns["CANCELED BY"]!!).trim()
-        ),
-        cancelledBy = row.substring(columns["CANCELED BY"]!!..<columns["CANCELED TIME"]!!).trim(),
-        cancelledTime = row.substring(columns["CANCELED TIME"]!!..<columns["CANCEL FINISHED TIME"]!!).trim(),
-        cancelFinishedTime = row.substring(columns["CANCEL FINISHED TIME"]!!..<columns["CANCEL FAILED"]!!).trim(),
-        cancelFailed = row.substring(columns["CANCEL FAILED"]!!).trim(),
+        )
     )
 }

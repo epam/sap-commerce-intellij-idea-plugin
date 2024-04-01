@@ -26,7 +26,8 @@
 - Migrated `SAP CCM` logic to Kotlin coroutines [#1069](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1069)
 - Introduced `Native` integration via OpenAPI [#1070](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1070)
 - Added possibility to change Integration Protocol and current subscription [#1071](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1071)
-- Fetch CCv2 build via `Native` integration [#1072](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1072)
+- Fetch CCv2 builds via `Native` integration [#1072](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1072)
+- Fetch CCv2 deployments via `Native` integration [#1073](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1073)
 
 ### `Type System` enhancements
 - Show Item line marker for jalo classes [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
 import com.intellij.idea.plugin.hybris.ccv2.api.BuildApi
+import com.intellij.idea.plugin.hybris.ccv2.api.DeploymentApi
 import com.intellij.idea.plugin.hybris.ccv2.api.EnvironmentApi
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
@@ -123,7 +124,42 @@ class CCv2NativeStrategy : CCv2Strategy {
         subscriptions: Collection<CCv2Subscription>
     ): SortedMap<CCv2Subscription, Collection<CCv2Deployment>> {
         ApiClient.accessToken = ccv2Token
-        return sortedMapOf()
+        val client = createClient()
+        val result = sortedMapOf<CCv2Subscription, Collection<CCv2Deployment>>()
+
+        reportProgress(subscriptions.size) { progressReporter ->
+            coroutineScope {
+                subscriptions.forEach {
+                    launch {
+                        result[it] = progressReporter.sizedStep(1, "Fetching Deployments for subscription: $it") {
+                            DeploymentApi(client = client)
+                                .getDeployments(it.id!!, dollarTop = 20)
+                                .value
+                                ?.map { deployment ->
+                                    CCv2Deployment(
+                                        code = deployment.code ?: "N/A",
+                                        createdBy = deployment.createdBy ?: "N/A",
+                                        createdTime = deployment.createdTimestamp
+                                            ?.toString() ?: "N/A",
+                                        buildCode = deployment.buildCode ?: "N/A",
+                                        envCode = deployment.environmentCode ?: "N/A",
+                                        updateMode = CCv2DeploymentDatabaseUpdateModeEnum.tryValueOf(deployment.databaseUpdateMode),
+                                        strategy = CCv2DeploymentStrategyEnum.tryValueOf(deployment.strategy),
+                                        scheduledTime = deployment.scheduledTimestamp?.toString() ?: "N/A",
+                                        deployedTime = deployment.deployedTimestamp?.toString() ?: "N/A",
+                                        failedTime = deployment.failedTimestamp?.toString() ?: "N/A",
+                                        undeployedTime = deployment.undeployedTimestamp?.toString() ?: "N/A",
+                                        status = CCv2DeploymentStatusEnum.tryValueOf(deployment.status)
+                                    )
+                                }
+                                ?: emptyList()
+                        }
+                    }
+                }
+            }
+        }
+
+        return result
     }
 
     override suspend fun createBuild(
