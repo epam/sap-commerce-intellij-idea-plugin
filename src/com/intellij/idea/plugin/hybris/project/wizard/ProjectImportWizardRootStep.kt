@@ -162,7 +162,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                label("CLI token:")
+                label("CCv2 token:")
                 sapCLITokenTextField = passwordField()
                     .comment(
                         """

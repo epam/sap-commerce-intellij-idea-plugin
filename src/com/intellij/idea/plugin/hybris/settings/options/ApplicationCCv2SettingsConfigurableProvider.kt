@@ -80,7 +80,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
             }.layout(RowLayout.PARENT_GRID)
 
             row {
-                label("CLI token:")
+                label("CCv2 token:")
                 sapCLITokenTextField = passwordField()
                     .comment(
                         """
