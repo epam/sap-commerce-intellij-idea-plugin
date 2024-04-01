@@ -23,6 +23,7 @@
 - Sync CCv2 subscriptions changes for all open projects [#1065](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1065)
 - Enhanced CCv2 deployments view [#1066](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1066)
 - Notify user on CCv2 settings validation errors [#1068](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1068)
+- Migrated SAP CCM logic to Kotlin coroutines [#1069](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1069)
 
 ### `Type System` enhancements
 - Show Item line marker for jalo classes [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)

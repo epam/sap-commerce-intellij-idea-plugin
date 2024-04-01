@@ -25,25 +25,33 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentType
 import com.intellij.openapi.project.Project
+import com.intellij.platform.util.progress.ProgressReporter
 
 object SAPCCMEnvironmentCommands {
-    private const val command = "environment"
+    private const val COMMAND = "environment"
     private val listCommand = object : AbstractSAPCCMListCommand<CCv2Environment>(
-        "Environments", command,
+        "Environments", COMMAND,
         listOf("CODE", "NAME", "STATUS", "TYPE", "DEPLOYMENT STATUS")
     ) {}
 
-    fun list(
+    suspend fun list(
         project: Project,
         appSettings: ApplicationSettingsComponent,
+        progressReporter: ProgressReporter,
         subscriptions: Collection<CCv2Subscription>
-    ) = listCommand.list(project, appSettings, subscriptions) { row, columns ->
-        CCv2Environment(
-            code = row.substring(0..<columns["NAME"]!!).trim(),
-            name = row.substring(columns["NAME"]!!..<columns["STATUS"]!!).trim(),
-            status = CCv2EnvironmentStatus.tryValueOf(row.substring(columns["STATUS"]!!..<columns["TYPE"]!!).trim()),
-            type = CCv2EnvironmentType.tryValueOf(row.substring(columns["TYPE"]!!..<columns["DEPLOYMENT STATUS"]!!).trim()),
-            deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(row.substring(columns["DEPLOYMENT STATUS"]!!).trim()),
-        )
-    }
+    ) = listCommand.list(project, appSettings, progressReporter, subscriptions) { row, columns -> mapToDTO(row, columns) }
+
+    suspend fun list(
+        project: Project,
+        appSettings: ApplicationSettingsComponent,
+        subscription: CCv2Subscription
+    ) = listCommand.list(project, appSettings, subscription) { row, columns -> mapToDTO(row, columns) }
+
+    private fun mapToDTO(row: String, columns: Map<String, Int>) = CCv2Environment(
+        code = row.substring(0..<columns["NAME"]!!).trim(),
+        name = row.substring(columns["NAME"]!!..<columns["STATUS"]!!).trim(),
+        status = CCv2EnvironmentStatus.tryValueOf(row.substring(columns["STATUS"]!!..<columns["TYPE"]!!).trim()),
+        type = CCv2EnvironmentType.tryValueOf(row.substring(columns["TYPE"]!!..<columns["DEPLOYMENT STATUS"]!!).trim()),
+        deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(row.substring(columns["DEPLOYMENT STATUS"]!!).trim()),
+    )
 }

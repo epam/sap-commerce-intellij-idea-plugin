@@ -36,7 +36,7 @@ enum class CCv2EnvironmentType(val title: String, val icon: Icon) {
     UNKNOWN("Unknown", HybrisIcons.CCV2_ENV_ENVIRONMENT_TYPE_UNKNOWN);
 
     companion object {
-        fun tryValueOf(name: String) = entries
+        fun tryValueOf(name: String?) = entries
             .find { it.name == name }
             ?: UNKNOWN
     }
@@ -51,7 +51,7 @@ enum class CCv2EnvironmentStatus(val title: String, val icon: Icon) {
     UNKNOWN("Unknown", HybrisIcons.CCV2_ENV_STATUS_UNKNOWN);
 
     companion object {
-        fun tryValueOf(name: String) = CCv2EnvironmentStatus.entries
+        fun tryValueOf(name: String?) = CCv2EnvironmentStatus.entries
             .find { it.name == name }
             ?: UNKNOWN
     }

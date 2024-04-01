@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.openapi.components.BaseState
 
-class CCv2Subscription : BaseState(), Cloneable {
+class CCv2Subscription : BaseState(), Cloneable, Comparable<CCv2Subscription> {
     var id by string()
     var name by string(null)
 
@@ -29,6 +29,8 @@ class CCv2Subscription : BaseState(), Cloneable {
         clone.name = name
         return clone
     }
+
+    override fun compareTo(other: CCv2Subscription) = toString().compareTo(other.toString())
 
     override fun toString() = name
         ?: id

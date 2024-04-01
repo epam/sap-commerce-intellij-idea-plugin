@@ -21,24 +21,49 @@ package com.intellij.idea.plugin.hybris.tools.ccm
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
+import com.intellij.platform.util.progress.ProgressReporter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.*
 
 abstract class AbstractSAPCCMListCommand<T : CCv2DTO>(
     protected val name: String,
     protected val command: String,
     private val headers: List<String>,
 ) {
-    // TODO: use Kotlin coroutines for parallel processing
-    fun list(
+
+    suspend fun list(
         project: Project,
         appSettings: ApplicationSettingsComponent,
+        progressReporter: ProgressReporter,
         subscriptions: Collection<CCv2Subscription>,
         transform: (String, Map<String, Int>) -> T,
-    ) = subscriptions.associateWith { subscription ->
-        val parameters = arrayOf(command, "list", "--subscription-code=${subscription.id}")
+    ): SortedMap<CCv2Subscription, Collection<T>> {
+        val result = sortedMapOf<CCv2Subscription, Collection<T>>()
 
-        ProgressManager.getInstance().progressIndicator.text2 = "Fetching $name for subscription: $subscription"
+        coroutineScope {
+            subscriptions.forEach {
+                launch {
+                    result[it] = progressReporter.sizedStep(1, "Fetching $name for subscription: $it") {
+                        list(project, appSettings, it, transform)
+                    }
+                }
+            }
+        }
+
+        return result
+    }
+
+    suspend fun list(
+        project: Project,
+        appSettings: ApplicationSettingsComponent,
+        subscription: CCv2Subscription,
+        transform: (String, Map<String, Int>) -> T
+    ): List<T> = withContext(Dispatchers.IO) {
+        val parameters = arrayOf(command, "list", "--subscription-code=${subscription.id}")
 
         SAPCCM.execute(project, appSettings, *parameters)
             ?.let { SAPCCM.transformResult(headers, it, transform) }

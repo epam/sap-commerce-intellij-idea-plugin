@@ -25,9 +25,10 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDatabaseUpda
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStrategyEnum
 import com.intellij.openapi.project.Project
+import com.intellij.platform.util.progress.ProgressReporter
 
 object SAPCCMDeploymentCommands {
-    private const val command = "deployment"
+    private const val COMMAND = "deployment"
     private val headers = listOf(
         "CODE",
         "CREATED BY",
@@ -47,38 +48,43 @@ object SAPCCMDeploymentCommands {
         "CANCEL FAILED",
     )
 
-    private val listCommand = object : AbstractSAPCCMListCommand<CCv2Deployment>("Deployments", command, headers) {}
+    private val listCommand = object : AbstractSAPCCMListCommand<CCv2Deployment>("Deployments", COMMAND, headers) {}
 
-    fun list(
+    suspend fun list(
         project: Project,
         appSettings: ApplicationSettingsComponent,
+        progressReporter: ProgressReporter,
         subscriptions: Collection<CCv2Subscription>
-    ) = listCommand.list(project, appSettings, subscriptions) { row, columns -> mapToDTO(row, columns) }
+    ) = listCommand.list(project, appSettings, progressReporter, subscriptions) { row, columns -> mapToDTO(row, columns) }
 
-    private fun mapToDTO(row: String, columns: Map<String, Int>): CCv2Deployment {
-        return CCv2Deployment(
-            code = row.substring(0..<columns["CREATED BY"]!!).trim(),
-            createdBy = row.substring(columns["CREATED BY"]!!..<columns["CREATED TIME"]!!).trim(),
-            createdTime = row.substring(columns["CREATED TIME"]!!..<columns["BUILD CODE"]!!).trim(),
-            buildCode = row.substring(columns["BUILD CODE"]!!..<columns["ENV. CODE"]!!).trim(),
-            envCode = row.substring(columns["ENV. CODE"]!!..<columns["UPDATE MODE"]!!).trim(),
-            updateMode = CCv2DeploymentDatabaseUpdateModeEnum.tryValueOf(
-                row.substring(columns["UPDATE MODE"]!!..<columns["STRATEGY"]!!).trim()
-            ),
-            strategy = CCv2DeploymentStrategyEnum.tryValueOf(
-                row.substring(columns["STRATEGY"]!!..<columns["SCHEDULED TIME"]!!).trim()
-            ),
-            scheduledTime = row.substring(columns["SCHEDULED TIME"]!!..<columns["DEPLOYED TIME"]!!).trim(),
-            deployedTime = row.substring(columns["DEPLOYED TIME"]!!..<columns["FAILED TIME"]!!).trim(),
-            failedTime = row.substring(columns["FAILED TIME"]!!..<columns["UNDEPLOYED TIME"]!!).trim(),
-            undeployedTime = row.substring(columns["UNDEPLOYED TIME"]!!..<columns["STATUS"]!!).trim(),
-            status = CCv2DeploymentStatusEnum.tryValueOf(
-                row.substring(columns["STATUS"]!!..<columns["CANCELED BY"]!!).trim()
-            ),
-            cancelledBy = row.substring(columns["CANCELED BY"]!!..<columns["CANCELED TIME"]!!).trim(),
-            cancelledTime = row.substring(columns["CANCELED TIME"]!!..<columns["CANCEL FINISHED TIME"]!!).trim(),
-            cancelFinishedTime = row.substring(columns["CANCEL FINISHED TIME"]!!..<columns["CANCEL FAILED"]!!).trim(),
-            cancelFailed = row.substring(columns["CANCEL FAILED"]!!).trim(),
-        )
-    }
+    suspend fun list(
+        project: Project,
+        appSettings: ApplicationSettingsComponent,
+        subscription: CCv2Subscription
+    ) = listCommand.list(project, appSettings, subscription) { row, columns -> mapToDTO(row, columns) }
+
+    private fun mapToDTO(row: String, columns: Map<String, Int>) = CCv2Deployment(
+        code = row.substring(0..<columns["CREATED BY"]!!).trim(),
+        createdBy = row.substring(columns["CREATED BY"]!!..<columns["CREATED TIME"]!!).trim(),
+        createdTime = row.substring(columns["CREATED TIME"]!!..<columns["BUILD CODE"]!!).trim(),
+        buildCode = row.substring(columns["BUILD CODE"]!!..<columns["ENV. CODE"]!!).trim(),
+        envCode = row.substring(columns["ENV. CODE"]!!..<columns["UPDATE MODE"]!!).trim(),
+        updateMode = CCv2DeploymentDatabaseUpdateModeEnum.tryValueOf(
+            row.substring(columns["UPDATE MODE"]!!..<columns["STRATEGY"]!!).trim()
+        ),
+        strategy = CCv2DeploymentStrategyEnum.tryValueOf(
+            row.substring(columns["STRATEGY"]!!..<columns["SCHEDULED TIME"]!!).trim()
+        ),
+        scheduledTime = row.substring(columns["SCHEDULED TIME"]!!..<columns["DEPLOYED TIME"]!!).trim(),
+        deployedTime = row.substring(columns["DEPLOYED TIME"]!!..<columns["FAILED TIME"]!!).trim(),
+        failedTime = row.substring(columns["FAILED TIME"]!!..<columns["UNDEPLOYED TIME"]!!).trim(),
+        undeployedTime = row.substring(columns["UNDEPLOYED TIME"]!!..<columns["STATUS"]!!).trim(),
+        status = CCv2DeploymentStatusEnum.tryValueOf(
+            row.substring(columns["STATUS"]!!..<columns["CANCELED BY"]!!).trim()
+        ),
+        cancelledBy = row.substring(columns["CANCELED BY"]!!..<columns["CANCELED TIME"]!!).trim(),
+        cancelledTime = row.substring(columns["CANCELED TIME"]!!..<columns["CANCEL FINISHED TIME"]!!).trim(),
+        cancelFinishedTime = row.substring(columns["CANCEL FINISHED TIME"]!!..<columns["CANCEL FAILED"]!!).trim(),
+        cancelFailed = row.substring(columns["CANCEL FAILED"]!!).trim(),
+    )
 }

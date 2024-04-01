@@ -83,7 +83,7 @@ enum class CCv2DeploymentStatusEnum(val title: String, val icon: Icon) {
     UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_STATUS_UNKNOWN);
 
     companion object {
-        fun tryValueOf(name: String) = entries
+        fun tryValueOf(name: String?) = entries
             .find { it.name == name }
             ?: UNKNOWN
     }

@@ -18,23 +18,47 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
+import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
+import java.util.*
 
 interface CCv2Strategy {
 
-    fun fetchEnvironments(project: Project, ccv2Token: String, subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Environment>>
-    fun fetchBuilds(project: Project, ccv2Token: String, subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Build>>
-    fun createBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, name: String, branch: String): CCv2Build?
-    fun deleteBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, build: CCv2Build)
+    suspend fun fetchEnvironments(
+        project: Project,
+        ccv2Token: String,
+        subscriptions: Collection<CCv2Subscription>
+    ): SortedMap<CCv2Subscription, Collection<CCv2Environment>>
+
+    suspend fun fetchBuilds(
+        project: Project,
+        ccv2Token: String,
+        subscriptions: Collection<CCv2Subscription>
+    ): SortedMap<CCv2Subscription, Collection<CCv2Build>>
+
+    suspend fun fetchDeployments(
+        project: Project,
+        ccv2Token: String,
+        subscriptions: Collection<CCv2Subscription>
+    ): SortedMap<CCv2Subscription, Collection<CCv2Deployment>>
+
+    suspend fun createBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, name: String, branch: String): CCv2Build?
+    suspend fun deleteBuild(project: Project, ccv2Token: String, subscription: CCv2Subscription, build: CCv2Build)
 
     companion object {
-        fun getSAPCCMCCv2Strategy(): SAPCCMCCv2Strategy = ApplicationManager.getApplication().getService(SAPCCMCCv2Strategy::class.java)
-    }
+        const val ID_CCM = "ccm"
+        const val ID_NATIVE = "native"
 
-    fun fetchDeployments(project: Project, ccv2Token: String, subscriptions: Collection<CCv2Subscription>): Map<CCv2Subscription, Collection<CCv2Deployment>>
+        fun getStrategy(project: Project): CCv2Strategy = when (val strategyId = DeveloperSettingsComponent.getInstance(project).getCurrentCCv2StrategyId()) {
+            ID_CCM -> ApplicationManager.getApplication().getService(CCv2SAPCCMStrategy::class.java)
+//            ID_NATIVE -> ApplicationManager.getApplication().getService(CCv2NativeStrategy::class.java)
+            else -> throw HybrisConfigurationException("CCv2 strategy '$strategyId' is not supported. Allowed values are: 'native' and 'ccm'.")
+        }
+    }
 }

@@ -23,12 +23,13 @@ import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsCo
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.openapi.project.Project
+import com.intellij.platform.util.progress.ProgressReporter
 
 object SAPCCMBuildCommands {
-    private const val command = "build"
+    private const val COMMAND = "build"
     private val headers = listOf("CODE", "NAME", "BRANCH", "STATUS", "APP. CODE", "APP. DEF. VERSION", "CREATED BY", "START TIME", "END TIME", "BUILD VERSION")
 
-    private val listCommand = object : AbstractSAPCCMListCommand<CCv2Build>("Builds", command, headers) {}
+    private val listCommand = object : AbstractSAPCCMListCommand<CCv2Build>("Builds", COMMAND, headers) {}
 
     fun create(
         project: Project,
@@ -38,7 +39,7 @@ object SAPCCMBuildCommands {
         branch: String
     ): CCv2Build? {
         val parameters = arrayOf(
-            command, "create",
+            COMMAND, "create",
             "--no-wait",
             "--branch=$branch",
             "--name=$name",
@@ -56,9 +57,8 @@ object SAPCCMBuildCommands {
         subscription: CCv2Subscription,
         build: CCv2Build
     ) {
-
         val parameters = arrayOf(
-            command, "delete",
+            COMMAND, "delete",
             "--build-code=${build.code}",
             "--subscription-code=${subscription.id}"
         )
@@ -66,11 +66,18 @@ object SAPCCMBuildCommands {
         SAPCCM.execute(project, appSettings, *parameters)
     }
 
-    fun list(
+    suspend fun list(
         project: Project,
         appSettings: ApplicationSettingsComponent,
+        progressReporter: ProgressReporter,
         subscriptions: Collection<CCv2Subscription>
-    ) = listCommand.list(project, appSettings, subscriptions) { row, columns -> mapToDTO(row, columns) }
+    ) = listCommand.list(project, appSettings, progressReporter, subscriptions) { row, columns -> mapToDTO(row, columns) }
+
+    suspend fun list(
+        project: Project,
+        appSettings: ApplicationSettingsComponent,
+        subscription: CCv2Subscription
+    ) = listCommand.list(project, appSettings, subscription) { row, columns -> mapToDTO(row, columns) }
 
     private fun mapToDTO(row: String, columns: Map<String, Int>): CCv2Build {
         val buildVersion = row.substring(columns["BUILD VERSION"]!!).trim()

@@ -26,6 +26,7 @@ class DeveloperSettings : BaseState() {
     var activeRemoteConnectionID by string(null)
     var activeSolrConnectionID by string(null)
     var activeCCv2SubscriptionID by string(null)
+    var currentCCv2Strategy by string(null)
     var remoteConnectionSettingsList by list<RemoteConnectionSettings>()
     var typeSystemDiagramSettings by property(TypeSystemDiagramSettings()) { false }
     var beanSystemSettings by property(BeanSystemSettings()) { false }
