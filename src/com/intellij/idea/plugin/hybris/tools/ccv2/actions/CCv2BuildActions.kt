@@ -34,7 +34,7 @@ val buildKey = DataKey.create<CCv2Build>("build")
 
 class CCv2CreateBuildAction : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
-    text = "Schedule a Build",
+    text = "Schedule Build",
     icon = HybrisIcons.CCV2_BUILD_CREATE
 ) {
     override fun actionPerformed(e: AnActionEvent) {
@@ -51,7 +51,7 @@ class CCv2RedoBuildAction(
     private val build: CCv2Build
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
-    text = "Redo a Build",
+    text = "Redo Build",
     icon = HybrisIcons.CCV2_BUILD_REDO
 ) {
     override fun actionPerformed(e: AnActionEvent) {
@@ -66,7 +66,7 @@ class CCv2DeployBuildAction(
     private val build: CCv2Build
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
-    text = "Deploy the Build",
+    text = "Deploy Build",
     icon = HybrisIcons.CCV2_BUILD_DEPLOY
 ) {
     override fun actionPerformed(e: AnActionEvent) {

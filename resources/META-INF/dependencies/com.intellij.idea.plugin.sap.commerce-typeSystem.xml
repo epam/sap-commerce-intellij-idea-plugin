@@ -36,15 +36,6 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelAccessImpl"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelProcessor"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelProcessorImpl"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelCollector"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelCollectorImpl"/>
-
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelMerger"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelMergerImpl"/>
-
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaItemServiceImpl"/>
 

@@ -148,6 +148,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         AttributesDescriptor("Value//file: prefix", ImpexHighlighterColors.FIELD_VALUE_FILE_PREFIX),
         AttributesDescriptor("Value//zip: prefix", ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX),
         AttributesDescriptor("Value//http: prefix", ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX),
+        AttributesDescriptor("Value//model: prefix", ImpexHighlighterColors.FIELD_VALUE_SCRIPT_PREFIX),
         AttributesDescriptor("Value//password encoding prefix", ImpexHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX),
 
         AttributesDescriptor("Scripting//Marker", ImpexHighlighterColors.SCRIPT_MARKER),

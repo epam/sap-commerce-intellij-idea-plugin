@@ -1718,6 +1718,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
   //     | FIELD_VALUE_FILE_PREFIX
   //     | FIELD_VALUE_ZIP_PREFIX
   //     | FIELD_VALUE_HTTP_PREFIX
+  //     | FIELD_VALUE_SCRIPT_PREFIX
   // //    | FIELD_VALUE_URL
   //     | BOOLEAN
   //     | DIGIT
@@ -1740,6 +1741,7 @@ public class ImpexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, FIELD_VALUE_FILE_PREFIX);
     if (!r) r = consumeToken(b, FIELD_VALUE_ZIP_PREFIX);
     if (!r) r = consumeToken(b, FIELD_VALUE_HTTP_PREFIX);
+    if (!r) r = consumeToken(b, FIELD_VALUE_SCRIPT_PREFIX);
     if (!r) r = consumeToken(b, BOOLEAN);
     if (!r) r = consumeToken(b, DIGIT);
     if (!r) r = string(b, l + 1);

@@ -53,6 +53,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
             ImpexTypes.FIELD_VALUE_ZIP_PREFIX to pack(ImpexHighlighterColors.FIELD_VALUE_ZIP_PREFIX),
             ImpexTypes.FIELD_VALUE_HTTP_PREFIX to pack(ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX),
             ImpexTypes.FIELD_VALUE_PASSWORD_ENCODING_PREFIX to pack(ImpexHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX),
+            ImpexTypes.FIELD_VALUE_SCRIPT_PREFIX to pack(ImpexHighlighterColors.FIELD_VALUE_SCRIPT_PREFIX),
 
             ImpexTypes.COLLECTION_APPEND_PREFIX to pack(ImpexHighlighterColors.COLLECTION_APPEND_PREFIX),
             ImpexTypes.COLLECTION_REMOVE_PREFIX to pack(ImpexHighlighterColors.COLLECTION_REMOVE_PREFIX),

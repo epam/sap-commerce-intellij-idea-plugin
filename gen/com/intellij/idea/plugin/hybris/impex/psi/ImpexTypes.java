@@ -100,6 +100,7 @@ public interface ImpexTypes {
   IElementType FIELD_VALUE_JAR_PREFIX = new ImpexTokenType("FIELD_VALUE_JAR_PREFIX");
   IElementType FIELD_VALUE_NULL = new ImpexTokenType("FIELD_VALUE_NULL");
   IElementType FIELD_VALUE_PASSWORD_ENCODING_PREFIX = new ImpexTokenType("FIELD_VALUE_PASSWORD_ENCODING_PREFIX");
+  IElementType FIELD_VALUE_SCRIPT_PREFIX = new ImpexTokenType("FIELD_VALUE_SCRIPT_PREFIX");
   IElementType FIELD_VALUE_SEPARATOR = new ImpexTokenType("FIELD_VALUE_SEPARATOR");
   IElementType FIELD_VALUE_ZIP_PREFIX = new ImpexTokenType("FIELD_VALUE_ZIP_PREFIX");
   IElementType FUNCTION = new ImpexTokenType("FUNCTION");
