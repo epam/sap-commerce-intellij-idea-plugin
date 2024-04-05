@@ -44,7 +44,7 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
         val psiClass = method.containingClass ?: return
         if (!TSUtils.isItemModelFile(psiClass)) return
 
-        val meta = TSMetaModelAccess.getInstance(element.project).findMetaItemByName(cleanSearchName(psiClass?.name)) ?: return
+        val meta = TSMetaModelAccess.getInstance(element.project).findMetaItemByName(cleanSearchName(psiClass.name)) ?: return
         val annotation = method.getAnnotation(HybrisConstants.CLASS_FQN_ANNOTATION_ACCESSOR) ?: return
 
         val qualifier = annotation.parameterList.attributes

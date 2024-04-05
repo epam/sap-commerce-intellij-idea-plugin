@@ -52,8 +52,10 @@ class CCv2CreateBuildDialog(
             subscriptionComboBox = comboBox(
                 CCv2SubscriptionsComboBoxModelFactory.create(project, subscription),
                 renderer = SimpleListCellRenderer.create { label, value, _ ->
-                    label.icon = HybrisIcons.MODULE_CCV2
-                    label.text = value.toString()
+                    if (value != null) {
+                        label.icon = HybrisIcons.MODULE_CCV2
+                        label.text = value.toString()
+                    }
                 }
             )
                 .label("Subscription:")
@@ -73,7 +75,7 @@ class CCv2CreateBuildDialog(
 
         row {
             branchTextField = textField()
-                .label("Branch:")
+                .label("Branch or Tag:")
                 .align(AlignX.FILL)
                 .addValidationRule("Please specify a branch for a build.") { it.text.isBlank() }
                 .component
