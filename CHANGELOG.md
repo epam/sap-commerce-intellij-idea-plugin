@@ -31,7 +31,7 @@
 - Schedule new build via `Native` integration [#1074](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1074)
 - Delete existing build via `Native` integration [#1075](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1075)
 - Schedule deployment for existing build [#1076](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1076)
-- Allow blank subscription for new build Dialog [#1077](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1077)
+- Allow blank subscription for new build Dialog [#1079](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1079)
 
 ### `Type System` enhancements
 - Show Item line marker for jalo classes [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)
