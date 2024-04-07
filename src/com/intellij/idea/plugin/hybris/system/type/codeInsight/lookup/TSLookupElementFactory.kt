@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -115,6 +115,8 @@ object TSLookupElementFactory {
             LookupElementBuilder.create(it)
                 .withTailText(if (meta.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
                 .withIcon(HybrisIcons.TS_ENUM)
+                .withTypeText(":: ${HybrisConstants.TS_TYPE_ENUMERATION_VALUE}", HybrisIcons.TS_ITEM, true)
+                .withTypeIconRightAligned(true)
                 .withCaseSensitivity(false)
         }
 

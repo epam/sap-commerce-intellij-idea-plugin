@@ -35,6 +35,7 @@
 
 ### `Type System` enhancements
 - Show Item line marker for jalo classes [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)
+- Show parent type for Enum in the completion list [#1080](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1080)
 
 ### `Cockpit NG` enhancements
 - Added code completion for various `merge-mode` attributes [#1022](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1022)
