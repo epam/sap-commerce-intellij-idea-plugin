@@ -20,13 +20,12 @@
 <component name="LanguageInjectionConfiguration">
     <injection language="FlexibleSearch" injector-id="java">
         <display-name>[y] FlexibleSearch</display-name>
-        <ignore-pattern>(\\s|.)*GET(\\s|.)*\{(.*)}</ignore-pattern>
-        <place><![CDATA[psiModifierListOwner().withText(string().matches("(\\s|.)*=(\\s|.)*SELECT(\\s|.)+FROM(\\s|.)+\\{(\\s|.)*"))]]></place>
+        <place><![CDATA[psiModifierListOwner().withText(and(string().contains("SELECT"), string().contains("FROM"), string().contains("{")))]]></place>
     </injection>
     <injection language="Polyglot Query" injector-id="java">
         <display-name>[y] Polyglot Query</display-name>
         <ignore-pattern>(\\s|.)*SELECT(\\s|.)*FROM(\\s|.)*\{(\\s|.)*</ignore-pattern>
-        <place><![CDATA[psiModifierListOwner().withText(string().matches("(\\s|.)*=(\\s|.)*GET(\\s|.)+\\{(\\s|.)*"))]]></place>
+        <place><![CDATA[psiModifierListOwner().withText(and(string().contains("GET"), string().contains("{")))]]></place>
     </injection>
     <injection language="JAVA" injector-id="xml">
         <display-name>[y] items.xml</display-name>

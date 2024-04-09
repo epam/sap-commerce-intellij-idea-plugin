@@ -31,7 +31,11 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.fileTypes.PlainTextLanguage
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.CollectionComboBoxModel
@@ -53,9 +57,11 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     private object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)
 
     val docs = "Docs: "
+    val coresComboBoxModel = CollectionComboBoxModel(ArrayList<SolrCoreData>())
+
     private val docsLabel = JBLabel(docs)
         .also { it.border = bordersLabel }
-    private val coresComboBox = ComboBox(CollectionComboBoxModel(retrieveListOfCores()), 270)
+    private val coresComboBox = ComboBox(coresComboBoxModel, 270)
         .also {
             it.border = borders5
             it.renderer = SimpleListCellRenderer.create("...") { cell -> cell.core }
@@ -66,7 +72,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
             it.icon = HybrisIcons.ACTION_FORCE_REFRESH
             it.isOpaque = true
             it.toolTipText = message("hybris.solr.search.console.reload.cores.button.tooltip")
-            it.addActionListener { coresComboBox.model = CollectionComboBoxModel(retrieveListOfCores()) }
+            it.addActionListener { reloadCores() }
         }
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 500, 1))
         .also {
@@ -97,13 +103,32 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     }
 
     override fun onSelection() {
-        val selectedItem = coresComboBox.selectedItem ?: return
-        val cores = retrieveListOfCores()
+        val selectedCore = coresComboBox.selectedItem.asSafely<SolrCoreData>()
+        reloadCores(selectedCore)
+    }
 
-        if (cores.isNotEmpty()) {
-            coresComboBox.model = CollectionComboBoxModel(cores)
-            setDocsLabelCount(selectedItem.asSafely<SolrCoreData>())
-        }
+    private fun reloadCores(selectedCore: SolrCoreData? = null) {
+        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Retrieving SOLR Cores", false) {
+            override fun run(indicator: ProgressIndicator) {
+                val cores = retrieveListOfCores()
+
+                invokeLater {
+                    coresComboBoxModel.removeAll()
+
+                    if (cores.isNotEmpty()) {
+                        coresComboBoxModel.removeAll()
+                        coresComboBoxModel.addAll(0, cores)
+                    }
+
+                    if (selectedCore != null) {
+                        setDocsLabelCount(selectedCore)
+                    } else {
+                        coresComboBoxModel.selectedItem = cores.firstOrNull()
+                        setDocsLabelCount(cores.firstOrNull())
+                    }
+                }
+            }
+        })
     }
 
     private fun setDocsLabelCount(data: SolrCoreData?) {
