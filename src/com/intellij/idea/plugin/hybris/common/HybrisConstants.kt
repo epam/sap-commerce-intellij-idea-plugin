@@ -362,6 +362,7 @@ object HybrisConstants {
     const val COCKPIT_NG_NAMESPACE_KEY = "COCKPIT_NG_NAMESPACE"
     const val COCKPIT_NG_INITIALIZE_CONTEXT_TYPE = "ctx.TYPE_CODE"
     const val COCKPIT_NG_WIDGET_ID_STUB = "STUB_"
+    const val COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX = "SPRING_BEAN_"
 
     const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
     const val SCHEMA_COCKPIT_NG_CONFIG = "http://www.hybris.com/cockpit/config"

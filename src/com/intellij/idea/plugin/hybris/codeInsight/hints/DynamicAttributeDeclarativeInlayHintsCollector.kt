@@ -23,10 +23,10 @@ import com.intellij.codeInsight.completion.JavaMethodCallElement
 import com.intellij.codeInsight.hints.declarative.*
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
-import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
 import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.psi.*
 
@@ -62,7 +62,7 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
 
         val inlayActionData = attribute.persistence
             .attributeHandler
-            ?.let { TSSpringHelper.resolveBeanClass(element, it) }
+            ?.let { SpringHelper.resolveBeanClass(element, it) }
             ?.let { SmartPointerManager.getInstance(element.project).createSmartPsiElementPointer(it) }
             ?.let {
                 InlayActionData(

@@ -26,9 +26,9 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.java.completion.JavaClassCompletionService
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
-import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.search.GlobalSearchScope
@@ -58,7 +58,7 @@ enum class TypeModifier(
                 .findClass(HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING, GlobalSearchScope.allScope(project))
                 ?: return emptySet()
 
-            return TSSpringHelper.getBeansLazy(interceptorClass).value
+            return SpringHelper.resolveInterceptorBeansLazy(interceptorClass).value
                 .mapNotNull {
                     it.springBean.beanName
                         ?.let { lookupElement -> ImpExLookupElementFactory.buildInterceptor(lookupElement, it.beanClass?.name) }

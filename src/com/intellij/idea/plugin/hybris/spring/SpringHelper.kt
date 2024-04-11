@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.type.spring
+package com.intellij.idea.plugin.hybris.spring
 
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
@@ -34,7 +34,7 @@ import com.intellij.spring.model.SpringBeanPointer
 import com.intellij.spring.model.utils.SpringModelSearchers
 import com.intellij.spring.model.xml.beans.SpringBean
 
-object TSSpringHelper {
+object SpringHelper {
 
     fun resolveBeanDeclaration(element: PsiElement, beanId: String): XmlTag? {
         val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return null
@@ -56,7 +56,7 @@ object TSSpringHelper {
             ?.let { JavaPsiFacade.getInstance(project).findClass(it, GlobalSearchScope.allScope(project)) }
     }
 
-    fun getBeansLazy(
+    fun resolveInterceptorBeansLazy(
         clazz: PsiClass,
         name: String? = null
     ): NotNullLazyValue<MutableCollection<out SpringBeanPointer<*>>> = NotNullLazyValue.lazy {

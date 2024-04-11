@@ -48,12 +48,16 @@ class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
                 val attrReference: PsiReference? = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
                     ?.let { type ->
                         val textRange = TextRange.from(initializeProperty.length + 2, qualifier.length)
-                        if (type.startsWith("SPRING_BEAN_"))
-                            SpringBeanJavaClassReference(element, textRange, type.replace("SPRING_BEAN_", ""))
-                        else if (type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE)
-                            JavaClassReference(element, textRange, type)
-                        else
-                            CngFlowTSItemAttributeReference(element, textRange)
+
+                        when {
+                            type.startsWith(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
+                                SpringBeanJavaClassReference(element, textRange, type.replace(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
+
+                            type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
+                                JavaClassReference(element, textRange, type)
+
+                            else -> CngFlowTSItemAttributeReference(element, textRange)
+                        }
                     }
 
                 listOfNotNull(

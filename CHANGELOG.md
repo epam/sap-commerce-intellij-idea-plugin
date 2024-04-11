@@ -49,6 +49,7 @@
 - Added reference resolution for `y`:`labels`:`beanId` [#1035](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1035)
 - Added `Spring EL` language injection into the `y:preview`:`urlQualifier` attribute [#1036](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1036)
 - Added `Spring EL` language injection into the `y:preview`:`description` tag body [#1037](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1037)
+- Added `Spring EL` reference resolution in the `visible` attribute based on `template-bean` [#1086](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1086)
 - Added reference resolution and code completion for nested references [#1038](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1038)
 - Added reference resolution and code completion for fields referenced by `template-bean` [#1085](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1085)
 

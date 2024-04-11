@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.spring.context
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.Labels
@@ -80,8 +81,16 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
             val name = it.first ?: return@let null
             val type = it.second ?: return@let null
 
-            val psiClass = if (type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE) findClassByFQN(project, type)
-            else findClassByHybrisTypeName(project, type)
+            val psiClass = when {
+                type.startsWith(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
+                    SpringHelper.resolveBeanClass(context, type.replace(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
+
+                type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
+                    findClassByFQN(project, type)
+
+                else -> findClassByHybrisTypeName(project, type)
+            }
+
             if (psiClass == null) return@let null
 
             name to psiClass

@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
+import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 
@@ -33,7 +33,7 @@ class SpringReference(
         ?: if (element.text.startsWith("\"") || element.text.startsWith("'")) TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
         else TextRange.from(0, element.textLength)
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = TSSpringHelper.resolveBeanClass(element, name)
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = SpringHelper.resolveBeanClass(element, name)
         ?.let { PsiElementResolveResult.createResults(it) }
         ?: ResolveResult.EMPTY_ARRAY
 

@@ -38,12 +38,15 @@ class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvid
         val type = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
             ?: return emptyArray()
 
-        val reference = if (type.startsWith("SPRING_BEAN_"))
-            SpringBeanJavaClassReference(element, type.replace("SPRING_BEAN_", ""))
-        else if (type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE)
-            JavaClassReference(element, type)
-        else
-            CngFlowTSItemAttributeReference(element)
+        val reference = when {
+            type.startsWith(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
+                SpringBeanJavaClassReference(element, type.replace(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX, ""))
+
+            type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE ->
+                JavaClassReference(element, type)
+
+            else -> CngFlowTSItemAttributeReference(element)
+        }
 
         return arrayOf(reference)
     }

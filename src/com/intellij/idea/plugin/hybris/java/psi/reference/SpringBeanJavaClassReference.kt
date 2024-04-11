@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.java.psi.reference
 
-import com.intellij.idea.plugin.hybris.system.type.spring.TSSpringHelper
+import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 
@@ -27,7 +27,7 @@ class SpringBeanJavaClassReference : JavaClassReference {
     constructor(element: PsiElement, className: String) : super(element, className)
     constructor(element: PsiElement, textRange: TextRange, className: String) : super(element, textRange, className)
 
-    override fun evalClassName() = TSSpringHelper.resolveBeanClass(element, className)
+    override fun evalClassName() = SpringHelper.resolveBeanClass(element, className)
         ?.qualifiedName
         ?: className
 
