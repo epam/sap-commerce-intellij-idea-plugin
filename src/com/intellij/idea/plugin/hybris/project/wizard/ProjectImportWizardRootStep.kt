@@ -366,9 +366,9 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
             this.externalExtensionsDirectory = overrideCustomDirChooser.takeIf { it.isEnabled }
                 ?.let { FileUtils.toFile(it.text) }
-            this.externalExtensionsDirectory = overrideConfigDirChooser.takeIf { it.isEnabled }
+            this.externalConfigDirectory = overrideConfigDirChooser.takeIf { it.isEnabled }
                 ?.let { FileUtils.toFile(it.text) }
-            this.externalExtensionsDirectory = overrideDBDriverDirChooser.takeIf { it.isEnabled }
+            this.externalDbDriversDirectory = overrideDBDriverDirChooser.takeIf { it.isEnabled }
                 ?.let { FileUtils.toFile(it.text) }
             this.sourceCodeFile = sourceCodeFilesInChooser.takeIf { it.isEnabled }
                 ?.let { File(it.text) }
