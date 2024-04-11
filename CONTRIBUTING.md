@@ -45,3 +45,4 @@
 - Yury Bich
 - Vitalii Ivanov
 - Maria Bogdanovich
+- Jan Bucher

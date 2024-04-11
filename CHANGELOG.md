@@ -71,6 +71,7 @@
 - Removed dependency on Kotlin PSI utils methods [#1053](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1053) for Issue [1052](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1052)
 - Fix Path separator to enable Model Item Declaration icons and navigation on Windows [#1054](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1054)
 - Adjusted FlexibleSearch language injection [#1081](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1081)
+- Fix import with custom extension directory override [#1084](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1084)
 
 ### Other
 - Added JetBrains Marketplace error reporting [#1039](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1039)
