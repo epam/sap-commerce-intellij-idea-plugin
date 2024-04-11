@@ -28,9 +28,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 
-class JavaClassReference : PsiReferenceBase<PsiElement>, HighlightedReference {
+open class JavaClassReference : PsiReferenceBase<PsiElement>, HighlightedReference {
 
-    private val className: String
+    protected val className: String
 
     constructor(element: PsiElement, className: String) : super(element) {
         this.className = className
@@ -40,12 +40,14 @@ class JavaClassReference : PsiReferenceBase<PsiElement>, HighlightedReference {
         this.className = className
     }
 
+    protected open fun evalClassName() = className
+
     override fun calculateDefaultRangeInElement(): TextRange =
         if (element.textLength == 0) super.calculateDefaultRangeInElement()
         else TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
 
     override fun getVariants() = JavaPsiFacade.getInstance(element.project)
-        .findClass(className, GlobalSearchScope.allScope(element.project))
+        .findClass(evalClassName(), GlobalSearchScope.allScope(element.project))
         ?.let { psiClass ->
             val fields = psiClass.allFields
 
@@ -66,7 +68,7 @@ class JavaClassReference : PsiReferenceBase<PsiElement>, HighlightedReference {
     override fun resolve(): PsiElement? {
         val project = element.project
         return JavaPsiFacade.getInstance(project)
-            .findClass(className, GlobalSearchScope.allScope(project))
+            .findClass(evalClassName(), GlobalSearchScope.allScope(project))
             ?.let { psiClass ->
                 val field = psiClass.findFieldByName(value, true)
                 return@let if (psiClass.isRecord) field

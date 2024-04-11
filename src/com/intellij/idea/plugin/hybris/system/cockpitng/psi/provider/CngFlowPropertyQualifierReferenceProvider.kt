@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.java.psi.reference.JavaClassReference
+import com.intellij.idea.plugin.hybris.java.psi.reference.SpringBeanJavaClassReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemAttributeReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngInitializePropertyReference
@@ -46,10 +47,13 @@ class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
                 val qualifier = it[1]
                 val attrReference: PsiReference? = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
                     ?.let { type ->
-                        if (type.contains(".")
-                            && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE
-                        ) JavaClassReference(element, TextRange.from(initializeProperty.length + 2, qualifier.length), type)
-                        else CngFlowTSItemAttributeReference(element, TextRange.from(initializeProperty.length + 2, qualifier.length))
+                        val textRange = TextRange.from(initializeProperty.length + 2, qualifier.length)
+                        if (type.startsWith("SPRING_BEAN_"))
+                            SpringBeanJavaClassReference(element, textRange, type.replace("SPRING_BEAN_", ""))
+                        else if (type.contains(".") && type != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE)
+                            JavaClassReference(element, textRange, type)
+                        else
+                            CngFlowTSItemAttributeReference(element, textRange)
                     }
 
                 listOfNotNull(
