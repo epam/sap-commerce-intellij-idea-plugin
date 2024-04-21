@@ -27,6 +27,7 @@ data class CCv2Environment(
     val type: CCv2EnvironmentType,
     val status: CCv2EnvironmentStatus,
     val deploymentStatus: CCv2DeploymentStatusEnum,
+    val deploymentAllowed: Boolean = false,
 ) : CCv2DTO, Comparable<CCv2Environment> {
 
     override fun compareTo(other: CCv2Environment) = name.compareTo(other.name)

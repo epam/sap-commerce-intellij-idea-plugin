@@ -26,7 +26,6 @@ import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiFile
 
 class FlexibleSearchFileCreateAction : CreateFileFromTemplateAction(NEW_FS_FILE, "", HybrisIcons.FXS_FILE), DumbAware {
 
@@ -40,10 +39,6 @@ class FlexibleSearchFileCreateAction : CreateFileFromTemplateAction(NEW_FS_FILE,
     }
 
     override fun getActionName(directory: PsiDirectory, newName: String, templateName: String) = NEW_FS_FILE
-
-    override fun postProcess(createdElement: PsiFile, templateName: String, customProperties: Map<String, String>) {
-        super.postProcess(createdElement, templateName, customProperties)
-    }
 
     override fun hashCode() = javaClass.hashCode()
 

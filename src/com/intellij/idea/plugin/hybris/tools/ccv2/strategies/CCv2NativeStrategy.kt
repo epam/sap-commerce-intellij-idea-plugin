@@ -18,9 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
-import com.intellij.idea.plugin.hybris.ccv2.api.BuildApi
-import com.intellij.idea.plugin.hybris.ccv2.api.DeploymentApi
-import com.intellij.idea.plugin.hybris.ccv2.api.EnvironmentApi
+import com.intellij.idea.plugin.hybris.ccv2.api.*
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
@@ -30,6 +28,8 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.platform.util.progress.reportProgress
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -52,14 +52,26 @@ class CCv2NativeStrategy : CCv2Strategy {
                 subscriptions.forEach {
                     launch {
                         result[it] = progressReporter.sizedStep(1, "Fetching Environments for subscription: $it") {
-                            EnvironmentApi(client = client).getEnvironments(it.id!!).value
-                                ?.map { environment ->
+                            val subscriptionCode = it.id!!
+                            EnvironmentApi(client = client).getEnvironments(subscriptionCode).value
+                                ?.map { env ->
+                                    val environmentCode = env.code ?: "N/A"
+                                    async {
+                                        val deploymentAllowed = EndpointApi(client = client).getEndpointsWithHttpInfo(subscriptionCode, environmentCode, null, null)
+                                            .statusCode == 200
+                                        env to deploymentAllowed
+                                    }
+                                }
+                                ?.awaitAll()
+                                ?.map { (environment, deploymentAllowed) ->
+                                    val status = CCv2EnvironmentStatus.tryValueOf(environment.status)
                                     CCv2Environment(
                                         code = environment.code ?: "N/A",
                                         name = environment.name ?: "N/A",
-                                        status = CCv2EnvironmentStatus.tryValueOf(environment.status),
+                                        status = status,
                                         type = CCv2EnvironmentType.tryValueOf(environment.type),
                                         deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
+                                        deploymentAllowed = deploymentAllowed && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT)
                                     )
                                 }
                                 ?: emptyList()

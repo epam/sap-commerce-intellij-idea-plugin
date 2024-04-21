@@ -197,7 +197,10 @@ class CCv2DeployBuildDialog(
 
     private fun updateEnvironments(subscription: CCv2Subscription) {
         environmentModel.removeAll()
-        environmentModel.addAll(0, environments[subscription]!!.toList())
+        environments[subscription]
+            ?.toList()
+            ?.filter { it.deploymentAllowed }
+            ?.let { environmentModel.addAll(0, it) }
         environmentModel.selectedItem = null
     }
 
