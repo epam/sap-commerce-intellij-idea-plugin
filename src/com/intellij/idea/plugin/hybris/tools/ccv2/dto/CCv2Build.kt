@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
+import com.intellij.idea.plugin.hybris.ccv2.model.BuildDetailDTO
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
 import javax.swing.Icon
@@ -42,6 +43,29 @@ data class CCv2Build(
 
     fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
     fun canDeploy() = status == CCv2BuildStatus.SUCCESS
+
+    companion object {
+        fun map(build: BuildDetailDTO) = CCv2Build(
+            code = build.code ?: "N/A",
+            name = build.name ?: "N/A",
+            branch = build.branch ?: "N/A",
+            status = CCv2BuildStatus.tryValueOf(build.status),
+            appCode = build.applicationCode ?: "N/A",
+            appDefVersion = build.applicationDefinitionVersion ?: "N/A",
+            createdBy = build.createdBy ?: "N/A",
+            startTime = build.buildStartTimestamp
+                ?.toString(),
+            endTime = build.buildEndTimestamp
+                ?.toString(),
+            buildVersion = build.buildVersion ?: "N/A",
+            version = build.buildVersion
+                ?.split("-")
+                ?.firstOrNull()
+                ?.takeIf { it.isNotBlank() }
+                ?: "N/A"
+        )
+
+    }
 }
 
 enum class CCv2BuildStatus(val title: String, val icon: Icon) {

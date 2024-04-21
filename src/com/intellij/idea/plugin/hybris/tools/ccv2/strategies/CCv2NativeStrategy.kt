@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
+import com.github.weisj.jsvg.de
 import com.intellij.idea.plugin.hybris.ccv2.api.*
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
-import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
-import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
+import com.intellij.idea.plugin.hybris.ccv2.model.*
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
@@ -84,6 +84,42 @@ class CCv2NativeStrategy : CCv2Strategy {
         return result
     }
 
+    override suspend fun fetchEnvironmentsBuilds(
+        project: Project,
+        ccv2Token: String,
+        subscriptions: Map<CCv2Subscription, Collection<CCv2Environment>>
+    ) {
+        ApiClient.accessToken = ccv2Token
+        val client = createClient()
+        val environments = subscriptions.values.flatten()
+
+        reportProgress(environments.size) { progressReporter ->
+            coroutineScope {
+                subscriptions.forEach { (subscription, environments) ->
+                    val subscriptionCode = subscription.id!!
+                    environments.forEach { environment ->
+                        launch {
+                            progressReporter.sizedStep(1, "Fetching Deployment details for ${environment.name} of the $subscription") {
+                                DeploymentApi(client = client).getDeployments(
+                                    subscriptionCode,
+                                    environmentCode = environment.code,
+                                    dollarCount = true,
+                                    dollarTop = 1,
+                                )
+                                    .value
+                                    ?.firstOrNull()
+                                    ?.buildCode
+                                    ?.let { BuildApi(client = client).getBuild(subscriptionCode, it) }
+                                    ?.let { build -> CCv2Build.map(build) }
+                                    ?.also { build -> environment.deployedBuild = build }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override suspend fun fetchBuilds(
         project: Project,
         ccv2Token: String,
@@ -101,27 +137,7 @@ class CCv2NativeStrategy : CCv2Strategy {
                             BuildApi(client = client)
                                 .getBuilds(it.id!!, dollarTop = 20)
                                 .value
-                                ?.map { build ->
-                                    CCv2Build(
-                                        code = build.code ?: "N/A",
-                                        name = build.name ?: "N/A",
-                                        branch = build.branch ?: "N/A",
-                                        status = CCv2BuildStatus.tryValueOf(build.status),
-                                        appCode = build.applicationCode ?: "N/A",
-                                        appDefVersion = build.applicationDefinitionVersion ?: "N/A",
-                                        createdBy = build.createdBy ?: "N/A",
-                                        startTime = build.buildStartTimestamp
-                                            ?.toString(),
-                                        endTime = build.buildEndTimestamp
-                                            ?.toString(),
-                                        buildVersion = build.buildVersion ?: "N/A",
-                                        version = build.buildVersion
-                                            ?.split("-")
-                                            ?.firstOrNull()
-                                            ?.takeIf { it.isNotBlank() }
-                                            ?: "N/A"
-                                    )
-                                }
+                                ?.map { build -> CCv2Build.map(build) }
                                 ?: emptyList()
                         }
                     }

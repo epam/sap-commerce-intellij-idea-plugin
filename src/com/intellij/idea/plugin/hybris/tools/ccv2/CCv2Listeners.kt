@@ -27,6 +27,9 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 sealed interface CCv2Listener<T : CCv2DTO> {
     fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = Unit
     fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<T>> = emptyMap()) = Unit
+
+    fun onFetchingBuildDetailsStarted(data: Map<CCv2Subscription, Collection<T>>) = Unit
+    fun onFetchingBuildDetailsCompleted(data: Map<CCv2Subscription, Collection<T>> = emptyMap()) = Unit
 }
 
 interface CCv2SettingsListener {

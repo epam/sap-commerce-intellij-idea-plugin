@@ -131,6 +131,16 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 { CCv2EnvironmentsDataView.fetchingInProgressPanel(subscriptions) }
 
                 override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
+                {
+                    val dataPanel = CCv2EnvironmentsDataView.dataPanel(data)
+                    CCv2Service.getInstance(project).fetchEnvironmentsBuilds(data)
+
+                    dataPanel
+                }
+
+                override fun onFetchingBuildDetailsCompleted(
+                    data: Map<CCv2Subscription, Collection<CCv2Environment>>,
+                ) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
                 { CCv2EnvironmentsDataView.dataPanel(data) }
             })
 

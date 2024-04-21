@@ -38,6 +38,13 @@ interface CCv2Strategy {
     ): SortedMap<CCv2Subscription, Collection<CCv2Environment>>
 
     @Throws(SocketTimeoutException::class, ClientException::class, SAPCCMClientException::class)
+    suspend fun fetchEnvironmentsBuilds(
+        project: Project,
+        ccv2Token: String,
+        subscriptions: Map<CCv2Subscription, Collection<CCv2Environment>>
+    )
+
+    @Throws(SocketTimeoutException::class, ClientException::class, SAPCCMClientException::class)
     suspend fun fetchBuilds(
         project: Project,
         ccv2Token: String,

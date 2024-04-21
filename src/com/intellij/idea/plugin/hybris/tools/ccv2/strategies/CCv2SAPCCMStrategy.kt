@@ -104,6 +104,13 @@ class CCv2SAPCCMStrategy : CCv2Strategy {
         TODO("Not yet implemented")
     }
 
+    override suspend fun fetchEnvironmentsBuilds(
+        project: Project,
+        ccv2Token: String,
+        subscriptions: Map<CCv2Subscription, Collection<CCv2Environment>>
+    ) {
+    }
+
     private suspend fun authCredentials(project: Project, appSettings: ApplicationSettingsComponent, progressReporter: ProgressReporter, ccv2Token: String): List<String>? {
         return progressReporter.sizedStep(1, "Authenticating with the provided token...") {
             SAPCCM.execute(project, appSettings, "config", "set", "auth-credentials", ccv2Token)

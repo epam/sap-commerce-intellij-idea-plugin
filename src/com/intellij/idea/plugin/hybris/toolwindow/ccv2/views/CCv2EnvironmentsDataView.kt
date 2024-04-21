@@ -19,9 +19,11 @@
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.RowLayout
@@ -49,6 +51,8 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
 
     private fun Panel.environment(environment: CCv2Environment) {
         row {
+            val deployedBuild = environment.deployedBuild
+
             panel {
                 row {
                     label(environment.name)
@@ -78,6 +82,48 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
                     icon(environment.deploymentStatus.icon)
                     label(environment.deploymentStatus.title)
                         .comment("Deployment status")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            if (deployedBuild != null) {
+                panel {
+                    row {
+                        label(deployedBuild.name)
+                            .comment("Build name")
+                    }
+                }.gap(RightGap.COLUMNS)
+                panel {
+                    row {
+                        label(deployedBuild.code)
+                            .comment("Build code")
+                    }
+                }.gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        label(deployedBuild.branch)
+                            .comment("Build branch")
+                    }
+                }
+            } else {
+                panel {
+                    row {
+                        icon(AnimatedIcon.Default.INSTANCE)
+                            .comment("Build name")
+                    }
+                }.gap(RightGap.COLUMNS)
+                panel {
+                    row {
+                        icon(AnimatedIcon.Default.INSTANCE)
+                            .comment("Build code")
+                    }
+                }.gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        icon(AnimatedIcon.Default.INSTANCE)
+                            .comment("Build branch")
+                    }
                 }
             }
         }.layout(RowLayout.PARENT_GRID)
