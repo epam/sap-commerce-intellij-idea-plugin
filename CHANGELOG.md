@@ -34,6 +34,7 @@
 - Allow blank subscription for new build Dialog [#1079](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1079)
 - List only permitted environments in the Deployment Dialog (`Native` integration) [#1087](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1087)
 - Show current build for environment (`Native` integration) [#1088](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1088)
+- Use BGT for CCv2 Open Settings actions [#1089](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1089)
 
 ### `Type System` enhancements
 - Show Item line marker for jalo classes [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)

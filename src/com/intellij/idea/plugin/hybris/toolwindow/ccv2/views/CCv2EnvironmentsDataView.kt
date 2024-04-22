@@ -89,6 +89,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
                 panel {
                     row {
                         label(deployedBuild.name)
+                            .bold()
                             .comment("Build name")
                     }
                 }.gap(RightGap.COLUMNS)
@@ -109,20 +110,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
                 panel {
                     row {
                         icon(AnimatedIcon.Default.INSTANCE)
-                            .comment("Build name")
-                    }
-                }.gap(RightGap.COLUMNS)
-                panel {
-                    row {
-                        icon(AnimatedIcon.Default.INSTANCE)
-                            .comment("Build code")
-                    }
-                }.gap(RightGap.COLUMNS)
-
-                panel {
-                    row {
-                        icon(AnimatedIcon.Default.INSTANCE)
-                            .comment("Build branch")
+                            .comment("Build details")
                     }
                 }
             }
