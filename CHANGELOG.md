@@ -34,6 +34,7 @@
 - Allow blank subscription for new build Dialog [#1079](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1079)
 - List only permitted environments in the Deployment Dialog (`Native` integration) [#1087](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1087)
 - Show current build for environment (`Native` integration) [#1088](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1088)
+- Hide current build for environment (`CCM` integration) [#1090](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1090)
 - Use BGT for CCv2 Open Settings actions [#1089](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1089)
 
 ### `Type System` enhancements

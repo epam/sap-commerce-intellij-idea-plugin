@@ -49,7 +49,22 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
     }
         .let { scrollPanel(it) }
 
-    private fun Panel.environment(environment: CCv2Environment) {
+    fun dataPanelWithBuilds(data: Map<CCv2Subscription, Collection<CCv2Environment>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    else panel {
+        data.forEach { (subscription, environments) ->
+            collapsibleGroup(subscription.toString()) {
+                if (environments.isEmpty()) {
+                    noData()
+                } else {
+                    environments.forEach { environment(it, true) }
+                }
+            }
+                .expanded = true
+        }
+    }
+        .let { scrollPanel(it) }
+
+    private fun Panel.environment(environment: CCv2Environment, showBuilds: Boolean = false) {
         row {
             val deployedBuild = environment.deployedBuild
 
@@ -85,32 +100,34 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
                 }
             }.gap(RightGap.COLUMNS)
 
-            if (deployedBuild != null) {
-                panel {
-                    row {
-                        label(deployedBuild.name)
-                            .bold()
-                            .comment("Build name")
-                    }
-                }.gap(RightGap.COLUMNS)
-                panel {
-                    row {
-                        label(deployedBuild.code)
-                            .comment("Build code")
-                    }
-                }.gap(RightGap.COLUMNS)
+            if (showBuilds) {
+                if (deployedBuild != null) {
+                    panel {
+                        row {
+                            label(deployedBuild.name)
+                                .bold()
+                                .comment("Build name")
+                        }
+                    }.gap(RightGap.COLUMNS)
+                    panel {
+                        row {
+                            label(deployedBuild.code)
+                                .comment("Build code")
+                        }
+                    }.gap(RightGap.COLUMNS)
 
-                panel {
-                    row {
-                        label(deployedBuild.branch)
-                            .comment("Build branch")
+                    panel {
+                        row {
+                            label(deployedBuild.branch)
+                                .comment("Build branch")
+                        }
                     }
-                }
-            } else {
-                panel {
-                    row {
-                        icon(AnimatedIcon.Default.INSTANCE)
-                            .comment("Build details")
+                } else {
+                    panel {
+                        row {
+                            icon(AnimatedIcon.Default.INSTANCE)
+                                .comment("Build details")
+                        }
                     }
                 }
             }
