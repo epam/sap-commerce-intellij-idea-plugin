@@ -26,6 +26,7 @@ import com.intellij.openapi.vfs.WritingAccessProvider
 class HybrisWritingAccessProvider(myProject: Project) : WritingAccessProvider() {
 
     private val ootbReadOnlyMode = ProjectSettingsComponent.getInstance(myProject).state.importOotbModulesInReadOnlyMode
+    private val customDirectory = ProjectSettingsComponent.getInstance(myProject).state.customDirectory
 
     override fun requestWriting(files: Collection<VirtualFile>) = files
         .filter { isFileReadOnly(it) }
@@ -37,7 +38,11 @@ class HybrisWritingAccessProvider(myProject: Project) : WritingAccessProvider() 
         if (!ootbReadOnlyMode) return false
         if (!file.isWritable) return true
 
-        return file.path.contains("hybris/bin")
-            && !file.path.contains("hybris/bin/custom")
+        if (file.path.contains("hybris/bin")) {
+            if (file.path.contains("hybris/bin/custom")) return false
+            if (customDirectory != null && file.path.contains(customDirectory)) return false
+            return true
+        }
+        return false
     }
 }
