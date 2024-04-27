@@ -79,6 +79,7 @@
 - Adjusted FlexibleSearch language injection [#1081](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1081)
 - Fix import with custom extension directory override [#1084](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1084)
 - Fix readonly problem for custom extension in a custom path [#1091](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1091)
+- Fix navigation to Enum values declared in the `beans.xml` [#1092](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1092)
 
 ### Other
 - Added JetBrains Marketplace error reporting [#1039](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1039)

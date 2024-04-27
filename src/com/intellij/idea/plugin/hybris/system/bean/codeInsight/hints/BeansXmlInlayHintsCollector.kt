@@ -75,7 +75,7 @@ class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
             attribute == null && parent.localName == Enum.VALUE -> parent.parentOfType<XmlTag>()
                 ?.takeIf { it.name == Beans.ENUM }
                 ?.getAttributeValue(Enum.CLASS)
-                ?.let { finEnumClass(project, element.text) }
+                ?.let { finEnumClass(project, it) }
                 ?.allFields
                 ?.find { it.name.equals(element.text, true) }
                 ?.let { arrayOf(it) }
