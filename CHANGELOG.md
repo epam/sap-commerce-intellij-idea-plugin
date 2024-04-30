@@ -36,6 +36,7 @@
 - Show current build for environment (`Native` integration) [#1088](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1088)
 - Hide current build for environment (`CCM` integration) [#1090](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1090)
 - Use BGT for CCv2 Open Settings actions [#1089](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1089)
+- Added CCv2 api specs yaml file [#1095](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1095), approved to be used by SAP in the [412082/2024](https://me.sap.com/case/002075129500004120822024)
 
 ### `Type System` enhancements
 - Show Item line marker for jalo classes [#1067](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1067)
