@@ -30,7 +30,7 @@ object PluginCommon {
     val PLUGIN_MAVEN = Plugin("org.jetbrains.idea.maven")
     val PLUGIN_KOTLIN = Plugin("org.jetbrains.kotlin", "https://plugins.jetbrains.com/plugin/6954-kotlin")
     val PLUGIN_GROOVY = Plugin("org.intellij.groovy", "https://plugins.jetbrains.com/plugin/1524-groovy")
-    val PLUGIN_GRADLE = Plugin("org.jetbrains.plugins.gradle")
+    val PLUGIN_GRADLE = Plugin("com.intellij.gradle")
     val PLUGIN_DATABASE = Plugin("com.intellij.database", "https://plugins.jetbrains.com/plugin/10925-database-tools-and-sql-for-webstorm")
     val PLUGIN_DIAGRAM = Plugin("com.intellij.diagram")
     val PLUGIN_PROPERTIES = Plugin("com.intellij.properties", "https://plugins.jetbrains.com/plugin/11594-properties")

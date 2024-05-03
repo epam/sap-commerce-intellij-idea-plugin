@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
   ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -24,9 +24,7 @@
     <name>SAP Commerce Developers Toolset</name>
     <!-- It is mandatory to have 3 values for version due validation of the project, which is done by DefaultCommonIdeaService -->
 
-    <vendor email="hybrisideaplugin@epam.com" url="https://github.com/epam/sap-commerce-intellij-idea-plugin">
-        EPAM_Systems
-    </vendor>
+    <vendor email="hybrisideaplugin@epam.com" url="https://github.com/epam/sap-commerce-intellij-idea-plugin">EPAM_Systems</vendor>
     <!-- Naming convention - https://plugins.jetbrains.com/docs/intellij/plugin-dependencies.html#optional-plugin-dependencies -->
 
     <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml">com.intellij.modules.lang</depends>
@@ -49,7 +47,7 @@
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-ant.xml">AntSupport</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-maven.xml">org.jetbrains.idea.maven</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-eclipse.xml">org.jetbrains.idea.eclipse</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-gradle.xml">org.jetbrains.plugins.gradle</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-gradle.xml">com.intellij.gradle</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-spring.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javaee.xml">com.intellij.javaee</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javaee-web.xml">com.intellij.javaee.web</depends>
