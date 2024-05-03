@@ -18,10 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
-import com.github.weisj.jsvg.de
-import com.intellij.idea.plugin.hybris.ccv2.api.*
+import com.intellij.idea.plugin.hybris.ccv2.api.BuildApi
+import com.intellij.idea.plugin.hybris.ccv2.api.DeploymentApi
+import com.intellij.idea.plugin.hybris.ccv2.api.EndpointApi
+import com.intellij.idea.plugin.hybris.ccv2.api.EnvironmentApi
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
-import com.intellij.idea.plugin.hybris.ccv2.model.*
+import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
+import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
@@ -169,16 +172,15 @@ class CCv2NativeStrategy : CCv2Strategy {
                                     CCv2Deployment(
                                         code = deployment.code ?: "N/A",
                                         createdBy = deployment.createdBy ?: "N/A",
-                                        createdTime = deployment.createdTimestamp
-                                            ?.toString() ?: "N/A",
+                                        createdTime = deployment.createdTimestamp,
                                         buildCode = deployment.buildCode ?: "N/A",
                                         envCode = deployment.environmentCode ?: "N/A",
                                         updateMode = CCv2DeploymentDatabaseUpdateModeEnum.tryValueOf(deployment.databaseUpdateMode),
                                         strategy = CCv2DeploymentStrategyEnum.tryValueOf(deployment.strategy),
-                                        scheduledTime = deployment.scheduledTimestamp?.toString() ?: "N/A",
-                                        deployedTime = deployment.deployedTimestamp?.toString() ?: "N/A",
-                                        failedTime = deployment.failedTimestamp?.toString() ?: "N/A",
-                                        undeployedTime = deployment.undeployedTimestamp?.toString() ?: "N/A",
+                                        scheduledTime = deployment.scheduledTimestamp,
+                                        deployedTime = deployment.deployedTimestamp,
+                                        failedTime = deployment.failedTimestamp,
+                                        undeployedTime = deployment.undeployedTimestamp,
                                         status = CCv2DeploymentStatusEnum.tryValueOf(deployment.status)
                                     )
                                 }

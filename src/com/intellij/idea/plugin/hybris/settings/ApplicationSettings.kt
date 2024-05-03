@@ -50,7 +50,6 @@ data class ApplicationSettings(
     var extensionsResourcesToExclude: List<String> = HybrisConstants.DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE,
     var excludedFromIndexList: List<String> = HybrisConstants.DEFAULT_EXCLUDED_FROM_INDEX,
 
-    var sapCLIDirectory: String? = null,
     var ccv2ReadTimeout: Int = 60,
     var ccv2Subscriptions: List<CCv2Subscription> = emptyList()
 

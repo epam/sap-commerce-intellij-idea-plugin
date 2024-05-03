@@ -20,7 +20,8 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv2.model.BuildDetailDTO
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
+import java.time.OffsetDateTime
 import javax.swing.Icon
 
 data class CCv2Build(
@@ -31,15 +32,15 @@ data class CCv2Build(
     val appCode: String,
     val appDefVersion: String,
     val createdBy: String,
-    val startTime: String?,
-    val endTime: String?,
+    val startTime: OffsetDateTime?,
+    val endTime: OffsetDateTime?,
     val buildVersion: String,
     val version: String,
 ) : CCv2DTO {
     val startTimeFormatted
-        get() = SAPCCM.formatTime(startTime)
+        get() = CCv2Util.formatTime(startTime)
     val endTimeFormatted
-        get() = SAPCCM.formatTime(endTime)
+        get() = CCv2Util.formatTime(endTime)
 
     fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
     fun canDeploy() = status == CCv2BuildStatus.SUCCESS
@@ -53,10 +54,8 @@ data class CCv2Build(
             appCode = build.applicationCode ?: "N/A",
             appDefVersion = build.applicationDefinitionVersion ?: "N/A",
             createdBy = build.createdBy ?: "N/A",
-            startTime = build.buildStartTimestamp
-                ?.toString(),
-            endTime = build.buildEndTimestamp
-                ?.toString(),
+            startTime = build.buildStartTimestamp,
+            endTime = build.buildEndTimestamp,
             buildVersion = build.buildVersion ?: "N/A",
             version = build.buildVersion
                 ?.split("-")

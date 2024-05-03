@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
-import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2IntegrationProtocolEnum
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
@@ -37,7 +36,6 @@ import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
@@ -62,7 +60,6 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
         private val currentActiveSolrConnection = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.SOLR)
 
         private lateinit var activeCCv2SubscriptionComboBox: ComboBox<CCv2Subscription>
-        private lateinit var currentCCv2IntegrationProtocolComboBox: ComboBox<CCv2IntegrationProtocolEnum>
         private val activeHacServerModel = DefaultComboBoxModel<RemoteConnectionSettings>()
         private val activeSolrServerModel = DefaultComboBoxModel<RemoteConnectionSettings>()
         private val hacInstances = RemoteHacInstancesListPanel(project) { eventType, data ->
@@ -84,34 +81,9 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
         }
 
         private val ccv2SubscriptionsModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true)
-        private val ccv2IntegrationProtocolModel = EnumComboBoxModel(CCv2IntegrationProtocolEnum::class.java)
 
         override fun createPanel() = panel {
             group("CCv2 Integration", true) {
-                row {
-                    icon(HybrisIcons.CCV2_PROTOCOL)
-                    currentCCv2IntegrationProtocolComboBox = comboBox(
-                        ccv2IntegrationProtocolModel,
-                        renderer = SimpleListCellRenderer.create { label, value, _ ->
-                            with(label) {
-                                text = value.title
-                                icon = value.icon
-                            }
-                        }
-                    )
-                        .label("Protocol:")
-                        .comment(
-                            """
-                            SAP CCM - relies on bundled CLI tool provided by SAP, it has to be downloaded and configured accordingly, see CCv2 application-level settings.<br>
-                            Native - relies on direct integration with CCv2 via OpenAPI and provides wider range of features.
-                        """.trimIndent()
-                        )
-                        .onApply { devSettings.currentCCv2IntegrationProtocol = currentCCv2IntegrationProtocolComboBox.selectedItem as CCv2IntegrationProtocolEnum }
-                        .onIsModified { currentCCv2IntegrationProtocolComboBox.selectedItem != devSettings.currentCCv2IntegrationProtocol }
-                        .component
-                        .also { it.selectedItem = devSettings.currentCCv2IntegrationProtocol }
-                }.layout(RowLayout.PARENT_GRID)
-
                 row {
                     icon(HybrisIcons.MODULE_CCV2)
                     activeCCv2SubscriptionComboBox = comboBox(
@@ -202,7 +174,6 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
         override fun reset() {
             isReset = true
 
-            currentCCv2IntegrationProtocolComboBox.selectedItem = devSettings.currentCCv2IntegrationProtocol
             activeCCv2SubscriptionComboBox.selectedItem = devSettingsComponent.getActiveCCv2Subscription()
 
             hacInstances.setData(RemoteConnectionUtil.getRemoteConnections(project, RemoteConnectionType.Hybris))

@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
-import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2IntegrationProtocolEnum
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildsDataView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2DeploymentsDataView
@@ -134,9 +133,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
                 {
                     val dataPanel = CCv2EnvironmentsDataView.dataPanel(data)
-                    if (DeveloperSettingsComponent.getInstance(project).state.currentCCv2IntegrationProtocol == CCv2IntegrationProtocolEnum.NATIVE) {
-                        CCv2Service.getInstance(project).fetchEnvironmentsBuilds(data)
-                    }
+                    CCv2Service.getInstance(project).fetchEnvironmentsBuilds(data)
 
                     dataPanel
                 }

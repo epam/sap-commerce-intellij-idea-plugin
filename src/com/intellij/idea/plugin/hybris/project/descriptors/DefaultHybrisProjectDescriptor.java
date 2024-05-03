@@ -93,9 +93,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     @Nullable
     protected File modulesFilesDirectory;
     @Nullable
-    protected File sapCLIDirectory;
-    @Nullable
-    protected String sapCLIToken;
+    protected String ccv2Token;
     @Nullable
     protected File sourceCodeFile;
     @Nullable
@@ -954,23 +952,13 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public @Nullable File getSAPCLIDirectory() {
-        return sapCLIDirectory;
+    public @Nullable String getCCv2Token() {
+        return ccv2Token;
     }
 
     @Override
-    public void setSAPCLIDirectory(@Nullable final File sapCLIDirectory) {
-        this.sapCLIDirectory = sapCLIDirectory;
-    }
-
-    @Override
-    public @Nullable String getSAPCLIToken() {
-        return sapCLIToken;
-    }
-
-    @Override
-    public void setSAPCLIToken(@Nullable final String sapCLIToken) {
-        this.sapCLIToken = sapCLIToken;
+    public void setCCv2Token(@Nullable final String ccv2Token) {
+        this.ccv2Token = ccv2Token;
     }
 
     @Nullable

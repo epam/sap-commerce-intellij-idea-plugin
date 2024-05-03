@@ -415,9 +415,7 @@ object HybrisConstants {
 
     val OCC_DEFAULT_LEVEL_MAPPINGS = setOf("BASIC", "DEFAULT", "FULL")
 
-    val CCV2_DATE_FORMAT_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
-    val CCV2_DATE_FORMAT_CCM_NANO: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
-    val CCV2_DATE_FORMAT_CCM: DateTimeFormatter = DateTimeFormatter.ISO_DATE
+    val CCV2_DATE_TIME_FORMATTER_LOCAL: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd | HH:mm:ss")
     val ZONE_GMT = ZoneId.of("GMT")
 
     @JvmField

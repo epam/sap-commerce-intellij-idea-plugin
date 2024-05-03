@@ -21,29 +21,30 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentDetailDTO
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
+import java.time.OffsetDateTime
 import javax.swing.Icon
 
 data class CCv2Deployment(
     val code: String,
     val createdBy: String,
-    val createdTime: String,
+    val createdTime: OffsetDateTime?,
     val buildCode: String,
     val envCode: String,
     val updateMode: CCv2DeploymentDatabaseUpdateModeEnum,
     val strategy: CCv2DeploymentStrategyEnum,
-    val scheduledTime: String,
-    val deployedTime: String,
-    val failedTime: String,
-    val undeployedTime: String,
+    val scheduledTime: OffsetDateTime?,
+    val deployedTime: OffsetDateTime?,
+    val failedTime: OffsetDateTime?,
+    val undeployedTime: OffsetDateTime?,
     val status: CCv2DeploymentStatusEnum,
 ) : CCv2DTO {
 
     val createdTimeFormatted
-        get() = SAPCCM.formatTime(createdTime)
+        get() = CCv2Util.formatTime(createdTime)
 
     val deployedTimeFormatted
-        get() = SAPCCM.formatTime(deployedTime)
+        get() = CCv2Util.formatTime(deployedTime)
 }
 
 enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Icon, val apiMode: CreateDeploymentRequestDTO.DatabaseUpdateMode) {

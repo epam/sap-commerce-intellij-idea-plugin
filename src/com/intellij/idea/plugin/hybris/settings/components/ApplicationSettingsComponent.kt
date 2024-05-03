@@ -52,7 +52,7 @@ class ApplicationSettingsComponent : PersistentStateComponent<ApplicationSetting
         XmlSerializerUtil.copyBean(state, this.hybrisApplicationSettings)
     }
 
-    fun loadSAPCLIToken(callback: (String?) -> Unit) {
+    fun loadCCv2Token(callback: (String?) -> Unit) {
         ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Token", false) {
             override fun run(indicator: ProgressIndicator) {
                 callback.invoke(ccv2Token)
@@ -60,7 +60,7 @@ class ApplicationSettingsComponent : PersistentStateComponent<ApplicationSetting
         })
     }
 
-    fun saveSAPCLIToken(token: String, callback: ((String?) -> Unit)? = null) {
+    fun saveCCv2Token(token: String, callback: ((String?) -> Unit)? = null) {
         ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Persisting SAP CCv2 Token", false) {
             override fun run(indicator: ProgressIndicator) {
                 val credentialAttributes = CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)

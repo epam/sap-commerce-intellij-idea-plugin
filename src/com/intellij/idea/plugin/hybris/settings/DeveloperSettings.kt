@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2IntegrationProtocolEnum
 import com.intellij.openapi.components.BaseState
 import com.intellij.util.xmlb.annotations.Tag
 
@@ -27,7 +26,6 @@ class DeveloperSettings : BaseState() {
     var activeRemoteConnectionID by string(null)
     var activeSolrConnectionID by string(null)
     var activeCCv2SubscriptionID by string(null)
-    var currentCCv2IntegrationProtocol by enum<CCv2IntegrationProtocolEnum>(CCv2IntegrationProtocolEnum.CCM)
     var remoteConnectionSettingsList by list<RemoteConnectionSettings>()
     var typeSystemDiagramSettings by property(TypeSystemDiagramSettings()) { false }
     var beanSystemSettings by property(BeanSystemSettings()) { false }

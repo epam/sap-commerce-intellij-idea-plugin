@@ -19,14 +19,14 @@ package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.ccm.SAPCCM
 import com.intellij.idea.plugin.hybris.ui.CCv2SubscriptionListPanel
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.ui.components.JBPasswordField
-import com.intellij.ui.components.textFieldWithBrowseButton
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.RowLayout
+import com.intellij.ui.dsl.builder.bindIntText
+import com.intellij.ui.dsl.builder.panel
 
 class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
 
@@ -38,72 +38,39 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
 
         private val appSettings = ApplicationSettingsComponent.getInstance()
         private val state = appSettings.state
-        private var originalSAPCLIToken: String? = ""
+        private var originalCCv2Token: String? = ""
         private var originalCCv2Subscriptions = state.ccv2Subscriptions
             .map { it.clone() }
 
-        private lateinit var sapCLITokenTextField: JBPasswordField
+        private lateinit var ccv2TokenTextField: JBPasswordField
         private val ccv2SubscriptionListPanel = CCv2SubscriptionListPanel(originalCCv2Subscriptions)
 
-        // TODO: we may use SAP CCM CLI or native REST API in the future
         override fun createPanel() = panel {
-            row {}.comment(
-                """
-                    All details on using SAP CCM can be found in official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9116f1cfd16049c3a531bfb6a681ff77/8acde53272c64efb908b9f0745498015.html">help.sap.com - Command Line Interface</a>.
-                """.trimIndent()
-            )
-
-            row {
-                label("CLI directory:")
-                cell(
-                    textFieldWithBrowseButton(
-                        null,
-                        "Select SAP CX CLI Directory",
-                        FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                    )
-                )
-                    .comment(
-                        """
-                            SAP Commerce Cloud command line interface installation directory.<br>
-                            Choose directory extracted from the <strong>CXCOMMCLI00P_*.zip</strong> file to enable CCv2 CLI integration. 
-                        """.trimIndent()
-                    )
-                    .bindText(
-                        { state.sapCLIDirectory ?: "" },
-                        { state.sapCLIDirectory = it }
-                    )
-                    .validationOnInput {
-                        SAPCCM.validateSAPCCMDirectory(it.text)
-                            ?.let { message -> this.error(message) }
-                    }
-                    .align(AlignX.FILL)
-            }.layout(RowLayout.PARENT_GRID)
-
             row {
                 label("CCv2 token:")
-                sapCLITokenTextField = passwordField()
+                ccv2TokenTextField = passwordField()
                     .comment(
                         """
-                            Specify developer specific Token for CCv2 CLI, it will be stored in the OS specific secure storage under <strong>SAP CX CLI Token</strong> alias.<br>
+                            Specify developer specific Token for CCv2 API, it will be stored in the OS specific secure storage under <strong>SAP CX CCv2 Token</strong> alias.<br>
                             Official documentation <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/b5d4d851cbd54469906a089bb8dd58d8.html">help.sap.com - Generating API Tokens</a>.
                         """.trimIndent()
                     )
                     .align(AlignX.RIGHT)
-                    .onIsModified { originalSAPCLIToken != String(sapCLITokenTextField.password) }
+                    .onIsModified { originalCCv2Token != String(ccv2TokenTextField.password) }
                     .onReset {
-                        sapCLITokenTextField.isEnabled = false
+                        ccv2TokenTextField.isEnabled = false
 
-                        appSettings.loadSAPCLIToken {
-                            val sapCLIToken = appSettings.ccv2Token
-                            originalSAPCLIToken = sapCLIToken
+                        appSettings.loadCCv2Token {
+                            val ccv2Token = appSettings.ccv2Token
+                            originalCCv2Token = ccv2Token
 
-                            sapCLITokenTextField.text = sapCLIToken
-                            sapCLITokenTextField.isEnabled = true
+                            ccv2TokenTextField.text = ccv2Token
+                            ccv2TokenTextField.isEnabled = true
                         }
                     }
                     .onApply {
-                        appSettings.saveSAPCLIToken(String(sapCLITokenTextField.password)) {
-                            originalSAPCLIToken = it
+                        appSettings.saveCCv2Token(String(ccv2TokenTextField.password)) {
+                            originalCCv2Token = it
                         }
                     }
                     .align(AlignX.FILL)

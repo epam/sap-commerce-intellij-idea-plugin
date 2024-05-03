@@ -1,3 +1,8 @@
+## [2024.1.2]
+
+### `CCv2 CI/CD` enhancements
+- Removed `SAP CCM` based integration [#1098](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1098)
+
 ## [2024.1.1]
 
 ### `Project Import` enhancements
