@@ -18,6 +18,7 @@
 /buildsrc/.gradle
 /common/build/
 /.gradle/
+/.intellijPlatform
 
 **/.directory
 /.idea/dictionaries/

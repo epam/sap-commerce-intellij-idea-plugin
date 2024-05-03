@@ -2,7 +2,7 @@
 # - validate Gradle Wrapper,
 # - run 'test' and 'verifyPlugin' tasks,
 # - run 'buildPlugin' task and prepare artifact for the further tests,
-# - run 'runPluginVerifier' task,
+# - run 'verifyPlugin' task,
 # - create a draft release.
 #
 # Workflow is triggered on push and pull_request events.
@@ -91,7 +91,7 @@ jobs:
 
       # Run Verify Plugin task and IntelliJ Plugin Verifier tool
       - name: Run Plugin Verification tasks
-        run: ./gradlew runPluginVerifier -Dplugin.verifier.home.dir=${{ steps.properties.outputs.pluginVerifierHomeDir }}
+        run: ./gradlew verifyPlugin -Dplugin.verifier.home.dir=${{ steps.properties.outputs.pluginVerifierHomeDir }}
 
       # Collect Plugin Verifier Result
       - name: Collect Plugin Verifier Result
