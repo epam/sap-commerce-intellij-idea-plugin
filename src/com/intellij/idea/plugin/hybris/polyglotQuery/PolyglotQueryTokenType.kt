@@ -19,10 +19,9 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery
 
 import com.intellij.psi.tree.IElementType
-import org.jetbrains.annotations.NonNls
 import java.util.regex.Pattern
 
-class PolyglotQueryTokenType(debugName: @NonNls String) : IElementType(debugName, PolyglotQueryLanguage) {
+class PolyglotQueryTokenType(debugName: String) : IElementType(debugName, PolyglotQueryLanguage) {
 
     override fun toString() = super.toString()
         .takeIf { it.isNotBlank() }

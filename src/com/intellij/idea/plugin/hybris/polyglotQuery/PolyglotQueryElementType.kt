@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery
 
 import com.intellij.psi.tree.IElementType
-import org.jetbrains.annotations.NonNls
 
-class PolyglotQueryElementType(debugName: @NonNls String) : IElementType(debugName, PolyglotQueryLanguage) {
+class PolyglotQueryElementType(debugName: String) : IElementType(debugName, PolyglotQueryLanguage) {
 }
