@@ -59,7 +59,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
                 var environments = sortedMapOf<CCv2Subscription, Collection<CCv2Environment>>()
                 try {
-                    environments = CCv2Strategy.getStrategy().fetchEnvironments(project, ccv2Token, subscriptions)
+                    environments = CCv2Strategy.getInstance().fetchEnvironments(ccv2Token, subscriptions)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
                 } catch (e: RuntimeException) {
@@ -84,7 +84,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 }
 
                 try {
-                    CCv2Strategy.getStrategy().fetchEnvironmentsBuilds(project, ccv2Token, subscriptions)
+                    CCv2Strategy.getInstance().fetchEnvironmentsBuilds(ccv2Token, subscriptions)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
                 } catch (e: RuntimeException) {
@@ -114,7 +114,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
                 var builds = sortedMapOf<CCv2Subscription, Collection<CCv2Build>>()
                 try {
-                    builds = CCv2Strategy.getStrategy().fetchBuilds(project, ccv2Token, subscriptions)
+                    builds = CCv2Strategy.getInstance().fetchBuilds(ccv2Token, subscriptions)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
                 } catch (e: RuntimeException) {
@@ -145,7 +145,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
                 var deployments = sortedMapOf<CCv2Subscription, Collection<CCv2Deployment>>()
                 try {
-                    deployments = CCv2Strategy.getStrategy().fetchDeployments(project, ccv2Token, subscriptions)
+                    deployments = CCv2Strategy.getInstance().fetchDeployments(ccv2Token, subscriptions)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
                 } catch (e: RuntimeException) {
@@ -165,7 +165,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
 
                 try {
-                    CCv2Strategy.getStrategy().createBuild(project, ccv2Token, subscription, name, branch)
+                    CCv2Strategy.getInstance().createBuild(ccv2Token, subscription, name, branch)
                         .also {
                             if (it != null) {
                                 Notifications.create(
@@ -202,8 +202,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 }
 
                 try {
-                    CCv2Strategy.getStrategy()
-                        .deleteBuild(project, ccv2Token, subscription, build)
+                    CCv2Strategy.getInstance()
+                        .deleteBuild(ccv2Token, subscription, build)
                         .also {
                             Notifications.create(
                                 NotificationType.INFORMATION,
@@ -244,8 +244,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 }
 
                 try {
-                    CCv2Strategy.getStrategy()
-                        .deployBuild(project, ccv2Token, subscription, environment, build, mode, strategy)
+                    CCv2Strategy.getInstance()
+                        .deployBuild(ccv2Token, subscription, environment, build, mode, strategy)
                         .also {
                             Notifications.create(
                                 NotificationType.INFORMATION,
