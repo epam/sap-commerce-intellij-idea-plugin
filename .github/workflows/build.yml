@@ -69,7 +69,7 @@ jobs:
           echo "pluginVerifierHomeDir=~/.pluginVerifier" >> $GITHUB_OUTPUT
           echo "response=$response" >> $GITHUB_OUTPUT
 
-          ./gradlew listProductsReleases # prepare list of IDEs for Plugin Verifier
+          ./gradlew printProductsReleases # prepare list of IDEs for Plugin Verifier
       # Run tests
       - name: Run Tests
         run: ./gradlew check
@@ -87,7 +87,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ steps.properties.outputs.pluginVerifierHomeDir }}/ides
-          key: plugin-verifier-${{ hashFiles('build/listProductsReleases.txt') }}
+          key: plugin-verifier-${{ hashFiles('build/printProductsReleases.txt') }}
 
       # Run Verify Plugin task and IntelliJ Plugin Verifier tool
       - name: Run Plugin Verification tasks
