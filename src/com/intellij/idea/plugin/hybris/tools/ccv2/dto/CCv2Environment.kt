@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import javax.swing.Icon
 
 data class CCv2Environment(
@@ -29,7 +28,9 @@ data class CCv2Environment(
     val status: CCv2EnvironmentStatus,
     val deploymentStatus: CCv2DeploymentStatusEnum,
     val deploymentAllowed: Boolean = false,
-    var deployedBuild: CCv2Build? = null
+    var deployedBuild: CCv2Build? = null,
+    val dynatraceLink: String? = null,
+    val loggingLink: String? = null,
 ) : CCv2DTO, Comparable<CCv2Environment> {
 
     override fun compareTo(other: CCv2Environment) = name.compareTo(other.name)

@@ -217,6 +217,8 @@ object HybrisIcons {
     val CONSOLE_SUSPEND = AllIcons.Actions.Suspend
     val CONSOLE_EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg")
 
+    val DYNATRACE = getIcon("/icons/dynatrace.svg")
+
     val CCV2 = getIcon("/icons/ccv2/ccv2.svg")
     val CCV2_FETCH = AllIcons.Vcs.Fetch
     val CCV2_ENVIRONMENTS = EXTENSION_CLOUD

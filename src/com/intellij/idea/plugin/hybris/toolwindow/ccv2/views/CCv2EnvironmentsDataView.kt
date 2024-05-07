@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum
@@ -85,6 +86,15 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
                     icon(environment.deploymentStatus.icon)
                     label(environment.deploymentStatus.title)
                         .comment("Deployment status")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    icon(HybrisIcons.DYNATRACE)
+                    browserLink("Dynatrace", environment.dynatraceLink ?: "")
+                        .enabled(environment.dynatraceLink != null)
+                        .comment("&nbsp;")
                 }
             }.gap(RightGap.COLUMNS)
 

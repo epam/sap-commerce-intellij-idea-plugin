@@ -1,3 +1,7 @@
 <component name="CopyrightManager">
-  <settings default="LGPL" />
+  <settings default="LGPL">
+    <LanguageOptions name="SVG">
+      <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
+  </settings>
 </component>

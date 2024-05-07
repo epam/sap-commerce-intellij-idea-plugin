@@ -53,6 +53,19 @@ class CCv2SubscriptionDialog(
                 .align(AlignX.FILL)
                 .bindText(subscription::name.toNonNullableProperty(""))
         }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            textField()
+                .label("Dynatrace link prefix:")
+                .comment(
+                    """
+                    If set, will be used to generate environment specific Dynatrace link.<br>
+                    For example: https://amer01-nonprod.cluster.observability.cloud.sap/e/ccv2-cust-customerCode-externalCode-.
+                    """.trimIndent()
+                )
+                .align(AlignX.FILL)
+                .bindText(subscription::dynatraceLinkPrefix.toNonNullableProperty(""))
+        }.layout(RowLayout.PARENT_GRID)
     }
 
     override fun getPreferredFocusedComponent() = idTextField

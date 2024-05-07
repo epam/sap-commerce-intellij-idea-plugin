@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.ccv2.api.DeploymentApi
 import com.intellij.idea.plugin.hybris.ccv2.api.EndpointApi
 import com.intellij.idea.plugin.hybris.ccv2.api.EnvironmentApi
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
+import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ClientException
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
@@ -51,29 +52,43 @@ class CCv2Strategy {
 
         reportProgress(subscriptions.size) { progressReporter ->
             coroutineScope {
-                subscriptions.forEach {
+                subscriptions.forEach { subscription ->
                     launch {
-                        result[it] = progressReporter.sizedStep(1, "Fetching Environments for subscription: $it") {
-                            val subscriptionCode = it.id!!
+                        result[subscription] = progressReporter.sizedStep(1, "Fetching Environments for subscription: $subscription") {
+                            val subscriptionCode = subscription.id!!
                             EnvironmentApi(client = client).getEnvironments(subscriptionCode).value
                                 ?.map { env ->
                                     val environmentCode = env.code ?: "N/A"
                                     async {
-                                        val deploymentAllowed = EndpointApi(client = client).getEndpointsWithHttpInfo(subscriptionCode, environmentCode, null, null)
+                                        val deploymentAllowed = EndpointApi(client = client)
+                                            .getEndpointsWithHttpInfo(subscriptionCode, environmentCode, null, null)
                                             .statusCode == 200
-                                        env to deploymentAllowed
+                                        val v1Env = try {
+                                            EnvironmentApi(basePath = "https://portalrotapi.hana.ondemand.com/v1", client = client)
+                                                .getEnvironmentV1(subscriptionCode, environmentCode)
+                                        } catch (e: ClientException) {
+                                            // user may not have access to the environment
+                                            null
+                                        }
+                                        env to (deploymentAllowed to v1Env)
                                     }
                                 }
                                 ?.awaitAll()
-                                ?.map { (environment, deploymentAllowed) ->
+                                ?.map { (environment, details) ->
                                     val status = CCv2EnvironmentStatus.tryValueOf(environment.status)
+                                    val code = environment.code
+                                    val deploymentStatus = details.first
+                                    val v1Environment = details.second
+
                                     CCv2Environment(
-                                        code = environment.code ?: "N/A",
+                                        code = code ?: "N/A",
                                         name = environment.name ?: "N/A",
                                         status = status,
                                         type = CCv2EnvironmentType.tryValueOf(environment.type),
                                         deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
-                                        deploymentAllowed = deploymentAllowed && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT)
+                                        deploymentAllowed = deploymentStatus && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT),
+                                        dynatraceLink = v1Environment?.dynatraceUrl,
+                                        loggingLink = v1Environment?.loggingUrl,
                                     )
                                 }
                                 ?: emptyList()

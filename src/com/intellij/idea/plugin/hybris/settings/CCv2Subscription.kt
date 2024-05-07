@@ -22,11 +22,13 @@ import com.intellij.openapi.components.BaseState
 class CCv2Subscription : BaseState(), Cloneable, Comparable<CCv2Subscription> {
     var id by string()
     var name by string(null)
+    var dynatraceLinkPrefix by string(null)
 
     public override fun clone(): CCv2Subscription {
         val clone = CCv2Subscription()
         clone.id = id
         clone.name = name
+        clone.dynatraceLinkPrefix = dynatraceLinkPrefix
         return clone
     }
 

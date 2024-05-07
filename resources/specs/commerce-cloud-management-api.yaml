@@ -11,12 +11,15 @@ x-sap-shortText: Manage Commerce Cloud Automation.
 x-sap-stateInfo:
   state: Beta
 servers:
-  - url: https://{uri}/v2
+  - url: https://{uri}/{version}
     description: Environment URL
     variables:
       uri:
         default: 'portalrotapi.hana.ondemand.com'
         description: Environment URI
+      version:
+        default: 'v2'
+        description: API version
 tags:
   - name: build
     description: Endpoints for managing builds
@@ -624,6 +627,39 @@ paths:
           $ref: '#/components/responses/DefaultResponse'
         '5XX':
           $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - environment
+      description: Get environment details
+      operationId: getEnvironmentV1
+      parameters:
+        - $ref: '#/components/parameters/EndpointWebProxyFilter'
+        - $ref: '#/components/parameters/EndpointServiceFilter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentDetailV1DTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
   /subscriptions/{subscriptionCode}/environments/{environmentCode}/endpoints:
     parameters:
       - name: subscriptionCode
@@ -912,7 +948,7 @@ paths:
         '5XX':
           $ref: '#/components/responses/DefaultResponse'
 security:
-  - OAuth2: []
+  - OAuth2: [ ]
 components:
   securitySchemes:
     OAuth2:
@@ -920,7 +956,7 @@ components:
       flows:
         authorizationCode:
           scopes:
-            {}
+            { }
           authorizationUrl: 'https://oauthasservices-a9f746d57.hana.ondemand.com/oauth2/api/v1/authorize'
           tokenUrl: 'https://oauthasservices-a9f746d57.hana.ondemand.com/oauth2/api/v1/token'
   parameters:
@@ -1826,6 +1862,49 @@ components:
           type: string
         deploymentStatus:
           description: Deployment status of the environment
+          type: string
+    EnvironmentDetailV1DTO:
+      description: V1 Entity to represent an environment
+      type: object
+      properties:
+        subscriptionCode:
+          description: Subscription code
+          type: string
+        name:
+          description: Environment name
+          type: string
+        code:
+          description: Environment code
+          type: string
+        live:
+          description: Live
+          type: boolean
+        loggingUrl:
+          description: Logging URL
+          type: string
+        dynatraceUrl:
+          description: Dynatrace URL
+          type: string
+        mediaStorages:
+          description: Media Storages
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaStorageV1DTO'
+    MediaStorageV1DTO:
+      description: V1 Entity to represent a media storage
+      type: object
+      properties:
+        code:
+          description: Description
+          type: string
+        name:
+          description: Name
+          type: string
+        accountName:
+          description: Account Name
+          type: string
+        publicUrl:
+          description: Public URL
           type: string
     EndpointDetailsDTO:
       description: Collection of endpoint details
