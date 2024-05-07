@@ -70,7 +70,14 @@ class CCv2Strategy {
                                             // user may not have access to the environment
                                             null
                                         }
-                                        env to (deploymentAllowed to v1Env)
+                                        val v1EnvHealth = try {
+                                            EnvironmentApi(basePath = "https://portalrotapi.hana.ondemand.com/v1", client = client)
+                                                .getEnvironmentHealthV1(subscriptionCode, environmentCode)
+                                        } catch (e: ClientException) {
+                                            // user may not have access to the environment
+                                            null
+                                        }
+                                        env to Triple(deploymentAllowed, v1Env, v1EnvHealth)
                                     }
                                 }
                                 ?.awaitAll()
@@ -79,6 +86,7 @@ class CCv2Strategy {
                                     val code = environment.code
                                     val deploymentStatus = details.first
                                     val v1Environment = details.second
+                                    val v1EnvironmentHealth = details.third
 
                                     CCv2Environment(
                                         code = code ?: "N/A",
@@ -89,6 +97,7 @@ class CCv2Strategy {
                                         deploymentAllowed = deploymentStatus && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT),
                                         dynatraceLink = v1Environment?.dynatraceUrl,
                                         loggingLink = v1Environment?.loggingUrl,
+                                        problems = v1EnvironmentHealth?.problems
                                     )
                                 }
                                 ?: emptyList()

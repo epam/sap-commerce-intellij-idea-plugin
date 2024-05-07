@@ -98,7 +98,8 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
                         .gap(RightGap.SMALL)
                     browserLink("Dynatrace", environment.dynatraceLink ?: "")
                         .enabled(environment.dynatraceLink != null)
-                        .comment("&nbsp;")
+                        .comment(environment.problems
+                            ?.let { "problems: <strong>$it</strong>" } ?: "&nbsp;")
                 }
             }.gap(RightGap.SMALL)
 

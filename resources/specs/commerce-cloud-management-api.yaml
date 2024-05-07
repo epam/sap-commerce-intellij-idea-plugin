@@ -660,6 +660,39 @@ paths:
           $ref: '#/components/responses/DefaultResponse'
         '5XX':
           $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/health:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - environment
+      description: Get environment health
+      operationId: getEnvironmentHealthV1
+      parameters:
+        - $ref: '#/components/parameters/EndpointWebProxyFilter'
+        - $ref: '#/components/parameters/EndpointServiceFilter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentHealthV1DTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
   /subscriptions/{subscriptionCode}/environments/{environmentCode}/endpoints:
     parameters:
       - name: subscriptionCode
@@ -1890,6 +1923,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MediaStorageV1DTO'
+    EnvironmentHealthV1DTO:
+      description: V1 Entity to represent problems of the environment
+      type: object
+      properties:
+        problems:
+          description: Dynatrace problems
+          type: integer
     MediaStorageV1DTO:
       description: V1 Entity to represent a media storage
       type: object
