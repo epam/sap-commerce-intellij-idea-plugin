@@ -25,17 +25,17 @@ import java.time.OffsetDateTime
 import javax.swing.Icon
 
 data class CCv2Build(
-    val code: String = "",
+    val code: String,
     val name: String,
-    var branch: String,
-    val status: CCv2BuildStatus = CCv2BuildStatus.UNKNOWN,
-    val appCode: String = "",
-    val appDefVersion: String = "",
-    val createdBy: String = "",
-    val startTime: OffsetDateTime? = null,
-    val endTime: OffsetDateTime? = null,
-    val buildVersion: String = "",
-    val version: String = "",
+    val branch: String,
+    val status: CCv2BuildStatus,
+    val appCode: String,
+    val appDefVersion: String,
+    val createdBy: String,
+    val startTime: OffsetDateTime?,
+    val endTime: OffsetDateTime?,
+    val buildVersion: String,
+    val version: String,
 ) : CCv2DTO {
     val startTimeFormatted
         get() = CCv2Util.formatTime(startTime)
