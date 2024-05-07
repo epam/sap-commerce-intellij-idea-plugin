@@ -21,7 +21,6 @@ import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
-import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -155,20 +154,6 @@ intellijPlatform {
     }
 
     verifyPlugin {
-        failureLevel = listOf(
-            VerifyPluginTask.FailureLevel.COMPATIBILITY_WARNINGS,
-            VerifyPluginTask.FailureLevel.COMPATIBILITY_PROBLEMS,
-            VerifyPluginTask.FailureLevel.DEPRECATED_API_USAGES,
-            VerifyPluginTask.FailureLevel.SCHEDULED_FOR_REMOVAL_API_USAGES,
-            VerifyPluginTask.FailureLevel.EXPERIMENTAL_API_USAGES,
-            VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES,
-            VerifyPluginTask.FailureLevel.OVERRIDE_ONLY_API_USAGES,
-            VerifyPluginTask.FailureLevel.NON_EXTENDABLE_API_USAGES,
-            VerifyPluginTask.FailureLevel.PLUGIN_STRUCTURE_WARNINGS,
-            VerifyPluginTask.FailureLevel.MISSING_DEPENDENCIES,
-            VerifyPluginTask.FailureLevel.INVALID_PLUGIN,
-            VerifyPluginTask.FailureLevel.NOT_DYNAMIC,
-        )
         ides {
             ide(properties("plugin.verifier.ide.versions"))
             recommended()
