@@ -4,6 +4,7 @@
 - Removed `SAP CCM` based integration [#1098](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1098)
 - Do not retrieve build for environments with `UNDEPLOYED` and `UNKNOWN` deployment status [#1101](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1101)
 - Integrated with CCv2 API V1 to show Dynatrace link [#1102](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1102)
+- Show OpenSearch link for each environment [#1103](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1103)
 
 ### `Project Import` enhancements
 - Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)

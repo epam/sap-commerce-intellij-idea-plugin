@@ -68,6 +68,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
             panel {
                 row {
                     icon(deployment.status.icon)
+                        .gap(RightGap.SMALL)
                     label(deployment.status.title)
                         .comment("Status")
                 }
@@ -76,6 +77,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
             panel {
                 row {
                     icon(deployment.strategy.icon)
+                        .gap(RightGap.SMALL)
                     label(deployment.strategy.title)
                         .comment("Strategy")
                 }
@@ -84,6 +86,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
             panel {
                 row {
                     icon(deployment.updateMode.icon)
+                        .gap(RightGap.SMALL)
                     label(deployment.updateMode.title)
                         .comment("Mode")
                 }
@@ -92,6 +95,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
             panel {
                 row {
                     icon(HybrisIcons.CCV2_DEPLOYMENT_CREATED_BY)
+                        .gap(RightGap.SMALL)
                     label(deployment.createdBy)
                         .comment("Created by")
                 }

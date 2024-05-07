@@ -68,6 +68,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
             panel {
                 row {
                     icon(environment.type.icon)
+                        .gap(RightGap.SMALL)
                     label(environment.type.title)
                         .comment("Type")
                 }
@@ -76,6 +77,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
             panel {
                 row {
                     icon(environment.status.icon)
+                        .gap(RightGap.SMALL)
                     label(environment.status.title)
                         .comment("Status")
                 }
@@ -84,6 +86,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
             panel {
                 row {
                     icon(environment.deploymentStatus.icon)
+                        .gap(RightGap.SMALL)
                     label(environment.deploymentStatus.title)
                         .comment("Deployment status")
                 }
@@ -92,8 +95,19 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
             panel {
                 row {
                     icon(HybrisIcons.DYNATRACE)
+                        .gap(RightGap.SMALL)
                     browserLink("Dynatrace", environment.dynatraceLink ?: "")
                         .enabled(environment.dynatraceLink != null)
+                        .comment("&nbsp;")
+                }
+            }.gap(RightGap.SMALL)
+
+            panel {
+                row {
+                    icon(HybrisIcons.OPENSEARCH)
+                        .gap(RightGap.SMALL)
+                    browserLink("OpenSearch", environment.loggingLink ?: "")
+                        .enabled(environment.loggingLink != null)
                         .comment("&nbsp;")
                 }
             }.gap(RightGap.COLUMNS)
