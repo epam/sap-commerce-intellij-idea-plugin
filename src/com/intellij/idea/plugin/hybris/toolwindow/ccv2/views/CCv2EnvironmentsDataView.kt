@@ -20,46 +20,34 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.AnimatedIcon
-import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.dsl.builder.RightGap
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
+import java.util.*
 
 object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
 
     override val tab: CCv2Tab
         get() = CCv2Tab.ENVIRONMENTS
 
-    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2Environment>>): DialogPanel = if (data.isEmpty()) noDataPanel()
-    else panel {
-        data.forEach { (subscription, environments) ->
-            collapsibleGroup(subscription.toString()) {
-                if (environments.isEmpty()) {
-                    noData()
-                } else {
-                    environments.forEach { environment(it) }
-                }
-            }
-                .expanded = true
-        }
-    }
-        .let { scrollPanel(it) }
+    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = panel(data)
 
-    fun dataPanelWithBuilds(data: Map<CCv2Subscription, Collection<CCv2Environment>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    fun dataPanelWithBuilds(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = panel(data, true)
+
+    private fun panel(data: Map<CCv2Subscription, Collection<CCv2Environment>>, showBuilds: Boolean = false): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, environments) ->
             collapsibleGroup(subscription.toString()) {
                 if (environments.isEmpty()) {
                     noData()
                 } else {
-                    environments.forEach { environment(it, true) }
+                    environments.forEach { environment(it, showBuilds) }
                 }
             }
-                .expanded = true
+                .expanded = showBuilds
         }
     }
         .let { scrollPanel(it) }
@@ -101,36 +89,40 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
             }.gap(RightGap.COLUMNS)
 
             if (showBuilds) {
-                if (deployedBuild != null) {
-                    panel {
-                        row {
-                            label(deployedBuild.name)
-                                .bold()
-                                .comment("Build name")
-                        }
-                    }.gap(RightGap.COLUMNS)
-                    panel {
-                        row {
-                            label(deployedBuild.code)
-                                .comment("Build code")
-                        }
-                    }.gap(RightGap.COLUMNS)
-
-                    panel {
-                        row {
-                            label(deployedBuild.branch)
-                                .comment("Build branch")
-                        }
-                    }
-                } else {
-                    panel {
-                        row {
-                            icon(AnimatedIcon.Default.INSTANCE)
-                                .comment("Build details")
-                        }
-                    }
-                }
+                buildPanel(environment, deployedBuild)
             }
         }.layout(RowLayout.PARENT_GRID)
+    }
+
+    private fun Row.buildPanel(environment: CCv2Environment, deployedBuild: CCv2Build?) {
+        if (deployedBuild != null) {
+            panel {
+                row {
+                    label(deployedBuild.name)
+                        .bold()
+                        .comment("Build name")
+                }
+            }.gap(RightGap.COLUMNS)
+            panel {
+                row {
+                    label(deployedBuild.code)
+                        .comment("Build code")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    label(deployedBuild.branch)
+                        .comment("Build branch")
+                }
+            }
+        } else if (!EnumSet.of(CCv2DeploymentStatusEnum.UNDEPLOYED, CCv2DeploymentStatusEnum.UNKNOWN).contains(environment.deploymentStatus)) {
+            panel {
+                row {
+                    icon(AnimatedIcon.Default.INSTANCE)
+                        .comment("Build details")
+                }
+            }
+        }
     }
 }
