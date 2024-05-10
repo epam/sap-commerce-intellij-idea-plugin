@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildsDataView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2DeploymentsDataView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2EnvironmentsDataView
@@ -36,6 +37,7 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.SimpleToolWindowPanel
+import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTabbedPane
 import com.intellij.ui.dsl.builder.Align
@@ -106,13 +108,8 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
         val toolbar = with(DefaultActionGroup()) {
             val actionManager = ActionManager.getInstance()
 
-            add(actionManager.getAction("ccv2.action.settings"))
-            addSeparator()
+            add(actionManager.getAction("ccv2.toolbar.actions"))
 
-            add(actionManager.getAction("ccv2.action.environment.fetch"))
-            add(actionManager.getAction("ccv2.action.deployment.fetch"))
-            add(actionManager.getAction("ccv2.action.build.fetch"))
-            add(actionManager.getAction("ccv2.action.build.create"))
             actionManager.createActionToolbar("SAP_CX_CCv2_View", this, false)
         }
         toolbar.targetComponent = this
@@ -190,5 +187,13 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
     companion object {
         @Serial
         private val serialVersionUID: Long = -3734294049693312978L
+
+        fun getActiveTab(project: Project) = ToolWindowManager.getInstance(project)
+            .getToolWindow(HybrisToolWindowFactory.ID)
+            ?.contentManager
+            ?.findContent(HybrisToolWindowFactory.CCV2)
+            ?.component
+            ?.let { it as? CCv2View }
+            ?.getActiveTab()
     }
 }

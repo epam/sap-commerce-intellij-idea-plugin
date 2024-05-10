@@ -20,13 +20,18 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2CreateBuildDialog
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DeployBuildDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKey
+import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
@@ -144,3 +149,37 @@ class CCv2DownloadBuildLogsAction(
 
     override fun isEnabled() = !processing && super.isEnabled()
 }
+
+abstract class CCv2ShowBuildWithStatusAction(private val buildStatus: CCv2BuildStatus) : ToggleAction("Show - ${buildStatus.title}", null, buildStatus.icon) {
+
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+    override fun isSelected(e: AnActionEvent): Boolean = getCCv2Settings(e)
+        ?.hideBuildStatuses
+        ?.let { !it.contains(buildStatus) }
+        ?: false
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        getCCv2Settings(e)
+            ?.let {
+                if (state) it.hideBuildStatuses.remove(buildStatus)
+                else it.hideBuildStatuses.add(buildStatus)
+            }
+    }
+
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        e.presentation.isVisible = e.project
+            ?.let { CCv2View.getActiveTab(it) == CCv2Tab.BUILDS }
+            ?: false
+    }
+
+    private fun getCCv2Settings(e: AnActionEvent) = e.project
+        ?.let { DeveloperSettingsComponent.getInstance(it).state.ccv2Settings }
+}
+
+class CCv2ShowDeletedBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.DELETED)
+class CCv2ShowFailedBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.FAIL)
+class CCv2ShowUnknownBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.UNKNOWN)
+class CCv2ShowScheduledBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.SCHEDULED)
+class CCv2ShowBuildingBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.BUILDING)
+class CCv2ShowSuccessBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.SUCCESS)

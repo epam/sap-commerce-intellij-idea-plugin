@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.options.ApplicationCCv2SettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.strategies.CCv2Strategy
@@ -111,6 +112,11 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         onStartCallback.invoke()
         project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingStarted(subscriptions)
 
+        val ccv2Settings = DeveloperSettingsComponent.getInstance(project).state.ccv2Settings
+
+        val statusNot = ccv2Settings.hideBuildStatuses
+            .map { it.name }
+
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Builds...", true) {
                 val ccv2Token = getCCv2Token()
@@ -121,7 +127,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
                 var builds = sortedMapOf<CCv2Subscription, Collection<CCv2Build>>()
                 try {
-                    builds = CCv2Strategy.getInstance().fetchBuilds(ccv2Token, subscriptions)
+                    builds = CCv2Strategy.getInstance().fetchBuilds(ccv2Token, subscriptions, statusNot)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
                 } catch (e: RuntimeException) {

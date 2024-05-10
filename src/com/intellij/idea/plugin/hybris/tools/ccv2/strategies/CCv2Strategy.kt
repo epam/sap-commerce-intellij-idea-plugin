@@ -149,6 +149,7 @@ class CCv2Strategy {
     suspend fun fetchBuilds(
         ccv2Token: String,
         subscriptions: Collection<CCv2Subscription>,
+        statusNot: List<String>?,
     ): SortedMap<CCv2Subscription, Collection<CCv2Build>> {
         ApiClient.accessToken = ccv2Token
         val client = createClient()
@@ -160,7 +161,7 @@ class CCv2Strategy {
                     launch {
                         result[it] = progressReporter.sizedStep(1, "Fetching Builds for subscription: $it") {
                             BuildApi(client = client)
-                                .getBuilds(it.id!!, dollarTop = 20)
+                                .getBuilds(it.id!!, dollarTop = 20, statusNot = statusNot)
                                 .value
                                 ?.map { build -> CCv2Build.map(build) }
                                 ?: emptyList()

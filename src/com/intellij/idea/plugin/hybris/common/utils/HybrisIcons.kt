@@ -227,6 +227,7 @@ object HybrisIcons {
     val CCV2_DEPLOYMENTS = AllIcons.Nodes.Deploy
     val CCV2_BACKUPS = AllIcons.Nodes.Undeploy
     val CCV2_ENDPOINTS = AllIcons.General.Web
+    val CCV2_SHOW = AllIcons.Actions.Show
 
     val CCV2_BUILD_BRANCH = AllIcons.Vcs.Branch
     val CCV2_BUILD_CREATED_BY = AllIcons.General.User

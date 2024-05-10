@@ -19,14 +19,11 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.wm.ToolWindowManager
 import javax.swing.Icon
 
 abstract class AbstractCCv2Action(
@@ -41,17 +38,9 @@ abstract class AbstractCCv2Action(
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabled = isEnabled()
         e.presentation.isVisible = e.project
-            ?.let { getActiveTab(it) == tab }
+            ?.let { CCv2View.getActiveTab(it) == tab }
             ?: false
     }
 
     protected open fun isEnabled() = ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
-
-    private fun getActiveTab(project: Project) = ToolWindowManager.getInstance(project)
-        .getToolWindow(HybrisToolWindowFactory.ID)
-        ?.contentManager
-        ?.findContent(HybrisToolWindowFactory.CCV2)
-        ?.component
-        ?.let { it as? CCv2View }
-        ?.getActiveTab()
 }

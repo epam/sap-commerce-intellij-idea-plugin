@@ -18,8 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.openapi.components.BaseState
 import com.intellij.util.xmlb.annotations.Tag
+import java.util.*
 
 @Tag("HybrisDeveloperSpecificProjectSettings")
 class DeveloperSettings : BaseState() {
@@ -36,4 +38,9 @@ class DeveloperSettings : BaseState() {
     var polyglotQuerySettings by property(PolyglotQuerySettings()) { false }
     var impexSettings by property(ImpexSettings()) { false }
     var groovySettings by property(GroovySettings()) { false }
+    var ccv2Settings by property(CCv2Settings()) { false }
 }
+
+data class CCv2Settings(
+    var hideBuildStatuses: EnumSet<CCv2BuildStatus> = EnumSet.noneOf(CCv2BuildStatus::class.java),
+)
