@@ -30,12 +30,19 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.util.io.ZipUtil
 import com.intellij.util.messages.Topic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
+import java.nio.file.Files
 import java.util.*
+import kotlin.io.path.deleteIfExists
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.pathString
 
 @Service(Service.Level.PROJECT)
 class CCv2Service(val project: Project, private val coroutineScope: CoroutineScope) {
@@ -258,6 +265,48 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 .hideAfter(10)
                                 .notify(project)
                         }
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout()
+                } catch (e: RuntimeException) {
+                    notifyOnException(e)
+                }
+            }
+        }
+    }
+
+    fun downloadBuildLogs(
+        project: Project,
+        subscription: CCv2Subscription,
+        build: CCv2Build,
+        onStartCallback: () -> Unit,
+        onCompleteCallback: (Collection<VirtualFile>) -> Unit
+    ) {
+        onStartCallback.invoke()
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Downloading CCv2 Build Logs - ${build.code}...") {
+                project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildDeploymentStarted(subscription, build)
+
+                val ccv2Token = getCCv2Token()
+                if (ccv2Token == null) {
+                    project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildDeploymentRequested(subscription, build)
+                    return@withBackgroundProgress
+                }
+
+                try {
+                    val buildLogs = CCv2Strategy.getInstance().downloadBuildLogs(ccv2Token, subscription, build)
+                    val buildLogsPath = buildLogs.toPath()
+                    val tempDirectory = Files.createTempDirectory("ccv2_${build.code}")
+                    tempDirectory.toFile().deleteOnExit()
+
+                    ZipUtil.extract(buildLogsPath, tempDirectory, null, true)
+
+                    buildLogsPath.deleteIfExists()
+
+                    val logFiles = tempDirectory.listDirectoryEntries()
+                        .onEach { it.toFile().deleteOnExit() }
+                        .mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.pathString) }
+
+                    onCompleteCallback.invoke(logFiles)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
                 } catch (e: RuntimeException) {

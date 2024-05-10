@@ -6,6 +6,7 @@
 - Integrated with CCv2 API V1 to show Dynatrace link [#1102](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1102)
 - Show OpenSearch link for each environment [#1103](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1103)
 - Show the number of problems for each environment [#1104](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1104)
+- Added possibility to download Build Logs [#1105](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1105)
 
 ### `Project Import` enhancements
 - Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)

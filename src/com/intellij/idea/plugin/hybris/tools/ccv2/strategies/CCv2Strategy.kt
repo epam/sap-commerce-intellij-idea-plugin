@@ -36,6 +36,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -257,6 +258,17 @@ class CCv2Strategy {
         return DeploymentApi(client = createClient())
             .createDeployment(subscription.id!!, request)
             .code
+    }
+
+    suspend fun downloadBuildLogs(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        build: CCv2Build
+    ): File {
+        ApiClient.accessToken = ccv2Token
+
+        return BuildApi(client = createClient())
+            .getBuildLogs(subscription.id!!, build.code)
     }
 
     private fun createClient() = ApiClient.builder

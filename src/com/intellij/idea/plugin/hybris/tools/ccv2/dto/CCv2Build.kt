@@ -43,6 +43,7 @@ data class CCv2Build(
         get() = CCv2Util.formatTime(endTime)
 
     fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
+    fun canDownloadLogs() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
     fun canDeploy() = status == CCv2BuildStatus.SUCCESS
 
     companion object {

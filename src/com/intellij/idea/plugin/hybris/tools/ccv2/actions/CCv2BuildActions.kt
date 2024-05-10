@@ -27,7 +27,11 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DeployBuildDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKey
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.vfs.VirtualFile
 
 val subscriptionKey = DataKey.create<CCv2Subscription>("subscription")
 val buildKey = DataKey.create<CCv2Build>("build")
@@ -81,7 +85,7 @@ class CCv2DeleteBuildAction(
     private val build: CCv2Build
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
-    text = "Delete the Build",
+    text = "Delete Build",
     icon = HybrisIcons.CCV2_BUILD_DELETE
 ) {
     override fun actionPerformed(e: AnActionEvent) {
@@ -107,3 +111,36 @@ class CCv2FetchBuildsAction : AbstractCCv2FetchAction<CCv2Build>(
         CCv2Service.getInstance(project).fetchBuilds(subscriptions, onStartCallback, onCompleteCallback)
     }
 )
+
+class CCv2DownloadBuildLogsAction(
+    private val subscription: CCv2Subscription,
+    private val build: CCv2Build
+) : AbstractCCv2Action(
+    tab = CCv2Tab.BUILDS,
+    text = "Download Build Logs",
+    icon = HybrisIcons.CCV2_BUILD_LOGS
+) {
+    private var processing = false
+
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+
+        CCv2Service.getInstance(project).downloadBuildLogs(project, subscription, build, onStartCallback(e), onCompleteCallback(e, project))
+    }
+
+    private fun onCompleteCallback(e: AnActionEvent, project: Project): (Collection<VirtualFile>) -> Unit = {
+        invokeLater {
+            processing = false
+
+            it.forEach {
+                FileEditorManager.getInstance(project).openFile(it, true)
+            }
+        }
+    }
+
+    private fun onStartCallback(e: AnActionEvent): () -> Unit = {
+        processing = true
+    }
+
+    override fun isEnabled() = !processing && super.isEnabled()
+}

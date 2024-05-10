@@ -51,6 +51,5 @@ data class ApplicationSettings(
     var excludedFromIndexList: List<String> = HybrisConstants.DEFAULT_EXCLUDED_FROM_INDEX,
 
     var ccv2ReadTimeout: Int = 60,
-    var ccv2Subscriptions: List<CCv2Subscription> = emptyList()
-
+    var ccv2Subscriptions: List<CCv2Subscription> = emptyList(),
 )
