@@ -192,23 +192,31 @@ class CCv2Strategy {
                 subscriptions.forEach {
                     launch {
                         result[it] = progressReporter.sizedStep(1, "Fetching Deployments for subscription: $it") {
+                            val subscriptionCode = it.id!!
                             DeploymentApi(client = client)
-                                .getDeployments(it.id!!, dollarTop = 20)
+                                .getDeployments(subscriptionCode, dollarTop = 20)
                                 .value
                                 ?.map { deployment ->
+                                    val code = deployment.code
+                                    val environmentCode = deployment.environmentCode
+                                    val link = if (environmentCode != null && code != null)
+                                        "https://portal.commerce.ondemand.com/subscription/$subscriptionCode/applications/commerce-cloud/environments/$environmentCode/deployments/$code"
+                                    else null
+
                                     CCv2Deployment(
-                                        code = deployment.code ?: "N/A",
+                                        code = code ?: "N/A",
                                         createdBy = deployment.createdBy ?: "N/A",
                                         createdTime = deployment.createdTimestamp,
                                         buildCode = deployment.buildCode ?: "N/A",
-                                        envCode = deployment.environmentCode ?: "N/A",
+                                        envCode = environmentCode ?: "N/A",
                                         updateMode = CCv2DeploymentDatabaseUpdateModeEnum.tryValueOf(deployment.databaseUpdateMode),
                                         strategy = CCv2DeploymentStrategyEnum.tryValueOf(deployment.strategy),
                                         scheduledTime = deployment.scheduledTimestamp,
                                         deployedTime = deployment.deployedTimestamp,
                                         failedTime = deployment.failedTimestamp,
                                         undeployedTime = deployment.undeployedTimestamp,
-                                        status = CCv2DeploymentStatusEnum.tryValueOf(deployment.status)
+                                        status = CCv2DeploymentStatusEnum.tryValueOf(deployment.status),
+                                        link = link
                                     )
                                 }
                                 ?: emptyList()

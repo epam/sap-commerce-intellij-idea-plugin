@@ -52,7 +52,10 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
         row {
             panel {
                 row {
-                    label(deployment.code)
+                    val deploymentCode = deployment.link
+                        ?.let { browserLink(deployment.code, it) }
+                        ?: label(deployment.code)
+                    deploymentCode
                         .comment(deployment.buildCode)
                         .bold()
                 }

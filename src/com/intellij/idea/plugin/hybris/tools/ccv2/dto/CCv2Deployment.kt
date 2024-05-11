@@ -38,6 +38,7 @@ data class CCv2Deployment(
     val failedTime: OffsetDateTime?,
     val undeployedTime: OffsetDateTime?,
     val status: CCv2DeploymentStatusEnum,
+    val link: String?,
 ) : CCv2DTO {
 
     val createdTimeFormatted
