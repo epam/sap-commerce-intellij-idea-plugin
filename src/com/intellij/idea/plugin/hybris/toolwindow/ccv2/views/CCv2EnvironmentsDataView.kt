@@ -45,7 +45,9 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
                 if (environments.isEmpty()) {
                     noData()
                 } else {
-                    environments.forEach { environment(it, showBuilds) }
+                    environments
+                        .sortedWith(compareBy({ it.type }, { it.name }))
+                        .forEach { environment(it, showBuilds) }
                 }
             }
                 .expanded = showBuilds
