@@ -89,6 +89,10 @@ class CCv2Strategy {
                                     val v1Environment = details.second
                                     val v1EnvironmentHealth = details.third
 
+                                    val link = if (v1Environment != null && status == CCv2EnvironmentStatus.AVAILABLE)
+                                        "https://portal.commerce.ondemand.com/subscription/$subscriptionCode/applications/commerce-cloud/environments/$code"
+                                    else null
+
                                     CCv2Environment(
                                         code = code ?: "N/A",
                                         name = environment.name ?: "N/A",
@@ -98,7 +102,8 @@ class CCv2Strategy {
                                         deploymentAllowed = deploymentStatus && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT),
                                         dynatraceLink = v1Environment?.dynatraceUrl,
                                         loggingLink = v1Environment?.loggingUrl?.let { "$it/app/discover" },
-                                        problems = v1EnvironmentHealth?.problems
+                                        problems = v1EnvironmentHealth?.problems,
+                                        link = link
                                     )
                                 }
                                 ?: emptyList()

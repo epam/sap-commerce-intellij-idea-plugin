@@ -32,6 +32,7 @@ data class CCv2Environment(
     val dynatraceLink: String? = null,
     val loggingLink: String? = null,
     val problems: Int? = null,
+    val link: String?,
 ) : CCv2DTO, Comparable<CCv2Environment> {
 
     override fun compareTo(other: CCv2Environment) = name.compareTo(other.name)

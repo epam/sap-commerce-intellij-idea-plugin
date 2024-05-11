@@ -1,6 +1,6 @@
 ## [2024.1.2]
 
-### `CCv2 CI/CD` enhancements
+### `CCv2` enhancements
 - Removed `SAP CCM` based integration [#1098](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1098)
 - Do not retrieve build for environments with `UNDEPLOYED` and `UNKNOWN` deployment status [#1101](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1101)
 - Integrated with CCv2 API V1 to show Dynatrace link [#1102](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1102)
@@ -9,6 +9,7 @@
 - Added possibility to download Build Logs [#1105](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1105)
 - Filter out Builds by Status [#1106](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1106)
 - Point OpenSearch link to `Discover` view [#1107](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1107)
+- Added browser link to Environment name [#1108](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1108)
 
 ### `Project Import` enhancements
 - Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)
@@ -22,7 +23,7 @@
 - Persist DB password forever during auto-configuration [#1046](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1046)
 - Unescape DB url during auto-configuration [#1047](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1047)
 
-### `CCv2 CI/CD` enhancements
+### `CCv2` enhancements
 - Brand new `CCv2` tool window for integration with Cloud Portal CI/CD
 - Added possibility to specify directory of the `SAP CCM` CLI [#1048](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1048)
 - Added possibility to set developer-specific `SAP CCM` CLI token in the secure storage [#1049](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1049)

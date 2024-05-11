@@ -59,8 +59,10 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
 
             panel {
                 row {
-                    label(environment.name)
-                        .comment(environment.code)
+                    val environmentName = environment.link
+                        ?.let { browserLink(environment.name, it) }
+                        ?: label(environment.name)
+                    environmentName.comment(environment.code)
                         .bold()
                 }
             }.gap(RightGap.COLUMNS)
