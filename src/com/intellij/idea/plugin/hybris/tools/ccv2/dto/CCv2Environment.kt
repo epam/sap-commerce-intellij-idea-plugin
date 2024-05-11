@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
-import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailV1DTO
-import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentHealthV1DTO
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import javax.swing.Icon
+import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentDetailDTO as EnvironmentDetailV1DTO
+import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentHealthDTO as EnvironmentHealthV1DTO
 
 data class CCv2Environment(
     val code: String,

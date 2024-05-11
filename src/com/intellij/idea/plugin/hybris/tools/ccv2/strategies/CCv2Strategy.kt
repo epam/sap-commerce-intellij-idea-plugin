@@ -20,13 +20,10 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
 
 import com.intellij.idea.plugin.hybris.ccv2.api.BuildApi
 import com.intellij.idea.plugin.hybris.ccv2.api.DeploymentApi
-import com.intellij.idea.plugin.hybris.ccv2.api.EndpointApi
 import com.intellij.idea.plugin.hybris.ccv2.api.EnvironmentApi
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
-import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ClientException
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
@@ -53,13 +50,21 @@ class CCv2Strategy {
         ApiClient.accessToken = ccv2Token
         val client = createClient()
         val result = sortedMapOf<CCv2Subscription, Collection<CCv2Environment>>()
+        val ccv1Strategy = CCv1Strategy.getInstance()
 
         reportProgress(subscriptions.size) { progressReporter ->
             coroutineScope {
+                val subscriptions2Permissions = ccv1Strategy.fetchPermissions(ccv2Token)
+                    ?.associateBy { it.scopeName }
+                    ?: return@coroutineScope null
+
                 subscriptions.forEach { subscription ->
                     launch {
                         result[subscription] = progressReporter.sizedStep(1, "Fetching Environments for subscription: $subscription") {
                             val subscriptionCode = subscription.id!!
+
+                            val subscriptionPermissions = subscriptions2Permissions[subscriptionCode]
+                                ?: return@sizedStep emptyList()
 
                             statuses
                                 .map { status ->
@@ -71,26 +76,12 @@ class CCv2Strategy {
                                 .awaitAll()
                                 .flatMapToNullableSet { it.value }
                                 ?.map { env ->
-                                    val environmentCode = env.code ?: "N/A"
+                                    val canAccess = subscriptionPermissions.environments.contains(env.code)
                                     async {
-                                        val deploymentAllowed = EndpointApi(client = client)
-                                            .getEndpointsWithHttpInfo(subscriptionCode, environmentCode, null, null)
-                                            .statusCode == 200
-                                        val v1Env = try {
-                                            EnvironmentApi(basePath = HybrisConstants.CCV2_API_V1, client = client)
-                                                .getEnvironmentV1(subscriptionCode, environmentCode)
-                                        } catch (e: ClientException) {
-                                            // user may not have access to the environment
-                                            null
-                                        }
-                                        val v1EnvHealth = try {
-                                            EnvironmentApi(basePath = HybrisConstants.CCV2_API_V1, client = client)
-                                                .getEnvironmentHealthV1(subscriptionCode, environmentCode)
-                                        } catch (e: ClientException) {
-                                            // user may not have access to the environment
-                                            null
-                                        }
-                                        env to Triple(deploymentAllowed, v1Env, v1EnvHealth)
+                                        val v1Env = if (canAccess) ccv1Strategy.fetchEnvironment(ccv2Token, env) else null
+                                        val v1EnvHealth = if (canAccess) ccv1Strategy.fetchEnvironmentHealth(ccv2Token, env) else null
+
+                                        env to Triple(canAccess, v1Env, v1EnvHealth)
                                     }
                                 }
                                 ?.awaitAll()

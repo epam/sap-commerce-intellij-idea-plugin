@@ -21,6 +21,7 @@ import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -79,35 +80,47 @@ changelog {
 // https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
 // OpenAPI - Kotlin generator
 // https://openapi-generator.tech/docs/generators/kotlin/
-openApiGenerate {
-    generatorName.set("kotlin")
-    inputSpec.set("$rootDir/resources/specs/commerce-cloud-management-api.yaml")
-    outputDir.set("$rootDir/ccv2")
+val ccv2OpenApiSpecs = listOf(
+    Triple("ccv1OpenApiGenerate", "commerce-cloud-management-api-v1.yaml", "com.intellij.idea.plugin.hybris.ccv1"),
+    Triple("ccv2OpenApiGenerate", "commerce-cloud-management-api-v2.yaml", "com.intellij.idea.plugin.hybris.ccv2"),
+)
+val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, packagePrefix) ->
+    tasks.register<GenerateTask>(taskName) {
+        group = "openapi tools"
+        generatorName.set("kotlin")
+        inputSpec.set("$rootDir/resources/specs/$schema")
+        outputDir.set("$rootDir/ccv2")
 
-    apiPackage.set("com.intellij.idea.plugin.hybris.ccv2.api")
-    packageName.set("com.intellij.idea.plugin.hybris.ccv2.invoker")
-    modelPackage.set("com.intellij.idea.plugin.hybris.ccv2.model")
+        apiPackage.set("$packagePrefix.api")
+        packageName.set("$packagePrefix.invoker")
+        modelPackage.set("$packagePrefix.model")
 
-    skipOperationExample.set(true)
-    cleanupOutput.set(true)
-    generateApiDocumentation.set(false)
-    generateApiTests.set(false)
-    generateModelTests.set(false)
+        cleanupOutput.set(index == 0)
+        skipOperationExample.set(true)
+        generateApiDocumentation.set(false)
+        generateApiTests.set(false)
+        generateModelTests.set(false)
 
-    globalProperties.set(
-        mapOf(
-            "modelDocs" to "false",
+        globalProperties.set(
+            mapOf(
+                "modelDocs" to "false",
+            )
         )
-    )
-    configOptions.set(
-        mapOf(
-            "useSettingsGradle" to "false",
-            "omitGradlePluginVersions" to "true",
-            "omitGradleWrapper" to "true",
-            "useCoroutines" to "true",
-            "sourceFolder" to "",
+        configOptions.set(
+            mapOf(
+                "useSettingsGradle" to "false",
+                "omitGradlePluginVersions" to "true",
+                "omitGradleWrapper" to "true",
+                "useCoroutines" to "true",
+                "sourceFolder" to "",
+            )
         )
-    )
+
+        if (index > 0) {
+            val previousTaskName = ccv2OpenApiSpecs[index - 1].first
+            dependsOn(previousTaskName)
+        }
+    }
 }
 
 intellijPlatform {
@@ -185,6 +198,8 @@ tasks {
     runIde {
         jvmArgs = jvmArguments
         maxHeapSize = properties("intellij.maxHeapSize").get()
+
+        applyRunIdeSystemSettings()
     }
 
     val runIdeCommunity by registering(RunIdeTask::class) {
@@ -193,6 +208,8 @@ tasks {
 
         jvmArgs = jvmArguments
         maxHeapSize = properties("intellij.maxHeapSize").get()
+
+        applyRunIdeSystemSettings()
     }
 
     clean {
@@ -206,11 +223,11 @@ tasks {
     }
 
     compileJava {
-        dependsOn(openApiGenerate)
+        dependsOn(ccv2OpenApiTasks)
     }
 
     compileKotlin {
-        dependsOn(openApiGenerate)
+        dependsOn(ccv2OpenApiTasks)
     }
 
     printProductsReleases {
@@ -275,4 +292,11 @@ dependencies {
         plugin("PsiViewer:241.14494.158-EAP-SNAPSHOT")
         plugin("JRebelPlugin:2024.2.0")
     }
+}
+
+fun RunIdeTask.applyRunIdeSystemSettings() {
+    systemProperty("ide.experimental.ui", "true")
+    systemProperty("ide.show.tips.on.startup.default.value", false)
+    systemProperty("idea.trust.all.projects", true)
+    systemProperty("jb.consents.confirmation.enabled", false)
 }
