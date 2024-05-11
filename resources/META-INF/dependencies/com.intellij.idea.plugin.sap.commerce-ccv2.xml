@@ -32,23 +32,28 @@
             <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2OpenSettingsAction"/>
             <separator/>
 
-            <group id="ccv2.actionGroup.build.show"
-                   text="View Options"
+            <group text="View Options"
                    popup="true"
                    icon="AllIcons.Actions.Show">
-                <separator text="Show Builds With Status"/>
+                <separator text="Show With Status"/>
                 <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowSuccessBuildsAction"/>
                 <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowScheduledBuildsAction"/>
                 <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowBuildingBuildsAction"/>
                 <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowFailedBuildsAction"/>
                 <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowDeletedBuildsAction"/>
                 <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowUnknownBuildsAction"/>
+
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowProvisioningEnvironmentsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowAvailableEnvironmentsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowTerminatingEnvironmentsAction"/>
+                <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowTerminatedEnvironmentsAction"/>
             </group>
             <separator/>
 
             <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentsAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchDeploymentsAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchBuildsAction"/>
+
             <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2CreateBuildAction"/>
         </group>
     </actions>

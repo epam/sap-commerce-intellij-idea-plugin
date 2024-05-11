@@ -17,7 +17,7 @@
   -->
 
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="Run IDE with Plugin" type="GradleRunConfiguration" factoryName="Gradle">
+    <configuration default="false" name="Run IDE - Community" type="GradleRunConfiguration" factoryName="Gradle">
         <log_file alias="idea.log" path="$PROJECT_DIR$/build/idea-sandbox/system/log/idea.log" />
         <ExternalSystemSettings>
             <option name="executionName" />

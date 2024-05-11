@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ClientException
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
@@ -36,6 +37,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import org.jetbrains.kotlin.utils.flatMapToNullableSet
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -45,7 +47,8 @@ class CCv2Strategy {
 
     suspend fun fetchEnvironments(
         ccv2Token: String,
-        subscriptions: Collection<CCv2Subscription>
+        subscriptions: Collection<CCv2Subscription>,
+        statuses: List<String>
     ): SortedMap<CCv2Subscription, Collection<CCv2Environment>> {
         ApiClient.accessToken = ccv2Token
         val client = createClient()
@@ -57,7 +60,16 @@ class CCv2Strategy {
                     launch {
                         result[subscription] = progressReporter.sizedStep(1, "Fetching Environments for subscription: $subscription") {
                             val subscriptionCode = subscription.id!!
-                            EnvironmentApi(client = client).getEnvironments(subscriptionCode).value
+
+                            statuses
+                                .map { status ->
+                                    async {
+                                        EnvironmentApi(client = client)
+                                            .getEnvironments(subscriptionCode, status = status)
+                                    }
+                                }
+                                .awaitAll()
+                                .flatMapToNullableSet { it.value }
                                 ?.map { env ->
                                     val environmentCode = env.code ?: "N/A"
                                     async {
@@ -65,14 +77,14 @@ class CCv2Strategy {
                                             .getEndpointsWithHttpInfo(subscriptionCode, environmentCode, null, null)
                                             .statusCode == 200
                                         val v1Env = try {
-                                            EnvironmentApi(basePath = "https://portalrotapi.hana.ondemand.com/v1", client = client)
+                                            EnvironmentApi(basePath = HybrisConstants.CCV2_API_V1, client = client)
                                                 .getEnvironmentV1(subscriptionCode, environmentCode)
                                         } catch (e: ClientException) {
                                             // user may not have access to the environment
                                             null
                                         }
                                         val v1EnvHealth = try {
-                                            EnvironmentApi(basePath = "https://portalrotapi.hana.ondemand.com/v1", client = client)
+                                            EnvironmentApi(basePath = HybrisConstants.CCV2_API_V1, client = client)
                                                 .getEnvironmentHealthV1(subscriptionCode, environmentCode)
                                         } catch (e: ClientException) {
                                             // user may not have access to the environment
@@ -83,28 +95,7 @@ class CCv2Strategy {
                                 }
                                 ?.awaitAll()
                                 ?.map { (environment, details) ->
-                                    val status = CCv2EnvironmentStatus.tryValueOf(environment.status)
-                                    val code = environment.code
-                                    val deploymentStatus = details.first
-                                    val v1Environment = details.second
-                                    val v1EnvironmentHealth = details.third
-
-                                    val link = if (v1Environment != null && status == CCv2EnvironmentStatus.AVAILABLE)
-                                        "https://portal.commerce.ondemand.com/subscription/$subscriptionCode/applications/commerce-cloud/environments/$code"
-                                    else null
-
-                                    CCv2Environment(
-                                        code = code ?: "N/A",
-                                        name = environment.name ?: "N/A",
-                                        status = status,
-                                        type = CCv2EnvironmentType.tryValueOf(environment.type),
-                                        deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
-                                        deploymentAllowed = deploymentStatus && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT),
-                                        dynatraceLink = v1Environment?.dynatraceUrl,
-                                        loggingLink = v1Environment?.loggingUrl?.let { "$it/app/discover" },
-                                        problems = v1EnvironmentHealth?.problems,
-                                        link = link
-                                    )
+                                    CCv2Environment.map(environment, details.first, details.second, details.third)
                                 }
                                 ?: emptyList()
                         }

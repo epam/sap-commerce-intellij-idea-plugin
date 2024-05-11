@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
 import com.intellij.openapi.components.BaseState
 import com.intellij.util.xmlb.annotations.Tag
 import java.util.*
@@ -42,5 +43,15 @@ class DeveloperSettings : BaseState() {
 }
 
 data class CCv2Settings(
-    var hideBuildStatuses: EnumSet<CCv2BuildStatus> = EnumSet.of(CCv2BuildStatus.DELETED),
+    var showBuildStatuses: EnumSet<CCv2BuildStatus> = EnumSet.of(
+        CCv2BuildStatus.BUILDING,
+        CCv2BuildStatus.SUCCESS,
+        CCv2BuildStatus.FAIL,
+        CCv2BuildStatus.SCHEDULED,
+        CCv2BuildStatus.UNKNOWN
+    ),
+    var showEnvironmentStatuses: EnumSet<CCv2EnvironmentStatus> = EnumSet.of(
+        CCv2EnvironmentStatus.PROVISIONING,
+        CCv2EnvironmentStatus.AVAILABLE,
+    ),
 )

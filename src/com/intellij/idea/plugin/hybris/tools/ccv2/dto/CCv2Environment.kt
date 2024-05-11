@@ -18,6 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
+import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
+import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailV1DTO
+import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentHealthV1DTO
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import javax.swing.Icon
 
@@ -36,6 +39,36 @@ data class CCv2Environment(
 ) : CCv2DTO, Comparable<CCv2Environment> {
 
     override fun compareTo(other: CCv2Environment) = name.compareTo(other.name)
+
+    companion object {
+
+        fun map(
+            environment: EnvironmentDetailDTO,
+            deploymentStatus: Boolean,
+            v1Environment: EnvironmentDetailV1DTO?,
+            v1EnvironmentHealth: EnvironmentHealthV1DTO?
+        ): CCv2Environment {
+            val status = CCv2EnvironmentStatus.tryValueOf(environment.status)
+            val code = environment.code
+
+            val link = if (v1Environment != null && status == CCv2EnvironmentStatus.AVAILABLE)
+                "https://portal.commerce.ondemand.com/subscription/${environment.subscriptionCode}/applications/commerce-cloud/environments/$code"
+            else null
+
+            return CCv2Environment(
+                code = code ?: "N/A",
+                name = environment.name ?: "N/A",
+                status = status,
+                type = CCv2EnvironmentType.tryValueOf(environment.type),
+                deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
+                deploymentAllowed = deploymentStatus && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT),
+                dynatraceLink = v1Environment?.dynatraceUrl,
+                loggingLink = v1Environment?.loggingUrl?.let { "$it/app/discover" },
+                problems = v1EnvironmentHealth?.problems,
+                link = link
+            )
+        }
+    }
 }
 
 enum class CCv2EnvironmentType(val title: String, val icon: Icon) {

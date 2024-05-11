@@ -13,6 +13,7 @@
 - Sort environments by type and name [#1109](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1109)
 - Added a browser link to Build name [#1110](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1110)
 - Added a browser link to Deployment code [#1111](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1111)
+- Filter out Environments by Status [#1112](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1112)
 
 ### `Project Import` enhancements
 - Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)

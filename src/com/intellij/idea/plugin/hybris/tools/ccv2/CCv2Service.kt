@@ -57,6 +57,10 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         onStartCallback.invoke()
         if (sendEvents) project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingStarted(subscriptions)
 
+        val ccv2Settings = DeveloperSettingsComponent.getInstance(project).state.ccv2Settings
+        val statuses = ccv2Settings.showEnvironmentStatuses
+            .map { it.name }
+
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environments...", true) {
                 val ccv2Token = getCCv2Token()
@@ -67,7 +71,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
                 var environments = sortedMapOf<CCv2Subscription, Collection<CCv2Environment>>()
                 try {
-                    environments = CCv2Strategy.getInstance().fetchEnvironments(ccv2Token, subscriptions)
+                    environments = CCv2Strategy.getInstance().fetchEnvironments(ccv2Token, subscriptions, statuses)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
                 } catch (e: RuntimeException) {
@@ -113,8 +117,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingStarted(subscriptions)
 
         val ccv2Settings = DeveloperSettingsComponent.getInstance(project).state.ccv2Settings
-
-        val statusNot = ccv2Settings.hideBuildStatuses
+        val statusNot = CCv2BuildStatus.entries
+            .filterNot { ccv2Settings.showBuildStatuses.contains(it) }
             .map { it.name }
 
         coroutineScope.launch {

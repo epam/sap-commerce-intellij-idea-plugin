@@ -19,8 +19,10 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 
 class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction<CCv2Environment>(
@@ -32,3 +34,17 @@ class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction<CCv2Environment>(
     }
 )
 
+abstract class AbstractCCv2ShowEnvironmentWithStatusAction(status: CCv2EnvironmentStatus) : AbstractCCv2ShowWithStatusAction<CCv2EnvironmentStatus>(
+    CCv2Tab.ENVIRONMENTS,
+    status,
+    status.title,
+    status.icon
+) {
+
+    override fun getStatuses(settings: CCv2Settings) = settings.showEnvironmentStatuses
+}
+
+class CCv2ShowProvisioningEnvironmentsAction : AbstractCCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.PROVISIONING)
+class CCv2ShowAvailableEnvironmentsAction : AbstractCCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.AVAILABLE)
+class CCv2ShowTerminatingEnvironmentsAction : AbstractCCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.TERMINATING)
+class CCv2ShowTerminatedEnvironmentsAction : AbstractCCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.TERMINATED)
