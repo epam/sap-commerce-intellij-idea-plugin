@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.view
 
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
+import com.intellij.idea.ActionsBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSChangeListener
@@ -126,7 +127,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     ) {
         templatePresentation.icon = HybrisIcons.BS_PREVIEW_SHOW
 
-        addSeparator(message("hybris.toolwindow.action.separator.show"))
+        addSeparator(ActionsBundle.message("separator.show"))
         add(ShowOnlyCustomAction(mySettings))
         add(ShowOnlyDeprecatedAction(mySettings))
         addSeparator("-- Enum --")

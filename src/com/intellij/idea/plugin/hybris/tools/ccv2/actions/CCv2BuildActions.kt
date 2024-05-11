@@ -130,10 +130,10 @@ class CCv2DownloadBuildLogsAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
 
-        CCv2Service.getInstance(project).downloadBuildLogs(project, subscription, build, onStartCallback(e), onCompleteCallback(e, project))
+        CCv2Service.getInstance(project).downloadBuildLogs(project, subscription, build, onStartCallback(), onCompleteCallback(project))
     }
 
-    private fun onCompleteCallback(e: AnActionEvent, project: Project): (Collection<VirtualFile>) -> Unit = {
+    private fun onCompleteCallback(project: Project): (Collection<VirtualFile>) -> Unit = {
         invokeLater {
             processing = false
 
@@ -143,14 +143,14 @@ class CCv2DownloadBuildLogsAction(
         }
     }
 
-    private fun onStartCallback(e: AnActionEvent): () -> Unit = {
+    private fun onStartCallback(): () -> Unit = {
         processing = true
     }
 
     override fun isEnabled() = !processing && super.isEnabled()
 }
 
-abstract class CCv2ShowBuildWithStatusAction(private val buildStatus: CCv2BuildStatus) : ToggleAction("Show - ${buildStatus.title}", null, buildStatus.icon) {
+abstract class CCv2ShowBuildWithStatusAction(private val buildStatus: CCv2BuildStatus) : ToggleAction("${buildStatus.title}", null, buildStatus.icon) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
     override fun isSelected(e: AnActionEvent): Boolean = getCCv2Settings(e)

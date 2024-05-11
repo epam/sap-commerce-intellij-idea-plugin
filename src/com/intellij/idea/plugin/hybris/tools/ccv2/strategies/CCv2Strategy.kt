@@ -97,7 +97,7 @@ class CCv2Strategy {
                                         deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
                                         deploymentAllowed = deploymentStatus && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT),
                                         dynatraceLink = v1Environment?.dynatraceUrl,
-                                        loggingLink = v1Environment?.loggingUrl,
+                                        loggingLink = v1Environment?.loggingUrl?.let { "$it/app/discover" },
                                         problems = v1EnvironmentHealth?.problems
                                     )
                                 }

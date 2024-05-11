@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
+import com.intellij.idea.ActionsBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSChangeListener
@@ -126,7 +127,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     ) {
         templatePresentation.icon = HybrisIcons.TS_PREVIEW_SHOW
 
-        addSeparator(message("hybris.toolwindow.action.separator.show"))
+        addSeparator(ActionsBundle.message("separator.show"))
         add(ShowOnlyCustomAction(mySettings))
         addSeparator("-- Types --")
         add(ShowMetaAtomicsAction(mySettings))
