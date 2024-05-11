@@ -36,6 +36,7 @@ data class CCv2Build(
     val endTime: OffsetDateTime?,
     val buildVersion: String,
     val version: String,
+    val link: String?,
 ) : CCv2DTO {
     val startTimeFormatted
         get() = CCv2Util.formatTime(startTime)
@@ -62,7 +63,10 @@ data class CCv2Build(
                 ?.split("-")
                 ?.firstOrNull()
                 ?.takeIf { it.isNotBlank() }
-                ?: "N/A"
+                ?: "N/A",
+            link = if (build.subscriptionCode != null && build.code != null)
+                "https://portal.commerce.ondemand.com/subscription/${build.subscriptionCode}/applications/commerce-cloud/builds/${build.code}"
+            else null
         )
 
     }

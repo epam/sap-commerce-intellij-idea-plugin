@@ -36,7 +36,7 @@
                    text="View Options"
                    popup="true"
                    icon="AllIcons.Actions.Show">
-                <separator text="Show"/>
+                <separator text="Show Builds With Status"/>
                 <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowSuccessBuildsAction"/>
                 <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowScheduledBuildsAction"/>
                 <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowBuildingBuildsAction"/>

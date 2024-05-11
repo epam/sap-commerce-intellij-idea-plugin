@@ -68,7 +68,10 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
 
             panel {
                 row {
-                    label(build.name)
+                    val buildName = build.link
+                        ?.let { browserLink(build.name, it) }
+                        ?: label(build.name)
+                    buildName
                         .comment(build.code)
                         .bold()
                 }

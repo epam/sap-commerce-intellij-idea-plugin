@@ -42,5 +42,5 @@ class DeveloperSettings : BaseState() {
 }
 
 data class CCv2Settings(
-    var hideBuildStatuses: EnumSet<CCv2BuildStatus> = EnumSet.noneOf(CCv2BuildStatus::class.java),
+    var hideBuildStatuses: EnumSet<CCv2BuildStatus> = EnumSet.of(CCv2BuildStatus.DELETED),
 )

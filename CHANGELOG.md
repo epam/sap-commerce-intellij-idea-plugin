@@ -11,6 +11,7 @@
 - Point OpenSearch link to `Discover` view [#1107](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1107)
 - Added browser link to Environment name [#1108](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1108)
 - Sort environments by type and name [#1109](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1109)
+- Added browser link to Build name [#1110](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1110)
 
 ### `Project Import` enhancements
 - Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)
