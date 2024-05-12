@@ -36,6 +36,7 @@ data class CCv2Environment(
     val loggingLink: String? = null,
     val problems: Int? = null,
     val link: String?,
+    val mediaStorages: Collection<CCv2MediaStorage>,
 ) : CCv2DTO, Comparable<CCv2Environment> {
 
     override fun compareTo(other: CCv2Environment) = name.compareTo(other.name)
@@ -55,6 +56,11 @@ data class CCv2Environment(
                 "https://portal.commerce.ondemand.com/subscription/${environment.subscriptionCode}/applications/commerce-cloud/environments/$code"
             else null
 
+            val mediaStorages = (v1Environment
+                ?.mediaStorages
+                ?.map { CCv2MediaStorage.map(it) }
+                ?: emptyList())
+
             return CCv2Environment(
                 code = code ?: "N/A",
                 name = environment.name ?: "N/A",
@@ -65,7 +71,8 @@ data class CCv2Environment(
                 dynatraceLink = v1Environment?.dynatraceUrl,
                 loggingLink = v1Environment?.loggingUrl?.let { "$it/app/discover" },
                 problems = v1EnvironmentHealth?.problems,
-                link = link
+                link = link,
+                mediaStorages = mediaStorages
             )
         }
     }

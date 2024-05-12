@@ -55,7 +55,7 @@ class CCv2ShowEnvironmentDetailsAction(
         val toolWindow = ToolWindowManager.getInstance(project)
             .getToolWindow(HybrisToolWindowFactory.ID) ?: return
         val contentManager = toolWindow.contentManager
-        val panel = CCv2EnvironmentDetailsView(subscription, environment)
+        val panel = CCv2EnvironmentDetailsView(project, subscription, environment)
         val content = contentManager.factory
             .createContent(panel, environment.name, true)
             .also {

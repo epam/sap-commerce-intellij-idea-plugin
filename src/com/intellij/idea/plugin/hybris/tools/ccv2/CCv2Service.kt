@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.options.ApplicationCCv2SettingsConfigurableProvider
+import com.intellij.idea.plugin.hybris.tools.ccv2.api.CCv1Api
 import com.intellij.idea.plugin.hybris.tools.ccv2.api.CCv2Api
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.notification.NotificationType
@@ -321,6 +322,35 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                     notifyOnTimeout()
                 } catch (e: RuntimeException) {
                     notifyOnException(e)
+                }
+            }
+        }
+    }
+
+    fun fetchMediaStoragePublicKey(
+        project: Project,
+        subscription: CCv2Subscription,
+        environment: CCv2Environment,
+        mediaStorage: CCv2MediaStorage,
+        onStartCallback: () -> Unit,
+        onCompleteCallback: (String?) -> Unit
+    ) {
+        onStartCallback.invoke()
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Fetching CCv2 Media Storage Public Key - ${mediaStorage.name}...") {
+                val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
+
+                try {
+                    val publicKey = CCv1Api.getInstance()
+                        .fetchMediaStoragePublicKey(ccv2Token, subscription, environment, mediaStorage)
+                        ?.publicKey
+                    onCompleteCallback.invoke(publicKey)
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout()
+                    onCompleteCallback.invoke(null)
+                } catch (e: RuntimeException) {
+                    notifyOnException(e)
+                    onCompleteCallback.invoke(null)
                 }
             }
         }

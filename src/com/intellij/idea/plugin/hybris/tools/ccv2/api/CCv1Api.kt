@@ -23,8 +23,12 @@ import com.intellij.idea.plugin.hybris.ccv1.api.PermissionsApi
 import com.intellij.idea.plugin.hybris.ccv1.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentDetailDTO
 import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentHealthDTO
+import com.intellij.idea.plugin.hybris.ccv1.model.MediaStoragePublicKeyDTO
 import com.intellij.idea.plugin.hybris.ccv1.model.PermissionDTO
+import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2MediaStorage
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import java.util.concurrent.TimeUnit
@@ -68,6 +72,25 @@ class CCv1Api {
 
         return EnvironmentApi(client = client)
             .getEnvironmentHealth(subscriptionCode, environmentCode)
+    }
+
+    suspend fun fetchMediaStoragePublicKey(
+        accessToken: String,
+        subscription: CCv2Subscription,
+        environment: CCv2Environment,
+        mediaStorage: CCv2MediaStorage,
+    ): MediaStoragePublicKeyDTO? {
+        ApiClient.accessToken = accessToken
+
+        val subscriptionCode = subscription.id ?: return null
+        val client = createClient()
+
+        return EnvironmentApi(client = client)
+            .getMediaStoragePublicKey(
+                subscriptionCode,
+                environment.code,
+                mediaStorage.code,
+            )
     }
 
     private fun createClient() = ApiClient.builder

@@ -142,6 +142,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
                         .comment("Build name")
                 }
             }.gap(RightGap.COLUMNS)
+
             panel {
                 row {
                     label(deployedBuild.code)

@@ -18,17 +18,27 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
+import com.intellij.ide.HelpTooltip
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
+import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
+import java.awt.datatransfer.StringSelection
 import java.io.Serial
 
 class CCv2EnvironmentDetailsView(
+    private val project: Project,
     private val subscription: CCv2Subscription,
     private val environment: CCv2Environment
 ) : SimpleToolWindowPanel(false, true), Disposable {
@@ -93,12 +103,30 @@ class CCv2EnvironmentDetailsView(
                     .gap(RightGap.COLUMNS)
                     .align(AlignY.TOP)
 
-//                panel {
-//                    row {
-//                        icon(AnimatedIcon.Default.INSTANCE)
-//                            .comment("Deployment")
-//                    }
-//                }
+                panel {
+                    row {
+                        icon(HybrisIcons.DYNATRACE)
+                            .gap(RightGap.SMALL)
+                        browserLink("Dynatrace", environment.dynatraceLink ?: "")
+                            .enabled(environment.dynatraceLink != null)
+                            .comment(environment.problems
+                                ?.let { "problems: <strong>$it</strong>" } ?: "&nbsp;")
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+                    .align(AlignY.TOP)
+
+                panel {
+                    row {
+                        icon(HybrisIcons.OPENSEARCH)
+                            .gap(RightGap.SMALL)
+                        browserLink("OpenSearch", environment.loggingLink ?: "")
+                            .enabled(environment.loggingLink != null)
+                            .comment("&nbsp;")
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+                    .align(AlignY.TOP)
             }
                 .layout(RowLayout.PARENT_GRID)
                 .topGap(TopGap.SMALL)
@@ -111,6 +139,7 @@ class CCv2EnvironmentDetailsView(
                         panel {
                             row {
                                 label(deployedBuild.name)
+                                    .bold()
                                     .comment("Name")
                             }
                         }.gap(RightGap.COLUMNS)
@@ -132,77 +161,105 @@ class CCv2EnvironmentDetailsView(
                         }
                     }
                 }
+            } else {
+                // TODO: show lazy loading...
             }
 
-            row {
-//                panel {
-//                    row {
-//                        label("Cloud storage")
-//                    }
-//                    indent {
-//                        row {
-//                            label("Hot folders")
-//                        }
-//                        row {
-//                            label("Audit logs")
-//                        }
-//                        row {
-//                            label("Logs")
-//                        }
-//                    }
-//                }
-//                    .gap(RightGap.COLUMNS)
-//                    .align(AlignY.TOP)
-//
-//                panel {
-//                    row {
-//                        label("Data backups")
-//                    }
-//                    indent {
-//                        row {
-//                            label("Some backupId")
-//                                .comment("Last created:")
-//                        }
-//
-//                        row {
-//                            label("Some backupId")
-//                                .comment("Last restored:")
-//                        }
-//
-//                        row {
-//                            link("Manage") {
-//                                // DO something
-//                            }
-//                        }
-//                    }
-//                }
-//                    .gap(RightGap.COLUMNS)
-//                    .align(AlignY.TOP)
-
-                panel {
+            group("Cloud Storage") {
+                val mediaStorages = environment.mediaStorages
+                if (mediaStorages.isEmpty()) {
                     row {
-                        label("Monitoring")
+                        label("No media storages found for environment.")
+                            .align(Align.FILL)
                     }
-                    indent {
+                } else {
+                    mediaStorages.forEach { mediaStorage ->
                         row {
-                            icon(HybrisIcons.DYNATRACE)
-                                .gap(RightGap.SMALL)
-                            browserLink("Dynatrace", environment.dynatraceLink ?: "")
-                                .enabled(environment.dynatraceLink != null)
-                                .comment(environment.problems
-                                    ?.let { "problems: <strong>$it</strong>" } ?: "&nbsp;")
-                        }
+                            panel {
+                                row {
+                                    label(mediaStorage.name)
+                                        .bold()
+                                        .comment("Name")
+                                }
+                            }.gap(RightGap.COLUMNS)
 
-                        row {
-                            icon(HybrisIcons.OPENSEARCH)
-                                .gap(RightGap.SMALL)
-                            browserLink("OpenSearch", environment.loggingLink ?: "")
-                                .enabled(environment.loggingLink != null)
-                                .comment("&nbsp;")
-                        }
+                            panel {
+                                row {
+                                    label(mediaStorage.publicUrl)
+                                        .comment("Public URL")
+                                }
+                            }.gap(RightGap.COLUMNS)
+
+                            panel {
+                                row {
+                                    link(mediaStorage.code) {
+                                        CopyPasteManager.getInstance().setContents(StringSelection(mediaStorage.code))
+                                        Notifications.create(NotificationType.INFORMATION, "Account name copied to clipboard", "")
+                                            .hideAfter(10)
+                                            .notify(project)
+                                    }
+                                        .comment("Account name")
+                                        .applyToComponent {
+                                            HelpTooltip()
+                                                .setTitle("Click to copy to clipboard")
+                                                .installOn(this);
+                                        }
+                                }
+                            }.gap(RightGap.COLUMNS)
+
+                            panel {
+                                row {
+                                    lateinit var publicKeyActionLink: ActionLink
+                                    var retrieved = false
+                                    var retrieving = false
+
+                                    publicKeyActionLink = link("Copy public key") {
+                                        if (retrieving) return@link
+
+                                        if (retrieved) {
+                                            CopyPasteManager.getInstance().setContents(StringSelection(publicKeyActionLink.text))
+                                            Notifications.create(NotificationType.INFORMATION, "Public key copied to clipboard", "")
+                                                .hideAfter(10)
+                                                .notify(project)
+                                        } else {
+                                            retrieving = true
+
+                                            CCv2Service.getInstance(project).fetchMediaStoragePublicKey(project, subscription, environment, mediaStorage,
+                                                {
+                                                    publicKeyActionLink.text = "Retrieving..."
+                                                },
+                                                { publicKey ->
+                                                    invokeLater {
+                                                        retrieving = false
+                                                        publicKeyActionLink.text = "Copy public key"
+
+                                                        if (publicKey != null) {
+                                                            retrieved = true
+                                                            publicKeyActionLink.text = publicKey
+
+                                                            CopyPasteManager.getInstance().setContents(StringSelection(publicKey))
+                                                            Notifications.create(NotificationType.INFORMATION, "Public key copied to clipboard", "")
+                                                                .hideAfter(10)
+                                                                .notify(project)
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                        }
+                                    }
+                                        .comment("Account key")
+                                        .applyToComponent {
+                                            HelpTooltip()
+                                                .setTitle("Click to copy to clipboard")
+                                                .installOn(this);
+                                        }
+                                        .component
+                                }
+                            }.gap(RightGap.COLUMNS)
+                        }.layout(RowLayout.PARENT_GRID)
                     }
-                }.align(AlignY.TOP)
-            }.layout(RowLayout.PARENT_GRID)
+                }
+            }
 
 //            collapsibleGroup("Services") {
 //                row {

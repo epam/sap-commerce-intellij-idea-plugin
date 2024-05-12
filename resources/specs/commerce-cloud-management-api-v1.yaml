@@ -112,6 +112,45 @@ paths:
           $ref: '#/components/responses/DefaultResponse'
         '5XX':
           $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/mediaStorage/{mediaStorageCode}/showkey:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+      - name: mediaStorageCode
+        in: path
+        description: Media storage in the environment
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - environment
+      description: Get public key for media storage
+      operationId: getMediaStoragePublicKey
+      parameters:
+        - $ref: '#/components/parameters/EndpointWebProxyFilter'
+        - $ref: '#/components/parameters/EndpointServiceFilter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaStoragePublicKeyDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
 security:
   - OAuth2: [ ]
 components:
@@ -196,6 +235,11 @@ components:
     MediaStorageDTO:
       description: Entity to represent a media storage
       type: object
+      required:
+        - code
+        - name
+        - accountName
+        - publicUrl
       properties:
         code:
           description: Description
@@ -241,3 +285,12 @@ components:
           type: array
           items:
             type: string
+    MediaStoragePublicKeyDTO:
+      description: Entity to represent media storage public key
+      type: object
+      required:
+        - publicKey
+      properties:
+        publicKey:
+          description: Public Key
+          type: string
