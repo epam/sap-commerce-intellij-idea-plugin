@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv2.model.BuildDetailDTO
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
 import java.time.OffsetDateTime
@@ -65,7 +66,7 @@ data class CCv2Build(
                 ?.takeIf { it.isNotBlank() }
                 ?: "N/A",
             link = if (build.subscriptionCode != null && build.code != null)
-                "https://portal.commerce.ondemand.com/subscription/${build.subscriptionCode}/applications/commerce-cloud/builds/${build.code}"
+                "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${build.subscriptionCode}/applications/commerce-cloud/builds/${build.code}"
             else null
         )
 

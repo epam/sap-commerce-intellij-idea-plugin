@@ -112,6 +112,39 @@ paths:
           $ref: '#/components/responses/DefaultResponse'
         '5XX':
           $ref: '#/components/responses/DefaultResponse'
+  /subscriptions/{subscriptionCode}/environments/{environmentCode}/services:
+    parameters:
+      - name: subscriptionCode
+        in: path
+        description: Customer subscription code
+        required: true
+        schema:
+          type: string
+      - name: environmentCode
+        in: path
+        description: Environment in the subscription
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - environment
+      description: Get environment services
+      operationId: getEnvironmentServices
+      parameters:
+        - $ref: '#/components/parameters/EndpointWebProxyFilter'
+        - $ref: '#/components/parameters/EndpointServiceFilter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicesDTO'
+        '4XX':
+          $ref: '#/components/responses/DefaultResponse'
+        '5XX':
+          $ref: '#/components/responses/DefaultResponse'
   /subscriptions/{subscriptionCode}/environments/{environmentCode}/mediaStorage/{mediaStorageCode}/showkey:
     parameters:
       - name: subscriptionCode
@@ -294,3 +327,53 @@ components:
         publicKey:
           description: Public Key
           type: string
+    ServicesDTO:
+      description: Collection of environment services
+      type: array
+      items:
+        $ref: '#/components/schemas/ServiceDTO'
+    ServiceDTO:
+      description: Entity to represent environment service
+      type: object
+      required:
+        - code
+        - name
+        - modifiedBy
+        - modifiedTime
+        - customerScalableSupported
+        - runnable
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        modifiedBy:
+          type: string
+        modifiedTime:
+          type: string
+          format: date-time
+        customerScalableSupported:
+          type: boolean
+        runnable:
+          type: boolean
+        desiredReplicas:
+          type: integer
+        availableReplicas:
+          type: integer
+        replicas:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceReplicaDTO'
+    ServiceReplicaDTO:
+      type: object
+      required:
+        - name
+        - status
+        - type
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+        ready:
+          type: boolean

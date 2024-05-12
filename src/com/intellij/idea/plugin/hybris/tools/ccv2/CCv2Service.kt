@@ -134,6 +134,32 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         }
     }
 
+    fun fetchEnvironmentServices(
+        subscription: CCv2Subscription,
+        environment: CCv2Environment,
+        onStartCallback: () -> Unit,
+        onCompleteCallback: (Collection<CCv2EnvironmentService>?) -> Unit
+    ) {
+        onStartCallback.invoke()
+
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Fetching CCv2 Environment Services...", true) {
+                val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
+                var services: Collection<CCv2EnvironmentService>? = null
+
+                try {
+                    services = CCv1Api.getInstance().fetchEnvironmentServices(ccv2Token, subscription, environment)
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout()
+                } catch (e: RuntimeException) {
+                    notifyOnException(e)
+                }
+
+                onCompleteCallback.invoke(services)
+            }
+        }
+    }
+
     fun fetchBuilds(
         subscriptions: Collection<CCv2Subscription>,
         onStartCallback: () -> Unit,

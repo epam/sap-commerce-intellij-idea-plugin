@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentService
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
@@ -35,8 +36,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.components.ActionLink
+import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
+import java.awt.GridBagLayout
 import java.awt.datatransfer.StringSelection
 import java.io.Serial
 import javax.swing.JLabel
@@ -48,24 +51,29 @@ class CCv2EnvironmentDetailsView(
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val showBuild = AtomicBooleanProperty(environment.deployedBuild != null)
+    private val showServices = AtomicBooleanProperty(false)
     private lateinit var buildNameLabel: JLabel
     private lateinit var buildBranchLabel: JLabel
     private lateinit var buildCodeLabel: JLabel
     private lateinit var buildVersionLabel: JLabel
     private lateinit var buildCreatedByLabel: JLabel
+    private val servicesPanel = JBPanel<JBPanel<*>>(GridBagLayout())
+        .also { border = JBUI.Borders.empty() }
 
     init {
         add(rootPanel())
 
+        val ccv2Service = CCv2Service.getInstance(project)
         if (environment.deployedBuild == null) {
-            CCv2Service.getInstance(project).fetchEnvironmentBuild(subscription, environment,
+            ccv2Service.fetchEnvironmentBuild(subscription, environment,
                 {
                     showBuild.set(false)
                     environment.deployedBuild = null
                 },
                 { build ->
+                    environment.deployedBuild = build
+
                     invokeLater {
-                        environment.deployedBuild = build
                         showBuild.set(build != null)
 
                         if (build != null) {
@@ -79,10 +87,81 @@ class CCv2EnvironmentDetailsView(
                 }
             )
         }
+
+        if (environment.services == null) {
+            ccv2Service.fetchEnvironmentServices(subscription, environment,
+                {
+                    showServices.set(false)
+                    environment.services = null
+                    servicesPanel.removeAll()
+                },
+                { services ->
+                    environment.services = services
+
+                    invokeLater {
+                        showServices.set(services != null)
+
+                        if (services != null) {
+                            servicesPanel.add(servicesPanel(services))
+                        }
+                    }
+                }
+            )
+        }
     }
 
     override fun dispose() {
         // NOP
+    }
+
+    private fun servicesPanel(services: Collection<CCv2EnvironmentService>) = panel {
+        services.forEach { service ->
+            row {
+                panel {
+                    row {
+                        browserLink(service.name, service.link)
+                            .bold()
+                            .comment("Name")
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        label(service.modifiedBy)
+                            .comment("Modified by")
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        label(service.modifiedTimeFormatted)
+                            .comment("Modified time")
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        val replicas = if (service.desiredReplicas != null && service.availableReplicas != null)
+                            "${service.availableReplicas} / ${service.desiredReplicas}"
+                        else "--"
+                        label(replicas)
+                            .comment("Replicas")
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        label(if (service.runnable) "Running" else "--")
+                            .comment("Status")
+                    }
+                }
+            }
+                .layout(RowLayout.PARENT_GRID)
+        }
     }
 
     private fun rootPanel() = panel {
@@ -319,6 +398,21 @@ class CCv2EnvironmentDetailsView(
                     }
                 }
             }
+
+            collapsibleGroup("Services") {
+                row {
+                    cell(servicesPanel)
+                }.visibleIf(showServices)
+
+                row {
+                    panel {
+                        row {
+                            icon(AnimatedIcon.Default.INSTANCE)
+                            label("Retrieving services...")
+                        }
+                    }.align(Align.CENTER)
+                }.visibleIf(showServices.not())
+            }.expanded = true
 
 //            collapsibleGroup("Services") {
 //                row {

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import javax.swing.Icon
 import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentDetailDTO as EnvironmentDetailV1DTO
@@ -37,6 +38,7 @@ data class CCv2Environment(
     val problems: Int? = null,
     val link: String?,
     val mediaStorages: Collection<CCv2MediaStorage>,
+    var services: Collection<CCv2EnvironmentService>? = null,
 ) : CCv2DTO, Comparable<CCv2Environment> {
 
     override fun compareTo(other: CCv2Environment) = name.compareTo(other.name)
@@ -53,7 +55,7 @@ data class CCv2Environment(
             val code = environment.code
 
             val link = if (v1Environment != null && status == CCv2EnvironmentStatus.AVAILABLE)
-                "https://portal.commerce.ondemand.com/subscription/${environment.subscriptionCode}/applications/commerce-cloud/environments/$code"
+                "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${environment.subscriptionCode}/applications/commerce-cloud/environments/$code"
             else null
 
             val mediaStorages = (v1Environment

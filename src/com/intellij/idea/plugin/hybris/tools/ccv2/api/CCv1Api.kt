@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.ccv1.model.PermissionDTO
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentService
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2MediaStorage
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
@@ -91,6 +92,24 @@ class CCv1Api {
                 environment.code,
                 mediaStorage.code,
             )
+    }
+
+    suspend fun fetchEnvironmentServices(
+        accessToken: String,
+        subscription: CCv2Subscription,
+        environment: CCv2Environment
+    ): Collection<CCv2EnvironmentService> {
+        ApiClient.accessToken = accessToken
+
+        val subscriptionCode = subscription.id ?: return emptyList()
+        val client = createClient()
+
+        return EnvironmentApi(client = client)
+            .getEnvironmentServices(
+                subscriptionCode,
+                environment.code,
+            )
+            .map { CCv2EnvironmentService.map(subscription, environment, it) }
     }
 
     private fun createClient() = ApiClient.builder

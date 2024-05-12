@@ -38,6 +38,7 @@ object HybrisConstants {
     const val PLATFORM_VERSION_5_0 = "5.0"
     const val PLATFORM_VERSION_5_2 = "5.2"
 
+    const val CCV2_DOMAIN = "portal.commerce.ondemand.com"
     const val CCV2_MANIFEST_NAME = "manifest.json"
     const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"
     const val CCV2_DATAHUB_NAME = "datahub"
