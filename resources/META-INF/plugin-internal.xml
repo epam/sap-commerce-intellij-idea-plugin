@@ -70,7 +70,7 @@
                              displayName="Integrations"
                              provider="com.intellij.idea.plugin.hybris.settings.options.ProjectIntegrationsSettingsConfigurableProvider"/>
 
-        <toolWindow id="SAP CX" icon="/icons/toolWindow.svg" anchor="bottom" doNotActivateOnStart="true"
+        <toolWindow id="SAP CX" icon="/icons/toolWindow.svg" anchor="bottom" doNotActivateOnStart="true" canCloseContents="true"
                     factoryClass="com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory"/>
 
         <iconProvider order="first" implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectIconProvider"/>

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
+package com.intellij.idea.plugin.hybris.tools.ccv2.api
 
 import com.intellij.idea.plugin.hybris.ccv2.api.BuildApi
 import com.intellij.idea.plugin.hybris.ccv2.api.DeploymentApi
@@ -40,7 +40,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 @Service
-class CCv2Strategy {
+class CCv2Api {
 
     suspend fun fetchEnvironments(
         ccv2Token: String,
@@ -50,11 +50,11 @@ class CCv2Strategy {
         ApiClient.accessToken = ccv2Token
         val client = createClient()
         val result = sortedMapOf<CCv2Subscription, Collection<CCv2Environment>>()
-        val ccv1Strategy = CCv1Strategy.getInstance()
+        val ccv1Api = CCv1Api.getInstance()
 
         reportProgress(subscriptions.size) { progressReporter ->
             coroutineScope {
-                val subscriptions2Permissions = ccv1Strategy.fetchPermissions(ccv2Token)
+                val subscriptions2Permissions = ccv1Api.fetchPermissions(ccv2Token)
                     ?.associateBy { it.scopeName }
                     ?: return@coroutineScope null
 
@@ -78,8 +78,8 @@ class CCv2Strategy {
                                 ?.map { env ->
                                     val canAccess = subscriptionPermissions.environments.contains(env.code)
                                     async {
-                                        val v1Env = if (canAccess) ccv1Strategy.fetchEnvironment(ccv2Token, env) else null
-                                        val v1EnvHealth = if (canAccess) ccv1Strategy.fetchEnvironmentHealth(ccv2Token, env) else null
+                                        val v1Env = if (canAccess) ccv1Api.fetchEnvironment(ccv2Token, env) else null
+                                        val v1EnvHealth = if (canAccess) ccv1Api.fetchEnvironmentHealth(ccv2Token, env) else null
 
                                         env to Triple(canAccess, v1Env, v1EnvHealth)
                                     }
@@ -272,7 +272,7 @@ class CCv2Strategy {
         .build()
 
     companion object {
-        fun getInstance(): CCv2Strategy = ApplicationManager.getApplication().getService(CCv2Strategy::class.java)
+        fun getInstance(): CCv2Api = ApplicationManager.getApplication().getService(CCv2Api::class.java)
     }
 
 }

@@ -49,6 +49,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
     private fun createTSContent(toolWindow: ToolWindow, panel: TSView) = with(toolWindow.contentManager.factory.createContent(panel, TS_ID, true)) {
         Disposer.register(toolWindow.disposable, panel)
 
+        isCloseable = false
         icon = HybrisIcons.TYPE_SYSTEM
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
 
@@ -58,6 +59,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
     private fun createBSContent(toolWindow: ToolWindow, panel: BSView) = with(toolWindow.contentManager.factory.createContent(panel, BS_ID, true)) {
         Disposer.register(toolWindow.disposable, panel)
 
+        isCloseable = false
         icon = HybrisIcons.BEAN_FILE
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         this
@@ -67,6 +69,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
         Disposer.register(toolWindow.disposable, panel)
 
+        isCloseable = false
         icon = HybrisIcons.CONSOLE
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         this
@@ -76,6 +79,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
         Disposer.register(toolWindow.disposable, panel)
 
+        isCloseable = false
         icon = HybrisIcons.CCV2
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
 

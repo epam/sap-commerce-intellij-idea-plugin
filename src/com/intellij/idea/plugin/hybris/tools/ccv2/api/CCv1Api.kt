@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.ccv2.strategies
+package com.intellij.idea.plugin.hybris.tools.ccv2.api
 
 import com.intellij.idea.plugin.hybris.ccv1.api.EnvironmentApi
 import com.intellij.idea.plugin.hybris.ccv1.api.PermissionsApi
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO as V2EnvironmentDetailDTO
 
 @Service
-class CCv1Strategy {
+class CCv1Api {
 
     suspend fun fetchPermissions(
         accessToken: String
@@ -75,7 +75,7 @@ class CCv1Strategy {
         .build()
 
     companion object {
-        fun getInstance(): CCv1Strategy = ApplicationManager.getApplication().getService(CCv1Strategy::class.java)
+        fun getInstance(): CCv1Api = ApplicationManager.getApplication().getService(CCv1Api::class.java)
     }
 
 }

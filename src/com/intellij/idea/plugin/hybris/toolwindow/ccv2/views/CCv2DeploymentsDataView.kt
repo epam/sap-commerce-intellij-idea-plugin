@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.RightGap
@@ -46,7 +47,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
                 .expanded = true
         }
     }
-        .let { scrollPanel(it) }
+        .let { Dsl.scrollPanel(it) }
 
     private fun Panel.deployment(deployment: CCv2Deployment) {
         row {

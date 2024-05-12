@@ -20,10 +20,12 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowEnvironmentDetailsAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.dsl.builder.*
@@ -47,17 +49,24 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
                 } else {
                     environments
                         .sortedWith(compareBy({ it.type }, { it.name }))
-                        .forEach { environment(it, showBuilds) }
+                        .forEach { environment(subscription, it, showBuilds) }
                 }
             }
                 .expanded = showBuilds
         }
     }
-        .let { scrollPanel(it) }
+        .let { Dsl.scrollPanel(it) }
 
-    private fun Panel.environment(environment: CCv2Environment, showBuilds: Boolean = false) {
+    private fun Panel.environment(subscription: CCv2Subscription, environment: CCv2Environment, showBuilds: Boolean = false) {
         row {
-            val deployedBuild = environment.deployedBuild
+            panel {
+                row {
+                    actionButton(
+                        CCv2ShowEnvironmentDetailsAction(subscription, environment),
+                        ActionPlaces.TOOLWINDOW_CONTENT
+                    )
+                }
+            }.gap(RightGap.SMALL)
 
             panel {
                 row {
@@ -118,12 +127,13 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2Environment>() {
             }.gap(RightGap.COLUMNS)
 
             if (showBuilds) {
-                buildPanel(environment, deployedBuild)
+                buildPanel(environment)
             }
         }.layout(RowLayout.PARENT_GRID)
     }
 
-    private fun Row.buildPanel(environment: CCv2Environment, deployedBuild: CCv2Build?) {
+    private fun Row.buildPanel(environment: CCv2Environment) {
+        val deployedBuild = environment.deployedBuild
         if (deployedBuild != null) {
             panel {
                 row {

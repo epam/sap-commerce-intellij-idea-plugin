@@ -243,6 +243,8 @@ object HybrisIcons {
     val CCV2_BUILD_DELETE = ExpUiIcons.General.Delete
     val CCV2_BUILD_LOGS = ExpUiIcons.General.Download
 
+    val CCV2_ENVIRONMENT_DETAILS = getIcon("/icons/module/cloud.svg")
+
     val CCV2_DEPLOYMENT_CREATED_BY = AllIcons.General.User
     val CCV2_DEPLOYMENT_UPDATE_MODE_NONE = AllIcons.Diff.GutterCheckBox
     val CCV2_DEPLOYMENT_UPDATE_MODE_UPDATE = ExpUiIcons.General.PluginUpdate

@@ -21,12 +21,11 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.util.ui.JBEmptyBorder
 
 abstract class AbstractCCv2DataView<T : CCv2DTO> {
 
@@ -45,7 +44,7 @@ abstract class AbstractCCv2DataView<T : CCv2DTO> {
                 .expanded = true
         }
     }
-        .let { scrollPanel(it) }
+        .let { Dsl.scrollPanel(it) }
 
     fun noDataPanel(): DialogPanel = panel {
         noData()
@@ -56,19 +55,6 @@ abstract class AbstractCCv2DataView<T : CCv2DTO> {
             label("No ${tab.title} data available. Try re-fetching remote data...")
                 .align(Align.CENTER)
                 .resizableColumn()
-        }.resizableRow()
-    }
-
-    protected fun scrollPanel(content: DialogPanel) = panel {
-        row {
-            scrollCell(content)
-                .align(Align.FILL)
-                .resizableColumn()
-                .applyToComponent {
-                    (this.parent.parent as? JBScrollPane)
-                        ?.border = JBEmptyBorder(0)
-                }
-
         }.resizableRow()
     }
 }

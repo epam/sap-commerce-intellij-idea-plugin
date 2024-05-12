@@ -15,6 +15,7 @@
 - Added a browser link to Deployment code [#1111](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1111)
 - Filter out Environments by Status [#1112](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1112)
 - Use `CCv1` api to get subscription permissions [#1113](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1113)
+- Show environment details in a new tab [#1114](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1114)
 
 ### `Project Import` enhancements
 - Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)
