@@ -29,13 +29,17 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
+import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
+import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import java.awt.datatransfer.StringSelection
 import java.io.Serial
+import javax.swing.JLabel
 
 class CCv2EnvironmentDetailsView(
     private val project: Project,
@@ -43,8 +47,38 @@ class CCv2EnvironmentDetailsView(
     private val environment: CCv2Environment
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
+    private val showBuild = AtomicBooleanProperty(environment.deployedBuild != null)
+    private lateinit var buildNameLabel: JLabel
+    private lateinit var buildBranchLabel: JLabel
+    private lateinit var buildCodeLabel: JLabel
+    private lateinit var buildVersionLabel: JLabel
+    private lateinit var buildCreatedByLabel: JLabel
+
     init {
         add(rootPanel())
+
+        if (environment.deployedBuild == null) {
+            CCv2Service.getInstance(project).fetchEnvironmentBuild(subscription, environment,
+                {
+                    showBuild.set(false)
+                    environment.deployedBuild = null
+                },
+                { build ->
+                    invokeLater {
+                        environment.deployedBuild = build
+                        showBuild.set(build != null)
+
+                        if (build != null) {
+                            buildNameLabel.text = build.name
+                            buildBranchLabel.text = build.branch
+                            buildCodeLabel.text = build.code
+                            buildVersionLabel.text = build.version
+                            buildCreatedByLabel.text = build.createdBy
+                        }
+                    }
+                }
+            )
+        }
     }
 
     override fun dispose() {
@@ -132,37 +166,62 @@ class CCv2EnvironmentDetailsView(
                 .topGap(TopGap.SMALL)
                 .bottomGap(BottomGap.SMALL)
 
-            val deployedBuild = environment.deployedBuild
-            if (deployedBuild != null) {
-                group("Build") {
-                    row {
-                        panel {
-                            row {
-                                label(deployedBuild.name)
-                                    .bold()
-                                    .comment("Name")
-                            }
-                        }.gap(RightGap.COLUMNS)
+            group("Build") {
+                row {
+                    val deployedBuild = environment.deployedBuild
+                    panel {
+                        row {
+                            buildNameLabel = label(deployedBuild?.name ?: "")
+                                .bold()
+                                .comment("Name")
+                                .component
+                        }
+                    }.gap(RightGap.COLUMNS)
 
-                        panel {
-                            row {
-                                icon(HybrisIcons.CCV2_BUILD_BRANCH)
-                                    .gap(RightGap.SMALL)
-                                label(deployedBuild.branch)
-                                    .comment("Branch")
-                            }
-                        }.gap(RightGap.COLUMNS)
+                    panel {
+                        row {
+                            icon(HybrisIcons.CCV2_BUILD_BRANCH)
+                                .gap(RightGap.SMALL)
+                            buildBranchLabel = label(deployedBuild?.branch ?: "")
+                                .comment("Branch")
+                                .component
+                        }
+                    }.gap(RightGap.COLUMNS)
 
-                        panel {
-                            row {
-                                label(deployedBuild.code)
-                                    .comment("Code")
-                            }
+                    panel {
+                        row {
+                            buildCodeLabel = label(deployedBuild?.code ?: "")
+                                .comment("Code")
+                                .component
                         }
                     }
-                }
-            } else {
-                // TODO: show lazy loading...
+
+                    panel {
+                        row {
+                            buildVersionLabel = label(deployedBuild?.version ?: "")
+                                .comment("Version")
+                                .component
+                        }
+                    }
+
+                    panel {
+                        row {
+                            icon(HybrisIcons.CCV2_BUILD_CREATED_BY)
+                            buildCreatedByLabel = label(deployedBuild?.createdBy ?: "")
+                                .comment("Created by")
+                                .component
+                        }
+                    }
+                }.visibleIf(showBuild)
+
+                row {
+                    panel {
+                        row {
+                            icon(AnimatedIcon.Default.INSTANCE)
+                            label("Retrieving build details...")
+                        }
+                    }.align(Align.CENTER)
+                }.visibleIf(showBuild.not())
             }
 
             group("Cloud Storage") {
@@ -213,7 +272,7 @@ class CCv2EnvironmentDetailsView(
                                     var retrieved = false
                                     var retrieving = false
 
-                                    publicKeyActionLink = link("Copy public key") {
+                                    publicKeyActionLink = link("Retrieve public key...") {
                                         if (retrieving) return@link
 
                                         if (retrieved) {

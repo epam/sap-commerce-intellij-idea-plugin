@@ -102,35 +102,57 @@ class CCv2Api {
         ccv2Token: String,
         subscriptions: Map<CCv2Subscription, Collection<CCv2Environment>>
     ) {
-        ApiClient.accessToken = ccv2Token
-        val client = createClient()
         val environments = subscriptions.values.flatten()
 
         reportProgress(environments.size) { progressReporter ->
             coroutineScope {
                 subscriptions.forEach { (subscription, environments) ->
-                    val subscriptionCode = subscription.id!!
                     environments.forEach { environment ->
                         launch {
                             progressReporter.sizedStep(1, "Fetching Deployment details for ${environment.name} of the $subscription") {
-                                DeploymentApi(client = client).getDeployments(
-                                    subscriptionCode,
-                                    environmentCode = environment.code,
-                                    dollarCount = true,
-                                    dollarTop = 1,
-                                )
-                                    .value
-                                    ?.firstOrNull()
-                                    ?.buildCode
-                                    ?.let { BuildApi(client = client).getBuild(subscriptionCode, it) }
-                                    ?.let { build -> CCv2Build.map(build) }
-                                    ?.also { build -> environment.deployedBuild = build }
+                                fetchEnvironmentBuild(ccv2Token, subscription, environment)
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    suspend fun fetchEnvironmentBuild(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2Environment,
+    ): CCv2Build? {
+        ApiClient.accessToken = ccv2Token
+        val client = createClient()
+        val subscriptionCode = subscription.id!!
+
+        return DeploymentApi(client = client).getDeployments(
+            subscriptionCode,
+            environmentCode = environment.code,
+            dollarCount = true,
+            dollarTop = 1,
+        )
+            .value
+            ?.firstOrNull()
+            ?.buildCode
+            ?.let { fetchBuildForCode(ccv2Token, subscription, it) }
+            ?.also { build -> environment.deployedBuild = build }
+    }
+
+    suspend fun fetchBuildForCode(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        buildCode: String
+    ): CCv2Build {
+        ApiClient.accessToken = ccv2Token
+        val subscriptionCode = subscription.id!!
+        val client = createClient()
+
+        return BuildApi(client = client)
+            .getBuild(subscriptionCode, buildCode)
+            .let { CCv2Build.map(it) }
     }
 
     suspend fun fetchBuilds(

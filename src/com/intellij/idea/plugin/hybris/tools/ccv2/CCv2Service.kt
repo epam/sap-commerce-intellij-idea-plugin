@@ -109,6 +109,31 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         }
     }
 
+    fun fetchEnvironmentBuild(
+        subscription: CCv2Subscription,
+        environment: CCv2Environment,
+        onStartCallback: () -> Unit,
+        onCompleteCallback: (CCv2Build?) -> Unit,
+    ) {
+        onStartCallback.invoke()
+
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Fetching CCv2 Environment Build Details...", true) {
+                val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
+                var build: CCv2Build? = null
+                try {
+                    build = CCv2Api.getInstance().fetchEnvironmentBuild(ccv2Token, subscription, environment)
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout()
+                } catch (e: RuntimeException) {
+                    notifyOnException(e)
+                }
+
+                onCompleteCallback.invoke(build)
+            }
+        }
+    }
+
     fun fetchBuilds(
         subscriptions: Collection<CCv2Subscription>,
         onStartCallback: () -> Unit,
@@ -339,19 +364,19 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Media Storage Public Key - ${mediaStorage.name}...") {
                 val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
+                var publicKey: String? = null
 
                 try {
-                    val publicKey = CCv1Api.getInstance()
+                    publicKey = CCv1Api.getInstance()
                         .fetchMediaStoragePublicKey(ccv2Token, subscription, environment, mediaStorage)
                         ?.publicKey
-                    onCompleteCallback.invoke(publicKey)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
-                    onCompleteCallback.invoke(null)
                 } catch (e: RuntimeException) {
                     notifyOnException(e)
-                    onCompleteCallback.invoke(null)
                 }
+
+                onCompleteCallback.invoke(publicKey)
             }
         }
     }
