@@ -20,10 +20,10 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 
-class CCv2FetchDeploymentsAction : AbstractCCv2FetchAction<CCv2Deployment>(
+class CCv2FetchDeploymentsAction : AbstractCCv2FetchAction<CCv2DeploymentDto>(
     tab = CCv2Tab.DEPLOYMENTS,
     text = "Fetch Deployments",
     icon = HybrisIcons.CCV2_FETCH,

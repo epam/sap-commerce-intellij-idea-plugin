@@ -22,9 +22,9 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.*
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildsDataView
@@ -127,7 +127,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.ENVIRONMENTS)
                 { CCv2EnvironmentsDataView.fetchingInProgressPanel(subscriptions) }
 
-                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
+                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
                 {
                     val dataPanel = CCv2EnvironmentsDataView.dataPanel(data)
                     CCv2Service.getInstance(project).fetchEnvironmentsBuilds(data)
@@ -135,11 +135,11 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                     dataPanel
                 }
 
-                override fun onFetchingBuildDetailsStarted(data: Map<CCv2Subscription, Collection<CCv2Environment>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
+                override fun onFetchingBuildDetailsStarted(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
                 { CCv2EnvironmentsDataView.dataPanelWithBuilds(data) }
 
                 override fun onFetchingBuildDetailsCompleted(
-                    data: Map<CCv2Subscription, Collection<CCv2Environment>>,
+                    data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>,
                 ) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
                 { CCv2EnvironmentsDataView.dataPanelWithBuilds(data) }
             })
@@ -149,7 +149,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.BUILDS)
                 { CCv2BuildsDataView.fetchingInProgressPanel(subscriptions) }
 
-                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Build>>) = onFetchingCompleted(CCv2Tab.BUILDS)
+                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2BuildDto>>) = onFetchingCompleted(CCv2Tab.BUILDS)
                 { CCv2BuildsDataView.dataPanel(data) }
             })
 
@@ -158,7 +158,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.DEPLOYMENTS)
                 { CCv2DeploymentsDataView.fetchingInProgressPanel(subscriptions) }
 
-                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2Deployment>>) = onFetchingCompleted(CCv2Tab.DEPLOYMENTS)
+                override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2DeploymentDto>>) = onFetchingCompleted(CCv2Tab.DEPLOYMENTS)
                 { CCv2DeploymentsDataView.dataPanel(data) }
             })
 

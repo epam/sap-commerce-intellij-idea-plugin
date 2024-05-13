@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2CreateBuildDialog
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DeployBuildDialog
@@ -36,7 +36,7 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
 
 val subscriptionKey = DataKey.create<CCv2Subscription>("subscription")
-val buildKey = DataKey.create<CCv2Build>("build")
+val buildKey = DataKey.create<CCv2BuildDto>("build")
 
 class CCv2CreateBuildAction : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
@@ -54,7 +54,7 @@ class CCv2CreateBuildAction : AbstractCCv2Action(
 
 class CCv2RedoBuildAction(
     private val subscription: CCv2Subscription,
-    private val build: CCv2Build
+    private val build: CCv2BuildDto
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Redo Build",
@@ -69,7 +69,7 @@ class CCv2RedoBuildAction(
 
 class CCv2DeployBuildAction(
     private val subscription: CCv2Subscription,
-    private val build: CCv2Build
+    private val build: CCv2BuildDto
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Deploy Build",
@@ -84,7 +84,7 @@ class CCv2DeployBuildAction(
 
 class CCv2DeleteBuildAction(
     private val subscription: CCv2Subscription,
-    private val build: CCv2Build
+    private val build: CCv2BuildDto
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Delete Build",
@@ -105,7 +105,7 @@ class CCv2DeleteBuildAction(
     }
 }
 
-class CCv2FetchBuildsAction : AbstractCCv2FetchAction<CCv2Build>(
+class CCv2FetchBuildsAction : AbstractCCv2FetchAction<CCv2BuildDto>(
     tab = CCv2Tab.BUILDS,
     text = "Fetch Builds",
     icon = HybrisIcons.CCV2_FETCH,
@@ -116,7 +116,7 @@ class CCv2FetchBuildsAction : AbstractCCv2FetchAction<CCv2Build>(
 
 class CCv2DownloadBuildLogsAction(
     private val subscription: CCv2Subscription,
-    private val build: CCv2Build
+    private val build: CCv2BuildDto
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Download Build Logs",

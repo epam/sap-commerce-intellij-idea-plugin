@@ -24,19 +24,19 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2DeleteBuildAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2DeployBuildAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2DownloadBuildLogsAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2RedoBuildAction
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
 
-object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
+object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
 
     override val tab: CCv2Tab
         get() = CCv2Tab.BUILDS
 
-    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2Build>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2BuildDto>>): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, builds) ->
             collapsibleGroup(subscription.toString()) {
@@ -51,7 +51,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2Build>() {
     }
         .let { Dsl.scrollPanel(it) }
 
-    private fun Panel.build(subscription: CCv2Subscription, build: CCv2Build) {
+    private fun Panel.build(subscription: CCv2Subscription, build: CCv2BuildDto) {
         row {
             panel {
                 row {

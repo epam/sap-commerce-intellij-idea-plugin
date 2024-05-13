@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
@@ -35,7 +35,7 @@ import com.intellij.util.ui.JBUI
 class CCv2CreateBuildDialog(
     private val project: Project,
     private val subscription: CCv2Subscription?,
-    private val build: CCv2Build?,
+    private val build: CCv2BuildDto?,
 ) : DialogWrapper(project) {
 
     init {

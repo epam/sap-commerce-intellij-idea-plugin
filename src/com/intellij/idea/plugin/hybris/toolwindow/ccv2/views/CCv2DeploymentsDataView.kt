@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.ui.DialogPanel
@@ -29,12 +29,12 @@ import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 
-object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
+object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2DeploymentDto>() {
 
     override val tab: CCv2Tab
         get() = CCv2Tab.DEPLOYMENTS
 
-    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2Deployment>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2DeploymentDto>>): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, builds) ->
             collapsibleGroup(subscription.toString()) {
@@ -49,7 +49,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2Deployment>() {
     }
         .let { Dsl.scrollPanel(it) }
 
-    private fun Panel.deployment(deployment: CCv2Deployment) {
+    private fun Panel.deployment(deployment: CCv2DeploymentDto) {
         row {
             panel {
                 row {

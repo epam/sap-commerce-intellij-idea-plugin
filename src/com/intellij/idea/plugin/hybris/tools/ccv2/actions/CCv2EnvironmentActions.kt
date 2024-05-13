@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
@@ -38,7 +38,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
 
-class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction<CCv2Environment>(
+class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction<CCv2EnvironmentDto>(
     tab = CCv2Tab.ENVIRONMENTS,
     text = "Fetch Environments",
     icon = HybrisIcons.CCV2_FETCH,
@@ -49,9 +49,9 @@ class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction<CCv2Environment>(
 
 class CCv2FetchEnvironmentAction(
     private val subscription: CCv2Subscription,
-    private val environment: CCv2Environment,
+    private val environment: CCv2EnvironmentDto,
     private val onStartCallback: () -> Unit,
-    private val onCompleteCallback: (CCv2Environment) -> Unit
+    private val onCompleteCallback: (CCv2EnvironmentDto) -> Unit
 ) : DumbAwareAction("Fetch Environment", null, HybrisIcons.CCV2_FETCH) {
 
     private var fetching = false
@@ -100,7 +100,7 @@ class CCv2FetchEnvironmentAction(
 
 class CCv2ShowEnvironmentDetailsAction(
     private val subscription: CCv2Subscription,
-    private val environment: CCv2Environment
+    private val environment: CCv2EnvironmentDto
 ) : DumbAwareAction("Show Environment Details", null, HybrisIcons.CCV2_ENVIRONMENT_DETAILS) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.EDT

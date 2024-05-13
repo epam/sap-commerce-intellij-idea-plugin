@@ -27,9 +27,9 @@ import com.intellij.idea.plugin.hybris.ccv1.model.MediaStoragePublicKeyDTO
 import com.intellij.idea.plugin.hybris.ccv1.model.PermissionDTO
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentService
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2MediaStorage
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2MediaStorageDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import java.util.concurrent.TimeUnit
@@ -78,8 +78,8 @@ class CCv1Api {
     suspend fun fetchMediaStoragePublicKey(
         accessToken: String,
         subscription: CCv2Subscription,
-        environment: CCv2Environment,
-        mediaStorage: CCv2MediaStorage,
+        environment: CCv2EnvironmentDto,
+        mediaStorage: CCv2MediaStorageDto,
     ): MediaStoragePublicKeyDTO? {
         ApiClient.accessToken = accessToken
 
@@ -97,8 +97,8 @@ class CCv1Api {
     suspend fun fetchEnvironmentServices(
         accessToken: String,
         subscription: CCv2Subscription,
-        environment: CCv2Environment
-    ): Collection<CCv2EnvironmentService> {
+        environment: CCv2EnvironmentDto
+    ): Collection<CCv2ServiceDto> {
         ApiClient.accessToken = accessToken
 
         val subscriptionCode = subscription.id ?: return emptyList()
@@ -109,7 +109,7 @@ class CCv1Api {
                 subscriptionCode,
                 environment.code,
             )
-            .map { CCv2EnvironmentService.map(subscription, environment, it) }
+            .map { CCv2ServiceDto.map(subscription, environment, it) }
     }
 
     private fun createClient() = ApiClient.builder

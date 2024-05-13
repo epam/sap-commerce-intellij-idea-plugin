@@ -24,23 +24,23 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import javax.swing.Icon
 
-data class CCv2Environment(
+data class CCv2EnvironmentDto(
     val code: String,
     val name: String,
     val type: CCv2EnvironmentType,
     val status: CCv2EnvironmentStatus,
     val deploymentStatus: CCv2DeploymentStatusEnum,
     val deploymentAllowed: Boolean = false,
-    var deployedBuild: CCv2Build? = null,
+    var deployedBuild: CCv2BuildDto? = null,
     val dynatraceLink: String? = null,
     val loggingLink: String? = null,
     val problems: Int? = null,
     val link: String?,
-    val mediaStorages: Collection<CCv2MediaStorage>,
-    var services: Collection<CCv2EnvironmentService>? = null,
-) : CCv2DTO, Comparable<CCv2Environment> {
+    val mediaStorages: Collection<CCv2MediaStorageDto>,
+    var services: Collection<CCv2ServiceDto>? = null,
+) : CCv2DTO, Comparable<CCv2EnvironmentDto> {
 
-    override fun compareTo(other: CCv2Environment) = name.compareTo(other.name)
+    override fun compareTo(other: CCv2EnvironmentDto) = name.compareTo(other.name)
 
     companion object {
 
@@ -49,7 +49,7 @@ data class CCv2Environment(
             deploymentStatus: Boolean,
             v1Environment: com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentDetailDTO?,
             v1EnvironmentHealth: EnvironmentHealthDTO?
-        ): CCv2Environment {
+        ): CCv2EnvironmentDto {
             val status = CCv2EnvironmentStatus.tryValueOf(environment.status)
             val code = environment.code
 
@@ -59,10 +59,10 @@ data class CCv2Environment(
 
             val mediaStorages = (v1Environment
                 ?.mediaStorages
-                ?.map { CCv2MediaStorage.map(environment, it) }
+                ?.map { CCv2MediaStorageDto.map(environment, it) }
                 ?: emptyList())
 
-            return CCv2Environment(
+            return CCv2EnvironmentDto(
                 code = code ?: "N/A",
                 name = environment.name ?: "N/A",
                 status = status,

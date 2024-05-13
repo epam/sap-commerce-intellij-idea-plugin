@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
 import java.time.OffsetDateTime
 import javax.swing.Icon
 
-data class CCv2Deployment(
+data class CCv2DeploymentDto(
     val code: String,
     val createdBy: String,
     val createdTime: OffsetDateTime?,

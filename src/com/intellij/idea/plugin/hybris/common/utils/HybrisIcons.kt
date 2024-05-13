@@ -245,6 +245,7 @@ object HybrisIcons {
 
     val CCV2_ENVIRONMENT_DETAILS = getIcon("/icons/module/cloud.svg")
 
+    val CCV2_SERVICE = AllIcons.Nodes.Services
     val CCV2_SERVICE_MODIFIED_BY = AllIcons.General.User
 
     val CCV2_DEPLOYMENT_CREATED_BY = AllIcons.General.User

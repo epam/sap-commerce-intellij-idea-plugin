@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
 import java.time.OffsetDateTime
 
-data class CCv2EnvironmentService(
+data class CCv2ServiceDto(
     val code: String,
     val name: String,
     val modifiedBy: String,
@@ -33,14 +33,15 @@ data class CCv2EnvironmentService(
     val runnable: Boolean,
     val desiredReplicas: Int?,
     val availableReplicas: Int?,
-    val link: String
+    val link: String,
+    val replicas: Collection<CCv2ServiceReplicaDto>,
 ) {
 
     val modifiedTimeFormatted
         get() = CCv2Util.formatTime(modifiedTime)
 
     companion object {
-        fun map(subscription: CCv2Subscription, environment: CCv2Environment, dto: ServiceDTO) = CCv2EnvironmentService(
+        fun map(subscription: CCv2Subscription, environment: CCv2EnvironmentDto, dto: ServiceDTO) = CCv2ServiceDto(
             code = dto.code,
             name = dto.name,
             modifiedBy = dto.modifiedBy,
@@ -49,7 +50,10 @@ data class CCv2EnvironmentService(
             runnable = dto.runnable,
             desiredReplicas = dto.desiredReplicas,
             availableReplicas = dto.availableReplicas,
-            link = "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${subscription.id!!}/applications/commerce-cloud/environments/${environment.code}/services/${dto.code}/replicas"
+            link = "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${subscription.id!!}/applications/commerce-cloud/environments/${environment.code}/services/${dto.code}/replicas",
+            replicas = dto.replicas
+                ?.map { CCv2ServiceReplicaDto.map(environment, it) }
+                ?: emptyList()
         )
     }
 }

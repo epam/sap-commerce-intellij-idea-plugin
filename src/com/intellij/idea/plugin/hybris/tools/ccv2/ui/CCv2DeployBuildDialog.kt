@@ -22,10 +22,10 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDatabaseUpdateModeEnum
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStrategyEnum
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -43,18 +43,18 @@ import javax.swing.JLabel
 class CCv2DeployBuildDialog(
     private val project: Project,
     private val subscription: CCv2Subscription?,
-    private val build: CCv2Build,
+    private val build: CCv2BuildDto,
 ) : DialogWrapper(project), Disposable {
 
-    private lateinit var environments: SortedMap<CCv2Subscription, Collection<CCv2Environment>>
+    private lateinit var environments: SortedMap<CCv2Subscription, Collection<CCv2EnvironmentDto>>
 
     private lateinit var subscriptionComboBox: ComboBox<CCv2Subscription>
-    private lateinit var environmentComboBox: ComboBox<CCv2Environment>
+    private lateinit var environmentComboBox: ComboBox<CCv2EnvironmentDto>
     private lateinit var modeComboBox: ComboBox<CCv2DeploymentDatabaseUpdateModeEnum>
     private lateinit var strategyComboBox: ComboBox<CCv2DeploymentStrategyEnum>
     private lateinit var fetchingLabel: JLabel
 
-    private val environmentModel by lazy { CollectionComboBoxModel<CCv2Environment>() }
+    private val environmentModel by lazy { CollectionComboBoxModel<CCv2EnvironmentDto>() }
     private val modeModel by lazy {
         CollectionComboBoxModel(
             listOf(
@@ -207,7 +207,7 @@ class CCv2DeployBuildDialog(
 
     override fun applyFields() {
         val subscription = subscriptionComboBox.selectedItem as CCv2Subscription
-        val environment = environmentComboBox.selectedItem as CCv2Environment
+        val environment = environmentComboBox.selectedItem as CCv2EnvironmentDto
         val mode = modeComboBox.selectedItem as CCv2DeploymentDatabaseUpdateModeEnum
         val strategy = strategyComboBox.selectedItem as CCv2DeploymentStrategyEnum
 

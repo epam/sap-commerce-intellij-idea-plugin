@@ -24,13 +24,15 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentAction
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentService
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowServiceDetailsAction
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.ide.CopyPasteManager
@@ -39,7 +41,6 @@ import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.AnimatedIcon
-import com.intellij.ui.JBColor
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
@@ -51,7 +52,7 @@ import java.io.Serial
 class CCv2EnvironmentDetailsView(
     private val project: Project,
     private val subscription: CCv2Subscription,
-    private var environment: CCv2Environment
+    private var environment: CCv2EnvironmentDto
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val showBuild = AtomicBooleanProperty(environment.deployedBuild != null)
@@ -160,7 +161,7 @@ class CCv2EnvironmentDetailsView(
         }
     }
 
-    private fun buildPanel(build: CCv2Build) = panel {
+    private fun buildPanel(build: CCv2BuildDto) = panel {
         row {
             panel {
                 row {
@@ -204,9 +205,18 @@ class CCv2EnvironmentDetailsView(
             .layout(RowLayout.PARENT_GRID)
     }
 
-    private fun servicesPanel(services: Collection<CCv2EnvironmentService>) = panel {
+    private fun servicesPanel(services: Collection<CCv2ServiceDto>) = panel {
         services.forEach { service ->
             row {
+                panel {
+                    row {
+                        actionButton(
+                            CCv2ShowServiceDetailsAction(subscription, environment, service),
+                            ActionPlaces.TOOLWINDOW_CONTENT
+                        )
+                    }
+                }.gap(RightGap.SMALL)
+
                 panel {
                     row {
                         browserLink(service.name, service.link)
@@ -217,12 +227,7 @@ class CCv2EnvironmentDetailsView(
                     .gap(RightGap.COLUMNS)
 
                 panel {
-                    row {
-                        icon(HybrisIcons.CCV2_SERVICE_MODIFIED_BY)
-                            .gap(RightGap.SMALL)
-                        label(service.modifiedBy)
-                            .comment("Modified by")
-                    }
+                    ccv2ServiceModifiedByRow(service)
                 }
                     .gap(RightGap.COLUMNS)
 
@@ -235,39 +240,12 @@ class CCv2EnvironmentDetailsView(
                     .gap(RightGap.COLUMNS)
 
                 panel {
-                    row {
-                        val replicas = if (service.desiredReplicas != null && service.availableReplicas != null)
-                            "${service.availableReplicas} / ${service.desiredReplicas}"
-                        else "--"
-                        label(replicas)
-                            .comment("Replicas")
-                    }
+                    ccv2ServiceReplicasRow(service)
                 }
                     .gap(RightGap.COLUMNS)
 
                 panel {
-                    row {
-                        val statusLabel = when {
-                            service.desiredReplicas == null -> label("--")
-                            service.availableReplicas == 0 -> label("Stopped").also {
-                                with(it.component) {
-                                    foreground = JBColor.namedColor("hybris.ccv2.service.stopped", 0xDB5860, 0xC75450)
-                                }
-                            }
-
-                            service.availableReplicas == service.desiredReplicas -> label("Running").also {
-                                with(it.component) {
-                                    foreground = JBColor.namedColor("hybris.ccv2.service.stopped", 0x59A869, 0x499C54)
-                                }
-                            }
-
-                            service.availableReplicas != service.desiredReplicas -> label("Deploying")
-                            else -> label("--")
-                        }
-
-                        statusLabel
-                            .comment("Status")
-                    }
+                    ccv2ServiceStatusRow(service)
                 }
             }
                 .layout(RowLayout.PARENT_GRID)
@@ -480,20 +458,6 @@ class CCv2EnvironmentDetailsView(
                     }.align(Align.CENTER)
                 }.visibleIf(showServices.not())
             }.expanded = true
-
-//            collapsibleGroup("Services") {
-//                row {
-//                    icon(AnimatedIcon.Default.INSTANCE)
-//                        .comment("Loading services...")
-//                }
-//            }.expanded = true
-//
-//            collapsibleGroup("Public Endpoints") {
-//                row {
-//                    icon(AnimatedIcon.Default.INSTANCE)
-//                        .comment("Loading public endpoints...")
-//                }
-//            }.expanded = true
         }
     }
         .let { Dsl.scrollPanel(it) }

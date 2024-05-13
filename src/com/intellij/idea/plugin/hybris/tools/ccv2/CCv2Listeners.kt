@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Deployment
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 
 sealed interface CCv2Listener<T : CCv2DTO> {
     fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = Unit
@@ -37,14 +37,14 @@ interface CCv2SettingsListener {
     fun onActiveSubscriptionChanged(subscription: CCv2Subscription?) = Unit
 }
 
-interface CCv2EnvironmentsListener : CCv2Listener<CCv2Environment>
-interface CCv2DeploymentsListener : CCv2Listener<CCv2Deployment>
+interface CCv2EnvironmentsListener : CCv2Listener<CCv2EnvironmentDto>
+interface CCv2DeploymentsListener : CCv2Listener<CCv2DeploymentDto>
 
-interface CCv2BuildsListener : CCv2Listener<CCv2Build> {
+interface CCv2BuildsListener : CCv2Listener<CCv2BuildDto> {
     fun onBuildStarted() = Unit
-    fun onBuildRemovalStarted(subscription: CCv2Subscription, build: CCv2Build) = Unit
-    fun onBuildRemovalRequested(subscription: CCv2Subscription, build: CCv2Build) = Unit
+    fun onBuildRemovalStarted(subscription: CCv2Subscription, build: CCv2BuildDto) = Unit
+    fun onBuildRemovalRequested(subscription: CCv2Subscription, build: CCv2BuildDto) = Unit
 
-    fun onBuildDeploymentStarted(subscription: CCv2Subscription, build: CCv2Build) = Unit
-    fun onBuildDeploymentRequested(subscription: CCv2Subscription, build: CCv2Build) = Unit
+    fun onBuildDeploymentStarted(subscription: CCv2Subscription, build: CCv2BuildDto) = Unit
+    fun onBuildDeploymentRequested(subscription: CCv2Subscription, build: CCv2BuildDto) = Unit
 }

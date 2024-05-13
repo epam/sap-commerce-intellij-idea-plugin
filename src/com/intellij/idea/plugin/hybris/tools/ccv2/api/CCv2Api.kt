@@ -47,10 +47,10 @@ class CCv2Api {
         ccv2Token: String,
         subscriptions: Collection<CCv2Subscription>,
         statuses: List<String>
-    ): SortedMap<CCv2Subscription, Collection<CCv2Environment>> {
+    ): SortedMap<CCv2Subscription, Collection<CCv2EnvironmentDto>> {
         ApiClient.accessToken = ccv2Token
         val client = createClient()
-        val result = sortedMapOf<CCv2Subscription, Collection<CCv2Environment>>()
+        val result = sortedMapOf<CCv2Subscription, Collection<CCv2EnvironmentDto>>()
         val ccv1Api = CCv1Api.getInstance()
 
         reportProgress(subscriptions.size) { progressReporter ->
@@ -87,7 +87,7 @@ class CCv2Api {
                                 }
                                 ?.awaitAll()
                                 ?.map { (environment, details) ->
-                                    CCv2Environment.map(environment, details.first, details.second, details.third)
+                                    CCv2EnvironmentDto.map(environment, details.first, details.second, details.third)
                                 }
                                 ?: emptyList()
                         }
@@ -101,7 +101,7 @@ class CCv2Api {
 
     suspend fun fetchEnvironmentsBuilds(
         ccv2Token: String,
-        subscriptions: Map<CCv2Subscription, Collection<CCv2Environment>>
+        subscriptions: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>
     ) {
         val environments = subscriptions.values.flatten()
 
@@ -123,8 +123,8 @@ class CCv2Api {
     suspend fun fetchEnvironmentBuild(
         ccv2Token: String,
         subscription: CCv2Subscription,
-        environment: CCv2Environment,
-    ): CCv2Build? {
+        environment: CCv2EnvironmentDto,
+    ): CCv2BuildDto? {
         ApiClient.accessToken = ccv2Token
         val client = createClient()
         val subscriptionCode = subscription.id!!
@@ -146,24 +146,24 @@ class CCv2Api {
         ccv2Token: String,
         subscription: CCv2Subscription,
         buildCode: String
-    ): CCv2Build {
+    ): CCv2BuildDto {
         ApiClient.accessToken = ccv2Token
         val subscriptionCode = subscription.id!!
         val client = createClient()
 
         return BuildApi(client = client)
             .getBuild(subscriptionCode, buildCode)
-            .let { CCv2Build.map(it) }
+            .let { CCv2BuildDto.map(it) }
     }
 
     suspend fun fetchBuilds(
         ccv2Token: String,
         subscriptions: Collection<CCv2Subscription>,
         statusNot: List<String>?,
-    ): SortedMap<CCv2Subscription, Collection<CCv2Build>> {
+    ): SortedMap<CCv2Subscription, Collection<CCv2BuildDto>> {
         ApiClient.accessToken = ccv2Token
         val client = createClient()
-        val result = sortedMapOf<CCv2Subscription, Collection<CCv2Build>>()
+        val result = sortedMapOf<CCv2Subscription, Collection<CCv2BuildDto>>()
 
         reportProgress(subscriptions.size) { progressReporter ->
             coroutineScope {
@@ -173,7 +173,7 @@ class CCv2Api {
                             BuildApi(client = client)
                                 .getBuilds(it.id!!, dollarTop = 20, statusNot = statusNot)
                                 .value
-                                ?.map { build -> CCv2Build.map(build) }
+                                ?.map { build -> CCv2BuildDto.map(build) }
                                 ?: emptyList()
                         }
                     }
@@ -187,10 +187,10 @@ class CCv2Api {
     suspend fun fetchDeployments(
         ccv2Token: String,
         subscriptions: Collection<CCv2Subscription>
-    ): SortedMap<CCv2Subscription, Collection<CCv2Deployment>> {
+    ): SortedMap<CCv2Subscription, Collection<CCv2DeploymentDto>> {
         ApiClient.accessToken = ccv2Token
         val client = createClient()
-        val result = sortedMapOf<CCv2Subscription, Collection<CCv2Deployment>>()
+        val result = sortedMapOf<CCv2Subscription, Collection<CCv2DeploymentDto>>()
 
         reportProgress(subscriptions.size) { progressReporter ->
             coroutineScope {
@@ -208,7 +208,7 @@ class CCv2Api {
                                         "https://${HybrisConstants.CCV2_DOMAIN}/subscription/$subscriptionCode/applications/commerce-cloud/environments/$environmentCode/deployments/$code"
                                     else null
 
-                                    CCv2Deployment(
+                                    CCv2DeploymentDto(
                                         code = code ?: "N/A",
                                         createdBy = deployment.createdBy ?: "N/A",
                                         createdTime = deployment.createdTimestamp,
@@ -250,7 +250,7 @@ class CCv2Api {
     suspend fun deleteBuild(
         ccv2Token: String,
         subscription: CCv2Subscription,
-        build: CCv2Build
+        build: CCv2BuildDto
     ) {
         ApiClient.accessToken = ccv2Token
 
@@ -261,8 +261,8 @@ class CCv2Api {
     suspend fun deployBuild(
         ccv2Token: String,
         subscription: CCv2Subscription,
-        environment: CCv2Environment,
-        build: CCv2Build,
+        environment: CCv2EnvironmentDto,
+        build: CCv2BuildDto,
         mode: CCv2DeploymentDatabaseUpdateModeEnum,
         strategy: CCv2DeploymentStrategyEnum
     ): String {
@@ -282,7 +282,7 @@ class CCv2Api {
     suspend fun downloadBuildLogs(
         ccv2Token: String,
         subscription: CCv2Subscription,
-        build: CCv2Build
+        build: CCv2BuildDto
     ): File {
         ApiClient.accessToken = ccv2Token
 

@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
 import java.time.OffsetDateTime
 import javax.swing.Icon
 
-data class CCv2Build(
+data class CCv2BuildDto(
     val code: String,
     val name: String,
     val branch: String,
@@ -49,7 +49,7 @@ data class CCv2Build(
     fun canDeploy() = status == CCv2BuildStatus.SUCCESS
 
     companion object {
-        fun map(build: BuildDetailDTO) = CCv2Build(
+        fun map(build: BuildDetailDTO) = CCv2BuildDto(
             code = build.code ?: "N/A",
             name = build.name ?: "N/A",
             branch = build.branch ?: "N/A",
