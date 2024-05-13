@@ -9,10 +9,10 @@
 - Added possibility to download Build Logs [#1105](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1105)
 - Filter out Builds by Status [#1106](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1106)
 - Point OpenSearch link to `Discover` view [#1107](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1107)
-- Added a browser link to Environment name [#1108](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1108)
+- Added a browser link for Environment name [#1108](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1108)
 - Sort environments by type and name [#1109](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1109)
-- Added a browser link to Build name [#1110](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1110)
-- Added a browser link to Deployment code [#1111](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1111)
+- Added a browser link for Build name [#1110](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1110)
+- Added a browser link for Deployment code [#1111](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1111)
 - Filter out Environments by Status [#1112](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1112)
 - Use `CCv1` api to get subscription permissions [#1113](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1113)
 - Show environment details in a new tab [#1114](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1114)
@@ -21,6 +21,7 @@
 - List services for an environment [#1117](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1117)
 - Cache list of services for an environment [#1118](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1118)
 - Added possibility to re-fetch environment [#1119](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1119)
+- Added a browser link for Cloud Storage name [#1120](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1120)
 
 ### `Project Import` enhancements
 - Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)

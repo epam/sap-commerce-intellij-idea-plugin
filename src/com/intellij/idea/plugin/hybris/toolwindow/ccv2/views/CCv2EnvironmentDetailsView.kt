@@ -382,7 +382,7 @@ class CCv2EnvironmentDetailsView(
                         row {
                             panel {
                                 row {
-                                    label(mediaStorage.name)
+                                    browserLink(mediaStorage.name, mediaStorage.link)
                                         .bold()
                                         .comment("Name")
                                 }

@@ -18,12 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
+import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentHealthDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import javax.swing.Icon
-import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentDetailDTO as EnvironmentDetailV1DTO
-import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentHealthDTO as EnvironmentHealthV1DTO
 
 data class CCv2Environment(
     val code: String,
@@ -48,8 +47,8 @@ data class CCv2Environment(
         fun map(
             environment: EnvironmentDetailDTO,
             deploymentStatus: Boolean,
-            v1Environment: EnvironmentDetailV1DTO?,
-            v1EnvironmentHealth: EnvironmentHealthV1DTO?
+            v1Environment: com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentDetailDTO?,
+            v1EnvironmentHealth: EnvironmentHealthDTO?
         ): CCv2Environment {
             val status = CCv2EnvironmentStatus.tryValueOf(environment.status)
             val code = environment.code
@@ -60,7 +59,7 @@ data class CCv2Environment(
 
             val mediaStorages = (v1Environment
                 ?.mediaStorages
-                ?.map { CCv2MediaStorage.map(it) }
+                ?.map { CCv2MediaStorage.map(environment, it) }
                 ?: emptyList())
 
             return CCv2Environment(

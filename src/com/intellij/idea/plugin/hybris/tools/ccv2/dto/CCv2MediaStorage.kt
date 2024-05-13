@@ -19,20 +19,24 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv1.model.MediaStorageDTO
+import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 
 data class CCv2MediaStorage(
     val code: String,
     val name: String,
     val accountName: String,
     val publicUrl: String,
-    var accountKey: String? = null
+    var accountKey: String? = null,
+    val link: String
 ) {
     companion object {
-        fun map(dto: MediaStorageDTO) = CCv2MediaStorage(
+        fun map(environment: EnvironmentDetailDTO, dto: MediaStorageDTO) = CCv2MediaStorage(
             code = dto.code,
             name = dto.name,
             accountName = dto.accountName,
             publicUrl = dto.publicUrl,
+            link = "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${environment.subscriptionCode}/applications/commerce-cloud/environments/${environment.code}/cloud-storage/${dto.code}"
         )
     }
 }
