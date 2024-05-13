@@ -28,8 +28,10 @@
     </extensions>
 
     <actions>
+        <action id="ccv2.open.settings.action" class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2OpenSettingsAction"/>
+
         <group id="ccv2.toolbar.actions">
-            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2OpenSettingsAction"/>
+            <reference id="ccv2.open.settings.action"/>
             <separator/>
 
             <group text="View Options"
@@ -55,6 +57,11 @@
             <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchBuildsAction"/>
 
             <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2CreateBuildAction"/>
+        </group>
+
+        <group id="ccv2.environment.toolbar.actions">
+            <reference id="ccv2.open.settings.action"/>
+            <separator/>
         </group>
     </actions>
 </idea-plugin>

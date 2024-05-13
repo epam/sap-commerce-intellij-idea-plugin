@@ -23,11 +23,15 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentAction
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Build
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Environment
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentService
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
@@ -43,34 +47,73 @@ import com.intellij.util.ui.JBUI
 import java.awt.GridBagLayout
 import java.awt.datatransfer.StringSelection
 import java.io.Serial
-import javax.swing.JLabel
 
 class CCv2EnvironmentDetailsView(
     private val project: Project,
     private val subscription: CCv2Subscription,
-    private val environment: CCv2Environment
+    private var environment: CCv2Environment
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val showBuild = AtomicBooleanProperty(environment.deployedBuild != null)
     private val showServices = AtomicBooleanProperty(environment.services != null)
 
-    private lateinit var buildNameLabel: JLabel
-    private lateinit var buildBranchLabel: JLabel
-    private lateinit var buildCodeLabel: JLabel
-    private lateinit var buildVersionLabel: JLabel
-    private lateinit var buildCreatedByLabel: JLabel
+    private val buildPanel = JBPanel<JBPanel<*>>(GridBagLayout())
+        .also { border = JBUI.Borders.empty() }
     private val servicesPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
+    private var rootPanel = rootPanel()
+
+    override fun dispose() {
+        // NOP
+    }
 
     init {
-        add(rootPanel())
+        installToolbar()
+        initPanel()
+    }
 
-        val ccv2Service = CCv2Service.getInstance(project)
-        if (environment.deployedBuild == null) {
-            ccv2Service.fetchEnvironmentBuild(subscription, environment,
+    private fun installToolbar() {
+        val toolbar = with(DefaultActionGroup()) {
+            val actionManager = ActionManager.getInstance()
+
+            add(actionManager.getAction("ccv2.environment.toolbar.actions"))
+            add(CCv2FetchEnvironmentAction(
+                subscription,
+                environment,
+                {
+                },
+                {
+                    environment = it
+
+                    this@CCv2EnvironmentDetailsView.remove(rootPanel)
+                    rootPanel = rootPanel()
+
+                    initPanel()
+                }
+            ))
+
+
+            actionManager.createActionToolbar("SAP_CX_CCv2_ENVIRONMENT_${System.identityHashCode(environment)}", this, false)
+        }
+        toolbar.targetComponent = this
+        setToolbar(toolbar.component)
+    }
+
+    private fun initPanel() {
+        add(rootPanel)
+
+        initBuildPanel()
+        initServicesPanel()
+    }
+
+    private fun initBuildPanel() {
+        val deployedBuild = environment.deployedBuild
+        if (deployedBuild == null) {
+            CCv2Service.getInstance(project).fetchEnvironmentBuild(subscription, environment,
                 {
                     showBuild.set(false)
                     environment.deployedBuild = null
+                    buildPanel.removeAll()
                 },
                 { build ->
                     environment.deployedBuild = build
@@ -79,20 +122,21 @@ class CCv2EnvironmentDetailsView(
                         showBuild.set(build != null)
 
                         if (build != null) {
-                            buildNameLabel.text = build.name
-                            buildBranchLabel.text = build.branch
-                            buildCodeLabel.text = build.code
-                            buildVersionLabel.text = build.version
-                            buildCreatedByLabel.text = build.createdBy
+                            buildPanel.add(buildPanel(build))
                         }
                     }
                 }
             )
+        } else {
+            buildPanel.removeAll()
+            buildPanel.add(buildPanel(deployedBuild))
         }
+    }
 
+    private fun initServicesPanel() {
         val services = environment.services
         if (services == null) {
-            ccv2Service.fetchEnvironmentServices(subscription, environment,
+            CCv2Service.getInstance(project).fetchEnvironmentServices(subscription, environment,
                 {
                     showServices.set(false)
                     environment.services = null
@@ -111,12 +155,53 @@ class CCv2EnvironmentDetailsView(
                 }
             )
         } else {
+            servicesPanel.removeAll()
             servicesPanel.add(servicesPanel(services))
         }
     }
 
-    override fun dispose() {
-        // NOP
+    private fun buildPanel(build: CCv2Build) = panel {
+        row {
+            panel {
+                row {
+                    label(build.name)
+                        .bold()
+                        .comment("Name")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    icon(HybrisIcons.CCV2_BUILD_BRANCH)
+                        .gap(RightGap.SMALL)
+                    label(build.branch)
+                        .comment("Branch")
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    label(build.code)
+                        .comment("Code")
+                }
+            }
+
+            panel {
+                row {
+                    label(build.version)
+                        .comment("Version")
+                }
+            }
+
+            panel {
+                row {
+                    icon(HybrisIcons.CCV2_BUILD_CREATED_BY)
+                    label(build.createdBy)
+                        .comment("Created by")
+                }
+            }
+        }
+            .layout(RowLayout.PARENT_GRID)
     }
 
     private fun servicesPanel(services: Collection<CCv2EnvironmentService>) = panel {
@@ -272,50 +357,7 @@ class CCv2EnvironmentDetailsView(
 
             group("Build") {
                 row {
-                    val deployedBuild = environment.deployedBuild
-                    panel {
-                        row {
-                            buildNameLabel = label(deployedBuild?.name ?: "")
-                                .bold()
-                                .comment("Name")
-                                .component
-                        }
-                    }.gap(RightGap.COLUMNS)
-
-                    panel {
-                        row {
-                            icon(HybrisIcons.CCV2_BUILD_BRANCH)
-                                .gap(RightGap.SMALL)
-                            buildBranchLabel = label(deployedBuild?.branch ?: "")
-                                .comment("Branch")
-                                .component
-                        }
-                    }.gap(RightGap.COLUMNS)
-
-                    panel {
-                        row {
-                            buildCodeLabel = label(deployedBuild?.code ?: "")
-                                .comment("Code")
-                                .component
-                        }
-                    }
-
-                    panel {
-                        row {
-                            buildVersionLabel = label(deployedBuild?.version ?: "")
-                                .comment("Version")
-                                .component
-                        }
-                    }
-
-                    panel {
-                        row {
-                            icon(HybrisIcons.CCV2_BUILD_CREATED_BY)
-                            buildCreatedByLabel = label(deployedBuild?.createdBy ?: "")
-                                .comment("Created by")
-                                .component
-                        }
-                    }
+                    cell(buildPanel)
                 }.visibleIf(showBuild)
 
                 row {
