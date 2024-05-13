@@ -24,7 +24,8 @@ data class CCv2MediaStorage(
     val code: String,
     val name: String,
     val accountName: String,
-    val publicUrl: String
+    val publicUrl: String,
+    var accountKey: String? = null
 ) {
     companion object {
         fun map(dto: MediaStorageDTO) = CCv2MediaStorage(

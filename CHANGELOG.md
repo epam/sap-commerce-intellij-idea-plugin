@@ -19,6 +19,7 @@
 - List Cloud Storages available for an environment [#1115](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1115)
 - Show build information for an environment [#1116](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1116)
 - List services for an environment [#1117](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1117)
+- Cache list of services for an environment [#1118](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1118)
 
 ### `Project Import` enhancements
 - Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)

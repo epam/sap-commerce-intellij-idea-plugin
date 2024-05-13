@@ -35,6 +35,7 @@ import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.AnimatedIcon
+import com.intellij.ui.JBColor
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
@@ -51,7 +52,8 @@ class CCv2EnvironmentDetailsView(
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val showBuild = AtomicBooleanProperty(environment.deployedBuild != null)
-    private val showServices = AtomicBooleanProperty(false)
+    private val showServices = AtomicBooleanProperty(environment.services != null)
+
     private lateinit var buildNameLabel: JLabel
     private lateinit var buildBranchLabel: JLabel
     private lateinit var buildCodeLabel: JLabel
@@ -88,25 +90,28 @@ class CCv2EnvironmentDetailsView(
             )
         }
 
-        if (environment.services == null) {
+        val services = environment.services
+        if (services == null) {
             ccv2Service.fetchEnvironmentServices(subscription, environment,
                 {
                     showServices.set(false)
                     environment.services = null
                     servicesPanel.removeAll()
                 },
-                { services ->
-                    environment.services = services
+                {
+                    environment.services = it
 
                     invokeLater {
-                        showServices.set(services != null)
+                        showServices.set(it != null)
 
-                        if (services != null) {
-                            servicesPanel.add(servicesPanel(services))
+                        if (it != null) {
+                            servicesPanel.add(servicesPanel(it))
                         }
                     }
                 }
             )
+        } else {
+            servicesPanel.add(servicesPanel(services))
         }
     }
 
@@ -128,6 +133,8 @@ class CCv2EnvironmentDetailsView(
 
                 panel {
                     row {
+                        icon(HybrisIcons.CCV2_SERVICE_MODIFIED_BY)
+                            .gap(RightGap.SMALL)
                         label(service.modifiedBy)
                             .comment("Modified by")
                     }
@@ -155,7 +162,25 @@ class CCv2EnvironmentDetailsView(
 
                 panel {
                     row {
-                        label(if (service.runnable) "Running" else "--")
+                        val statusLabel = when {
+                            service.desiredReplicas == null -> label("--")
+                            service.availableReplicas == 0 -> label("Stopped").also {
+                                with(it.component) {
+                                    foreground = JBColor.namedColor("hybris.ccv2.service.stopped", 0xDB5860, 0xC75450)
+                                }
+                            }
+
+                            service.availableReplicas == service.desiredReplicas -> label("Running").also {
+                                with(it.component) {
+                                    foreground = JBColor.namedColor("hybris.ccv2.service.stopped", 0x59A869, 0x499C54)
+                                }
+                            }
+
+                            service.availableReplicas != service.desiredReplicas -> label("Deploying")
+                            else -> label("--")
+                        }
+
+                        statusLabel
                             .comment("Status")
                     }
                 }
