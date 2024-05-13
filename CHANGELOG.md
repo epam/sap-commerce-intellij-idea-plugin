@@ -23,6 +23,7 @@
 - Added possibility to re-fetch environment [#1119](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1119)
 - Added a browser link for Cloud Storage name [#1120](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1120)
 - Show basic Environment Service details [#1121](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1121)
+- Retrieve and show Service properties [#1122](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1122)
 
 ### `Project Import` enhancements
 - Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)

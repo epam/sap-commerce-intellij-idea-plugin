@@ -18,15 +18,27 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
+import com.intellij.ide.HelpTooltip
+import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.ide.CopyPasteManager
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
+import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
+import com.intellij.ui.AnimatedIcon
+import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
+import java.awt.GridBagLayout
+import java.awt.datatransfer.StringSelection
 import java.io.Serial
 
 class CCv2ServiceDetailsView(
@@ -36,13 +48,92 @@ class CCv2ServiceDetailsView(
     private var service: CCv2ServiceDto,
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
+    private val showProperties = AtomicBooleanProperty(service.properties != null)
+
+    private val propertiesPanel = JBPanel<JBPanel<*>>(GridBagLayout())
+        .also { border = JBUI.Borders.empty() }
+    private var rootPanel = rootPanel()
+
     override fun dispose() {
         // NOP
     }
 
     init {
-        add(rootPanel())
+        initPanel()
     }
+
+    private fun initPanel() {
+        add(rootPanel)
+
+        initPropertiesPanel()
+    }
+
+    private fun initPropertiesPanel() {
+        val properties = service.properties
+        if (properties == null) {
+            CCv2Service.getInstance(project).fetchEnvironmentServiceProperties(subscription, environment, service,
+                {
+                    showProperties.set(false)
+                    service.properties = null
+                    propertiesPanel.removeAll()
+                },
+                {
+                    service.properties = it
+
+                    invokeLater {
+                        showProperties.set(it != null)
+
+                        if (it != null) {
+                            propertiesPanel.add(propertiesPanel(it))
+                        }
+                    }
+                }
+            )
+        } else {
+            propertiesPanel.removeAll()
+            propertiesPanel.add(propertiesPanel(properties))
+        }
+    }
+
+    private fun propertiesPanel(properties: Map<String, String>) = panel {
+        properties.forEach { (key, value) ->
+            row {
+                panel {
+                    row {
+                        link(key) {
+                            CopyPasteManager.getInstance().setContents(StringSelection(key))
+                            Notifications.create(NotificationType.INFORMATION, "Key copied to clipboard", "")
+                                .hideAfter(10)
+                                .notify(project)
+                        }
+                            .applyToComponent {
+                                HelpTooltip()
+                                    .setTitle("Click to copy to clipboard")
+                                    .installOn(this);
+                            }
+                    }
+                }.gap(RightGap.SMALL)
+
+                panel {
+                    row {
+                        link(value) {
+                            CopyPasteManager.getInstance().setContents(StringSelection(value))
+                            Notifications.create(NotificationType.INFORMATION, "Value copied to clipboard", "")
+                                .hideAfter(10)
+                                .notify(project)
+                        }
+                            .applyToComponent {
+                                HelpTooltip()
+                                    .setTitle("Click to copy to clipboard")
+                                    .installOn(this);
+                            }
+                    }
+                }
+            }
+                .layout(RowLayout.PARENT_GRID)
+        }
+    }
+
 
     private fun rootPanel() = panel {
         indent {
@@ -103,11 +194,20 @@ class CCv2ServiceDetailsView(
                 }
             }
 
-//            collapsibleGroup("Properties") {
-//                row {
-//                    cell(JBTable())
-//                }
-//            }.expanded = true
+            collapsibleGroup("Properties") {
+                row {
+                    cell(propertiesPanel)
+                }.visibleIf(showProperties)
+
+                row {
+                    panel {
+                        row {
+                            icon(AnimatedIcon.Default.INSTANCE)
+                            label("Retrieving service properties...")
+                        }
+                    }.align(Align.CENTER)
+                }.visibleIf(showProperties.not())
+            }.expanded = true
         }
     }
         .let { Dsl.scrollPanel(it) }

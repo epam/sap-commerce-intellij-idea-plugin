@@ -35,6 +35,7 @@ data class CCv2ServiceDto(
     val availableReplicas: Int?,
     val link: String,
     val replicas: Collection<CCv2ServiceReplicaDto>,
+    var properties: Map<String, String>? = null,
 ) {
 
     val modifiedTimeFormatted

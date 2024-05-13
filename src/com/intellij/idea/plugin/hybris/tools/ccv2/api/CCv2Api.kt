@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.api
 import com.intellij.idea.plugin.hybris.ccv2.api.BuildApi
 import com.intellij.idea.plugin.hybris.ccv2.api.DeploymentApi
 import com.intellij.idea.plugin.hybris.ccv2.api.EnvironmentApi
+import com.intellij.idea.plugin.hybris.ccv2.api.ServicePropertiesApi
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
@@ -290,12 +291,37 @@ class CCv2Api {
             .getBuildLogs(subscription.id!!, build.code)
     }
 
+    suspend fun fetchServiceProperties(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+        service: CCv2ServiceDto,
+    ): Map<String, String>? {
+        ApiClient.accessToken = ccv2Token
+        val subscriptionCode = subscription.id ?: return null
+
+        return ServicePropertiesApi(client = createClient())
+            .getProperty(
+                subscriptionCode,
+                environment.code,
+                service.code,
+                HybrisConstants.CCV2_SERVICE_CUSTOMER_PROPERTIES_CODE
+            )
+            .value
+            .let { it as? String }
+            ?.split("\n")
+            ?.map { propertySeparatorRegex.split(it, 2) }
+            ?.filter { it.size == 2 }
+            ?.associate { it[0] to it[1] }
+    }
+
     private fun createClient() = ApiClient.builder
         .readTimeout(ApplicationSettingsComponent.getInstance().state.ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
         .build()
 
     companion object {
         fun getInstance(): CCv2Api = ApplicationManager.getApplication().getService(CCv2Api::class.java)
+        private val propertySeparatorRegex = Regex("=")
     }
 
 }
