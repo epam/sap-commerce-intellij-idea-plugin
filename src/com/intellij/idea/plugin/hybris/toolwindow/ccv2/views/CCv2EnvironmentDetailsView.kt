@@ -232,10 +232,7 @@ class CCv2EnvironmentDetailsView(
                     .gap(RightGap.COLUMNS)
 
                 panel {
-                    row {
-                        label(service.modifiedTimeFormatted)
-                            .comment("Modified time")
-                    }
+                    ccv2ServiceModifiedTimeRow(service)
                 }
                     .gap(RightGap.COLUMNS)
 

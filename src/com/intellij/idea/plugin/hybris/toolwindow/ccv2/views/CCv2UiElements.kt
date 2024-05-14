@@ -67,3 +67,10 @@ fun Panel.ccv2ServiceModifiedByRow(service: CCv2ServiceDto) {
             .comment("Modified by")
     }
 }
+
+fun Panel.ccv2ServiceModifiedTimeRow(service: CCv2ServiceDto) {
+    row {
+        label(service.modifiedTimeFormatted)
+            .comment("Modified time")
+    }
+}

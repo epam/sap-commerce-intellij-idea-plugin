@@ -163,6 +163,10 @@ class CCv2ServiceDetailsView(
                     ccv2ServiceModifiedByRow(service)
                 }
                     .gap(RightGap.COLUMNS)
+
+                panel {
+                    ccv2ServiceModifiedTimeRow(service)
+                }
             }
 
             collapsibleGroup("Replicas") {

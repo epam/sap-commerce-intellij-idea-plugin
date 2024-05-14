@@ -23,7 +23,7 @@ jaxbImpl = "4.0.5"
 # https://mvnrepository.com/artifact/org.apache.solr/solr-solrj
 # version 9.2.1 is already available but we stick to the version used by Hybris
 # see folder hybris\bin\modules\search-and-navigation\solrserver\resources\solr\
-solrSolrj = "9.6.0"
+solrSolrj = "8.11.2"
 # https://mvnrepository.com/artifact/com.squareup.moshi/moshi
 moshi = "1.15.1"
 # https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp/
