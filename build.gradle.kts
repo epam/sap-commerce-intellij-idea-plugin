@@ -20,6 +20,7 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
+import org.jetbrains.intellij.platform.gradle.tasks.CustomRunIdeTask
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
@@ -202,7 +203,7 @@ tasks {
         applyRunIdeSystemSettings()
     }
 
-    val runIdeCommunity by registering(RunIdeTask::class) {
+    val runIdeCommunity by registering(CustomRunIdeTask::class) {
         type = IntelliJPlatformType.IntellijIdeaCommunity
         version = properties("intellij.version")
 
@@ -265,32 +266,36 @@ dependencies {
         pluginVerifier()
 
         // printBundledPlugins for bundled plugins
-        bundledPlugin("com.intellij.java")
-        bundledPlugin("com.intellij.java-i18n")
-        bundledPlugin("org.intellij.intelliLang")
-        bundledPlugin("com.intellij.copyright")
-        bundledPlugin("com.intellij.database")
-        bundledPlugin("com.intellij.diagram")
-        bundledPlugin("com.intellij.spring")
-        bundledPlugin("com.intellij.properties")
-        bundledPlugin("org.intellij.groovy")
-        bundledPlugin("com.intellij.gradle")
-        bundledPlugin("com.intellij.javaee")
-        bundledPlugin("com.intellij.javaee.el")
-        bundledPlugin("com.intellij.javaee.web")
-        bundledPlugin("com.intellij.platform.images")
-        bundledPlugin("org.jetbrains.idea.maven")
-        bundledPlugin("org.jetbrains.idea.maven.model")
-        bundledPlugin("org.jetbrains.idea.maven.server.api")
-        bundledPlugin("org.jetbrains.idea.eclipse")
-        bundledPlugin("org.jetbrains.kotlin")
-        bundledPlugin("JavaScript")
-        bundledPlugin("JUnit")
+        bundledPlugins(
+            "com.intellij.java",
+            "com.intellij.java-i18n",
+            "org.intellij.intelliLang",
+            "com.intellij.copyright",
+            "com.intellij.database",
+            "com.intellij.diagram",
+            "com.intellij.spring",
+            "com.intellij.properties",
+            "org.intellij.groovy",
+            "com.intellij.gradle",
+            "com.intellij.javaee",
+            "com.intellij.javaee.el",
+            "com.intellij.javaee.web",
+            "com.intellij.platform.images",
+            "org.jetbrains.idea.maven",
+            "org.jetbrains.idea.maven.model",
+            "org.jetbrains.idea.maven.server.api",
+            "org.jetbrains.idea.eclipse",
+            "org.jetbrains.kotlin",
+            "JavaScript",
+            "JUnit",
+        )
 
         // https://plugins.jetbrains.com/intellij-platform-explorer/extensions
-        plugin("AntSupport:241.14494.158")
-        plugin("PsiViewer:241.14494.158-EAP-SNAPSHOT")
-        plugin("JRebelPlugin:2024.2.0")
+        plugins(
+            "AntSupport:241.14494.158",
+            "PsiViewer:241.14494.158-EAP-SNAPSHOT",
+            "JRebelPlugin:2024.2.1",
+        )
     }
 }
 
