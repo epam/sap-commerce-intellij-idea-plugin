@@ -126,7 +126,7 @@ val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, p
 
 intellijPlatform {
     pluginConfiguration {
-        id = "com.intellij.idea.plugin.sap.commerce"
+        id = properties("intellij.plugin.id")
         name = properties("intellij.plugin.name")
         version = properties("intellij.plugin.version")
         description = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
