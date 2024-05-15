@@ -82,6 +82,16 @@ class CCv2ServiceDetailsView(
         add(rootPanel)
 
         initPropertiesPanel(
+            CCv2ServiceProperties.INITIAL_PASSWORDS,
+            service.initialPasswords,
+            showInitialPasswords,
+            initialPasswordsPanel,
+            { service.initialPasswords = null },
+            { service.initialPasswords = it },
+            { propertiesPanel(it) }
+        )
+
+        initPropertiesPanel(
             CCv2ServiceProperties.CUSTOMER_PROPERTIES,
             service.customerProperties,
             showCustomerProperties,
