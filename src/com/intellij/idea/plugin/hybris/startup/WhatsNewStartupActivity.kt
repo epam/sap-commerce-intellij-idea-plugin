@@ -22,10 +22,17 @@ import com.intellij.ide.util.RunOnceUtil
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.extensions.PluginId
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.TextEditorWithPreview
 import com.intellij.openapi.fileEditor.impl.HTMLEditorProvider
+import com.intellij.openapi.fileTypes.ex.FileTypeManagerEx
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import com.intellij.openapi.util.io.StreamUtil
+import com.intellij.testFramework.LightVirtualFile
 import com.intellij.ui.jcef.JBCefApp
+import java.io.IOException
+import java.nio.charset.StandardCharsets
 
 class WhatsNewStartupActivity : ProjectActivity {
 
@@ -38,11 +45,30 @@ class WhatsNewStartupActivity : ProjectActivity {
         val version = pluginDescriptor.version
 
         RunOnceUtil.runOnceForProject(project, "sapCX_showWhatsNew_$version") {
-            val request = HTMLEditorProvider.Request.url("https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/CHANGELOG.md#$version")
+            try {
+                val content = this.javaClass.getResourceAsStream("/CHANGELOG.md").use { html ->
+                    html
+                        ?.let { String(StreamUtil.readBytes(it), StandardCharsets.UTF_8) }
+                } ?: return@runOnceForProject
 
-            invokeLater {
-                HTMLEditorProvider.openEditor(project, "See What's New", request)
+                val lvf = LightVirtualFile("What's New in SAP Commerce Developers Toolset - ${version}").also {
+                    it.putUserData(TextEditorWithPreview.DEFAULT_LAYOUT_FOR_FILE, TextEditorWithPreview.Layout.SHOW_PREVIEW)
+                    it.setContent(null, content, true)
+                    it.fileType = FileTypeManagerEx.getInstance().getFileTypeByExtension("md")
+                    it.isWritable = false
+                }
+
+                invokeLater {
+                    FileEditorManager.getInstance(project).openFile(lvf, true, true)
+                }
+            } catch (e: IOException) {
+                val request = HTMLEditorProvider.Request.url("https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/CHANGELOG.md#$version")
+
+                invokeLater {
+                    HTMLEditorProvider.openEditor(project, "What's New in SAP Commerce Developers Toolset - ${version}", request)
+                }
             }
         }
     }
+
 }

@@ -120,6 +120,8 @@ val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, p
         if (index > 0) {
             val previousTaskName = ccv2OpenApiSpecs[index - 1].first
             dependsOn(previousTaskName)
+        } else {
+            dependsOn("copyChangelog")
         }
     }
 }
@@ -182,6 +184,15 @@ intellijPlatform {
 }
 
 tasks {
+    val copyChangelog by registering(Copy::class) {
+        from("CHANGELOG.md")
+        into("resources")
+    }
+
+    patchPluginXml {
+        dependsOn(copyChangelog)
+    }
+
     val jvmArguments = mutableListOf<String>().apply {
         add(properties("intellij.jvm.args").get())
 
