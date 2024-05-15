@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceProperties
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
@@ -32,14 +33,17 @@ import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.AnimatedIcon
+import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import java.awt.GridBagLayout
 import java.awt.datatransfer.StringSelection
 import java.io.Serial
+import javax.swing.JPanel
 
 class CCv2ServiceDetailsView(
     private val project: Project,
@@ -48,10 +52,22 @@ class CCv2ServiceDetailsView(
     private var service: CCv2ServiceDto,
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
-    private val showProperties = AtomicBooleanProperty(service.properties != null)
+    private val showCustomerProperties by lazy { AtomicBooleanProperty(service.customerProperties != null) }
+    private val showGreenDeploymentSupported by lazy { AtomicBooleanProperty(service.greenDeploymentSupported != null) }
+    private val showInitialPasswords by lazy { AtomicBooleanProperty(service.initialPasswords != null) }
 
-    private val propertiesPanel = JBPanel<JBPanel<*>>(GridBagLayout())
-        .also { border = JBUI.Borders.empty() }
+    private val customerPropertiesPanel by lazy {
+        JBPanel<JBPanel<*>>(GridBagLayout())
+            .also { border = JBUI.Borders.empty() }
+    }
+    private val initialPasswordsPanel by lazy {
+        JBPanel<JBPanel<*>>(GridBagLayout())
+            .also { border = JBUI.Borders.empty() }
+    }
+    private val greenDeploymentSupportedPanel by lazy {
+        JBPanel<JBPanel<*>>(GridBagLayout())
+            .also { border = JBUI.Borders.empty() }
+    }
     private var rootPanel = rootPanel()
 
     override fun dispose() {
@@ -65,33 +81,79 @@ class CCv2ServiceDetailsView(
     private fun initPanel() {
         add(rootPanel)
 
-        initPropertiesPanel()
+        initPropertiesPanel(
+            CCv2ServiceProperties.CUSTOMER_PROPERTIES,
+            service.customerProperties,
+            showCustomerProperties,
+            customerPropertiesPanel,
+            { service.customerProperties = null },
+            { service.customerProperties = it },
+            { propertiesPanel(it) }
+        )
+
+        initPropertiesPanel(
+            CCv2ServiceProperties.GREEN_DEPLOYMENT_SUPPORTED,
+            service.greenDeploymentSupported?.let { mapOf(CCv2ServiceProperties.GREEN_DEPLOYMENT_SUPPORTED_KEY to it.toString()) },
+            showGreenDeploymentSupported,
+            greenDeploymentSupportedPanel,
+            { service.greenDeploymentSupported = null },
+            { service.greenDeploymentSupported = it?.get(CCv2ServiceProperties.GREEN_DEPLOYMENT_SUPPORTED_KEY)?.let { value -> value == "true" } },
+            { greenDeploymentSupportedPanel(service.greenDeploymentSupported) }
+        )
     }
 
-    private fun initPropertiesPanel() {
-        val properties = service.properties
-        if (properties == null) {
-            CCv2Service.getInstance(project).fetchEnvironmentServiceProperties(subscription, environment, service,
+    private fun greenDeploymentSupportedPanel(greenDeploymentSupported: Boolean?) = panel {
+        row {
+            val text = when (greenDeploymentSupported) {
+                true -> "Supported"
+                false -> "Not supported"
+                null -> "N/A"
+            }
+            label(text)
+                .comment(CCv2ServiceProperties.GREEN_DEPLOYMENT_SUPPORTED.title)
+                .component.also {
+                    when (greenDeploymentSupported) {
+                        true -> it.foreground = JBColor.namedColor("hybris.ccv2.greenDeployment.supported", 0x59A869, 0x499C54)
+                        false -> it.foreground = JBColor.namedColor("hybris.ccv2.greenDeployment.notSupported", 0xDB5860, 0xC75450)
+                        else -> Unit
+                    }
+                }
+        }
+    }
+
+    private fun initPropertiesPanel(
+        serviceProperties: CCv2ServiceProperties,
+        currentProperties: Map<String, String>?,
+        showFlag: AtomicBooleanProperty,
+        panel: JPanel,
+        onStartCallback: () -> Unit,
+        onCompleteCallback: (Map<String, String>?) -> Unit,
+        panelProvider: (Map<String, String>) -> DialogPanel
+    ) {
+        if (!service.supportedProperties.contains(serviceProperties)) return
+
+        if (currentProperties != null) {
+            panel.removeAll()
+            panel.add(panelProvider.invoke(currentProperties))
+        } else {
+            CCv2Service.getInstance(project).fetchEnvironmentServiceProperties(subscription, environment, service, serviceProperties,
                 {
-                    showProperties.set(false)
-                    service.properties = null
-                    propertiesPanel.removeAll()
+                    showFlag.set(false)
+                    onStartCallback.invoke()
+                    panel.removeAll()
                 },
                 {
-                    service.properties = it
+                    onCompleteCallback.invoke(it)
 
                     invokeLater {
-                        showProperties.set(it != null)
+                        showFlag.set(it != null)
 
                         if (it != null) {
-                            propertiesPanel.add(propertiesPanel(it))
+                            panel.add(panelProvider.invoke(it))
                         }
                     }
                 }
             )
-        } else {
-            propertiesPanel.removeAll()
-            propertiesPanel.add(propertiesPanel(properties))
         }
     }
 
@@ -134,7 +196,6 @@ class CCv2ServiceDetailsView(
         }
     }
 
-
     private fun rootPanel() = panel {
         indent {
             row {
@@ -167,6 +228,23 @@ class CCv2ServiceDetailsView(
                 panel {
                     ccv2ServiceModifiedTimeRow(service)
                 }
+
+                if (service.supportedProperties.contains(CCv2ServiceProperties.GREEN_DEPLOYMENT_SUPPORTED)) {
+                    panel {
+                        row {
+                            cell(greenDeploymentSupportedPanel)
+                        }.visibleIf(showGreenDeploymentSupported)
+
+                        row {
+                            panel {
+                                row {
+                                    icon(AnimatedIcon.Default.INSTANCE)
+                                    label("Checking Green deployment...")
+                                }
+                            }
+                        }.visibleIf(showGreenDeploymentSupported.not())
+                    }
+                }
             }
 
             collapsibleGroup("Replicas") {
@@ -198,20 +276,39 @@ class CCv2ServiceDetailsView(
                 }
             }
 
-            collapsibleGroup("Properties") {
-                row {
-                    cell(propertiesPanel)
-                }.visibleIf(showProperties)
+            if (service.supportedProperties.contains(CCv2ServiceProperties.INITIAL_PASSWORDS)) {
+                collapsibleGroup(CCv2ServiceProperties.INITIAL_PASSWORDS.title) {
+                    row {
+                        cell(initialPasswordsPanel)
+                    }.visibleIf(showInitialPasswords)
 
-                row {
-                    panel {
-                        row {
-                            icon(AnimatedIcon.Default.INSTANCE)
-                            label("Retrieving service properties...")
-                        }
-                    }.align(Align.CENTER)
-                }.visibleIf(showProperties.not())
-            }.expanded = true
+                    row {
+                        panel {
+                            row {
+                                icon(AnimatedIcon.Default.INSTANCE)
+                                label("Retrieving properties...")
+                            }
+                        }.align(Align.CENTER)
+                    }.visibleIf(showInitialPasswords.not())
+                }.expanded = true
+            }
+
+            if (service.supportedProperties.contains(CCv2ServiceProperties.CUSTOMER_PROPERTIES)) {
+                collapsibleGroup(CCv2ServiceProperties.CUSTOMER_PROPERTIES.title) {
+                    row {
+                        cell(customerPropertiesPanel)
+                    }.visibleIf(showCustomerProperties)
+
+                    row {
+                        panel {
+                            row {
+                                icon(AnimatedIcon.Default.INSTANCE)
+                                label("Retrieving properties...")
+                            }
+                        }.align(Align.CENTER)
+                    }.visibleIf(showCustomerProperties.not())
+                }.expanded = true
+            }
         }
     }
         .let { Dsl.scrollPanel(it) }

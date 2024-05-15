@@ -40,12 +40,6 @@ object HybrisConstants {
 
     const val CCV2_DOMAIN = "portal.commerce.ondemand.com"
 
-    // Details here: https://me.sap.com/notes/0003383335
-    const val CCV2_SERVICE_CUSTOMER_PROPERTIES_CODE = "customer-properties"
-    const val CCV2_SERVICE_SECURITY_PROPERTIES_CODE = "security-properties"
-    const val CCV2_SERVICE_INITIAL_PASSWORD_CODE = "initialpassword"
-    const val CCV2_SERVICE_GREEN_DEPLOYMENT_SUPPORTED_CODE = "green-deployment-supported"
-
     const val CCV2_MANIFEST_NAME = "manifest.json"
     const val CCV2_CORE_CUSTOMIZE_NAME = "core-customize"
     const val CCV2_DATAHUB_NAME = "datahub"

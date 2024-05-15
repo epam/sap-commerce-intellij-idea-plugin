@@ -296,6 +296,7 @@ class CCv2Api {
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         service: CCv2ServiceDto,
+        serviceProperties: CCv2ServiceProperties
     ): Map<String, String>? {
         ApiClient.accessToken = ccv2Token
         val subscriptionCode = subscription.id ?: return null
@@ -305,14 +306,10 @@ class CCv2Api {
                 subscriptionCode,
                 environment.code,
                 service.code,
-                HybrisConstants.CCV2_SERVICE_CUSTOMER_PROPERTIES_CODE
+                serviceProperties.id
             )
             .value
-            .let { it as? String }
-            ?.split("\n")
-            ?.map { propertySeparatorRegex.split(it, 2) }
-            ?.filter { it.size == 2 }
-            ?.associate { it[0] to it[1] }
+            .let { serviceProperties.parseResponse(it) }
     }
 
     private fun createClient() = ApiClient.builder
@@ -321,7 +318,6 @@ class CCv2Api {
 
     companion object {
         fun getInstance(): CCv2Api = ApplicationManager.getApplication().getService(CCv2Api::class.java)
-        private val propertySeparatorRegex = Regex("=")
     }
 
 }

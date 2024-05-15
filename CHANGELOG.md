@@ -4,7 +4,8 @@
 - Generate `models.jar` for JUnit Run Configuration only when needed [#1128](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1128)
 
 ### `CCv2` enhancements
-- Show modified time for Service view [#1127](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1127)
+- Show modified time in the Service view [#1127](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1127)
+- Show Green deployment information in the Service view [#1129](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1129)
 
 ### Other
 - Migrated to `IntelliJ Platform Gradle Plugin 2.beta2` [#1124](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1124)

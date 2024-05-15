@@ -36,7 +36,7 @@ fun Panel.ccv2ServiceStatusRow(service: CCv2ServiceDto) {
 
             service.availableReplicas == service.desiredReplicas -> label("Running").also {
                 with(it.component) {
-                    foreground = JBColor.namedColor("hybris.ccv2.service.stopped", 0x59A869, 0x499C54)
+                    foreground = JBColor.namedColor("hybris.ccv2.service.running", 0x59A869, 0x499C54)
                 }
             }
 

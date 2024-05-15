@@ -164,6 +164,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         service: CCv2ServiceDto,
+        serviceProperties: CCv2ServiceProperties,
         onStartCallback: () -> Unit,
         onCompleteCallback: (Map<String, String>?) -> Unit
     ) {
@@ -175,7 +176,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 var properties: Map<String, String>? = null
 
                 try {
-                    properties = CCv2Api.getInstance().fetchServiceProperties(ccv2Token, subscription, environment, service)
+                    properties = CCv2Api.getInstance().fetchServiceProperties(ccv2Token, subscription, environment, service, serviceProperties)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()
                 } catch (e: RuntimeException) {
