@@ -7,6 +7,7 @@
 - Show modified time in the Service view [#1127](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1127)
 - Show Green deployment information in the Service view [#1129](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1129)
 - Show Initial Passwords in the `hcs_admin` Service view [#1130](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1130)
+- Added possibility to re-fetch Service details [#1132](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1132)
 
 ### Other
 - Migrated to `IntelliJ Platform Gradle Plugin 2.beta2` [#1124](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1124)

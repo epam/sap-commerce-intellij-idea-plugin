@@ -22,12 +22,15 @@ import com.intellij.ide.HelpTooltip
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentServiceAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceProperties
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
@@ -75,7 +78,36 @@ class CCv2ServiceDetailsView(
     }
 
     init {
+        installToolbar()
         initPanel()
+    }
+
+    private fun installToolbar() {
+        val toolbar = with(DefaultActionGroup()) {
+            val actionManager = ActionManager.getInstance()
+
+            add(actionManager.getAction("ccv2.service.toolbar.actions"))
+            add(CCv2FetchEnvironmentServiceAction(
+                subscription,
+                environment,
+                service,
+                {
+                },
+                {
+                    service = it
+
+                    this@CCv2ServiceDetailsView.remove(rootPanel)
+                    rootPanel = rootPanel()
+
+                    initPanel()
+                }
+            ))
+
+
+            actionManager.createActionToolbar("SAP_CX_CCv2_SERVICE_${System.identityHashCode(service)}", this, false)
+        }
+        toolbar.targetComponent = this
+        setToolbar(toolbar.component)
     }
 
     private fun initPanel() {

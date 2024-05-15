@@ -34,7 +34,7 @@
             <reference id="ccv2.open.settings.action"/>
             <separator/>
 
-            <group text="View Options"
+            <group id="ccv2.toolbar.actions.show" text="View Options"
                    popup="true"
                    icon="AllIcons.Actions.Show">
                 <separator text="Show With Status"/>
@@ -60,6 +60,11 @@
         </group>
 
         <group id="ccv2.environment.toolbar.actions">
+            <reference id="ccv2.open.settings.action"/>
+            <separator/>
+        </group>
+
+        <group id="ccv2.service.toolbar.actions">
             <reference id="ccv2.open.settings.action"/>
             <separator/>
         </group>

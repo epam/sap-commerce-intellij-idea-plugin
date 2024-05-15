@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsCo
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2EnvironmentDetailsView
@@ -90,6 +91,58 @@ class CCv2FetchEnvironmentAction(
                 }
             },
             false
+        )
+    }
+
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabled = !fetching && ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
+    }
+}
+
+class CCv2FetchEnvironmentServiceAction(
+    private val subscription: CCv2Subscription,
+    private val environment: CCv2EnvironmentDto,
+    private val service: CCv2ServiceDto,
+    private val onStartCallback: () -> Unit,
+    private val onCompleteCallback: (CCv2ServiceDto) -> Unit
+) : DumbAwareAction("Fetch Service", null, HybrisIcons.CCV2_FETCH) {
+
+    private var fetching = false
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        CCv2Service.getInstance(project).fetchEnvironmentServices(
+            subscription,
+            environment,
+            {
+                fetching = true
+                e.presentation.text = "Fetching..."
+
+                onStartCallback.invoke()
+            },
+            { response ->
+                invokeLater {
+                    fetching = false
+                    e.presentation.text = "Fetch Environment"
+
+                    val fetchedService = response
+                        ?.find { it.code == service.code }
+
+                    if (fetchedService != null) {
+                        onCompleteCallback.invoke(fetchedService)
+                    } else {
+                        Notifications.create(
+                            NotificationType.WARNING,
+                            "Unable to fetch service",
+                            "Service ${service.code} is not found."
+                        )
+                            .hideAfter(10)
+                            .notify(project)
+                    }
+                }
+            }
         )
     }
 
