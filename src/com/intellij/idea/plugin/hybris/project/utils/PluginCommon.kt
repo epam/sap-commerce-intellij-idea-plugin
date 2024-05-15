@@ -73,9 +73,13 @@ object PluginCommon {
     )
 
     @JvmStatic
-    fun isPluginActive(plugin: Plugin) = PluginManagerCore.getPlugin(PluginId.getId(plugin.id))
+    fun isPluginActive(plugin: Plugin) = plugin.isActive()
+
+    fun Plugin.isActive() = PluginManagerCore.getPlugin(PluginId.getId(id))
         ?.isEnabled
         ?: false
+
+    fun Plugin.isDisabled() = !isActive()
 
     fun enablePlugins(pluginIds: Collection<PluginId>) {
         val pluginManager = PluginManager.getInstance()

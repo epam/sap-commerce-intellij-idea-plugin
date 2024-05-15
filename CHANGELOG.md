@@ -1,5 +1,8 @@
 ## [2024.1.3]
 
+### `Project Build` enhancements
+- Generate `models.jar` for JUnit Run Configuration only when needed [#1128](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1128)
+
 ### `CCv2` enhancements
 - Show modified time for Service view [#1127](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1127)
 

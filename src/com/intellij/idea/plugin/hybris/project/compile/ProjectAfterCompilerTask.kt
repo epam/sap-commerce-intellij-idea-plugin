@@ -24,27 +24,31 @@ import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsCompon
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
+import com.intellij.openapi.compiler.CompilerManager
 
 class ProjectAfterCompilerTask : CompileTask {
 
-    override fun execute(context: CompileContext): Boolean {
-        return ApplicationManager.getApplication().runReadAction<Boolean> {
-            val modules = context.compileScope.affectedModules
-            val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
-                ?: return@runReadAction true
+    override fun execute(context: CompileContext) = ApplicationManager.getApplication().runReadAction<Boolean> {
+        val settings = ProjectSettingsComponent.getInstance(context.project)
+        if (!settings.isHybrisProject()) return@runReadAction true
+        if (!settings.state.generateCodeOnRebuild) return@runReadAction true
 
-            val settings = ProjectSettingsComponent.getInstance(context.project)
-            if (!settings.isHybrisProject()) return@runReadAction true
-            if (!settings.state.generateCodeOnRebuild) return@runReadAction true
+        val typeId = context.compileScope.getUserData(CompilerManager.RUN_CONFIGURATION_TYPE_ID_KEY)
+        // do not rebuild sources in case of JUnit
+        // see JUnitConfigurationType
+        if ("JUnit" == typeId && !settings.state.generateCodeOnJUnitRunConfiguration) return@runReadAction true
 
-            val bootstrapDirectory = platformModule
-                .root()
-                ?.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
-                ?: return@runReadAction true
+        val modules = context.compileScope.affectedModules
+        val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+            ?: return@runReadAction true
 
-            ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
+        val bootstrapDirectory = platformModule
+            .root()
+            ?.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
+            ?: return@runReadAction true
 
-            return@runReadAction true
-        }
+        ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
+
+        return@runReadAction true
     }
 }

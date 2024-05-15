@@ -84,6 +84,11 @@ class ProjectSettingsConfigurableProvider(val project: Project) : ConfigurablePr
                         .bindSelected(projectSettings::generateCodeOnRebuild)
                         .component
                 }
+                row {
+                    checkBox("Generate code before execution of the JUnit Run Configuration")
+                        .bindSelected(projectSettings::generateCodeOnJUnitRunConfiguration)
+                        .enabledIf(generateCodeOnRebuildCheckBox.selected)
+                }
                 row("Code generation timeout (in seconds):") {
                     spinner(1..10000, 1)
                         .bindIntValue(projectSettings::generateCodeTimeoutSeconds)

@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDe
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isActive
 import com.intellij.lang.ant.config.AntBuildFileBase
 import com.intellij.lang.ant.config.AntConfigurationBase
 import com.intellij.lang.ant.config.AntNoFileException
@@ -380,7 +381,7 @@ class AntConfigurator {
         private val PATTERN_APACHE_ANT: Pattern = Pattern.compile("apache-ant.*")
 
         fun getInstance(): AntConfigurator? =
-            if (PluginCommon.isPluginActive(PluginCommon.PLUGIN_ANT_SUPPORT)) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
+            if (PluginCommon.PLUGIN_ANT_SUPPORT.isActive()) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
             else null
     }
 }

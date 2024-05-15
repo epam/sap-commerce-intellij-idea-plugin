@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.common.utils
 import com.intellij.icons.AllIcons
 import com.intellij.icons.ExpUiIcons
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isActive
 import com.intellij.openapi.util.IconLoader
 import com.intellij.util.ReflectionUtil
 import icons.GradleIcons
@@ -71,7 +72,7 @@ object HybrisIcons {
     val MODULE_ECLIPSE = AllIcons.Providers.Eclipse
     val MODULE_MAVEN = OpenapiIcons.RepositoryLibraryLogo
     val MODULE_CONFLICT = AllIcons.Actions.Cancel
-    val MODULE_GRADLE = if (PluginCommon.isPluginActive(PluginCommon.PLUGIN_GRADLE)) GradleIcons.Gradle else AllIcons.Nodes.Module
+    val MODULE_GRADLE = if (PluginCommon.PLUGIN_GRADLE.isActive()) GradleIcons.Gradle else AllIcons.Nodes.Module
     val MODULE_CCV2 = getIcon("/icons/module/cloud.svg")
     val MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg")
     val MODULE_COMMERCE_GROUP = Y_LOGO_GREEN
@@ -91,7 +92,7 @@ object HybrisIcons {
     val EXTENSION_BACKOFFICE = AllIcons.Nodes.Folder
     val EXTENSION_HMC = AllIcons.Nodes.Folder
     val EXTENSION_HAC = AllIcons.Nodes.Folder
-    val EXTENSION_KOTLIN_NATURE = if (PluginCommon.isPluginActive(PluginCommon.PLUGIN_KOTLIN)) KotlinIcons.SMALL_LOGO else AllIcons.Nodes.Module
+    val EXTENSION_KOTLIN_NATURE = if (PluginCommon.PLUGIN_KOTLIN.isActive()) KotlinIcons.SMALL_LOGO else AllIcons.Nodes.Module
 
     val TYPE_SYSTEM = getIcon("/icons/typeSystem.svg")
     val SPRING_BEAN = getIcon("icons/springBean.svg")
