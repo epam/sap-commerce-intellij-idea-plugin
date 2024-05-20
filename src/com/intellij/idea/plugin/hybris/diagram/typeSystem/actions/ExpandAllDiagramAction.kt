@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramDataModel
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.util.asSafely
 
 class ExpandAllDiagramAction : DiagramAction(
     ActionsBundle.message("action.ExpandAll.text"),
@@ -33,8 +34,7 @@ class ExpandAllDiagramAction : DiagramAction(
     override fun perform(event: AnActionEvent) {
         getBuilder(event)
             ?.dataModel
-            ?.takeIf { it is TSDiagramDataModel }
-            ?.let { it as TSDiagramDataModel }
+            ?.asSafely<TSDiagramDataModel>()
             ?.let {
                 it.expandAllNodes()
 

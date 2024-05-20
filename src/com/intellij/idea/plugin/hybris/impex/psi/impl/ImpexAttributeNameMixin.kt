@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,13 +22,14 @@ import com.intellij.extapi.psi.ASTDelegatePsiElement
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
 import com.intellij.lang.ASTNode
+import com.intellij.util.asSafely
 import java.io.Serial
 
 abstract class ImpexAttributeNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexAnyAttributeName {
 
     override fun subtreeChanged() {
         anyAttributeValue
-            ?.let { it as? ASTDelegatePsiElement }
+            ?.asSafely<ASTDelegatePsiElement>()
             ?.subtreeChanged()
     }
 

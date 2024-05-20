@@ -27,7 +27,7 @@ data class CCv2ServiceReplicaDto(
 ) {
 
     companion object {
-        fun map(environment: CCv2EnvironmentDto, dto: ServiceReplicaDTO) = CCv2ServiceReplicaDto(
+        fun map(dto: ServiceReplicaDTO) = CCv2ServiceReplicaDto(
             name = dto.name,
             status = dto.status,
             ready = dto.ready ?: false

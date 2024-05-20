@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,6 +32,7 @@ import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.ui.EditorNotifications
+import com.intellij.util.asSafely
 import java.util.function.Function
 import javax.swing.JComponent
 
@@ -55,7 +56,7 @@ class AntUpdateMavenDependenciesNotificationProvider : EditorNotificationProvide
             panel.createActionLabel("Download") {
                 AntConfiguration.getInstance(project).buildFiles
                     .firstOrNull { it.virtualFile?.path?.endsWith("hybris/bin/platform/build.xml") ?: false }
-                    ?.let { it as? AntBuildFileBase }
+                    ?.asSafely<AntBuildFileBase>()
                     ?.let { buildFile ->
                         val targets = listOf(HybrisConstants.ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES)
                         ExecutionHandler.runBuild(buildFile, targets, null, DataContext.EMPTY_CONTEXT, emptyList())

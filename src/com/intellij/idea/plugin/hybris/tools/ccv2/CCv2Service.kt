@@ -263,20 +263,18 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
                 try {
                     CCv2Api.getInstance().createBuild(ccv2Token, subscription, name, branch)
-                        .also {
-                            if (it != null) {
-                                Notifications.create(
-                                    NotificationType.INFORMATION,
-                                    "CCv2: New Build has been scheduled.",
-                                    """
-                                    Code: ${it}<br>
+                        .also { buildCode ->
+                            Notifications.create(
+                                NotificationType.INFORMATION,
+                                "CCv2: New Build has been scheduled.",
+                                """
+                                    Code: ${buildCode}<br>
                                     Name: ${name}<br>
                                     Branch: ${branch}<br>
                                 """.trimIndent()
-                                )
-                                    .hideAfter(10)
-                                    .notify(project)
-                            }
+                            )
+                                .hideAfter(10)
+                                .notify(project)
                         }
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout()

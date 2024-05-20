@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,6 +33,7 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
+import com.intellij.util.asSafely
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
 import javax.swing.event.TreeModelListener
@@ -82,9 +83,9 @@ class BSTreePanel(
                 val node = tree
                     .selectionPath
                     ?.lastPathComponent
-                    ?.let { it as? TreeNode }
+                    ?.asSafely<TreeNode>()
                     ?.userObject
-                    ?.let { it as? BSNode }
+                    ?.asSafely<BSNode>()
                 updateSecondComponent(node)
             }
         }

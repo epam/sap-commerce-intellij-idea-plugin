@@ -59,7 +59,7 @@ data class CCv2ServiceDto(
             availableReplicas = dto.availableReplicas,
             link = "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${subscription.id!!}/applications/commerce-cloud/environments/${environment.code}/services/${dto.code}/replicas",
             replicas = dto.replicas
-                ?.map { CCv2ServiceReplicaDto.map(environment, it) }
+                ?.map { CCv2ServiceReplicaDto.map(it) }
                 ?: emptyList()
         )
     }

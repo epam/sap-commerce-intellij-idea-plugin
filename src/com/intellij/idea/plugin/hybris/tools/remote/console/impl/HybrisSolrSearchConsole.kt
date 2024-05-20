@@ -154,7 +154,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
     override fun icon() = HybrisIcons.CONSOLE_SOLR
 
     private fun buildSolrQueryObject(query: String) = coresComboBox.selectedItem
-        ?.let { it as? SolrCoreData }
+        ?.asSafely<SolrCoreData>()
         ?.core
         ?.let { SolrQueryObject(query, it, maxRowsSpinner.value as Int) }
 

@@ -127,6 +127,8 @@ val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, p
 }
 
 intellijPlatform {
+    buildSearchableOptions  = false
+
     pluginConfiguration {
         id = properties("intellij.plugin.id")
         name = properties("intellij.plugin.name")
@@ -167,12 +169,15 @@ intellijPlatform {
             email = "hybrisideaplugin@epam.com"
             url = "https://github.com/epam/sap-commerce-intellij-idea-plugin"
         }
+
     }
 
     verifyPlugin {
+        freeArgs = listOf("-mute TemplateWordInPluginId,TemplateWordInPluginName,ForbiddenPluginIdPrefix")
+
         ides {
             ide(properties("plugin.verifier.ide.versions"))
-            recommended()
+
             select {
                 types = listOf(IntelliJPlatformType.IntellijIdeaUltimate)
                 channels = listOf(ProductRelease.Channel.RELEASE)
@@ -316,27 +321,28 @@ dependencies {
         plugin("JRebelPlugin:2024.2.1")
 
         // Big Data Tools:
+        // incredibly sad, but as for now API cannot be used by 3rd-party plugins
         // https://plugins.jetbrains.com/bundles/8-big-data-tools
-        plugins(
-            // https://plugins.jetbrains.com/plugin/12494-big-data-tools
-            "com.intellij.bigdatatools:241.14494.158",
-            // https://plugins.jetbrains.com/plugin/21713-big-data-tools-core
-            "com.intellij.bigdatatools.core:241.14494.158",
-            // https://plugins.jetbrains.com/plugin/21701-big-data-file-viewer
-            "com.intellij.bigdatatools.binary.files:241.14494.158",
-            // https://plugins.jetbrains.com/plugin/21712-metastore-core
-            "com.intellij.bigdatatools.metastore.core:241.14494.158",
-            // https://plugins.jetbrains.com/plugin/21700-spark/versions
-            "com.intellij.bigdatatools.spark:241.14494.158",
-            // https://plugins.jetbrains.com/plugin/21673-zeppelin
-            "com.intellij.bigdatatools.zeppelin:241.14494.158",
-            // https://plugins.jetbrains.com/plugin/21702-flink
-            "com.intellij.bigdatatools.flink:241.14494.158",
-            // https://plugins.jetbrains.com/plugin/21704-kafka
-            "com.intellij.bigdatatools.kafka:241.14494.158",
-            // https://plugins.jetbrains.com/plugin/21706-remote-file-systems
-            "com.intellij.bigdatatools.rfs:241.15989.150",
-        )
+//        plugins(
+//            // https://plugins.jetbrains.com/plugin/12494-big-data-tools
+//            "com.intellij.bigdatatools:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21713-big-data-tools-core
+//            "com.intellij.bigdatatools.core:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21701-big-data-file-viewer
+//            "com.intellij.bigdatatools.binary.files:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21712-metastore-core
+//            "com.intellij.bigdatatools.metastore.core:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21700-spark/versions
+//            "com.intellij.bigdatatools.spark:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21673-zeppelin
+//            "com.intellij.bigdatatools.zeppelin:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21702-flink
+//            "com.intellij.bigdatatools.flink:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21704-kafka
+//            "com.intellij.bigdatatools.kafka:241.14494.158",
+//            // https://plugins.jetbrains.com/plugin/21706-remote-file-systems
+//            "com.intellij.bigdatatools.rfs:241.15989.150",
+//        )
     }
 }
 

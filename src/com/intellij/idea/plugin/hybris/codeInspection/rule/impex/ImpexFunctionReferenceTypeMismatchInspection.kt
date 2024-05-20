@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSItemR
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.util.asSafely
 
 class ImpexFunctionReferenceTypeMismatchInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
@@ -43,7 +44,7 @@ class ImpexFunctionReferenceTypeMismatchInspection : LocalInspectionTool() {
 
             val typeReference = parameter.references
                 .find { it is ImpexFunctionTSItemReference }
-                ?.let { it as? ImpexFunctionTSItemReference }
+                ?.asSafely<ImpexFunctionTSItemReference>()
                 ?.takeIf { it.multiResolve(false).isNotEmpty() }
                 ?: return
 

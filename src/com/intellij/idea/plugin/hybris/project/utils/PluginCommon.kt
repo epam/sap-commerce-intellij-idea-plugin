@@ -22,6 +22,7 @@ import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.extensions.PluginId
+import com.intellij.util.asSafely
 
 object PluginCommon {
 
@@ -86,7 +87,7 @@ object PluginCommon {
         pluginIds.forEach { pluginManager.enablePlugin(it) }
 
         ApplicationManager.getApplication()
-            .let { it as? ApplicationEx }
+            .asSafely<ApplicationEx>()
             ?.restart(true)
     }
 }

@@ -43,6 +43,7 @@ import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
 import java.io.File
 import java.io.FileInputStream
@@ -319,7 +320,7 @@ class AntConfigurator {
 
         try {
             return antConfiguration.addBuildFile(buildFile)
-                ?.let { it as? AntBuildFileBase }
+                ?.asSafely<AntBuildFileBase>()
         } catch (ignored: AntNoFileException) {
         }
 

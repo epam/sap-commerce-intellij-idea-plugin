@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
+import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyFileType
 import javax.swing.Icon
 
@@ -39,7 +40,7 @@ abstract class AbstractGroovyExecuteAction(controlText: String, controlDescripti
 
     override fun doExecute(consoleService: HybrisConsoleService) {
         consoleService.getActiveConsole()
-            ?.let { it as? HybrisGroovyConsole }
+            ?.asSafely<HybrisGroovyConsole>()
             ?.also {
                 it.updateCommitMode(commitMode)
                 super.doExecute(consoleService)

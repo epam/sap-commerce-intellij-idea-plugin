@@ -10,6 +10,7 @@
 - Added possibility to re-fetch Service details [#1132](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1132)
 
 ### Other
+- Migrated to `IntelliJ Platform Gradle Plugin 2.beta3` [#1133](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1133)
 - Migrated to `IntelliJ Platform Gradle Plugin 2.beta2` [#1124](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1124)
 - Show once `CHANGELOG.md` in a new `What's New` tab once per version [#1125](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1125)
 - Show bundled `What's New` tab with fallback to GitHub page [#1131](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1131)

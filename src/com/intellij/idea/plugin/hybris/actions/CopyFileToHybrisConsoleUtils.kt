@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,6 +32,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
+import com.intellij.util.asSafely
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 
@@ -99,9 +100,9 @@ object CopyFileToHybrisConsoleUtils {
         ?: emptyList()
 
     private fun getVirtualFile(treePath: TreePath) = treePath.lastPathComponent
-        ?.let { it as? DefaultMutableTreeNode }
+        ?.asSafely<DefaultMutableTreeNode>()
         ?.userObject
-        ?.let { it as? ProjectViewNode<*> }
+        ?.asSafely<ProjectViewNode<*>>()
         ?.virtualFile
         ?.takeUnless { it.isDirectory }
 

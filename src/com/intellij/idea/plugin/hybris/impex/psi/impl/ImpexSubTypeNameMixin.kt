@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
+import com.intellij.util.asSafely
 import java.io.Serial
 
 abstract class ImpexSubTypeNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), ImpexSubTypeName {
@@ -34,10 +35,10 @@ abstract class ImpexSubTypeNameMixin(node: ASTNode) : ASTWrapperReferencePsiElem
         text.isNotBlank()
         && headerTypeName
             ?.reference
-            ?.let { it as? ImpexTSItemReference }
+            ?.asSafely<ImpexTSItemReference>()
             ?.multiResolve(false)
             ?.firstOrNull()
-            ?.let { it as? ItemResolveResult }
+            ?.asSafely<ItemResolveResult>()
             ?.takeIf {
                 it.meta.name != HybrisConstants.TS_TYPE_GENERIC_ITEM
                     &&

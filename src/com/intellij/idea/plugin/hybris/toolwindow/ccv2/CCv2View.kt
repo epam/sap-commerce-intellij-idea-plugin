@@ -44,6 +44,7 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.asSafely
 import java.io.Serial
 
 class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable {
@@ -193,7 +194,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
             ?.contentManager
             ?.findContent(HybrisToolWindowFactory.CCV2)
             ?.component
-            ?.let { it as? CCv2View }
+            ?.asSafely<CCv2View>()
             ?.getActiveTab()
     }
 }
