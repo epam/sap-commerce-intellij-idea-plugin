@@ -127,7 +127,7 @@ val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, p
 }
 
 intellijPlatform {
-    buildSearchableOptions = false
+    buildSearchableOptions = true
 
     pluginConfiguration {
         id = properties("intellij.plugin.id")
