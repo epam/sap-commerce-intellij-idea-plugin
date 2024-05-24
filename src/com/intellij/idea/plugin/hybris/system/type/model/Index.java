@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,6 +42,7 @@ public interface Index extends DomElement {
     String UNIQUE = "unique";
     String NAME = "name";
     String KEY = "key";
+    String INCLUDE = "include";
 
     /**
      * Returns the value of the name child.
@@ -148,7 +149,7 @@ public interface Index extends DomElement {
      * @return the list of include children.
      */
     @NotNull
-    @SubTagList("include")
+    @SubTagList(INCLUDE)
     java.util.List<IndexInclude> getIncludes();
 
     /**
@@ -156,7 +157,7 @@ public interface Index extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("include")
+    @SubTagList(INCLUDE)
     IndexInclude addInclude();
 
 

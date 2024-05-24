@@ -127,6 +127,8 @@ val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, p
 }
 
 intellijPlatform {
+    buildSearchableOptions = false
+
     pluginConfiguration {
         id = properties("intellij.plugin.id")
         name = properties("intellij.plugin.name")
@@ -174,11 +176,9 @@ intellijPlatform {
         freeArgs = listOf("-mute TemplateWordInPluginId,TemplateWordInPluginName,ForbiddenPluginIdPrefix")
 
         ides {
-            ide(properties("plugin.verifier.ide.versions"))
-
             select {
-                types = listOf(IntelliJPlatformType.IntellijIdeaUltimate)
-                channels = listOf(ProductRelease.Channel.RELEASE)
+                types = listOf(IntelliJPlatformType.IntellijIdeaUltimate, IntelliJPlatformType.IntellijIdeaCommunity)
+                channels = listOf(ProductRelease.Channel.EAP, ProductRelease.Channel.RELEASE)
                 sinceBuild = properties("intellij.plugin.since.build")
                 untilBuild = properties("intellij.plugin.until.build")
             }

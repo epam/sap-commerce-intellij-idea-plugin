@@ -9,6 +9,9 @@
 - Show Initial Passwords in the `hcs_admin` Service view [#1130](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1130)
 - Added possibility to re-fetch Service details [#1132](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1132)
 
+### `items.xml` enhancements
+- Added reference resolution for index `include`:`attribute` [#1134](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1134)
+
 ### Other
 - Migrated to `IntelliJ Platform Gradle Plugin 2.beta3` [#1133](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1133)
 - Migrated to `IntelliJ Platform Gradle Plugin 2.beta2` [#1124](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1124)
