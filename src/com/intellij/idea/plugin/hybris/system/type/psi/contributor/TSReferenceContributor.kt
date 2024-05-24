@@ -30,10 +30,6 @@ class TSReferenceContributor : PsiReferenceContributor() {
             TSPatterns.INDEX_KEY_ATTRIBUTE,
             TSItemAttributeReferenceProvider.instance
         )
-        registrar.registerReferenceProvider(
-            TSPatterns.INDEX_KEY_ATTRIBUTE,
-            TSItemAttributeReferenceProvider.instance
-        )
 
         registrar.registerReferenceProvider(
             TSPatterns.SPRING_INTERCEPTOR_TYPE_CODE,
