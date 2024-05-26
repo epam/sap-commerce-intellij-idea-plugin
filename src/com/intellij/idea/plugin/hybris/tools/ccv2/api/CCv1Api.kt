@@ -38,41 +38,48 @@ import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO as V2Envi
 @Service
 class CCv1Api {
 
+    private val apiClient by lazy {
+        ApiClient.builder
+            .readTimeout(ApplicationSettingsComponent.getInstance().state.ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
+            .build()
+    }
+    private val environmentApi by lazy { EnvironmentApi(client = apiClient) }
+    private val permissionsApi by lazy { PermissionsApi(client = apiClient) }
+
     suspend fun fetchPermissions(
         accessToken: String
-    ): List<PermissionDTO>? {
-        ApiClient.accessToken = accessToken
-        val client = createClient()
-
-        return PermissionsApi(client = client)
-            .getPermissions()
-            .permissionDTOS
-    }
+    ): List<PermissionDTO>? = permissionsApi
+        .getPermissions(requestHeaders = createRequestParams(accessToken))
+        .permissionDTOS
 
     suspend fun fetchEnvironment(
         accessToken: String,
         v2Environment: V2EnvironmentDetailDTO
     ): EnvironmentDetailDTO? {
-        ApiClient.accessToken = accessToken
         val subscriptionCode = v2Environment.subscriptionCode ?: return null
         val environmentCode = v2Environment.code ?: return null
-        val client = createClient()
 
-        return EnvironmentApi(client = client)
-            .getEnvironment(subscriptionCode, environmentCode)
+        return environmentApi
+            .getEnvironment(
+                subscriptionCode = subscriptionCode,
+                environmentCode = environmentCode,
+                requestHeaders = createRequestParams(accessToken)
+            )
     }
 
     suspend fun fetchEnvironmentHealth(
         accessToken: String,
         v2Environment: V2EnvironmentDetailDTO
     ): EnvironmentHealthDTO? {
-        ApiClient.accessToken = accessToken
         val subscriptionCode = v2Environment.subscriptionCode ?: return null
         val environmentCode = v2Environment.code ?: return null
-        val client = createClient()
 
-        return EnvironmentApi(client = client)
-            .getEnvironmentHealth(subscriptionCode, environmentCode)
+        return environmentApi
+            .getEnvironmentHealth(
+                subscriptionCode = subscriptionCode,
+                environmentCode = environmentCode,
+                requestHeaders = createRequestParams(accessToken)
+            )
     }
 
     suspend fun fetchMediaStoragePublicKey(
@@ -80,41 +87,27 @@ class CCv1Api {
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
         mediaStorage: CCv2MediaStorageDto,
-    ): MediaStoragePublicKeyDTO? {
-        ApiClient.accessToken = accessToken
-
-        val subscriptionCode = subscription.id ?: return null
-        val client = createClient()
-
-        return EnvironmentApi(client = client)
-            .getMediaStoragePublicKey(
-                subscriptionCode,
-                environment.code,
-                mediaStorage.code,
-            )
-    }
+    ): MediaStoragePublicKeyDTO = environmentApi
+        .getMediaStoragePublicKey(
+            subscriptionCode = subscription.id!!,
+            environmentCode = environment.code,
+            mediaStorageCode = mediaStorage.code,
+            requestHeaders = createRequestParams(accessToken)
+        )
 
     suspend fun fetchEnvironmentServices(
         accessToken: String,
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto
-    ): Collection<CCv2ServiceDto> {
-        ApiClient.accessToken = accessToken
+    ): Collection<CCv2ServiceDto> = environmentApi
+        .getEnvironmentServices(
+            subscriptionCode = subscription.id!!,
+            environmentCode = environment.code,
+            requestHeaders = createRequestParams(accessToken)
+        )
+        .map { CCv2ServiceDto.map(subscription, environment, it) }
 
-        val subscriptionCode = subscription.id ?: return emptyList()
-        val client = createClient()
-
-        return EnvironmentApi(client = client)
-            .getEnvironmentServices(
-                subscriptionCode,
-                environment.code,
-            )
-            .map { CCv2ServiceDto.map(subscription, environment, it) }
-    }
-
-    private fun createClient() = ApiClient.builder
-        .readTimeout(ApplicationSettingsComponent.getInstance().state.ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
-        .build()
+    private fun createRequestParams(ccv2Token: String) = mapOf("Authorization" to "Bearer $ccv2Token")
 
     companion object {
         fun getInstance(): CCv1Api = ApplicationManager.getApplication().getService(CCv1Api::class.java)

@@ -35,10 +35,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.progress.reportProgress
 import com.intellij.util.io.ZipUtil
 import com.intellij.util.messages.Topic
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.net.SocketTimeoutException
 import java.nio.file.Files
 import java.util.*
@@ -64,19 +64,30 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environments...", true) {
-                val ccv2Token = getCCv2Token()
-                if (ccv2Token == null) {
-                    if (sendEvents) project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingCompleted(subscriptions.associateWith { emptyList() })
-                    return@withBackgroundProgress
-                }
+                val environments = sortedMapOf<CCv2Subscription, Collection<CCv2EnvironmentDto>>()
+                reportProgress(subscriptions.size) { progressReporter ->
+                    coroutineScope {
+                        subscriptions
+                            .map { subscription ->
+                                async {
+                                    subscription to (getCCv2Token(subscription)
+                                        ?.let { ccv2Token ->
+                                            try {
+                                                return@let CCv2Api.getInstance().fetchEnvironments(ccv2Token, subscription, statuses, progressReporter)
+                                            } catch (e: SocketTimeoutException) {
+                                                notifyOnTimeout(subscription)
+                                            } catch (e: RuntimeException) {
+                                                notifyOnException(subscription, e)
+                                            }
 
-                var environments = sortedMapOf<CCv2Subscription, Collection<CCv2EnvironmentDto>>()
-                try {
-                    environments = CCv2Api.getInstance().fetchEnvironments(ccv2Token, subscriptions, statuses)
-                } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
-                } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                                            return@let emptyList()
+                                        }
+                                        ?: emptyList())
+                                }
+                            }
+                            .awaitAll()
+                            .let { environments.putAll(it) }
+                    }
                 }
 
                 onCompleteCallback.invoke(environments)
@@ -90,18 +101,22 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environments Build Details...", true) {
-                val ccv2Token = getCCv2Token()
-                if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingBuildDetailsCompleted()
-                    return@withBackgroundProgress
-                }
+                val environments = subscriptions.values.flatten()
 
-                try {
-                    CCv2Api.getInstance().fetchEnvironmentsBuilds(ccv2Token, subscriptions)
-                } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
-                } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                reportProgress(environments.size) { progressReporter ->
+                    coroutineScope {
+                        subscriptions.forEach { (subscription, environments) ->
+                            try {
+                                val ccv2Token = getCCv2Token(subscription) ?: return@forEach
+
+                                CCv2Api.getInstance().fetchEnvironmentsBuilds(ccv2Token, subscription, environments, this, progressReporter)
+                            } catch (e: SocketTimeoutException) {
+                                notifyOnTimeout(subscription)
+                            } catch (e: RuntimeException) {
+                                notifyOnException(subscription, e)
+                            }
+                        }
+                    }
                 }
 
                 project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingBuildDetailsCompleted(subscriptions)
@@ -119,14 +134,14 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environment Build Details...", true) {
-                val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
+                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
                 var build: CCv2BuildDto? = null
                 try {
                     build = CCv2Api.getInstance().fetchEnvironmentBuild(ccv2Token, subscription, environment)
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
+                    notifyOnTimeout(subscription)
                 } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                    notifyOnException(subscription, e)
                 }
 
                 onCompleteCallback.invoke(build)
@@ -144,15 +159,15 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environment Services...", true) {
-                val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
+                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
                 var services: Collection<CCv2ServiceDto>? = null
 
                 try {
                     services = CCv1Api.getInstance().fetchEnvironmentServices(ccv2Token, subscription, environment)
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
+                    notifyOnTimeout(subscription)
                 } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                    notifyOnException(subscription, e)
                 }
 
                 onCompleteCallback.invoke(services)
@@ -172,15 +187,15 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Service Properties...", true) {
-                val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
+                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
                 var properties: Map<String, String>? = null
 
                 try {
                     properties = CCv2Api.getInstance().fetchServiceProperties(ccv2Token, subscription, environment, service, serviceProperties)
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
+                    notifyOnTimeout(subscription)
                 } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                    notifyOnException(subscription, e)
                 }
 
                 onCompleteCallback.invoke(properties)
@@ -203,19 +218,30 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Builds...", true) {
-                val ccv2Token = getCCv2Token()
-                if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingCompleted(subscriptions.associateWith { emptyList() })
-                    return@withBackgroundProgress
-                }
+                val builds = sortedMapOf<CCv2Subscription, Collection<CCv2BuildDto>>()
+                reportProgress(subscriptions.size) { progressReporter ->
+                    coroutineScope {
+                        subscriptions
+                            .map { subscription ->
+                                async {
+                                    subscription to (getCCv2Token(subscription)
+                                        ?.let { ccv2Token ->
+                                            try {
+                                                return@let CCv2Api.getInstance().fetchBuilds(ccv2Token, subscription, statusNot, progressReporter)
+                                            } catch (e: SocketTimeoutException) {
+                                                notifyOnTimeout(subscription)
+                                            } catch (e: RuntimeException) {
+                                                notifyOnException(subscription, e)
+                                            }
 
-                var builds = sortedMapOf<CCv2Subscription, Collection<CCv2BuildDto>>()
-                try {
-                    builds = CCv2Api.getInstance().fetchBuilds(ccv2Token, subscriptions, statusNot)
-                } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
-                } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                                            return@let emptyList()
+                                        }
+                                        ?: emptyList())
+                                }
+                            }
+                            .awaitAll()
+                            .let { builds.putAll(it) }
+                    }
                 }
 
                 onCompleteCallback.invoke(builds)
@@ -234,19 +260,29 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Deployments...", true) {
-                val ccv2Token = getCCv2Token()
-                if (ccv2Token == null) {
-                    project.messageBus.syncPublisher(TOPIC_DEPLOYMENTS).onFetchingCompleted(subscriptions.associateWith { emptyList() })
-                    return@withBackgroundProgress
-                }
-
-                var deployments = sortedMapOf<CCv2Subscription, Collection<CCv2DeploymentDto>>()
-                try {
-                    deployments = CCv2Api.getInstance().fetchDeployments(ccv2Token, subscriptions)
-                } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
-                } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                val deployments = sortedMapOf<CCv2Subscription, Collection<CCv2DeploymentDto>>()
+                reportProgress(subscriptions.size) { progressReporter ->
+                    coroutineScope {
+                        subscriptions
+                            .map { subscription ->
+                                async {
+                                    subscription to (getCCv2Token(subscription)
+                                        ?.let { ccv2Token ->
+                                            try {
+                                                return@let CCv2Api.getInstance().fetchDeployments(ccv2Token, subscription, progressReporter)
+                                            } catch (e: SocketTimeoutException) {
+                                                notifyOnTimeout(subscription)
+                                            } catch (e: RuntimeException) {
+                                                notifyOnException(subscription, e)
+                                            }
+                                            return@let emptyList()
+                                        }
+                                        ?: emptyList())
+                                }
+                            }
+                            .awaitAll()
+                            .let { deployments.putAll(it) }
+                    }
                 }
 
                 onCompleteCallback.invoke(deployments)
@@ -259,7 +295,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         coroutineScope.launch {
             withBackgroundProgress(project, "Creating new CCv2 Build...") {
                 project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildStarted()
-                val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
+                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
 
                 try {
                     CCv2Api.getInstance().createBuild(ccv2Token, subscription, name, branch)
@@ -277,9 +313,9 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 .notify(project)
                         }
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
+                    notifyOnTimeout(subscription)
                 } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                    notifyOnException(subscription, e)
                 }
             }
         }
@@ -290,7 +326,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
             withBackgroundProgress(project, "Deleting CCv2 Build - ${build.code}...") {
                 project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRemovalStarted(subscription, build)
 
-                val ccv2Token = getCCv2Token()
+                val ccv2Token = getCCv2Token(subscription)
                 if (ccv2Token == null) {
                     project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildRemovalRequested(subscription, build)
                     return@withBackgroundProgress
@@ -312,9 +348,9 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 .notify(project)
                         }
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
+                    notifyOnTimeout(subscription)
                 } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                    notifyOnException(subscription, e)
                 }
             }
         }
@@ -332,7 +368,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
             withBackgroundProgress(project, "Deploying CCv2 Build - ${build.code}...") {
                 project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildDeploymentStarted(subscription, build)
 
-                val ccv2Token = getCCv2Token()
+                val ccv2Token = getCCv2Token(subscription)
                 if (ccv2Token == null) {
                     project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildDeploymentRequested(subscription, build)
                     return@withBackgroundProgress
@@ -354,9 +390,9 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 .notify(project)
                         }
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
+                    notifyOnTimeout(subscription)
                 } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                    notifyOnException(subscription, e)
                 }
             }
         }
@@ -374,7 +410,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
             withBackgroundProgress(project, "Downloading CCv2 Build Logs - ${build.code}...") {
                 project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildDeploymentStarted(subscription, build)
 
-                val ccv2Token = getCCv2Token()
+                val ccv2Token = getCCv2Token(subscription)
                 if (ccv2Token == null) {
                     project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildDeploymentRequested(subscription, build)
                     return@withBackgroundProgress
@@ -396,9 +432,9 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
                     onCompleteCallback.invoke(logFiles)
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
+                    notifyOnTimeout(subscription)
                 } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                    notifyOnException(subscription, e)
                 }
             }
         }
@@ -415,17 +451,17 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         onStartCallback.invoke()
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Media Storage Public Key - ${mediaStorage.name}...") {
-                val ccv2Token = getCCv2Token() ?: return@withBackgroundProgress
+                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
                 var publicKey: String? = null
 
                 try {
                     publicKey = CCv1Api.getInstance()
                         .fetchMediaStoragePublicKey(ccv2Token, subscription, environment, mediaStorage)
-                        ?.publicKey
+                        .publicKey
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout()
+                    notifyOnTimeout(subscription)
                 } catch (e: RuntimeException) {
-                    notifyOnException(e)
+                    notifyOnException(subscription, e)
                 }
 
                 onCompleteCallback.invoke(publicKey)
@@ -433,9 +469,10 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         }
     }
 
-    private fun getCCv2Token(): String? {
+    private fun getCCv2Token(subscription: CCv2Subscription): String? {
         val appSettings = ApplicationSettingsComponent.getInstance()
-        val ccv2Token = appSettings.ccv2Token
+        val ccv2Token = appSettings.getCCv2Token(subscription.uuid)
+            ?: appSettings.getCCv2Token()
 
         if (ccv2Token != null) return ccv2Token
 
@@ -454,12 +491,15 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         return null
     }
 
-    private fun notifyOnTimeout() {
+    private fun notifyOnTimeout(subscription: CCv2Subscription) {
         Notifications
             .create(
                 NotificationType.WARNING,
-                "CCv2: Interrupted on timeout",
-                "Exceeded current read timeout, it can be adjusted within CCv2 settings."
+                "CCv2: Request interrupted on timeout",
+                """
+                    Subscription: $subscription<br>
+                    Exceeded current read timeout, it can be adjusted via CCv2 settings.
+                """.trimIndent()
             )
             .addAction("Open Settings") { _, _ ->
                 ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
@@ -468,12 +508,15 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
             .notify(project)
     }
 
-    private fun notifyOnException(e: RuntimeException) {
+    private fun notifyOnException(subscription: CCv2Subscription, e: RuntimeException) {
         Notifications
             .create(
                 NotificationType.WARNING,
                 "CCv2: Unable to process request",
-                e.message ?: ""
+                """
+                    Subscription: $subscription<br>
+                    ${e.message ?: ""}
+                """.trimIndent()
             )
             .addAction("Open Settings") { _, _ ->
                 ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)

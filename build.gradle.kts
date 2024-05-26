@@ -89,8 +89,14 @@ val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, p
     tasks.register<GenerateTask>(taskName) {
         group = "openapi tools"
         generatorName.set("kotlin")
+
         inputSpec.set("$rootDir/resources/specs/$schema")
         outputDir.set("$rootDir/ccv2")
+
+        // Custom template required to enable request-specific headers for Authentication
+        // https://openapi-generator.tech/docs/templating
+        // https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator/src/main/resources/kotlin-client/libraries/jvm-okhttp
+        templateDir.set("$rootDir/resources/openapi/templates")
 
         apiPackage.set("$packagePrefix.api")
         packageName.set("$packagePrefix.invoker")
@@ -308,7 +314,7 @@ dependencies {
 
         // Ant:
         // https://plugins.jetbrains.com/plugin/23025-ant
-        plugin("AntSupport:241.14494.158")
+        plugin("AntSupport:241.17011.48")
 
         // PsiViewer:
         // https://plugins.jetbrains.com/plugin/227-psiviewer

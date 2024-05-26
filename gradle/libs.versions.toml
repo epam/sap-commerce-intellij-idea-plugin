@@ -36,8 +36,9 @@ kotlin = "1.9.24"
 gradleIntelliJPlugin = "2.0.0-beta3"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
 changelog = "2.2.0"
-# https://plugins.gradle.org/plugin/org.openapi.generator
-openAPIGenerator = "7.5.0"
+# Dependency: https://plugins.gradle.org/plugin/org.openapi.generator
+# Generator: https://openapi-generator.tech/docs/generators/kotlin
+openAPIGenerator = "7.6.0"
 
 [libraries]
 commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIO" }

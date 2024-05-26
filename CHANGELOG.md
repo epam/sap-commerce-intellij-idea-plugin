@@ -4,6 +4,7 @@
 - Generate `models.jar` for JUnit Run Configuration only when needed [#1128](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1128)
 
 ### `CCv2` enhancements
+- Introduced possibility to specify access token per subscription [#1135](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1135)
 - Show modified time in the Service view [#1127](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1127)
 - Show Green deployment information in the Service view [#1129](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1129)
 - Show Initial Passwords in the `hcs_admin` Service view [#1130](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1130)

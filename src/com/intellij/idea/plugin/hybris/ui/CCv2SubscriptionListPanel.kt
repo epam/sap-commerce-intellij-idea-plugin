@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.ui
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.settings.CCv2SubscriptionDto
 import com.intellij.ui.AddEditDeleteListPanel
 import com.intellij.ui.ListSpeedSearch
 import com.intellij.util.ui.JBEmptyBorder
@@ -30,7 +30,7 @@ import javax.swing.JComponent
 import javax.swing.JList
 import javax.swing.ListCellRenderer
 
-class CCv2SubscriptionListPanel(initialList: List<CCv2Subscription>) : AddEditDeleteListPanel<CCv2Subscription>(null, initialList) {
+class CCv2SubscriptionListPanel(initialList: List<CCv2SubscriptionDto>) : AddEditDeleteListPanel<CCv2SubscriptionDto>(null, initialList) {
 
     private var myListCellRenderer: ListCellRenderer<*>? = null
 
@@ -38,14 +38,14 @@ class CCv2SubscriptionListPanel(initialList: List<CCv2Subscription>) : AddEditDe
         ListSpeedSearch.installOn(myList) { it.name }
     }
 
-    override fun findItemToAdd(): CCv2Subscription? {
-        val newSubscription = CCv2Subscription()
+    override fun findItemToAdd(): CCv2SubscriptionDto? {
+        val newSubscription = CCv2SubscriptionDto()
 
         return if (CCv2SubscriptionDialog(this, newSubscription, "Create CCv2 Subscription").showAndGet()) newSubscription
         else null
     }
 
-    override fun editSelectedItem(item: CCv2Subscription) = if (CCv2SubscriptionDialog(this, item, "Edit CCv2 Subscription").showAndGet()) item
+    override fun editSelectedItem(item: CCv2SubscriptionDto) = if (CCv2SubscriptionDialog(this, item, "Edit CCv2 Subscription").showAndGet()) item
     else null
 
     override fun getListCellRenderer(): ListCellRenderer<*> {
@@ -67,7 +67,7 @@ class CCv2SubscriptionListPanel(initialList: List<CCv2Subscription>) : AddEditDe
         return myListCellRenderer!!
     }
 
-    var data: List<CCv2Subscription>
+    var data: List<CCv2SubscriptionDto>
         get() = Collections.list(myListModel.elements())
         set(itemList) {
             myListModel.clear()

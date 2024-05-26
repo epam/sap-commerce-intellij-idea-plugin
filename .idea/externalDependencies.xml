@@ -4,5 +4,6 @@
     <plugin id="DevKit" />
     <plugin id="org.jetbrains.idea.grammar" />
     <plugin id="com.intellij.properties.bundle.editor" />
+    <plugin id="com.dmarcotte.handlebars" />
   </component>
 </project>
