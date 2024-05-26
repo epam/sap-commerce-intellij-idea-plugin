@@ -49,6 +49,27 @@ fun Panel.ccv2ServiceStatusRow(service: CCv2ServiceDto) {
     }
 }
 
+fun Panel.ccv2StatusYesNo(status: Boolean, comment: String) {
+    row {
+        val statusLabel = when(status) {
+            false -> label("No").also {
+                with(it.component) {
+                    foreground = JBColor.namedColor("hybris.ccv2.status.no", 0xDB5860, 0xC75450)
+                }
+            }
+
+            true -> label("Yes").also {
+                with(it.component) {
+                    foreground = JBColor.namedColor("hybris.ccv2.status.yes", 0x59A869, 0x499C54)
+                }
+            }
+        }
+
+        statusLabel
+            .comment(comment)
+    }
+}
+
 fun Panel.ccv2ServiceReplicasRow(service: CCv2ServiceDto) {
     row {
         val replicas = if (service.desiredReplicas != null && service.availableReplicas != null)

@@ -18,10 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.api
 
-import com.intellij.idea.plugin.hybris.ccv2.api.BuildApi
-import com.intellij.idea.plugin.hybris.ccv2.api.DeploymentApi
-import com.intellij.idea.plugin.hybris.ccv2.api.EnvironmentApi
-import com.intellij.idea.plugin.hybris.ccv2.api.ServicePropertiesApi
+import com.intellij.idea.plugin.hybris.ccv2.api.*
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
@@ -52,6 +49,7 @@ class CCv2Api {
     private val deploymentApi by lazy { DeploymentApi(client = apiClient) }
     private val buildApi by lazy { BuildApi(client = apiClient) }
     private val servicePropertiesApi by lazy { ServicePropertiesApi(client = apiClient) }
+    private val databackupApi by lazy { DatabackupApi(client = apiClient) }
 
     suspend fun fetchEnvironments(
         ccv2Token: String,
@@ -101,6 +99,19 @@ class CCv2Api {
         }
     }
 
+    suspend fun fetchEnvironmentDataBackups(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+    ) = databackupApi.getDatabackups(
+        subscriptionCode = subscription.id!!,
+        environmentCode = environment.code,
+        requestHeaders = createRequestParams(ccv2Token)
+    )
+        .value
+        ?.map { CCv2DataBackupDto.map(it) }
+        ?: emptyList()
+
     suspend fun fetchEnvironmentsBuilds(
         ccv2Token: String,
         subscription: CCv2Subscription,
@@ -122,7 +133,7 @@ class CCv2Api {
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
     ): CCv2BuildDto? = deploymentApi.getDeployments(
-        subscription.id!!,
+        subscriptionCode = subscription.id!!,
         environmentCode = environment.code,
         dollarCount = true,
         dollarTop = 1,

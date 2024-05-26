@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowServiceDetailsAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DataBackupDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.ui.Dsl
@@ -57,10 +58,13 @@ class CCv2EnvironmentDetailsView(
 
     private val showBuild = AtomicBooleanProperty(environment.deployedBuild != null)
     private val showServices = AtomicBooleanProperty(environment.services != null)
+    private val showDataBackups = AtomicBooleanProperty(environment.dataBackups != null)
 
     private val buildPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
     private val servicesPanel = JBPanel<JBPanel<*>>(GridBagLayout())
+        .also { border = JBUI.Borders.empty() }
+    private val dataBackupsPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
     private var rootPanel = rootPanel()
 
@@ -105,6 +109,7 @@ class CCv2EnvironmentDetailsView(
 
         initBuildPanel()
         initServicesPanel()
+        initDataBackupsPanel()
     }
 
     private fun initBuildPanel() {
@@ -158,6 +163,33 @@ class CCv2EnvironmentDetailsView(
         } else {
             servicesPanel.removeAll()
             servicesPanel.add(servicesPanel(services))
+        }
+    }
+
+    private fun initDataBackupsPanel() {
+        val dataBackups = environment.dataBackups
+        if (dataBackups == null) {
+            CCv2Service.getInstance(project).fetchEnvironmentDataBackups(subscription, environment,
+                {
+                    showDataBackups.set(false)
+                    environment.dataBackups = null
+                    dataBackupsPanel.removeAll()
+                },
+                {
+                    environment.dataBackups = it
+
+                    invokeLater {
+                        showDataBackups.set(it != null)
+
+                        if (it != null) {
+                            dataBackupsPanel.add(dataBackupsPanel(it))
+                        }
+                    }
+                }
+            )
+        } else {
+            dataBackupsPanel.removeAll()
+            dataBackupsPanel.add(dataBackupsPanel(dataBackups))
         }
     }
 
@@ -243,6 +275,70 @@ class CCv2EnvironmentDetailsView(
 
                 panel {
                     ccv2ServiceStatusRow(service)
+                }
+            }
+                .layout(RowLayout.PARENT_GRID)
+        }
+    }
+
+    private fun dataBackupsPanel(dataBackups: Collection<CCv2DataBackupDto>) = panel {
+        dataBackups.forEach { dataBackup ->
+            row {
+                panel {
+                    row {
+                        contextHelp(dataBackup.description)
+                        label(dataBackup.name)
+                            .comment(dataBackup.dataBackupCode)
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        icon(HybrisIcons.CCV2_DATA_BACKUP_CREATED_BY)
+                            .gap(RightGap.SMALL)
+                        label(dataBackup.createdBy)
+                            .comment("Created by")
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        label(dataBackup.status)
+                            .comment("Status")
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        label(dataBackup.buildCode)
+                            .comment("Build code")
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        label(dataBackup.createdTimestampFormatted)
+                            .comment("Created")
+                    }
+                }
+                    .gap(RightGap.COLUMNS)
+
+                panel {
+                    ccv2StatusYesNo(dataBackup.canBeRestored, "Can be restored")
+                }
+                    .gap(RightGap.SMALL)
+
+                panel {
+                    ccv2StatusYesNo(dataBackup.canBeCanceled, "Can be canceled")
+                }
+                    .gap(RightGap.SMALL)
+
+                panel {
+                    ccv2StatusYesNo(dataBackup.canBeDeleted, "Can be deleted")
                 }
             }
                 .layout(RowLayout.PARENT_GRID)
@@ -454,6 +550,21 @@ class CCv2EnvironmentDetailsView(
                         }
                     }.align(Align.CENTER)
                 }.visibleIf(showServices.not())
+            }.expanded = true
+
+            collapsibleGroup("Data Backups") {
+                row {
+                    cell(dataBackupsPanel)
+                }.visibleIf(showDataBackups)
+
+                row {
+                    panel {
+                        row {
+                            icon(AnimatedIcon.Default.INSTANCE)
+                            label("Retrieving data backups...")
+                        }
+                    }.align(Align.CENTER)
+                }.visibleIf(showDataBackups.not())
             }.expanded = true
         }
     }

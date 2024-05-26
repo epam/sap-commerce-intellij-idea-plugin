@@ -175,6 +175,33 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         }
     }
 
+    fun fetchEnvironmentDataBackups(
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+        onStartCallback: () -> Unit,
+        onCompleteCallback: (Collection<CCv2DataBackupDto>?) -> Unit
+    ) {
+        onStartCallback.invoke()
+
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Fetching CCv2 Environment Data Backups...", true) {
+                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                var dataBackups: Collection<CCv2DataBackupDto>? = null
+
+                try {
+                    dataBackups = CCv2Api.getInstance().fetchEnvironmentDataBackups(ccv2Token, subscription, environment)
+                        .sortedByDescending { it.createdTimestamp }
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout(subscription)
+                } catch (e: RuntimeException) {
+                    notifyOnException(subscription, e)
+                }
+
+                onCompleteCallback.invoke(dataBackups)
+            }
+        }
+    }
+
     fun fetchEnvironmentServiceProperties(
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
