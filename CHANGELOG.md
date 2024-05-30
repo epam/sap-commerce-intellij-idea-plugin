@@ -15,6 +15,7 @@
 - Added reference resolution for index `include`:`attribute` [#1134](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1134)
 
 ### Other
+- Migrated to `IntelliJ Platform Gradle Plugin 2.beta5` [#1137](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1137)
 - Migrated to `IntelliJ Platform Gradle Plugin 2.beta3` [#1133](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1133)
 - Migrated to `IntelliJ Platform Gradle Plugin 2.beta2` [#1124](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1124)
 - Show once `CHANGELOG.md` in a new `What's New` tab once per version [#1125](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1125)
