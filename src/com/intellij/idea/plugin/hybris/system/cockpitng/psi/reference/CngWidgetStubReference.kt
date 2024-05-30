@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,27 +24,45 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.ActionDefinitionResolveResult
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.EditorDefinitionResolveResult
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
+import com.intellij.psi.util.*
 
 class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
-    override fun calculateDefaultRangeInElement() = TextRange.from(stubLength + 1, element.textLength - stubLength - HybrisConstants.QUOTE_LENGTH)
+    override fun calculateDefaultRangeInElement() = TextRange.from(STUB_LENGTH + 1, element.textLength - STUB_LENGTH - HybrisConstants.QUOTE_LENGTH)
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val metaModel = CngMetaModelAccess.getInstance(element.project).getMetaModel()
-        return metaModel
-            .editorDefinitions[value]
-            ?.let { PsiUtils.getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
-            ?: metaModel.actionDefinitions[value]
-                ?.let { PsiUtils.getValidResults(arrayOf(ActionDefinitionResolveResult(it))) }
-            ?: emptyArray()
-    }
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
+        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+        .let { PsiUtils.getValidResults(it) }
 
     companion object {
-        private const val stubLength = HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB.length
+        private const val STUB_LENGTH = HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB.length
+
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngWidgetStubReference>>("HYBRIS_CNGWIDGETSTUBREFERENCE")
+
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, CngWidgetStubReference> { ref ->
+            val element = ref.element
+            val value = ref.value
+            val project = element.project
+            val metaModel = CngMetaModelAccess.getInstance(project).getMetaModel()
+
+            val result = metaModel
+                .editorDefinitions[value]
+                ?.let { PsiUtils.getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
+                ?: metaModel.actionDefinitions[value]
+                    ?.let { PsiUtils.getValidResults(arrayOf(ActionDefinitionResolveResult(it))) }
+                ?: emptyArray()
+
+            CachedValueProvider.Result.create(
+                result,
+                metaModel, PsiModificationTracker.MODIFICATION_COUNT
+            )
+        }
     }
+
 }
