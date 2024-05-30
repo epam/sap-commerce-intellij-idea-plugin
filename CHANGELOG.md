@@ -13,6 +13,7 @@
 
 ### `OCC` enhancements
 - Cache bean property reference [#1138](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1138)
+- Cache level mapping reference [#1139](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1139)
 
 ### `items.xml` enhancements
 - Added reference resolution for index `include`:`attribute` [#1134](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1134)
