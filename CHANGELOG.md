@@ -19,6 +19,7 @@
 - Cache widget reference [#1144](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1144)
 - Cache initialize property reference [#1145](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1145)
 - Cache editor definition reference [#1146](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1146)
+- Cache action definition reference [#1147](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1147)
 
 ### `OCC` enhancements
 - Cache bean property reference [#1138](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1138)
