@@ -17,6 +17,7 @@
 - Cache flow type system item reference [#1142](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1142)
 - Cache widget definition reference [#1143](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1143)
 - Cache widget reference [#1144](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1144)
+- Cache initialize property reference [#1145](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1145)
 
 ### `OCC` enhancements
 - Cache bean property reference [#1138](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1138)
