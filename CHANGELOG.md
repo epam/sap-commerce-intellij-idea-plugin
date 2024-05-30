@@ -24,6 +24,7 @@
 ### `ImpEx` enhancements
 - Cache document id reference [#1148](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1148)
 - Cache header abbreviation reference [#1149](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1149)
+- Cache java enum value reference [#1150](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1150)
 
 ### `OCC` enhancements
 - Cache bean property reference [#1138](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1138)
