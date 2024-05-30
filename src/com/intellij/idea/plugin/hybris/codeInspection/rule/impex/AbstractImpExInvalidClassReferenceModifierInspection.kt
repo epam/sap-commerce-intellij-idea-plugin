@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexJavaClassReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExJavaClassReference
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.PsiClassImplUtil
@@ -50,7 +50,7 @@ abstract class AbstractImpExInvalidClassReferenceModifierInspection(
             val reference = element.reference
 
             if (reference == null) unresolvedReference(element)
-            else if (reference is ImpexJavaClassReference) {
+            else if (reference is ImpExJavaClassReference) {
                 val psiClass = reference.resolve() as? PsiClass
 
                 if (psiClass == null) {
