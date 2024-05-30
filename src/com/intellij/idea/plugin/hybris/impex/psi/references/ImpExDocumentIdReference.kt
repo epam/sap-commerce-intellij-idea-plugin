@@ -21,21 +21,20 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
 import com.intellij.idea.plugin.hybris.impex.psi.util.setName
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.*
 import com.intellij.util.IncorrectOperationException
 
-class ImpexDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
+class ImpExDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = PsiTreeUtil
-        .collectElementsOfType(element.containingFile, ImpexDocumentIdDec::class.java)
-        .filter { element.textMatches(it.text) }
-        .takeIf { it.isNotEmpty() }
-        ?.let { PsiElementResolveResult.createResults(it) }
-        ?: ResolveResult.EMPTY_ARRAY
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
+        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+        .let { PsiUtils.getValidResults(it) }
 
     override fun getRangeInElement() = TextRange.from(0, element.textLength)
 
@@ -45,5 +44,25 @@ class ImpexDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<P
 
     private fun getManipulator() = object : AbstractElementManipulator<PsiElement>() {
         override fun handleContentChange(element: PsiElement, range: TextRange, newContent: String) = setName(element, newContent)
+    }
+
+    companion object {
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExDocumentIdReference>>("HYBRIS_IMPEXDOCUMENTID_REFERENCE")
+
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExDocumentIdReference> { ref ->
+            val element = ref.element
+
+            val result = PsiTreeUtil
+                .collectElementsOfType(element.containingFile, ImpexDocumentIdDec::class.java)
+                .filter { element.textMatches(it.text) }
+                .takeIf { it.isNotEmpty() }
+                ?.let { PsiElementResolveResult.createResults(it) }
+                ?: ResolveResult.EMPTY_ARRAY
+
+            CachedValueProvider.Result.create(
+                result,
+                PsiModificationTracker.MODIFICATION_COUNT
+            )
+        }
     }
 }

@@ -21,6 +21,9 @@
 - Cache editor definition reference [#1146](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1146)
 - Cache action definition reference [#1147](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1147)
 
+### `ImpEx` enhancements
+- Cache document id reference [#1148](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1148)
+
 ### `OCC` enhancements
 - Cache bean property reference [#1138](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1138)
 - Cache level mapping reference [#1139](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1139)

@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexDocumentIdReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExDocumentIdReference
 import com.intellij.lang.ASTNode
 import java.io.Serial
 
@@ -27,7 +27,7 @@ abstract class ImpexDocumentIdUsageMixin(node: ASTNode) : ASTWrapperPsiElement(n
 
     override fun getReference() = references.firstOrNull()
 
-    override fun getReferences() = arrayOf(ImpexDocumentIdReference(this))
+    override fun getReferences() = arrayOf(ImpExDocumentIdReference(this))
 
     companion object {
         @Serial
