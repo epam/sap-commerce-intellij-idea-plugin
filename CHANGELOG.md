@@ -14,6 +14,7 @@
 ### `Cockpit NG` enhancements
 - Cache widget stub reference [#1140](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1140)
 - Cache widget stub reference [#1141](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1141)
+- Cache flow type system item reference [#1142](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1142)
 
 ### `OCC` enhancements
 - Cache bean property reference [#1138](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1138)
