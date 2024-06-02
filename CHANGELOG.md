@@ -1,5 +1,8 @@
 ## [2024.1.3]
 
+### `Project Import` enhancements
+- Do not group external modules by default [#1152](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1152)
+
 ### `Project Build` enhancements
 - Generate `models.jar` for JUnit Run Configuration only when needed [#1128](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1128)
 

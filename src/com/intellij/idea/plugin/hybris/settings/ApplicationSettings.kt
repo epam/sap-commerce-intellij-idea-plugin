@@ -25,7 +25,7 @@ import com.intellij.util.xmlb.annotations.Tag
 data class ApplicationSettings(
 
     var groupModules: Boolean = true,
-    var groupExternalModules: Boolean = true,
+    var groupExternalModules: Boolean = false,
     var hideEmptyMiddleFolders: Boolean = true,
     var defaultPlatformInReadOnly: Boolean = true,
     var followSymlink: Boolean = true,
