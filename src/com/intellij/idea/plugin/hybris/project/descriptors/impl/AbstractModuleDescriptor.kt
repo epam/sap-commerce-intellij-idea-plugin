@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.*
+import com.intellij.util.asSafely
 import io.ktor.util.*
 import org.apache.commons.collections4.CollectionUtils
 import org.apache.commons.lang3.builder.EqualsBuilder
@@ -69,7 +70,7 @@ abstract class AbstractModuleDescriptor(
         }
 
         return other
-            .let { it as? AbstractModuleDescriptor }
+            .asSafely<AbstractModuleDescriptor>()
             ?.let {
                 EqualsBuilder()
                     .append(this.name, it.name)

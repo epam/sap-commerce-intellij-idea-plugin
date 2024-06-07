@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.spring
 
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isActive
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtilCore
@@ -39,7 +40,7 @@ object SpringHelper {
     fun resolveBeanDeclaration(element: PsiElement, beanId: String): XmlTag? {
         val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return null
 
-        return if (PluginCommon.isPluginActive(PluginCommon.PLUGIN_SPRING)) springResolveBean(module, beanId)
+        return if (PluginCommon.PLUGIN_SPRING.isActive()) springResolveBean(module, beanId)
             ?.springBean
             ?.xmlTag
         else plainResolveBean(module, beanId)
@@ -49,7 +50,7 @@ object SpringHelper {
         val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return null
         val project = module.project
 
-        return if (PluginCommon.isPluginActive(PluginCommon.PLUGIN_SPRING)) springResolveBean(module, beanId)
+        return if (PluginCommon.PLUGIN_SPRING.isActive()) springResolveBean(module, beanId)
             ?.beanClass
         else plainResolveBean(module, beanId)
             ?.getAttributeValue("class")

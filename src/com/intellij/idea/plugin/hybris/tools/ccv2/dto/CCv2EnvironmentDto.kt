@@ -38,6 +38,7 @@ data class CCv2EnvironmentDto(
     val link: String?,
     val mediaStorages: Collection<CCv2MediaStorageDto>,
     var services: Collection<CCv2ServiceDto>? = null,
+    var dataBackups: Collection<CCv2DataBackupDto>? = null,
 ) : CCv2DTO, Comparable<CCv2EnvironmentDto> {
 
     override fun compareTo(other: CCv2EnvironmentDto) = name.compareTo(other.name)

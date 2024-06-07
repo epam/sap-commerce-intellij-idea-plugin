@@ -42,6 +42,7 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.refactoring.suggested.startOffset
+import com.intellij.util.asSafely
 
 /**
  * use com.intellij.codeInsight.hints.presentation.PresentationFactory#referenceOnHover and show popup from clickListener
@@ -86,7 +87,7 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
                 ?.retrieveDom()
                 ?.code
                 ?.xmlAttributeValue
-                ?.let { it as? Navigatable }
+                ?.asSafely<Navigatable>()
                 ?.let { inlayPresentation(HybrisIcons.TS_RELATION, arrayOf(it), "Navigate to Relation declaration") }
                 ?: findItemClass(project, name)
                     .takeIf { it.isNotEmpty() }

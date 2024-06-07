@@ -313,7 +313,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
         val appSettings = ApplicationSettingsComponent.getInstance()
 
-        appSettings.loadCCv2Token {
+        appSettings.loadDefaultCCv2Token {
             ccv2TokenTextField.text = it
         }
 
@@ -509,7 +509,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
                 )
 
-            this.cCv2Token = appSettings.ccv2Token
+            this.cCv2Token = appSettings.getCCv2Token()
 
             val hybrisDirectory = settings.hybrisDirectory
             if (hybrisDirectory != null) {

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.system.type.psi
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.insideTagPattern
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttributeValuePattern
+import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
@@ -31,15 +32,25 @@ object TSPatterns {
     private val itemsXmlFile = PlatformPatterns.psiFile()
         .withName(StandardPatterns.string().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING))
 
-    val INDEX_KEY_ATTRIBUTE = tagAttributeValuePattern("key", "attribute")
-        .inside(
-            insideTagPattern("indexes")
-                .inside(insideTagPattern("itemtype"))
-        )
-        .inFile(itemsXmlFile)
+    val INDEX_KEY_ATTRIBUTE = XmlPatterns.or(
+        tagAttributeValuePattern(Index.KEY, IndexKey.ATTRIBUTE)
+            .inside(
+                insideTagPattern(ItemType.INDEXES)
+                    .inside(insideTagPattern(ItemTypes.ITEMTYPE))
+            )
+            .inFile(itemsXmlFile),
+        tagAttributeValuePattern(Index.INCLUDE, IndexInclude.ATTRIBUTE)
+            .inside(
+                insideTagPattern(ItemType.INDEXES)
+                    .inside(insideTagPattern(ItemTypes.ITEMTYPE))
+            )
+            .inFile(itemsXmlFile)
+    )
+
 
     val SPRING_INTERCEPTOR_TYPE_CODE: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue("value")
-        .withSuperParent(2,
+        .withSuperParent(
+            2,
             XmlPatterns.xmlTag()
                 .withLocalName("property")
                 .withAttributeValue("name", "typeCode")

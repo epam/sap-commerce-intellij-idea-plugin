@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,6 +27,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.refactoring.suggested.startOffset
+import com.intellij.util.asSafely
 
 class GoToDeclarationBSTableAction : AbstractGoToDeclarationAction() {
 
@@ -62,6 +63,6 @@ class GoToDeclarationBSTableAction : AbstractGoToDeclarationAction() {
 
     private fun getSelectedItem(event: AnActionEvent) = event
         .getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
-        ?.let { it as? AbstractTable<*, *> }
+        ?.asSafely<AbstractTable<*, *>>()
         ?.getCurrentItem()
 }

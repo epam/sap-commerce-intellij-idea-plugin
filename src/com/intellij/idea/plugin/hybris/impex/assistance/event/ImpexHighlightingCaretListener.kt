@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -40,6 +40,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiUtilBase
+import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
 
 @Service
@@ -60,7 +61,7 @@ class ImpexHighlightingCaretListener : CaretListener {
                 if (PsiUtilBase.getLanguageInEditor(editor, project) !is ImpexLanguage) return@nonBlocking emptyList()
 
                 ImpexPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
-                    ?.let { it as? ImpexFullHeaderParameter }
+                    ?.asSafely<ImpexFullHeaderParameter>()
                     ?.let { listOf(it) }
                     ?: ImpexPsiUtils.getFullHeaderParameterUnderCaret(editor)
                         ?.valueGroups

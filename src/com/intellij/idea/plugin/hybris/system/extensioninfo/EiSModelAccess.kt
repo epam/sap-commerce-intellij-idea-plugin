@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,6 +27,7 @@ import com.intellij.openapi.vfs.findFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.xml.XmlFile
+import com.intellij.util.asSafely
 import com.intellij.util.xml.DomManager
 
 object EiSModelAccess {
@@ -37,7 +38,7 @@ object EiSModelAccess {
     fun getExtensionInfo(module: Module) = ModuleRootManager.getInstance(module).contentRoots
         .firstNotNullOfOrNull { it.findFile(HybrisConstants.EXTENSION_INFO_XML) }
         ?.let { PsiManager.getInstance(module.project).findFile(it) }
-        ?.let { it as? XmlFile }
+        ?.asSafely<XmlFile>()
         ?.let { DomManager.getDomManager(module.project).getFileElement(it, ExtensionInfo::class.java) }
         ?.rootElement
         ?.extension

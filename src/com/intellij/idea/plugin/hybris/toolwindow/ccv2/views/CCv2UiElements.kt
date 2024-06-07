@@ -36,7 +36,7 @@ fun Panel.ccv2ServiceStatusRow(service: CCv2ServiceDto) {
 
             service.availableReplicas == service.desiredReplicas -> label("Running").also {
                 with(it.component) {
-                    foreground = JBColor.namedColor("hybris.ccv2.service.stopped", 0x59A869, 0x499C54)
+                    foreground = JBColor.namedColor("hybris.ccv2.service.running", 0x59A869, 0x499C54)
                 }
             }
 
@@ -46,6 +46,27 @@ fun Panel.ccv2ServiceStatusRow(service: CCv2ServiceDto) {
 
         statusLabel
             .comment("Status")
+    }
+}
+
+fun Panel.ccv2StatusYesNo(status: Boolean, comment: String) {
+    row {
+        val statusLabel = when(status) {
+            false -> label("No").also {
+                with(it.component) {
+                    foreground = JBColor.namedColor("hybris.ccv2.status.no", 0xDB5860, 0xC75450)
+                }
+            }
+
+            true -> label("Yes").also {
+                with(it.component) {
+                    foreground = JBColor.namedColor("hybris.ccv2.status.yes", 0x59A869, 0x499C54)
+                }
+            }
+        }
+
+        statusLabel
+            .comment(comment)
     }
 }
 
@@ -65,5 +86,12 @@ fun Panel.ccv2ServiceModifiedByRow(service: CCv2ServiceDto) {
             .gap(RightGap.SMALL)
         label(service.modifiedBy)
             .comment("Modified by")
+    }
+}
+
+fun Panel.ccv2ServiceModifiedTimeRow(service: CCv2ServiceDto) {
+    row {
+        label(service.modifiedTimeFormatted)
+            .comment("Modified time")
     }
 }

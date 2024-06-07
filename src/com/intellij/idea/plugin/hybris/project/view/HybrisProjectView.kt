@@ -36,6 +36,7 @@ import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.util.asSafely
 import java.io.File
 
 open class HybrisProjectView(val project: Project) : TreeStructureProvider, DumbAware {
@@ -147,7 +148,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
         for (i in nodes.indices) {
             nodes[i]
-                .let { it as? ProjectViewModuleGroupNode }
+                .asSafely<ProjectViewModuleGroupNode>()
                 ?.let { node ->
                     val yNode = YProjectViewModuleGroupNode(node.project, node.value, node.settings)
                     yNode.value
@@ -288,7 +289,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         val onlyChild = children
             .takeIf { it.size == 1 }
             ?.firstOrNull()
-            ?.let { it as? PsiDirectoryNode }
+            ?.asSafely<PsiDirectoryNode>()
             ?: return parent
 
         val parentVirtualFile = parent.virtualFile

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -39,6 +39,7 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
 import java.io.File
 import java.util.*
@@ -224,7 +225,7 @@ class PropertyService(val project: Project) {
     private fun toPropertiesFile(file: File) = LocalFileSystem.getInstance().findFileByIoFile(file)
         ?.takeIf { it.exists() }
         ?.let { PsiManager.getInstance(project).findFile(it) }
-        ?.let { it as? PropertiesFile }
+        ?.asSafely<PropertiesFile>()
 
     private fun addPropertyFile(result: MutableMap<String, IProperty>, propertiesFile: PropertiesFile) {
         for (property in propertiesFile.properties) {

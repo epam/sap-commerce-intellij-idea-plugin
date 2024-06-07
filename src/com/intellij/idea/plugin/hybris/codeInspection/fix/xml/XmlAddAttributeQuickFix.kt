@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.psi.util.PsiNavigateUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlTag
+import com.intellij.util.asSafely
 
 class XmlAddAttributeQuickFix(private val attributeName: String) : LocalQuickFix {
 
@@ -32,7 +33,7 @@ class XmlAddAttributeQuickFix(private val attributeName: String) : LocalQuickFix
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         descriptor.psiElement
-            .let { it as? XmlTag }
+            .asSafely<XmlTag>()
             ?.setAttribute(attributeName, "")
             ?.valueElement
             ?.let { PsiNavigateUtil.navigate(descriptor, it) }

@@ -18,19 +18,36 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.openapi.components.BaseState
+import java.util.*
 
-class CCv2Subscription : BaseState(), Cloneable, Comparable<CCv2Subscription> {
+class CCv2Subscription : BaseState(), Comparable<CCv2Subscription> {
+    var uuid by string(UUID.randomUUID().toString())
     var id by string()
     var name by string(null)
 
-    public override fun clone(): CCv2Subscription {
-        val clone = CCv2Subscription()
-        clone.id = id
-        clone.name = name
-        return clone
-    }
-
     override fun compareTo(other: CCv2Subscription) = toString().compareTo(other.toString())
+
+    override fun toString() = name
+        ?: id
+        ?: "?"
+
+    fun toDto() = CCv2SubscriptionDto(uuid ?: UUID.randomUUID().toString(), id, name)
+}
+
+data class CCv2SubscriptionDto(
+    var uuid: String = UUID.randomUUID().toString(),
+    var id: String? = null,
+    var name: String? = null,
+    var ccv2Token: String? = null,
+) {
+    fun toModel() = CCv2Subscription()
+        .also {
+            it.uuid = uuid
+            it.id = id
+            it.name = name
+        }
+
+    fun copy() = CCv2SubscriptionDto(uuid, id, name, ccv2Token)
 
     override fun toString() = name
         ?: id

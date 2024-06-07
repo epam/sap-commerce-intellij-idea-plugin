@@ -25,7 +25,6 @@ import com.intellij.util.xmlb.annotations.OptionTag
 
 class LocalSapCXRunnerOptions : ModuleBasedConfigurationOptions() {
 
-
     @get:OptionTag(tag = "remoteDebugPort", valueAttribute = "remoteDebugPort", nameAttribute = "")
     var remoteDebugPort: String? by string(HybrisConstants.DEBUG_PORT)
 

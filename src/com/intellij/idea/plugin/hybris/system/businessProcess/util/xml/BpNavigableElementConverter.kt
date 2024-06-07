@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
+import com.intellij.util.asSafely
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.ResolvingConverter
@@ -41,7 +42,7 @@ class BpNavigableElementConverter : ResolvingConverter<NavigableElement>() {
             .filterIsInstance<XmlTag>()
             .firstOrNull { el -> el.getAttribute("id")?.value == name }
             ?.let { domManager.getDomElement(it) }
-            ?.let { it as NavigableElement }
+            ?.asSafely<NavigableElement>()
 
     }
 

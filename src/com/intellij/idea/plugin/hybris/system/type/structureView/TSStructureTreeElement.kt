@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.Function
+import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomElementNavigationProvider
 import com.intellij.util.xml.DomService
@@ -95,7 +96,7 @@ class TSStructureTreeElement(
     private fun resolveLocationString(dom: CollectionType) = dom.type.value.toString() + (dom.elementType.stringValue?.let { " of $it" } ?: "")
 
     private fun resolveLocationString(dom: Description) = dom.xmlElement
-        ?.let { it as? XmlTag }
+        ?.asSafely<XmlTag>()
         ?.value
         ?.trimmedText
 

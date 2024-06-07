@@ -54,16 +54,21 @@ import kotlin.io.path.name
 class ProjectBeforeCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext): Boolean {
-        val modules = context.compileScope.affectedModules
-        val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
-            ?: return true
-
         val settings = ProjectSettingsComponent.getInstance(context.project)
         if (!settings.isHybrisProject()) return true
         if (!settings.state.generateCodeOnRebuild) {
             context.addMessage(CompilerMessageCategory.WARNING, "[y] Code generation is disabled, to enable it adjust SAP Commerce Project specific settings.", null, -1, -1)
             return true
         }
+
+        val typeId = context.compileScope.getUserData(CompilerManager.RUN_CONFIGURATION_TYPE_ID_KEY)
+        // do not rebuild sources in case of JUnit
+        // see JUnitConfigurationType
+        if ("JUnit" == typeId && !settings.state.generateCodeOnJUnitRunConfiguration) return true
+
+        val modules = context.compileScope.affectedModules
+        val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
+            ?: return true
 
         val platformModuleRoot = platformModule.root()
             ?: return true

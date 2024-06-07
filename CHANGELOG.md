@@ -1,3 +1,50 @@
+## [2024.1.3]
+
+### `Project Import` enhancements
+- Do not group external modules by default [#1152](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1152)
+
+### `Project Build` enhancements
+- Generate `models.jar` for JUnit Run Configuration only when needed [#1128](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1128)
+
+### `CCv2` enhancements
+- Introduced possibility to specify access token per subscription [#1135](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1135)
+- Show modified time in the Service view [#1127](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1127)
+- Show Green deployment information in the Service view [#1129](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1129)
+- Show Initial Passwords in the `hcs_admin` Service view [#1130](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1130)
+- Added possibility to re-fetch Service details [#1132](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1132)
+- List environment specific data backups [#1136](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1136)
+
+### `Cockpit NG` enhancements
+- Cache widget stub reference [#1140](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1140)
+- Cache widget stub reference [#1141](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1141)
+- Cache flow type system item reference [#1142](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1142)
+- Cache widget definition reference [#1143](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1143)
+- Cache widget reference [#1144](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1144)
+- Cache initialize property reference [#1145](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1145)
+- Cache editor definition reference [#1146](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1146)
+- Cache action definition reference [#1147](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1147)
+
+### `ImpEx` enhancements
+- Cache document id reference [#1148](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1148)
+- Cache header abbreviation reference [#1149](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1149)
+- Cache java enum value reference [#1150](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1150)
+- Cache java class reference [#1151](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1151)
+
+### `OCC` enhancements
+- Cache bean property reference [#1138](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1138)
+- Cache level mapping reference [#1139](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1139)
+
+### `items.xml` enhancements
+- Added reference resolution for index `include`:`attribute` [#1134](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1134)
+
+### Other
+- Migrated to `IntelliJ Platform Gradle Plugin 2.beta5` [#1137](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1137)
+- Migrated to `IntelliJ Platform Gradle Plugin 2.beta3` [#1133](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1133)
+- Migrated to `IntelliJ Platform Gradle Plugin 2.beta2` [#1124](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1124)
+- Show once `CHANGELOG.md` in a new `What's New` tab once per version [#1125](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1125)
+- Show bundled `What's New` tab with fallback to GitHub page [#1131](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1131)
+- Updated gradle wrapper to 8.7 [#1126](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1126)
+
 ## [2024.1.2]
 
 ### `CCv2` enhancements
@@ -23,7 +70,7 @@
 - Added possibility to re-fetch environment [#1119](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1119)
 - Added a browser link for Cloud Storage name [#1120](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1120)
 - Show basic Environment Service details [#1121](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1121)
-- Retrieve and show Service properties [#1122](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1122)
+- Retrieve and show Service customer properties [#1122](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1122)
 
 ### `Project Import` enhancements
 - Loading backoffice sources provided by SAP on project import [#1096](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1096)

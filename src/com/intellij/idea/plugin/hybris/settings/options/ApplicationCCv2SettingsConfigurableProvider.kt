@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
+import com.intellij.idea.plugin.hybris.settings.CCv2SubscriptionDto
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.ui.CCv2SubscriptionListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -40,15 +41,22 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
         private val state = appSettings.state
         private var originalCCv2Token: String? = ""
         private var originalCCv2Subscriptions = state.ccv2Subscriptions
-            .map { it.clone() }
+            .map { it.toDto() }
 
-        private lateinit var ccv2TokenTextField: JBPasswordField
-        private val ccv2SubscriptionListPanel = CCv2SubscriptionListPanel(originalCCv2Subscriptions)
+        private lateinit var defaultCCv2TokenTextField: JBPasswordField
+        private val ccv2SubscriptionListPanel = CCv2SubscriptionListPanel(state.ccv2Subscriptions
+            .map { it.toDto() }
+        )
+
+        init {
+            loadCCv2TokensForSubscriptions(originalCCv2Subscriptions)
+            loadCCv2TokensForSubscriptions(ccv2SubscriptionListPanel.data)
+        }
 
         override fun createPanel() = panel {
             row {
                 label("CCv2 token:")
-                ccv2TokenTextField = passwordField()
+                defaultCCv2TokenTextField = passwordField()
                     .comment(
                         """
                             Specify developer specific Token for CCv2 API, it will be stored in the OS specific secure storage under <strong>SAP CX CCv2 Token</strong> alias.<br>
@@ -56,20 +64,20 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
                         """.trimIndent()
                     )
                     .align(AlignX.RIGHT)
-                    .onIsModified { originalCCv2Token != String(ccv2TokenTextField.password) }
+                    .onIsModified { originalCCv2Token != String(defaultCCv2TokenTextField.password) }
                     .onReset {
-                        ccv2TokenTextField.isEnabled = false
+                        defaultCCv2TokenTextField.isEnabled = false
 
-                        appSettings.loadCCv2Token {
-                            val ccv2Token = appSettings.ccv2Token
+                        appSettings.loadDefaultCCv2Token {
+                            val ccv2Token = appSettings.getCCv2Token()
                             originalCCv2Token = ccv2Token
 
-                            ccv2TokenTextField.text = ccv2Token
-                            ccv2TokenTextField.isEnabled = true
+                            defaultCCv2TokenTextField.text = ccv2Token
+                            defaultCCv2TokenTextField.isEnabled = true
                         }
                     }
                     .onApply {
-                        appSettings.saveCCv2Token(String(ccv2TokenTextField.password)) {
+                        appSettings.saveDefaultCCv2Token(String(defaultCCv2TokenTextField.password)) {
                             originalCCv2Token = it
                         }
                     }
@@ -92,13 +100,34 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
                 row {
                     cell(ccv2SubscriptionListPanel)
                         .align(AlignX.FILL)
-                        .onApply { appSettings.setCCv2Subscriptions(ccv2SubscriptionListPanel.data) }
-                        .onReset {
-                            originalCCv2Subscriptions = state.ccv2Subscriptions
-                                .map { it.clone() }
+                        .onApply {
+                            val applicationSettingsComponent = ApplicationSettingsComponent.getInstance()
+                            val subscriptions = ccv2SubscriptionListPanel.data
+                            subscriptions.forEach {
+                                applicationSettingsComponent.saveCCv2Token(it.uuid, it.ccv2Token)
+                            }
+                            originalCCv2Subscriptions = subscriptions
+                            appSettings.setCCv2Subscriptions(subscriptions)
+
                             ccv2SubscriptionListPanel.data = originalCCv2Subscriptions
+                                .map { it.copy() }
                         }
-                        .onIsModified { ccv2SubscriptionListPanel.data.equalsIgnoreOrder(state.ccv2Subscriptions).not() }
+                        .onReset {
+                            ccv2SubscriptionListPanel.data = state.ccv2Subscriptions
+                                .map { it.toDto() }
+
+                            loadCCv2TokensForSubscriptions(ccv2SubscriptionListPanel.data)
+                        }
+                        .onIsModified { ccv2SubscriptionListPanel.data.equalsIgnoreOrder(originalCCv2Subscriptions).not() }
+                }
+            }
+        }
+
+        private fun loadCCv2TokensForSubscriptions(subscriptions: List<CCv2SubscriptionDto>) {
+            val applicationSettingsComponent = ApplicationSettingsComponent.getInstance()
+            subscriptions.forEach { subscription ->
+                applicationSettingsComponent.loadCCv2Token(subscription.uuid) {
+                    subscription.ccv2Token = it
                 }
             }
         }

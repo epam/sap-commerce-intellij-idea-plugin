@@ -34,6 +34,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.createSmartPointer
+import com.intellij.util.asSafely
 
 class ImpexDocumentationTarget(val element: PsiElement, private val originalElement: PsiElement?) : DocumentationTarget {
 
@@ -521,7 +522,7 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
 
         ImpexTypes.HEADER_PARAMETER_NAME -> {
             element.parent.reference
-                ?.let { it as? ImpExHeaderAbbreviationReference }
+                ?.asSafely<ImpExHeaderAbbreviationReference>()
                 ?.let {
                     impexDoc {
                         headerAbbreviation(element.text)

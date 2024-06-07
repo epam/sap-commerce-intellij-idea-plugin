@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,13 +21,16 @@ package com.intellij.idea.plugin.hybris.system.bean.psi.reference
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.result.BeanPropertyResolveResult
+import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
+import com.intellij.psi.util.*
 
 class OccBSBeanPropertyReference(
     private val meta: BSGlobalMetaBean,
@@ -39,13 +42,29 @@ class OccBSBeanPropertyReference(
         .getCompletions(meta)
         .toTypedArray()
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val propertyName = value
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
+        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this to meta)
+        .let { PsiUtils.getValidResults(it) }
 
-        return meta.allProperties[propertyName]
-            ?.let { BeanPropertyResolveResult(it) }
-            ?.let { arrayOf(it) }
-            ?.let { PsiUtils.getValidResults(it) }
-            ?: emptyArray()
+    companion object {
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, Pair<OccBSBeanPropertyReference, BSGlobalMetaBean>>>("HYBRIS_OCCBSBEANPROPERTYREFERENCE")
+
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, Pair<OccBSBeanPropertyReference, BSGlobalMetaBean>> { param ->
+            val ref = param.first
+            val meta = param.second
+            val element = ref.element
+            val propertyName = ref.value
+
+            val result = meta.allProperties[propertyName]
+                ?.let { BeanPropertyResolveResult(it) }
+                ?.let { arrayOf(it) }
+                ?.let { PsiUtils.getValidResults(it) }
+                ?: emptyArray()
+
+            CachedValueProvider.Result.create(
+                result,
+                BSMetaModelAccess.getInstance(element.project).getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
+            )
+        }
     }
 }

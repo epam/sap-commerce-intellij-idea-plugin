@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindowManager
+import com.intellij.util.asSafely
 
 @Service(Service.Level.PROJECT)
 class HybrisToolWindowService(val project: Project) {
@@ -52,7 +53,7 @@ class HybrisToolWindowService(val project: Project) {
         ?.contentManager
         ?.findContent(HybrisToolWindowFactory.CONSOLES_ID)
         ?.component
-        ?.let { it as? HybrisConsolesView }
+        ?.asSafely<HybrisConsolesView>()
 
     private fun hybrisToolWindow() = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID)
 

@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -52,6 +52,7 @@
         <postStartupActivity order="first" id="hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
         <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
         <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisJavaTypeRenderersStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.WhatsNewStartupActivity"/>
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisPluginUpdateCheckerStartupActivity"/>
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.PreLoadSystemsStartupActivity"/>
     </extensions>

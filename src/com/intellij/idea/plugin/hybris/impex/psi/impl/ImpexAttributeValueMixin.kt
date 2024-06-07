@@ -25,8 +25,8 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifie
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExJavaClassReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExJavaEnumValueReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexJavaClassReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
 import com.intellij.idea.plugin.hybris.psi.reference.LanguageReference
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.SpringReference
@@ -70,7 +70,7 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
 
         return when (modifierName) {
             TypeModifier.PROCESSOR -> if (SourceVersion.isName(text)) {
-                ImpexJavaClassReference(this)
+                ImpExJavaClassReference(this)
             } else null
 
             TypeModifier.DISABLE_INTERCEPTOR_TYPES -> if (node.text.contains(disableInterceptorExclusionRegex)) return null
@@ -96,7 +96,7 @@ abstract class ImpexAttributeValueMixin(astNode: ASTNode) : ASTWrapperPsiElement
         return when (modifierName) {
             TRANSLATOR,
             CELL_DECORATOR -> if (SourceVersion.isName(text)) {
-                ImpexJavaClassReference(this)
+                ImpExJavaClassReference(this)
             } else null
 
             LANG -> LanguageReference(this)

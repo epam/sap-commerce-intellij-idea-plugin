@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,6 +29,7 @@ import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
+import com.intellij.util.asSafely
 import com.intellij.util.xml.DomManager
 
 @Service
@@ -38,7 +39,7 @@ class CngTSItemAttributeReferenceProvider : PsiReferenceProvider() {
         element: PsiElement, context: ProcessingContext
     ): Array<PsiReference> = element.parentOfType<XmlTag>()
         ?.let { DomManager.getDomManager(element.project).getDomElement(it) }
-        ?.let { it as? ListColumn }
+        ?.asSafely<ListColumn>()
         ?.springBean
         ?.takeUnless { it.stringValue == null }
         ?.let { emptyArray() }

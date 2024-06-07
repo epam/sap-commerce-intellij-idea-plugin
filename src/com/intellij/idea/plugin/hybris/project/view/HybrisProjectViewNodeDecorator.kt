@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isActive
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.roots.ProjectRootManager
 
@@ -54,7 +55,7 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
 
         val descriptorType = projectSettings.getModuleSettings(module).type
 
-        if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && PluginCommon.isPluginActive(PluginCommon.PLUGIN_KOTLIN)) {
+        if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && PluginCommon.PLUGIN_KOTLIN.isActive()) {
             data.setIcon(HybrisIcons.EXTENSION_KOTLIN_NATURE)
             return
         }

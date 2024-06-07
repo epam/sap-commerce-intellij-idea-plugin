@@ -22,6 +22,7 @@ import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.extensions.PluginId
+import com.intellij.util.asSafely
 
 object PluginCommon {
 
@@ -73,16 +74,20 @@ object PluginCommon {
     )
 
     @JvmStatic
-    fun isPluginActive(plugin: Plugin) = PluginManagerCore.getPlugin(PluginId.getId(plugin.id))
+    fun isPluginActive(plugin: Plugin) = plugin.isActive()
+
+    fun Plugin.isActive() = PluginManagerCore.getPlugin(PluginId.getId(id))
         ?.isEnabled
         ?: false
+
+    fun Plugin.isDisabled() = !isActive()
 
     fun enablePlugins(pluginIds: Collection<PluginId>) {
         val pluginManager = PluginManager.getInstance()
         pluginIds.forEach { pluginManager.enablePlugin(it) }
 
         ApplicationManager.getApplication()
-            .let { it as? ApplicationEx }
+            .asSafely<ApplicationEx>()
             ?.restart(true)
     }
 }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ import com.intellij.codeInsight.hints.declarative.PsiPointerInlayActionPayload
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiClass
+import com.intellij.util.asSafely
 
 class DynamicAttributeDeclarativeInlayActionHandler : InlayActionHandler {
 
@@ -30,7 +31,7 @@ class DynamicAttributeDeclarativeInlayActionHandler : InlayActionHandler {
         (payload as? PsiPointerInlayActionPayload)
             ?.pointer
             ?.element
-            ?.let { it as? PsiClass }
+            ?.asSafely<PsiClass>()
             ?.let {
                 invokeLater { it.navigate(true) }
             }
