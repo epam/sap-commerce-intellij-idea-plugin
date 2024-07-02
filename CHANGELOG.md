@@ -44,6 +44,7 @@
 - Show once `CHANGELOG.md` in a new `What's New` tab once per version [#1125](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1125)
 - Show bundled `What's New` tab with fallback to GitHub page [#1131](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1131)
 - Updated gradle wrapper to 8.7 [#1126](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1126)
+- Updated JSON-schema for js-storefront manifest.json to reflect changes from SAP documentation.
 
 ## [2024.1.2]
 
