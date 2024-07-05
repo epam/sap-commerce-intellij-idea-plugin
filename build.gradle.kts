@@ -20,7 +20,6 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
-import org.jetbrains.intellij.platform.gradle.tasks.CustomRunIdeTask
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
@@ -75,6 +74,16 @@ changelog {
     version = properties("intellij.plugin.version")
     groups = listOf()
     headerParserRegex = """(\d+(.\d+)*)""".toRegex()
+}
+
+val projectJvmArguments = mutableListOf<String>().apply {
+    add(properties("intellij.jvm.args").get())
+
+    if (OperatingSystem.current().isMacOsX) {
+        add("-Xdock:name=${project.name}")
+        // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
+        add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
+    }
 }
 
 // OpenAPI - Gradle plugin
@@ -179,7 +188,7 @@ intellijPlatform {
     }
 
     verifyPlugin {
-        freeArgs = listOf("-mute TemplateWordInPluginId,TemplateWordInPluginName,ForbiddenPluginIdPrefix")
+        freeArgs = listOf("-mute", "TemplateWordInPluginId,TemplateWordInPluginName,ForbiddenPluginIdPrefix")
 
         ides {
             select {
@@ -202,32 +211,12 @@ tasks {
         dependsOn(copyChangelog)
     }
 
-    val jvmArguments = mutableListOf<String>().apply {
-        add(properties("intellij.jvm.args").get())
-
-        if (OperatingSystem.current().isMacOsX) {
-            add("-Xdock:name=${project.name}")
-            // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
-            add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
-        }
-    }
-
     wrapper {
         gradleVersion = properties("gradle.version").get()
     }
 
     runIde {
-        jvmArgs = jvmArguments
-        maxHeapSize = properties("intellij.maxHeapSize").get()
-
-        applyRunIdeSystemSettings()
-    }
-
-    val runIdeCommunity by registering(CustomRunIdeTask::class) {
-        type = IntelliJPlatformType.IntellijIdeaCommunity
-        version = properties("intellij.version")
-
-        jvmArgs = jvmArguments
+        jvmArgs = projectJvmArguments
         maxHeapSize = properties("intellij.maxHeapSize").get()
 
         applyRunIdeSystemSettings()
@@ -261,6 +250,23 @@ tasks {
         }
     }
 }
+
+intellijPlatformTesting {
+    runIde {
+        val runIdeCommunity by registering {
+            type = IntelliJPlatformType.IntellijIdeaCommunity
+            version = properties("intellij.version")
+
+            task {
+                jvmArgs = projectJvmArguments
+                maxHeapSize = properties("intellij.maxHeapSize").get()
+
+                applyRunIdeSystemSettings()
+            }
+        }
+    }
+}
+
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
