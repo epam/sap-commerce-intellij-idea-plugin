@@ -1,5 +1,8 @@
 ## [2024.2.0]
 
+### Fixes
+- Class initialization must not depend on services [#1158](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1158)
+
 ### Other
 - Dropped legacy `items.xml` XML based validation [#1157](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1157)
 - Added 2024.2 IntelliJ IDEA support [#1156](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1156)

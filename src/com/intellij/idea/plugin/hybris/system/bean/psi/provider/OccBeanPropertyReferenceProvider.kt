@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,8 +23,6 @@ import com.intellij.idea.plugin.hybris.system.bean.psi.BSConstants
 import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccBSBeanPropertyReference
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccLevelMappingReference
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
@@ -37,7 +35,6 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 import java.util.*
 
-@Service
 class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
 
     // TODO*: Create new Global OCC Meta Model, which will contain list of levelMappings and properties per dtoClass
@@ -134,8 +131,5 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
         return properties
     }
 
-    companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(OccBeanPropertyReferenceProvider::class.java)
-    }
 }
 

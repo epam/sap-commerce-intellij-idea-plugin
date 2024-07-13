@@ -19,8 +19,6 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListColumn
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngTSItemAttributeReference
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
@@ -32,7 +30,6 @@ import com.intellij.util.ProcessingContext
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomManager
 
-@Service
 class CngTSItemAttributeReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
@@ -68,7 +65,4 @@ class CngTSItemAttributeReferenceProvider : PsiReferenceProvider() {
             ?: arrayOf(CngTSItemAttributeReference(element, TextRange.from(from, value.length)))
     }
 
-    companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngTSItemAttributeReferenceProvider::class.java)
-    }
 }

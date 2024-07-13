@@ -22,14 +22,11 @@ import com.intellij.idea.plugin.hybris.java.psi.reference.JavaClassReference
 import com.intellij.idea.plugin.hybris.java.psi.reference.SpringBeanJavaClassReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemAttributeReference
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 
-@Service
 class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
@@ -49,9 +46,5 @@ class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvid
         }
 
         return arrayOf(reference)
-    }
-
-    companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngFlowPropertyListPropertyQualifierReferenceProvider::class.java)
     }
 }

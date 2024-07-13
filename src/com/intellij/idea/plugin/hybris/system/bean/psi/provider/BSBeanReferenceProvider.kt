@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,8 +22,6 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.BSBeanReference
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.BSEnumReference
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -31,7 +29,6 @@ import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
-@Service
 class BSBeanReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
@@ -83,7 +80,4 @@ class BSBeanReferenceProvider : PsiReferenceProvider() {
         properties[lastIndexOfFqn - fqn.length + 1] = fqn
     }
 
-    companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(BSBeanReferenceProvider::class.java)
-    }
 }

@@ -23,8 +23,6 @@ import com.intellij.idea.plugin.hybris.java.psi.reference.SpringBeanJavaClassRef
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemAttributeReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngInitializePropertyReference
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -32,7 +30,6 @@ import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
-@Service
 class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
@@ -71,7 +68,4 @@ class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
             )
     }
 
-    companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngFlowPropertyQualifierReferenceProvider::class.java)
-    }
 }

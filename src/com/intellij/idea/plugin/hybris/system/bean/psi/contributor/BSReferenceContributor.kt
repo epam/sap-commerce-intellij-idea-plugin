@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,17 +26,19 @@ import com.intellij.psi.PsiReferenceRegistrar
 class BSReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
+        val bsBeanReferenceProvider = BSBeanReferenceProvider()
+
         registrar.registerReferenceProvider(
             BSPatterns.OCC_LEVEL_MAPPING_PROPERTY,
-            OccBeanPropertyReferenceProvider.instance
+            OccBeanPropertyReferenceProvider()
         )
         registrar.registerReferenceProvider(
             BSPatterns.BEAN_EXTENDS,
-            BSBeanReferenceProvider.instance
+            bsBeanReferenceProvider
         )
         registrar.registerReferenceProvider(
             BSPatterns.BEAN_PROPERTY_TYPE,
-            BSBeanReferenceProvider.instance
+            bsBeanReferenceProvider
         )
     }
 }

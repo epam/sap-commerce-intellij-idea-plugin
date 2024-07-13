@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,6 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngEditorDefinitionReference
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -43,7 +41,6 @@ Editor Definition ref:
               label="collaboration.workflow.details.workflow.started.label">
 </editorArea:attribute>
  */
-@Service
 class CngEditorDefinitionReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
@@ -60,7 +57,6 @@ class CngEditorDefinitionReferenceProvider : PsiReferenceProvider() {
     }
 
     companion object {
-        val instance: PsiReferenceProvider = ApplicationManager.getApplication().getService(CngEditorDefinitionReferenceProvider::class.java)
         private val regex = "(\\{)(.*?)(})|([,)\"])".toRegex()
     }
 }

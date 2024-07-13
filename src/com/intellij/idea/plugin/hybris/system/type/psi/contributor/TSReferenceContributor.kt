@@ -28,12 +28,12 @@ class TSReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(
             TSPatterns.INDEX_KEY_ATTRIBUTE,
-            TSItemAttributeReferenceProvider.instance
+            TSItemAttributeReferenceProvider()
         )
 
         registrar.registerReferenceProvider(
             TSPatterns.SPRING_INTERCEPTOR_TYPE_CODE,
-            TSItemReferenceProvider.instance
+            TSItemReferenceProvider()
         )
     }
 }

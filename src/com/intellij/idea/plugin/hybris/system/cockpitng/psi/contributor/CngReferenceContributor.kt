@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,51 +27,51 @@ class CngReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(
             CngPatterns.ITEM_TYPE,
-            CngTSItemReferenceProvider.instance
+            CngTSItemReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.FLOW_STEP_CONTENT_PROPERTY_LIST_PROPERTY_QUALIFIER,
-            CngFlowPropertyListPropertyQualifierReferenceProvider.instance
+            CngFlowPropertyListPropertyQualifierReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.FLOW_STEP_CONTENT_PROPERTY_QUALIFIER,
-            CngFlowPropertyQualifierReferenceProvider.instance
+            CngFlowPropertyQualifierReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.FLOW_INITIALIZE_TYPE,
-            CngFlowTypeReferenceProvider.instance
+            CngFlowTypeReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.FLOW_PROPERTY_LIST_ROOT,
-            CngFlowInitializePropertyReferenceProvider.instance
+            CngFlowInitializePropertyReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.EDITOR_DEFINITION,
-            CngEditorDefinitionReferenceProvider.instance
+            CngEditorDefinitionReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.ITEM_ATTRIBUTE,
-            CngTSItemAttributeReferenceProvider.instance
+            CngTSItemAttributeReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.ACTION_DEFINITION,
-            CngActionDefinitionReferenceProvider.instance
+            CngActionDefinitionReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.WIDGET_ID,
-            CngWidgetReferenceProvider.instance
+            CngWidgetReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.WIDGET_CONNECTION_WIDGET_ID,
-            CngWidgetConnectionWidgetIdReferenceProvider.instance
+            CngWidgetConnectionWidgetIdReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.WIDGET_DEFINITION,
-            CngWidgetDefinitionReferenceProvider.instance
+            CngWidgetDefinitionReferenceProvider()
         )
         registrar.registerReferenceProvider(
             CngPatterns.WIDGET_SETTING,
-            CngWidgetSettingReferenceProvider.instance
+            CngWidgetSettingReferenceProvider()
         )
     }
 }
