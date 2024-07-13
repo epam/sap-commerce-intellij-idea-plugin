@@ -25,11 +25,6 @@
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
 
-    <projectListeners>
-        <listener class="com.intellij.idea.plugin.hybris.startup.event.ItemsXmlFileEditorManagerListener"
-                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
-    </projectListeners>
-
     <extensions defaultExtensionNs="com.intellij">
         <!-- ####################################################################################################### -->
         <!--                                        Run Contributors                                                 -->

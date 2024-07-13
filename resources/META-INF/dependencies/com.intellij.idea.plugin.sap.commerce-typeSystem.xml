@@ -43,8 +43,6 @@
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
                              provider="com.intellij.idea.plugin.hybris.settings.options.ProjectTypeSystemConfigurableProvider"/>
-
-        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.ItemsXmlFileOpenStartupActivity"/>
     </extensions>
 
     <actions>
