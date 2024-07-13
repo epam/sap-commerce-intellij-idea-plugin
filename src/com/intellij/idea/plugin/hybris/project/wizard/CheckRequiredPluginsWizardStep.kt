@@ -23,14 +23,17 @@ import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
+import com.intellij.idea.plugin.hybris.project.utils.Plugin.*
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ApplicationNamesInfo
+import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.projectImport.ProjectImportWizardStep
 import com.intellij.ui.*
 import com.intellij.ui.components.JBList
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -43,15 +46,34 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
 
     private val ultimateEditionOnly by lazy {
         listOf(
-            PluginCommon.PLUGIN_DATABASE,
-            PluginCommon.PLUGIN_SPRING,
-            PluginCommon.PLUGIN_JAVAEE,
-            PluginCommon.PLUGIN_JAVAEE_WEB,
-            PluginCommon.PLUGIN_JAVAEE_EL,
-            PluginCommon.PLUGIN_DIAGRAM
+            DATABASE,
+            SPRING,
+            JAVAEE,
+            JAVAEE_WEB,
+            JAVAEE_EL,
+            DIAGRAM
         )
             .map { it.id }
     }
+    private val plugins = mapOf(
+        SPRING.id to SPRING,
+        KOTLIN.id to KOTLIN,
+        GROOVY.id to GROOVY,
+        GRADLE.id to GRADLE,
+        DATABASE.id to DATABASE,
+        DIAGRAM.id to DIAGRAM,
+        PROPERTIES.id to PROPERTIES,
+        COPYRIGHT.id to COPYRIGHT,
+        JAVAEE_EL.id to JAVAEE_EL,
+        JAVAEE_WEB.id to JAVAEE_WEB,
+        JAVAEE.id to JAVAEE,
+        JAVAEE.id to JAVAEE,
+        MAVEN.id to MAVEN,
+        ANT_SUPPORT.id to ANT_SUPPORT,
+        JREBEL.id to JREBEL,
+        JAVASCRIPT.id to JAVASCRIPT,
+        INTELLILANG.id to INTELLILANG,
+    )
     private val excludedIdPrefix = "com.intellij.modules"
 
     private val cellRenderer = object : ColoredListCellRenderer<PluginId>() {
@@ -59,10 +81,10 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         private val serialVersionUID: Long = -7396769063069852812L
 
         override fun customizeCellRenderer(list: JList<out PluginId>, value: PluginId, index: Int, selected: Boolean, hasFocus: Boolean) {
-            PluginCommon.PLUGINS[value.idString]
+            plugins[value.idString]
                 ?.takeIf { it.url != null }
                 ?.let {
-                    append(value.idString, SimpleTextAttributes.LINK_ATTRIBUTES);
+                    append(value.idString, SimpleTextAttributes.LINK_ATTRIBUTES)
                 }
                 ?: append(value.idString)
         }
@@ -89,7 +111,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         val index = list.locationToIndex(e.point)
         if (index == -1) return
         val element = model.getElementAt(index)
-        PluginCommon.PLUGINS[element.idString]
+        plugins[element.idString]
             ?.url
             ?.let { BrowserUtil.browse(it) }
     }
@@ -123,7 +145,8 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
                     if (!enablePlugins.isEnabled) return@button
                     enablePlugins.isEnabled = false
                     enablePlugins.text = "Enabling ${notEnabledModel.items.size} plugins, IDE will restart automatically.."
-                    PluginCommon.enablePlugins(notEnabledModel.items)
+
+                    enablePlugins(notEnabledModel.items)
                 }
                     .component
             }
@@ -142,6 +165,15 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         enablePlugins.isEnabled = !notEnabledModel.isEmpty
 
         return isAnyMissing()
+    }
+
+    private fun enablePlugins(pluginIds: Collection<PluginId>) {
+        val pluginManager = PluginManager.getInstance()
+        pluginIds.forEach { pluginManager.enablePlugin(it) }
+
+        ApplicationManager.getApplication()
+            .asSafely<ApplicationEx>()
+            ?.restart(true)
     }
 
     private fun validateDependencies() {
@@ -167,7 +199,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
 
     private fun isAnyMissing(): Boolean {
         if (!notEnabledModel.isEmpty) return true
-        if (HybrisConstants.IDEA_EDITION_ULTIMATE.equals(ApplicationNamesInfo.getInstance().editionName, true)) return !notInstalledModel.isEmpty()
+        if (HybrisConstants.IDEA_EDITION_ULTIMATE.equals(ApplicationNamesInfo.getInstance().editionName, true)) return !notInstalledModel.isEmpty
 
         return notInstalledModel.items
             .any { !ultimateEditionOnly.contains(it.idString) }

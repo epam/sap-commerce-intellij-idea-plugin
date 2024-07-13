@@ -19,10 +19,10 @@ package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.util.RunOnceUtil
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.extensions.PluginId
-import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.TextEditorWithPreview
 import com.intellij.openapi.fileEditor.impl.HTMLEditorProvider
 import com.intellij.openapi.fileTypes.ex.FileTypeManagerEx
@@ -40,7 +40,7 @@ class WhatsNewStartupActivity : ProjectActivity {
         if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) return
         if (!JBCefApp.isSupported()) return
 
-        val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(PluginId.getId("com.intellij.idea.plugin.sap.commerce"))
+        val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))
             ?: return
         val version = pluginDescriptor.version
 
@@ -51,15 +51,14 @@ class WhatsNewStartupActivity : ProjectActivity {
                         ?.let { String(StreamUtil.readBytes(it), StandardCharsets.UTF_8) }
                 } ?: return@runOnceForProject
 
-                val lvf = LightVirtualFile("What's New in SAP Commerce Developers Toolset - ${version}").also {
-                    it.putUserData(TextEditorWithPreview.DEFAULT_LAYOUT_FOR_FILE, TextEditorWithPreview.Layout.SHOW_PREVIEW)
+                val lvf = LightVirtualFile("What's New in SAP Commerce Developers Toolset - $version").also {
                     it.setContent(null, content, true)
                     it.fileType = FileTypeManagerEx.getInstance().getFileTypeByExtension("md")
                     it.isWritable = false
                 }
 
                 invokeLater {
-                    FileEditorManager.getInstance(project).openFile(lvf, true, true)
+                    TextEditorWithPreview.openPreviewForFile(project, lvf)
                 }
             } catch (e: IOException) {
                 val request = HTMLEditorProvider.Request.url("https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/CHANGELOG.md#$version")

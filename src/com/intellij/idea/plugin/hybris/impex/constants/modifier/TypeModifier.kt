@@ -25,8 +25,7 @@ import com.intellij.idea.plugin.hybris.impex.constants.InterceptorType
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.java.completion.JavaClassCompletionService
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isDisabled
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
@@ -53,7 +52,7 @@ enum class TypeModifier(
     },
     DISABLE_INTERCEPTOR_BEANS("disable.interceptor.beans") {
         override fun getLookupElements(project: Project): Set<LookupElement> {
-            if (PluginCommon.PLUGIN_SPRING.isDisabled()) return emptySet()
+            if (Plugin.SPRING.isDisabled()) return emptySet()
 
             val interceptorClass = JavaPsiFacade.getInstance(project)
                 .findClass(HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING, GlobalSearchScope.allScope(project))

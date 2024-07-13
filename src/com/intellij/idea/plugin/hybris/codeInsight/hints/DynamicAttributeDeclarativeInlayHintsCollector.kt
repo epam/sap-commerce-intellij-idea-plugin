@@ -73,8 +73,9 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
 
         sink.addPresentation(
             InlineInlayPosition(identifier.textRange.startOffset, true),
+            null,
             tooltip = "Navigate to the ${meta.name}.${attribute.name} dynamic attribute handler",
-            hasBackground = true
+            HintColorKind.Default
         ) {
             text(message("hybris.ts.type.dynamic") + (inlayActionData?.let { "⌝" } ?: ""), inlayActionData)
         }

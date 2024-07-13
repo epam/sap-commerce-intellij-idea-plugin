@@ -19,9 +19,7 @@
 package com.intellij.idea.plugin.hybris.common.utils
 
 import com.intellij.icons.AllIcons
-import com.intellij.icons.ExpUiIcons
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isActive
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.openapi.util.IconLoader
 import com.intellij.util.ReflectionUtil
 import icons.GradleIcons
@@ -72,7 +70,7 @@ object HybrisIcons {
     val MODULE_ECLIPSE = AllIcons.Providers.Eclipse
     val MODULE_MAVEN = OpenapiIcons.RepositoryLibraryLogo
     val MODULE_CONFLICT = AllIcons.Actions.Cancel
-    val MODULE_GRADLE = if (PluginCommon.PLUGIN_GRADLE.isActive()) GradleIcons.Gradle else AllIcons.Nodes.Module
+    val MODULE_GRADLE = if (Plugin.GRADLE.isActive()) GradleIcons.Gradle else AllIcons.Nodes.Module
     val MODULE_CCV2 = getIcon("/icons/module/cloud.svg")
     val MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg")
     val MODULE_COMMERCE_GROUP = Y_LOGO_GREEN
@@ -92,7 +90,7 @@ object HybrisIcons {
     val EXTENSION_BACKOFFICE = AllIcons.Nodes.Folder
     val EXTENSION_HMC = AllIcons.Nodes.Folder
     val EXTENSION_HAC = AllIcons.Nodes.Folder
-    val EXTENSION_KOTLIN_NATURE = if (PluginCommon.PLUGIN_KOTLIN.isActive()) KotlinIcons.SMALL_LOGO else AllIcons.Nodes.Module
+    val EXTENSION_KOTLIN_NATURE = if (Plugin.KOTLIN.isActive()) KotlinIcons.SMALL_LOGO else AllIcons.Nodes.Module
 
     val TYPE_SYSTEM = getIcon("/icons/typeSystem.svg")
     val SPRING_BEAN = getIcon("icons/springBean.svg")
@@ -232,17 +230,17 @@ object HybrisIcons {
 
     val CCV2_BUILD_BRANCH = AllIcons.Vcs.Branch
     val CCV2_BUILD_CREATED_BY = AllIcons.General.User
-    val CCV2_BUILD_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
-    val CCV2_BUILD_STATUS_SCHEDULED = ExpUiIcons.Run.Profile
-    val CCV2_BUILD_STATUS_BUILDING = ExpUiIcons.Run.TestCustom
-    val CCV2_BUILD_STATUS_SUCCESS = ExpUiIcons.Run.TestPassed
-    val CCV2_BUILD_STATUS_FAIL = ExpUiIcons.Run.TestFailed
-    val CCV2_BUILD_STATUS_DELETED = ExpUiIcons.Run.KillProcess
+    val CCV2_BUILD_STATUS_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
+    val CCV2_BUILD_STATUS_SCHEDULED = AllIcons.Actions.Profile
+    val CCV2_BUILD_STATUS_BUILDING = AllIcons.RunConfigurations.TestCustom
+    val CCV2_BUILD_STATUS_SUCCESS = AllIcons.RunConfigurations.TestPassed
+    val CCV2_BUILD_STATUS_FAIL = AllIcons.RunConfigurations.TestFailed
+    val CCV2_BUILD_STATUS_DELETED = AllIcons.Debugger.KillProcess
     val CCV2_BUILD_CREATE = AllIcons.Actions.Execute
     val CCV2_BUILD_REDO = AllIcons.Actions.BuildAutoReloadChanges
     val CCV2_BUILD_DEPLOY = AllIcons.Nodes.Deploy
-    val CCV2_BUILD_DELETE = ExpUiIcons.General.Delete
-    val CCV2_BUILD_LOGS = ExpUiIcons.General.Download
+    val CCV2_BUILD_DELETE = AllIcons.General.Delete
+    val CCV2_BUILD_LOGS = AllIcons.Actions.Download
 
     val CCV2_ENVIRONMENT_DETAILS = getIcon("/icons/module/cloud.svg")
 
@@ -253,27 +251,27 @@ object HybrisIcons {
 
     val CCV2_DEPLOYMENT_CREATED_BY = AllIcons.General.User
     val CCV2_DEPLOYMENT_UPDATE_MODE_NONE = AllIcons.Diff.GutterCheckBox
-    val CCV2_DEPLOYMENT_UPDATE_MODE_UPDATE = ExpUiIcons.General.PluginUpdate
+    val CCV2_DEPLOYMENT_UPDATE_MODE_UPDATE = AllIcons.Ide.Notification.PluginUpdate
     val CCV2_DEPLOYMENT_UPDATE_MODE_INIT = AllIcons.General.ExclMark
-    val CCV2_DEPLOYMENT_UPDATE_MODE_UNKNOWN = ExpUiIcons.Run.TestUnknown
+    val CCV2_DEPLOYMENT_UPDATE_MODE_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
     val CCV2_DEPLOYMENT_STRATEGY_ROLLING_UPDATE = AllIcons.Gutter.RecursiveMethod
     val CCV2_DEPLOYMENT_STRATEGY_RECREATE = AllIcons.Gutter.WriteAccess
     val CCV2_DEPLOYMENT_STRATEGY_GREEN = AllIcons.Gutter.ReadAccess
-    val CCV2_DEPLOYMENT_STRATEGY_UNKNOWN = ExpUiIcons.Run.TestUnknown
+    val CCV2_DEPLOYMENT_STRATEGY_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
 
-    val CCV2_DEPLOYMENT_STATUS_SCHEDULED = ExpUiIcons.Run.Profile
-    val CCV2_DEPLOYMENT_STATUS_DEPLOYING = ExpUiIcons.Run.TestCustom
-    val CCV2_DEPLOYMENT_STATUS_DEPLOYED = ExpUiIcons.Run.TestPassed
-    val CCV2_DEPLOYMENT_STATUS_UNDEPLOYED = ExpUiIcons.Run.TestSkipped
-    val CCV2_DEPLOYMENT_STATUS_FAIL = ExpUiIcons.Run.TestError
-    val CCV2_DEPLOYMENT_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
+    val CCV2_DEPLOYMENT_STATUS_SCHEDULED = AllIcons.Actions.Profile
+    val CCV2_DEPLOYMENT_STATUS_DEPLOYING = AllIcons.RunConfigurations.TestCustom
+    val CCV2_DEPLOYMENT_STATUS_DEPLOYED = AllIcons.RunConfigurations.TestPassed
+    val CCV2_DEPLOYMENT_STATUS_UNDEPLOYED = AllIcons.RunConfigurations.TestSkipped
+    val CCV2_DEPLOYMENT_STATUS_FAIL = AllIcons.RunConfigurations.TestError
+    val CCV2_DEPLOYMENT_STATUS_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
 
     val CCV2_ENV_STATUS_PROVISIONING = AllIcons.Actions.ProfileYellow
     val CCV2_ENV_STATUS_AVAILABLE = AllIcons.Actions.ProjectWideAnalysisOn
     val CCV2_ENV_STATUS_TERMINATING = AllIcons.Actions.ProfileRed
     val CCV2_ENV_STATUS_TERMINATED = AllIcons.Actions.ProjectWideAnalysisOff
     val CCV2_ENV_STATUS_READY_FOR_DEPLOYMENT = AllIcons.Actions.ShowReadAccess
-    val CCV2_ENV_STATUS_UNKNOWN = ExpUiIcons.Run.TestUnknown
+    val CCV2_ENV_STATUS_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
 
     val CCV2_ENV_ENVIRONMENT_TYPE_DEV = AllIcons.Nodes.AnonymousClass
     val CCV2_ENV_ENVIRONMENT_TYPE_STG = AllIcons.Nodes.Type

@@ -18,8 +18,7 @@
 package com.intellij.idea.plugin.hybris.groovy.file
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isActive
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.application.ApplicationManager
@@ -50,7 +49,7 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
         val testFileCheckPassed = settings.groovySettings.enableActionsToolbarForGroovyTest && isTestFile || !isTestFile
         val ideConsoleCheckPassed = settings.groovySettings.enableActionsToolbarForGroovyIdeConsole && isIdeConsole || !isIdeConsole
 
-        return PluginCommon.PLUGIN_GROOVY.isActive()
+        return Plugin.GROOVY.isActive()
             && fileType == file.fileType
             && settings.groovySettings.enableActionsToolbar
             && testFileCheckPassed

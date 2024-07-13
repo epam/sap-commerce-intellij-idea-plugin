@@ -27,20 +27,17 @@
     <vendor email="hybrisideaplugin@epam.com" url="https://github.com/epam/sap-commerce-intellij-idea-plugin">EPAM_Systems</vendor>
     <!-- Naming convention - https://plugins.jetbrains.com/docs/intellij/plugin-dependencies.html#optional-plugin-dependencies -->
 
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml">com.intellij.modules.lang</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-beanSystem.xml">com.intellij.modules.lang</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-businessProcess.xml">com.intellij.modules.lang</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-ccv2.xml">com.intellij.modules.lang</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-cockpitng.xml">com.intellij.modules.lang</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-extensioninfo.xml">com.intellij.modules.lang</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-flexibleSearch.xml">com.intellij.modules.lang</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-impex.xml">com.intellij.modules.lang</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-localextensions.xml">com.intellij.modules.lang</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-polyglot-query.xml">com.intellij.modules.lang</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-typeSystem.xml">com.intellij.modules.lang</depends>
+    <resource-bundle>i18n.HybrisBundle</resource-bundle>
+
+    <incompatible-with>ccom.intellij.idea.plugin.hybris.impex</incompatible-with>
+    <incompatible-with>ccom.intellij.idea.plugin.commerce.integration</incompatible-with>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.xml</depends>
+    <depends>com.intellij.modules.xdebugger</depends>
 
     <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-java.xml">com.intellij.modules.java</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-xdebugger.xml">com.intellij.modules.xdebugger</depends>
     <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-properties.xml">com.intellij.properties</depends>
 
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-junit.xml">JUnit</depends>
@@ -59,6 +56,19 @@
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-database.xml">com.intellij.database</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-intelliLang.xml">org.intellij.intelliLang</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-jrebel.xml">JRebelPlugin</depends>
+
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-xdebugger.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-beanSystem.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-businessProcess.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-ccv2.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-cockpitng.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-extensioninfo.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-flexibleSearch.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-impex.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-localextensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-polyglot-query.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-typeSystem.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>

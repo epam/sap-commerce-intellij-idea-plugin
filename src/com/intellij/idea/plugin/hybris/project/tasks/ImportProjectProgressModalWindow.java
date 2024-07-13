@@ -39,7 +39,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon;
+import com.intellij.idea.plugin.hybris.project.utils.Plugin;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent;
@@ -101,6 +101,7 @@ import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 public class ImportProjectProgressModalWindow extends Task.Modal {
     private static final Logger LOG = Logger.getInstance(ImportProjectProgressModalWindow.class);
     private static final int COMMITTED_CHUNK_SIZE = 20;
+    private static final String SHOW_UNLINKED_GRADLE_POPUP = "show.inlinked.gradle.project.popup";
 
     private final Project project;
     private final ModifiableModuleModel model;
@@ -164,7 +165,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.saveImportedSettings(projectSettings, appSettings, projectSettingsComponent);
         this.disableWrapOnType(ImpexLanguage.INSTANCE);
 
-        PropertiesComponent.getInstance(project).setValue(PluginCommon.SHOW_UNLINKED_GRADLE_POPUP, false);
+        PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
 
         processUltimateEdition(indicator);
 
@@ -255,13 +256,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private void processUltimateEdition(final @NotNull ProgressIndicator indicator) {
         if (IDEA_EDITION_ULTIMATE.equalsIgnoreCase(ApplicationNamesInfo.getInstance().getEditionName())) {
             indicator.setText(message("hybris.project.import.facets"));
-            if (PluginCommon.isPluginActive(PluginCommon.getPLUGIN_SPRING())) {
+            if (Plugin.SPRING.isActive()) {
                 this.excludeFrameworkDetection(project, SpringFacet.FACET_TYPE_ID);
             }
-            if (PluginCommon.isPluginActive(PluginCommon.getPLUGIN_JAVAEE())) {
+            if (Plugin.JAVAEE.isActive()) {
                 this.excludeFrameworkDetection(project, JavaeeApplicationFacet.ID);
             }
-            if (PluginCommon.isPluginActive(PluginCommon.getPLUGIN_JAVAEE_WEB())) {
+            if (Plugin.JAVAEE_WEB.isActive()) {
                 this.excludeFrameworkDetection(project, WebFacet.ID);
             }
         }

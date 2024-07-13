@@ -23,10 +23,10 @@ import com.intellij.util.xml.ResolvingConverter
 
 class DeploymentTypeCodeConverter : ResolvingConverter<String>() {
 
-    override fun toString(t: String?, context: ConvertContext?) = t
-    override fun fromString(s: String?, context: ConvertContext?) = s
+    override fun toString(t: String?, context: ConvertContext) = t
+    override fun fromString(s: String?, context: ConvertContext) = s
 
-    override fun getVariants(context: ConvertContext?): MutableCollection<out String> = context?.project
+    override fun getVariants(context: ConvertContext): MutableCollection<out String> = context.project
         ?.let { TSMetaModelAccess.getInstance(it).getNextAvailableTypeCode() }
         ?.toString()
         ?.let { mutableListOf(it) }

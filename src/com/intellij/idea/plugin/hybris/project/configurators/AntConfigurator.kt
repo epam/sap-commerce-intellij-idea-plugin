@@ -27,8 +27,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDesc
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isActive
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.lang.ant.config.AntBuildFileBase
 import com.intellij.lang.ant.config.AntConfigurationBase
 import com.intellij.lang.ant.config.AntNoFileException
@@ -382,7 +381,7 @@ class AntConfigurator {
         private val PATTERN_APACHE_ANT: Pattern = Pattern.compile("apache-ant.*")
 
         fun getInstance(): AntConfigurator? =
-            if (PluginCommon.PLUGIN_ANT_SUPPORT.isActive()) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
+            if (Plugin.ANT_SUPPORT.isActive()) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
             else null
     }
 }

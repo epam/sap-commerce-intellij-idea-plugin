@@ -45,12 +45,12 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 sourceSets {
@@ -286,7 +286,7 @@ dependencies {
     testImplementation(kotlin("test"))
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version"))
+        intellijIdeaUltimate(properties("intellij.version"), useInstaller = false)
 
         instrumentationTools()
         pluginVerifier()
@@ -320,15 +320,15 @@ dependencies {
 
         // Ant:
         // https://plugins.jetbrains.com/plugin/23025-ant
-        plugin("AntSupport:241.17011.48")
+        plugin("AntSupport:242.20224.23")
 
         // PsiViewer:
         // https://plugins.jetbrains.com/plugin/227-psiviewer
-        plugin("PsiViewer:241.14494.158-EAP-SNAPSHOT")
+        plugin("PsiViewer:242.4697")
 
         // JRebel and XRebel:
         // https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-        plugin("JRebelPlugin:2024.2.1")
+        plugin("JRebelPlugin:2024.3.0")
 
         // Big Data Tools:
         // incredibly sad, but as for now API cannot be used by 3rd-party plugins

@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSNode
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.refactoring.suggested.startOffset
+import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
 import javax.swing.JTree
 

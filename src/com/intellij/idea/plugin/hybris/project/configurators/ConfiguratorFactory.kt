@@ -19,8 +19,7 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.configurators.impl.*
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isActive
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 
@@ -57,7 +56,7 @@ class ConfiguratorFactory {
     fun getLoadedConfigurator(): LoadedConfigurator = ApplicationManager.getApplication().getService(LoadedConfigurator::class.java)
 
     fun getAntConfigurator(): AntConfigurator? =
-        if (PluginCommon.PLUGIN_ANT_SUPPORT.isActive()) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
+        if (Plugin.ANT_SUPPORT.isActive()) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
         else null
 
     fun getDataSourcesConfigurator(): DataSourcesConfigurator? = ApplicationManager.getApplication().getService(DataSourcesConfigurator::class.java)

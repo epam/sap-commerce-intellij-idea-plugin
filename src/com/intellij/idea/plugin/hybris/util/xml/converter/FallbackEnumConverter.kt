@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,12 +28,12 @@ open class FallbackEnumConverter<T : Enum<*>>(
     private val fallbackValue: T
 ) : ResolvingConverter<T>() {
 
-    override fun toString(t: T?, context: ConvertContext?) = t?.let { NamedEnumUtil.getEnumValueByElement(it) }
+    override fun toString(t: T?, context: ConvertContext) = t?.let { NamedEnumUtil.getEnumValueByElement(it) }
 
-    override fun fromString(s: String?, context: ConvertContext?) = NamedEnumUtil.getEnumElementByValue(clazz, s)
+    override fun fromString(s: String?, context: ConvertContext) = NamedEnumUtil.getEnumElementByValue(clazz, s)
         ?: fallbackValue
 
-    override fun getVariants(context: ConvertContext?) = clazz.enumConstants.toList()
+    override fun getVariants(context: ConvertContext) = clazz.enumConstants.toList()
 
-    override fun getErrorMessage(s: String?, context: ConvertContext?) = XmlDomBundle.message("dom.converter.unknown.enum.value", s)
+    override fun getErrorMessage(s: String?, context: ConvertContext) = XmlDomBundle.message("dom.converter.unknown.enum.value", s)
 }

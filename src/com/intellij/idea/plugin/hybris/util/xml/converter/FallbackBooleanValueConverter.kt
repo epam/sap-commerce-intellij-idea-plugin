@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,10 +24,10 @@ import com.intellij.util.xml.ResolvingConverter
 open class FallbackBooleanValueConverter(
     private val fallbackValue: Boolean
 ) : ResolvingConverter<Boolean>() {
-    override fun toString(t: Boolean?, context: ConvertContext?): String? = t?.toString()
+    override fun toString(t: Boolean?, context: ConvertContext): String? = t?.toString()
 
-    override fun fromString(stringValue: String?, context: ConvertContext?): Boolean = stringValue?.toBoolean()
+    override fun fromString(stringValue: String?, context: ConvertContext): Boolean = stringValue?.toBoolean()
         ?: fallbackValue
 
-    override fun getVariants(context: ConvertContext?) = listOf(true, false)
+    override fun getVariants(context: ConvertContext) = listOf(true, false)
 }

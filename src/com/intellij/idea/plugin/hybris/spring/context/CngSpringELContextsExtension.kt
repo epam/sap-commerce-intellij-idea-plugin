@@ -18,8 +18,7 @@
 package com.intellij.idea.plugin.hybris.spring.context
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon
-import com.intellij.idea.plugin.hybris.project.utils.PluginCommon.isDisabled
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
@@ -46,7 +45,7 @@ import com.intellij.spring.el.contextProviders.SpringElContextsExtension
 class CngSpringELContextsExtension : SpringElContextsExtension() {
 
     override fun getContextVariables(spelFile: PsiElement): MutableCollection<out PsiVariable> {
-        if (PluginCommon.PLUGIN_JAVAEE_EL.isDisabled()) return mutableListOf()
+        if (Plugin.JAVAEE_EL.isDisabled()) return mutableListOf()
 
         val context = spelFile.context ?: return mutableListOf()
         val project = spelFile.project
