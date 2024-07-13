@@ -18,22 +18,18 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.JavaLookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.java.psi.JavaPsiHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ProcessingContext
 
-@Service
 class CngFlowPropertyListPropertyQualifierCompletionProvider : AttributeDeclarationCompletionProvider() {
 
     override fun resolveType(element: PsiElement) = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
@@ -68,7 +64,4 @@ class CngFlowPropertyListPropertyQualifierCompletionProvider : AttributeDeclarat
             ?.forEach { result.addElement(it) }
     }
 
-    companion object {
-        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(CngFlowPropertyListPropertyQualifierCompletionProvider::class.java)
-    }
 }

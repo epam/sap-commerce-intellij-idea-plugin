@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,28 +32,26 @@ class BSCompletionContributor : CompletionContributor() {
     init {
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(BSPatterns.BEAN_CLASS),
-            BSBeanClassCompletionProvider.getInstance()
+            PlatformPatterns.or(
+                PlatformPatterns.psiElement().inside(BSPatterns.BEAN_CLASS),
+                PlatformPatterns.psiElement().inside(BSPatterns.BEAN_EXTENDS)
+            ),
+            BSBeanClassCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(BSPatterns.ENUM_CLASS),
-            BSEnumClassCompletionProvider.getInstance()
-        )
-        extend(
-            CompletionType.BASIC,
-            PlatformPatterns.psiElement().inside(BSPatterns.BEAN_EXTENDS),
-            BSBeanClassCompletionProvider.getInstance()
+            BSEnumClassCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(BSPatterns.BEAN_PROPERTY_TYPE),
-            BSBeanPropertyTypeCompletionProvider.getInstance()
+            BSBeanPropertyTypeCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(BSPatterns.HINT_NAME),
-            BSHintNameCompletionProvider.getInstance()
+            BSHintNameCompletionProvider()
         )
     }
 }

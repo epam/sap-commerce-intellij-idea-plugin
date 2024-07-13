@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,8 +24,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
@@ -33,7 +31,6 @@ import com.intellij.util.ProcessingContext
 /**
  * See Swagger Documentation Annotations https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/8bc53579866910149472ccbef0222ec5.html#swagger-documentation-annotations
  */
-@Service
 class BSHintNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     private val classLevelNameLookupElements = classLevelName.map { BSLookupElementFactory.buildWsHint(it) }
@@ -58,6 +55,5 @@ class BSHintNameCompletionProvider : CompletionProvider<CompletionParameters>() 
     companion object {
         val classLevelName = setOf("wsRelated", "alias")
         val propertyLevelNames = setOf("alias", "allowedValues", "example", "required")
-        fun getInstance(): BSHintNameCompletionProvider = ApplicationManager.getApplication().getService(BSHintNameCompletionProvider::class.java)
     }
 }

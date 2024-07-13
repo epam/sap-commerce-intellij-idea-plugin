@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,8 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType.*
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.util.ProcessingContext
 
-@Service
 class ItemCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
@@ -42,8 +39,4 @@ class ItemCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
             .forEach { resultCaseInsensitive.addElement(it) }
     }
 
-    companion object {
-        @JvmStatic
-        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(ItemCodeCompletionProvider::class.java)
-    }
 }

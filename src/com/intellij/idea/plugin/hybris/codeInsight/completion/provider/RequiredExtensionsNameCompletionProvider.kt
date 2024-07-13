@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,17 +19,13 @@
 package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 
-@Service
 class RequiredExtensionsNameCompletionProvider : ExtensionNameCompletionProvider() {
 
     override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project): Collection<ExtensionDescriptor> {
@@ -50,9 +46,5 @@ class RequiredExtensionsNameCompletionProvider : ExtensionNameCompletionProvider
                 .entries
                 .filterNot { currentNames.contains(it.key) }
                 .map { it.value }
-    }
-
-    companion object {
-        val instance: CompletionProvider<CompletionParameters> = ApplicationManager.getApplication().getService(RequiredExtensionsNameCompletionProvider::class.java)
     }
 }

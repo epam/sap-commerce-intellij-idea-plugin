@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,12 +24,9 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 
-@Service
 class ImpexMacrosCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(
@@ -46,9 +43,4 @@ class ImpexMacrosCompletionProvider : CompletionProvider<CompletionParameters>()
             .let { result.addAllElements(it) }
     }
 
-    companion object {
-        @JvmStatic
-        val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(ImpexMacrosCompletionProvider::class.java)
-    }
 }

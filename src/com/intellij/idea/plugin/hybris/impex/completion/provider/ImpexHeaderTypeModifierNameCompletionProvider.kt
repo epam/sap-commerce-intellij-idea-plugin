@@ -24,11 +24,8 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.util.ProcessingContext
 
-@Service
 class ImpexHeaderTypeModifierNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
@@ -45,9 +42,4 @@ class ImpexHeaderTypeModifierNameCompletionProvider : CompletionProvider<Complet
             .let { result.addAllElements(it) }
     }
 
-    companion object {
-        @JvmStatic
-        val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(ImpexHeaderTypeModifierNameCompletionProvider::class.java)
-    }
 }

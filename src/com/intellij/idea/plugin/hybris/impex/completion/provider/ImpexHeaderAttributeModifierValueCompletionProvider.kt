@@ -26,12 +26,9 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifie
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 
-@Service
 class ImpexHeaderAttributeModifierValueCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
@@ -57,11 +54,5 @@ class ImpexHeaderAttributeModifierValueCompletionProvider : CompletionProvider<C
             )
                 .notify(parameters.position.project)
         }
-    }
-
-    companion object {
-        @JvmStatic
-        val instance: CompletionProvider<CompletionParameters> =
-            ApplicationManager.getApplication().getService(ImpexHeaderAttributeModifierValueCompletionProvider::class.java)
     }
 }

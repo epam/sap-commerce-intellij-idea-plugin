@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,13 +19,6 @@
 package com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.provider
 
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.Service
 import java.util.*
 
-@Service
-class BSBeanClassCompletionProvider : BSClassCompletionProvider(EnumSet.of(BSMetaType.META_BEAN, BSMetaType.META_WS_BEAN, BSMetaType.META_EVENT)) {
-    companion object {
-        fun getInstance(): BSBeanClassCompletionProvider = ApplicationManager.getApplication().getService(BSBeanClassCompletionProvider::class.java)
-    }
-}
+class BSBeanClassCompletionProvider : BSClassCompletionProvider(EnumSet.of(BSMetaType.META_BEAN, BSMetaType.META_WS_BEAN, BSMetaType.META_EVENT))

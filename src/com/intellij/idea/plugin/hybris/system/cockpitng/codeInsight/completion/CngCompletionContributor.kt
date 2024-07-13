@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,62 +29,62 @@ class CngCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.ITEM_TYPE),
-            CngItemTypeCodeCompletionProvider.getInstance()
+            CngItemTypeCodeCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.CONTEXT_PARENT_NON_ITEM_TYPE),
-            CngContextParentNonItemTypeCompletionProvider.instance
+            CngContextParentNonItemTypeCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.FLOW_STEP_CONTENT_PROPERTY_LIST_PROPERTY_QUALIFIER),
-            CngFlowPropertyListPropertyQualifierCompletionProvider.instance
+            CngFlowPropertyListPropertyQualifierCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.FLOW_INITIALIZE_TYPE),
-            CngFlowTypeCodeCompletionProvider.instance
+            CngFlowTypeCodeCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.FLOW_PROPERTY_LIST_ROOT),
-            CngFlowInitializePropertyCompletionProvider.instance
+            CngFlowInitializePropertyCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.EDITOR_DEFINITION),
-            CngEditorDefinitionCodeCompletionProvider.instance
+            CngEditorDefinitionCodeCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.ACTION_DEFINITION),
-            CngActionDefinitionCompletionProvider.instance
+            CngActionDefinitionCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_DEFINITION),
-            CngWidgetDefinitionCompletionProvider.instance
+            CngWidgetDefinitionCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_CONNECTION_WIDGET_ID),
-            CngWidgetConnectionWidgetIdCompletionProvider.instance
+            CngWidgetConnectionWidgetIdCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_ID),
-            CngWidgetIdCompletionProvider.instance
+            CngWidgetIdCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_SETTING),
-            CngWidgetSettingCompletionProvider.instance
+            CngWidgetSettingCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement().inside(CngPatterns.WIDGET_COMPONENT_RENDERER_CLASS),
-            CngWidgetComponentRendererClassCompletionProvider.instance
+            CngWidgetComponentRendererClassCompletionProvider()
         )
     }
 }
