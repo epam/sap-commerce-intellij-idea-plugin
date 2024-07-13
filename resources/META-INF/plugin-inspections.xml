@@ -236,6 +236,12 @@
                          shortName="MandatoryFieldMustHaveInitialValue" level="WEAK WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSMandatoryFieldMustHaveInitialValue"/>
 
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSEnumValueMustBeUppercase.key"
+                         shortName="TSEnumValueMustBeUppercase" level="WEAK WARNING"
+                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSEnumValueMustBeUppercase"/>
+
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.ImmutableFieldMustHaveInitialValue.key"
                          shortName="ImmutableFieldMustHaveInitialValue" level="WEAK WARNING"
