@@ -38,7 +38,6 @@ class WhatsNewStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
         if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) return
-        if (!JBCefApp.isSupported()) return
 
         val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))
             ?: return
@@ -61,10 +60,12 @@ class WhatsNewStartupActivity : ProjectActivity {
                     TextEditorWithPreview.openPreviewForFile(project, lvf)
                 }
             } catch (e: IOException) {
+                if (!JBCefApp.isSupported()) return@runOnceForProject
+
                 val request = HTMLEditorProvider.Request.url("https://github.com/epam/sap-commerce-intellij-idea-plugin/blob/main/CHANGELOG.md#$version")
 
                 invokeLater {
-                    HTMLEditorProvider.openEditor(project, "What's New in SAP Commerce Developers Toolset - ${version}", request)
+                    HTMLEditorProvider.openEditor(project, "What's New in SAP Commerce Developers Toolset - $version", request)
                 }
             }
         }
