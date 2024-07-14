@@ -36,9 +36,6 @@
         <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService"
                         serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaItemServiceImpl"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.validation.ItemsXmlFileValidation"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.validation.impl.ItemsFileValidation"/>
-
         <projectConfigurable id="hybris.project.ts.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"

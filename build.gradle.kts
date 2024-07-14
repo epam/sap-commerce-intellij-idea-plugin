@@ -45,12 +45,17 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+        vendor = JvmVendorSpec.JETBRAINS
+    }
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+        vendor = JvmVendorSpec.JETBRAINS
+    }
 }
 
 sourceSets {
