@@ -15,6 +15,7 @@
 - Dropped legacy `items.xml` XML based validation [#1157](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1157)
 - Added 2024.2 IntelliJ IDEA support [#1156](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1156)
 - Declare explicit dependency on JBR 21 [#1163](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1163)
+- Added dependency on Foojay Toolchains Plugin [#1164](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1164)
 
 ## [2024.1.3]
 
