@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,12 +32,13 @@ class BSDomFileDescription : DomFileDescription<Beans>(Beans::class.java, "beans
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.BEAN_FILE
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-        && file.virtualFile != null
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
-        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
         && file.name.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING)
-        && file.rootTag
-        ?.attributes
-        ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "beans.xsd" }
-        ?: false
+        && hasNamespace(file)
+        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
+        && (module != null || ModuleUtil.projectContainsFile(file.project, file.viewProvider.virtualFile, false))
+
+    private fun hasNamespace(file: XmlFile) = file.rootTag
+            ?.attributes
+            ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "beans.xsd" }
+            ?: false
 }

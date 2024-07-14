@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,9 +34,9 @@ class CngWidgetsDomFileDescription : DomFileDescription<Widgets>(Widgets::class.
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.COCKPIT_NG_WIDGETS
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.virtualFile, true))
         && (hasNamespace(file) || "backoffice-widgets.xml" == file.name)
         && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
+        && (module != null || ModuleUtil.projectContainsFile(file.project, file.viewProvider.virtualFile, false))
 
     private fun hasNamespace(file: XmlFile) = file.rootTag
         ?.attributes
