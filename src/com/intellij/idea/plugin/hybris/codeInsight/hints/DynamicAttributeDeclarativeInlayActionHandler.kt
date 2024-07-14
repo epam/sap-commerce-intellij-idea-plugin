@@ -22,6 +22,7 @@ import com.intellij.codeInsight.hints.declarative.InlayActionPayload
 import com.intellij.codeInsight.hints.declarative.PsiPointerInlayActionPayload
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiClass
 import com.intellij.util.asSafely
 
@@ -33,7 +34,9 @@ class DynamicAttributeDeclarativeInlayActionHandler : InlayActionHandler {
             ?.element
             ?.asSafely<PsiClass>()
             ?.let {
-                invokeLater { it.navigate(true) }
+                invokeLater {
+                    FileEditorManager.getInstance(it.project).openFile(it.containingFile.virtualFile, true)
+                }
             }
     }
 

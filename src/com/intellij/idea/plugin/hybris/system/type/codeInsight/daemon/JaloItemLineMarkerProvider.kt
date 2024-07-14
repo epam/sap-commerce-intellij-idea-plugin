@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,13 +27,14 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiJavaFile
 import javax.swing.Icon
 
 class JaloItemLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass>() {
 
     override fun getName() = "Jalo - Item declaration(s)"
     override fun getIcon(): Icon = HybrisIcons.TS_ITEM
-    override fun canProcess(psi: PsiFile) = true
+    override fun canProcess(psi: PsiFile) = psi is PsiJavaFile
     override fun canProcess(psi: PsiClass) = TSUtils.isItemJaloFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiClass)
         ?.takeIf { it.nameIdentifier != null }

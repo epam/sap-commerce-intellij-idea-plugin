@@ -1,5 +1,8 @@
 ## [2024.2.0]
 
+### `Type System` enhancements
+- Improved resolution and navigation from Java to `items.xml` [#1162](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1162)
+
 ### `items.xml` inspection rules
 - Enum values must be all uppercase [#1159](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1159), see [Java Enum Types](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)
 
