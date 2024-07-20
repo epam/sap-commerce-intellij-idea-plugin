@@ -38,7 +38,7 @@ class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")
     }
 
-    override fun getActionUpdateThread() = ActionUpdateThread.EDT
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         val tsNode = getSelectedNode(e)
