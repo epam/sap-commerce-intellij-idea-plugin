@@ -22,41 +22,50 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.startOffset
+import java.util.*
 
 abstract class AbstractImpExTableColumnMoveAction(private val direction: ImpExColumnPosition) : AbstractImpExTableColumnAction() {
 
-    override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
-        when (element) {
-            is ImpexFullHeaderParameter -> move(editor, element, element, direction)
+    override fun performAction(project: Project, editor: Editor, element: PsiElement) {
+        val headerParameter = when (element) {
+            is ImpexFullHeaderParameter -> element
             is ImpexValueGroup -> element.fullHeaderParameter
-                ?.let { move(editor, it, element, direction) }
+                ?: return
+
+            else -> return
         }
-    }
 
-    private fun move(editor: Editor, headerParameter: ImpexFullHeaderParameter, elementAtCaret: PsiElement, direction: ImpExColumnPosition) {
-        ImpexHighlightingCaretListener.getInstance().clearHighlightedArea(editor)
+        run(project, "Moving the '${headerParameter.text}' column ${direction.name.lowercase(Locale.ROOT)}") {
+            WriteCommandAction.runWriteCommandAction(project) {
+                PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
+                    ImpexHighlightingCaretListener.getInstance().clearHighlightedArea(editor)
 
-        val headerLine = headerParameter.headerLine ?: return
-        val column = headerParameter.columnNumber
+                    val headerLine = headerParameter.headerLine ?: return@disablePostprocessFormattingInside
+                    val column = headerParameter.columnNumber
 
-        val previousOffset = editor.caretModel.currentCaret.offset
-        val previousElementStartOffset = elementAtCaret.startOffset
+                    val previousOffset = editor.caretModel.currentCaret.offset
+                    val previousElementStartOffset = element.startOffset
 
-        var newElementAtCaret: PsiElement? = null
-        moveHeaderParam(headerLine, column, direction)
-            ?.let { newElementAtCaret = it }
-        moveValueGroups(headerLine.valueLines, elementAtCaret, column, direction)
-            ?.let { newElementAtCaret = it }
+                    var newElementAtCaret: PsiElement? = null
+                    moveHeaderParam(headerLine, column, direction)
+                        ?.let { newElementAtCaret = it }
+                    moveValueGroups(headerLine.valueLines, element, column, direction)
+                        ?.let { newElementAtCaret = it }
 
-        newElementAtCaret
-            ?.let {
-                val caretOffsetInText = previousOffset - previousElementStartOffset
-                editor.caretModel.currentCaret.moveToOffset(it.startOffset + caretOffsetInText)
+                    newElementAtCaret
+                        ?.let {
+                            val caretOffsetInText = previousOffset - previousElementStartOffset
+                            editor.caretModel.currentCaret.moveToOffset(it.startOffset + caretOffsetInText)
+                        }
+                }
             }
+        }
     }
 
     private fun moveHeaderParam(headerLine: ImpexHeaderLine, column: Int, direction: ImpExColumnPosition): ImpexFullHeaderParameter? {

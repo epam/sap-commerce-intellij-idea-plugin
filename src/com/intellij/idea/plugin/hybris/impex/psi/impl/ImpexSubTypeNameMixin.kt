@@ -20,12 +20,15 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexSubTypeName
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSSubTypeItemReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.removeUserData
+import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import java.io.Serial
 
@@ -61,7 +64,19 @@ abstract class ImpexSubTypeNameMixin(node: ASTNode) : ASTWrapperReferencePsiElem
         removeUserData(ImpexTSSubTypeItemReference.CACHE_KEY)
     }
 
+    override fun getValueLine(): ImpexValueLine? = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_VALUE_LINE, {
+        val valueLine = PsiTreeUtil
+            .getParentOfType(this, ImpexValueLine::class.java)
+
+        CachedValueProvider.Result.createSingleDependency(
+            valueLine,
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
+    }, false)
+
     companion object {
+        val CACHE_KEY_VALUE_LINE = Key.create<CachedValue<ImpexValueLine?>>("SAP_CX_IMPEX_VALUE_LINE")
+
         @Serial
         private val serialVersionUID: Long = 3091595509597451013L
     }

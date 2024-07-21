@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,12 +21,15 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiUtilBase
+
 
 abstract class AbstractImpExTableAction : AnAction() {
 
@@ -50,18 +53,25 @@ abstract class AbstractImpExTableAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val psiFile = e.getData(CommonDataKeys.PSI_FILE) ?: return
+
         PsiUtilBase.getElementAtCaret(editor)
             ?.let { getSuitableElement(it) }
-            ?.let {
-                WriteCommandAction.runWriteCommandAction(project) {
-                    if (EditorModificationUtil.requestWriting(editor)) {
-                        performCommand(project, editor, it)
-                    }
-                }
-            }
+            ?.takeIf { EditorModificationUtil.requestWriting(editor) }
+            ?.let { performAction(project, editor, it) }
     }
 
-    abstract fun performCommand(project: Project, editor: Editor, element: PsiElement)
+    abstract fun performAction(project: Project, editor: Editor, element: PsiElement)
     abstract fun getSuitableElement(element: PsiElement): PsiElement?
     abstract fun isActionAllowed(project: Project, editor: Editor, element: PsiElement): Boolean
+
+    protected fun run(project: Project, title: String, block: (ProgressIndicator) -> Unit) {
+        ProgressManager.getInstance().run(object : Task.Backgroundable(project, title, false, DEAF) {
+            override fun run(indicator: ProgressIndicator) {
+                indicator.isIndeterminate = true
+
+                block.invoke(indicator)
+            }
+        })
+    }
 }

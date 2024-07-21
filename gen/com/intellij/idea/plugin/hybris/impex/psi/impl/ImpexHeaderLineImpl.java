@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,12 +24,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 import com.intellij.openapi.util.TextRange;
 import java.util.Collection;
 
-public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHeaderLine {
+public class ImpexHeaderLineImpl extends ImpexHeaderLineMixin implements ImpexHeaderLine {
 
   public ImpexHeaderLineImpl(@NotNull ASTNode node) {
     super(node);
@@ -65,12 +60,6 @@ public class ImpexHeaderLineImpl extends ASTWrapperPsiElement implements ImpexHe
   @Nullable
   public ImpexFullHeaderType getFullHeaderType() {
     return findChildByClass(ImpexFullHeaderType.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName) {
-    return ImpexPsiUtil.getFullHeaderParameter(this, parameterName);
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,10 +21,14 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.util.concurrency.AppExecutorUtil
 
 class ImpExTableSelectAction : AbstractImpExTableAction() {
 
@@ -36,20 +40,23 @@ class ImpExTableSelectAction : AbstractImpExTableAction() {
         }
     }
 
-    override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
-        val tableRange = when (element) {
-            is ImpexUserRights -> element.textRange
-            is ImpexHeaderLine -> element.tableRange
-            is ImpexValueLine -> PsiTreeUtil.getPrevSiblingOfType(element, ImpexHeaderLine::class.java)
-                ?.tableRange
-                ?: return
+    override fun performAction(project: Project, editor: Editor, element: PsiElement) {
+        ReadAction
+            .nonBlocking<TextRange?> {
+                return@nonBlocking when (element) {
+                    is ImpexUserRights -> element.textRange
+                    is ImpexHeaderLine -> element.tableRange
+                    is ImpexValueLine -> element.headerLine
+                        ?.tableRange
+                        ?: return@nonBlocking null
 
-            else -> return
-        }
-
-        with(tableRange) {
-            editor.selectionModel.setSelection(startOffset, endOffset)
-        }
+                    else -> return@nonBlocking null
+                }
+            }
+            .finishOnUiThread(ModalityState.defaultModalityState()) {
+                editor.selectionModel.setSelection(it.startOffset, it.endOffset)
+            }
+            .submit(AppExecutorUtil.getAppExecutorService())
     }
 
     override fun getSuitableElement(element: PsiElement) = PsiTreeUtil

@@ -130,6 +130,7 @@ user_rights_value_line ::= user_rights_first_value_group? user_rights_value_grou
 
 user_rights_first_value_group ::= user_rights_value {
     recoverWhile=user_rights_value_group_recover
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexUserRightsFirstValueGroupMixin"
     methods=[getValueLine]
 }
 
@@ -173,6 +174,7 @@ root_macro_usage ::= MACRO_USAGE FIELD_VALUE_SEPARATOR*
 header_line ::= any_header_mode full_header_type ((PARAMETERS_SEPARATOR MULTILINE_SEPARATOR? full_header_parameter) | PARAMETERS_SEPARATOR)*
 {
     pin = 1
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexHeaderLineMixin"
     methods=[getFullHeaderParameter getValueLines getTableRange getUniqueFullHeaderParameters]
 }
 
@@ -229,12 +231,14 @@ string ::= SINGLE_STRING | DOUBLE_STRING
 
 // Value line rules
 value_line ::= (sub_type_name value_group*) | (value_group+) {
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexValueLineMixin"
     methods=[getHeaderLine getValueGroup addValueGroups]
 }
 
 value_group ::= FIELD_VALUE_SEPARATOR value? MULTILINE_SEPARATOR?
 {
     pin=1
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexValueGroupMixin"
     methods=[getFullHeaderParameter getColumnNumber getValueLine computeValue]
 }
 
@@ -300,6 +304,7 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
 {
     pin=1
     recoverWhile=not_line_break_or_parameters_separator
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexFullHeaderParameterMixin"
     methods=[getHeaderLine getColumnNumber getAttribute getValueGroups]
 }
 

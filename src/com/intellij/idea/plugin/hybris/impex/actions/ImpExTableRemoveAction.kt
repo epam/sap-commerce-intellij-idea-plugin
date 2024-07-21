@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,10 +21,16 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
+import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.util.concurrency.AppExecutorUtil
 
 class ImpExTableRemoveAction : AbstractImpExTableAction() {
 
@@ -36,23 +42,37 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
         }
     }
 
-    override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
-        if (element is ImpexUserRights) {
+    override fun performAction(project: Project, editor: Editor, element: PsiElement) {
+        if (element is ImpexUserRights) removeUserRightsTable(project, element)
+        else removeTable(element, project, editor)
+    }
+
+    private fun removeUserRightsTable(project: Project, element: PsiElement) {
+        WriteCommandAction.runWriteCommandAction(project) {
             element.delete()
-            return
         }
+    }
 
-        val header = when (element) {
-            is ImpexHeaderLine -> element
-            is ImpexValueLine -> PsiTreeUtil.getPrevSiblingOfType(element, ImpexHeaderLine::class.java)
-                ?: return
+    private fun removeTable(element: PsiElement, project: Project, editor: Editor) {
+        ReadAction
+            .nonBlocking<TextRange?> {
+                return@nonBlocking when (element) {
+                    is ImpexHeaderLine -> element.tableRange
+                    is ImpexValueLine -> element.headerLine
+                        ?.tableRange
+                        ?: return@nonBlocking null
 
-            else -> return
-        }
-
-        val tableRange = header.tableRange
-
-        editor.document.deleteString(tableRange.startOffset, tableRange.endOffset)
+                    else -> return@nonBlocking null
+                }
+            }
+            .finishOnUiThread(ModalityState.defaultModalityState()) {
+                WriteCommandAction.runWriteCommandAction(project) {
+                    PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
+                        editor.document.deleteString(it.startOffset, it.endOffset)
+                    }
+                }
+            }
+            .submit(AppExecutorUtil.getAppExecutorService())
     }
 
     override fun getSuitableElement(element: PsiElement) = PsiTreeUtil

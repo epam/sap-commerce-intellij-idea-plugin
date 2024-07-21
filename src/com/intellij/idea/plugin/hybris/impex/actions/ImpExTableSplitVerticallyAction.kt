@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,10 +20,12 @@ package com.intellij.idea.plugin.hybris.impex.actions
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.codeStyle.CodeStyleManager
+import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.childrenOfType
 
 class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
@@ -47,11 +49,21 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
         }
     }
 
-    override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
-        when (element) {
-            is ImpexFullHeaderParameter -> split(editor, element)
+    override fun performAction(project: Project, editor: Editor, element: PsiElement) {
+        val headerParameter = when (element) {
+            is ImpexFullHeaderParameter -> element
             is ImpexValueGroup -> element.fullHeaderParameter
-                ?.let { split(editor, it) }
+                ?: return
+
+            else -> return
+        }
+
+        run(project, "Splitting the table by '${headerParameter.text}' column") {
+            WriteCommandAction.runWriteCommandAction(project) {
+                PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
+                    split(editor, headerParameter)
+                }
+            }
         }
     }
 

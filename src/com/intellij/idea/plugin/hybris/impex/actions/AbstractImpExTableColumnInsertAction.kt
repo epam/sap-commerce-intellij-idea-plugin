@@ -19,38 +19,49 @@ package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.codeInsight.AutoPopupController
 import com.intellij.idea.plugin.hybris.impex.psi.*
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 
 abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExColumnPosition) : AbstractImpExTableColumnAction() {
 
-    override fun performCommand(project: Project, editor: Editor, element: PsiElement) {
-        when (element) {
-            is ImpexFullHeaderParameter -> insert(project, editor, element, position)
+    override fun performAction(project: Project, editor: Editor, element: PsiElement) {
+        val headerParameter = when (element) {
+            is ImpexFullHeaderParameter -> element
             is ImpexValueGroup -> element.fullHeaderParameter
-                ?.let { insert(project, editor, it, position) }
+                ?: return
+
+            else -> return
         }
-    }
 
-    private fun insert(project: Project, editor: Editor, headerParameter: ImpexFullHeaderParameter, position: ImpExColumnPosition) {
-        val headerLine = headerParameter.headerLine ?: return
-        val column = headerParameter.columnNumber
+        val placement = if (position == ImpExColumnPosition.LEFT) "before"
+        else "after"
 
-        val newElementAtCaret: PsiElement? = insertHeaderParam(project, headerLine, column, position)
-        insertValueGroups(project, headerLine.valueLines, column, position)
+        run(project, "Inserting a new column $placement '${headerParameter.text}'") {
+            WriteCommandAction.runWriteCommandAction(project) {
+                PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
+                    val headerLine = headerParameter.headerLine ?: return@disablePostprocessFormattingInside
+                    val column = headerParameter.columnNumber
 
-        newElementAtCaret
-            ?.let {
-                val offset = when (position) {
-                    ImpExColumnPosition.LEFT -> it.startOffset
-                    ImpExColumnPosition.RIGHT -> it.endOffset
+                    val newElementAtCaret: PsiElement? = insertHeaderParam(project, headerLine, column, position)
+                    insertValueGroups(project, headerLine.valueLines, column, position)
+
+                    newElementAtCaret
+                        ?.let {
+                            val offset = when (position) {
+                                ImpExColumnPosition.LEFT -> it.startOffset
+                                ImpExColumnPosition.RIGHT -> it.endOffset
+                            }
+                            editor.caretModel.currentCaret.moveToOffset(offset)
+                            AutoPopupController.getInstance(project).scheduleAutoPopup(editor)
+                        }
                 }
-                editor.caretModel.currentCaret.moveToOffset(offset)
-                AutoPopupController.getInstance(project).scheduleAutoPopup(editor)
             }
+        }
     }
 
     private fun insertHeaderParam(project: Project, headerLine: ImpexHeaderLine, column: Int, position: ImpExColumnPosition): PsiElement? {

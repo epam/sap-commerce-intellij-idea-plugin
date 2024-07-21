@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,10 +24,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 
-public class ImpexValueLineImpl extends ASTWrapperPsiElement implements ImpexValueLine {
+public class ImpexValueLineImpl extends ImpexValueLineMixin implements ImpexValueLine {
 
   public ImpexValueLineImpl(@NotNull ASTNode node) {
     super(node);
@@ -57,12 +52,6 @@ public class ImpexValueLineImpl extends ASTWrapperPsiElement implements ImpexVal
   @NotNull
   public List<ImpexValueGroup> getValueGroupList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexValueGroup.class);
-  }
-
-  @Override
-  @Nullable
-  public ImpexHeaderLine getHeaderLine() {
-    return ImpexPsiUtil.getHeaderLine(this);
   }
 
   @Override
