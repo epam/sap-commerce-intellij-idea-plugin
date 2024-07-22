@@ -3,6 +3,9 @@
 ### `ImpEx` enhancements
 - Improved PSI operations performance [#1167](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1167)
 
+### `Cockpit NG` enhancements
+- Added `Spring EL` language injection into the body of the `y:shortLabel` tag [#1168](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1168)
+
 ### `Type System` enhancements
 - Improved resolution and navigation from Java to `items.xml` [#1162](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1162)
 

@@ -44,7 +44,7 @@ class HybrisSpringELInjector : MultiHostInjector {
 
         when {
             context is XmlText
-                && (tag.localName == Labels.LABEL || tag.localName == Labels.DESCRIPTION)
+                && (tag.localName == Labels.LABEL || tag.localName == Labels.DESCRIPTION || tag.localName == Labels.SHORT_LABEL)
                 && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> doInject(registrar, context)
         }
     }

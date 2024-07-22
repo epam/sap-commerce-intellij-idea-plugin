@@ -54,7 +54,7 @@ class CngSpringELContextsExtension : SpringElContextsExtension() {
 
         return when {
             context is XmlText
-                && (tag.localName == Labels.LABEL || tag.localName == Labels.DESCRIPTION)
+                && (tag.localName == Labels.LABEL || tag.localName == Labels.DESCRIPTION || tag.localName == Labels.SHORT_LABEL)
                 && tag.namespace == NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS -> process(CngPsiHelper.resolveContextType(context), project)
 
             context is XmlAttributeValue

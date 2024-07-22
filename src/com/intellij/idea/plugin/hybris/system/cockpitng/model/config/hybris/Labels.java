@@ -34,6 +34,7 @@ public interface Labels extends DomElement {
 
     String LABEL = "label";
     String DESCRIPTION = "description";
+    String SHORT_LABEL = "shortLabel";
 
     /**
      * Returns the value of the beanId child.
@@ -62,7 +63,7 @@ public interface Labels extends DomElement {
      * @return the value of the shortLabel child.
      */
     @NotNull
-    @SubTag("shortLabel")
+    @SubTag(SHORT_LABEL)
     GenericDomValue<String> getShortLabel();
 
 
