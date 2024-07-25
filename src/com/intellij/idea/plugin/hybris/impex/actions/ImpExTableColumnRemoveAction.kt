@@ -54,6 +54,8 @@ class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
     override fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {
         currentThreadCoroutineScope().launch {
             val fullHeaderParameter = readAction {
+                if (!psiFile.isValid) return@readAction null
+
                 when (element) {
                     is ImpexFullHeaderParameter -> element
                     is ImpexValueGroup -> {
