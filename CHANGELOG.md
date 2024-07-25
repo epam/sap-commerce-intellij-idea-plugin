@@ -19,6 +19,7 @@
 - Class initialization must not depend on services [#1158](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1158), [#1160](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1160)
 - `What's New` is not shown when JCEF is not supported by the JDK [#1161](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1161)
 - Moved actions from `EDT` to `BGT` [#1166](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1166)
+- CCv2 actions should not be available outside the ToolWindow [#1166](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1166)
 
 ### Other
 - Improved resolution of the XML Dom based files [#1164](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1164)
