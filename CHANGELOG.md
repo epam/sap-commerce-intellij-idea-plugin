@@ -2,6 +2,7 @@
 
 ### `ImpEx` enhancements
 - Improved PSI operations performance [#1167](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1167)
+- Migrated `Remove Column` to coroutine with progress [#1169](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1169)
 
 ### `Cockpit NG` enhancements
 - Added `Spring EL` language injection into the body of the `y:shortLabel` tag [#1168](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1168)

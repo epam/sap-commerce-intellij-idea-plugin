@@ -28,6 +28,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiUtilBase
 
 
@@ -58,10 +59,10 @@ abstract class AbstractImpExTableAction : AnAction() {
         PsiUtilBase.getElementAtCaret(editor)
             ?.let { getSuitableElement(it) }
             ?.takeIf { EditorModificationUtil.requestWriting(editor) }
-            ?.let { performAction(project, editor, it) }
+            ?.let { performAction(project, editor, psiFile, it) }
     }
 
-    abstract fun performAction(project: Project, editor: Editor, element: PsiElement)
+    abstract fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement)
     abstract fun getSuitableElement(element: PsiElement): PsiElement?
     abstract fun isActionAllowed(project: Project, editor: Editor, element: PsiElement): Boolean
 

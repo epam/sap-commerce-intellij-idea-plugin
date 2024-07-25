@@ -23,13 +23,14 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 
 abstract class AbstractImpExTableColumnInsertAction(private val position: ImpExColumnPosition) : AbstractImpExTableColumnAction() {
 
-    override fun performAction(project: Project, editor: Editor, element: PsiElement) {
+    override fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {
         val headerParameter = when (element) {
             is ImpexFullHeaderParameter -> element
             is ImpexValueGroup -> element.fullHeaderParameter

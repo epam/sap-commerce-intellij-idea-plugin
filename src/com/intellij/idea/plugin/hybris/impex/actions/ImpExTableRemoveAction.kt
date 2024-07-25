@@ -28,6 +28,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.concurrency.AppExecutorUtil
@@ -42,7 +43,7 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
         }
     }
 
-    override fun performAction(project: Project, editor: Editor, element: PsiElement) {
+    override fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {
         if (element is ImpexUserRights) removeUserRightsTable(project, element)
         else removeTable(element, project, editor)
     }

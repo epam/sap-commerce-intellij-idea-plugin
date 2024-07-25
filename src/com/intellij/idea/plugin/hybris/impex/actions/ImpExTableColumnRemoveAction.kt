@@ -23,94 +23,75 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.Task
+import com.intellij.openapi.progress.currentThreadCoroutineScope
 import com.intellij.openapi.project.Project
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
+import com.intellij.platform.util.progress.forEachWithProgress
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
-import kotlin.math.min
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
 
+    private val commandName = "Remove Column"
+
     init {
         with(templatePresentation) {
-            text = "Remove Column"
+            text = commandName
             description = "Remove current column"
             icon = HybrisIcons.TABLE_COLUMN_REMOVE
         }
     }
 
-    override fun performAction(project: Project, editor: Editor, element: PsiElement) {
-        when (element) {
-            is ImpexFullHeaderParameter -> {
-                run(project, "Removing '${element.text}' column") {
-                    val elements = runReadAction {
-                        ImpexPsiUtils.getColumnForHeader(element)
-                            .filter { it.isValid }
-                            .reversed()
+    override fun performAction(project: Project, editor: Editor, psiFile: PsiFile, element: PsiElement) {
+        currentThreadCoroutineScope().launch {
+            val fullHeaderParameter = readAction {
+                when (element) {
+                    is ImpexFullHeaderParameter -> element
+                    is ImpexValueGroup -> {
+                        val headerParameter = element.fullHeaderParameter
+                            ?: return@readAction null
+                        return@readAction headerParameter
                     }
 
-                    WriteCommandAction.runWriteCommandAction(project) {
-                        PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
-                            elements.forEach { it.delete() }
-
-                            PsiTreeUtilExt.getPrevSiblingOfElementType(element, ImpexTypes.PARAMETERS_SEPARATOR)
-                                ?.delete()
-                            element.delete()
-                        }
-                    }
+                    else -> return@readAction null
                 }
-            }
+            } ?: return@launch
 
-            is ImpexValueGroup -> {
-                val headerParameter = element.fullHeaderParameter
-                    ?: return
-                return performAction(project, editor, headerParameter)
-            }
-
-            else -> return
-        }
-    }
-
-    private fun createTask(project: Project, element: ImpexFullHeaderParameter) = object : Task.Modal(project, "Removing Column", false) {
-        override fun run(indicator: ProgressIndicator) {
-            val elements = runReadAction {
-                ImpexPsiUtils.getColumnForHeader(element)
+            val elements = readAction {
+                ImpexPsiUtils.getColumnForHeader(fullHeaderParameter)
+                    .filter { it.isValid }
                     .reversed()
             }
-            val batchSize = 25
-            val totalElements = elements.size
-            var processedElements = 0
 
-            while (processedElements < totalElements) {
-                val end = min((processedElements + batchSize).toDouble(), totalElements.toDouble()).toInt()
-                val batch = elements.subList(processedElements, end)
-
-                processedElements = end
-
-                ApplicationManager.getApplication().invokeAndWait {
-                    indicator.fraction = processedElements.toDouble() / totalElements
-                    indicator.text = "Removing elements: $processedElements of $totalElements"
-                }
-
-                WriteCommandAction.runWriteCommandAction(project) {
-                    PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
-                        batch
-                            .filter { it.isValid }
-                            .forEach { it.delete() }
-                    }
-                }
-            }
-
-            WriteCommandAction.runWriteCommandAction(project) {
+            withContext(Dispatchers.EDT) {
                 PostprocessReformattingAspect.getInstance(project).disablePostprocessFormattingInside {
-                    PsiTreeUtilExt.getPrevSiblingOfElementType(element, ImpexTypes.PARAMETERS_SEPARATOR)
-                        ?.delete()
-                    element.delete()
+                    runWithModalProgressBlocking(project, "Removing '${fullHeaderParameter.text}' column") {
+                        elements.forEachWithProgress {
+                            WriteCommandAction.runWriteCommandAction(
+                                project, commandName, "action.sap.cx.impex.column.remove",
+                                { it.delete() },
+                                psiFile
+                            )
+                        }
+
+                        WriteCommandAction.runWriteCommandAction(
+                            project, commandName, "action.sap.cx.impex.column.remove",
+                            {
+                                PsiTreeUtilExt.getPrevSiblingOfElementType(fullHeaderParameter, ImpexTypes.PARAMETERS_SEPARATOR)
+                                    ?.delete()
+                                fullHeaderParameter.delete()
+                            },
+                            psiFile
+                        )
+                    }
                 }
             }
         }
