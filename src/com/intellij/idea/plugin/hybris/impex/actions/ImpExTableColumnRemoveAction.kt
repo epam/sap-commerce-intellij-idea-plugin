@@ -41,6 +41,7 @@ import kotlinx.coroutines.withContext
 class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
 
     private val commandName = "Remove Column"
+    private val groupID = "action.sap.cx.impex.column.remove"
 
     init {
         with(templatePresentation) {
@@ -76,14 +77,14 @@ class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
                     runWithModalProgressBlocking(project, "Removing '${fullHeaderParameter.text}' column") {
                         elements.forEachWithProgress {
                             WriteCommandAction.runWriteCommandAction(
-                                project, commandName, "action.sap.cx.impex.column.remove",
+                                project, commandName, groupID,
                                 { it.delete() },
                                 psiFile
                             )
                         }
 
                         WriteCommandAction.runWriteCommandAction(
-                            project, commandName, "action.sap.cx.impex.column.remove",
+                            project, commandName, groupID,
                             {
                                 PsiTreeUtilExt.getPrevSiblingOfElementType(fullHeaderParameter, ImpexTypes.PARAMETERS_SEPARATOR)
                                     ?.delete()
