@@ -111,7 +111,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
 
             add(actionManager.getAction("ccv2.toolbar.actions"))
 
-            actionManager.createActionToolbar("SAP_CX_CCv2_View", this, false)
+            actionManager.createActionToolbar(PLACE, this, false)
         }
         toolbar.targetComponent = this
         setToolbar(toolbar.component)
@@ -188,6 +188,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
     companion object {
         @Serial
         private val serialVersionUID: Long = -3734294049693312978L
+        const val PLACE = "SAP_CX_CCv2_View"
 
         fun getActiveTab(project: Project) = ToolWindowManager.getInstance(project)
             .getToolWindow(HybrisToolWindowFactory.ID)

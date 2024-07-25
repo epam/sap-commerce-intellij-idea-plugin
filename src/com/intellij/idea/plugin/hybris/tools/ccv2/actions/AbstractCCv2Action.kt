@@ -36,7 +36,7 @@ abstract class AbstractCCv2Action(
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val isRightPlace = "SAP_CX_CCv2_View" == e.place
+        val isRightPlace = CCv2View.PLACE == e.place
         e.presentation.isEnabled = isRightPlace && isEnabled()
         e.presentation.isVisible = isRightPlace && e.project
             ?.let { CCv2View.getActiveTab(it) == tab }
