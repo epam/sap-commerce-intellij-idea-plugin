@@ -306,6 +306,15 @@ object HybrisIcons {
 
     val NODE_JUNK = AllIcons.Modules.ExcludedGeneratedRoot
 
+    val LOG_LEVEL = getIcon("/icons/logging/level.svg")
+    val LOG_LEVEL_TRACE = getIcon("/icons/logging/trace.svg")
+    val LOG_LEVEL_DEBUG = getIcon("/icons/logging/debug.svg")
+    val LOG_LEVEL_INFO = getIcon("/icons/logging/info.svg")
+    val LOG_LEVEL_WARN = getIcon("/icons/logging/warn.svg")
+    val LOG_LEVEL_ERROR = getIcon("/icons/logging/error.svg")
+    val LOG_LEVEL_FATAL = getIcon("/icons/logging/fatal.svg")
+    val LOG_LEVEL_SEVERE = getIcon("/icons/logging/severe.svg")
+
     private fun getIcon(path: String) = ReflectionUtil.getGrandCallerClass()
         ?.let { IconLoader.getIcon(path, it) }
         ?: error(path)
