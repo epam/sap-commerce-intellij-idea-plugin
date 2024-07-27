@@ -31,7 +31,7 @@ import com.intellij.openapi.project.DumbAwareAction
 class HybrisClearAllAction : DumbAwareAction(
     ExecutionBundle.message("clear.all.from.console.action.name"),
     "Clear the contents of the console",
-    HybrisIcons.ACTION_CLEAR_ALL
+    HybrisIcons.Actions.CLEAR_ALL
 ) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

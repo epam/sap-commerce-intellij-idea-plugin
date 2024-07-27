@@ -33,7 +33,7 @@ class ImpExExecuteAction : AbstractExecuteAction(
         with(templatePresentation) {
             text = message("hybris.impex.actions.execute_query")
             description = message("hybris.impex.actions.execute_query.description")
-            icon = HybrisIcons.CONSOLE_EXECUTE
+            icon = HybrisIcons.Console.Actions.EXECUTE
         }
     }
 

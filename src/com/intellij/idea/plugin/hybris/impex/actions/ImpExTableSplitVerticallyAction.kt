@@ -46,7 +46,7 @@ class ImpExTableSplitVerticallyAction : AbstractImpExTableColumnAction() {
         with(templatePresentation) {
             text = commandName
             description = "Split current table vertically"
-            icon = HybrisIcons.TABLE_SPLIT_VERTICALLY
+            icon = HybrisIcons.ImpEx.Actions.SPLIT_TABLE_VERTICALLY
         }
     }
 

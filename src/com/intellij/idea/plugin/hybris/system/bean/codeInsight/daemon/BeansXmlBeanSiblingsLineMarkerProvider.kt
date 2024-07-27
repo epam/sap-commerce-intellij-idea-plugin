@@ -39,7 +39,7 @@ import javax.swing.Icon
 class BeansXmlBeanSiblingsLineMarkerProvider : AbstractBeansXmlLineMarkerProvider<XmlAttributeValue>() {
 
     override fun getName() = message("hybris.editor.gutter.bs.beans.bean.siblings.name")
-    override fun getIcon(): Icon = HybrisIcons.BS_SIBLING
+    override fun getIcon(): Icon = HybrisIcons.BeanSystem.SIBLING
     override fun tryCast(psi: PsiElement) = psi as? XmlAttributeValue
 
     override fun collectDeclarations(psi: XmlAttributeValue): Collection<LineMarkerInfo<PsiElement>> {

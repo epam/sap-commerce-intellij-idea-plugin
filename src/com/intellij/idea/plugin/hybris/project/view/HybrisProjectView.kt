@@ -52,10 +52,10 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
     private val customGroupName = ApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupCustom)
         ?.firstOrNull()
     private val groupToIcon = mapOf(
-        customGroupName to HybrisIcons.MODULE_CUSTOM_GROUP,
-        platformGroupName to HybrisIcons.MODULE_PLATFORM_GROUP,
-        commerceGroupName to HybrisIcons.MODULE_COMMERCE_GROUP,
-        ccv2GroupName to HybrisIcons.MODULE_CCV2_GROUP,
+        customGroupName to HybrisIcons.Module.CUSTOM_GROUP,
+        platformGroupName to HybrisIcons.Module.PLATFORM_GROUP,
+        commerceGroupName to HybrisIcons.Module.COMMERCE_GROUP,
+        ccv2GroupName to HybrisIcons.Module.CCV2_GROUP,
     )
     private val hideModuleLibraries = setOf(
         "- Backoffice Classes",

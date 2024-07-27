@@ -22,16 +22,14 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
 class BpDomFileDescription : DomFileDescription<Process>(Process::class.java, HybrisConstants.ROOT_TAG_BUSINESS_PROCESS_XML) {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.BUSINESS_PROCESS
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.BusinessProcess.FILE
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.viewProvider.virtualFile, false))
 }

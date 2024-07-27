@@ -33,7 +33,7 @@ class ImpExValidateAction : AbstractExecuteAction(
         with(templatePresentation) {
             text = "Validate ImpEx"
             description = "Validate ImpEx file via remote SAP Commerce instance"
-            icon = HybrisIcons.IMPEX_VALIDATE
+            icon = HybrisIcons.ImpEx.Actions.VALIDATE
         }
     }
 

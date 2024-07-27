@@ -41,7 +41,7 @@ val buildKey = DataKey.create<CCv2BuildDto>("build")
 class CCv2CreateBuildAction : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Schedule Build",
-    icon = HybrisIcons.CCV2_BUILD_CREATE
+    icon = HybrisIcons.CCv2.Build.CREATE
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val subscription = e.dataContext.getData(subscriptionKey)
@@ -58,7 +58,7 @@ class CCv2RedoBuildAction(
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Redo Build",
-    icon = HybrisIcons.CCV2_BUILD_REDO
+    icon = HybrisIcons.CCv2.Build.REDO
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
@@ -73,7 +73,7 @@ class CCv2DeployBuildAction(
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Deploy Build",
-    icon = HybrisIcons.CCV2_BUILD_DEPLOY
+    icon = HybrisIcons.CCv2.Build.DEPLOY
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
@@ -88,7 +88,7 @@ class CCv2DeleteBuildAction(
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Delete Build",
-    icon = HybrisIcons.CCV2_BUILD_DELETE
+    icon = HybrisIcons.CCv2.Build.DELETE
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
@@ -97,7 +97,7 @@ class CCv2DeleteBuildAction(
                 project,
                 "Are you sure you want to delete '${build.code}' build within the '$subscription' subscription?",
                 "Delete CCv2 Build",
-                HybrisIcons.CCV2_BUILD_DELETE
+                HybrisIcons.CCv2.Build.DELETE
             ) != Messages.YES
         ) return
 
@@ -108,7 +108,7 @@ class CCv2DeleteBuildAction(
 class CCv2FetchBuildsAction : AbstractCCv2FetchAction<CCv2BuildDto>(
     tab = CCv2Tab.BUILDS,
     text = "Fetch Builds",
-    icon = HybrisIcons.CCV2_FETCH,
+    icon = HybrisIcons.CCv2.Actions.FETCH,
     fetch = { project, subscriptions, onStartCallback, onCompleteCallback ->
         CCv2Service.getInstance(project).fetchBuilds(subscriptions, onStartCallback, onCompleteCallback)
     }
@@ -120,7 +120,7 @@ class CCv2DownloadBuildLogsAction(
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Download Build Logs",
-    icon = HybrisIcons.CCV2_BUILD_LOGS
+    icon = HybrisIcons.CCv2.Build.LOGS
 ) {
     private var processing = false
 

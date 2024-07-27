@@ -33,7 +33,7 @@ import javax.swing.Icon
 class JaloItemLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass>() {
 
     override fun getName() = "Jalo - Item declaration(s)"
-    override fun getIcon(): Icon = HybrisIcons.TS_ITEM
+    override fun getIcon(): Icon = HybrisIcons.TypeSystem.ITEM
     override fun canProcess(psi: PsiFile) = psi is PsiJavaFile
     override fun canProcess(psi: PsiClass) = TSUtils.isItemJaloFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiClass)

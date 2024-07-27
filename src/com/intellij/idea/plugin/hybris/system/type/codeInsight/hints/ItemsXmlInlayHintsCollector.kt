@@ -77,7 +77,7 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
         return when {
             parent.name == EnumTypes.ENUMTYPE && attribute == EnumType.CODE -> finEnumClass(project, name)
                 .takeIf { it.isNotEmpty() }
-                ?.let { inlayPresentation(HybrisIcons.TS_ENUM, it) }
+                ?.let { inlayPresentation(HybrisIcons.TypeSystem.ENUM, it) }
                 ?: unknown
 
             // It is possible to declare many-to-many Relation as Item to add new index
@@ -88,10 +88,10 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
                 ?.code
                 ?.xmlAttributeValue
                 ?.asSafely<Navigatable>()
-                ?.let { inlayPresentation(HybrisIcons.TS_RELATION, arrayOf(it), "Navigate to Relation declaration") }
+                ?.let { inlayPresentation(HybrisIcons.TypeSystem.RELATION, arrayOf(it), "Navigate to Relation declaration") }
                 ?: findItemClass(project, name)
                     .takeIf { it.isNotEmpty() }
-                    ?.let { inlayPresentation(HybrisIcons.TS_ITEM, it) }
+                    ?.let { inlayPresentation(HybrisIcons.TypeSystem.ITEM, it) }
                 ?: unknown
 
             parent.name == "value" -> {
@@ -105,7 +105,7 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
                     ?.allFields
                     ?.find { it.name.equals(name, true) }
                     ?.let { arrayOf(it) }
-                    ?.let { inlayPresentation(HybrisIcons.TS_ENUM_VALUE, it) }
+                    ?.let { inlayPresentation(HybrisIcons.TypeSystem.ENUM_VALUE, it) }
                     ?: unknown
             }
 

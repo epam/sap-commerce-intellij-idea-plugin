@@ -33,7 +33,7 @@ import javax.swing.Icon
 class ItemsXmlItemAlternativeDeclarationsLineMarkerProvider : AbstractItemsXmlLineMarkerProvider<XmlAttributeValue>() {
 
     override fun getName() = message("hybris.editor.gutter.ts.items.item.alternativeDeclarations.name")
-    override fun getIcon(): Icon = HybrisIcons.TS_ALTERNATIVE_DECLARATION
+    override fun getIcon(): Icon = HybrisIcons.TypeSystem.ALTERNATIVE_DECLARATION
     override fun tryCast(psi: PsiElement) = (psi as? XmlAttributeValue)
         ?.takeIf {
             val attribute = psi.parent as? XmlAttribute ?: return@takeIf false

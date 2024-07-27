@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,7 +29,7 @@ class TSMetaMapNode(parent: TSNode, meta: TSGlobalMetaMap) : TSMetaNode<TSGlobal
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(HybrisIcons.TS_MAP)
+        presentation.setIcon(HybrisIcons.TypeSystem.MAP)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.locationString = meta.flattenType
     }

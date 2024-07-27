@@ -51,7 +51,7 @@ class AntUpdateMavenDependenciesNotificationProvider : EditorNotificationProvide
 
         return Function { fileEditor ->
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Warning)
-            panel.icon(HybrisIcons.Y_LOGO_BLUE)
+            panel.icon(HybrisIcons.Y.LOGO_BLUE)
             panel.text = "[y] Download missing external dependencies via Ant"
             panel.createActionLabel("Download") {
                 AntConfiguration.getInstance(project).buildFiles

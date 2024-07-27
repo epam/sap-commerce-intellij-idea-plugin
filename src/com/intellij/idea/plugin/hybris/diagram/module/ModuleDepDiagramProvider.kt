@@ -35,7 +35,7 @@ class ModuleDepDiagramProvider : BaseDiagramProvider<ModuleDepGraphNode>() {
     @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisModuleDependencies"
     override fun getPresentableName() = HybrisI18NBundleUtils.message("hybris.diagram.module.dependencies.provider.name")
-    override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.DIAGRAM_DIFF
+    override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.Module.Diagram.Actions.SHOW
 
     override fun createVisibilityManager() = ModuleDepDiagramVisibilityManager()
     override fun createNodeContentManager() = ModuleDepDiagramNodeContentManager()

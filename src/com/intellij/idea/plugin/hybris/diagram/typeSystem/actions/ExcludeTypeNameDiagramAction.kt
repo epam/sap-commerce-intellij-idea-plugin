@@ -28,7 +28,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 class ExcludeTypeNameDiagramAction : DiagramAction(
     message("hybris.diagram.ts.provider.actions.exclude_type_name"),
     null,
-    HybrisIcons.ACTION_REMOVE
+    HybrisIcons.Actions.REMOVE
 ) {
     override fun perform(event: AnActionEvent) {
         val project = event.project ?: return

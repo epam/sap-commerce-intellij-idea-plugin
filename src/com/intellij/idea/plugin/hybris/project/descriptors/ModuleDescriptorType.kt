@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,15 +21,15 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import javax.swing.Icon
 
-enum class ModuleDescriptorType(val icon: Icon = HybrisIcons.Y_LOGO_BLUE) {
-    CONFIG(HybrisIcons.EXTENSION_CONFIG),
-    CUSTOM(HybrisIcons.EXTENSION_CUSTOM),
-    EXT(HybrisIcons.EXTENSION_EXT),
+enum class ModuleDescriptorType(val icon: Icon = HybrisIcons.Y.LOGO_BLUE) {
+    CONFIG(HybrisIcons.Extension.CONFIG),
+    CUSTOM(HybrisIcons.Extension.CUSTOM),
+    EXT(HybrisIcons.Extension.EXT),
     NONE,
-    OOTB(HybrisIcons.EXTENSION_OOTB),
-    PLATFORM(HybrisIcons.EXTENSION_PLATFORM),
+    OOTB(HybrisIcons.Extension.OOTB),
+    PLATFORM(HybrisIcons.Extension.PLATFORM),
     ECLIPSE,
     MAVEN,
     GRADLE,
-    CCV2(HybrisIcons.EXTENSION_CLOUD)
+    CCV2(HybrisIcons.Extension.CLOUD)
 }

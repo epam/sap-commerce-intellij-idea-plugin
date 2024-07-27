@@ -47,7 +47,7 @@ class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
         with(templatePresentation) {
             text = commandName
             description = "Remove current column"
-            icon = HybrisIcons.TABLE_COLUMN_REMOVE
+            icon = HybrisIcons.ImpEx.Actions.REMOVE_COLUMN
         }
     }
 

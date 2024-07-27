@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,12 +23,12 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 class GroovyExecuteInCommitModeOnAction : AbstractGroovyExecuteAction(
     "Execute Groovy Script<br/>Commit Mode <strong><font color='#57965C'>ON</font></strong>",
     "Execute Groovy Script on a remote SAP Commerce instance",
-    HybrisIcons.CONSOLE_EXECUTE,
+    HybrisIcons.Console.Actions.EXECUTE,
     true
 )
 class GroovyExecuteInCommitModeOffAction : AbstractGroovyExecuteAction(
     "Execute Groovy Script<br/>Commit Mode <strong><font color='#C75450'>OFF</font></strong>",
     "Execute Groovy Script on a remote SAP Commerce instance",
-    HybrisIcons.CONSOLE_EXECUTE_COMMIT_MODE_OFF,
+    HybrisIcons.Console.Actions.EXECUTE_COMMIT_MODE_OFF,
     false
 )

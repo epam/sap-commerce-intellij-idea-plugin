@@ -37,7 +37,7 @@ class ImpExTableSelectAction : AbstractImpExTableAction() {
         with(templatePresentation) {
             text = "Select ImpEx Statement"
             description = "Select ImpEx statement"
-            icon = HybrisIcons.TABLE_SELECT
+            icon = HybrisIcons.ImpEx.Actions.SELECT_TABLE
         }
     }
 

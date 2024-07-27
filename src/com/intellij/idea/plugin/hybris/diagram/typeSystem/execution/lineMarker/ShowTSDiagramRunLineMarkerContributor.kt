@@ -42,6 +42,6 @@ class ShowTSDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
         if (DomManager.getDomManager(xmlFile.project).getFileElement(xmlFile, Items::class.java) == null) return null
 
         val action = ActionManager.getInstance().getAction("ShowTypeSystemDiagram") ?: return null
-        return Info(HybrisIcons.DIAGRAM, arrayOf(action)) { action.templateText }
+        return Info(HybrisIcons.Actions.SHOW_DIAGRAM, arrayOf(action)) { action.templateText }
     }
 }

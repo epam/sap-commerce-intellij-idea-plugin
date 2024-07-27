@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,9 +34,9 @@ class BSMetaBeanNode(val parent: BSNode,  meta: BSGlobalMetaBean) : BSMetaNode<B
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.setIcon(
             when (meta.metaType) {
-                BSMetaType.META_EVENT -> HybrisIcons.BS_EVENT_BEAN
-                BSMetaType.META_WS_BEAN -> HybrisIcons.BS_WS_BEAN
-                else -> HybrisIcons.BS_BEAN
+                BSMetaType.META_EVENT -> HybrisIcons.BeanSystem.EVENT_BEAN
+                BSMetaType.META_WS_BEAN -> HybrisIcons.BeanSystem.WS_BEAN
+                else -> HybrisIcons.BeanSystem.BEAN
             }
         )
         if (meta.isDeprecated) {

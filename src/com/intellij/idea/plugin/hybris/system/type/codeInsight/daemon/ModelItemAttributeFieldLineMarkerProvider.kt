@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -61,7 +61,7 @@ class ModelItemAttributeFieldLineMarkerProvider : AbstractModelAttributeLineMark
         ?.xmlAttributeValue
         ?.let {
             NavigationGutterIconBuilder
-                .create(HybrisIcons.TS_ORDERING_ATTRIBUTE)
+                .create(HybrisIcons.TypeSystem.ORDERING_ATTRIBUTE)
                 .setTargets(it)
                 .setTooltipText(message("hybris.editor.gutter.ts.model.item.orderingAttribute.tooltip.text"))
                 .setAlignment(GutterIconRenderer.Alignment.LEFT)
@@ -77,7 +77,7 @@ class ModelItemAttributeFieldLineMarkerProvider : AbstractModelAttributeLineMark
         ?.xmlAttributeValue
         ?.let {
             NavigationGutterIconBuilder
-                .create(HybrisIcons.TS_RELATION)
+                .create(HybrisIcons.TypeSystem.RELATION)
                 .setTargets(it)
                 .setTooltipText(message("hybris.editor.gutter.ts.model.item.attribute.field.relation.tooltip.text"))
                 .setAlignment(GutterIconRenderer.Alignment.LEFT)

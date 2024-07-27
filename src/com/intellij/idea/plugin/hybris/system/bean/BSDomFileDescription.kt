@@ -22,20 +22,18 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
 class BSDomFileDescription : DomFileDescription<Beans>(Beans::class.java, "beans") {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.BEAN_FILE
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.BeanSystem.FILE
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && file.name.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING)
         && hasNamespace(file)
         && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.viewProvider.virtualFile, false))
 
     private fun hasNamespace(file: XmlFile) = file.rootTag
             ?.attributes

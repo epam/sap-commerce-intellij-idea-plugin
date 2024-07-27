@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,7 +38,7 @@ abstract class HybrisExecuteActionBase(
     }
 }
 
-class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, HybrisIcons.CONSOLE_EXECUTE) {
+class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, HybrisIcons.Console.Actions.EXECUTE) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -58,7 +58,7 @@ class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteA
     }
 }
 
-class HybrisSuspendAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, HybrisIcons.CONSOLE_SUSPEND) {
+class HybrisSuspendAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, HybrisIcons.Console.Actions.SUSPEND) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 

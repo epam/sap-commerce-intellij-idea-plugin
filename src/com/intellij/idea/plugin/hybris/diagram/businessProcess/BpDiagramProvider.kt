@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,7 +35,7 @@ class BpDiagramProvider : BaseDiagramProvider<BpGraphNode>() {
     @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisBusinessProcessDiagramProvider"
     override fun getPresentableName() = HybrisI18NBundleUtils.message("hybris.diagram.bp.provider.name")
-    override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.BUSINESS_PROCESS
+    override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.BusinessProcess.FILE
 
     override fun createNodeContentManager(): DiagramNodeContentManager = BpDiagramNodeContentManager()
     override fun getElementManager(): DiagramElementManager<BpGraphNode> = BpDiagramElementManager()

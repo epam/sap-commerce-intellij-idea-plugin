@@ -49,10 +49,10 @@ data class CCv2DeploymentDto(
 }
 
 enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Icon, val apiMode: CreateDeploymentRequestDTO.DatabaseUpdateMode) {
-    NONE("None", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_NONE, CreateDeploymentRequestDTO.DatabaseUpdateMode.NONE),
-    UPDATE("Update", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_UPDATE, CreateDeploymentRequestDTO.DatabaseUpdateMode.UPDATE),
-    INITIALIZE("Initialize", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_INIT, CreateDeploymentRequestDTO.DatabaseUpdateMode.INITIALIZE),
-    UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_UPDATE_MODE_UNKNOWN, CreateDeploymentRequestDTO.DatabaseUpdateMode.NONE);
+    NONE("None", HybrisIcons.CCv2.Deployment.UpdateMode.NONE, CreateDeploymentRequestDTO.DatabaseUpdateMode.NONE),
+    UPDATE("Update", HybrisIcons.CCv2.Deployment.UpdateMode.UPDATE, CreateDeploymentRequestDTO.DatabaseUpdateMode.UPDATE),
+    INITIALIZE("Initialize", HybrisIcons.CCv2.Deployment.UpdateMode.INIT, CreateDeploymentRequestDTO.DatabaseUpdateMode.INITIALIZE),
+    UNKNOWN("Unknown", HybrisIcons.CCv2.Deployment.UpdateMode.UNKNOWN, CreateDeploymentRequestDTO.DatabaseUpdateMode.NONE);
 
     companion object {
         fun tryValueOf(name: String?) = entries
@@ -66,10 +66,10 @@ enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Ico
 }
 
 enum class CCv2DeploymentStrategyEnum(val title: String, val icon: Icon, val apiStrategy: CreateDeploymentRequestDTO.Strategy) {
-    ROLLING_UPDATE("Rolling update", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_ROLLING_UPDATE, CreateDeploymentRequestDTO.Strategy.ROLLING_UPDATE),
-    RECREATE("Recreate", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_RECREATE, CreateDeploymentRequestDTO.Strategy.RECREATE),
-    GREEN("Blue / Green", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_GREEN, CreateDeploymentRequestDTO.Strategy.GREEN),
-    UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_STRATEGY_UNKNOWN, CreateDeploymentRequestDTO.Strategy.ROLLING_UPDATE);
+    ROLLING_UPDATE("Rolling update", HybrisIcons.CCv2.Deployment.Strategy.ROLLING_UPDATE, CreateDeploymentRequestDTO.Strategy.ROLLING_UPDATE),
+    RECREATE("Recreate", HybrisIcons.CCv2.Deployment.Strategy.RECREATE, CreateDeploymentRequestDTO.Strategy.RECREATE),
+    GREEN("Blue / Green", HybrisIcons.CCv2.Deployment.Strategy.GREEN, CreateDeploymentRequestDTO.Strategy.GREEN),
+    UNKNOWN("Unknown", HybrisIcons.CCv2.Deployment.Strategy.UNKNOWN, CreateDeploymentRequestDTO.Strategy.ROLLING_UPDATE);
 
     companion object {
         fun tryValueOf(name: String?) = entries
@@ -83,12 +83,12 @@ enum class CCv2DeploymentStrategyEnum(val title: String, val icon: Icon, val api
 }
 
 enum class CCv2DeploymentStatusEnum(val title: String, val icon: Icon) {
-    SCHEDULED("Scheduled", HybrisIcons.CCV2_DEPLOYMENT_STATUS_SCHEDULED),
-    DEPLOYED("Deployed", HybrisIcons.CCV2_DEPLOYMENT_STATUS_DEPLOYED),
-    DEPLOYING("Deploying", HybrisIcons.CCV2_DEPLOYMENT_STATUS_DEPLOYING),
-    UNDEPLOYED("Undeployed", HybrisIcons.CCV2_DEPLOYMENT_STATUS_UNDEPLOYED),
-    FAIL("Fail", HybrisIcons.CCV2_DEPLOYMENT_STATUS_FAIL),
-    UNKNOWN("Unknown", HybrisIcons.CCV2_DEPLOYMENT_STATUS_UNKNOWN);
+    SCHEDULED("Scheduled", HybrisIcons.CCv2.Deployment.Status.SCHEDULED),
+    DEPLOYED("Deployed", HybrisIcons.CCv2.Deployment.Status.DEPLOYED),
+    DEPLOYING("Deploying", HybrisIcons.CCv2.Deployment.Status.DEPLOYING),
+    UNDEPLOYED("Undeployed", HybrisIcons.CCv2.Deployment.Status.UNDEPLOYED),
+    FAIL("Fail", HybrisIcons.CCv2.Deployment.Status.FAIL),
+    UNKNOWN("Unknown", HybrisIcons.CCv2.Deployment.Status.UNKNOWN);
 
     companion object {
         fun tryValueOf(name: String?) = entries

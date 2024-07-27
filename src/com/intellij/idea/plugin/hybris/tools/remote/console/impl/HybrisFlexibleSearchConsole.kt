@@ -73,7 +73,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
     override fun title(): String = "FlexibleSearch"
     override fun tip(): String = "FlexibleSearch Console"
-    override fun icon(): Icon = HybrisIcons.FXS_FILE
+    override fun icon(): Icon = HybrisIcons.FlexibleSearch.FILE
 
     companion object {
         @Serial

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,13 +51,13 @@ class ModuleDepDiagramElementManager : AbstractDiagramElementManager<ModuleDepGr
     }
 
     override fun getItemIcon(nodeElement: ModuleDepGraphNode?, nodeItem: Any?, builder: DiagramBuilder?) = when (nodeItem) {
-        is ModuleDepGraphFieldDescription -> HybrisIcons.MODULE_DEP_DIAGRAM_DESCRIPTION
+        is ModuleDepGraphFieldDescription -> HybrisIcons.Module.Diagram.DESCRIPTION
         is ModuleDepGraphField -> when (nodeItem.name) {
-            "Maven Enabled" -> HybrisIcons.MODULE_DEP_DIAGRAM_MAVEN_ENABLED
-            "Jalo Logic Free" -> HybrisIcons.MODULE_DEP_DIAGRAM_JALO_LOGIC_FREE
-            "Template Extension" -> HybrisIcons.MODULE_DEP_DIAGRAM_TEMPLATE
-            "Deprecated" -> HybrisIcons.MODULE_DEP_DIAGRAM_DEPRECATED
-            else -> HybrisIcons.MODULE_DEP_DIAGRAM_PROPERTY
+            "Maven Enabled" -> HybrisIcons.Module.Diagram.MAVEN_ENABLED
+            "Jalo Logic Free" -> HybrisIcons.Module.Diagram.JALO_LOGIC_FREE
+            "Template Extension" -> HybrisIcons.Module.Diagram.TEMPLATE
+            "Deprecated" -> HybrisIcons.Module.Diagram.DEPRECATED
+            else -> HybrisIcons.Module.Diagram.PROPERTY
         }
 
         else -> null

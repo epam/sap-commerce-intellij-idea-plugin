@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -71,23 +71,23 @@ class TSDiagramElementManager : AbstractDiagramElementManager<TSGraphNode>() {
     }
 
     override fun getItemIcon(nodeElement: TSGraphNode?, nodeItem: Any?, builder: DiagramBuilder?) = when (nodeItem) {
-        is TSGraphFieldEnumValue -> HybrisIcons.TS_ENUM_VALUE
-        is TSGraphFieldProperty -> HybrisIcons.TS_DIAGRAM_PROPERTY
-        is TSGraphFieldTyped -> HybrisIcons.TS_DIAGRAM_PROPERTY
-        is TSGraphFieldDeployment -> HybrisIcons.TS_DIAGRAM_DEPLOYMENT
-        is TSGraphFieldAttribute -> HybrisIcons.TS_ATTRIBUTE
-        is TSGraphFieldCustomProperty -> HybrisIcons.TS_CUSTOM_PROPERTY
-        is TSGraphFieldRelationEnd -> if (nodeItem.meta.end == TSMetaRelation.RelationEnd.SOURCE) HybrisIcons.TS_RELATION_SOURCE
-        else HybrisIcons.TS_RELATION_TARGET
+        is TSGraphFieldEnumValue -> HybrisIcons.TypeSystem.ENUM_VALUE
+        is TSGraphFieldProperty -> HybrisIcons.TypeSystem.Diagram.PROPERTY
+        is TSGraphFieldTyped -> HybrisIcons.TypeSystem.Diagram.PROPERTY
+        is TSGraphFieldDeployment -> HybrisIcons.TypeSystem.Diagram.DEPLOYMENT
+        is TSGraphFieldAttribute -> HybrisIcons.TypeSystem.ATTRIBUTE
+        is TSGraphFieldCustomProperty -> HybrisIcons.TypeSystem.CUSTOM_PROPERTY
+        is TSGraphFieldRelationEnd -> if (nodeItem.meta.end == TSMetaRelation.RelationEnd.SOURCE) HybrisIcons.TypeSystem.RELATION_SOURCE
+        else HybrisIcons.TypeSystem.RELATION_TARGET
 
-        is TSGraphFieldRelationElement -> if (nodeItem.meta.end == TSMetaRelation.RelationEnd.SOURCE) HybrisIcons.TS_RELATION_SOURCE
-        else HybrisIcons.TS_RELATION_TARGET
+        is TSGraphFieldRelationElement -> if (nodeItem.meta.end == TSMetaRelation.RelationEnd.SOURCE) HybrisIcons.TypeSystem.RELATION_SOURCE
+        else HybrisIcons.TypeSystem.RELATION_TARGET
 
         is TSGraphFieldIndex -> {
-            if (nodeItem.meta.isRemove) HybrisIcons.TS_INDEX_REMOVE
-            else if (nodeItem.meta.isReplace) HybrisIcons.TS_INDEX_REPLACE
-            else if (nodeItem.meta.isUnique) HybrisIcons.TS_INDEX_UNIQUE
-            else HybrisIcons.TS_INDEX
+            if (nodeItem.meta.isRemove) HybrisIcons.TypeSystem.INDEX_REMOVE
+            else if (nodeItem.meta.isReplace) HybrisIcons.TypeSystem.INDEX_REPLACE
+            else if (nodeItem.meta.isUnique) HybrisIcons.TypeSystem.INDEX_UNIQUE
+            else HybrisIcons.TypeSystem.INDEX
         }
 
         else -> null

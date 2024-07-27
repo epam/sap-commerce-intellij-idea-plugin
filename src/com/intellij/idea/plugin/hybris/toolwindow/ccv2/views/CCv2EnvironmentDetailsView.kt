@@ -205,7 +205,7 @@ class CCv2EnvironmentDetailsView(
 
             panel {
                 row {
-                    icon(HybrisIcons.CCV2_BUILD_BRANCH)
+                    icon(HybrisIcons.CCv2.Build.BRANCH)
                         .gap(RightGap.SMALL)
                     label(build.branch)
                         .comment("Branch")
@@ -228,7 +228,7 @@ class CCv2EnvironmentDetailsView(
 
             panel {
                 row {
-                    icon(HybrisIcons.CCV2_BUILD_CREATED_BY)
+                    icon(HybrisIcons.CCv2.Build.CREATED_BY)
                     label(build.createdBy)
                         .comment("Created by")
                 }
@@ -295,7 +295,7 @@ class CCv2EnvironmentDetailsView(
 
                 panel {
                     row {
-                        icon(HybrisIcons.CCV2_DATA_BACKUP_CREATED_BY)
+                        icon(HybrisIcons.CCv2.Environment.DATA_BACKUP_CREATED_BY)
                             .gap(RightGap.SMALL)
                         label(dataBackup.createdBy)
                             .comment("Created by")
@@ -366,7 +366,7 @@ class CCv2EnvironmentDetailsView(
                     ?.let {
                         panel {
                             row {
-                                icon(HybrisIcons.EXTENSION_CLOUD)
+                                icon(HybrisIcons.Extension.CLOUD)
                                     .gap(RightGap.SMALL)
                                 browserLink("Cloud portal", it)
                                     .comment("&nbsp;")
@@ -399,7 +399,7 @@ class CCv2EnvironmentDetailsView(
 
                 panel {
                     row {
-                        icon(HybrisIcons.DYNATRACE)
+                        icon(HybrisIcons.CCv2.DYNATRACE)
                             .gap(RightGap.SMALL)
                         browserLink("Dynatrace", environment.dynatraceLink ?: "")
                             .enabled(environment.dynatraceLink != null)
@@ -412,7 +412,7 @@ class CCv2EnvironmentDetailsView(
 
                 panel {
                     row {
-                        icon(HybrisIcons.OPENSEARCH)
+                        icon(HybrisIcons.CCv2.OPENSEARCH)
                             .gap(RightGap.SMALL)
                         browserLink("OpenSearch", environment.loggingLink ?: "")
                             .enabled(environment.loggingLink != null)

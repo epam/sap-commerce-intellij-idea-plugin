@@ -70,7 +70,7 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, Hybr
 
     override fun title() = "Polyglot Query"
     override fun tip() = "Polyglot Persistence Query Language Console (available only for 1905+)"
-    override fun icon() = HybrisIcons.PGQ_FILE
+    override fun icon() = HybrisIcons.PolyglotQuery.FILE
 
     companion object {
         @Serial

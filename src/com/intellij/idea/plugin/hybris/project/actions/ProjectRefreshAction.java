@@ -114,7 +114,7 @@ public class ProjectRefreshAction extends AnAction {
             presentation.setVisible(false);
             return;
         }
-        presentation.setIcon(HybrisIcons.INSTANCE.getY_LOGO_BLUE());
+        presentation.setIcon(HybrisIcons.Y.INSTANCE.getLOGO_BLUE());
         presentation.setVisible(ProjectSettingsComponent.getInstance(project).isHybrisProject());
     }
 

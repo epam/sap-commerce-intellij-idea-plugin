@@ -28,7 +28,7 @@ import com.intellij.util.asSafely
 class CollapseAllDiagramAction : DiagramAction(
     ActionsBundle.message("action.CollapseAll.text"),
     null,
-    HybrisIcons.ACTION_COLLAPSE_ALL
+    HybrisIcons.Actions.COLLAPSE_ALL
 ) {
 
     override fun perform(event: AnActionEvent) {

@@ -125,7 +125,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
             true
         )
     ) {
-        templatePresentation.icon = HybrisIcons.BS_PREVIEW_SHOW
+        templatePresentation.icon = HybrisIcons.BeanSystem.Preview.SHOW
 
         addSeparator(ActionsBundle.message("separator.show"))
         add(ShowOnlyCustomAction(mySettings))

@@ -69,7 +69,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         }
     private val reloadCoresButton = JButton("Reload")
         .also {
-            it.icon = HybrisIcons.ACTION_FORCE_REFRESH
+            it.icon = HybrisIcons.Actions.FORCE_REFRESH
             it.isOpaque = true
             it.toolTipText = message("hybris.solr.search.console.reload.cores.button.tooltip")
             it.addActionListener { reloadCores() }
@@ -151,7 +151,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
 
     override fun title() = "Solr Search"
     override fun tip() = "Solr Search Console"
-    override fun icon() = HybrisIcons.CONSOLE_SOLR
+    override fun icon() = HybrisIcons.Console.SOLR
 
     private fun buildSolrQueryObject(query: String) = coresComboBox.selectedItem
         ?.asSafely<SolrCoreData>()

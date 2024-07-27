@@ -36,12 +36,12 @@ class TSDiagramNode(val graphNode: TSGraphNode, provider: DiagramProvider<TSGrap
         .asSafely<TSGraphNodeClassifier>()
         ?.let {
             when (it.meta) {
-                is TSGlobalMetaEnum -> HybrisIcons.TS_ENUM
-                is TSGlobalMetaItem -> HybrisIcons.TS_ITEM
-                is TSGlobalMetaCollection -> HybrisIcons.TS_COLLECTION
-                is TSGlobalMetaMap -> HybrisIcons.TS_MAP
-                is TSGlobalMetaRelation -> HybrisIcons.TS_RELATION
-                else -> HybrisIcons.TYPE_SYSTEM
+                is TSGlobalMetaEnum -> HybrisIcons.TypeSystem.ENUM
+                is TSGlobalMetaItem -> HybrisIcons.TypeSystem.ITEM
+                is TSGlobalMetaCollection -> HybrisIcons.TypeSystem.COLLECTION
+                is TSGlobalMetaMap -> HybrisIcons.TypeSystem.MAP
+                is TSGlobalMetaRelation -> HybrisIcons.TypeSystem.RELATION
+                else -> HybrisIcons.TypeSystem.FILE
             }
         }
 

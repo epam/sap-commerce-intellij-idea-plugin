@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,10 @@ import com.intellij.debugger.engine.JavaValue.JavaFullValueEvaluator
 import com.intellij.debugger.engine.evaluation.EvaluationContextImpl
 import com.intellij.debugger.settings.NodeRendererSettings
 import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
-import com.intellij.debugger.ui.tree.render.*
+import com.intellij.debugger.ui.tree.render.CompoundReferenceRenderer
+import com.intellij.debugger.ui.tree.render.CompoundRendererProvider
+import com.intellij.debugger.ui.tree.render.NodeRenderer
+import com.intellij.debugger.ui.tree.render.ValueIconRenderer
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -51,7 +54,7 @@ class DefaultModelRenderer : CompoundRendererProvider() {
         }
     }
 
-    override fun getIconRenderer() = ValueIconRenderer { _, _, _ -> HybrisIcons.Y_LOGO_BLUE }
+    override fun getIconRenderer() = ValueIconRenderer { _, _, _ -> HybrisIcons.Y.LOGO_BLUE }
 
     override fun getFullValueEvaluatorProvider(): FullValueEvaluatorProvider {
         return FullValueEvaluatorProvider { evaluationContext: EvaluationContextImpl, valueDescriptor: ValueDescriptorImpl ->

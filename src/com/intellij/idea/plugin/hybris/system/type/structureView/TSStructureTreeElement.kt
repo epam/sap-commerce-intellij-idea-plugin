@@ -156,26 +156,26 @@ class TSStructureTreeElement(
     }
 
     override fun getIcon(open: Boolean) = when (element) {
-        is Description -> HybrisIcons.TS_DESCRIPTION
-        is AtomicTypes -> HybrisIcons.TS_GROUP_ATOMIC
-        is CollectionTypes -> HybrisIcons.TS_GROUP_COLLECTION
-        is MapTypes -> HybrisIcons.TS_GROUP_MAP
-        is Relations -> HybrisIcons.TS_GROUP_RELATION
-        is ItemTypes -> HybrisIcons.TS_GROUP_ITEM
-        is TypeGroup -> HybrisIcons.TS_GROUP_ITEM
-        is EnumTypes -> HybrisIcons.TS_GROUP_ENUM
-        is AtomicType -> HybrisIcons.TS_ATOMIC
-        is EnumType -> HybrisIcons.TS_ENUM
-        is EnumValue -> HybrisIcons.TS_ENUM_VALUE
-        is Attribute -> HybrisIcons.TS_ATTRIBUTE
-        is Index -> HybrisIcons.TS_INDEX
-        is ItemType -> HybrisIcons.TS_ITEM
-        is CollectionType -> HybrisIcons.TS_COLLECTION
-        is CustomProperty -> HybrisIcons.TS_CUSTOM_PROPERTY
-        is MapType -> HybrisIcons.TS_MAP
-        is Relation -> HybrisIcons.TS_RELATION
-        is RelationSourceElement -> HybrisIcons.TS_RELATION_SOURCE
-        is RelationTargetElement -> HybrisIcons.TS_RELATION_TARGET
+        is Description -> HybrisIcons.TypeSystem.DESCRIPTION
+        is AtomicTypes -> HybrisIcons.TypeSystem.GROUP_ATOMIC
+        is CollectionTypes -> HybrisIcons.TypeSystem.GROUP_COLLECTION
+        is MapTypes -> HybrisIcons.TypeSystem.GROUP_MAP
+        is Relations -> HybrisIcons.TypeSystem.GROUP_RELATION
+        is ItemTypes -> HybrisIcons.TypeSystem.GROUP_ITEM
+        is TypeGroup -> HybrisIcons.TypeSystem.GROUP_ITEM
+        is EnumTypes -> HybrisIcons.TypeSystem.GROUP_ENUM
+        is AtomicType -> HybrisIcons.TypeSystem.ATOMIC
+        is EnumType -> HybrisIcons.TypeSystem.ENUM
+        is EnumValue -> HybrisIcons.TypeSystem.ENUM_VALUE
+        is Attribute -> HybrisIcons.TypeSystem.ATTRIBUTE
+        is Index -> HybrisIcons.TypeSystem.INDEX
+        is ItemType -> HybrisIcons.TypeSystem.ITEM
+        is CollectionType -> HybrisIcons.TypeSystem.COLLECTION
+        is CustomProperty -> HybrisIcons.TypeSystem.CUSTOM_PROPERTY
+        is MapType -> HybrisIcons.TypeSystem.MAP
+        is Relation -> HybrisIcons.TypeSystem.RELATION
+        is RelationSourceElement -> HybrisIcons.TypeSystem.RELATION_SOURCE
+        is RelationTargetElement -> HybrisIcons.TypeSystem.RELATION_TARGET
         else -> null
     }
 

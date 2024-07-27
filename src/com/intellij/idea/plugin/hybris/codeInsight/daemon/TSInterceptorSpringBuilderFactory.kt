@@ -74,7 +74,7 @@ object TSInterceptorSpringBuilderFactory {
             ?: return null
 
         val builder = SpringGutterIconBuilder.createBuilder(
-            HybrisIcons.INTERCEPTOR,
+            HybrisIcons.TypeSystem.INTERCEPTOR,
             converter,
             gotoRelatedItemProvider
         )

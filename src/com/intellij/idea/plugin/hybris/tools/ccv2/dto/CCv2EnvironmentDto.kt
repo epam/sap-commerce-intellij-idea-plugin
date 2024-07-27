@@ -81,10 +81,10 @@ data class CCv2EnvironmentDto(
 }
 
 enum class CCv2EnvironmentType(val title: String, val icon: Icon) {
-    DEV("Development", HybrisIcons.CCV2_ENV_ENVIRONMENT_TYPE_DEV),
-    STG("Staging", HybrisIcons.CCV2_ENV_ENVIRONMENT_TYPE_STG),
-    PROD("Production", HybrisIcons.CCV2_ENV_ENVIRONMENT_TYPE_PROD),
-    UNKNOWN("Unknown", HybrisIcons.CCV2_ENV_ENVIRONMENT_TYPE_UNKNOWN);
+    DEV("Development", HybrisIcons.CCv2.Environment.Type.DEV),
+    STG("Staging", HybrisIcons.CCv2.Environment.Type.STG),
+    PROD("Production", HybrisIcons.CCv2.Environment.Type.PROD),
+    UNKNOWN("Unknown", HybrisIcons.CCv2.Environment.Type.UNKNOWN);
 
     companion object {
         fun tryValueOf(name: String?) = entries
@@ -94,12 +94,12 @@ enum class CCv2EnvironmentType(val title: String, val icon: Icon) {
 }
 
 enum class CCv2EnvironmentStatus(val title: String, val icon: Icon) {
-    PROVISIONING("Provisioning", HybrisIcons.CCV2_ENV_STATUS_PROVISIONING),
-    AVAILABLE("Available", HybrisIcons.CCV2_ENV_STATUS_AVAILABLE),
-    TERMINATING("Terminating", HybrisIcons.CCV2_ENV_STATUS_TERMINATING),
-    TERMINATED("Terminated", HybrisIcons.CCV2_ENV_STATUS_TERMINATED),
-    READY_FOR_DEPLOYMENT("Ready for deployment", HybrisIcons.CCV2_ENV_STATUS_READY_FOR_DEPLOYMENT),
-    UNKNOWN("Unknown", HybrisIcons.CCV2_ENV_STATUS_UNKNOWN);
+    PROVISIONING("Provisioning", HybrisIcons.CCv2.Environment.Status.PROVISIONING),
+    AVAILABLE("Available", HybrisIcons.CCv2.Environment.Status.AVAILABLE),
+    TERMINATING("Terminating", HybrisIcons.CCv2.Environment.Status.TERMINATING),
+    TERMINATED("Terminated", HybrisIcons.CCv2.Environment.Status.TERMINATED),
+    READY_FOR_DEPLOYMENT("Ready for deployment", HybrisIcons.CCv2.Environment.Status.READY_FOR_DEPLOYMENT),
+    UNKNOWN("Unknown", HybrisIcons.CCv2.Environment.Status.UNKNOWN);
 
     companion object {
         fun tryValueOf(name: String?) = CCv2EnvironmentStatus.entries

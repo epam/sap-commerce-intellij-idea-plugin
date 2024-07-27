@@ -87,7 +87,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.CCV2_BUILD_BRANCH)
+                    icon(HybrisIcons.CCv2.Build.BRANCH)
                         .gap(RightGap.SMALL)
                     label(build.branch)
                         .comment("Branch")
@@ -105,7 +105,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.CCV2_BUILD_CREATED_BY)
+                    icon(HybrisIcons.CCv2.Build.CREATED_BY)
                         .gap(RightGap.SMALL)
                     label(build.createdBy)
                         .comment("Created by")

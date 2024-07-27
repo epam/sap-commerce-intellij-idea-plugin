@@ -28,7 +28,7 @@ import com.intellij.util.asSafely
 class RestoreRemovedNodesDiagramAction : DiagramAction(
     message("hybris.diagram.ts.provider.actions.restore_removed_nodes"),
     message("hybris.diagram.ts.provider.actions.restore_removed_nodes.description"),
-    HybrisIcons.TS_DIAGRAM_RESET_VIEW
+    HybrisIcons.TypeSystem.Diagram.Actions.RESET_VIEW
 ) {
 
     override fun perform(event: AnActionEvent) {

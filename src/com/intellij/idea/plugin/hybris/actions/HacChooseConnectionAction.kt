@@ -61,7 +61,7 @@ class HacChooseConnectionAction : ActionGroup() {
         val hacSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
         presentation.text = "$hacSettings"
         presentation.isEnabledAndVisible = true
-        presentation.icon = HybrisIcons.Y_REMOTE_GREEN
+        presentation.icon = HybrisIcons.Y.REMOTE_GREEN
 
         presentation.description = createHTML().div {
             p { +"Switch active connection" }
@@ -113,12 +113,12 @@ class HacChooseConnectionAction : ActionGroup() {
 
     class CreateConnectionItem : ListItem() {
         override fun getText() = "Create new connection"
-        override fun getIcon() = HybrisIcons.CONNECTION_ADD
+        override fun getIcon() = HybrisIcons.Connection.ADD
     }
 
     class EditConnectionItem : ListItem() {
         override fun getText() = "Edit active connection"
-        override fun getIcon() = HybrisIcons.CONNECTION_EDIT
+        override fun getIcon() = HybrisIcons.Connection.EDIT
     }
 
     class ConnectionSettingsItem : ListItem() {
@@ -128,11 +128,11 @@ class HacChooseConnectionAction : ActionGroup() {
 
     open class ConnectionItem(val settings: RemoteConnectionSettings) : ListItem() {
         override fun getText() = settings.toString()
-        override fun getIcon(): Icon = HybrisIcons.Y_REMOTE
+        override fun getIcon(): Icon = HybrisIcons.Y.REMOTE
     }
 
     class ActiveConnectionItem(settings: RemoteConnectionSettings) : ConnectionItem(settings) {
-        override fun getIcon(): Icon = HybrisIcons.Y_REMOTE_GREEN
+        override fun getIcon(): Icon = HybrisIcons.Y.REMOTE_GREEN
     }
 
     private class ListPopupStep(

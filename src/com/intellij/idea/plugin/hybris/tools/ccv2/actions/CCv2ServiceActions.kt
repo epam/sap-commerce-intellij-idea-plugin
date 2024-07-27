@@ -35,7 +35,7 @@ class CCv2ShowServiceDetailsAction(
     private val subscription: CCv2Subscription,
     private val environment: CCv2EnvironmentDto,
     private val service: CCv2ServiceDto,
-) : DumbAwareAction("Show Service Details", null, HybrisIcons.CCV2_SERVICE) {
+) : DumbAwareAction("Show Service Details", null, HybrisIcons.CCv2.Service.Actions.SHOW_DETAILS) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
@@ -50,7 +50,7 @@ class CCv2ShowServiceDetailsAction(
             .also {
                 it.isCloseable = true
                 it.isPinnable = true
-                it.icon = HybrisIcons.CCV2_SERVICE
+                it.icon = HybrisIcons.CCv2.Service.Actions.SHOW_DETAILS
                 it.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
             }
 

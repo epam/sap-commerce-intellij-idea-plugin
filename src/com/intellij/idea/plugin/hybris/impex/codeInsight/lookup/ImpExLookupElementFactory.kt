@@ -44,7 +44,7 @@ object ImpExLookupElementFactory {
         .withTypeText(typeText, true)
 
     fun buildInterceptor(lookupElement: String, beanClass: String? = "?") = LookupElementBuilder.create(lookupElement)
-        .withIcon(HybrisIcons.INTERCEPTOR)
+        .withIcon(HybrisIcons.TypeSystem.INTERCEPTOR)
         .withTypeIconRightAligned(true)
         .withTypeText(beanClass, HybrisIcons.SPRING_BEAN, true)
 
@@ -57,14 +57,14 @@ object ImpExLookupElementFactory {
         """.trimIndent()
     )
         .withPresentableText("\$START_USERRIGHTS")
-        .withIcon(HybrisIcons.MACROS)
+        .withIcon(HybrisIcons.ImpEx.MACROS)
 
     fun buildMacro(lookupElement: String) = LookupElementBuilder.create(lookupElement)
-        .withIcon(HybrisIcons.MACROS)
+        .withIcon(HybrisIcons.ImpEx.MACROS)
 
     fun buildMode(mode: String) = LookupElementBuilder.create("$mode ")
         .withPresentableText(mode)
-        .withIcon(HybrisIcons.IMPEX_MODE)
+        .withIcon(HybrisIcons.ImpEx.MODE)
         .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
 
     private fun build(element: PsiElement, modifierName: String, completionSettings: ImpexCompletionSettings) =

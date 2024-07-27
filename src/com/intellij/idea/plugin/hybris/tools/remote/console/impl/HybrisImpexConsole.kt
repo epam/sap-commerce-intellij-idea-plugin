@@ -78,7 +78,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
 
     override fun title(): String = HybrisConstants.IMPEX
     override fun tip(): String = "ImpEx Console"
-    override fun icon(): Icon = HybrisIcons.IMPEX_FILE
+    override fun icon(): Icon = HybrisIcons.ImpEx.FILE
 
     override fun execute(query: String): HybrisHttpResult {
         val requestParams = getRequestParams(query)

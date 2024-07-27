@@ -107,7 +107,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.DYNATRACE)
+                    icon(HybrisIcons.CCv2.DYNATRACE)
                         .gap(RightGap.SMALL)
                     browserLink("Dynatrace", environment.dynatraceLink ?: "")
                         .enabled(environment.dynatraceLink != null)
@@ -118,7 +118,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.OPENSEARCH)
+                    icon(HybrisIcons.CCv2.OPENSEARCH)
                         .gap(RightGap.SMALL)
                     browserLink("OpenSearch", environment.loggingLink ?: "")
                         .enabled(environment.loggingLink != null)

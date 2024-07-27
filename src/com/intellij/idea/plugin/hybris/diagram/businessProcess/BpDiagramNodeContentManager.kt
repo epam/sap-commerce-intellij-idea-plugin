@@ -37,7 +37,7 @@ class BpDiagramNodeContentManager : AbstractDiagramNodeContentManager() {
     }
 
     companion object {
-        val PARAMETERS = DiagramCategory({ message("hybris.diagram.bp.provider.category.parameters") }, HybrisIcons.BP_DIAGRAM_PROPERTIES, true, false)
+        val PARAMETERS = DiagramCategory({ message("hybris.diagram.bp.provider.category.parameters") }, HybrisIcons.BusinessProcess.Diagram.PROPERTIES, true, false)
         val CATEGORIES = arrayOf(PARAMETERS)
     }
 

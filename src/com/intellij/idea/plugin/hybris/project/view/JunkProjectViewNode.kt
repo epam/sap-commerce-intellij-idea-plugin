@@ -43,7 +43,7 @@ class JunkProjectViewNode(
 
     public override fun update(presentation: PresentationData) {
         with(presentation) {
-            setIcon(HybrisIcons.NODE_JUNK)
+            setIcon(HybrisIcons.ProjectView.NODE_JUNK)
             addText(
                 ColoredFragment(
                     message("hybris.project.view.junk.directory.name"),

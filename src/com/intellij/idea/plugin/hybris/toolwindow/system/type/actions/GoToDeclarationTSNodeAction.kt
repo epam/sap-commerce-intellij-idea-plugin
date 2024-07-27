@@ -49,7 +49,7 @@ class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
         }
 
         e.presentation.isEnabledAndVisible = true
-        e.presentation.icon = HybrisIcons.DECLARATION
+        e.presentation.icon = HybrisIcons.Actions.GO_TO_DECLARATION
     }
 
     override fun actionPerformed(e: AnActionEvent) {

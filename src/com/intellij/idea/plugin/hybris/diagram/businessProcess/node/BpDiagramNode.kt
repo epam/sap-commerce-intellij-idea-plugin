@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,16 +32,16 @@ class BpDiagramNode(val graphNode: BpGraphNode, provider: DiagramProvider<BpGrap
     override fun getTooltip() = graphNode.name
 
     override fun getIcon() = when (graphNode) {
-        is BpGraphNodeContextParameters -> HybrisIcons.BP_DIAGRAM_PARAMETERS
+        is BpGraphNodeContextParameters -> HybrisIcons.BusinessProcess.Diagram.PARAMETERS
         is BpGraphNodeNavigable -> when (graphNode.navigableElement) {
-            is Process -> HybrisIcons.BUSINESS_PROCESS
-            is ScriptAction -> HybrisIcons.BP_DIAGRAM_SCRIPT
-            is Action -> HybrisIcons.BP_DIAGRAM_ACTION
-            is Split -> HybrisIcons.BP_DIAGRAM_SPLIT
-            is Wait -> HybrisIcons.BP_DIAGRAM_WAIT
-            is Join -> HybrisIcons.BP_DIAGRAM_JOIN
-            is End -> HybrisIcons.BP_DIAGRAM_END
-            is Notify -> HybrisIcons.BP_DIAGRAM_NOTIFY
+            is Process -> HybrisIcons.BusinessProcess.FILE
+            is ScriptAction -> HybrisIcons.BusinessProcess.Diagram.SCRIPT
+            is Action -> HybrisIcons.BusinessProcess.Diagram.ACTION
+            is Split -> HybrisIcons.BusinessProcess.Diagram.SPLIT
+            is Wait -> HybrisIcons.BusinessProcess.Diagram.WAIT
+            is Join -> HybrisIcons.BusinessProcess.Diagram.JOIN
+            is End -> HybrisIcons.BusinessProcess.Diagram.END
+            is Notify -> HybrisIcons.BusinessProcess.Diagram.NOTIFY
             else -> null
         }
 

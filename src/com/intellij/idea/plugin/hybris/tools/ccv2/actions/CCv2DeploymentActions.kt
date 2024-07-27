@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 class CCv2FetchDeploymentsAction : AbstractCCv2FetchAction<CCv2DeploymentDto>(
     tab = CCv2Tab.DEPLOYMENTS,
     text = "Fetch Deployments",
-    icon = HybrisIcons.CCV2_FETCH,
+    icon = HybrisIcons.CCv2.Actions.FETCH,
     fetch = { project, subscriptions, onStartCallback, onCompleteCallback ->
         CCv2Service.getInstance(project).fetchDeployments(subscriptions, onStartCallback, onCompleteCallback)
     }

@@ -53,7 +53,7 @@ class CCv2CreateBuildDialog(
                 CCv2SubscriptionsComboBoxModelFactory.create(project, subscription),
                 renderer = SimpleListCellRenderer.create { label, value, _ ->
                     if (value != null) {
-                        label.icon = HybrisIcons.MODULE_CCV2
+                        label.icon = HybrisIcons.Module.CCV2
                         label.text = value.toString()
                     }
                 }

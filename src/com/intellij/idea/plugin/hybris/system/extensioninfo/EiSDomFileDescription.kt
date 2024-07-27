@@ -23,18 +23,16 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
 class EiSDomFileDescription : DomFileDescription<ExtensionInfo>(ExtensionInfo::class.java, HybrisConstants.ROOT_TAG_EXTENSION_INFO_XML) {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.EXTENSION_INFO
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.ExtensionInfo.FILE
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && file.name == HybrisConstants.EXTENSION_INFO_XML
         && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.viewProvider.virtualFile, false))
 
 }

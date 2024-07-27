@@ -79,7 +79,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                     ccv2SubscriptionsModel,
                     renderer = SimpleListCellRenderer.create { label, value, _ ->
                         if (value != null) {
-                            label.icon = HybrisIcons.MODULE_CCV2
+                            label.icon = HybrisIcons.Module.CCV2
                             label.text = value.toString()
                         } else {
                             label.text = "-- all subscriptions --"

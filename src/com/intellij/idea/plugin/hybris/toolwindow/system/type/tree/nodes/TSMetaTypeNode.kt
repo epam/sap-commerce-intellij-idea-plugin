@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -41,12 +41,12 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
 
     override fun update(project: Project, presentation: PresentationData) {
         when (metaType) {
-            TSMetaType.META_ATOMIC -> presentation.setIcon(HybrisIcons.TS_GROUP_ATOMIC)
-            TSMetaType.META_ITEM -> presentation.setIcon(HybrisIcons.TS_GROUP_ITEM)
-            TSMetaType.META_ENUM -> presentation.setIcon(HybrisIcons.TS_GROUP_ENUM)
-            TSMetaType.META_COLLECTION -> presentation.setIcon(HybrisIcons.TS_GROUP_COLLECTION)
-            TSMetaType.META_MAP -> presentation.setIcon(HybrisIcons.TS_GROUP_MAP)
-            TSMetaType.META_RELATION -> presentation.setIcon(HybrisIcons.TS_GROUP_RELATION)
+            TSMetaType.META_ATOMIC -> presentation.setIcon(HybrisIcons.TypeSystem.GROUP_ATOMIC)
+            TSMetaType.META_ITEM -> presentation.setIcon(HybrisIcons.TypeSystem.GROUP_ITEM)
+            TSMetaType.META_ENUM -> presentation.setIcon(HybrisIcons.TypeSystem.GROUP_ENUM)
+            TSMetaType.META_COLLECTION -> presentation.setIcon(HybrisIcons.TypeSystem.GROUP_COLLECTION)
+            TSMetaType.META_MAP -> presentation.setIcon(HybrisIcons.TypeSystem.GROUP_MAP)
+            TSMetaType.META_RELATION -> presentation.setIcon(HybrisIcons.TypeSystem.GROUP_RELATION)
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 

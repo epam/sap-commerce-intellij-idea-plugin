@@ -25,6 +25,7 @@ import com.intellij.util.ReflectionUtil
 import icons.GradleIcons
 import icons.OpenapiIcons
 import org.jetbrains.kotlin.idea.KotlinIcons
+import javax.swing.Icon
 
 /**
  * Please follow Intellij Platform UI style and naming convention for icons.
@@ -33,289 +34,398 @@ import org.jetbrains.kotlin.idea.KotlinIcons
  */
 object HybrisIcons {
 
-    val IMPEX_FILE = getIcon("/icons/fileTypes/impexFile.svg")
-    val FXS_FILE = getIcon("/icons/fileTypes/flexibleSearchFileIcon.svg")
-    val PGQ_FILE = getIcon("icons/fileTypes/polyglotQueryFile.svg")
-    val BEAN_FILE = getIcon("/icons/beanSystem/bean.svg")
-
     val PLUGIN_SETTINGS = getIcon("/icons/pluginSettings.svg")
-
-    val FLEXIBLE_SEARCH = getIcon("/icons/flexibleSearch.svg")
-
-    val DECLARATION = getIcon("/icons/declaration.svg")
-
-    val Y_LICENCE = getIcon("/icons/hybrisLicenceIcon.svg")
-    val Y_LOGO_BLUE = getIcon("/icons/hybrisIcon.svg")
-    val Y_LOGO_ORANGE = getIcon("/icons/hybrisIconOrange.svg")
-    val Y_LOGO_GREEN = getIcon("/icons/hybrisIconGreen.svg")
-    val Y_REMOTE = getIcon("/icons/hybrisRemote.svg")
-    val Y_REMOTE_GREEN = getIcon("/icons/hybrisRemoteGreen.svg")
-    val Y_FACET = Y_LOGO_GREEN
-    val EXTENSION_INFO = getIcon("/icons/extensionInfo.svg")
-    val COCKPIT_NG_CONFIG = getIcon("/icons/cockpitNG/config.svg")
-    val COCKPIT_NG_WIDGETS = getIcon("/icons/cockpitNG/widgets.svg")
-    val COCKPIT_NG_WIDGET = getIcon("/icons/cockpitNG/widget.svg")
-    val COCKPIT_NG_WIDGET_DEFINITION = getIcon("/icons/cockpitNG/widgetDefinition.svg")
-    val COCKPIT_NG_ACTION_DEFINITION = getIcon("/icons/cockpitNG/actionDefinition.svg")
-    val COCKPIT_NG_EDITOR_DEFINITION = getIcon("/icons/cockpitNG/editorDefinition.svg")
-    val COCKPIT_NG_INITIALIZE_PROPERTY = AllIcons.Nodes.PropertyWrite
-    val LOCAL_EXTENSIONS = getIcon("/icons/extensionInfo.svg")
-    val BUSINESS_PROCESS = getIcon("/icons/businessProcess.svg")
-    val MONITORING = getIcon("/icons/monitoring.svg")
-    val BUILD_CALLBACKS = AllIcons.Toolwindows.ToolWindowBuild
-    val EXTERNAL_DEPENDENCIES = getIcon("/icons/externalDependencies.svg")
-    val UNMANAGED_DEPENDENCIES = getIcon("/icons/unmanagedDependencies.svg")
     val SETTINGS = getIcon("/icons/settings.svg")
 
-    val MODULE_ECLIPSE = AllIcons.Providers.Eclipse
-    val MODULE_MAVEN = OpenapiIcons.RepositoryLibraryLogo
-    val MODULE_CONFLICT = AllIcons.Actions.Cancel
-    val MODULE_GRADLE = if (Plugin.GRADLE.isActive()) GradleIcons.Gradle else AllIcons.Nodes.Module
-    val MODULE_CCV2 = getIcon("/icons/module/cloud.svg")
-    val MODULE_CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg")
-    val MODULE_COMMERCE_GROUP = Y_LOGO_GREEN
-    val MODULE_PLATFORM_GROUP = Y_LOGO_ORANGE
-    val MODULE_CUSTOM_GROUP = Y_LOGO_BLUE
-    val MODULE_EXTERNAL_GROUP = AllIcons.Nodes.ModuleGroup
-
-    val EXTENSION_CONFIG = AllIcons.Nodes.ConfigFolder
-    val EXTENSION_CLOUD = getIcon("/icons/extension/cloud.svg")
-    val EXTENSION_CUSTOM = getIcon("/icons/extension/custom.svg")
-    val EXTENSION_PLATFORM = getIcon("/icons/extension/platform.svg")
-    val EXTENSION_EXT = getIcon("/icons/extension/ext.svg")
-    val EXTENSION_OOTB = getIcon("/icons/extension/ootb.svg")
-    val EXTENSION_WEB = AllIcons.Nodes.WebFolder
-    val EXTENSION_COMMON_WEB = AllIcons.Nodes.WebFolder
-    val EXTENSION_ADDON = AllIcons.Nodes.WebFolder
-    val EXTENSION_BACKOFFICE = AllIcons.Nodes.Folder
-    val EXTENSION_HMC = AllIcons.Nodes.Folder
-    val EXTENSION_HAC = AllIcons.Nodes.Folder
-    val EXTENSION_KOTLIN_NATURE = if (Plugin.KOTLIN.isActive()) KotlinIcons.SMALL_LOGO else AllIcons.Nodes.Module
-
-    val TYPE_SYSTEM = getIcon("/icons/typeSystem.svg")
-    val SPRING_BEAN = getIcon("icons/springBean.svg")
-    val LOCALIZED = getIcon("/icons/localized.svg")
-
-    val MACROS = getIcon("/icons/macros.svg")
-
-    val INTERCEPTOR = getIcon("/icons/interceptor.svg")
-
-    val JAVA_CLASS = AllIcons.Nodes.Class
-
-    val TYPE_PRIMITIVE = getIcon("/icons/typePrimitive.svg")
-    val TYPE_BOXED = getIcon("/icons/typeBoxed.svg")
-    val TYPE_OBJECT = getIcon("/icons/typeObject.svg")
-    val TYPE_COLLECTION = getIcon("/icons/typeCollection.svg")
-    val TYPE_MAP = getIcon("/icons/typeMap.svg")
-    val TYPE_GENERIC = AllIcons.Nodes.AbstractClass
-
-    val TS_GROUP_ATOMIC = getIcon("/icons/typeSystem/groupByAtomic.svg")
-    val TS_GROUP_ENUM = getIcon("/icons/typeSystem/groupByEnum.svg")
-    val TS_GROUP_COLLECTION = getIcon("/icons/typeSystem/groupByCollection.svg")
-    val TS_GROUP_ITEM = getIcon("/icons/typeSystem/groupByItem.svg")
-    val TS_GROUP_MAP = getIcon("/icons/typeSystem/groupByMap.svg")
-    val TS_GROUP_RELATION = getIcon("/icons/typeSystem/groupByRelation.svg")
-    val TS_DESCRIPTION = AllIcons.Windows.Help
-    val TS_ENUM = getIcon("/icons/typeSystem/enum.svg")
-    val TS_ENUM_VALUE = getIcon("/icons/typeSystem/enumValue.svg")
-    val TS_ATOMIC = getIcon("/icons/typeSystem/atomic.svg")
-    val TS_ITEM = getIcon("/icons/typeSystem/item.svg")
-    val TS_MAP = getIcon("/icons/typeSystem/map.svg")
-    val TS_RELATION = getIcon("/icons/typeSystem/relation.svg")
-    val TS_CUSTOM_PROPERTY = getIcon("/icons/typeSystem/customProperty.svg")
-    val TS_ATTRIBUTE = getIcon("/icons/typeSystem/attribute.svg")
-    val TS_ORDERING_ATTRIBUTE = getIcon("/icons/typeSystem/orderingAttribute.svg")
-    val TS_RELATION_SOURCE = getIcon("/icons/typeSystem/relationSource.svg")
-    val TS_RELATION_TARGET = getIcon("/icons/typeSystem/relationTarget.svg")
-    val TS_COLLECTION = getIcon("/icons/typeSystem/collection.svg")
-    val TS_INDEX = getIcon("/icons/typeSystem/index.svg")
-    val TS_INDEX_UNIQUE = getIcon("/icons/typeSystem/indexUnique.svg")
-    val TS_INDEX_REPLACE = getIcon("/icons/typeSystem/indexReplace.svg")
-    val TS_INDEX_REMOVE = getIcon("/icons/typeSystem/indexRemove.svg")
-    val TS_IMPORT = AllIcons.ToolbarDecorator.Import
-    val TS_ANNOTATION = AllIcons.Nodes.Annotationtype
-    val TS_HEADER_ABBREVIATION = getIcon("/icons/typeSystem/headerAbbreviation.svg")
-    val TS_ALTERNATIVE_DECLARATION = AllIcons.Actions.Forward
-    val TS_SIBLING = AllIcons.Gutter.OverridenMethod
-    val TS_PREVIEW_SHOW = AllIcons.Actions.Show
-    val TS_PREVIEW_SHOW_COLLECTIONS = AllIcons.Actions.GroupByPrefix
-    val TS_PREVIEW_SHOW_ENUMS = AllIcons.Actions.GroupByTestProduction
-    val TS_PREVIEW_SHOW_MAPS = AllIcons.Actions.GroupByPackage
-    val TS_PREVIEW_SHOW_ITEMS = AllIcons.Actions.GroupByClass
-
-    val BS_GROUP_BY_BEAN_DTO = getIcon("/icons/beanSystem/groupByDTO.svg")
-    val BS_GROUP_BY_BEAN_EVENT = getIcon("/icons/beanSystem/groupByEvent.svg")
-    val BS_GROUP_BY_BEAN_WS = getIcon("/icons/beanSystem/groupByWS.svg")
-    val BS_GROUP_BY_ENUM = getIcon("/icons/beanSystem/groupByEnum.svg")
-    val BS_BEAN = getIcon("/icons/beanSystem/bean.svg")
-    val BS_EVENT_BEAN = getIcon("/icons/beanSystem/eventBean.svg")
-    val BS_WS_BEAN = getIcon("/icons/beanSystem/wsBean.svg")
-    val BS_WS_HINT = AllIcons.Actions.QuickfixOffBulb
-    val BS_PROPERTY = getIcon("/icons/beanSystem/property.svg")
-    val BS_ENUM = getIcon("/icons/beanSystem/enum.svg")
-    val BS_ENUM_VALUE = getIcon("/icons/beanSystem/enumValue.svg")
-    val BS_LEVEL_MAPPING = getIcon("/icons/beanSystem/levelMapping.svg")
-    val BS_ALTERNATIVE_DECLARATION = AllIcons.Actions.Forward
-    val BS_SIBLING = AllIcons.Gutter.OverridenMethod
-    val BS_PREVIEW_SHOW = AllIcons.Actions.Show
+    val MONITORING = getIcon("/icons/monitoring.svg")
 
     val CODE_NOT_GENERATED = AllIcons.General.ExclMark
-
-    val DIAGRAM = AllIcons.FileTypes.Diagram
-    val DIAGRAM_DIFF = AllIcons.Actions.DiagramDiff
-
-    val BP_DIAGRAM_WAIT = getIcon("/icons/businessProcess/diagram/wait.svg")
-    val BP_DIAGRAM_END = getIcon("/icons/businessProcess/diagram/end.svg")
-    val BP_DIAGRAM_NOTIFY = getIcon("/icons/businessProcess/diagram/notify.svg")
-    val BP_DIAGRAM_ACTION = getIcon("/icons/businessProcess/diagram/action.svg")
-    val BP_DIAGRAM_SPLIT = getIcon("/icons/businessProcess/diagram/split.svg")
-    val BP_DIAGRAM_JOIN = getIcon("/icons/businessProcess/diagram/join.svg")
-    val BP_DIAGRAM_SCRIPT = getIcon("/icons/businessProcess/diagram/script.svg")
-    val BP_DIAGRAM_PARAMETERS = AllIcons.Nodes.NewParameter
-    val BP_DIAGRAM_PROPERTY = BS_PROPERTY
-    val BP_DIAGRAM_SPRING_BEAN = SPRING_BEAN
-    val BP_DIAGRAM_NODE = AllIcons.Nodes.FieldPK
-    val BP_DIAGRAM_FIELD = AllIcons.Nodes.Field
-    val BP_DIAGRAM_CLASS = AllIcons.Nodes.Class
-    val BP_DIAGRAM_PARAMETER_REQUIRED = AllIcons.Nodes.Plugin
-    val BP_DIAGRAM_PARAMETER_OPTIONAL = AllIcons.Nodes.Pluginobsolete
-    val BP_DIAGRAM_PROPERTIES = AllIcons.Nodes.Property
-
-    val MODULE_DEP_DIAGRAM_PROPERTY = BS_PROPERTY
-    val MODULE_DEP_DIAGRAM_DESCRIPTION = AllIcons.Windows.Help
-    val MODULE_DEP_DIAGRAM_MAVEN_ENABLED = MODULE_MAVEN
-    val MODULE_DEP_DIAGRAM_DEPRECATED = AllIcons.General.ExclMark
-    val MODULE_DEP_DIAGRAM_TEMPLATE = AllIcons.Nodes.Template
-    val MODULE_DEP_DIAGRAM_JALO_LOGIC_FREE = getIcon("/icons/flexibleSearch/star.svg")
-
-    val TS_DIAGRAM_PROPERTY = AllIcons.Nodes.Property
-    val TS_DIAGRAM_DEPLOYMENT = AllIcons.Debugger.Db_db_object
-    val TS_DIAGRAM_RESET_VIEW = getIcon("/icons/typeSystem/diagram/resetView.svg")
-    val TS_DIAGRAM_SETTINGS = SETTINGS
-
-    val FXS_TABLE_ALIAS = getIcon("/icons/flexibleSearch/tableAlias.svg")
-    val FXS_COLUMN_ALIAS = getIcon("/icons/flexibleSearch/columnAlias.svg")
-    val FXS_OUTER_JOIN = getIcon("/icons/flexibleSearch/outerJoin.svg")
-    val FXS_Y_COLUMN_PLACEHOLDER = AllIcons.Actions.PrettyPrint
-    val FXS_Y_FROM_PLACEHOLDER = AllIcons.Actions.PrettyPrint
-    val FXS_FROM_PARENS_PLACEHOLDER = getIcon("/icons/flexibleSearch/parens.svg")
-    val FXS_KEYWORD = AllIcons.Nodes.Static
-    val FXS_Y_COLUMN_ALL = getIcon("/icons/flexibleSearch/star.svg")
-    val FXS_TABLE_SUFFIX = AllIcons.General.Filter
-    val FXS_TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg")
-
-    val IMPEX_VALIDATE = getIcon("/icons/impex/validate.svg")
-    val IMPEX_MODE = AllIcons.Nodes.Function
-
+    val SPRING_BEAN = getIcon("icons/springBean.svg")
     val GUTTER_POPULATOR = getIcon("/icons/gutter/populator.svg")
 
-    val CONSOLE = AllIcons.Debugger.Console
-    val CONSOLE_SOLR = getIcon("/icons/console/solr.svg")
-    val CONSOLE_OPEN = getIcon("/icons/console/open.svg")
-    val CONSOLE_EXECUTE = AllIcons.Actions.Execute
-    val CONSOLE_SUSPEND = AllIcons.Actions.Suspend
-    val CONSOLE_EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg")
+    object Y {
+        val LICENCE = getIcon("/icons/hybrisLicenceIcon.svg")
+        val LOGO_BLUE = getIcon("/icons/hybrisIcon.svg")
+        val LOGO_ORANGE = getIcon("/icons/hybrisIconOrange.svg")
+        val LOGO_GREEN = getIcon("/icons/hybrisIconGreen.svg")
+        val REMOTE = getIcon("/icons/hybrisRemote.svg")
+        val REMOTE_GREEN = getIcon("/icons/hybrisRemoteGreen.svg")
+        val FACET = LOGO_GREEN
+    }
 
-    val DYNATRACE = getIcon("/icons/dynatrace.svg")
-    val OPENSEARCH = getIcon("/icons/opensearch.svg")
+    object UnmanagedDependencies {
+        val FILE = getIcon("/icons/unmanagedDependencies.svg")
+    }
 
-    val CCV2 = getIcon("/icons/ccv2/ccv2.svg")
-    val CCV2_FETCH = AllIcons.Vcs.Fetch
-    val CCV2_ENVIRONMENTS = EXTENSION_CLOUD
-    val CCV2_BUILDS = BUILD_CALLBACKS
-    val CCV2_DEPLOYMENTS = AllIcons.Nodes.Deploy
-    val CCV2_BACKUPS = AllIcons.Nodes.Undeploy
-    val CCV2_ENDPOINTS = AllIcons.General.Web
-    val CCV2_SHOW = AllIcons.Actions.Show
+    object ExternalDependencies {
+        val FILE = getIcon("/icons/externalDependencies.svg")
+    }
 
-    val CCV2_BUILD_BRANCH = AllIcons.Vcs.Branch
-    val CCV2_BUILD_CREATED_BY = AllIcons.General.User
-    val CCV2_BUILD_STATUS_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
-    val CCV2_BUILD_STATUS_SCHEDULED = AllIcons.Actions.Profile
-    val CCV2_BUILD_STATUS_BUILDING = AllIcons.RunConfigurations.TestCustom
-    val CCV2_BUILD_STATUS_SUCCESS = AllIcons.RunConfigurations.TestPassed
-    val CCV2_BUILD_STATUS_FAIL = AllIcons.RunConfigurations.TestFailed
-    val CCV2_BUILD_STATUS_DELETED = AllIcons.Debugger.KillProcess
-    val CCV2_BUILD_CREATE = AllIcons.Actions.Execute
-    val CCV2_BUILD_REDO = AllIcons.Actions.BuildAutoReloadChanges
-    val CCV2_BUILD_DEPLOY = AllIcons.Nodes.Deploy
-    val CCV2_BUILD_DELETE = AllIcons.General.Delete
-    val CCV2_BUILD_LOGS = AllIcons.Actions.Download
+    object LocalExtensions {
+        val FILE = getIcon("/icons/extensionInfo.svg")
+    }
 
-    val CCV2_ENVIRONMENT_DETAILS = getIcon("/icons/module/cloud.svg")
+    object ExtensionInfo {
+        val FILE = getIcon("/icons/extensionInfo.svg")
+    }
 
-    val CCV2_SERVICE = AllIcons.Nodes.Services
-    val CCV2_SERVICE_MODIFIED_BY = AllIcons.General.User
+    object BuildCallbacks {
+        val FILE = AllIcons.Toolwindows.ToolWindowBuild
+    }
 
-    val CCV2_DATA_BACKUP_CREATED_BY = AllIcons.General.User
+    object Module {
+        val ECLIPSE = AllIcons.Providers.Eclipse
+        val MAVEN = OpenapiIcons.RepositoryLibraryLogo
+        val CONFLICT = AllIcons.Actions.Cancel
+        val GRADLE = if (Plugin.GRADLE.isActive()) GradleIcons.Gradle else AllIcons.Nodes.Module
+        val CCV2 = getIcon("/icons/module/cloud.svg")
+        val CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg")
+        val COMMERCE_GROUP = Y.LOGO_GREEN
+        val PLATFORM_GROUP = Y.LOGO_ORANGE
+        val CUSTOM_GROUP = Y.LOGO_BLUE
+        val EXTERNAL_GROUP = AllIcons.Nodes.ModuleGroup
 
-    val CCV2_DEPLOYMENT_CREATED_BY = AllIcons.General.User
-    val CCV2_DEPLOYMENT_UPDATE_MODE_NONE = AllIcons.Diff.GutterCheckBox
-    val CCV2_DEPLOYMENT_UPDATE_MODE_UPDATE = AllIcons.Ide.Notification.PluginUpdate
-    val CCV2_DEPLOYMENT_UPDATE_MODE_INIT = AllIcons.General.ExclMark
-    val CCV2_DEPLOYMENT_UPDATE_MODE_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
-    val CCV2_DEPLOYMENT_STRATEGY_ROLLING_UPDATE = AllIcons.Gutter.RecursiveMethod
-    val CCV2_DEPLOYMENT_STRATEGY_RECREATE = AllIcons.Gutter.WriteAccess
-    val CCV2_DEPLOYMENT_STRATEGY_GREEN = AllIcons.Gutter.ReadAccess
-    val CCV2_DEPLOYMENT_STRATEGY_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
+        object Diagram {
+            val PROPERTY = BeanSystem.PROPERTY
+            val DESCRIPTION = AllIcons.Windows.Help
+            val MAVEN_ENABLED = MAVEN
+            val DEPRECATED = AllIcons.General.ExclMark
+            val TEMPLATE = AllIcons.Nodes.Template
+            val JALO_LOGIC_FREE = getIcon("/icons/flexibleSearch/star.svg")
 
-    val CCV2_DEPLOYMENT_STATUS_SCHEDULED = AllIcons.Actions.Profile
-    val CCV2_DEPLOYMENT_STATUS_DEPLOYING = AllIcons.RunConfigurations.TestCustom
-    val CCV2_DEPLOYMENT_STATUS_DEPLOYED = AllIcons.RunConfigurations.TestPassed
-    val CCV2_DEPLOYMENT_STATUS_UNDEPLOYED = AllIcons.RunConfigurations.TestSkipped
-    val CCV2_DEPLOYMENT_STATUS_FAIL = AllIcons.RunConfigurations.TestError
-    val CCV2_DEPLOYMENT_STATUS_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
+            object Actions {
+                val SHOW = AllIcons.Actions.DiagramDiff
+            }
+        }
+    }
 
-    val CCV2_ENV_STATUS_PROVISIONING = AllIcons.Actions.ProfileYellow
-    val CCV2_ENV_STATUS_AVAILABLE = AllIcons.Actions.ProjectWideAnalysisOn
-    val CCV2_ENV_STATUS_TERMINATING = AllIcons.Actions.ProfileRed
-    val CCV2_ENV_STATUS_TERMINATED = AllIcons.Actions.ProjectWideAnalysisOff
-    val CCV2_ENV_STATUS_READY_FOR_DEPLOYMENT = AllIcons.Actions.ShowReadAccess
-    val CCV2_ENV_STATUS_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
+    object Extension {
+        val CONFLICT = getIcon("/icons/extension/conflict.svg")
+        val CONFIG = AllIcons.Nodes.ConfigFolder
+        val CLOUD = getIcon("/icons/extension/cloud.svg")
+        val CUSTOM = getIcon("/icons/extension/custom.svg")
+        val PLATFORM = getIcon("/icons/extension/platform.svg")
+        val EXT = getIcon("/icons/extension/ext.svg")
+        val OOTB = getIcon("/icons/extension/ootb.svg")
+        val WEB = AllIcons.Nodes.WebFolder
+        val COMMON_WEB = AllIcons.Nodes.WebFolder
+        val ADDON = AllIcons.Nodes.WebFolder
+        val BACKOFFICE = AllIcons.Nodes.Folder
+        val HMC = AllIcons.Nodes.Folder
+        val HAC = AllIcons.Nodes.Folder
+        val KOTLIN_NATURE = if (Plugin.KOTLIN.isActive()) KotlinIcons.SMALL_LOGO else AllIcons.Nodes.Module
+    }
 
-    val CCV2_ENV_ENVIRONMENT_TYPE_DEV = AllIcons.Nodes.AnonymousClass
-    val CCV2_ENV_ENVIRONMENT_TYPE_STG = AllIcons.Nodes.Type
-    val CCV2_ENV_ENVIRONMENT_TYPE_PROD = AllIcons.Nodes.AbstractException
-    val CCV2_ENV_ENVIRONMENT_TYPE_UNKNOWN = AllIcons.Nodes.ErrorIntroduction
+    object Types {
+        val PRIMITIVE = getIcon("/icons/types/primitive.svg")
+        val BOXED = getIcon("/icons/types/boxed.svg")
+        val OBJECT = getIcon("/icons/types/object.svg")
+        val COLLECTION = getIcon("/icons/types/collection.svg")
+        val MAP = getIcon("/icons/types/map.svg")
+        val GENERIC = AllIcons.Nodes.AbstractClass
+    }
 
-    val CONNECTION_ADD = AllIcons.General.Add
-    val CONNECTION_EDIT = AllIcons.Actions.Edit
+    object ImpEx {
+        val FILE = getIcon("/icons/fileTypes/impexFile.svg")
+        val MACROS = getIcon("/icons/macros.svg")
+        val MODE = AllIcons.Nodes.Function
 
-    val TABLE_COLUMN_INSERT_LEFT = getIcon("/icons/table/columnInsertLeft.svg")
-    val TABLE_COLUMN_INSERT_RIGHT = getIcon("/icons/table/columnInsertRight.svg")
-    val TABLE_COLUMN_MOVE_LEFT = getIcon("/icons/table/columnMoveLeft.svg")
-    val TABLE_COLUMN_MOVE_RIGHT = getIcon("/icons/table/columnMoveRight.svg")
-    val TABLE_COLUMN_REMOVE = getIcon("/icons/table/columnRemove.svg")
-    val TABLE_REMOVE = getIcon("/icons/table/tableRemove.svg")
-    val TABLE_SELECT = getIcon("/icons/table/tableSelect.svg")
-    val TABLE_SPLIT_VERTICALLY = getIcon("/icons/table/tableSplitVertically.svg")
+        object Actions {
+            val VALIDATE = getIcon("/icons/impex/validate.svg")
 
-    val SAVE_ALL = getIcon("/icons/menu-saveall.svg")
-    val UPLOAD = getIcon("/icons/upload.svg")
-    val DELETE = getIcon("/icons/delete.svg")
-    val CANCEL = DELETE
+            val INSERT_COLUMN_LEFT = getIcon("/icons/impex/actions/columnInsertLeft.svg")
+            val INSERT_COLUMN_RIGHT = getIcon("/icons/impex/actions/columnInsertRight.svg")
+            val MOVE_COLUMN_LEFT = getIcon("/icons/impex/actions/columnMoveLeft.svg")
+            val MOVE_COLUMN_RIGHT = getIcon("/icons/impex/actions/columnMoveRight.svg")
+            val REMOVE_COLUMN = getIcon("/icons/impex/actions/columnRemove.svg")
+            val REMOVE_TABLE = getIcon("/icons/impex/actions/tableRemove.svg")
+            val SELECT_TABLE = getIcon("/icons/impex/actions/tableSelect.svg")
+            val SPLIT_TABLE_VERTICALLY = getIcon("/icons/impex/actions/tableSplitVertically.svg")
+        }
+    }
 
-    val ACTION_COLLAPSE_ALL = AllIcons.Actions.Collapseall
-    val ACTION_EXPAND_ALL = AllIcons.Actions.Expandall
-    val ACTION_CLEAR_ALL = AllIcons.Actions.GC
-    val ACTION_REMOVE = AllIcons.General.Remove
-    val ACTION_FORCE_REFRESH = AllIcons.Actions.ForceRefresh
-    val ACTION_FORWARD = AllIcons.Actions.Forward
+    object FlexibleSearch {
+        val FILE = getIcon("/icons/fileTypes/flexibleSearchFile.svg")
 
-    val SCOPE_LOCAL = AllIcons.Ide.LocalScope
+        val TABLE_ALIAS = getIcon("/icons/flexibleSearch/tableAlias.svg")
+        val COLUMN_ALIAS = getIcon("/icons/flexibleSearch/columnAlias.svg")
+        val OUTER_JOIN = getIcon("/icons/flexibleSearch/outerJoin.svg")
+        val Y_COLUMN_PLACEHOLDER = AllIcons.Actions.PrettyPrint
+        val Y_FROM_PLACEHOLDER = AllIcons.Actions.PrettyPrint
+        val FROM_PARENS_PLACEHOLDER = getIcon("/icons/flexibleSearch/parens.svg")
+        val KEYWORD = AllIcons.Nodes.Static
+        val Y_COLUMN_ALL = getIcon("/icons/flexibleSearch/star.svg")
+        val TABLE_SUFFIX = AllIcons.General.Filter
+        val TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg")
 
-    val NODE_JUNK = AllIcons.Modules.ExcludedGeneratedRoot
+        object Actions {
+            val GROUP = getIcon("/icons/flexibleSearch/actions/group.svg")
+        }
+    }
 
-    val LOG_LEVEL = getIcon("/icons/logging/level.svg")
-    val LOG_LEVEL_TRACE = getIcon("/icons/logging/trace.svg")
-    val LOG_LEVEL_DEBUG = getIcon("/icons/logging/debug.svg")
-    val LOG_LEVEL_INFO = getIcon("/icons/logging/info.svg")
-    val LOG_LEVEL_WARN = getIcon("/icons/logging/warn.svg")
-    val LOG_LEVEL_ERROR = getIcon("/icons/logging/error.svg")
-    val LOG_LEVEL_FATAL = getIcon("/icons/logging/fatal.svg")
-    val LOG_LEVEL_SEVERE = getIcon("/icons/logging/severe.svg")
+    object PolyglotQuery {
+        val FILE = getIcon("icons/fileTypes/polyglotQueryFile.svg")
+    }
 
-    private fun getIcon(path: String) = ReflectionUtil.getGrandCallerClass()
+    object CockpitNG {
+        val CONFIG = getIcon("/icons/cockpitNG/config.svg")
+        val WIDGETS = getIcon("/icons/cockpitNG/widgets.svg")
+        val WIDGET = getIcon("/icons/cockpitNG/widget.svg")
+        val WIDGET_DEFINITION = getIcon("/icons/cockpitNG/widgetDefinition.svg")
+        val ACTION_DEFINITION = getIcon("/icons/cockpitNG/actionDefinition.svg")
+        val EDITOR_DEFINITION = getIcon("/icons/cockpitNG/editorDefinition.svg")
+        val INITIALIZE_PROPERTY = AllIcons.Nodes.PropertyWrite
+    }
+
+    object TypeSystem {
+        val FILE = getIcon("/icons/typeSystem.svg")
+
+        val LOCALIZED = getIcon("/icons/typeSystem/localized.svg")
+        val INTERCEPTOR = getIcon("/icons/typeSystem/interceptor.svg")
+
+        val GROUP_ATOMIC = getIcon("/icons/typeSystem/groupByAtomic.svg")
+        val GROUP_ENUM = getIcon("/icons/typeSystem/groupByEnum.svg")
+        val GROUP_COLLECTION = getIcon("/icons/typeSystem/groupByCollection.svg")
+        val GROUP_ITEM = getIcon("/icons/typeSystem/groupByItem.svg")
+        val GROUP_MAP = getIcon("/icons/typeSystem/groupByMap.svg")
+        val GROUP_RELATION = getIcon("/icons/typeSystem/groupByRelation.svg")
+        val DESCRIPTION = AllIcons.Windows.Help
+        val ENUM = getIcon("/icons/typeSystem/enum.svg")
+        val ENUM_VALUE = getIcon("/icons/typeSystem/enumValue.svg")
+        val ATOMIC = getIcon("/icons/typeSystem/atomic.svg")
+        val ITEM = getIcon("/icons/typeSystem/item.svg")
+        val MAP = getIcon("/icons/typeSystem/map.svg")
+        val RELATION = getIcon("/icons/typeSystem/relation.svg")
+        val CUSTOM_PROPERTY = getIcon("/icons/typeSystem/customProperty.svg")
+        val ATTRIBUTE = getIcon("/icons/typeSystem/attribute.svg")
+        val ORDERING_ATTRIBUTE = getIcon("/icons/typeSystem/orderingAttribute.svg")
+        val RELATION_SOURCE = getIcon("/icons/typeSystem/relationSource.svg")
+        val RELATION_TARGET = getIcon("/icons/typeSystem/relationTarget.svg")
+        val COLLECTION = getIcon("/icons/typeSystem/collection.svg")
+        val INDEX = getIcon("/icons/typeSystem/index.svg")
+        val INDEX_UNIQUE = getIcon("/icons/typeSystem/indexUnique.svg")
+        val INDEX_REPLACE = getIcon("/icons/typeSystem/indexReplace.svg")
+        val INDEX_REMOVE = getIcon("/icons/typeSystem/indexRemove.svg")
+        val HEADER_ABBREVIATION = getIcon("/icons/typeSystem/headerAbbreviation.svg")
+        val ALTERNATIVE_DECLARATION = AllIcons.Actions.Forward
+        val SIBLING = AllIcons.Gutter.OverridenMethod
+
+        object Preview {
+            object Actions {
+                val SHOW = AllIcons.Actions.Show
+                val SHOW_COLLECTIONS = AllIcons.Actions.GroupByPrefix
+                val SHOW_ENUMS = AllIcons.Actions.GroupByTestProduction
+                val SHOW_MAPS = AllIcons.Actions.GroupByPackage
+                val SHOW_ITEMS = AllIcons.Actions.GroupByClass
+            }
+        }
+
+        object Diagram {
+            val PROPERTY = AllIcons.Nodes.Property
+            val DEPLOYMENT = AllIcons.Debugger.Db_db_object
+
+            object Actions {
+                val RESET_VIEW = getIcon("/icons/typeSystem/diagram/resetView.svg")
+                val OPEN_SETTINGS = HybrisIcons.SETTINGS
+            }
+        }
+    }
+
+    object BeanSystem {
+        val FILE = getIcon("/icons/beanSystem/bean.svg")
+
+        val GROUP_BY_BEAN_DTO = getIcon("/icons/beanSystem/groupByDTO.svg")
+        val GROUP_BY_BEAN_EVENT = getIcon("/icons/beanSystem/groupByEvent.svg")
+        val GROUP_BY_BEAN_WS = getIcon("/icons/beanSystem/groupByWS.svg")
+        val GROUP_BY_ENUM = getIcon("/icons/beanSystem/groupByEnum.svg")
+        val BEAN = getIcon("/icons/beanSystem/bean.svg")
+        val IMPORT = AllIcons.ToolbarDecorator.Import
+        val ANNOTATION = AllIcons.Nodes.Annotationtype
+        val EVENT_BEAN = getIcon("/icons/beanSystem/eventBean.svg")
+        val WS_BEAN = getIcon("/icons/beanSystem/wsBean.svg")
+        val WS_HINT = AllIcons.Actions.QuickfixOffBulb
+        val PROPERTY = getIcon("/icons/beanSystem/property.svg")
+        val ENUM = getIcon("/icons/beanSystem/enum.svg")
+        val ENUM_VALUE = getIcon("/icons/beanSystem/enumValue.svg")
+        val LEVEL_MAPPING = getIcon("/icons/beanSystem/levelMapping.svg")
+        val ALTERNATIVE_DECLARATION = AllIcons.Actions.Forward
+        val SIBLING = AllIcons.Gutter.OverridenMethod
+
+        object Preview {
+            val SHOW = AllIcons.Actions.Show
+        }
+    }
+
+    object BusinessProcess {
+        val FILE = getIcon("/icons/businessProcess.svg")
+
+        object Diagram {
+            val PROCESS = getIcon("/icons/businessProcess.svg")
+            val WAIT = getIcon("/icons/businessProcess/diagram/wait.svg")
+            val END = getIcon("/icons/businessProcess/diagram/end.svg")
+            val NOTIFY = getIcon("/icons/businessProcess/diagram/notify.svg")
+            val ACTION = getIcon("/icons/businessProcess/diagram/action.svg")
+            val SPLIT = getIcon("/icons/businessProcess/diagram/split.svg")
+            val JOIN = getIcon("/icons/businessProcess/diagram/join.svg")
+            val SCRIPT = getIcon("/icons/businessProcess/diagram/script.svg")
+            val PARAMETERS = AllIcons.Nodes.NewParameter
+            val PROPERTY = BeanSystem.PROPERTY
+            val SPRING_BEAN = HybrisIcons.SPRING_BEAN
+            val NODE = AllIcons.Nodes.FieldPK
+            val FIELD = AllIcons.Nodes.Field
+            val CLASS = AllIcons.Nodes.Class
+            val PARAMETER_REQUIRED = AllIcons.Nodes.Plugin
+            val PARAMETER_OPTIONAL = AllIcons.Nodes.Pluginobsolete
+            val PROPERTIES = AllIcons.Nodes.Property
+        }
+    }
+
+    object Console {
+        val DESCRIPTOR = AllIcons.Debugger.Console
+        val SOLR = getIcon("/icons/console/solr.svg")
+
+        object Actions {
+            val OPEN = getIcon("/icons/console/open.svg")
+            val EXECUTE = AllIcons.Actions.Execute
+            val EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg")
+            val SUSPEND = AllIcons.Actions.Suspend
+        }
+    }
+
+    object CCv2 {
+        val DESCRIPTOR = getIcon("/icons/ccv2/ccv2.svg")
+        val DYNATRACE = getIcon("/icons/dynatrace.svg")
+        val OPENSEARCH = getIcon("/icons/opensearch.svg")
+
+        val ENVIRONMENTS = Extension.CLOUD
+        val BUILDS = BuildCallbacks.FILE
+        val DEPLOYMENTS = AllIcons.Nodes.Deploy
+        val BACKUPS = AllIcons.Nodes.Undeploy
+        val ENDPOINTS = AllIcons.General.Web
+        val SHOW = AllIcons.Actions.Show
+
+        object Actions {
+            val FETCH = AllIcons.Vcs.Fetch
+        }
+
+        object Build {
+            val BRANCH = AllIcons.Vcs.Branch
+            val CREATED_BY = AllIcons.General.User
+            val STATUS_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
+            val STATUS_SCHEDULED = AllIcons.Actions.Profile
+            val STATUS_BUILDING = AllIcons.RunConfigurations.TestCustom
+            val STATUS_SUCCESS = AllIcons.RunConfigurations.TestPassed
+            val STATUS_FAIL = AllIcons.RunConfigurations.TestFailed
+            val STATUS_DELETED = AllIcons.Debugger.KillProcess
+            val CREATE = AllIcons.Actions.Execute
+            val REDO = AllIcons.Actions.BuildAutoReloadChanges
+            val DEPLOY = AllIcons.Nodes.Deploy
+            val DELETE = AllIcons.General.Delete
+            val LOGS = AllIcons.Actions.Download
+        }
+
+        object Deployment {
+            val CREATED_BY = AllIcons.General.User
+
+            object UpdateMode {
+                val NONE = AllIcons.Diff.GutterCheckBox
+                val UPDATE = AllIcons.Ide.Notification.PluginUpdate
+                val INIT = AllIcons.General.ExclMark
+                val UNKNOWN = AllIcons.RunConfigurations.TestUnknown
+            }
+
+            object Strategy {
+                val ROLLING_UPDATE = AllIcons.Gutter.RecursiveMethod
+                val RECREATE = AllIcons.Gutter.WriteAccess
+                val GREEN = AllIcons.Gutter.ReadAccess
+                val UNKNOWN = AllIcons.RunConfigurations.TestUnknown
+            }
+
+            object Status {
+                val SCHEDULED = AllIcons.Actions.Profile
+                val DEPLOYING = AllIcons.RunConfigurations.TestCustom
+                val DEPLOYED = AllIcons.RunConfigurations.TestPassed
+                val UNDEPLOYED = AllIcons.RunConfigurations.TestSkipped
+                val FAIL = AllIcons.RunConfigurations.TestError
+                val UNKNOWN = AllIcons.RunConfigurations.TestUnknown
+            }
+        }
+
+        object Environment {
+            val DATA_BACKUP_CREATED_BY = AllIcons.General.User
+
+            object Actions {
+                val SHOW_DETAILS = getIcon("/icons/module/cloud.svg")
+            }
+
+            object Status {
+                val PROVISIONING = AllIcons.Actions.ProfileYellow
+                val AVAILABLE = AllIcons.Actions.ProjectWideAnalysisOn
+                val TERMINATING = AllIcons.Actions.ProfileRed
+                val TERMINATED = AllIcons.Actions.ProjectWideAnalysisOff
+                val READY_FOR_DEPLOYMENT = AllIcons.Actions.ShowReadAccess
+                val UNKNOWN = AllIcons.RunConfigurations.TestUnknown
+            }
+
+            object Type {
+                val DEV = AllIcons.Nodes.AnonymousClass
+                val STG = AllIcons.Nodes.Type
+                val PROD = AllIcons.Nodes.AbstractException
+                val UNKNOWN = AllIcons.Nodes.ErrorIntroduction
+            }
+        }
+
+        object Service {
+            val MODIFIED_BY = AllIcons.General.User
+
+            object Actions {
+                val SHOW_DETAILS = AllIcons.Nodes.Services
+            }
+        }
+    }
+
+    object Connection {
+        val ADD = AllIcons.General.Add
+        val EDIT = AllIcons.Actions.Edit
+    }
+
+    object Scope {
+        val LOCAL = AllIcons.Ide.LocalScope
+        val PLATFORM = Extension.PLATFORM
+        val COMMERCE_GROUP = Module.COMMERCE_GROUP
+        val PLATFORM_GROUP = Module.PLATFORM_GROUP
+    }
+
+    object ProjectView {
+        val NODE_JUNK = AllIcons.Modules.ExcludedGeneratedRoot
+    }
+
+    object Actions {
+        val COLLAPSE_ALL = AllIcons.Actions.Collapseall
+        val EXPAND_ALL = AllIcons.Actions.Expandall
+        val CLEAR_ALL = AllIcons.Actions.GC
+        val REMOVE = AllIcons.General.Remove
+        val FORCE_REFRESH = AllIcons.Actions.ForceRefresh
+        val FORWARD = AllIcons.Actions.Forward
+        val GO_TO_DECLARATION = getIcon("/icons/actions/declaration.svg")
+        val SHOW_DIAGRAM = AllIcons.FileTypes.Diagram
+    }
+
+    object Log {
+        val TOGGLE = getIcon("/icons/logging/toggle.svg")
+
+        object Level {
+            val TRACE = getIcon("/icons/logging/level/trace.svg")
+            val DEBUG = getIcon("/icons/logging/level/debug.svg")
+            val INFO = getIcon("/icons/logging/level/info.svg")
+            val WARN = getIcon("/icons/logging/level/warn.svg")
+            val ERROR = getIcon("/icons/logging/level/error.svg")
+            val FATAL = getIcon("/icons/logging/level/fatal.svg")
+            val SEVERE = getIcon("/icons/logging/level/severe.svg")
+        }
+    }
+
+    private fun getIcon(path: String): Icon = ReflectionUtil.getGrandCallerClass()
         ?.let { IconLoader.getIcon(path, it) }
         ?: error(path)
 }

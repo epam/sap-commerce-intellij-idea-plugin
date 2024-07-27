@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,7 @@ import com.intellij.openapi.options.ShowSettingsUtil
 class OpenSettingsDiagramAction : AnAction(
     message("hybris.diagram.ts.provider.actions.open_settings"),
     message("hybris.diagram.ts.provider.actions.open_settings.description"),
-    HybrisIcons.TS_DIAGRAM_SETTINGS
+    HybrisIcons.TypeSystem.Diagram.Actions.OPEN_SETTINGS
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return

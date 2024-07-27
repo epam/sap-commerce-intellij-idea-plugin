@@ -85,12 +85,12 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
         override fun createPanel() = panel {
             group("CCv2 Integration", true) {
                 row {
-                    icon(HybrisIcons.MODULE_CCV2)
+                    icon(HybrisIcons.Module.CCV2)
                     activeCCv2SubscriptionComboBox = comboBox(
                         ccv2SubscriptionsModel,
                         renderer = SimpleListCellRenderer.create { label, value, _ ->
                             if (value != null) {
-                                label.icon = HybrisIcons.MODULE_CCV2
+                                label.icon = HybrisIcons.Module.CCV2
                                 label.text = value.toString()
                             } else {
                                 label.text = "-- all subscriptions --"
@@ -118,7 +118,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
 
             group("Remote Instances", true) {
                 row {
-                    icon(HybrisIcons.Y_REMOTE_GREEN)
+                    icon(HybrisIcons.Y.REMOTE_GREEN)
                     comboBox(
                         activeHacServerModel,
                         renderer = SimpleListCellRenderer.create("?") { it.toString() }
@@ -137,7 +137,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
                 }.layout(RowLayout.PARENT_GRID)
 
                 row {
-                    icon(HybrisIcons.CONSOLE_SOLR)
+                    icon(HybrisIcons.Console.SOLR)
                     comboBox(
                         activeSolrServerModel,
                         renderer = SimpleListCellRenderer.create("?") { it.toString() }

@@ -118,7 +118,7 @@ class CCv2DeployBuildDialog(
                 label(build.branch)
                     .bold()
                     .label("Branch:")
-                icon(HybrisIcons.CCV2_BUILD_BRANCH)
+                icon(HybrisIcons.CCv2.Build.BRANCH)
             }.layout(RowLayout.PARENT_GRID)
         }
 
@@ -127,7 +127,7 @@ class CCv2DeployBuildDialog(
                 subscriptionComboBox = comboBox(
                     CCv2SubscriptionsComboBoxModelFactory.create(project, subscription),
                     renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        label.icon = HybrisIcons.MODULE_CCV2
+                        label.icon = HybrisIcons.Module.CCV2
                         label.text = value.toString()
                     }
                 )

@@ -62,35 +62,35 @@ class BpNavigableElementConverter : ResolvingConverter<NavigableElement>() {
         return when (dom) {
             is Process -> LookupElementBuilder.create(id)
                 .withTypeText("Process", true)
-                .withIcon(HybrisIcons.BUSINESS_PROCESS)
+                .withIcon(HybrisIcons.BusinessProcess.Diagram.PROCESS)
 
             is ScriptAction -> LookupElementBuilder.create(id)
                 .withTypeText("Script Action", true)
-                .withIcon(HybrisIcons.BP_DIAGRAM_SCRIPT)
+                .withIcon(HybrisIcons.BusinessProcess.Diagram.SCRIPT)
 
             is Action -> LookupElementBuilder.create(id)
                 .withTypeText("Action", true)
-                .withIcon(HybrisIcons.BP_DIAGRAM_ACTION)
+                .withIcon(HybrisIcons.BusinessProcess.Diagram.ACTION)
 
             is Split -> LookupElementBuilder.create(id)
                 .withTypeText("Split", true)
-                .withIcon(HybrisIcons.BP_DIAGRAM_SPLIT)
+                .withIcon(HybrisIcons.BusinessProcess.Diagram.SPLIT)
 
             is Wait -> LookupElementBuilder.create(id)
                 .withTypeText("Wait", true)
-                .withIcon(HybrisIcons.BP_DIAGRAM_WAIT)
+                .withIcon(HybrisIcons.BusinessProcess.Diagram.WAIT)
 
             is Join -> LookupElementBuilder.create(id)
                 .withTypeText("Join", true)
-                .withIcon(HybrisIcons.BP_DIAGRAM_JOIN)
+                .withIcon(HybrisIcons.BusinessProcess.Diagram.JOIN)
 
             is End -> LookupElementBuilder.create(id)
                 .withTypeText("End", true)
-                .withIcon(HybrisIcons.BP_DIAGRAM_END)
+                .withIcon(HybrisIcons.BusinessProcess.Diagram.END)
 
             is Notify -> LookupElementBuilder.create(id)
                 .withTypeText("Notify", true)
-                .withIcon(HybrisIcons.BP_DIAGRAM_NOTIFY)
+                .withIcon(HybrisIcons.BusinessProcess.Diagram.NOTIFY)
 
             else -> null
         }

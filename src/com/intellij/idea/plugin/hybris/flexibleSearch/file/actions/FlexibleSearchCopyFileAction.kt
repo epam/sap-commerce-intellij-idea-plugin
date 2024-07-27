@@ -32,7 +32,7 @@ import com.intellij.openapi.project.DumbAware
 class FlexibleSearchCopyFileAction : AnAction(
     "Copy to FlexibleSearch Console",
     "Copy FlexibleSearch file to SAP Commerce console",
-    HybrisIcons.CONSOLE_OPEN
+    HybrisIcons.Console.Actions.OPEN
 ), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.TS_PREVIEW_SHOW_COLLECTIONS
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
@@ -37,7 +36,7 @@ class ShowOnlyCustomAction(val settings: TSViewSettings) : ToggleAction(message(
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.items.text"), null, HybrisIcons.TS_PREVIEW_SHOW_ITEMS) {
+class ShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.items.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_ITEMS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItems()
 
@@ -49,7 +48,7 @@ class ShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction(message("
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.maps.text"), null, HybrisIcons.TS_PREVIEW_SHOW_MAPS) {
+class ShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.maps.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_MAPS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaMaps()
 
@@ -61,7 +60,7 @@ class ShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(message("h
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaEnumsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.enums.text"), null, HybrisIcons.TS_PREVIEW_SHOW_ENUMS) {
+class ShowMetaEnumsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.enums.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_ENUMS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaEnums()
 
@@ -73,7 +72,7 @@ class ShowMetaEnumsAction(val settings: TSViewSettings) : ToggleAction(message("
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.collections.text"), null, TS_PREVIEW_SHOW_COLLECTIONS) {
+class ShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.collections.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_COLLECTIONS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaCollections()
 
@@ -85,7 +84,7 @@ class ShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction(mes
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.relations.text"), null, HybrisIcons.TS_RELATION) {
+class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.relations.text"), null, HybrisIcons.TypeSystem.RELATION) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaRelations()
 
@@ -97,7 +96,7 @@ class ShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(messa
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.atomics.text"), null, HybrisIcons.TS_ATOMIC) {
+class ShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.atomics.text"), null, HybrisIcons.TypeSystem.ATOMIC) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaAtomics()
 

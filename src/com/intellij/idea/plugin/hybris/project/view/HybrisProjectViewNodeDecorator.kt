@@ -55,17 +55,17 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
         val descriptorType = projectSettings.getModuleSettings(module).type
 
         if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && Plugin.KOTLIN.isActive()) {
-            data.setIcon(HybrisIcons.EXTENSION_KOTLIN_NATURE)
+            data.setIcon(HybrisIcons.Extension.KOTLIN_NATURE)
             return
         }
 
         when (descriptorType) {
-            ModuleDescriptorType.CCV2 -> data.setIcon(HybrisIcons.MODULE_CCV2_GROUP)
-            ModuleDescriptorType.CONFIG -> data.setIcon(HybrisIcons.EXTENSION_CONFIG)
-            ModuleDescriptorType.CUSTOM -> data.setIcon(HybrisIcons.EXTENSION_CUSTOM)
-            ModuleDescriptorType.EXT -> data.setIcon(HybrisIcons.EXTENSION_EXT)
-            ModuleDescriptorType.OOTB -> data.setIcon(HybrisIcons.EXTENSION_OOTB)
-            ModuleDescriptorType.PLATFORM -> data.setIcon(HybrisIcons.EXTENSION_PLATFORM)
+            ModuleDescriptorType.CCV2 -> data.setIcon(HybrisIcons.Module.CCV2_GROUP)
+            ModuleDescriptorType.CONFIG -> data.setIcon(HybrisIcons.Extension.CONFIG)
+            ModuleDescriptorType.CUSTOM -> data.setIcon(HybrisIcons.Extension.CUSTOM)
+            ModuleDescriptorType.EXT -> data.setIcon(HybrisIcons.Extension.EXT)
+            ModuleDescriptorType.OOTB -> data.setIcon(HybrisIcons.Extension.OOTB)
+            ModuleDescriptorType.PLATFORM -> data.setIcon(HybrisIcons.Extension.PLATFORM)
             else -> return
         }
     }

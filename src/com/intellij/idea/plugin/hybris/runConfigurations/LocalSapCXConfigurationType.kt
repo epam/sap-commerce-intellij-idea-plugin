@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,7 +28,7 @@ class LocalSapCXConfigurationType : SimpleConfigurationType(
     "SAPCX",
     "SAP CX Start",
     "Start local SAP CX Platform Configuration Type",
-    NotNullLazyValue.createValue { HybrisIcons.Y_LOGO_BLUE }
+    NotNullLazyValue.createValue { HybrisIcons.Y.LOGO_BLUE }
 ) {
 
     override fun createTemplateConfiguration(project: Project): RunConfiguration = LocalSapCXRunConfiguration(project, this)

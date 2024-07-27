@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 class FlexibleSearchActionsGroup : DefaultActionGroup({ "FlexibleSearch" }, true) {
 
     init {
-        templatePresentation.icon = HybrisIcons.FLEXIBLE_SEARCH
+        templatePresentation.icon = HybrisIcons.FlexibleSearch.Actions.GROUP
         templatePresentation.putClientProperty(ActionUtil.HIDE_DROPDOWN_ICON, true)
         templatePresentation.isHideGroupIfEmpty = true
     }

@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -50,13 +50,13 @@ class SelectOtherModulesToImportStep(context: WizardContext) : AbstractSelectMod
     }
 
     override fun getElementIcon(module: ModuleDescriptor): Icon? {
-        if (isInConflict(module)) return HybrisIcons.MODULE_CONFLICT
+        if (isInConflict(module)) return HybrisIcons.Module.CONFLICT
 
         return when (module) {
-            is MavenModuleDescriptor -> HybrisIcons.MODULE_MAVEN
-            is EclipseModuleDescriptor -> HybrisIcons.MODULE_ECLIPSE
-            is GradleModuleDescriptor -> HybrisIcons.MODULE_GRADLE
-            is CCv2ModuleDescriptor -> HybrisIcons.MODULE_CCV2
+            is MavenModuleDescriptor -> HybrisIcons.Module.MAVEN
+            is EclipseModuleDescriptor -> HybrisIcons.Module.ECLIPSE
+            is GradleModuleDescriptor -> HybrisIcons.Module.GRADLE
+            is CCv2ModuleDescriptor -> HybrisIcons.Module.CCV2
             else -> null
         }
     }

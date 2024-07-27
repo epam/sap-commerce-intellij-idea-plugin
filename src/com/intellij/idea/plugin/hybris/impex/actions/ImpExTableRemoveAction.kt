@@ -42,7 +42,7 @@ class ImpExTableRemoveAction : AbstractImpExTableAction() {
         with(templatePresentation) {
             text = "Remove Table"
             description = "Remove current table"
-            icon = HybrisIcons.TABLE_REMOVE
+            icon = HybrisIcons.ImpEx.Actions.REMOVE_TABLE
         }
     }
 

@@ -64,7 +64,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         NamedScope hybrisScope = null;
 
         if (groupExists(model, customGroupName)) {
-            customScope = createScope(HybrisIcons.INSTANCE.getEXTENSION_CUSTOM(), customGroupName);
+            customScope = createScope(HybrisIcons.Extension.INSTANCE.getCUSTOM(), customGroupName);
             newScopes.add(customScope);
 
             newScopes.add(new NamedScope(
@@ -81,19 +81,19 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             ));
         }
         if (groupExists(model, platformGroupName)) {
-            platformScope = createScope(HybrisIcons.INSTANCE.getMODULE_PLATFORM_GROUP(), platformGroupName);
+            platformScope = createScope(HybrisIcons.Scope.INSTANCE.getPLATFORM_GROUP(), platformGroupName);
             newScopes.add(platformScope);
         }
         if (groupExists(model, commerceGroupName)) {
-            commerceScope = createScope(HybrisIcons.INSTANCE.getMODULE_COMMERCE_GROUP(), commerceGroupName);
+            commerceScope = createScope(HybrisIcons.Scope.INSTANCE.getCOMMERCE_GROUP(), commerceGroupName);
             newScopes.add(commerceScope);
         }
         if (platformScope != null && commerceScope != null) {
-            hybrisScope = createScopeFor2Groups(HybrisIcons.INSTANCE.getEXTENSION_PLATFORM(), platformGroupName, commerceGroupName);
+            hybrisScope = createScopeFor2Groups(HybrisIcons.Scope.INSTANCE.getPLATFORM(), platformGroupName, commerceGroupName);
             newScopes.add(hybrisScope);
         }
         if (groupExists(model, nonHybrisGroupName)) {
-            newScopes.add(createScope(HybrisIcons.INSTANCE.getSCOPE_LOCAL(), nonHybrisGroupName));
+            newScopes.add(createScope(HybrisIcons.Scope.INSTANCE.getLOCAL(), nonHybrisGroupName));
         }
         newScopes.add(new NamedScope(
             HybrisI18NBundleUtils.message("hybris.scope.editable.all.ts.files"),

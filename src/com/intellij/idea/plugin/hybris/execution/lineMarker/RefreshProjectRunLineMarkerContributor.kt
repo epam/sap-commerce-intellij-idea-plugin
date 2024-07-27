@@ -57,7 +57,7 @@ class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
             || (parentTagName == Extensions.EXTENSION && domManager.getFileElement(xmlFile, Hybrisconfig::class.java) != null)) {
 
             val action = ActionManager.getInstance().getAction("File.yRefresh") ?: return null
-            return Info(HybrisIcons.ACTION_FORCE_REFRESH, arrayOf(action)) { action.templateText }
+            return Info(HybrisIcons.Actions.FORCE_REFRESH, arrayOf(action)) { action.templateText }
         }
 
         return null

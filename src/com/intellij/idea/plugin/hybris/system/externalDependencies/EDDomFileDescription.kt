@@ -22,18 +22,16 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import org.jetbrains.idea.maven.dom.MavenDomProjectModelDescription
 import javax.swing.Icon
 
 class EDDomFileDescription : MavenDomProjectModelDescription() {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.EXTERNAL_DEPENDENCIES
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.ExternalDependencies.FILE
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML
         && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.viewProvider.virtualFile, false))
 
 }

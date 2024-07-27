@@ -125,7 +125,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
             true
         )
     ) {
-        templatePresentation.icon = HybrisIcons.TS_PREVIEW_SHOW
+        templatePresentation.icon = HybrisIcons.TypeSystem.Preview.Actions.SHOW
 
         addSeparator(ActionsBundle.message("separator.show"))
         add(ShowOnlyCustomAction(mySettings))

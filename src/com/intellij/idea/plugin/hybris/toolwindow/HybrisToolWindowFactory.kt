@@ -50,7 +50,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false
-        icon = HybrisIcons.TYPE_SYSTEM
+        icon = HybrisIcons.TypeSystem.FILE
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
 
         this
@@ -60,7 +60,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false
-        icon = HybrisIcons.BEAN_FILE
+        icon = HybrisIcons.BeanSystem.FILE
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         this
     }
@@ -70,7 +70,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false
-        icon = HybrisIcons.CONSOLE
+        icon = HybrisIcons.Console.DESCRIPTOR
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
         this
     }
@@ -80,7 +80,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false
-        icon = HybrisIcons.CCV2
+        icon = HybrisIcons.CCv2.DESCRIPTOR
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
 
         this

@@ -24,19 +24,17 @@ import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsCompon
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import javax.swing.Icon
 
 class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.java, CngPatterns.CONFIG_ROOT) {
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.COCKPIT_NG_CONFIG
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.CockpitNG.CONFIG
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && hasNamespace(file)
         && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
-        && (module != null || ModuleUtil.projectContainsFile(file.project, file.viewProvider.virtualFile, false))
 
     private fun hasNamespace(file: XmlFile) = file.rootTag
         ?.attributes

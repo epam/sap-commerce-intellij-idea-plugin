@@ -82,7 +82,7 @@ fun Panel.ccv2ServiceReplicasRow(service: CCv2ServiceDto) {
 
 fun Panel.ccv2ServiceModifiedByRow(service: CCv2ServiceDto) {
     row {
-        icon(HybrisIcons.CCV2_SERVICE_MODIFIED_BY)
+        icon(HybrisIcons.CCv2.Service.MODIFIED_BY)
             .gap(RightGap.SMALL)
         label(service.modifiedBy)
             .comment("Modified by")

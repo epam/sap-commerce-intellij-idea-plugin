@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,7 +28,7 @@ import javax.swing.Icon
 
 class YFacetType : FacetType<YFacet, YFacetConfiguration>(HybrisConstants.Y_FACET_TYPE_ID, FACET_ID, FACET_NAME) {
 
-    override fun getIcon(): Icon = HybrisIcons.Y_FACET
+    override fun getIcon(): Icon = HybrisIcons.Y.FACET
     override fun isSuitableModuleType(type: ModuleType<*>?) = type is JavaModuleType
     override fun createDefaultConfiguration() = YFacetConfiguration()
 

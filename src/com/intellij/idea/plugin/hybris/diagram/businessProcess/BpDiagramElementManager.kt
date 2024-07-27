@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -59,18 +59,18 @@ class BpDiagramElementManager : AbstractDiagramElementManager<BpGraphNode>() {
 
     override fun getItemIcon(nodeElement: BpGraphNode?, nodeItem: Any?, builder: DiagramBuilder?) = when (nodeItem) {
         is BpGraphFieldContextParameter -> when (nodeItem.use) {
-            ParameterUse.REQUIRED -> HybrisIcons.BP_DIAGRAM_PARAMETER_REQUIRED
-            else -> HybrisIcons.BP_DIAGRAM_PARAMETER_OPTIONAL
+            ParameterUse.REQUIRED -> HybrisIcons.BusinessProcess.Diagram.PARAMETER_REQUIRED
+            else -> HybrisIcons.BusinessProcess.Diagram.PARAMETER_OPTIONAL
         }
 
         is BpGraphField -> when (nodeItem.name) {
-            Action.BEAN -> HybrisIcons.BP_DIAGRAM_SPRING_BEAN
-            Action.NODE -> HybrisIcons.BP_DIAGRAM_NODE
-            Action.NODE_GROUP -> HybrisIcons.BP_DIAGRAM_NODE
-            Action.CAN_JOIN_PREVIOUS_NODE -> HybrisIcons.BP_DIAGRAM_FIELD
-            Process.DEFAULT_NODE_GROUP -> HybrisIcons.BP_DIAGRAM_NODE
-            Process.PROCESS_CLASS -> HybrisIcons.BP_DIAGRAM_CLASS
-            else -> HybrisIcons.BP_DIAGRAM_PROPERTY
+            Action.BEAN -> HybrisIcons.BusinessProcess.Diagram.SPRING_BEAN
+            Action.NODE -> HybrisIcons.BusinessProcess.Diagram.NODE
+            Action.NODE_GROUP -> HybrisIcons.BusinessProcess.Diagram.NODE
+            Action.CAN_JOIN_PREVIOUS_NODE -> HybrisIcons.BusinessProcess.Diagram.FIELD
+            Process.DEFAULT_NODE_GROUP -> HybrisIcons.BusinessProcess.Diagram.NODE
+            Process.PROCESS_CLASS -> HybrisIcons.BusinessProcess.Diagram.CLASS
+            else -> HybrisIcons.BusinessProcess.Diagram.PROPERTY
         }
 
         else -> null

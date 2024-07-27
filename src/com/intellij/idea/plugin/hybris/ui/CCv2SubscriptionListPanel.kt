@@ -55,7 +55,7 @@ class CCv2SubscriptionListPanel(initialList: List<CCv2SubscriptionDto>) : AddEdi
                 override fun getListCellRendererComponent(list: JList<*>, value: Any, index: Int, isSelected: Boolean, cellHasFocus: Boolean): Component {
                     val comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus)
                     (comp as JComponent).border = JBEmptyBorder(5)
-                    icon = HybrisIcons.MODULE_CCV2
+                    icon = HybrisIcons.Module.CCV2
 
                     return comp
                 }

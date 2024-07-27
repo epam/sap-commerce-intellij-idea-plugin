@@ -79,12 +79,12 @@ class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
                 ?.allFields
                 ?.find { it.name.equals(element.text, true) }
                 ?.let { arrayOf(it) }
-                ?.let { inlayPresentation(HybrisIcons.BS_ENUM_VALUE, it, "Navigate to the Generated Enum Value") }
+                ?.let { inlayPresentation(HybrisIcons.BeanSystem.ENUM_VALUE, it, "Navigate to the Generated Enum Value") }
                 ?: unknown
 
             parent.localName == Beans.ENUM && attribute?.name == Bean.CLASS -> finEnumClass(project, element.text)
                 ?.let { arrayOf(it) }
-                ?.let { inlayPresentation(HybrisIcons.BS_ENUM, it) }
+                ?.let { inlayPresentation(HybrisIcons.BeanSystem.ENUM, it) }
                 ?: unknown
 
             parent.localName == Beans.BEAN && attribute?.name == Bean.CLASS -> findItemClass(project, element.text)
@@ -93,7 +93,7 @@ class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
                     val icon = BSMetaModelAccess.getInstance(project).findMetaBeanByName(element.text)
                         ?.metaType
                         ?.icon
-                        ?: HybrisIcons.BS_BEAN
+                        ?: HybrisIcons.BeanSystem.BEAN
                     inlayPresentation(icon, it)
                 }
                 ?: unknown
@@ -105,7 +105,7 @@ class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
                 ?.allFields
                 ?.find { it.name == parent.getAttributeValue(Property.NAME) }
                 ?.let { arrayOf(it) }
-                ?.let { inlayPresentation(HybrisIcons.BS_PROPERTY, it, "Navigate to the Generated Bean Property") }
+                ?.let { inlayPresentation(HybrisIcons.BeanSystem.PROPERTY, it, "Navigate to the Generated Bean Property") }
                 ?: unknown
 
             else -> null

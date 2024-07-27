@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -62,12 +62,12 @@ class BSStructureTreeElement(
     }
 
     override fun getIcon(open: Boolean) = when (element) {
-        is Enum -> HybrisIcons.BS_ENUM
-        is Bean -> HybrisIcons.BS_BEAN
-        is Annotations -> HybrisIcons.TS_ANNOTATION
-        is Import -> HybrisIcons.TS_IMPORT
-        is EnumValue -> HybrisIcons.BS_ENUM_VALUE
-        is Property -> HybrisIcons.BS_PROPERTY
+        is Enum -> HybrisIcons.BeanSystem.ENUM
+        is Bean -> HybrisIcons.BeanSystem.BEAN
+        is Annotations -> HybrisIcons.BeanSystem.ANNOTATION
+        is Import -> HybrisIcons.BeanSystem.IMPORT
+        is EnumValue -> HybrisIcons.BeanSystem.ENUM_VALUE
+        is Property -> HybrisIcons.BeanSystem.PROPERTY
         else -> null
     }
 

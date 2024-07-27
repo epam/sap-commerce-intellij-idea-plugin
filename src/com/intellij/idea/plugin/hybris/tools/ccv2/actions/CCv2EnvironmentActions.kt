@@ -42,7 +42,7 @@ import com.intellij.openapi.wm.ToolWindowManager
 class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction<CCv2EnvironmentDto>(
     tab = CCv2Tab.ENVIRONMENTS,
     text = "Fetch Environments",
-    icon = HybrisIcons.CCV2_FETCH,
+    icon = HybrisIcons.CCv2.Actions.FETCH,
     fetch = { project, subscriptions, onStartCallback, onCompleteCallback ->
         CCv2Service.getInstance(project).fetchEnvironments(subscriptions, onStartCallback, onCompleteCallback)
     }
@@ -53,7 +53,7 @@ class CCv2FetchEnvironmentAction(
     private val environment: CCv2EnvironmentDto,
     private val onStartCallback: () -> Unit,
     private val onCompleteCallback: (CCv2EnvironmentDto) -> Unit
-) : DumbAwareAction("Fetch Environment", null, HybrisIcons.CCV2_FETCH) {
+) : DumbAwareAction("Fetch Environment", null, HybrisIcons.CCv2.Actions.FETCH) {
 
     private var fetching = false
 
@@ -105,7 +105,7 @@ class CCv2FetchEnvironmentServiceAction(
     private val service: CCv2ServiceDto,
     private val onStartCallback: () -> Unit,
     private val onCompleteCallback: (CCv2ServiceDto) -> Unit
-) : DumbAwareAction("Fetch Service", null, HybrisIcons.CCV2_FETCH) {
+) : DumbAwareAction("Fetch Service", null, HybrisIcons.CCv2.Actions.FETCH) {
 
     private var fetching = false
 
@@ -154,7 +154,7 @@ class CCv2FetchEnvironmentServiceAction(
 class CCv2ShowEnvironmentDetailsAction(
     private val subscription: CCv2Subscription,
     private val environment: CCv2EnvironmentDto
-) : DumbAwareAction("Show Environment Details", null, HybrisIcons.CCV2_ENVIRONMENT_DETAILS) {
+) : DumbAwareAction("Show Environment Details", null, HybrisIcons.CCv2.Environment.Actions.SHOW_DETAILS) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
@@ -169,7 +169,7 @@ class CCv2ShowEnvironmentDetailsAction(
             .also {
                 it.isCloseable = true
                 it.isPinnable = true
-                it.icon = HybrisIcons.CCV2_ENVIRONMENT_DETAILS
+                it.icon = HybrisIcons.CCv2.Environment.Actions.SHOW_DETAILS
                 it.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
             }
 

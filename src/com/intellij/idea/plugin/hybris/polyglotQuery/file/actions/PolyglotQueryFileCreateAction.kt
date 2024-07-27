@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,12 +29,12 @@ import com.intellij.psi.PsiDirectory
 class PolyglotQueryFileCreateAction : CreateFileFromTemplateAction(
     NEW_FILE,
     "Create new Polyglot Query file",
-    HybrisIcons.PGQ_FILE
+    HybrisIcons.PolyglotQuery.FILE
 ), DumbAware {
 
     override fun buildDialog(project: Project, directory: PsiDirectory, builder: CreateFileFromTemplateDialog.Builder) {
         builder.setTitle(NEW_FILE)
-            .addKind("Empty file", HybrisIcons.PGQ_FILE, FILE_TEMPLATE)
+            .addKind("Empty file", HybrisIcons.PolyglotQuery.FILE, FILE_TEMPLATE)
     }
 
     override fun getActionName(directory: PsiDirectory?, newName: String, templateName: String?) = NEW_FILE

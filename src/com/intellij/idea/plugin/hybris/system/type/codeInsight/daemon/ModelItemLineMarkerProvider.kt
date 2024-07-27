@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,7 +31,7 @@ import javax.swing.Icon
 class ModelItemLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass>() {
 
     override fun getName() = message("hybris.editor.gutter.ts.model.item.name")
-    override fun getIcon(): Icon = HybrisIcons.TS_ITEM
+    override fun getIcon(): Icon = HybrisIcons.TypeSystem.ITEM
     override fun canProcess(psi: PsiClass) = TSUtils.isItemModelFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiClass)
         ?.takeIf { it.nameIdentifier != null }

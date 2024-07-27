@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,8 +37,8 @@ class TSMetaRelationElementNode(parent: TSMetaRelationNode, meta: TSMetaRelation
             (meta.qualifier?.let { " as ${meta.qualifier}" } ?: "")
 
         when (meta.end) {
-            TSMetaRelation.RelationEnd.SOURCE -> presentation.setIcon(HybrisIcons.TS_RELATION_SOURCE)
-            TSMetaRelation.RelationEnd.TARGET -> presentation.setIcon(HybrisIcons.TS_RELATION_TARGET)
+            TSMetaRelation.RelationEnd.SOURCE -> presentation.setIcon(HybrisIcons.TypeSystem.RELATION_SOURCE)
+            TSMetaRelation.RelationEnd.TARGET -> presentation.setIcon(HybrisIcons.TypeSystem.RELATION_TARGET)
         }
 
     }

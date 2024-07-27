@@ -38,7 +38,7 @@ import javax.swing.Icon
 class ItemsXmlItemSiblingsLineMarkerProvider : AbstractItemsXmlLineMarkerProvider<XmlAttributeValue>() {
 
     override fun getName() = message("hybris.editor.gutter.ts.items.item.siblings.name")
-    override fun getIcon(): Icon = HybrisIcons.TS_SIBLING
+    override fun getIcon(): Icon = HybrisIcons.TypeSystem.SIBLING
     override fun tryCast(psi: PsiElement) = (psi as? XmlAttributeValue)
         ?.takeIf {
             val attribute = psi.parent as? XmlAttribute ?: return@takeIf false

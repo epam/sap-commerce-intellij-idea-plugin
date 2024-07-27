@@ -142,20 +142,20 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
     }
 
     override fun getElementIcon(item: ModuleDescriptor?) = when {
-        item == null -> HybrisIcons.Y_LOGO_BLUE
-        isInConflict(item) -> HybrisIcons.CANCEL
-        item is YCustomRegularModuleDescriptor -> HybrisIcons.EXTENSION_CUSTOM
-        item is ConfigModuleDescriptor -> HybrisIcons.EXTENSION_CONFIG
-        item is PlatformModuleDescriptor -> HybrisIcons.EXTENSION_PLATFORM
-        item is YPlatformExtModuleDescriptor -> HybrisIcons.EXTENSION_EXT
-        item is YOotbRegularModuleDescriptor -> HybrisIcons.EXTENSION_OOTB
-        item is YWebSubModuleDescriptor -> HybrisIcons.EXTENSION_WEB
-        item is YCommonWebSubModuleDescriptor -> HybrisIcons.EXTENSION_COMMON_WEB
-        item is YAcceleratorAddonSubModuleDescriptor -> HybrisIcons.EXTENSION_ADDON
-        item is YBackofficeSubModuleDescriptor -> HybrisIcons.EXTENSION_BACKOFFICE
-        item is YHacSubModuleDescriptor -> HybrisIcons.EXTENSION_HAC
-        item is YHmcSubModuleDescriptor -> HybrisIcons.EXTENSION_HMC
-        else -> HybrisIcons.Y_LOGO_BLUE
+        item == null -> HybrisIcons.Y.LOGO_BLUE
+        isInConflict(item) -> HybrisIcons.Extension.CONFLICT
+        item is YCustomRegularModuleDescriptor -> HybrisIcons.Extension.CUSTOM
+        item is ConfigModuleDescriptor -> HybrisIcons.Extension.CONFIG
+        item is PlatformModuleDescriptor -> HybrisIcons.Extension.PLATFORM
+        item is YPlatformExtModuleDescriptor -> HybrisIcons.Extension.EXT
+        item is YOotbRegularModuleDescriptor -> HybrisIcons.Extension.OOTB
+        item is YWebSubModuleDescriptor -> HybrisIcons.Extension.WEB
+        item is YCommonWebSubModuleDescriptor -> HybrisIcons.Extension.COMMON_WEB
+        item is YAcceleratorAddonSubModuleDescriptor -> HybrisIcons.Extension.ADDON
+        item is YBackofficeSubModuleDescriptor -> HybrisIcons.Extension.BACKOFFICE
+        item is YHacSubModuleDescriptor -> HybrisIcons.Extension.HAC
+        item is YHmcSubModuleDescriptor -> HybrisIcons.Extension.HMC
+        else -> HybrisIcons.Y.LOGO_BLUE
     }
 
     private fun isMandatoryOrPreselected(descriptor: ModuleDescriptor) = descriptor.importStatus === ModuleDescriptorImportStatus.MANDATORY

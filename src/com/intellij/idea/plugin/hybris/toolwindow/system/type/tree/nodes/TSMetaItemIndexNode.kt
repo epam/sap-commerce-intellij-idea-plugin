@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,13 +32,13 @@ class TSMetaItemIndexNode(val parent: TSMetaItemNode, meta: TSMetaItemIndex) : T
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.locationString = meta.keys.joinToString()
 
-        presentation.setIcon(HybrisIcons.TS_INDEX)
+        presentation.setIcon(HybrisIcons.TypeSystem.INDEX)
         if (meta.isUnique) {
-            presentation.setIcon(HybrisIcons.TS_INDEX_UNIQUE)
+            presentation.setIcon(HybrisIcons.TypeSystem.INDEX_UNIQUE)
         } else if (meta.isReplace) {
-            presentation.setIcon(HybrisIcons.TS_INDEX_REPLACE)
+            presentation.setIcon(HybrisIcons.TypeSystem.INDEX_REPLACE)
         } else if (meta.isRemove) {
-            presentation.setIcon(HybrisIcons.TS_INDEX_REMOVE)
+            presentation.setIcon(HybrisIcons.TypeSystem.INDEX_REMOVE)
         }
 
     }

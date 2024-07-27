@@ -70,7 +70,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                 }
                 indent {
                     row {
-                        icon(HybrisIcons.EXTENSION_OOTB)
+                        icon(HybrisIcons.Extension.OOTB)
                         textField()
                             .label(message("hybris.import.settings.group.hybris"))
                             .bindText(state::groupHybris)
@@ -79,7 +79,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                             .bindText(state::groupOtherHybris)
                     }.layout(RowLayout.PARENT_GRID)
                     row {
-                        icon(HybrisIcons.EXTENSION_CUSTOM)
+                        icon(HybrisIcons.Extension.CUSTOM)
                         textField()
                             .label(message("hybris.import.settings.group.custom"))
                             .bindText(state::groupCustom)
@@ -88,7 +88,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                             .bindText(state::groupOtherCustom)
                     }.layout(RowLayout.PARENT_GRID)
                     row {
-                        icon(HybrisIcons.EXTENSION_PLATFORM)
+                        icon(HybrisIcons.Extension.PLATFORM)
                         textField()
                             .label(message("hybris.import.settings.group.platform"))
                             .bindText(state::groupPlatform)
@@ -97,7 +97,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                             .bindText(state::groupNonHybris)
                     }.layout(RowLayout.PARENT_GRID)
                     row {
-                        icon(HybrisIcons.MODULE_CCV2_GROUP)
+                        icon(HybrisIcons.Module.CCV2_GROUP)
                         textField()
                             .label(message("hybris.import.settings.group.ccv2"))
                             .bindText(state::groupCCv2)
@@ -112,7 +112,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                 }
                 indent {
                     row {
-                        icon(HybrisIcons.MODULE_EXTERNAL_GROUP)
+                        icon(HybrisIcons.Module.EXTERNAL_GROUP)
                         textField()
                             .label("External modules:")
                             .bindText(state::groupNameExternalModules)

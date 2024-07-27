@@ -40,9 +40,9 @@ class Notifications private constructor(type: NotificationType, title: String, c
         .setIcon(
             when (type) {
                 NotificationType.WARNING,
-                NotificationType.ERROR -> HybrisIcons.Y_LOGO_ORANGE
+                NotificationType.ERROR -> HybrisIcons.Y.LOGO_ORANGE
 
-                else -> HybrisIcons.Y_LOGO_BLUE
+                else -> HybrisIcons.Y.LOGO_BLUE
             }
         )
 

@@ -28,6 +28,6 @@ object PolyglotQueryFileType : LanguageFileType(PolyglotQueryLanguage) {
     override fun getName() = "Polyglot Query File"
     override fun getDescription() = "Polyglot Query language file"
     override fun getDefaultExtension() = "pgq"
-    override fun getIcon(): Icon = HybrisIcons.PGQ_FILE
+    override fun getIcon(): Icon = HybrisIcons.PolyglotQuery.FILE
 
 }

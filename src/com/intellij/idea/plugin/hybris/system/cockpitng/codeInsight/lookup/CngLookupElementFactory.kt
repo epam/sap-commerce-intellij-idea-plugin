@@ -31,15 +31,15 @@ object CngLookupElementFactory {
 
     fun build(meta: CngMetaWidgetDefinition, lookupString: String) = LookupElementBuilder.create(lookupString)
         .withTailText(meta.name?.let { name -> " $name" }, true)
-        .withIcon(HybrisIcons.COCKPIT_NG_WIDGET_DEFINITION)
+        .withIcon(HybrisIcons.CockpitNG.WIDGET_DEFINITION)
 
     fun build(meta: CngMetaEditorDefinition, lookupString: String) = LookupElementBuilder.create(lookupString)
         .withTailText(meta.name?.let { name -> " $name" }, true)
-        .withIcon(HybrisIcons.COCKPIT_NG_EDITOR_DEFINITION)
+        .withIcon(HybrisIcons.CockpitNG.EDITOR_DEFINITION)
 
     fun build(meta: CngMetaActionDefinition) = LookupElementBuilder.create(meta.id)
         .withTailText(meta.name?.let { name -> " $name" }, true)
-        .withIcon(HybrisIcons.COCKPIT_NG_ACTION_DEFINITION)
+        .withIcon(HybrisIcons.CockpitNG.ACTION_DEFINITION)
 
     fun build(meta: CngMetaWidgetSetting) = LookupElementBuilder.create(meta.id)
         .withTypeText(meta.defaultValue?.let { defaultValue -> " $defaultValue" }, true)
@@ -47,7 +47,7 @@ object CngLookupElementFactory {
 
     fun build(meta: CngMetaWidget) = LookupElementBuilder.create(meta.id)
         .withTailText(meta.name?.let { name -> " $name" }, true)
-        .withIcon(HybrisIcons.COCKPIT_NG_WIDGET)
+        .withIcon(HybrisIcons.CockpitNG.WIDGET)
 
     fun buildInitializeProperty(tag: XmlTag) = tag.getAttributeValue("property")
         ?.let { LookupElementBuilder.create(it) }
@@ -57,10 +57,10 @@ object CngLookupElementFactory {
                 ?: tag.getAttributeValue("template-bean"),
             true
         )
-        ?.withIcon(HybrisIcons.COCKPIT_NG_INITIALIZE_PROPERTY)
+        ?.withIcon(HybrisIcons.CockpitNG.INITIALIZE_PROPERTY)
 
     fun buildInitializeProperty(property: String) = LookupElementBuilder.create(property)
-        .withIcon(HybrisIcons.COCKPIT_NG_INITIALIZE_PROPERTY)
+        .withIcon(HybrisIcons.CockpitNG.INITIALIZE_PROPERTY)
 
     fun buildWrappingType(lookupString: String, presentableText: String, tailText: String? = null) = PrioritizedLookupElement.withGrouping(
         PrioritizedLookupElement.withPriority(
@@ -68,7 +68,7 @@ object CngLookupElementFactory {
                 .withPresentableText(presentableText)
                 .withTailText(tailText?.let { " ($it)" }, true)
                 .withTypeText(lookupString, true)
-                .withIcon(HybrisIcons.TYPE_OBJECT)
+                .withIcon(HybrisIcons.Types.OBJECT)
                 .withInsertHandler(
                     object : AutoPopupInsertHandler() {
                         override fun handle(context: InsertionContext, item: LookupElement) {

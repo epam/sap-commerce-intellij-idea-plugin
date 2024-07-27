@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,7 +38,7 @@ import javax.swing.Icon
 
 abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerProvider<XmlAttributeValue>() {
 
-    override fun getIcon(): Icon = HybrisIcons.Y_LOGO_BLUE
+    override fun getIcon(): Icon = HybrisIcons.Y.LOGO_BLUE
     override fun tryCast(psi: PsiElement) = psi as? XmlAttributeValue
     abstract fun getParentTagName(): String
     abstract fun getTooltipText(): String
@@ -60,11 +60,11 @@ abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerPro
         val marker = NavigationGutterIconBuilder
             .create(
                 when (descriptor.type) {
-                    ModuleDescriptorType.CCV2 -> HybrisIcons.EXTENSION_CLOUD
-                    ModuleDescriptorType.CUSTOM -> HybrisIcons.EXTENSION_CUSTOM
-                    ModuleDescriptorType.EXT -> HybrisIcons.EXTENSION_EXT
-                    ModuleDescriptorType.OOTB -> HybrisIcons.EXTENSION_OOTB
-                    ModuleDescriptorType.PLATFORM -> HybrisIcons.EXTENSION_PLATFORM
+                    ModuleDescriptorType.CCV2 -> HybrisIcons.Extension.CLOUD
+                    ModuleDescriptorType.CUSTOM -> HybrisIcons.Extension.CUSTOM
+                    ModuleDescriptorType.EXT -> HybrisIcons.Extension.EXT
+                    ModuleDescriptorType.OOTB -> HybrisIcons.Extension.OOTB
+                    ModuleDescriptorType.PLATFORM -> HybrisIcons.Extension.PLATFORM
                     else -> icon
                 }
             )

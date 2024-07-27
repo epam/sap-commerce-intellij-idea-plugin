@@ -98,7 +98,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2DeploymentDto>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.CCV2_DEPLOYMENT_CREATED_BY)
+                    icon(HybrisIcons.CCv2.Deployment.CREATED_BY)
                         .gap(RightGap.SMALL)
                     label(deployment.createdBy)
                         .comment("Created by")

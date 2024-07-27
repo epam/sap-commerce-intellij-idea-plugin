@@ -31,7 +31,7 @@ import com.intellij.openapi.project.DumbAware
 class ImpexCopyFileAction : AnAction(
     "Copy to ImpEx Console",
     "Copy ImpEx file to SAP Commerce console",
-    HybrisIcons.CONSOLE_OPEN
+    HybrisIcons.Console.Actions.OPEN
 ), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

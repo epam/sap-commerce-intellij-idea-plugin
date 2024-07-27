@@ -42,6 +42,6 @@ class ShowBPDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
         if (DomManager.getDomManager(xmlFile.project).getFileElement(xmlFile, Process::class.java) == null) return null
 
         val action = ActionManager.getInstance().getAction("ShowBusinessProcessDiagram") ?: return null
-        return Info(HybrisIcons.DIAGRAM, arrayOf(action)) { action.templateText }
+        return Info(HybrisIcons.Actions.SHOW_DIAGRAM, arrayOf(action)) { action.templateText }
     }
 }

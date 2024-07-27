@@ -28,7 +28,7 @@ import com.intellij.util.asSafely
 class ExpandAllDiagramAction : DiagramAction(
     ActionsBundle.message("action.ExpandAll.text"),
     null,
-    HybrisIcons.ACTION_EXPAND_ALL
+    HybrisIcons.Actions.EXPAND_ALL
 ) {
 
     override fun perform(event: AnActionEvent) {

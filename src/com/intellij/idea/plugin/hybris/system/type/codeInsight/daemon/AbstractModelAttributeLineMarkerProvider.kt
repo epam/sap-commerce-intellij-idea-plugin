@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -36,7 +36,7 @@ import javax.swing.Icon
 
 abstract class AbstractModelAttributeLineMarkerProvider<T : PsiElement> : AbstractHybrisClassLineMarkerProvider<T>() {
 
-    override fun getIcon(): Icon = HybrisIcons.TYPE_SYSTEM
+    override fun getIcon(): Icon = HybrisIcons.TypeSystem.FILE
     override fun canProcess(psi: PsiClass) = TSUtils.isItemModelFile(psi)
 
     override fun collectDeclarations(psi: T) = TSMetaModelAccess.getInstance(psi.project).findMetaItemByName(TSUtils.cleanItemModelSearchName((psi.parent as PsiClass).name))
@@ -50,13 +50,13 @@ abstract class AbstractModelAttributeLineMarkerProvider<T : PsiElement> : Abstra
     ) = with(getAttributeElements(meta, name)) {
         if (this == null) {
             val groupedRelElements = getRelations(meta, name)
-            return@with getRelationMarkers(groupedRelElements, RelationEnd.SOURCE, HybrisIcons.TS_RELATION_SOURCE, nameIdentifier)
-                ?: getRelationMarkers(groupedRelElements, RelationEnd.TARGET, HybrisIcons.TS_RELATION_TARGET, nameIdentifier)
+            return@with getRelationMarkers(groupedRelElements, RelationEnd.SOURCE, HybrisIcons.TypeSystem.RELATION_SOURCE, nameIdentifier)
+                ?: getRelationMarkers(groupedRelElements, RelationEnd.TARGET, HybrisIcons.TypeSystem.RELATION_TARGET, nameIdentifier)
         } else {
             return@with createTargetsWithGutterIcon(
                 nameIdentifier,
                 this,
-                HybrisIcons.TS_ATTRIBUTE,
+                HybrisIcons.TypeSystem.ATTRIBUTE,
                 message("hybris.editor.gutter.ts.model.item.attribute.popup.title"),
                 message("hybris.editor.gutter.ts.model.item.attribute.tooltip.text")
             )

@@ -1,10 +1,11 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -27,7 +28,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 
-class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_IMPEX_FILE, "", HybrisIcons.IMPEX_FILE), DumbAware {
+class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_IMPEX_FILE, "", HybrisIcons.ImpEx.FILE), DumbAware {
 
     override fun buildDialog(
         project: Project,
@@ -35,7 +36,7 @@ class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_IMPEX_FILE, "", H
         builder: CreateFileFromTemplateDialog.Builder
     ) {
         builder.setTitle(NEW_IMPEX_FILE)
-            .addKind("Empty file", HybrisIcons.IMPEX_FILE, FILE_TEMPLATE)
+            .addKind("Empty file", HybrisIcons.ImpEx.FILE, FILE_TEMPLATE)
     }
 
     override fun postProcess(createdElement: PsiFile, templateName: String, customProperties: Map<String, String>?) {

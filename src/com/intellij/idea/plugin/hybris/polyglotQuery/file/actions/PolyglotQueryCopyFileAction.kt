@@ -30,7 +30,7 @@ import com.intellij.openapi.project.DumbAware
 class PolyglotQueryCopyFileAction : AnAction(
     "Copy to Polyglot Query Console",
     "Copy Polyglot Query file to SAP Commerce console",
-    HybrisIcons.CONSOLE_OPEN
+    HybrisIcons.Console.Actions.OPEN
 ), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
