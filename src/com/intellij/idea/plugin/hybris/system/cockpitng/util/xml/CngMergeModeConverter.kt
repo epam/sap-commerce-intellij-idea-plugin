@@ -29,6 +29,6 @@ class CngMergeModeConverter : ResolvingConverter<String>() {
 
     override fun fromString(s: String?, context: ConvertContext) = s?.uppercase(Locale.ROOT)
 
-    override fun getVariants(context: ConvertContext) = CngUtils.getValidMergeModes()
+    override fun getVariants(context: ConvertContext) = CngUtils.mergeModes
 
 }

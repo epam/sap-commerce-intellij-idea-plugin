@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,11 +22,8 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.collectionBrowser;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.idea.plugin.hybris.system.cockpitng.util.xml.CngMoldConverter;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -35,29 +32,34 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface MoldList extends DomElement {
 
-	/**
-	 * Returns the value of the default-mold child.
-	 * @return the value of the default-mold child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("default-mold")
-	GenericAttributeValue<String> getDefaultMold();
+    /**
+     * Returns the value of the default-mold child.
+     *
+     * @return the value of the default-mold child.
+     */
+    @NotNull
+    @Attribute("default-mold")
+    @Convert(CngMoldConverter.class)
+    GenericAttributeValue<String> getDefaultMold();
 
 
-	/**
-	 * Returns the list of mold children.
-	 * @return the list of mold children.
-	 */
-	@NotNull
-	@SubTagList ("mold")
-	@Required
-	java.util.List<Mold> getMolds();
-	/**
-	 * Adds new child to the list of mold children.
-	 * @return created child
-	 */
-	@SubTagList ("mold")
-	Mold addMold();
+    /**
+     * Returns the list of mold children.
+     *
+     * @return the list of mold children.
+     */
+    @NotNull
+    @SubTagList("mold")
+    @Required
+    java.util.List<Mold> getMolds();
+
+    /**
+     * Adds new child to the list of mold children.
+     *
+     * @return created child
+     */
+    @SubTagList("mold")
+    Mold addMold();
 
 
 }

@@ -28,5 +28,5 @@ class CngOperatorConverter : ResolvingConverter<String>() {
 
     override fun fromString(s: String?, context: ConvertContext) = s
 
-    override fun getVariants(context: ConvertContext) = CngUtils.getOperatorValues()
+    override fun getVariants(context: ConvertContext) = CngUtils.operatorValues
 }

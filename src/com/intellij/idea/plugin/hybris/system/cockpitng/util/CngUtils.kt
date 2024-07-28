@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,7 +28,7 @@ import com.intellij.util.xml.DomManager
 
 object CngUtils {
 
-    private val operatorValues = setOf(
+    val operatorValues = setOf(
         "equals",
         "unequal",
         "startsWith",
@@ -50,7 +50,9 @@ object CngUtils {
         "and",
         "match",
     )
-    private val mergeModes = MergeMode.entries.map { it.value }
+    val mergeModes by lazy {
+        MergeMode.entries.map { it.value }
+    }
 
     fun isConfigFile(file: XmlFile) = DomManager.getDomManager(file.project).getFileElement(file, Config::class.java) != null
 
@@ -60,7 +62,4 @@ object CngUtils {
         // exclude itself
         .filter { Context.MERGE_BY != it }
 
-    fun getValidMergeModes() = mergeModes
-
-    fun getOperatorValues() = operatorValues
 }

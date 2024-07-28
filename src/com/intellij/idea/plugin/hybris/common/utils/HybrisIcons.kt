@@ -175,6 +175,13 @@ object HybrisIcons {
         val ACTION_DEFINITION = getIcon("/icons/cockpitNG/actionDefinition.svg")
         val EDITOR_DEFINITION = getIcon("/icons/cockpitNG/editorDefinition.svg")
         val INITIALIZE_PROPERTY = AllIcons.Nodes.PropertyWrite
+
+        object Molds {
+            val NULL = AllIcons.Nodes.AnonymousClass
+            val LIST = AllIcons.Actions.ListFiles
+            val TREE = AllIcons.Actions.ShowAsTree
+            val GRID = AllIcons.Graph.Grid
+        }
     }
 
     object TypeSystem {
