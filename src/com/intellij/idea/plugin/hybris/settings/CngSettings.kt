@@ -29,4 +29,5 @@ data class CngFoldingSettings(
     var tablifySearchFields: Boolean = true,
     var tablifyListColumns: Boolean = true,
     var tablifyParameters: Boolean = true,
+    var tablifyMolds: Boolean = true,
 ): FoldingSettings

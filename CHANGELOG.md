@@ -10,6 +10,7 @@
 - Added `Spring EL` language injection into the body of the `y:shortLabel` tag [#1168](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1168)
 - Added code completion for `cb:available-molds`:`default-mold` [#1175](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1175)
 - Added code completion and reference resolution for `cb:mold`:`class` [#1176](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1176)
+- Added code folding for `cb:available-molds`:`cb:mold` [#1177](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1177)
 
 ### `Type System` enhancements
 - Improved resolution and navigation from Java to `items.xml` [#1162](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1162)

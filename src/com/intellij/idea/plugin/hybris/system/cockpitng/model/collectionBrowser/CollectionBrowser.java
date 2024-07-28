@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,10 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.collectionBrowser;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,22 +31,27 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface CollectionBrowser extends DomElement {
 
-	/**
-	 * Returns the value of the enable-multi-select child.
-	 * @return the value of the enable-multi-select child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("enable-multi-select")
-	GenericAttributeValue<Boolean> getEnableMultiSelect();
+    String AVAILABLE_MOLDS = "available-molds";
+    String ENABLE_MULTI_SELECT = "enable-multi-select";
+
+    /**
+     * Returns the value of the enable-multi-select child.
+     *
+     * @return the value of the enable-multi-select child.
+     */
+    @NotNull
+    @Attribute(ENABLE_MULTI_SELECT)
+    GenericAttributeValue<Boolean> getEnableMultiSelect();
 
 
-	/**
-	 * Returns the value of the available-molds child.
-	 * @return the value of the available-molds child.
-	 */
-	@NotNull
-	@SubTag ("available-molds")
-	MoldList getAvailableMolds();
+    /**
+     * Returns the value of the available-molds child.
+     *
+     * @return the value of the available-molds child.
+     */
+    @NotNull
+    @SubTag(AVAILABLE_MOLDS)
+    MoldList getAvailableMolds();
 
 
 }

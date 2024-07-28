@@ -33,33 +33,40 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Mold extends DomElement {
 
-	/**
-	 * Returns the value of the class child.
-	 * @return the value of the class child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("class")
-	@Convert(CngMoldClassConverter.class)
-	GenericAttributeValue<String> getClazz();
+    String CLASS = "class";
+    String SPRING_BEAN = "spring-bean";
+    String ENABLE_MULTI_SELECT = "enable-multi-select";
+
+    /**
+     * Returns the value of the class child.
+     *
+     * @return the value of the class child.
+     */
+    @NotNull
+    @Attribute(CLASS)
+    @Convert(CngMoldClassConverter.class)
+    GenericAttributeValue<String> getClazz();
 
 
-	/**
-	 * Returns the value of the spring-bean child.
-	 * @return the value of the spring-bean child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("spring-bean")
-	@Referencing(SpringBeanReferenceConverter.class)
-	GenericAttributeValue<String> getSpringBean();
+    /**
+     * Returns the value of the spring-bean child.
+     *
+     * @return the value of the spring-bean child.
+     */
+    @NotNull
+    @Attribute(SPRING_BEAN)
+    @Referencing(SpringBeanReferenceConverter.class)
+    GenericAttributeValue<String> getSpringBean();
 
 
-	/**
-	 * Returns the value of the enable-multi-select child.
-	 * @return the value of the enable-multi-select child.
-	 */
-	@NotNull
-	@com.intellij.util.xml.Attribute ("enable-multi-select")
-	GenericAttributeValue<Boolean> getEnableMultiSelect();
+    /**
+     * Returns the value of the enable-multi-select child.
+     *
+     * @return the value of the enable-multi-select child.
+     */
+    @NotNull
+    @Attribute(ENABLE_MULTI_SELECT)
+    GenericAttributeValue<Boolean> getEnableMultiSelect();
 
 
 }

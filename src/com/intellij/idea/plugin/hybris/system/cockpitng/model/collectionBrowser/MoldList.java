@@ -32,6 +32,8 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface MoldList extends DomElement {
 
+    String MOLD = "mold";
+
     /**
      * Returns the value of the default-mold child.
      *
@@ -49,7 +51,7 @@ public interface MoldList extends DomElement {
      * @return the list of mold children.
      */
     @NotNull
-    @SubTagList("mold")
+    @SubTagList(MOLD)
     @Required
     java.util.List<Mold> getMolds();
 
@@ -58,7 +60,7 @@ public interface MoldList extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("mold")
+    @SubTagList(MOLD)
     Mold addMold();
 
 

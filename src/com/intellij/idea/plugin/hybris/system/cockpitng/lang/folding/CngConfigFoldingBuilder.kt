@@ -22,6 +22,8 @@ import com.intellij.idea.plugin.hybris.settings.CngFoldingSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.Field
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.FieldList
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.collectionBrowser.Mold
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.collectionBrowser.MoldList
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Parameter
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor.Attribute
@@ -40,6 +42,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
+import java.util.*
 
 class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, Config>(Config::class.java), DumbAware {
 
@@ -47,6 +50,7 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
         when (it) {
             is XmlTag -> when (it.localName) {
                 FieldList.FIELD,
+                MoldList.MOLD,
                 Section.ATTRIBUTE,
                 ExplorerTree.TYPE_NODE,
                 ExplorerTree.NAVIGATION_NODE,
@@ -74,6 +78,23 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                 psi.getAttributeValue(AdditionalParam.VALUE)
                     ?.let { " = $it" }
                     ?: ""
+            )
+
+            MoldList.MOLD -> fold(
+                psi, MoldList.MOLD, Mold.SPRING_BEAN,
+                getCachedFoldingSettings(psi)?.tablifyMolds,
+                (psi.getAttributeValue(Mold.CLASS)
+                    ?.let { TYPE_SEPARATOR + it }
+                    ?: "") +
+                    computeExtraAttributes(
+                        psi.getAttributeValue(Mold.ENABLE_MULTI_SELECT)
+                            ?.lowercase(Locale.ROOT)
+                            ?.toBooleanStrictOrNull()
+                            ?.let {
+                                return@let if (it) "multi"
+                                else "single"
+                            }
+                    )
             )
 
             Parameter.TAG_NAME,
@@ -195,6 +216,7 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
     override fun isCollapsedByDefault(node: ASTNode) = when (val psi = node.psi) {
         is XmlTag -> when (psi.localName) {
             FieldList.FIELD,
+            MoldList.MOLD,
             Section.ATTRIBUTE,
             ExplorerTree.TYPE_NODE,
             ListView.COLUMN,
