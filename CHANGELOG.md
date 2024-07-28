@@ -6,7 +6,7 @@
 - Migrated `Remove Table` to coroutine with progress [#1170](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1170)
 - Migrated `Split Table` to coroutine with progress [#1171](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1171)
 - Re-enabled `odd` | `even` value lines coloring [#1178](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1178)
-- Cache value lines by header line [#1179](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1179)
+- Cache value lines by header line [#1180](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1180)
 
 ### `Cockpit NG` enhancements
 - Added `Spring EL` language injection into the body of the `y:shortLabel` tag [#1168](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1168)
