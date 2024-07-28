@@ -304,11 +304,6 @@ public final class ImpexPsiUtils {
         return PsiTreeUtil.getParentOfType(psiElementUnderCaret, ImpexFullHeaderParameter.class);
     }
 
-    @NotNull
-    public static List<ImpexValueGroup> getColumnForHeader(@NotNull final ImpexFullHeaderParameter headerParameter) {
-        return headerParameter.getValueGroups();
-    }
-
     @Nullable
     @Contract(pure = true)
     public static ImpexValueGroup getClosestSelectedValueGroupFromTheSameLine(@Nullable final PsiElement psiElementUnderCaret) {
