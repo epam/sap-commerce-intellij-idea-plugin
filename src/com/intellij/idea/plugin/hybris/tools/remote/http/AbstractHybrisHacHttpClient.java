@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,7 +37,6 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.message.BasicHttpResponse;
@@ -106,7 +105,7 @@ public abstract class AbstractHybrisHacHttpClient {
         if (sessionId == null) {
             return "Unable to obtain sessionId for " + hostHacURL;
         }
-        final var csrfToken = getCsrfToken(hostHacURL, sessionId, settings);
+        final var csrfToken = getCsrfToken(hostHacURL, settings);
         final var params = List.of(
             new BasicNameValuePair("j_username", settings.getUsername()),
             new BasicNameValuePair("j_password", settings.getPassword()),
@@ -157,7 +156,7 @@ public abstract class AbstractHybrisHacHttpClient {
         }
         cookies = cookiesPerSettings.get(settings);
         final var sessionId = cookies.get(COOKIE_JSESSIONID);
-        final var csrfToken = getCsrfToken(settings.getGeneratedURL(), sessionId, settings);
+        final var csrfToken = getCsrfToken(settings.getGeneratedURL(), settings);
         if (csrfToken == null) {
             cookiesPerSettings.remove(settings);
 
@@ -195,7 +194,7 @@ public abstract class AbstractHybrisHacHttpClient {
         final var statusCode = response.getStatusLine().getStatusCode();
         final var needsLogin = switch (statusCode) {
             case HttpStatus.SC_FORBIDDEN,
-                HttpStatus.SC_METHOD_NOT_ALLOWED -> true;
+                 HttpStatus.SC_METHOD_NOT_ALLOWED -> true;
             case HttpStatus.SC_MOVED_TEMPORARILY -> {
                 final var location = response.getFirstHeader("Location");
                 yield location != null && location.getValue().contains("login");
@@ -232,14 +231,14 @@ public abstract class AbstractHybrisHacHttpClient {
             .build();
 
         final HttpClientConnectionManager ccm = new BasicHttpClientConnectionManager(registry);
-        final HttpClientBuilder builder = HttpClients.custom();
-        builder.setConnectionManager(ccm);
         final RequestConfig config = RequestConfig.custom()
             .setSocketTimeout((int) timeout)
             .setConnectTimeout((int) timeout)
             .build();
-        builder.setDefaultRequestConfig(config);
-        return builder.build();
+        return HttpClients.custom()
+            .setConnectionManager(ccm)
+            .setDefaultRequestConfig(config)
+            .build();
     }
 
 
@@ -258,6 +257,7 @@ public abstract class AbstractHybrisHacHttpClient {
         cookies.putAll(res.cookies());
     }
 
+    @Nullable
     protected Response getResponseForUrl(
         final String hacURL,
         final @NotNull RemoteConnectionSettings settings
@@ -275,13 +275,14 @@ public abstract class AbstractHybrisHacHttpClient {
 
     protected String getCsrfToken(
         final @NotNull String hacURL,
-        final @NotNull String sessionId,
         final @NotNull RemoteConnectionSettings settings
     ) {
         try {
             final var sslProtocol = settings.getSslProtocol();
 
-            final Document doc = connect(hacURL, sslProtocol).cookie("JSESSIONID", sessionId).get();
+            final Document doc = connect(hacURL, sslProtocol)
+                .cookies(cookiesPerSettings.get(settings))
+                .get();
             final Elements csrfMetaElt = doc.select("meta[name=_csrf]");
             return csrfMetaElt.attr("content");
         } catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {

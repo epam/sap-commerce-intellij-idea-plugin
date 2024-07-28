@@ -42,8 +42,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 
-class HybrisConsoleExecuteActionHandler(private val project: Project,
-                                        private val preserveMarkup: Boolean) {
+class HybrisConsoleExecuteActionHandler(
+    private val project: Project,
+    private val preserveMarkup: Boolean
+) {
 
     private fun setEditorEnabled(console: HybrisConsole, enabled: Boolean) {
         console.consoleEditor.isRendererMode = !enabled
@@ -64,6 +66,7 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                                 console.clear()
                                 printSyntaxText(console, httpResult.output, ImpexFileType)
                             }
+
                             is HybrisSolrSearchConsole -> {
                                 console.clear()
 
@@ -76,6 +79,7 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
                                 }
 
                             }
+
                             else -> {
                                 printCurrentHost(console, RemoteConnectionType.Hybris)
 
@@ -94,7 +98,10 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
 
     private fun printCurrentHost(console: HybrisConsole, remoteConnectionType: RemoteConnectionType) {
         val activeConnectionSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, remoteConnectionType)
-        console.print("Host ${activeConnectionSettings.displayName?.let { "($it)" } ?: ""}: ${activeConnectionSettings.generatedURL}\n", LOG_INFO_OUTPUT)
+        console.print("[HOST] ", SYSTEM_OUTPUT)
+        activeConnectionSettings.displayName
+            ?.let { console.print("($it) ", LOG_INFO_OUTPUT) }
+        console.print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
 
     private fun printPlainText(console: HybrisConsole, httpResult: HybrisHttpResult?) {
@@ -135,8 +142,10 @@ class HybrisConsoleExecuteActionHandler(private val project: Project,
             ?.let { execute(activeConsole, it) }
     }
 
-    private fun execute(console: HybrisConsole,
-                        consoleHistoryController: ConsoleHistoryController) {
+    private fun execute(
+        console: HybrisConsole,
+        consoleHistoryController: ConsoleHistoryController
+    ) {
 
         // Process input and add to history
         val document = console.currentEditor.document

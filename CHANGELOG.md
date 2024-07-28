@@ -21,6 +21,7 @@
 - Enum values must be all uppercase [#1159](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1159), see [Java Enum Types](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)
 
 ### Fixes
+- Improved connection with remote `HAC` instances [#1182](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1182)
 - Class initialization must not depend on services [#1158](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1158), [#1160](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1160)
 - `What's New` is not shown when JCEF is not supported by the JDK [#1161](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1161)
 - Moved actions from `EDT` to `BGT` [#1166](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1166)
