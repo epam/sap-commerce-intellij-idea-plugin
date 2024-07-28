@@ -68,6 +68,9 @@ class ProjectCngSettingsConfigurableProvider(val project: Project) : Configurabl
                         checkBox("Parameters")
                             .bindSelected(settings.folding::tablifyParameters)
                             .enabledIf(foldingEnableCheckBox.selected)
+                        checkBox("Molds")
+                            .bindSelected(settings.folding::tablifyMolds)
+                            .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }
             }
