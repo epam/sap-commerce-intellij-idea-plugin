@@ -21,12 +21,10 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
-import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
+import com.intellij.psi.util.*
 import java.io.Serial
 
 abstract class ImpexHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpexHeaderLine {
@@ -56,14 +54,31 @@ abstract class ImpexHeaderLineMixin(node: ASTNode) : ASTWrapperPsiElement(node),
                 fhp,
                 PsiModificationTracker.MODIFICATION_COUNT,
             )
-
         },
         false
     )[index]
 
+    override fun getValueLines(): Collection<ImpexValueLine> = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_VALUE_LINES, {
+        val subTypesIterator = siblings(withSelf = false).iterator()
+        var proceed = true
+        val valueLines = mutableListOf<ImpexValueLine>()
+
+        while (proceed && subTypesIterator.hasNext()) {
+            when (val psi = subTypesIterator.next()) {
+                is ImpexHeaderLine -> proceed = false
+                is ImpexValueLine -> valueLines.add(psi)
+            }
+        }
+        CachedValueProvider.Result.createSingleDependency(
+            valueLines,
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
+    }, false)
+
     companion object {
         val CACHE_KEY_BY_INDEX = Key.create<CachedValue<Map<Int, ImpexFullHeaderParameter>>>("SAP_CX_IMPEX_FHP_BY_INDEX")
         val CACHE_KEY_BY_NAME = Key.create<CachedValue<Map<String, ImpexFullHeaderParameter>>>("SAP_CX_IMPEX_FHP_BY_NAME")
+        val CACHE_KEY_VALUE_LINES = Key.create<CachedValue<Collection<ImpexValueLine>>>("SAP_CX_IMPEX_VALUE_LINES")
 
         @Serial
         private val serialVersionUID: Long = -4491471414641409161L

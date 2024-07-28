@@ -49,20 +49,6 @@ fun getAnyAttributeName(element: ImpexAnyAttributeValue): ImpexAnyAttributeName?
 fun getAnyAttributeValue(element: ImpexAnyAttributeName): ImpexAnyAttributeValue? = PsiTreeUtil
     .getNextSiblingOfType(element, ImpexAnyAttributeValue::class.java)
 
-fun getValueLines(element: ImpexHeaderLine): Collection<ImpexValueLine> {
-    val subTypesIterator = element.siblings(withSelf = false).iterator()
-    var proceed = true
-    val valueLines = mutableListOf<ImpexValueLine>()
-
-    while (proceed && subTypesIterator.hasNext()) {
-        when (val psi = subTypesIterator.next()) {
-            is ImpexHeaderLine -> proceed = false
-            is ImpexValueLine -> valueLines.add(psi)
-        }
-    }
-    return valueLines
-}
-
 fun getUniqueFullHeaderParameters(element: ImpexHeaderLine) = element.fullHeaderParameterList
     .filter { it.getAttribute(AttributeModifier.UNIQUE)?.anyAttributeValue?.textMatches("true") ?: false }
 

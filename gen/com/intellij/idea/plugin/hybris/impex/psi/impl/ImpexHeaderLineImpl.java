@@ -68,12 +68,6 @@ public class ImpexHeaderLineImpl extends ImpexHeaderLineMixin implements ImpexHe
 
   @Override
   @NotNull
-  public Collection<ImpexValueLine> getValueLines() {
-    return ImpexPsiUtil.getValueLines(this);
-  }
-
-  @Override
-  @NotNull
   public TextRange getTableRange() {
     return ImpexPsiUtil.getTableRange(this);
   }

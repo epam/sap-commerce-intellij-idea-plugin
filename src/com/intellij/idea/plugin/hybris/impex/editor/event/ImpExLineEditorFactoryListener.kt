@@ -20,14 +20,16 @@ package com.intellij.idea.plugin.hybris.impex.editor.event
 
 import com.intellij.idea.plugin.hybris.impex.editor.ImpExEditorMarkupModelHelper
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
-import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiFile
-import com.intellij.psi.util.childrenOfType
 import com.intellij.util.asSafely
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class ImpExLineEditorFactoryListener : EditorFactoryListener {
 
@@ -35,20 +37,27 @@ class ImpExLineEditorFactoryListener : EditorFactoryListener {
         val editor = event.editor
         val project = editor.project ?: return
 
-        val psiFile = ReadAction.compute<PsiFile?, RuntimeException> {
-            PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
-        }
-            ?.takeIf { it.isPhysical }
-            ?.asSafely<ImpexFile>()
-            ?: return
-
-        psiFile.childrenOfType<ImpexHeaderLine>()
-            .forEach { headerLine ->
-                headerLine.valueLines
-                    .forEachIndexed { index, impexValueLine ->
-                        ImpExEditorMarkupModelHelper.highlightLine(editor, index, impexValueLine.textOffset)
-                    }
-            }
+        project.getService(ImpExLineHighlighterService::class.java).highlight(editor)
     }
+}
 
+@Service(Service.Level.PROJECT)
+private class ImpExLineHighlighterService(private val project: Project, private val coroutineScope: CoroutineScope) {
+
+    fun highlight(editor: Editor) {
+        coroutineScope.launch {
+            val headerLines = readAction {
+                PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
+                    ?.takeIf { it.isPhysical }
+                    ?.asSafely<ImpexFile>()
+                    ?.getHeaderLines()
+            } ?: return@launch
+
+            headerLines.entries.forEach {
+                it.value.forEachIndexed { index, impexValueLine ->
+                    ImpExEditorMarkupModelHelper.highlightLine(editor, index, impexValueLine.textOffset)
+                }
+            }
+        }
+    }
 }
