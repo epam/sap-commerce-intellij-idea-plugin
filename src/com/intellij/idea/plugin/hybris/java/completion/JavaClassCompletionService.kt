@@ -23,6 +23,7 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.PsiClass
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ClassInheritorsSearch
 
@@ -40,15 +41,34 @@ class JavaClassCompletionService(val myProject: Project) {
             .map { it.findAll() }
             .flatten()
             .filterNot { it.isInterface }
-            .mapNotNull {
-                val presentableText = it.name ?: return@mapNotNull null
-                val lookupString = it.qualifiedName ?: return@mapNotNull null
-                JavaLookupElementBuilder.forClass(it, lookupString, true)
-                    .withPresentableText(presentableText)
-            }
+            .mapNotNull { createLookupElement(it) }
             .distinctBy { it.lookupString }
             .sortedBy { it.lookupString }
             .toLinkedSet()
+    }
+
+    fun getImplementationsPsiClassesForClasses(vararg qualifiedNames: String): Set<PsiClass> {
+        val psiFacade = JavaPsiFacade.getInstance(myProject)
+        val allScope = GlobalSearchScope.allScope(myProject)
+
+        return qualifiedNames
+            .asSequence()
+            .mapNotNull { psiFacade.findClass(it, allScope) }
+            .map { ClassInheritorsSearch.search(it, allScope, true) }
+            .map { it.findAll() }
+            .flatten()
+            .filterNot { it.isInterface }
+            .distinctBy { it }
+            .sortedBy { it.qualifiedName }
+            .toLinkedSet()
+    }
+
+    fun createLookupElement(psiClass: PsiClass): LookupElement? {
+        val presentableText = psiClass.name ?: return null
+        val lookupString = psiClass.qualifiedName ?: return null
+
+        return JavaLookupElementBuilder.forClass(psiClass, lookupString, true)
+            .withPresentableText(presentableText)
     }
 
     companion object {
