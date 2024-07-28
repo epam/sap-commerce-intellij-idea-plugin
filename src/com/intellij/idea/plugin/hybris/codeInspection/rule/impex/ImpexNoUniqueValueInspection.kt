@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,11 +23,9 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.impex.inspection.analyzer.*
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
-
 
 class ImpexNoUniqueValueInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.WARNING
@@ -50,10 +48,10 @@ private class NoUniqueValueVisitor(private val problemsHolder: ProblemsHolder) :
 
                     val keyAttrsGroupedByName = fullParametersList.filter { keyAttrPredicate(it) }.groupBy { it.anyHeaderParameterName.text }
 
-                    val dataMap =keyAttrsGroupedByName.entries
+                    val dataMap = keyAttrsGroupedByName.entries
                         .associate { (name, attrs) ->
                             name to attrs
-                                .flatMap { ImpexPsiUtils.getColumnForHeader(it) }
+                                .flatMap { it.valueGroups }
                                 .mapNotNull { it.value }
                         }
 

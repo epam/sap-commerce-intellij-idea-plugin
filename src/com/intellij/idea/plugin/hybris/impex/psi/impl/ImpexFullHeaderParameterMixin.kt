@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
@@ -40,8 +41,23 @@ abstract class ImpexFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
         )
     }, false)
 
+    override fun getValueGroups(): List<ImpexValueGroup> = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_VALUE_GROUPS, {
+        val valueGroups = this
+            .headerLine
+            ?.valueLines
+            ?.mapNotNull { it.getValueGroup(this.columnNumber) }
+            ?: emptyList()
+
+        CachedValueProvider.Result.createSingleDependency(
+            valueGroups,
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
+    }, false)
+
     companion object {
         val CACHE_KEY_COLUMN_NUMBER = Key.create<CachedValue<Int>>("SAP_CX_IMPEX_COLUMN_NUMBER")
+        val CACHE_KEY_VALUE_GROUPS = Key.create<CachedValue<List<ImpexValueGroup>>>("SAP_CX_IMPEX_VALUE_GROUPS")
+
         @Serial
         private val serialVersionUID: Long = -4491471414641409161L
     }

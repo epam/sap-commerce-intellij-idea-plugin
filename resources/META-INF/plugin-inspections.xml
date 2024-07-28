@@ -74,9 +74,9 @@
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexLanguageModifierIsNotAllowedInspection"/>
 
-        <localInspection groupPath="SAP Commerce" shortName="ImpexNoUniqueValueInspection" displayName="[y] No unique value in column"
-                         groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexNoUniqueValueInspection"/>
+<!--        <localInspection groupPath="SAP Commerce" shortName="ImpexNoUniqueValueInspection" displayName="[y] No unique value in column"-->
+<!--                         groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"-->
+<!--                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexNoUniqueValueInspection"/>-->
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownConfigPropertyInspection" displayName="[y] Unknown configuration property"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"

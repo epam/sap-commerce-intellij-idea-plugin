@@ -27,9 +27,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExHeaderAbbreviat
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.markup.HighlighterLayer
-import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
@@ -86,31 +83,6 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
                         highlight(ImpexTypes.SCRIPT_ACTION, holder, element, range = TextRange.from(it.first, it.second))
                     }
             }
-
-//            ImpexTypes.VALUE_LINE,
-//            ImpexTypes.USER_RIGHTS_VALUE_LINE -> {
-//                element.findExistingEditor()
-//                    ?.let { editor ->
-//                        when (element) {
-//                            is ImpexValueLine -> {
-//                                element.headerLine
-//                                    ?.valueLines
-//                                    ?.indexOf(element)
-//                                    ?.let { highlightLine(editor, it, element.textOffset) }
-//                            }
-//
-//                            is ImpexUserRightsValueLine -> {
-//                                element.parent
-//                                    .let { it as? ImpexUserRights }
-//                                    ?.userRightsValueLineList
-//                                    ?.indexOf(element)
-//                                    ?.let { highlightLine(editor, it, element.textOffset) }
-//                            }
-//
-//                            else -> return
-//                        }
-//                    }
-//            }
 
             ImpexTypes.USER_RIGHTS_HEADER_PARAMETER -> {
                 val headerParameter = element as? ImpexUserRightsHeaderParameter ?: return
@@ -252,20 +224,6 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
                         }
                 }
             }
-        }
-    }
-
-    private fun highlightLine(
-        it: Editor,
-        valueLineIndex: Int,
-        textOffset: Int
-    ): RangeHighlighter {
-        val lineNumber = it.document.getLineNumber(textOffset)
-
-        return if ((valueLineIndex + 1) % 2 == 0) {
-            it.markupModel.addLineHighlighter(ImpexHighlighterColors.VALUE_LINE_EVEN, lineNumber, HighlighterLayer.SYNTAX)
-        } else {
-            it.markupModel.addLineHighlighter(ImpexHighlighterColors.VALUE_LINE_ODD, lineNumber, HighlighterLayer.SYNTAX)
         }
     }
 }

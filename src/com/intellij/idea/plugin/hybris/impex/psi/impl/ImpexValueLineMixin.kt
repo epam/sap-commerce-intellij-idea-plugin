@@ -19,18 +19,27 @@
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
-import com.intellij.psi.util.*
+import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
+import com.intellij.util.asSafely
 import java.io.Serial
 
 abstract class ImpexValueLineMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpexValueLine {
 
     override fun getHeaderLine(): ImpexHeaderLine? = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_HEADER_LINE, {
-        val headerLine = PsiTreeUtil
-            .getPrevSiblingOfType(this, ImpexHeaderLine::class.java)
+        val headerLine = this.containingFile
+            .asSafely<ImpexFile>()
+            ?.getHeaderLines()
+            ?.entries
+            ?.find { it.value.contains(this) }
+            ?.key
 
         CachedValueProvider.Result.createSingleDependency(
             headerLine,

@@ -34,6 +34,9 @@
         <platform.backend.documentation.psiTargetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexPsiDocumentationTargetProvider" />
         <platform.backend.documentation.targetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexDocumentationTargetProvider"/>
 
+        <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.impex.editor.event.ImpExLineEditorFactoryListener"/>
+        <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.impex.vfs.event.ImpExVfsAsyncListener"/>
+
         <lang.parserDefinition language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
         <lang.syntaxHighlighterFactory language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
         <lang.commenter language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.ImpexCommenter"/>

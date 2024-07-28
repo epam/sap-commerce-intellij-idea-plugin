@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
 
@@ -40,7 +39,7 @@ class ImpexUniqueDocumentIdInspection : LocalInspectionTool() {
             val impexFullHeaderParameter = parameter.parentOfType<ImpexFullHeaderParameter>() ?: return
             val set = HashSet<String>()
 
-            ImpexPsiUtils.getColumnForHeader(impexFullHeaderParameter)
+            impexFullHeaderParameter.valueGroups
                 .forEach {
                     if (!set.add(it.text)) {
                         val qualifier = (it as ImpexValueGroup).value

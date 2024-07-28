@@ -21,7 +21,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
-import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.readAction
@@ -69,7 +68,7 @@ class ImpExTableColumnRemoveAction : AbstractImpExTableColumnAction() {
             } ?: return@launch
 
             val elements = readAction {
-                ImpexPsiUtils.getColumnForHeader(fullHeaderParameter)
+                fullHeaderParameter.valueGroups
                     .filter { it.isValid }
                     .reversed()
             }

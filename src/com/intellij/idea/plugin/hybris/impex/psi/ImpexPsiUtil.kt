@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.*
@@ -107,36 +106,10 @@ fun addValueGroups(element: ImpexValueLine, groupsToAdd: Int) {
     }
 }
 
-/**
- * This method will get the value of the value group and if it's empty will check for value in the default attribute
- */
-fun computeValue(element: ImpexValueGroup): String? {
-    val computedValue = element
-        .value
-        ?.text
-        ?: element.fullHeaderParameter
-            ?.getAttribute(AttributeModifier.DEFAULT)
-            ?.anyAttributeValue
-            ?.let {
-                it.stringList.firstOrNull()
-                    ?.text
-                    ?: it.text
-            }
-    return computedValue
-        ?.let { StringUtil.unquoteString(it) }
-        ?.trim()
-}
-
 fun getAttribute(element: ImpexFullHeaderParameter, attributeModifier: AttributeModifier): ImpexAttribute? = element
     .modifiersList
     .flatMap { it.attributeList }
     .find { it.anyAttributeName.textMatches(attributeModifier.modifierName) }
-
-fun getValueGroups(element: ImpexFullHeaderParameter): List<ImpexValueGroup> = element
-    .headerLine
-    ?.valueLines
-    ?.mapNotNull { it.getValueGroup(element.columnNumber) }
-    ?: emptyList()
 
 fun getHeaderTypeName(element: ImpexSubTypeName): ImpexHeaderTypeName? = element
     .valueLine
