@@ -25,6 +25,7 @@
 - `What's New` is not shown when JCEF is not supported by the JDK [#1161](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1161)
 - Moved actions from `EDT` to `BGT` [#1166](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1166)
 - CCv2 actions should not be available outside the ToolWindow [#1172](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1172)
+- Console statement is not executed on first time [#1181](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1181)
 
 ### Other
 - Improved resolution of the XML Dom based files [#1164](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1164)
