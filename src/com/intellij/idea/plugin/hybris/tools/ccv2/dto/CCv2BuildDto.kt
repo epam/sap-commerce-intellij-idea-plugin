@@ -74,12 +74,12 @@ data class CCv2BuildDto(
 }
 
 enum class CCv2BuildStatus(val title: String, val icon: Icon) {
-    UNKNOWN("Unknown", HybrisIcons.CCv2.Build.STATUS_UNKNOWN),
-    SCHEDULED("Scheduled", HybrisIcons.CCv2.Build.STATUS_SCHEDULED),
-    BUILDING("Building", HybrisIcons.CCv2.Build.STATUS_BUILDING),
-    SUCCESS("Success", HybrisIcons.CCv2.Build.STATUS_SUCCESS),
-    FAIL("Fail", HybrisIcons.CCv2.Build.STATUS_FAIL),
-    DELETED("Deleted", HybrisIcons.CCv2.Build.STATUS_DELETED);
+    UNKNOWN("Unknown", HybrisIcons.CCv2.Build.Status.UNKNOWN),
+    SCHEDULED("Scheduled", HybrisIcons.CCv2.Build.Status.SCHEDULED),
+    BUILDING("Building", HybrisIcons.CCv2.Build.Status.BUILDING),
+    SUCCESS("Success", HybrisIcons.CCv2.Build.Status.SUCCESS),
+    FAIL("Fail", HybrisIcons.CCv2.Build.Status.FAIL),
+    DELETED("Deleted", HybrisIcons.CCv2.Build.Status.DELETED);
 
     companion object {
         fun tryValueOf(name: String?) = CCv2BuildStatus.entries

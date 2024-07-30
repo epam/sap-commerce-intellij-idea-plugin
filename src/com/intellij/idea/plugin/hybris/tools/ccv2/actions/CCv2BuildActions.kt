@@ -41,7 +41,7 @@ val buildKey = DataKey.create<CCv2BuildDto>("build")
 class CCv2CreateBuildAction : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Schedule Build",
-    icon = HybrisIcons.CCv2.Build.CREATE
+    icon = HybrisIcons.CCv2.Build.Actions.CREATE
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val subscription = e.dataContext.getData(subscriptionKey)
@@ -58,7 +58,7 @@ class CCv2RedoBuildAction(
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Redo Build",
-    icon = HybrisIcons.CCv2.Build.REDO
+    icon = HybrisIcons.CCv2.Build.Actions.REDO
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
@@ -73,7 +73,7 @@ class CCv2DeployBuildAction(
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Deploy Build",
-    icon = HybrisIcons.CCv2.Build.DEPLOY
+    icon = HybrisIcons.CCv2.Build.Actions.DEPLOY
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
@@ -88,7 +88,7 @@ class CCv2DeleteBuildAction(
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Delete Build",
-    icon = HybrisIcons.CCv2.Build.DELETE
+    icon = HybrisIcons.CCv2.Build.Actions.DELETE
 ) {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
@@ -97,7 +97,7 @@ class CCv2DeleteBuildAction(
                 project,
                 "Are you sure you want to delete '${build.code}' build within the '$subscription' subscription?",
                 "Delete CCv2 Build",
-                HybrisIcons.CCv2.Build.DELETE
+                HybrisIcons.CCv2.Build.Actions.DELETE
             ) != Messages.YES
         ) return
 
@@ -120,7 +120,7 @@ class CCv2DownloadBuildLogsAction(
 ) : AbstractCCv2Action(
     tab = CCv2Tab.BUILDS,
     text = "Download Build Logs",
-    icon = HybrisIcons.CCv2.Build.LOGS
+    icon = HybrisIcons.CCv2.Build.Actions.DOWNLOAD_LOGS
 ) {
     private var processing = false
 

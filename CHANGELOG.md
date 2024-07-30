@@ -1,5 +1,8 @@
 ## [2024.2.0]
 
+### `CCv2` enhancements
+- Introduced possibility to restart a service replica [#1183](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1183)
+
 ### `ImpEx` enhancements
 - Improved PSI operations performance [#1167](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1167)
 - Migrated `Remove Column` to coroutine with progress [#1169](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1169)

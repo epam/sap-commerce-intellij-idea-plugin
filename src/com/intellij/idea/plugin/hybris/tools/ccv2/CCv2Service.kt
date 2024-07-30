@@ -383,6 +383,40 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         }
     }
 
+    fun restartServicePod(project: Project, subscription: CCv2Subscription, environment: CCv2EnvironmentDto, service: CCv2ServiceDto, replica: CCv2ServiceReplicaDto) {
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Restarting CCv2 Replica - ${replica.name}...") {
+                val ccv2Token = getCCv2Token(subscription)
+                if (ccv2Token == null) {
+                    return@withBackgroundProgress
+                }
+
+                try {
+                    CCv1Api.getInstance()
+                        .restartServiceReplica(ccv2Token, subscription, environment, service, replica)
+                        .also {
+                            Notifications.create(
+                                NotificationType.INFORMATION,
+                                "CCv2: Replica pod has been restarted.",
+                                """
+                                    Replica: ${replica.name}<br>
+                                    Service: ${service.name}<br>
+                                    Environment: ${environment.name}<br>
+                                    Subscription: $subscription<br>
+                                """.trimIndent()
+                            )
+                                .hideAfter(10)
+                                .notify(project)
+                        }
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout(subscription)
+                } catch (e: RuntimeException) {
+                    notifyOnException(subscription, e)
+                }
+            }
+        }
+    }
+
     fun deployBuild(
         project: Project,
         subscription: CCv2Subscription,

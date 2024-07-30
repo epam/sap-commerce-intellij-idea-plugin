@@ -318,17 +318,23 @@ object HybrisIcons {
         object Build {
             val BRANCH = AllIcons.Vcs.Branch
             val CREATED_BY = AllIcons.General.User
-            val STATUS_UNKNOWN = AllIcons.RunConfigurations.TestUnknown
-            val STATUS_SCHEDULED = AllIcons.Actions.Profile
-            val STATUS_BUILDING = AllIcons.RunConfigurations.TestCustom
-            val STATUS_SUCCESS = AllIcons.RunConfigurations.TestPassed
-            val STATUS_FAIL = AllIcons.RunConfigurations.TestFailed
-            val STATUS_DELETED = AllIcons.Debugger.KillProcess
-            val CREATE = AllIcons.Actions.Execute
-            val REDO = AllIcons.Actions.BuildAutoReloadChanges
-            val DEPLOY = AllIcons.Nodes.Deploy
-            val DELETE = AllIcons.General.Delete
-            val LOGS = AllIcons.Actions.Download
+
+            object Status {
+                val UNKNOWN = AllIcons.RunConfigurations.TestUnknown
+                val SCHEDULED = AllIcons.Actions.Profile
+                val BUILDING = AllIcons.RunConfigurations.TestCustom
+                val SUCCESS = AllIcons.RunConfigurations.TestPassed
+                val FAIL = AllIcons.RunConfigurations.TestFailed
+                val DELETED = AllIcons.Debugger.KillProcess
+            }
+
+            object Actions {
+                val CREATE = AllIcons.Actions.Execute
+                val REDO = AllIcons.Actions.BuildAutoReloadChanges
+                val DEPLOY = AllIcons.Nodes.Deploy
+                val DELETE = AllIcons.General.Delete
+                val DOWNLOAD_LOGS = AllIcons.Actions.Download
+            }
         }
 
         object Deployment {
@@ -387,6 +393,7 @@ object HybrisIcons {
 
             object Actions {
                 val SHOW_DETAILS = AllIcons.Nodes.Services
+                val RESTART_POD = AllIcons.Actions.RestartFrame
             }
         }
     }

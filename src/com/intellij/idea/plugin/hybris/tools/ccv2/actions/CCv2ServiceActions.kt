@@ -20,13 +20,16 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2ServiceDetailsView
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
@@ -60,4 +63,29 @@ class CCv2ShowServiceDetailsAction(
         contentManager.setSelectedContent(content)
     }
 
+}
+
+
+class CCv2ServiceRestartReplicaAction(
+    private val subscription: CCv2Subscription,
+    private val environment: CCv2EnvironmentDto,
+    private val service: CCv2ServiceDto,
+    private val replica: CCv2ServiceReplicaDto
+) : DumbAwareAction("Restart Pod", null, HybrisIcons.CCv2.Service.Actions.RESTART_POD) {
+
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+
+        if (Messages.showYesNoDialog(
+                project,
+                "This action will terminate the '${replica.name}' pod associated with this replica and create a new pod to maintain the desired replica count for '${service.name}' service, '${environment.name}' environment within the '$subscription' subscription.",
+                "Restart the Pod",
+                HybrisIcons.CCv2.Service.Actions.RESTART_POD
+            ) != Messages.YES
+        ) return
+
+        CCv2Service.getInstance(project).restartServicePod(project, subscription, environment, service, replica)
+    }
 }

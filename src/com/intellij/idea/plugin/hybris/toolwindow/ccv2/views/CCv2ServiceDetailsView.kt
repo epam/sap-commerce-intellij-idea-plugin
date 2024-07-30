@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentServiceAction
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ServiceRestartReplicaAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceProperties
@@ -30,6 +31,7 @@ import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.ide.CopyPasteManager
@@ -299,6 +301,17 @@ class CCv2ServiceDetailsView(
                 } else {
                     replicas.forEach { replica ->
                         row {
+                            panel {
+                                row {
+                                    actionsButton(
+                                        actions = listOfNotNull(
+                                            CCv2ServiceRestartReplicaAction(subscription, environment, service, replica),
+                                        ).toTypedArray(),
+                                        ActionPlaces.TOOLWINDOW_CONTENT
+                                    )
+                                }
+                            }.gap(RightGap.SMALL)
+
                             panel {
                                 row {
                                     label(replica.name)

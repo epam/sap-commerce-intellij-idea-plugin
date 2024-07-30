@@ -20,16 +20,15 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.api
 
 import com.intellij.idea.plugin.hybris.ccv1.api.EnvironmentApi
 import com.intellij.idea.plugin.hybris.ccv1.api.PermissionsApi
+import com.intellij.idea.plugin.hybris.ccv1.api.ServiceApi
 import com.intellij.idea.plugin.hybris.ccv1.invoker.infrastructure.ApiClient
-import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentDetailDTO
-import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentHealthDTO
-import com.intellij.idea.plugin.hybris.ccv1.model.MediaStoragePublicKeyDTO
-import com.intellij.idea.plugin.hybris.ccv1.model.PermissionDTO
+import com.intellij.idea.plugin.hybris.ccv1.model.*
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2MediaStorageDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import java.util.concurrent.TimeUnit
@@ -45,6 +44,7 @@ class CCv1Api {
     }
     private val environmentApi by lazy { EnvironmentApi(client = apiClient) }
     private val permissionsApi by lazy { PermissionsApi(client = apiClient) }
+    private val serviceApi by lazy { ServiceApi(client = apiClient) }
 
     suspend fun fetchPermissions(
         accessToken: String
@@ -106,6 +106,21 @@ class CCv1Api {
             requestHeaders = createRequestParams(accessToken)
         )
         .map { CCv2ServiceDto.map(subscription, environment, it) }
+
+    suspend fun restartServiceReplica(
+        accessToken: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto,
+        service: CCv2ServiceDto,
+        replica: CCv2ServiceReplicaDto
+    ): ServiceReplicaStatusDTO = serviceApi
+        .restartReplica(
+            subscriptionCode = subscription.id!!,
+            environmentCode = environment.code,
+            serviceCode = service.code,
+            replicaName = replica.name,
+            requestHeaders = createRequestParams(accessToken)
+        )
 
     private fun createRequestParams(ccv2Token: String) = mapOf("Authorization" to "Bearer $ccv2Token")
 
