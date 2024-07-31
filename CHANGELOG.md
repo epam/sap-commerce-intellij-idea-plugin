@@ -32,6 +32,7 @@
 - Console statement is not executed on first time [#1181](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1181)
 
 ### Other
+- Migrated to `IntelliJ Platform Gradle Plugin 2.0` [#1184](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1184)
 - Improved resolution of the XML Dom based files [#1164](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1164)
 - Dropped legacy `items.xml` XML based validation [#1157](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1157)
 - Added 2024.2 IntelliJ IDEA support [#1156](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1156)

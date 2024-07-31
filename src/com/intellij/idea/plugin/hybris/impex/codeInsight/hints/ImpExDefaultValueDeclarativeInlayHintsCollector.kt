@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.codeInsight.hints
 
-import com.intellij.codeInsight.hints.declarative.HintColorKind
+import com.intellij.codeInsight.hints.declarative.HintFormat
 import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
 import com.intellij.codeInsight.hints.declarative.SharedBypassCollector
@@ -35,10 +35,10 @@ class ImpExDefaultValueDeclarativeInlayHintsCollector : SharedBypassCollector {
         val defaultValue = element.computeValue() ?: return
 
         sink.addPresentation(
-            InlineInlayPosition(element.textRange.startOffset + 1, true),
-            null,
-            null,
-            hintColorKind = HintColorKind.Default,
+            position = InlineInlayPosition(element.textRange.startOffset + 1, true),
+            payloads = null,
+            tooltip = null,
+            hintFormat = HintFormat.default,
         ) {
             text(defaultValue)
         }
