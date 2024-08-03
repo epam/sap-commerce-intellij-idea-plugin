@@ -1,3 +1,8 @@
+## [2024.2.1]
+
+### Other
+- Omit internal IntelliJ API usage in `ProjectBeforeCompilerTask` [#1186](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1186)
+
 ## [2024.2.0]
 
 ### `CCv2` enhancements

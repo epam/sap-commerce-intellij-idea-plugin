@@ -36,8 +36,8 @@ import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.util.io.ZipUtil
+import com.intellij.util.lang.JavaVersion
 import org.jetbrains.jps.incremental.java.JavaBuilder
-import org.jetbrains.jps.model.java.JpsJavaSdkType
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -183,7 +183,7 @@ class ProjectBeforeCompilerTask : CompileTask {
                 })
 
             val profile = CompilerConfiguration.getInstance(context.project).getAnnotationProcessingConfiguration(platformModule)
-            val sourceOption = JpsJavaSdkType.complianceOption(sdkVersion.maxLanguageLevel.toJavaVersion())
+            val sourceOption = sdkVersion.maxLanguageLevel.toJavaVersion().complianceOption()
             val options = mutableListOf(
                 "-encoding",
                 "UTF-8",
@@ -227,6 +227,8 @@ class ProjectBeforeCompilerTask : CompileTask {
 
         return true
     }
+
+    private fun JavaVersion.complianceOption() = if (feature < 5) "1.$feature" else feature.toString()
 
     private fun invokeModelsJarCreation(context: CompileContext, bootstrapDirectory: Path): Boolean {
         context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Started creation of the models.jar file...", null, -1, -1)
