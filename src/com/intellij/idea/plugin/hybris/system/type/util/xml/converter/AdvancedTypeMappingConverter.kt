@@ -36,7 +36,7 @@ import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.stubs.index.DomElementClassIndex
 import java.util.*
 
-class PrimitiveTypeConverter : AbstractTSConverterBase<TypeMapping>(TypeMapping::class.java) {
+class AdvancedTypeMappingConverter : AbstractTSConverterBase<TypeMapping>(TypeMapping::class.java) {
 
     override fun toString(t: TypeMapping?, context: ConvertContext) = t?.type?.stringValue
 
@@ -53,6 +53,7 @@ class PrimitiveTypeConverter : AbstractTSConverterBase<TypeMapping>(TypeMapping:
             ?: return null
         return when {
             typeMapping.startsWith("java.") -> TSLookupElementFactory.buildObject(t)
+            typeMapping.startsWith("HYBRIS.") -> TSLookupElementFactory.buildSpecial(t)
             else -> TSLookupElementFactory.buildPrimitive(t)
         }
     }
@@ -60,7 +61,6 @@ class PrimitiveTypeConverter : AbstractTSConverterBase<TypeMapping>(TypeMapping:
     private fun getTypeMappings(context: ConvertContext): MutableList<TypeMapping>? = getDatabaseSchema(context.project)
         ?.typeMappings
         ?.filterNot { it.type.stringValue?.startsWith("java.lang.") ?: false }
-        ?.filterNot { it.type.stringValue?.startsWith("HYBRIS.") ?: false }
         ?.toMutableList()
 
     private fun getDatabaseSchema(project: Project): DatabaseSchema? {

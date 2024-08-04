@@ -4,6 +4,7 @@
 - Added dom model for `core-advanced-deployment.xml` [#1187](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1187)
 - Added code completion and reference resolution for primitive types [#1188](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1188)
 - Added code completion and reference resolution for additional object types [#1189](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1189)
+- Added code completion and reference resolution for special types [#1190](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1190)
 
 ### Other
 - Omit internal IntelliJ API usage in `ProjectBeforeCompilerTask` [#1186](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1186)

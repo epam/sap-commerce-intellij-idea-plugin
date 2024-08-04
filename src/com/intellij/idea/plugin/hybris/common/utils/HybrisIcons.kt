@@ -221,6 +221,7 @@ object HybrisIcons {
             val COLLECTION = getIcon("/icons/typeSystem/collection.svg")
             val PRIMITIVE = HybrisIcons.Types.PRIMITIVE
             val OBJECT = HybrisIcons.Types.OBJECT
+            val SPECIAL = AllIcons.FileTypes.Yaml
         }
 
         object Preview {

@@ -115,7 +115,7 @@ public abstract class CompositeConverter<DOM extends DomElement> extends Resolvi
 
         public AnyClassifier() {
             super(
-                new PrimitiveTypeConverter(),
+                new AdvancedTypeMappingConverter(),
                 new EnumTypeConverter(),
                 new ItemTypeConverter(),
                 new CollectionTypeConverter(),
