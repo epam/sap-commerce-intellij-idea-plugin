@@ -39,6 +39,7 @@ object TSLookupElementFactory {
     const val GROUP_1 = 1
     const val GROUP_2 = 2
     const val GROUP_3 = 3
+    const val GROUP_4 = 4
 
     fun build(
         meta: TSGlobalMetaItem,
@@ -178,6 +179,17 @@ object TSLookupElementFactory {
                 .withIcon(HybrisIcons.TypeSystem.Types.PRIMITIVE)
         }
         ?.let { PrioritizedLookupElement.withGrouping(it, GROUP_3) }
+
+    fun buildObject(dom: TypeMapping?) = dom
+        ?.let {
+            val type = it.type.stringValue ?: return@let null
+            val persistenceType = it.persistenceType.stringValue ?: return@let null
+
+            LookupElementBuilder.create(type)
+                .withTypeText(persistenceType, true)
+                .withIcon(HybrisIcons.TypeSystem.Types.OBJECT)
+        }
+        ?.let { PrioritizedLookupElement.withGrouping(it, GROUP_4) }
 
     fun buildCustomProperty(lookupString: String) = LookupElementBuilder.create(lookupString)
         .withIcon(HybrisIcons.TypeSystem.CUSTOM_PROPERTY)

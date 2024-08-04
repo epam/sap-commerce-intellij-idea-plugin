@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
@@ -45,11 +46,20 @@ class PrimitiveTypeConverter : AbstractTSConverterBase<TypeMapping>(TypeMapping:
     override fun searchAll(context: ConvertContext, meta: TSMetaModelAccess?): MutableList<TypeMapping> = getTypeMappings(context)
         ?: mutableListOf()
 
-    override fun createLookupElement(t: TypeMapping?) = TSLookupElementFactory.buildPrimitive(t)
+    override fun createLookupElement(t: TypeMapping?): LookupElement? {
+        val typeMapping = t
+            ?.type
+            ?.stringValue
+            ?: return null
+        return when {
+            typeMapping.startsWith("java.") -> TSLookupElementFactory.buildObject(t)
+            else -> TSLookupElementFactory.buildPrimitive(t)
+        }
+    }
 
     private fun getTypeMappings(context: ConvertContext): MutableList<TypeMapping>? = getDatabaseSchema(context.project)
         ?.typeMappings
-        ?.filterNot { it.type.stringValue?.startsWith("java.") ?: false }
+        ?.filterNot { it.type.stringValue?.startsWith("java.lang.") ?: false }
         ?.filterNot { it.type.stringValue?.startsWith("HYBRIS.") ?: false }
         ?.toMutableList()
 

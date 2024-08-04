@@ -220,6 +220,7 @@ object HybrisIcons {
             val ENUM = getIcon("/icons/typeSystem/enum.svg")
             val COLLECTION = getIcon("/icons/typeSystem/collection.svg")
             val PRIMITIVE = HybrisIcons.Types.PRIMITIVE
+            val OBJECT = HybrisIcons.Types.OBJECT
         }
 
         object Preview {
