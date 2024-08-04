@@ -84,6 +84,7 @@ object HybrisConstants {
 
     const val ROOT_TAG_BUSINESS_PROCESS_XML = "process"
     const val ROOT_TAG_ITEMS_XML = "items"
+    const val ROOT_TAG_DEPLOYMENT_MODEL_XML = "model"
     const val ROOT_TAG_EXTENSION_INFO_XML = "extensioninfo"
 
     const val DOT_PROJECT = ".project"
@@ -183,6 +184,7 @@ object HybrisConstants {
     const val HYBRIS_ITEMS_XML_FILE_ENDING = "-items.xml"
     const val HYBRIS_BEANS_XML_FILE_ENDING = "-beans.xml"
     const val HYBRIS_IMPEX_XML_FILE_ENDING = ".$IMPEX_FILE_EXTENSION"
+    const val CORE_ADVANCED_DEPLOYMENT_FILE = "core-advanced-deployment.xml"
 
     const val DEBUG_HOST = "localhost"
     const val DEBUG_PORT = "8000"

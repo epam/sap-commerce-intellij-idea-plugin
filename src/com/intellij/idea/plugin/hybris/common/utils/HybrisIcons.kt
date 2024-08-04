@@ -186,6 +186,7 @@ object HybrisIcons {
 
     object TypeSystem {
         val FILE = getIcon("/icons/typeSystem.svg")
+        val DEPLOYMENT_MODEL = AllIcons.Nodes.Undeploy
 
         val LOCALIZED = getIcon("/icons/typeSystem/localized.svg")
         val INTERCEPTOR = getIcon("/icons/typeSystem/interceptor.svg")

@@ -1,5 +1,8 @@
 ## [2024.2.1]
 
+### `Type System` enhancements
+- Added dom model for `core-advanced-deployment.xml` [#1187](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1187)
+
 ### Other
 - Omit internal IntelliJ API usage in `ProjectBeforeCompilerTask` [#1186](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1186)
 
