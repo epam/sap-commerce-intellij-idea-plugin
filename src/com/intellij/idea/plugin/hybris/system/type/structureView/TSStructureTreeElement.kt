@@ -164,16 +164,16 @@ class TSStructureTreeElement(
         is ItemTypes -> HybrisIcons.TypeSystem.GROUP_ITEM
         is TypeGroup -> HybrisIcons.TypeSystem.GROUP_ITEM
         is EnumTypes -> HybrisIcons.TypeSystem.GROUP_ENUM
-        is AtomicType -> HybrisIcons.TypeSystem.ATOMIC
-        is EnumType -> HybrisIcons.TypeSystem.ENUM
+        is AtomicType -> HybrisIcons.TypeSystem.Types.ATOMIC
+        is EnumType -> HybrisIcons.TypeSystem.Types.ENUM
         is EnumValue -> HybrisIcons.TypeSystem.ENUM_VALUE
         is Attribute -> HybrisIcons.TypeSystem.ATTRIBUTE
         is Index -> HybrisIcons.TypeSystem.INDEX
         is ItemType -> HybrisIcons.TypeSystem.ITEM
-        is CollectionType -> HybrisIcons.TypeSystem.COLLECTION
+        is CollectionType -> HybrisIcons.TypeSystem.Types.COLLECTION
         is CustomProperty -> HybrisIcons.TypeSystem.CUSTOM_PROPERTY
-        is MapType -> HybrisIcons.TypeSystem.MAP
-        is Relation -> HybrisIcons.TypeSystem.RELATION
+        is MapType -> HybrisIcons.TypeSystem.Types.MAP
+        is Relation -> HybrisIcons.TypeSystem.Types.RELATION
         is RelationSourceElement -> HybrisIcons.TypeSystem.RELATION_SOURCE
         is RelationTargetElement -> HybrisIcons.TypeSystem.RELATION_TARGET
         else -> null

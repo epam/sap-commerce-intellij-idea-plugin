@@ -77,7 +77,7 @@ class ModelItemAttributeFieldLineMarkerProvider : AbstractModelAttributeLineMark
         ?.xmlAttributeValue
         ?.let {
             NavigationGutterIconBuilder
-                .create(HybrisIcons.TypeSystem.RELATION)
+                .create(HybrisIcons.TypeSystem.Types.RELATION)
                 .setTargets(it)
                 .setTooltipText(message("hybris.editor.gutter.ts.model.item.attribute.field.relation.tooltip.text"))
                 .setAlignment(GutterIconRenderer.Alignment.LEFT)

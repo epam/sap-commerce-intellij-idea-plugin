@@ -29,7 +29,7 @@ class TSMetaCollectionNode(parent: TSNode, meta: TSGlobalMetaCollection) : TSMet
     override fun getName() = meta.name ?: "-- no name --"
 
     override fun update(project: Project, presentation: PresentationData) {
-        presentation.setIcon(HybrisIcons.TypeSystem.COLLECTION)
+        presentation.setIcon(HybrisIcons.TypeSystem.Types.COLLECTION)
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.locationString = meta.flattenType
     }

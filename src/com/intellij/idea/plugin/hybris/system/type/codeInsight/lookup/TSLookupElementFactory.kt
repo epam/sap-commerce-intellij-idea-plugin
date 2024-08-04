@@ -30,8 +30,15 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+import com.intellij.idea.plugin.hybris.system.type.model.deployment.TypeMapping
 
 object TSLookupElementFactory {
+
+    const val PRIORITY_2_0 = 2.0
+    const val PRIORITY_1_0 = 1.0
+    const val GROUP_1 = 1
+    const val GROUP_2 = 2
+    const val GROUP_3 = 3
 
     fun build(
         meta: TSGlobalMetaItem,
@@ -47,30 +54,34 @@ object TSLookupElementFactory {
                 .withCaseSensitivity(false)
         }
 
-    fun build(meta: TSGlobalMetaRelation) = meta.name?.let {
-        LookupElementBuilder.create(it)
-            .withTypeText(meta.flattenType)
-            .withIcon(HybrisIcons.TypeSystem.RELATION)
-            .withCaseSensitivity(false)
-    }
+    fun build(meta: TSGlobalMetaRelation) = meta.name
+        ?.let {
+            LookupElementBuilder.create(it)
+                .withTypeText(meta.flattenType)
+                .withIcon(HybrisIcons.TypeSystem.Types.RELATION)
+                .withCaseSensitivity(false)
+        }
 
-    fun build(meta: TSGlobalMetaCollection) = meta.name?.let {
-        LookupElementBuilder.create(it)
-            .withTypeText(meta.flattenType)
-            .withIcon(HybrisIcons.TypeSystem.COLLECTION)
-            .withCaseSensitivity(false)
-    }
+    fun build(meta: TSGlobalMetaCollection) = meta.name
+        ?.let {
+            LookupElementBuilder.create(it)
+                .withTypeText(meta.flattenType)
+                .withIcon(HybrisIcons.TypeSystem.Types.COLLECTION)
+                .withCaseSensitivity(false)
+        }
 
-    fun build(meta: TSGlobalMetaMap) = meta.name?.let {
-        LookupElementBuilder.create(it)
-            .withTypeText(meta.flattenType)
-            .withIcon(HybrisIcons.TypeSystem.MAP)
-            .withCaseSensitivity(false)
-    }
+    fun build(meta: TSGlobalMetaMap) = meta.name
+        ?.let {
+            LookupElementBuilder.create(it)
+                .withTypeText(meta.flattenType)
+                .withIcon(HybrisIcons.TypeSystem.Types.MAP)
+                .withCaseSensitivity(false)
+        }
 
     fun build(meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute) = LookupElementBuilder.create(meta.name)
         .withStrikeoutness(meta.isDeprecated)
-        .withTypeText(meta.flattenType,
+        .withTypeText(
+            meta.flattenType,
             if (meta.isLocalized) HybrisIcons.TypeSystem.LOCALIZED
             else null,
             true
@@ -114,7 +125,7 @@ object TSLookupElementFactory {
         ?.let {
             LookupElementBuilder.create(it)
                 .withTailText(if (meta.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
-                .withIcon(HybrisIcons.TypeSystem.ENUM)
+                .withIcon(HybrisIcons.TypeSystem.Types.ENUM)
                 .withTypeText(":: ${HybrisConstants.TS_TYPE_ENUMERATION_VALUE}", HybrisIcons.TypeSystem.ITEM, true)
                 .withTypeIconRightAligned(true)
                 .withCaseSensitivity(false)
@@ -124,7 +135,8 @@ object TSLookupElementFactory {
         .withIcon(HybrisIcons.TypeSystem.ATTRIBUTE)
         .withTailText(if (attribute.isDynamic) " (" + message("hybris.ts.type.dynamic") + ')' else "", true)
         .withStrikeoutness(attribute.isDeprecated)
-        .withTypeText(attribute.flattenType,
+        .withTypeText(
+            attribute.flattenType,
             if (attribute.isLocalized) HybrisIcons.TypeSystem.LOCALIZED
             else null,
             true
@@ -134,20 +146,20 @@ object TSLookupElementFactory {
 
     fun build(type: String?, lookupString: String) = LookupElementBuilder.create(lookupString)
         .withTypeText(type, true)
-        .withIcon(HybrisIcons.TypeSystem.MAP)
+        .withIcon(HybrisIcons.TypeSystem.Types.MAP)
         .withCaseSensitivity(false)
 
     fun build(dom: EnumType) = dom.code.stringValue
         ?.let {
             LookupElementBuilder.create(it)
                 .withTailText(if (dom.dynamic.value) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
-                .withIcon(HybrisIcons.TypeSystem.ENUM)
+                .withIcon(HybrisIcons.TypeSystem.Types.ENUM)
         }
 
     fun build(dom: AtomicType) = dom.clazz.stringValue
         ?.let {
             LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.TypeSystem.ATOMIC)
+                .withIcon(HybrisIcons.TypeSystem.Types.ATOMIC)
         }
 
     fun build(dom: ItemType) = dom.code.stringValue
@@ -156,31 +168,41 @@ object TSLookupElementFactory {
                 .withIcon(HybrisIcons.TypeSystem.ITEM)
         }
 
+    fun buildPrimitive(dom: TypeMapping?) = dom
+        ?.let {
+            val type = it.type.stringValue ?: return@let null
+            val persistenceType = it.persistenceType.stringValue ?: return@let null
+
+            LookupElementBuilder.create(type)
+                .withTypeText(persistenceType, true)
+                .withIcon(HybrisIcons.TypeSystem.Types.PRIMITIVE)
+        }
+        ?.let { PrioritizedLookupElement.withGrouping(it, GROUP_3) }
+
     fun buildCustomProperty(lookupString: String) = LookupElementBuilder.create(lookupString)
         .withIcon(HybrisIcons.TypeSystem.CUSTOM_PROPERTY)
         .withCaseSensitivity(false)
 
-    fun buildHeaderAbbreviation(lookupString: String) = PrioritizedLookupElement.withPriority(
-        LookupElementBuilder.create(lookupString)
-            .withTypeText("Header Abbreviation", true)
-            .withIcon(HybrisIcons.TypeSystem.HEADER_ABBREVIATION)
-            .withInsertHandler(lookupString.contains('@')
-                .takeIf { it }
-                ?.let {
-                    object : AutoPopupInsertHandler() {
-                        override fun handle(context: InsertionContext, item: LookupElement) {
-                            lookupString.indexOf('@')
-                                .takeIf { it >= 0 }
-                                ?.let { index ->
-                                    val cursorOffset = context.editor.caretModel.offset
-                                    val moveBackTo = lookupString.length - index - 1
-                                    val offset = cursorOffset - moveBackTo
-                                    context.editor.caretModel.moveToOffset(offset)
-                                    context.editor.selectionModel.setSelection(offset, offset + moveBackTo)
-                                }
-                        }
+    fun buildHeaderAbbreviation(lookupString: String) = LookupElementBuilder.create(lookupString)
+        .withTypeText("Header Abbreviation", true)
+        .withIcon(HybrisIcons.TypeSystem.HEADER_ABBREVIATION)
+        .withInsertHandler(lookupString.contains('@')
+            .takeIf { it }
+            ?.let {
+                object : AutoPopupInsertHandler() {
+                    override fun handle(context: InsertionContext, item: LookupElement) {
+                        lookupString.indexOf('@')
+                            .takeIf { it >= 0 }
+                            ?.let { index ->
+                                val cursorOffset = context.editor.caretModel.offset
+                                val moveBackTo = lookupString.length - index - 1
+                                val offset = cursorOffset - moveBackTo
+                                context.editor.caretModel.moveToOffset(offset)
+                                context.editor.selectionModel.setSelection(offset, offset + moveBackTo)
+                            }
                     }
                 }
-            ), 2.0
-    )
+            }
+        )
+        .let { PrioritizedLookupElement.withPriority(it, 2.0) }
 }

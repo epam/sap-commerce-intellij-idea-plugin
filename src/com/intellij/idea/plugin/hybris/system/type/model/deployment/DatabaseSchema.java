@@ -21,9 +21,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model.deployment;
 
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.SubTagList;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -31,6 +29,8 @@ import java.util.List;
 /**
  * null:database-schemaElemType interface.
  */
+@Stubbed
+@StubbedOccurrence
 public interface DatabaseSchema extends DomElement {
 
     /**
@@ -40,6 +40,9 @@ public interface DatabaseSchema extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("database")
+    @Required
+    @Stubbed
+    @NameValue
     GenericAttributeValue<String> getDatabase();
 
 

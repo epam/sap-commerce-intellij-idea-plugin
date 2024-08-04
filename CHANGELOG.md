@@ -2,6 +2,7 @@
 
 ### `Type System` enhancements
 - Added dom model for `core-advanced-deployment.xml` [#1187](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1187)
+- Added code completion and reference resolution for primitive types [#1188](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1188)
 
 ### Other
 - Omit internal IntelliJ API usage in `ProjectBeforeCompilerTask` [#1186](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1186)

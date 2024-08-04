@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -39,12 +39,12 @@ public abstract class CompositeConverter<DOM extends DomElement> extends Resolvi
     public CompositeConverter(final AbstractTSConverterBase<? extends DOM>... converters) {
         myDelegates = converters;
         this.converters = Arrays.stream(converters)
-                                .collect(Collectors.toMap(AbstractTSConverterBase::getResolvesToClass, it -> it));
+            .collect(Collectors.toMap(AbstractTSConverterBase::getResolvesToClass, it -> it));
     }
 
     @NotNull
     @Override
-    public Collection<? extends DOM> getVariants(final ConvertContext context) {
+    public Collection<? extends DOM> getVariants(@NotNull final ConvertContext context) {
         final List<DOM> result = new LinkedList<>();
         for (AbstractTSConverterBase<? extends DOM> next : myDelegates) {
             result.addAll(next.getVariants(context));
@@ -74,9 +74,7 @@ public abstract class CompositeConverter<DOM extends DomElement> extends Resolvi
 
     @Nullable
     @Override
-    public DOM fromString(
-        @Nullable @NonNls final String s, final ConvertContext context
-    ) {
+    public DOM fromString(@Nullable @NonNls final String s, @NotNull final ConvertContext context) {
         for (AbstractTSConverterBase<? extends DOM> next : myDelegates) {
             final DOM nextResult = next.fromString(s, context);
             if (nextResult != null) {
@@ -88,7 +86,7 @@ public abstract class CompositeConverter<DOM extends DomElement> extends Resolvi
 
     @Nullable
     @Override
-    public String toString(@Nullable final DOM dom, final ConvertContext context) {
+    public String toString(@Nullable final DOM dom, @NotNull final ConvertContext context) {
         final AbstractTSConverterBase<DOM> converter = getConverter(dom);
         if (converter == null) return null;
         return converter.tryToString(dom, context);
@@ -117,6 +115,7 @@ public abstract class CompositeConverter<DOM extends DomElement> extends Resolvi
 
         public AnyClassifier() {
             super(
+                new PrimitiveTypeConverter(),
                 new EnumTypeConverter(),
                 new ItemTypeConverter(),
                 new CollectionTypeConverter(),

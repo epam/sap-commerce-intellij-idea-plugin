@@ -40,7 +40,7 @@ public interface Package extends DomElement {
      * @return the value of the name child.
      */
     @NotNull
-    @Attribute("name")
+    @com.intellij.util.xml.Attribute("name")
     GenericAttributeValue<String> getName();
 
 
@@ -50,7 +50,7 @@ public interface Package extends DomElement {
      * @return the value of the description child.
      */
     @NotNull
-    @Attribute("description")
+    @com.intellij.util.xml.Attribute("description")
     GenericAttributeValue<String> getDescription();
 
 

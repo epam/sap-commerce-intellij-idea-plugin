@@ -22,7 +22,7 @@
         <dom.fileMetaData rootTagName="items" stubVersion="22"
                           implementation="com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription"/>
 
-        <dom.fileMetaData rootTagName="model" stubVersion="1"
+        <dom.fileMetaData rootTagName="model" stubVersion="2"
                           implementation="com.intellij.idea.plugin.hybris.system.type.file.TSDeploymentModelDomFileDescription"/>
 
         <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.lang.folding.ItemsXmlFoldingBuilder"/>

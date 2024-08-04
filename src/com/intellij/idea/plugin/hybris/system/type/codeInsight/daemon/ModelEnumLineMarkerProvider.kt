@@ -31,7 +31,7 @@ import javax.swing.Icon
 class ModelEnumLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass>() {
 
     override fun getName() = message("hybris.editor.gutter.ts.model.enum.name")
-    override fun getIcon(): Icon = HybrisIcons.TypeSystem.ENUM
+    override fun getIcon(): Icon = HybrisIcons.TypeSystem.Types.ENUM
     override fun canProcess(psi: PsiClass) = TSUtils.isEnumFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiClass)
         ?.takeIf { it.nameIdentifier != null }

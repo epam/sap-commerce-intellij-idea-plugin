@@ -21,32 +21,15 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model.deployment;
 
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.Required;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * null:type-mappingElemType interface.
  */
+@Stubbed
+@StubbedOccurrence
 public interface TypeMapping extends DomElement {
-
-    /**
-     * Returns the value of the simple content.
-     *
-     * @return the value of the simple content.
-     */
-    @NotNull
-    @Required
-    String getValue();
-
-    /**
-     * Sets the value of the simple content.
-     *
-     * @param value the new value to set
-     */
-    void setValue(@NotNull String value);
-
 
     /**
      * Returns the value of the type child.
@@ -55,6 +38,9 @@ public interface TypeMapping extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("type")
+    @Required
+    @Stubbed
+    @NameValue
     GenericAttributeValue<String> getType();
 
 
@@ -65,6 +51,8 @@ public interface TypeMapping extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute("persistence-type")
+    @Required
+    @Stubbed
     GenericAttributeValue<String> getPersistenceType();
 
 

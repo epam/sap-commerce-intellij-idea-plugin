@@ -83,7 +83,7 @@ class TSCompletionService(private val project: Project) {
             .flatten()
     }
 
-    fun getImpexInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElement> {
+    fun getImpExInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElement> {
         val completion = DeveloperSettingsComponent.getInstance(project).state.impexSettings.completion
         if (!completion.showInlineTypes) return emptyList()
 
@@ -108,8 +108,8 @@ class TSCompletionService(private val project: Project) {
                 TSLookupElementFactory.build(it, suffix)
                     ?.withTypeText(" child of $referenceItemTypeName", true)
             }
-            .map { PrioritizedLookupElement.withPriority(it, 2.0) }
-            .map { PrioritizedLookupElement.withGrouping(it, 2) }
+            .map { PrioritizedLookupElement.withPriority(it, TSLookupElementFactory.PRIORITY_2_0) }
+            .map { PrioritizedLookupElement.withGrouping(it, TSLookupElementFactory.GROUP_2) }
     }
 
     /**

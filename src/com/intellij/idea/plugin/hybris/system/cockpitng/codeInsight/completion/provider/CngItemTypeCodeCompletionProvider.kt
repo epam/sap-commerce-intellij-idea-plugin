@@ -113,8 +113,8 @@ class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
                     ?.withTypeText(typeText, true)
                     ?.withBoldness(true)
             }
-            .map { PrioritizedLookupElement.withPriority(it, 1.0) }
-            .map { PrioritizedLookupElement.withGrouping(it, 1) }
+            .map { PrioritizedLookupElement.withPriority(it, TSLookupElementFactory.PRIORITY_1_0) }
+            .map { PrioritizedLookupElement.withGrouping(it, TSLookupElementFactory.GROUP_1) }
             .forEach { resultCaseInsensitive.addElement(it) }
 
         allItems
