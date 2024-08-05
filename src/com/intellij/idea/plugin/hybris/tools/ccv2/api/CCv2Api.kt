@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.ccv2.api.*
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
+import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentDetailDTO
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
@@ -29,10 +30,8 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.platform.util.progress.ProgressReporter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
+import com.intellij.platform.util.progress.reportProgress
+import kotlinx.coroutines.*
 import org.jetbrains.kotlin.utils.flatMapToNullableSet
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -195,21 +194,29 @@ class CCv2Api {
                     "https://${HybrisConstants.CCV2_DOMAIN}/subscription/$subscriptionCode/applications/commerce-cloud/environments/$environmentCode/deployments/$code"
                 else null
 
-                CCv2DeploymentDto(
-                    code = code ?: "N/A",
-                    createdBy = deployment.createdBy ?: "N/A",
-                    createdTime = deployment.createdTimestamp,
-                    buildCode = deployment.buildCode ?: "N/A",
-                    envCode = environmentCode ?: "N/A",
-                    updateMode = CCv2DeploymentDatabaseUpdateModeEnum.tryValueOf(deployment.databaseUpdateMode),
-                    strategy = CCv2DeploymentStrategyEnum.tryValueOf(deployment.strategy),
-                    scheduledTime = deployment.scheduledTimestamp,
-                    deployedTime = deployment.deployedTimestamp,
-                    failedTime = deployment.failedTimestamp,
-                    undeployedTime = deployment.undeployedTimestamp,
-                    status = CCv2DeploymentStatusEnum.tryValueOf(deployment.status),
-                    link = link
-                )
+                cCv2DeploymentDto(code, deployment, environmentCode, link)
+            }
+            ?: emptyList()
+    }
+
+    suspend fun fetchDeploymentsForBuild(
+        subscription: CCv2Subscription,
+        buildCode: String,
+        ccv2Token: String,
+        progressReporter: ProgressReporter
+    ) = progressReporter.sizedStep(1, "Fetching Deployments for subscription: $subscription") {
+
+        deploymentApi
+            .getDeployments(subscription.id!!, buildCode, dollarTop = 20, requestHeaders = createRequestParams(ccv2Token))
+            .value
+            ?.map { deployment ->
+                val code = deployment.code
+                val environmentCode = deployment.environmentCode
+                val link = if (environmentCode != null && code != null)
+                    "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${subscription.id}/applications/commerce-cloud/environments/$environmentCode/deployments/$code"
+                else null
+
+                cCv2DeploymentDto(code, deployment, environmentCode, link)
             }
             ?: emptyList()
     }
@@ -287,6 +294,27 @@ class CCv2Api {
         )
         .value
         .let { serviceProperties.parseResponse(it) }
+
+    private fun cCv2DeploymentDto(
+        code: String?,
+        deployment: DeploymentDetailDTO,
+        environmentCode: String?,
+        link: String?
+    ) = CCv2DeploymentDto(
+        code = code ?: "N/A",
+        createdBy = deployment.createdBy ?: "N/A",
+        createdTime = deployment.createdTimestamp,
+        buildCode = deployment.buildCode ?: "N/A",
+        envCode = environmentCode ?: "N/A",
+        updateMode = CCv2DeploymentDatabaseUpdateModeEnum.tryValueOf(deployment.databaseUpdateMode),
+        strategy = CCv2DeploymentStrategyEnum.tryValueOf(deployment.strategy),
+        scheduledTime = deployment.scheduledTimestamp,
+        deployedTime = deployment.deployedTimestamp,
+        failedTime = deployment.failedTimestamp,
+        undeployedTime = deployment.undeployedTimestamp,
+        status = CCv2DeploymentStatusEnum.tryValueOf(deployment.status),
+        link = link
+    )
 
     private fun createRequestParams(ccv2Token: String) = mapOf("Authorization" to "Bearer $ccv2Token")
 

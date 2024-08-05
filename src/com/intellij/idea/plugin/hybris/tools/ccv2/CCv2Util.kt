@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import java.time.OffsetDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 
 object CCv2Util {
 
@@ -28,4 +29,11 @@ object CCv2Util {
         ?.atZoneSameInstant(ZoneId.systemDefault())
         ?.format(HybrisConstants.CCV2_DATE_TIME_FORMATTER_LOCAL)
         ?: "N/A";
+
+    fun getTimeDiffInMinutes(startTime: OffsetDateTime?, endTime: OffsetDateTime?): Long {
+        if (startTime == null || endTime == null) {
+            return -1;
+        }
+        return ChronoUnit.MINUTES.between(startTime, endTime)
+    }
 }

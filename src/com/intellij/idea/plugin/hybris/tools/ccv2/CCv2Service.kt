@@ -386,10 +386,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
     fun restartServicePod(project: Project, subscription: CCv2Subscription, environment: CCv2EnvironmentDto, service: CCv2ServiceDto, replica: CCv2ServiceReplicaDto) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Restarting CCv2 Replica - ${replica.name}...") {
-                val ccv2Token = getCCv2Token(subscription)
-                if (ccv2Token == null) {
-                    return@withBackgroundProgress
-                }
+                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
 
                 try {
                     CCv1Api.getInstance()
@@ -529,6 +526,56 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
             }
         }
     }
+
+    fun fetchBuildWithCode(
+        subscription: CCv2Subscription,
+        buildCode: String,
+        onStartCallback: () -> Unit,
+        onCompleteCallback: (CCv2BuildDto) -> Unit
+    ) {
+        onStartCallback.invoke()
+        project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingStarted(listOf(subscription))
+
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Fetching Build...$buildCode", true) {
+                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                try {
+                    val build = CCv2Api.getInstance().fetchBuildForCode(ccv2Token, subscription, buildCode)
+                    onCompleteCallback.invoke(build)
+                    project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingCompleted(mapOf(Pair(subscription, listOf(build))))
+                } catch (e: SocketTimeoutException) {
+                    notifyOnTimeout(subscription)
+                } catch (e: RuntimeException) {
+                    notifyOnException(subscription, e)
+                }
+            }
+        }
+    }
+
+    fun fetchDeploymentsForBuild(
+        subscription: CCv2Subscription,
+        buildCode: String,
+        onStartCallback: () -> Unit,
+        onCompleteCallback: (List<CCv2DeploymentDto>) -> Unit
+    ) {
+        onStartCallback.invoke()
+        var deployments: List<CCv2DeploymentDto>
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Fetching Deployment for build...", true) {
+                reportProgress(1) { progressReporter ->
+                    val ccv2Token = getCCv2Token(subscription)
+                            try {
+                                deployments = CCv2Api.getInstance().fetchDeploymentsForBuild(subscription, buildCode, ccv2Token!!, progressReporter)
+                                onCompleteCallback(deployments)
+                            } catch (e: SocketTimeoutException) {
+                                notifyOnTimeout(subscription)
+                            } catch (e: RuntimeException) {
+                                notifyOnException(subscription, e)
+                            }
+                        }
+                }
+            }
+        }
 
     private fun getCCv2Token(subscription: CCv2Subscription): String? {
         val appSettings = ApplicationSettingsComponent.getInstance()

@@ -19,21 +19,30 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
 import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2CreateBuildDialog
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DeployBuildDialog
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildDetailsView
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.wm.ToolWindow
+import com.intellij.openapi.wm.ToolWindowManager
 
 val subscriptionKey = DataKey.create<CCv2Subscription>("subscription")
 val buildKey = DataKey.create<CCv2BuildDto>("build")
@@ -114,6 +123,43 @@ class CCv2FetchBuildsAction : AbstractCCv2FetchAction<CCv2BuildDto>(
     }
 )
 
+class CCv2FetchBuildDetailsAction(
+    private val subscription: CCv2Subscription,
+    private val build: CCv2BuildDto,
+    private val onStartCallback: () -> Unit,
+    private val onCompleteCallback: (CCv2BuildDto) -> Unit
+) : DumbAwareAction("Fetch Build", null, SHOW_DETAILS) {
+
+    private var fetching = false
+
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        CCv2Service.getInstance(project).fetchBuildWithCode(
+            subscription, build.code,
+            {
+                fetching = true
+                e.presentation.text = "Fetching..."
+
+                onStartCallback.invoke()
+            },
+            { response ->
+                invokeLater {
+                    fetching = false
+                    e.presentation.text = "Fetch Build"
+
+                    onCompleteCallback.invoke(response)
+                }
+            }
+        )
+    }
+
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabled = !fetching && ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
+    }
+}
+
 class CCv2DownloadBuildLogsAction(
     private val subscription: CCv2Subscription,
     private val build: CCv2BuildDto
@@ -147,7 +193,37 @@ class CCv2DownloadBuildLogsAction(
     override fun isEnabled() = !processing && super.isEnabled()
 }
 
-abstract class AbstractCCv2ShowBuildWithStatusAction(status: CCv2BuildStatus): AbstractCCv2ShowWithStatusAction<CCv2BuildStatus>(
+class CCv2ShowBuildDetailsAction(
+    private val subscription: CCv2Subscription,
+    private val build: CCv2BuildDto
+) : DumbAwareAction("Show Build Details", null, SHOW_DETAILS) {
+
+    override fun getActionUpdateThread() = ActionUpdateThread.EDT
+
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val toolWindow = ToolWindowManager.getInstance(project)
+            .getToolWindow(HybrisToolWindowFactory.ID) ?: return
+        val contentManager = toolWindow.contentManager
+        val panel = CCv2BuildDetailsView(project, subscription, build)
+        val content = contentManager.factory
+            .createContent(panel, build.code, true)
+            .also {
+                it.isCloseable = true
+                it.isPinnable = true
+                it.icon = SHOW_DETAILS
+                it.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
+            }
+
+        Disposer.register(toolWindow.disposable, panel)
+
+        contentManager.addContent(content)
+        contentManager.setSelectedContent(content)
+    }
+
+}
+
+abstract class AbstractCCv2ShowBuildWithStatusAction(status: CCv2BuildStatus) : AbstractCCv2ShowWithStatusAction<CCv2BuildStatus>(
     CCv2Tab.BUILDS,
     status,
     status.title,

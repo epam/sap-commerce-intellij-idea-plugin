@@ -46,6 +46,9 @@ data class CCv2DeploymentDto(
 
     val deployedTimeFormatted
         get() = CCv2Util.formatTime(deployedTime)
+
+    val scheduledTimeFormatted
+        get() = CCv2Util.formatTime(scheduledTime)
 }
 
 enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Icon, val apiMode: CreateDeploymentRequestDTO.DatabaseUpdateMode) {
