@@ -67,16 +67,7 @@ class CCv2BuildDetailsView(
             val actionManager = ActionManager.getInstance()
 
             add(actionManager.getAction("ccv2.environment.toolbar.actions"))
-            add(
-                CCv2FetchBuildDetailsAction(subscription, build, {}, {
-                    build = it
 
-                    this@CCv2BuildDetailsView.remove(rootPanel)
-                    rootPanel = rootPanel()
-
-                    initPanel()
-                })
-            )
             add(CCv2RedoBuildAction(subscription, build))
             if (build.canDeploy()) {
                 add(CCv2DeployBuildAction(subscription, build))
@@ -87,6 +78,16 @@ class CCv2BuildDetailsView(
             if (build.canDownloadLogs()) {
                 add(CCv2DownloadBuildLogsAction(subscription, build))
             }
+            add(
+                CCv2FetchBuildDetailsAction(subscription, build, {}, {
+                    build = it
+
+                    this@CCv2BuildDetailsView.remove(rootPanel)
+                    rootPanel = rootPanel()
+
+                    initPanel()
+                })
+            )
             actionManager.createActionToolbar("SAP_CX_CCv2_ENVIRONMENT_${System.identityHashCode(build)}", this, false)
         }
         toolbar.targetComponent = this
@@ -179,7 +180,7 @@ class CCv2BuildDetailsView(
                         label(build.endTimeFormatted).comment("End time")
                     }
                 }
-                if (build.duration != "-1") {
+                    if (build.duration != "N/A") {
                     panel {
                         row {
                             if (build.status == CCv2BuildStatus.BUILDING) {

@@ -58,7 +58,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
                             CCv2RedoBuildAction(subscription, build),
                             if (build.canDeploy()) CCv2DeployBuildAction(subscription, build) else null,
                             if (build.canDelete()) CCv2DeleteBuildAction(subscription, build) else null,
-                            if (build.canDownloadLogs()) CCv2DownloadBuildLogsAction(subscription, build) else null,
+                            if (build.canDownloadLogs()) CCv2DownloadBuildLogsAction(subscription, build) else null
                         ).toTypedArray(),
                         ActionPlaces.TOOLWINDOW_CONTENT
                     )

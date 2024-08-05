@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Actions.FETCH
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
 import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
@@ -117,7 +118,7 @@ class CCv2DeleteBuildAction(
 class CCv2FetchBuildsAction : AbstractCCv2FetchAction<CCv2BuildDto>(
     tab = CCv2Tab.BUILDS,
     text = "Fetch Builds",
-    icon = HybrisIcons.CCv2.Actions.FETCH,
+    icon = FETCH,
     fetch = { project, subscriptions, onStartCallback, onCompleteCallback ->
         CCv2Service.getInstance(project).fetchBuilds(subscriptions, onStartCallback, onCompleteCallback)
     }
@@ -128,7 +129,7 @@ class CCv2FetchBuildDetailsAction(
     private val build: CCv2BuildDto,
     private val onStartCallback: () -> Unit,
     private val onCompleteCallback: (CCv2BuildDto) -> Unit
-) : DumbAwareAction("Fetch Build", null, SHOW_DETAILS) {
+) : DumbAwareAction("Fetch Build", null, FETCH) {
 
     private var fetching = false
 
