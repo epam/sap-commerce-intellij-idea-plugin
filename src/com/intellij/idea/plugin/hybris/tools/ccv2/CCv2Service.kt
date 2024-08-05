@@ -534,7 +534,6 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         onCompleteCallback: (CCv2BuildDto) -> Unit
     ) {
         onStartCallback.invoke()
-        project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingStarted(listOf(subscription))
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching Build...$buildCode", true) {
@@ -542,7 +541,6 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 try {
                     val build = CCv2Api.getInstance().fetchBuildForCode(ccv2Token, subscription, buildCode)
                     onCompleteCallback.invoke(build)
-                    project.messageBus.syncPublisher(TOPIC_BUILDS).onFetchingCompleted(mapOf(Pair(subscription, listOf(build))))
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription)
                 } catch (e: RuntimeException) {
