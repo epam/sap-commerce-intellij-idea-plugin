@@ -9,6 +9,9 @@
 ### Other
 - Omit internal IntelliJ API usage in `ProjectBeforeCompilerTask` [#1186](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1186)
 
+### Fixes
+- Actions for CCv2 Build were not showing [#1191](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1191)
+
 ### `CCv2` enhancements
 - Added build details sections to know more about the build.
 
