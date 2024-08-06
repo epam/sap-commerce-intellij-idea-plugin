@@ -559,21 +559,21 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         onStartCallback.invoke()
         var deployments: List<CCv2DeploymentDto>
         coroutineScope.launch {
-            withBackgroundProgress(project, "Fetching Deployment for build...", true) {
+            withBackgroundProgress(project, "Fetching Deployment for build - $buildCode...", true) {
                 reportProgress(1) { progressReporter ->
                     val ccv2Token = getCCv2Token(subscription)
-                            try {
-                                deployments = CCv2Api.getInstance().fetchDeploymentsForBuild(subscription, buildCode, ccv2Token!!, progressReporter)
-                                onCompleteCallback(deployments)
-                            } catch (e: SocketTimeoutException) {
-                                notifyOnTimeout(subscription)
-                            } catch (e: RuntimeException) {
-                                notifyOnException(subscription, e)
-                            }
-                        }
+                    try {
+                        deployments = CCv2Api.getInstance().fetchDeploymentsForBuild(subscription, buildCode, ccv2Token!!, progressReporter)
+                        onCompleteCallback(deployments)
+                    } catch (e: SocketTimeoutException) {
+                        notifyOnTimeout(subscription)
+                    } catch (e: RuntimeException) {
+                        notifyOnException(subscription, e)
+                    }
                 }
             }
         }
+    }
 
     private fun getCCv2Token(subscription: CCv2Subscription): String? {
         val appSettings = ApplicationSettingsComponent.getInstance()

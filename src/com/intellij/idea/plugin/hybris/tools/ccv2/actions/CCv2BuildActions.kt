@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2CreateBuildDialog
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DeployBuildDialog
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildDetailsView
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -157,8 +158,15 @@ class CCv2FetchBuildDetailsAction(
     }
 
     override fun update(e: AnActionEvent) {
+        val isRightPlace = "GoToAction" != e.place
+        e.presentation.isEnabled = isRightPlace && isEnabled()
+        e.presentation.isVisible = isRightPlace && e.project
+            ?.let { CCv2View.getActiveTab(it) == CCv2Tab.BUILDS }
+            ?: false
         e.presentation.isEnabled = !fetching && ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
     }
+
+    fun isEnabled() = ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
 }
 
 class CCv2DownloadBuildLogsAction(
