@@ -536,7 +536,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         onStartCallback.invoke()
 
         coroutineScope.launch {
-            withBackgroundProgress(project, "Fetching Build...$buildCode", true) {
+            withBackgroundProgress(project, "Fetching Build - $buildCode...", true) {
                 val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
                 try {
                     val build = CCv2Api.getInstance().fetchBuildForCode(ccv2Token, subscription, buildCode)
