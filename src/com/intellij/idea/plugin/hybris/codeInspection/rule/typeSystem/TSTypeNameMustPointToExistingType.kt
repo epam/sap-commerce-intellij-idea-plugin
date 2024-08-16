@@ -63,6 +63,7 @@ class TSTypeNameMustPointToExistingType : AbstractTSInspection() {
         // If type code is Primitive - skip, it is not registered via TS, but available in Service Layer
         if (HybrisConstants.TS_PRIMITIVE_TYPES.contains(typeCode)) return
         if (typeCode.startsWith("HYBRIS.")) return
+        if ("String" == typeCode) return
         if ("java.io.Serializable" == typeCode) return
         if ("java.math.BigDecimal" == typeCode) return
         if ("java.util.Date" == typeCode) return

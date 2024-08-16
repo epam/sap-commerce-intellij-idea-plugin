@@ -1,6 +1,11 @@
 ## [2024.2.1]
 
 ### `Type System` enhancements
+- Added `String` to allowed types [#1195](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1195)
+
+## [2024.2.1]
+
+### `Type System` enhancements
 - Added dom model for `core-advanced-deployment.xml` [#1187](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1187)
 - Added code completion and reference resolution for primitive types [#1188](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1188)
 - Added code completion and reference resolution for additional object types [#1189](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1189)
