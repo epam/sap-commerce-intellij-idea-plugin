@@ -30,8 +30,10 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.platform.util.progress.ProgressReporter
-import com.intellij.platform.util.progress.reportProgress
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import org.jetbrains.kotlin.utils.flatMapToNullableSet
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -82,7 +84,7 @@ class CCv2Api {
                 .awaitAll()
                 .flatMapToNullableSet { it.value }
                 ?.map { env ->
-                    val canAccess = subscriptionPermissions.environments.contains(env.code)
+                    val canAccess = subscriptionPermissions.environments?.contains(env.code) ?: true
                     async {
                         val v1Env = if (canAccess) ccv1Api.fetchEnvironment(ccv2Token, env) else null
                         val v1EnvHealth = if (canAccess) ccv1Api.fetchEnvironmentHealth(ccv2Token, env) else null

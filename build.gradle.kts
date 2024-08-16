@@ -325,7 +325,7 @@ dependencies {
 
         // Ant:
         // https://plugins.jetbrains.com/plugin/23025-ant
-        plugin("AntSupport:242.20224.23")
+        plugin("AntSupport:242.20224.159")
 
         // PsiViewer:
         // https://plugins.jetbrains.com/plugin/227-psiviewer
@@ -333,7 +333,7 @@ dependencies {
 
         // JRebel and XRebel:
         // https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-        plugin("JRebelPlugin:2024.3.0")
+        plugin("JRebelPlugin:2024.3.1")
 
         // Big Data Tools:
         // incredibly sad, but as for now API cannot be used by 3rd-party plugins

@@ -349,7 +349,6 @@ components:
       required:
         - scopeName
         - permissions
-        - environments
       properties:
         scopeName:
           description: Subscription id
