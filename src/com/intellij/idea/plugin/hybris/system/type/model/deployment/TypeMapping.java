@@ -31,13 +31,16 @@ import org.jetbrains.annotations.NotNull;
 @StubbedOccurrence
 public interface TypeMapping extends DomElement {
 
+    String TYPE = "type";
+    String PERSISTENCE_TYPE = "persistence-type";
+
     /**
      * Returns the value of the type child.
      *
      * @return the value of the type child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("type")
+    @com.intellij.util.xml.Attribute(TYPE)
     @Required
     @Stubbed
     @NameValue
@@ -50,7 +53,7 @@ public interface TypeMapping extends DomElement {
      * @return the value of the persistence-type child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("persistence-type")
+    @com.intellij.util.xml.Attribute(PERSISTENCE_TYPE)
     @Required
     @Stubbed
     GenericAttributeValue<String> getPersistenceType();

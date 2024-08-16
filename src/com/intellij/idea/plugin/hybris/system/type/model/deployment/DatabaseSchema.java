@@ -33,6 +33,8 @@ import java.util.List;
 @StubbedOccurrence
 public interface DatabaseSchema extends DomElement {
 
+    String TYPE_MAPPING = "type-mapping";
+
     /**
      * Returns the value of the database child.
      *
@@ -82,7 +84,7 @@ public interface DatabaseSchema extends DomElement {
      * @return the list of type-mapping children.
      */
     @NotNull
-    @SubTagList("type-mapping")
+    @SubTagList(TYPE_MAPPING)
     List<TypeMapping> getTypeMappings();
 
     /**
@@ -90,7 +92,7 @@ public interface DatabaseSchema extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("type-mapping")
+    @SubTagList(TYPE_MAPPING)
     TypeMapping addTypeMapping();
 
 

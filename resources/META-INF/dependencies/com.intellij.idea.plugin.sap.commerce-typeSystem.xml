@@ -26,6 +26,7 @@
                           implementation="com.intellij.idea.plugin.hybris.system.type.file.TSDeploymentModelDomFileDescription"/>
 
         <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.lang.folding.ItemsXmlFoldingBuilder"/>
+        <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.lang.folding.DeploymentModelFoldingBuilder"/>
 
         <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlItemAlternativeDeclarationsLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlItemSiblingsLineMarkerProvider"/>

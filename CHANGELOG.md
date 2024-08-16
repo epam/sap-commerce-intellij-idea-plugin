@@ -6,6 +6,7 @@
 
 ### `Type System` enhancements
 - Added `String` to allowed types [#1195](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1195)
+- Added folding for `core-advanced-deployment.xml` [#1198](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1198)
 
 ## [2024.2.1]
 
