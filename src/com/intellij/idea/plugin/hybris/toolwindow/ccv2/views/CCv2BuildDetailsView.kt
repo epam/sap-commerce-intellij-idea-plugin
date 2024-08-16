@@ -180,7 +180,7 @@ class CCv2BuildDetailsView(
                         label(build.endTimeFormatted).comment("End time")
                     }
                 }
-                    if (build.duration != "N/A") {
+                if (build.duration != "N/A") {
                     panel {
                         row {
                             if (build.status == CCv2BuildStatus.BUILDING) {
@@ -245,6 +245,13 @@ class CCv2BuildDetailsView(
                     row {
                         label(activeDeployment.scheduledTimeFormatted)
                             .comment("Scheduled date")
+                    }
+                }.gap(RightGap.COLUMNS)
+
+                panel {
+                    row {
+                        label(activeDeployment.deployedTimeFormatted)
+                            .comment("Deployed date")
                     }
                 }.gap(RightGap.COLUMNS)
 
