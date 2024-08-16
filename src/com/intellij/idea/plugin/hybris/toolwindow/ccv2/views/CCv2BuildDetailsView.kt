@@ -216,9 +216,13 @@ class CCv2BuildDetailsView(
             row {
                 panel {
                     row {
-                        label(activeDeployment.status.name).comment("Status")
+                        icon(activeDeployment.status.icon)
+                            .gap(RightGap.SMALL)
+                        label(activeDeployment.status.title)
+                            .comment("Status")
                     }
                 }.gap(RightGap.COLUMNS)
+
                 panel {
                     row {
                         icon(activeDeployment.updateMode.icon)
@@ -227,6 +231,7 @@ class CCv2BuildDetailsView(
                             .comment("Platform update mode")
                     }
                 }.gap(RightGap.COLUMNS)
+
                 panel {
                     row {
                         icon(activeDeployment.strategy.icon)
@@ -235,15 +240,18 @@ class CCv2BuildDetailsView(
                             .comment("Platform deployment mode")
                     }
                 }.gap(RightGap.COLUMNS)
+
                 panel {
                     row {
-                        label(activeDeployment.scheduledTimeFormatted).comment("Scheduled date")
+                        label(activeDeployment.scheduledTimeFormatted)
+                            .comment("Scheduled date")
                     }
                 }.gap(RightGap.COLUMNS)
 
                 panel {
                     row {
-                        label(activeDeployment.createdBy).comment("Deployed by")
+                        label(activeDeployment.createdBy)
+                            .comment("Deployed by")
                     }
                 }.gap(RightGap.COLUMNS)
             }
