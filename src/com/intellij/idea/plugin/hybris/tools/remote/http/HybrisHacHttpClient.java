@@ -304,13 +304,13 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final int timeout
     ) {
 
-        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+        final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
         final var params = Arrays.asList(
             new BasicNameValuePair("loggerName", loggerName),
             new BasicNameValuePair("levelName", logLevel)
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
-        final String actionUrl = getHostHacURL(project) + "/platform/log4j/changeLevel/";
+        final String actionUrl = settings.getGeneratedURL() + "/console/scripting/execute";
 
         final HttpResponse response = post(project, actionUrl, params, true, timeout, settings);
         final StatusLine statusLine = response.getStatusLine();
@@ -329,19 +329,26 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         if (fsResultStatus == null) {
             return resultBuilder.errorMessage("No data in response").build();
         }
-        final HashMap json = new Gson().fromJson(fsResultStatus.text(), HashMap.class);
+        final Map json = parseResponse(fsResultStatus);
+
+        if (json == null) {
+            return createResult()
+                .errorMessage("Cannot parse response from the server...")
+                .build();
+        }
+
         if (json.get("stacktraceText") != null && isNotEmpty(json.get("stacktraceText").toString())) {
             return createResult()
                 .errorMessage(json.get("stacktraceText").toString())
                 .build();
-        } else {
-            if (json.get("outputText") != null) {
-                resultBuilder.output(json.get("outputText").toString());
-            }
-            if (json.get("executionResult") != null) {
-                resultBuilder.result(json.get("executionResult").toString());
-            }
-            return resultBuilder.build();
         }
+
+        if (json.get("outputText") != null) {
+            resultBuilder.output(json.get("outputText").toString());
+        }
+        if (json.get("executionResult") != null) {
+            resultBuilder.result(json.get("executionResult").toString());
+        }
+        return resultBuilder.build();
     }
 }
