@@ -295,4 +295,53 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             return null;
         }
     }
+
+    public @NotNull
+    HybrisHttpResult executeLogUpdate(
+        final Project project,
+        final String loggerName,
+        final String logLevel,
+        final int timeout
+    ) {
+
+        final var settings = HybrisDeveloperSpecificProjectSettingsComponent.getInstance(project).getActiveHacRemoteConnectionSettings(project);
+        final var params = Arrays.asList(
+            new BasicNameValuePair("loggerName", loggerName),
+            new BasicNameValuePair("levelName", logLevel)
+        );
+        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
+        final String actionUrl = getHostHacURL(project) + "/platform/log4j/changeLevel/";
+
+        final HttpResponse response = post(project, actionUrl, params, true, timeout, settings);
+        final StatusLine statusLine = response.getStatusLine();
+        resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
+        if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
+            return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
+                statusLine.getReasonPhrase()).build();
+        }
+        final Document document;
+        try {
+            document = parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "");
+        } catch (final IOException e) {
+            return resultBuilder.errorMessage(e.getMessage() + ' ' + actionUrl).httpCode(SC_BAD_REQUEST).build();
+        }
+        final Elements fsResultStatus = document.getElementsByTag("body");
+        if (fsResultStatus == null) {
+            return resultBuilder.errorMessage("No data in response").build();
+        }
+        final HashMap json = new Gson().fromJson(fsResultStatus.text(), HashMap.class);
+        if (json.get("stacktraceText") != null && isNotEmpty(json.get("stacktraceText").toString())) {
+            return createResult()
+                .errorMessage(json.get("stacktraceText").toString())
+                .build();
+        } else {
+            if (json.get("outputText") != null) {
+                resultBuilder.output(json.get("outputText").toString());
+            }
+            if (json.get("executionResult") != null) {
+                resultBuilder.result(json.get("executionResult").toString());
+            }
+            return resultBuilder.build();
+        }
+    }
 }
