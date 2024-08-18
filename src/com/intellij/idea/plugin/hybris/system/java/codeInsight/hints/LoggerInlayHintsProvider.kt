@@ -27,13 +27,18 @@ import com.intellij.codeInsight.hints.codeVision.DaemonBoundCodeVisionProvider
 import com.intellij.codeInsight.hints.settings.language.isInlaySettingsEditor
 import com.intellij.ide.DataManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
+import com.intellij.ui.awt.RelativePoint
+import java.awt.Point
 import java.awt.event.MouseEvent
 import javax.swing.Icon
 
@@ -58,8 +63,8 @@ class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
 
                 if (shouldShowIcon(element)) {
                     when (element) {
-                        is PsiClass -> println(element.name)
-                        is PsiPackage -> println(element.name)
+                        is PsiClass -> println("class: ${element.name}")
+                        is PsiPackageStatement -> println("package: ${element.packageName}")
                         else -> println("element: $element")
                     }
                     val hint = "!Logging!"
@@ -92,14 +97,16 @@ class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
     }
 
     fun handleClick(editor: Editor, element: PsiElement, event: MouseEvent?) {
+        val logIdentifier = getLogIdentifier(element) ?: return
+
         val actionGroup = DefaultActionGroup().apply {
-            add(LoggerAction("TRACE", HybrisIcons.Log.Level.TRACE))
-            add(LoggerAction("DEBUG", HybrisIcons.Log.Level.DEBUG))
-            add(LoggerAction("INFO", HybrisIcons.Log.Level.INFO))
-            add(LoggerAction("WARN", HybrisIcons.Log.Level.WARN))
-            add(LoggerAction("ERROR", HybrisIcons.Log.Level.ERROR))
-            add(LoggerAction("FATAL", HybrisIcons.Log.Level.FATAL))
-            add(LoggerAction("SEVERE", HybrisIcons.Log.Level.SEVERE))
+            add(LoggerAction("TRACE", logIdentifier, HybrisIcons.Log.Level.TRACE))
+            add(LoggerAction("DEBUG", logIdentifier, HybrisIcons.Log.Level.DEBUG))
+            add(LoggerAction("INFO", logIdentifier, HybrisIcons.Log.Level.INFO))
+            add(LoggerAction("WARN", logIdentifier, HybrisIcons.Log.Level.WARN))
+            add(LoggerAction("ERROR", logIdentifier, HybrisIcons.Log.Level.ERROR))
+            add(LoggerAction("FATAL", logIdentifier, HybrisIcons.Log.Level.FATAL))
+            add(LoggerAction("SEVERE", logIdentifier, HybrisIcons.Log.Level.SEVERE))
         }
 
         val dataManager = DataManager.getInstance()
@@ -114,14 +121,55 @@ class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
                 true
             )
 
-        popup.showInBestPositionFor(editor)
+        //popup.showInBestPositionFor(editor)
+
+        // Calculate the position for the popup
+        val offset = element.textOffset
+        val logicalPosition = editor.offsetToLogicalPosition(offset)
+        val visualPosition = editor.logicalToVisualPosition(logicalPosition)
+        val point = editor.visualPositionToXY(visualPosition)
+
+        // Convert the point to a RelativePoint
+        val relativePoint = RelativePoint(editor.contentComponent, Point(point))
+
+        // Show the popup at the calculated relative point
+        popup.show(relativePoint)
     }
+
 
 }
 
-class LoggerAction(private val text: String, icon: Icon) : AnAction(text, "", icon) {
+class LoggerAction(private val logLevel: String, val logIdentifier: String, val icon: Icon) : AnAction(logLevel, "", icon) {
+
     override fun actionPerformed(e: AnActionEvent) {
-        // Handle the action click
-        println("Action '$text' clicked")
+        println("Set the log level: $logLevel for $logIdentifier")
+
+        val project = e.project ?: return
+        val psiFile: PsiFile = e.getData(LangDataKeys.PSI_FILE) ?: return
+        val virtualFile = psiFile.virtualFile
+        val packageName = getPackageName(psiFile)
+
+        val fileNameWithPackage = "$packageName.${virtualFile.nameWithoutExtension}"
+
+        val result = HybrisHacHttpClient.getInstance(project).executeLogUpdate(
+            project,
+            fileNameWithPackage,
+            logLevel,
+            AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
+        )
+        println(result.statusCode)
     }
+
+    private fun getPackageName(psiFile: PsiFile): String {
+        val packageStatement = psiFile.children.firstOrNull { it is PsiPackageStatement }
+        return (packageStatement as? PsiPackageStatement)?.packageName ?: ""
+    }
+
+
+}
+
+fun getLogIdentifier(element: PsiElement) = when (element) {
+    is PsiClass -> element.name
+    is PsiPackageStatement -> element.packageName
+    else -> null
 }
