@@ -22,13 +22,15 @@ import com.intellij.codeInsight.codeVision.CodeVisionAnchorKind
 import com.intellij.codeInsight.codeVision.CodeVisionEntry
 import com.intellij.codeInsight.codeVision.CodeVisionRelativeOrdering
 import com.intellij.codeInsight.codeVision.ui.model.ClickableTextCodeVisionEntry
+import com.intellij.codeInsight.daemon.impl.JavaCodeVisionProviderBase
 import com.intellij.codeInsight.hints.InlayHintsUtils
-import com.intellij.codeInsight.hints.codeVision.DaemonBoundCodeVisionProvider
 import com.intellij.codeInsight.hints.settings.language.isInlaySettingsEditor
 import com.intellij.ide.DataManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -36,13 +38,14 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
+import com.intellij.psi.util.childrenOfType
 import com.intellij.ui.awt.RelativePoint
 import java.awt.Point
 import java.awt.event.MouseEvent
 import javax.swing.Icon
 
 
-class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
+class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     override val defaultAnchor: CodeVisionAnchorKind
         get() = CodeVisionAnchorKind.Default
     override val id: String
@@ -53,53 +56,58 @@ class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
     override val relativeOrderings: List<CodeVisionRelativeOrdering>
         get() = emptyList()
 
-    override fun computeForEditor(editor: Editor, file: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
+    override fun computeLenses(editor: Editor, psiFile: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
         val entries = mutableListOf<Pair<TextRange, CodeVisionEntry>>()
 
-        file.accept(object : PsiRecursiveElementVisitor() {
+        psiFile.accept(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 super.visitElement(element)
-
-                if (isEligibleForLogging(element)) {
-                    val handler = ClickHandler(element, file)
-                    val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(element)
-                    entries.add(range to ClickableTextCodeVisionEntry("", id, handler, HybrisIcons.Log.TOGGLE, "", "Setup the logger for SAP Commerce Cloud"))
+                val targetElement = when (element) {
+                    is PsiClass -> element.nameIdentifier
+                    is PsiPackageStatement -> element.packageReference
+                    else -> null
                 }
+                if (targetElement == null) return
+
+                val loggerIdentifier = extractIdentifierForLogger(element, psiFile) ?: return
+
+                val handler = ClickHandler(targetElement, loggerIdentifier)
+                val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(targetElement)
+                entries.add(range to ClickableTextCodeVisionEntry("", id, handler, HybrisIcons.Log.TOGGLE, "", "Setup the logger for SAP Commerce Cloud"))
             }
         })
 
         return entries
     }
 
-    private fun isEligibleForLogging(element: PsiElement): Boolean {
-        return element is PsiClass || element is PsiPackageStatement
+    fun extractIdentifierForLogger(element: PsiElement, file: PsiFile): String? = when (element) {
+        is PsiClass -> file.packageName()?.let { "$it.${element.name}" }
+        is PsiPackageStatement -> element.packageName
+        else -> null
     }
 
     private inner class ClickHandler(
         element: PsiElement,
-        file: PsiFile,
+        private val loggerIdentifier: String,
     ) : (MouseEvent?, Editor) -> Unit {
         private val elementPointer = SmartPointerManager.createPointer(element)
 
         override fun invoke(event: MouseEvent?, editor: Editor) {
             if (isInlaySettingsEditor(editor)) return
             val element = elementPointer.element ?: return
-            handleClick(editor, element, file)
+            handleClick(editor, element, loggerIdentifier)
         }
     }
 
-    fun handleClick(editor: Editor, element: PsiElement, file: PsiFile) {
-
-        val logIdentifier = extractIdentifierForLogger(element, file) ?: return
-
+    fun handleClick(editor: Editor, element: PsiElement, loggerIdentifier: String) {
         val actionGroup = DefaultActionGroup().apply {
-            add(LoggerAction("TRACE", logIdentifier, HybrisIcons.Log.Level.TRACE))
-            add(LoggerAction("DEBUG", logIdentifier, HybrisIcons.Log.Level.DEBUG))
-            add(LoggerAction("INFO", logIdentifier, HybrisIcons.Log.Level.INFO))
-            add(LoggerAction("WARN", logIdentifier, HybrisIcons.Log.Level.WARN))
-            add(LoggerAction("ERROR", logIdentifier, HybrisIcons.Log.Level.ERROR))
-            add(LoggerAction("FATAL", logIdentifier, HybrisIcons.Log.Level.FATAL))
-            add(LoggerAction("SEVERE", logIdentifier, HybrisIcons.Log.Level.SEVERE))
+            add(LoggerAction("TRACE", loggerIdentifier, HybrisIcons.Log.Level.TRACE))
+            add(LoggerAction("DEBUG", loggerIdentifier, HybrisIcons.Log.Level.DEBUG))
+            add(LoggerAction("INFO", loggerIdentifier, HybrisIcons.Log.Level.INFO))
+            add(LoggerAction("WARN", loggerIdentifier, HybrisIcons.Log.Level.WARN))
+            add(LoggerAction("ERROR", loggerIdentifier, HybrisIcons.Log.Level.ERROR))
+            add(LoggerAction("FATAL", loggerIdentifier, HybrisIcons.Log.Level.FATAL))
+            add(LoggerAction("SEVERE", loggerIdentifier, HybrisIcons.Log.Level.SEVERE))
         }
 
         val dataManager = DataManager.getInstance()
@@ -142,21 +150,16 @@ class LoggerAction(private val logLevel: String, val logIdentifier: String, val 
             logLevel,
             AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
         )
-        println(result.statusCode)
+
+        Notifications.create(
+            NotificationType.INFORMATION, "Logger",
+            "Set the log level: $logLevel for $logIdentifier. Server response: ${result.statusCode}"
+        )
+            .hideAfter(5)
+            .notify(project)
     }
 }
 
-fun extractIdentifierForLogger(element: PsiElement, file: PsiFile): String? = when (element) {
-    is PsiClass -> {
-        val packageName = packageName(file)
-        "$packageName.${element.name}"
-    }
-
-    is PsiPackageStatement -> element.packageName
-    else -> null
-}
-
-private fun packageName(psiFile: PsiFile): String {
-    val packageStatement = psiFile.children.firstOrNull { it is PsiPackageStatement }
-    return (packageStatement as? PsiPackageStatement)?.packageName ?: ""
-}
+private fun PsiFile.packageName() = childrenOfType<PsiPackageStatement>()
+    .firstOrNull()
+    ?.packageName
