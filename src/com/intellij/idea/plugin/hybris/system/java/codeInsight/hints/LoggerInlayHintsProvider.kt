@@ -61,16 +61,10 @@ class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
             override fun visitElement(element: PsiElement) {
                 super.visitElement(element)
 
-                if (shouldShowIcon(element)) {
-                    when (element) {
-                        is PsiClass -> println("class: ${element.name}")
-                        is PsiPackageStatement -> println("package: ${element.packageName}")
-                        else -> println("element: $element")
-                    }
-                    val hint = "!Logging!"
-                    val handler = ClickHandler(element, hint)
+                if (isEligibleForLogging(element)) {
+                    val handler = ClickHandler(element)
                     val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(element)
-                    entries.add(range to ClickableTextCodeVisionEntry(hint, id, handler, HybrisIcons.Log.TOGGLE, hint, "Setup the logger"))
+                    entries.add(range to ClickableTextCodeVisionEntry("", id, handler, HybrisIcons.Log.TOGGLE, "", "Setup the logger for SAP Commerce Cloud"))
                 }
             }
         })
@@ -78,25 +72,23 @@ class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
         return entries
     }
 
-    private fun shouldShowIcon(element: PsiElement): Boolean {
-        // Implement your logic to decide whether the icon should be shown at this element
+    private fun isEligibleForLogging(element: PsiElement): Boolean {
         return element is PsiClass || element is PsiPackageStatement
     }
 
     private inner class ClickHandler(
         element: PsiElement,
-        private val hint: String,
     ) : (MouseEvent?, Editor) -> Unit {
         private val elementPointer = SmartPointerManager.createPointer(element)
 
         override fun invoke(event: MouseEvent?, editor: Editor) {
             if (isInlaySettingsEditor(editor)) return
             val element = elementPointer.element ?: return
-            handleClick(editor, element, event)
+            handleClick(editor, element)
         }
     }
 
-    fun handleClick(editor: Editor, element: PsiElement, event: MouseEvent?) {
+    fun handleClick(editor: Editor, element: PsiElement) {
         val logIdentifier = getLogIdentifier(element) ?: return
 
         val actionGroup = DefaultActionGroup().apply {
@@ -121,8 +113,6 @@ class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
                 true
             )
 
-        //popup.showInBestPositionFor(editor)
-
         // Calculate the position for the popup
         val offset = element.textOffset
         val logicalPosition = editor.offsetToLogicalPosition(offset)
@@ -135,13 +125,12 @@ class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
         // Show the popup at the calculated relative point
         popup.show(relativePoint)
     }
-
-
 }
 
 class LoggerAction(private val logLevel: String, val logIdentifier: String, val icon: Icon) : AnAction(logLevel, "", icon) {
 
     override fun actionPerformed(e: AnActionEvent) {
+        //TODO comment this
         println("Set the log level: $logLevel for $logIdentifier")
 
         val project = e.project ?: return
@@ -164,8 +153,6 @@ class LoggerAction(private val logLevel: String, val logIdentifier: String, val 
         val packageStatement = psiFile.children.firstOrNull { it is PsiPackageStatement }
         return (packageStatement as? PsiPackageStatement)?.packageName ?: ""
     }
-
-
 }
 
 fun getLogIdentifier(element: PsiElement) = when (element) {

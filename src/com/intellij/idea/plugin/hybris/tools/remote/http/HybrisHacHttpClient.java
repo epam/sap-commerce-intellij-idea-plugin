@@ -310,7 +310,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             new BasicNameValuePair("levelName", logLevel)
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
-        final String actionUrl = settings.getGeneratedURL() + "/console/scripting/execute";
+        final String actionUrl = settings.getGeneratedURL() + "/platform/log4j/changeLevel/";
 
         final HttpResponse response = post(project, actionUrl, params, true, timeout, settings);
         final StatusLine statusLine = response.getStatusLine();
