@@ -32,7 +32,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.TextRange
@@ -62,7 +61,7 @@ class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
                 super.visitElement(element)
 
                 if (isEligibleForLogging(element)) {
-                    val handler = ClickHandler(element)
+                    val handler = ClickHandler(element, file)
                     val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(element)
                     entries.add(range to ClickableTextCodeVisionEntry("", id, handler, HybrisIcons.Log.TOGGLE, "", "Setup the logger for SAP Commerce Cloud"))
                 }
@@ -78,18 +77,20 @@ class LoggerInlayHintsProvider : DaemonBoundCodeVisionProvider {
 
     private inner class ClickHandler(
         element: PsiElement,
+        file: PsiFile,
     ) : (MouseEvent?, Editor) -> Unit {
         private val elementPointer = SmartPointerManager.createPointer(element)
 
         override fun invoke(event: MouseEvent?, editor: Editor) {
             if (isInlaySettingsEditor(editor)) return
             val element = elementPointer.element ?: return
-            handleClick(editor, element)
+            handleClick(editor, element, file)
         }
     }
 
-    fun handleClick(editor: Editor, element: PsiElement) {
-        val logIdentifier = getLogIdentifier(element) ?: return
+    fun handleClick(editor: Editor, element: PsiElement, file: PsiFile) {
+
+        val logIdentifier = extractIdentifierForLogger(element, file) ?: return
 
         val actionGroup = DefaultActionGroup().apply {
             add(LoggerAction("TRACE", logIdentifier, HybrisIcons.Log.Level.TRACE))
@@ -134,29 +135,28 @@ class LoggerAction(private val logLevel: String, val logIdentifier: String, val 
         println("Set the log level: $logLevel for $logIdentifier")
 
         val project = e.project ?: return
-        val psiFile: PsiFile = e.getData(LangDataKeys.PSI_FILE) ?: return
-        val virtualFile = psiFile.virtualFile
-        val packageName = getPackageName(psiFile)
-
-        val fileNameWithPackage = "$packageName.${virtualFile.nameWithoutExtension}"
 
         val result = HybrisHacHttpClient.getInstance(project).executeLogUpdate(
             project,
-            fileNameWithPackage,
+            logIdentifier,
             logLevel,
             AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
         )
         println(result.statusCode)
     }
-
-    private fun getPackageName(psiFile: PsiFile): String {
-        val packageStatement = psiFile.children.firstOrNull { it is PsiPackageStatement }
-        return (packageStatement as? PsiPackageStatement)?.packageName ?: ""
-    }
 }
 
-fun getLogIdentifier(element: PsiElement) = when (element) {
-    is PsiClass -> element.name
+fun extractIdentifierForLogger(element: PsiElement, file: PsiFile): String? = when (element) {
+    is PsiClass -> {
+        val packageName = packageName(file)
+        "$packageName.${element.name}"
+    }
+
     is PsiPackageStatement -> element.packageName
     else -> null
+}
+
+private fun packageName(psiFile: PsiFile): String {
+    val packageStatement = psiFile.children.firstOrNull { it is PsiPackageStatement }
+    return (packageStatement as? PsiPackageStatement)?.packageName ?: ""
 }
