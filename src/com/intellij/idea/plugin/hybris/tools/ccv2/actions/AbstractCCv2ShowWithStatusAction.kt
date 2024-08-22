@@ -52,8 +52,7 @@ abstract class AbstractCCv2ShowWithStatusAction<T : Enum<T>>(
 
     override fun update(e: AnActionEvent) {
         super.update(e)
-        val isRightPlace = CCv2View.PLACE == e.place
-        e.presentation.isVisible = isRightPlace && e.project
+        e.presentation.isVisible = e.project
             ?.let { CCv2View.getActiveTab(it) == tab }
             ?: false
     }

@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.Namespace;
 import com.intellij.util.xml.SubTag;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * http://www.hybris.com/cockpit/config/hybris:action-group-extended interface.
@@ -38,7 +37,6 @@ public interface ActionGroupExtended extends DomElement, ActionGroup {
      *
      * @return the value of the extended-action child.
      */
-    @NotNull
     @SubTag("extended-action")
     Action getExtendedAction();
 
