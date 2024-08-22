@@ -1,7 +1,7 @@
 ## [2024.2.3]
 
 ### `CCv2` enhancements
-- Build status view options are not displayed [#1201](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1201)
+- Build status view options are not displayed [#1202](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1202)
 
 ## [2024.2.2]
 
