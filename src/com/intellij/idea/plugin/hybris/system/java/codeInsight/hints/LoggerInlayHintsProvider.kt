@@ -38,7 +38,9 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
+import com.intellij.psi.util.endOffset
 import com.intellij.ui.awt.RelativePoint
 import java.awt.Point
 import java.awt.event.MouseEvent
@@ -57,14 +59,26 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         get() = emptyList()
 
     override fun computeLenses(editor: Editor, psiFile: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
+        //todo check it is hybris
+
         val entries = mutableListOf<Pair<TextRange, CodeVisionEntry>>()
 
         psiFile.accept(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 super.visitElement(element)
                 val targetElement = when (element) {
-                    is PsiClass -> element.nameIdentifier
-                    is PsiPackageStatement -> element.packageReference
+                    is PsiClass -> {
+                        val psiKeyword = PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)?.first()?.text
+                        if (psiKeyword == "class")
+                             element.nameIdentifier
+                        else null
+                    }
+                    is PsiPackageStatement -> {
+                        val psiKeyword = PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)?.first()?.text
+                        if (psiKeyword == "package")
+                            element.packageReference
+                        else null
+                    }
                     else -> null
                 }
                 if (targetElement == null) return
@@ -73,7 +87,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
                 val handler = ClickHandler(targetElement, loggerIdentifier)
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(targetElement)
-                entries.add(range to ClickableTextCodeVisionEntry("", id, handler, HybrisIcons.Log.TOGGLE, "", "Setup the logger for SAP Commerce Cloud"))
+                entries.add(range to ClickableTextCodeVisionEntry("log level", id, handler, HybrisIcons.Log.TOGGLE, "", "Setup the logger for SAP Commerce Cloud"))
             }
         })
 
@@ -123,7 +137,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             )
 
         // Calculate the position for the popup
-        val offset = element.textOffset
+        val offset = element.endOffset
         val logicalPosition = editor.offsetToLogicalPosition(offset)
         val visualPosition = editor.logicalToVisualPosition(logicalPosition)
         val point = editor.visualPositionToXY(visualPosition)
@@ -139,9 +153,6 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 class LoggerAction(private val logLevel: String, val logIdentifier: String, val icon: Icon) : AnAction(logLevel, "", icon) {
 
     override fun actionPerformed(e: AnActionEvent) {
-        //TODO comment this
-        println("Set the log level: $logLevel for $logIdentifier")
-
         val project = e.project ?: return
 
         val result = HybrisHacHttpClient.getInstance(project).executeLogUpdate(
@@ -151,8 +162,10 @@ class LoggerAction(private val logLevel: String, val logIdentifier: String, val 
             AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
         )
 
+        val resultMessage = if (result.statusCode == 200) "Success" else "Failed"
+        val title = "Logger - $resultMessage"
         Notifications.create(
-            NotificationType.INFORMATION, "Logger",
+            NotificationType.INFORMATION, title,
             "Set the log level: $logLevel for $logIdentifier. Server response: ${result.statusCode}"
         )
             .hideAfter(5)
