@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -70,6 +70,15 @@ class DataSourcesConfigurator {
 
             for (dataSource in dataSources) {
                 LocalDataSourceManager.getInstance(project).addDataSource(dataSource)
+                /**
+                 * @deprecated Use performAutoIntrospection
+                 * Yann Cébron
+                 * :jetbrains:  Aug 1st at 10:53 AM
+                 * the specified method is the replacement
+                 * The only difference is that method is suspend
+                 * you need to call it from coroutine context
+                 * the current version returning AsyncTask (completable future) is deprecated
+                 */
                 DataSourceUtil.performAutoSyncTask(project, dataSource)
                 loadDatabaseDriver(project, dataSource)
             }

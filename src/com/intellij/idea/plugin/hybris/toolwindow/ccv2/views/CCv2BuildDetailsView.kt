@@ -47,7 +47,7 @@ class CCv2BuildDetailsView(
     private val project: Project, private val subscription: CCv2Subscription, private var build: CCv2BuildDto
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
-    private val buildHistoryPanel = JBPanel<JBPanel<*>>(GridBagLayout())
+    private val deploymentHistoryPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
     private val showBuildHistory = AtomicBooleanProperty(false)
     private var rootPanel = rootPanel()
@@ -104,20 +104,21 @@ class CCv2BuildDetailsView(
         CCv2Service.getInstance(project).fetchDeploymentsForBuild(subscription, build.code,
             {
                 showBuildHistory.set(false)
-                buildHistoryPanel.removeAll()
+                deploymentHistoryPanel.removeAll()
             }
-        ) { it ->
-            if (it.isNotEmpty()) {
+        ) { deployments ->
+            if (deployments.isNotEmpty()) {
                 invokeLater {
                     showBuildHistory.set(true)
-                    it.forEach {
-                        buildHistoryPanel.add(buildHistoryPanel(it))
-                    }
+
+                    val groupedDeployments = deployments
+                        .groupBy { it.envCode }
+                    deploymentHistoryPanel.add(buildDeploymentHistoryPanel(groupedDeployments))
                 }
             } else {
                 invokeLater {
                     showBuildHistory.set(true)
-                    buildHistoryPanel.add(panel {
+                    deploymentHistoryPanel.add(panel {
                         row {
                             label("No deployments available for the build")
                         }
@@ -196,7 +197,7 @@ class CCv2BuildDetailsView(
 
         group("Deployment History") {
             row {
-                cell(buildHistoryPanel).visibleIf(showBuildHistory)
+                cell(deploymentHistoryPanel).visibleIf(showBuildHistory)
             }
 
             row {
@@ -211,58 +212,65 @@ class CCv2BuildDetailsView(
     }.let { Dsl.scrollPanel(it) }
 
 
-    private fun buildHistoryPanel(activeDeployment: CCv2DeploymentDto) = panel {
-        collapsibleGroup(activeDeployment.envCode) {
-            row {
-                panel {
-                    row {
-                        icon(activeDeployment.status.icon)
-                            .gap(RightGap.SMALL)
-                        label(activeDeployment.status.title)
-                            .comment("Status")
-                    }
-                }.gap(RightGap.COLUMNS)
+    private fun buildDeploymentHistoryPanel(groupedDeployments: Map<String, List<CCv2DeploymentDto>>) = panel {
+        groupedDeployments.forEach {
+            val envCode = it.key
+            val deployments = it.value
 
-                panel {
+            collapsibleGroup(envCode) {
+                deployments.forEach { deployment ->
                     row {
-                        icon(activeDeployment.updateMode.icon)
-                            .gap(RightGap.SMALL)
-                        label(activeDeployment.updateMode.title)
-                            .comment("Platform update mode")
-                    }
-                }.gap(RightGap.COLUMNS)
+                        panel {
+                            row {
+                                icon(deployment.status.icon)
+                                    .gap(RightGap.SMALL)
+                                label(deployment.status.title)
+                                    .comment("Status")
+                            }
+                        }.gap(RightGap.COLUMNS)
 
-                panel {
-                    row {
-                        icon(activeDeployment.strategy.icon)
-                            .gap(RightGap.SMALL)
-                        label(activeDeployment.strategy.title)
-                            .comment("Platform deployment mode")
-                    }
-                }.gap(RightGap.COLUMNS)
+                        panel {
+                            row {
+                                icon(deployment.updateMode.icon)
+                                    .gap(RightGap.SMALL)
+                                label(deployment.updateMode.title)
+                                    .comment("Platform update mode")
+                            }
+                        }.gap(RightGap.COLUMNS)
 
-                panel {
-                    row {
-                        label(activeDeployment.scheduledTimeFormatted)
-                            .comment("Scheduled date")
-                    }
-                }.gap(RightGap.COLUMNS)
+                        panel {
+                            row {
+                                icon(deployment.strategy.icon)
+                                    .gap(RightGap.SMALL)
+                                label(deployment.strategy.title)
+                                    .comment("Platform deployment mode")
+                            }
+                        }.gap(RightGap.COLUMNS)
 
-                panel {
-                    row {
-                        label(activeDeployment.deployedTimeFormatted)
-                            .comment("Deployed date")
-                    }
-                }.gap(RightGap.COLUMNS)
+                        panel {
+                            row {
+                                label(deployment.scheduledTimeFormatted)
+                                    .comment("Scheduled date")
+                            }
+                        }.gap(RightGap.COLUMNS)
 
-                panel {
-                    row {
-                        label(activeDeployment.createdBy)
-                            .comment("Deployed by")
+                        panel {
+                            row {
+                                label(deployment.deployedTimeFormatted)
+                                    .comment("Deployed date")
+                            }
+                        }.gap(RightGap.COLUMNS)
+
+                        panel {
+                            row {
+                                label(deployment.createdBy)
+                                    .comment("Deployed by")
+                            }
+                        }.gap(RightGap.COLUMNS)
                     }
-                }.gap(RightGap.COLUMNS)
-            }
-        }.expanded = true
+                }
+            }.expanded = true
+        }
     }
 
     companion object {
