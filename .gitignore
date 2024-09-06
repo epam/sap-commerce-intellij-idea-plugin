@@ -1,3 +1,6 @@
+.DS_Store
+
+.idea/hybrisDeveloperSpecificProjectSettings.xml
 .idea/workspace.xml
 .idea/shelf
 .idea/libraries
@@ -37,3 +40,5 @@
 jflex-*.jar
 
 resources/CHANGELOG.md
+
+src/com/intellij/idea/plugin/hybris/polyglotQuery/_PolyglotQueryLexer.java~
