@@ -4,6 +4,9 @@
 - Build status view options are not displayed [#1202](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1202)
 - Show deployments as groups for the build [#1203](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1203)
 
+### Other
+- Enable K2 compiler [#1204](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1204)
+
 ## [2024.2.2]
 
 ### `CCv2` enhancements

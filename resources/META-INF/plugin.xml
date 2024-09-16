@@ -32,6 +32,10 @@
     <incompatible-with>ccom.intellij.idea.plugin.hybris.impex</incompatible-with>
     <incompatible-with>ccom.intellij.idea.plugin.commerce.integration</incompatible-with>
 
+    <extensions defaultExtensionNs="org.jetbrains.kotlin">
+        <supportsKotlinPluginMode supportsK2="true" />
+    </extensions>
+
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.modules.xml</depends>
