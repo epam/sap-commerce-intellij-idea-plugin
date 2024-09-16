@@ -5,7 +5,7 @@
 - Show deployments as groups for the build [#1203](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1203)
 
 ### Other
-- Enable K2 compiler [#1205](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1205)
+- Enable K2 compiler [#1207](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1207)
 
 ## [2024.2.2]
 
