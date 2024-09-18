@@ -18,11 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.api
 
+import com.intellij.idea.plugin.hybris.ccv1.invoker.infrastructure.ClientException
 import com.intellij.idea.plugin.hybris.ccv2.api.*
 import com.intellij.idea.plugin.hybris.ccv2.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentDetailDTO
+import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
@@ -86,8 +88,8 @@ class CCv2Api {
                 ?.map { env ->
                     val canAccess = subscriptionPermissions.environments?.contains(env.code) ?: true
                     async {
-                        val v1Env = if (canAccess) ccv1Api.fetchEnvironment(ccv2Token, env) else null
-                        val v1EnvHealth = if (canAccess) ccv1Api.fetchEnvironmentHealth(ccv2Token, env) else null
+                        val v1Env = getV1Environment(canAccess, ccv1Api, ccv2Token, env)
+                        val v1EnvHealth = getV1EnvironmentHealth(canAccess, ccv1Api, ccv2Token, env)
 
                         env to Triple(canAccess, v1Env, v1EnvHealth)
                     }
@@ -319,6 +321,32 @@ class CCv2Api {
     )
 
     private fun createRequestParams(ccv2Token: String) = mapOf("Authorization" to "Bearer $ccv2Token")
+
+    private suspend fun getV1Environment(
+        canAccess: Boolean,
+        ccv1Api: CCv1Api,
+        ccv2Token: String,
+        env: EnvironmentDetailDTO
+    ) = if (canAccess) {
+        try {
+            ccv1Api.fetchEnvironment(ccv2Token, env)
+        } catch (e: ClientException) {
+            null
+        }
+    } else null
+
+    private suspend fun getV1EnvironmentHealth(
+        canAccess: Boolean,
+        ccv1Api: CCv1Api,
+        ccv2Token: String,
+        env: EnvironmentDetailDTO
+    ) = if (canAccess) {
+        try {
+            ccv1Api.fetchEnvironmentHealth(ccv2Token, env)
+        } catch (e: ClientException) {
+            null
+        }
+    } else null
 
     companion object {
         fun getInstance(): CCv2Api = ApplicationManager.getApplication().getService(CCv2Api::class.java)
