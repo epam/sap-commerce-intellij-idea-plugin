@@ -69,7 +69,7 @@ data class CCv2EnvironmentDto(
                 status = status,
                 type = CCv2EnvironmentType.tryValueOf(environment.type),
                 deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(environment.deploymentStatus),
-                deploymentAllowed = deploymentStatus && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT),
+                deploymentAllowed = deploymentStatus && (status == CCv2EnvironmentStatus.AVAILABLE || status == CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT) && link != null,
                 dynatraceLink = v1Environment?.dynatraceUrl,
                 loggingLink = v1Environment?.loggingUrl?.let { "$it/app/discover" },
                 problems = v1EnvironmentHealth?.problems,
