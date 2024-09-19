@@ -1,10 +1,15 @@
+## [2024.2.4]
+
+### `CCv2` enhancements
+- Copy Cloud Storage account name on click [#1211](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1211)
+
 ## [2024.2.3]
 
 ### `CCv2` enhancements
 - Build status view options are not displayed [#1202](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1202)
 - Show deployments as groups for the build [#1203](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1203)
 - Show environments even if there is no response from the v1 API [#1208](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1208)
-- Hide environment from the deployment list if the is no link to it [#1209](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1209)
+- Hide environment from the deployment list if there is no link to it [#1209](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1209)
 
 ### Other
 - Enable K2 compiler [#1207](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1207)

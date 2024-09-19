@@ -469,7 +469,7 @@ class CCv2EnvironmentDetailsView(
                             panel {
                                 row {
                                     link(mediaStorage.code) {
-                                        CopyPasteManager.getInstance().setContents(StringSelection(mediaStorage.code))
+                                        CopyPasteManager.getInstance().setContents(StringSelection(mediaStorage.accountName))
                                         Notifications.create(NotificationType.INFORMATION, "Account name copied to clipboard", "")
                                             .hideAfter(10)
                                             .notify(project)
