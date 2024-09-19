@@ -341,7 +341,7 @@ object HybrisIcons {
                 val DEPLOY = AllIcons.Nodes.Deploy
                 val DELETE = AllIcons.General.Delete
                 val DOWNLOAD_LOGS = AllIcons.Actions.Download
-                val SHOW_DETAILS = getIcon("/icons/module/cloud.svg")
+                val SHOW_DETAILS = BUILDS
             }
         }
 
