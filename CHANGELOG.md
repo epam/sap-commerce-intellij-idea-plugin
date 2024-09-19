@@ -1,6 +1,7 @@
 ## [2024.2.4]
 
 ### `CCv2` enhancements
+- Show build icon in the environments view per build [#1213](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1213)
 - Open build details from the environments view [#1212](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1212)
 - Copy Cloud Storage account name on click [#1211](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1211)
 

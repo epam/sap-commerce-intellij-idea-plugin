@@ -140,6 +140,8 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
         if (deployedBuild != null) {
             panel {
                 row {
+                    icon(HybrisIcons.CCv2.BUILDS)
+                        .gap(RightGap.SMALL)
                     link(deployedBuild.name) {
                         CCv2ViewUtil.showBuildDetailsTab(project, subscription, deployedBuild)
                     }
