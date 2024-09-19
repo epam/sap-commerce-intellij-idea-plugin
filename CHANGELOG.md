@@ -1,6 +1,7 @@
 ## [2024.2.4]
 
 ### `CCv2` enhancements
+- Added possibility to specify alias for S-User [#1215](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1215)
 - Use build icon for build details [#1214](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1214)
 - Show build icon in the environments view per build [#1213](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1213)
 - Open build details from the environments view [#1212](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1212)

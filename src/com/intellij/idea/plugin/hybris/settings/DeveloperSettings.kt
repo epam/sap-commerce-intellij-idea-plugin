@@ -54,4 +54,6 @@ data class CCv2Settings(
         CCv2EnvironmentStatus.PROVISIONING,
         CCv2EnvironmentStatus.AVAILABLE,
     ),
+    // key = S-User uid
+    var sUsers: MutableMap<String, SUser> = mutableMapOf(),
 )

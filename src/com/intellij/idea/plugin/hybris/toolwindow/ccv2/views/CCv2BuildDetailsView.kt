@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.actions.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DSL.sUser
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -165,8 +166,7 @@ class CCv2BuildDetailsView(
 
                 panel {
                     row {
-                        icon(HybrisIcons.CCv2.Build.CREATED_BY).gap(RightGap.SMALL)
-                        label(build.createdBy).comment("Created by")
+                        sUser(project, build.createdBy, HybrisIcons.CCv2.Build.CREATED_BY)
                     }
                 }.gap(RightGap.COLUMNS)
 
@@ -187,7 +187,8 @@ class CCv2BuildDetailsView(
                             if (build.status == CCv2BuildStatus.BUILDING) {
                                 label("-").comment("Duration")
                             } else {
-                                build.duration.toString().concatWithSpace("minutes")?.let { label(it).comment("Duration") }
+                                build.duration.toString().concatWithSpace("minutes")
+                                    ?.let { label(it).comment("Duration") }
                             }
                         }
                     }
@@ -263,8 +264,7 @@ class CCv2BuildDetailsView(
 
                         panel {
                             row {
-                                label(deployment.createdBy)
-                                    .comment("Deployed by")
+                                sUser(project, deployment.createdBy, HybrisIcons.CCv2.Deployment.CREATED_BY, "Deployed by")
                             }
                         }.gap(RightGap.COLUMNS)
                     }

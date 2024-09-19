@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DataBackupDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DSL.sUser
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
@@ -228,9 +229,7 @@ class CCv2EnvironmentDetailsView(
 
             panel {
                 row {
-                    icon(HybrisIcons.CCv2.Build.CREATED_BY)
-                    label(build.createdBy)
-                        .comment("Created by")
+                    sUser(project, build.createdBy, HybrisIcons.CCv2.Build.CREATED_BY)
                 }
             }
         }
@@ -295,10 +294,7 @@ class CCv2EnvironmentDetailsView(
 
                 panel {
                     row {
-                        icon(HybrisIcons.CCv2.Environment.DATA_BACKUP_CREATED_BY)
-                            .gap(RightGap.SMALL)
-                        label(dataBackup.createdBy)
-                            .comment("Created by")
+                        sUser(project, dataBackup.createdBy, HybrisIcons.CCv2.Environment.DATA_BACKUP_CREATED_BY)
                     }
                 }
                     .gap(RightGap.COLUMNS)

@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DSL.sUser
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -41,7 +42,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
                 if (builds.isEmpty()) {
                     noData()
                 } else {
-                    builds.forEach { build(subscription, it) }
+                    builds.forEach { build(project, subscription, it) }
                 }
             }
                 .expanded = true
@@ -49,7 +50,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
     }
         .let { Dsl.scrollPanel(it) }
 
-    private fun Panel.build(subscription: CCv2Subscription, build: CCv2BuildDto) {
+    private fun Panel.build(project: Project, subscription: CCv2Subscription, build: CCv2BuildDto) {
         row {
             panel {
                 row {
@@ -104,10 +105,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.CCv2.Build.CREATED_BY)
-                        .gap(RightGap.SMALL)
-                    label(build.createdBy)
-                        .comment("Created by")
+                    sUser(project, build.createdBy, HybrisIcons.CCv2.Build.CREATED_BY)
                 }
             }.gap(RightGap.COLUMNS)
 
