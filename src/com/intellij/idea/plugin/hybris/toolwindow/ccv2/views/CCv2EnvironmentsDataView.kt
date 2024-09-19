@@ -18,14 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
+import com.intellij.ide.HelpTooltip
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowEnvironmentDetailsAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2ViewUtil
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.dsl.builder.*
@@ -36,11 +39,11 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
     override val tab: CCv2Tab
         get() = CCv2Tab.ENVIRONMENTS
 
-    override fun dataPanel(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = panel(data)
+    override fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = panel(project, data)
 
-    fun dataPanelWithBuilds(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = panel(data, true)
+    fun dataPanelWithBuilds(project: Project, data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = panel(project, data, true)
 
-    private fun panel(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>, showBuilds: Boolean = false): DialogPanel = if (data.isEmpty()) noDataPanel()
+    private fun panel(project: Project, data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>, showBuilds: Boolean = false): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, environments) ->
             collapsibleGroup(subscription.toString()) {
@@ -49,7 +52,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
                 } else {
                     environments
                         .sortedWith(compareBy({ it.type }, { it.name }))
-                        .forEach { environment(subscription, it, showBuilds) }
+                        .forEach { environment(project, subscription, it, showBuilds) }
                 }
             }
                 .expanded = showBuilds
@@ -57,7 +60,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
     }
         .let { Dsl.scrollPanel(it) }
 
-    private fun Panel.environment(subscription: CCv2Subscription, environment: CCv2EnvironmentDto, showBuilds: Boolean = false) {
+    private fun Panel.environment(project: Project, subscription: CCv2Subscription, environment: CCv2EnvironmentDto, showBuilds: Boolean = false) {
         row {
             panel {
                 row {
@@ -127,19 +130,26 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
             }.gap(RightGap.COLUMNS)
 
             if (showBuilds) {
-                buildPanel(environment)
+                buildPanel(project, subscription, environment)
             }
         }.layout(RowLayout.PARENT_GRID)
     }
 
-    private fun Row.buildPanel(environment: CCv2EnvironmentDto) {
+    private fun Row.buildPanel(project: Project, subscription: CCv2Subscription, environment: CCv2EnvironmentDto) {
         val deployedBuild = environment.deployedBuild
         if (deployedBuild != null) {
             panel {
                 row {
-                    label(deployedBuild.name)
+                    link(deployedBuild.name) {
+                        CCv2ViewUtil.showBuildDetailsTab(project, subscription, deployedBuild)
+                    }
                         .bold()
                         .comment("Build name")
+                        .applyToComponent {
+                            HelpTooltip()
+                                .setTitle("Show build details")
+                                .installOn(this);
+                        }
                 }
             }.gap(RightGap.COLUMNS)
 

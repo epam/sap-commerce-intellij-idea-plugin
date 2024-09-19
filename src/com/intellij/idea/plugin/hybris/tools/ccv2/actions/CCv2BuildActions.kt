@@ -29,10 +29,9 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2CreateBuildDialog
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DeployBuildDialog
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildDetailsView
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2ViewUtil
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKey
@@ -41,10 +40,7 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.wm.ToolWindow
-import com.intellij.openapi.wm.ToolWindowManager
 
 val subscriptionKey = DataKey.create<CCv2Subscription>("subscription")
 val buildKey = DataKey.create<CCv2BuildDto>("build")
@@ -211,23 +207,7 @@ class CCv2ShowBuildDetailsAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val toolWindow = ToolWindowManager.getInstance(project)
-            .getToolWindow(HybrisToolWindowFactory.ID) ?: return
-        val contentManager = toolWindow.contentManager
-        val panel = CCv2BuildDetailsView(project, subscription, build)
-        val content = contentManager.factory
-            .createContent(panel, build.code, true)
-            .also {
-                it.isCloseable = true
-                it.isPinnable = true
-                it.icon = SHOW_DETAILS
-                it.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
-            }
-
-        Disposer.register(toolWindow.disposable, panel)
-
-        contentManager.addContent(content)
-        contentManager.setSelectedContent(content)
+        CCv2ViewUtil.showBuildDetailsTab(project, subscription, build)
     }
 
 }

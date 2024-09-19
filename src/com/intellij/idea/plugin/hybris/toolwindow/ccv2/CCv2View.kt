@@ -130,19 +130,19 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
 
                 override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
                 {
-                    val dataPanel = CCv2EnvironmentsDataView.dataPanel(data)
+                    val dataPanel = CCv2EnvironmentsDataView.dataPanel(project, data)
                     CCv2Service.getInstance(project).fetchEnvironmentsBuilds(data)
 
                     dataPanel
                 }
 
                 override fun onFetchingBuildDetailsStarted(data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
-                { CCv2EnvironmentsDataView.dataPanelWithBuilds(data) }
+                { CCv2EnvironmentsDataView.dataPanelWithBuilds(project, data) }
 
                 override fun onFetchingBuildDetailsCompleted(
                     data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>,
                 ) = onFetchingCompleted(CCv2Tab.ENVIRONMENTS)
-                { CCv2EnvironmentsDataView.dataPanelWithBuilds(data) }
+                { CCv2EnvironmentsDataView.dataPanelWithBuilds(project, data) }
             })
 
             // Builds data listeners
@@ -151,7 +151,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 { CCv2BuildsDataView.fetchingInProgressPanel(subscriptions) }
 
                 override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2BuildDto>>) = onFetchingCompleted(CCv2Tab.BUILDS)
-                { CCv2BuildsDataView.dataPanel(data) }
+                { CCv2BuildsDataView.dataPanel(project, data) }
             })
 
             // Deployments data listeners
@@ -160,7 +160,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 { CCv2DeploymentsDataView.fetchingInProgressPanel(subscriptions) }
 
                 override fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<CCv2DeploymentDto>>) = onFetchingCompleted(CCv2Tab.DEPLOYMENTS)
-                { CCv2DeploymentsDataView.dataPanel(data) }
+                { CCv2DeploymentsDataView.dataPanel(project, data) }
             })
 
             subscribe(CCv2Service.TOPIC_CCV2_SETTINGS, object : CCv2SettingsListener {

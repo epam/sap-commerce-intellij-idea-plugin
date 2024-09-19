@@ -1,6 +1,7 @@
 ## [2024.2.4]
 
 ### `CCv2` enhancements
+- Open build details from the environments view [#1212](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1212)
 - Copy Cloud Storage account name on click [#1211](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1211)
 
 ## [2024.2.3]
@@ -19,7 +20,7 @@
 ### `CCv2` enhancements
 - Added icon for build details deployment status [#1196](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1196)
 - Added deployment date for build details [#1197](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1197)
-- Unable to fetch CCv2 information if user have any subscription without environment permission [#1199](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1199)
+- Unable to fetch CCv2 information if a user has any subscription without environment permission [#1199](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1199)
 
 ### `Type System` enhancements
 - Added `String` to allowed types [#1195](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1195)
