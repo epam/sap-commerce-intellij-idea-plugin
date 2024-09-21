@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccBSBeanPropertyReference
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccLevelMappingReference
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlAttribute
@@ -38,7 +39,7 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ) = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+    ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
         val attributeValue = element as? XmlAttributeValue
             ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
 

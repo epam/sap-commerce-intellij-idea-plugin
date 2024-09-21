@@ -26,6 +26,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
@@ -33,8 +36,9 @@ class BSBeanReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ): Array<out PsiReference> {
-        val attributeValue = element as? XmlAttributeValue ?: return emptyArray()
+    ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+        val attributeValue = element as? XmlAttributeValue
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
 
         val text = attributeValue.value
             .replace(HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED, "    ")
@@ -43,7 +47,7 @@ class BSBeanReferenceProvider : PsiReferenceProvider() {
 
         val metaModelAccess = BSMetaModelAccess.getInstance(element.project)
 
-        return process(text)
+        val references = process(text)
             .mapNotNull {
                 val meta = metaModelAccess.findMetasByName(it.value).firstOrNull()
                     ?: return@mapNotNull null
@@ -54,6 +58,11 @@ class BSBeanReferenceProvider : PsiReferenceProvider() {
                 else BSBeanReference(element, textRange)
             }
             .toTypedArray()
+
+        return@getCachedValue CachedValueProvider.Result.createSingleDependency(
+            references,
+            PsiModificationTracker.MODIFICATION_COUNT,
+        );
     }
 
     private fun process(text: String): Map<Int, String> {

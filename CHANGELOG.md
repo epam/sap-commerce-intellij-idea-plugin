@@ -1,5 +1,8 @@
 ## [2024.2.4]
 
+### `Bean System` enhancements
+- Cache bean references [#1219](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1219)
+
 ### `OCC` enhancements
 - Highlight only unresolved references [#1216](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1216)
 - Respect spaces in the property reference [#1217](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1217)
