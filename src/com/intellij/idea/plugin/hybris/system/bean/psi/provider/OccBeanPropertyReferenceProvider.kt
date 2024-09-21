@@ -24,11 +24,8 @@ import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccBSBeanPropertyReference
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccLevelMappingReference
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.childrenOfType
-import com.intellij.psi.util.parents
+import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
@@ -41,8 +38,9 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ): Array<out PsiReference> {
-        val attributeValue = element as? XmlAttributeValue ?: return emptyArray()
+    ) = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+        val attributeValue = element as? XmlAttributeValue
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
 
         val propertyXmlTags = element.parents(false)
             .mapNotNull { it as? XmlTag }
@@ -50,27 +48,32 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
             .firstOrNull()
             ?.childrenOfType<XmlTag>()
             ?.filter { it.localName == "property" }
-            ?: return emptyArray()
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
         val currentLevelMappings = propertyXmlTags
             .firstOrNull { it.getAttributeValue("name") == BSConstants.ATTRIBUTE_VALUE_LEVEL_MAPPING }
             ?.let { PsiTreeUtil.collectElements(it) { element -> element is XmlAttribute && element.localName == "key" } }
             ?.map { it as XmlAttribute }
             ?.mapNotNull { it.value }
-            ?: return emptyArray()
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
 
         val meta = propertyXmlTags
             .firstOrNull { it.getAttributeValue("name") == BSConstants.ATTRIBUTE_VALUE_DTO_CLASS }
             ?.let { BSMetaModelAccess.getInstance(element.project).findMetaBeanByName(it.getAttributeValue("value")) }
-            ?: return emptyArray()
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
 
         val levelMappings = currentLevelMappings + HybrisConstants.OCC_DEFAULT_LEVEL_MAPPINGS
 
-        return processProperties(attributeValue.value)
+        val references = processProperties(attributeValue.value)
             .map {
                 return@map if (levelMappings.contains(it.value)) OccLevelMappingReference(meta, attributeValue, it)
                 else OccBSBeanPropertyReference(meta, attributeValue, it)
             }
             .toTypedArray()
+
+        return@getCachedValue CachedValueProvider.Result.createSingleDependency(
+            references,
+            PsiModificationTracker.MODIFICATION_COUNT,
+        );
     }
 
     private fun processProperties(text: String): List<OccPropertyMapping> {
