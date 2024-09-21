@@ -1,5 +1,8 @@
 ## [2024.2.4]
 
+### `Type System` enhancements
+- Cache item and attribute references [#1221](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1221)
+
 ### `Cockpit NG` enhancements
 - Cache various references [#1220](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1220)
 
