@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.psi.BSConstants
 import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlAttribute
@@ -42,12 +43,10 @@ class OccLevelMappingReference(
         .toTypedArray()
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
-        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this to meta)
+        .getParameterizedCachedValue(element, cacheKey(rangeInElement), provider, false, this to meta)
         .let { PsiUtils.getValidResults(it) }
 
     companion object {
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, Pair<OccLevelMappingReference, BSGlobalMetaBean>>>("HYBRIS_OCCLEVELMAPPINGREFERENCE")
-
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, Pair<OccLevelMappingReference, BSGlobalMetaBean>> { param ->
             val ref = param.first
             val element = ref.element
@@ -74,4 +73,6 @@ class OccLevelMappingReference(
             )
         }
     }
+
+    private fun cacheKey(range: TextRange) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, Pair<OccLevelMappingReference, BSGlobalMetaBean>>>("HYBRIS_OCCLEVELMAPPINGREFERENCE_" + range)
 }
