@@ -37,13 +37,11 @@ class CngInitializePropertyReference : PsiReferenceBase.Poly<PsiElement>, PsiPol
         .getInitializeProperties(element)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
-        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+        .getParameterizedCachedValue(element, cacheKey(rangeInElement), provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
     companion object {
         const val NEW_OBJECT = "newObject"
-
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngInitializePropertyReference>>("HYBRIS_CNGINITIALIZEPROPERTYREFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, CngInitializePropertyReference> { ref ->
             val element = ref.element
@@ -75,4 +73,7 @@ class CngInitializePropertyReference : PsiReferenceBase.Poly<PsiElement>, PsiPol
             )
         }
     }
+
+    private fun cacheKey(range: TextRange) =
+        Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngInitializePropertyReference>>("HYBRIS_CNGINITIALIZEPROPERTYREFERENCE_" + range)
 }
