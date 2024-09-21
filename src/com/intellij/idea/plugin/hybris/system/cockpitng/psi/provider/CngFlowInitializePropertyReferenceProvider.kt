@@ -21,12 +21,20 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngInitializePropertyReference
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.util.ProcessingContext
 
 class CngFlowInitializePropertyReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ) = arrayOf(CngInitializePropertyReference(element))
+    ): Array<CngInitializePropertyReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+        CachedValueProvider.Result.createSingleDependency(
+            arrayOf(CngInitializePropertyReference(element)),
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
+    }
 
 }

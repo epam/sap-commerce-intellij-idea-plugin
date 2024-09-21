@@ -71,7 +71,7 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
             }
             .toTypedArray()
 
-        return@getCachedValue CachedValueProvider.Result.createSingleDependency(
+        CachedValueProvider.Result.createSingleDependency(
             references,
             PsiModificationTracker.MODIFICATION_COUNT,
         );

@@ -1,5 +1,8 @@
 ## [2024.2.4]
 
+### `Cockpit NG` enhancements
+- Cache various references [#1220](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1220)
+
 ### `Bean System` enhancements
 - Cache bean references [#1219](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1219)
 

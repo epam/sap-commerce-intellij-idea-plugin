@@ -22,6 +22,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.util.ProcessingContext
 
 /*
@@ -43,8 +46,10 @@ Editor Definition ref:
  */
 class CngEditorDefinitionReferenceProvider : PsiReferenceProvider() {
 
-    override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-        return element.text
+    override fun getReferencesByElement(
+        element: PsiElement, context: ProcessingContext
+    ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+        val references = element.text
             .replace(regex, "")
             .split("(")
             .map { it.trim() }
@@ -54,6 +59,11 @@ class CngEditorDefinitionReferenceProvider : PsiReferenceProvider() {
                 CngEditorDefinitionReference(element, TextRange.from(offset, it.length))
             }
             .toTypedArray()
+
+        CachedValueProvider.Result.createSingleDependency(
+            references,
+            PsiModificationTracker.MODIFICATION_COUNT,
+        );
     }
 
     companion object {

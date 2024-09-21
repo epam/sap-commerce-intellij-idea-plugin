@@ -20,12 +20,20 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngTSItemReference
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.util.ProcessingContext
 
 class CngTSItemReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ) = arrayOf(CngTSItemReference(element))
+    ): Array<CngTSItemReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+        CachedValueProvider.Result.createSingleDependency(
+            arrayOf(CngTSItemReference(element)),
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
+    }
 
 }

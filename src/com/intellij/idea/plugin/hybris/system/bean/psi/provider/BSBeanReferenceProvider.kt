@@ -59,10 +59,10 @@ class BSBeanReferenceProvider : PsiReferenceProvider() {
             }
             .toTypedArray()
 
-        return@getCachedValue CachedValueProvider.Result.createSingleDependency(
+        CachedValueProvider.Result.createSingleDependency(
             references,
             PsiModificationTracker.MODIFICATION_COUNT,
-        );
+        )
     }
 
     private fun process(text: String): Map<Int, String> {

@@ -21,15 +21,27 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngWidgetReference
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngWidgetStubReference
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
 class CngWidgetConnectionWidgetIdReferenceProvider : PsiReferenceProvider() {
 
-    override fun getReferencesByElement(element: PsiElement, context: ProcessingContext) =
-        if (element is XmlAttributeValue)
+    override fun getReferencesByElement(
+        element: PsiElement, context: ProcessingContext
+    ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+        val references = if (element is XmlAttributeValue)
             if (element.value.startsWith(HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB, true)) arrayOf(CngWidgetStubReference(element))
             else arrayOf(CngWidgetReference(element))
         else emptyArray()
+
+        CachedValueProvider.Result.createSingleDependency(
+            references,
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
+    }
 }

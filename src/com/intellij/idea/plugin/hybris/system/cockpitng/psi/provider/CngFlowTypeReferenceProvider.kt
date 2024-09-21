@@ -21,6 +21,9 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSItemReference
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
@@ -28,10 +31,17 @@ class CngFlowTypeReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ) = (element as? XmlAttributeValue)
-        // type may point to Java class
-        ?.takeUnless { it.value.contains(".") && it.value != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE }
-        ?.let { arrayOf(CngFlowTSItemReference(element)) }
-        ?: emptyArray()
+    ): Array<CngFlowTSItemReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+        val references = (element as? XmlAttributeValue)
+            // type may point to Java class
+            ?.takeUnless { it.value.contains(".") && it.value != HybrisConstants.COCKPIT_NG_INITIALIZE_CONTEXT_TYPE }
+            ?.let { arrayOf(CngFlowTSItemReference(element)) }
+            ?: emptyArray()
+
+        CachedValueProvider.Result.createSingleDependency(
+            references,
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
+    }
 
 }

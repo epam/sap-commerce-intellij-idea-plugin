@@ -25,15 +25,18 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.CngFlowTSI
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.util.ProcessingContext
 
 class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ): Array<PsiReference> {
+    ): Array<PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
         val type = CngPsiHelper.resolveContextTypeForNewItemInWizardFlow(element)
-            ?: return emptyArray()
+            ?: return@getCachedValue CachedValueProvider.Result.createSingleDependency(emptyArray(), PsiModificationTracker.MODIFICATION_COUNT)
 
         val reference = when {
             type.startsWith(HybrisConstants.COCKPIT_NG_TEMPLATE_BEAN_REFERENCE_PREFIX) ->
@@ -45,6 +48,9 @@ class CngFlowPropertyListPropertyQualifierReferenceProvider : PsiReferenceProvid
             else -> CngFlowTSItemAttributeReference(element)
         }
 
-        return arrayOf(reference)
+        CachedValueProvider.Result.createSingleDependency(
+            arrayOf(reference),
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
     }
 }

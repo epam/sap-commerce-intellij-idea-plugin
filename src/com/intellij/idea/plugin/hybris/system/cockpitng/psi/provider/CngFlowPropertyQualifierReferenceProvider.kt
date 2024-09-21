@@ -27,6 +27,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.util.ProcessingContext
 
@@ -34,8 +37,8 @@ class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ): Array<PsiReference> {
-        return (element as? XmlAttributeValue)
+    ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+        val references = (element as? XmlAttributeValue)
             ?.value
             ?.split(".")
             ?.takeIf { it.size == 2 }
@@ -66,6 +69,11 @@ class CngFlowPropertyQualifierReferenceProvider : PsiReferenceProvider() {
             ?: arrayOf(
                 CngInitializePropertyReference(element)
             )
+
+        CachedValueProvider.Result.createSingleDependency(
+            references,
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
     }
 
 }

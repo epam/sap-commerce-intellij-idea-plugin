@@ -24,6 +24,9 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
@@ -34,13 +37,20 @@ class CngTSItemAttributeReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement, context: ProcessingContext
-    ): Array<PsiReference> = element.parentOfType<XmlTag>()
-        ?.let { DomManager.getDomManager(element.project).getDomElement(it) }
-        ?.asSafely<ListColumn>()
-        ?.springBean
-        ?.takeUnless { it.stringValue == null }
-        ?.let { emptyArray() }
-        ?: createReferences(element)
+    ): Array<PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+        val references = element.parentOfType<XmlTag>()
+            ?.let { DomManager.getDomManager(element.project).getDomElement(it) }
+            ?.asSafely<ListColumn>()
+            ?.springBean
+            ?.takeUnless { it.stringValue == null }
+            ?.let { emptyArray() }
+            ?: createReferences(element)
+
+        CachedValueProvider.Result.createSingleDependency(
+            references,
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
+    }
 
     private fun createReferences(element: PsiElement): Array<PsiReference> {
         var from = 1
