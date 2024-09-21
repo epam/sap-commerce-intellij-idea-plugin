@@ -86,12 +86,12 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
 
             if (tempPropertyName.isEmpty()) newPropertyIndex = index + 1
 
-            if (c != '\n' && c != '\t' && c != ' ' && c != ',' && c != '(' && c != ')') {
+            if (c != '\n' && c != '\t' && c != ',' && c != '(' && c != ')' && (tempPropertyName.isNotEmpty() || c != ' ')) {
                 tempPropertyName.append(c)
             }
 
             if ((c == ',' || index == textLength) && tempPropertyName.isNotEmpty()) {
-                val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString())
+                val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString().trim())
 
                 if (parentProperties.lastOrNull() == null) properties.add(newProperty)
                 else {
@@ -101,7 +101,7 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
                 }
                 tempPropertyName.clear()
             } else if (c == '(') {
-                val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString())
+                val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString().trim())
 
                 if (parentProperties.lastOrNull() == null) {
                     properties.add(newProperty)
@@ -114,7 +114,7 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
                 }
                 tempPropertyName.clear()
             } else if (c == ')') {
-                val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString())
+                val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString().trim())
 
                 parentProperties.lastOrNull()
                     ?.let {

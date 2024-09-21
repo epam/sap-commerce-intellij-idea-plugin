@@ -2,6 +2,7 @@
 
 ### `OCC` enhancements
 - Highlight only unresolved references [#1216](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1216)
+- Respect spaces in the property reference [#1217](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1217)
 
 ### `CCv2` enhancements
 - Added possibility to specify alias for S-User [#1215](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1215)
