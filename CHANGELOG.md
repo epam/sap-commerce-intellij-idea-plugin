@@ -1,5 +1,8 @@
 ## [2024.2.4]
 
+### `OCC` enhancements
+- Highlight only unresolved references [#1216](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1216)
+
 ### `CCv2` enhancements
 - Added possibility to specify alias for S-User [#1215](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1215)
 - Use build icon for build details [#1214](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1214)

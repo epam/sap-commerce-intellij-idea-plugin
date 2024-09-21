@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.result.BeanPropertyResolveResult
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
@@ -43,12 +44,10 @@ class OccBSBeanPropertyReference(
         .toTypedArray()
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
-        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this to meta)
+        .getParameterizedCachedValue(element, occCacheKey(rangeInElement), provider, false, this to meta)
         .let { PsiUtils.getValidResults(it) }
 
     companion object {
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, Pair<OccBSBeanPropertyReference, BSGlobalMetaBean>>>("HYBRIS_OCCBSBEANPROPERTYREFERENCE")
-
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, Pair<OccBSBeanPropertyReference, BSGlobalMetaBean>> { param ->
             val ref = param.first
             val meta = param.second
@@ -67,4 +66,6 @@ class OccBSBeanPropertyReference(
             )
         }
     }
+
+    private fun occCacheKey(range: TextRange) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, Pair<OccBSBeanPropertyReference, BSGlobalMetaBean>>>("HYBRIS_OCCBSBEANPROPERTYREFERENCE_" + range)
 }
