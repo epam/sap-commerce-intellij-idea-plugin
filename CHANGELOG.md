@@ -4,6 +4,7 @@
 - Cache item and attribute references [#1221](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1221)
 
 ### `Cockpit NG` enhancements
+- Improved resolution of the nested references to editors [#1222](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1222)
 - Cache various references [#1220](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1220)
 
 ### `Bean System` enhancements

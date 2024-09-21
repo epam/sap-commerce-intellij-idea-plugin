@@ -34,12 +34,10 @@ class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : 
     PsiPolyVariantReference, HighlightedReference {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
-        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+        .getParameterizedCachedValue(element, cacheKey(rangeInElement), provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
     companion object {
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngEditorDefinitionReference>>("HYBRIS_CNGEDITORDEFINITIONREFERENCE")
-
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, CngEditorDefinitionReference> { ref ->
             val element = ref.element
             val value = ref.value
@@ -57,4 +55,6 @@ class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : 
             )
         }
     }
+
+    private fun cacheKey(range: TextRange) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngEditorDefinitionReference>>("HYBRIS_CNGEDITORDEFINITIONREFERENCE" + range)
 }

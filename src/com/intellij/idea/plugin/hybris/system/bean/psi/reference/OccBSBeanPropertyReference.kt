@@ -44,7 +44,7 @@ class OccBSBeanPropertyReference(
         .toTypedArray()
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
-        .getParameterizedCachedValue(element, occCacheKey(rangeInElement), provider, false, this to meta)
+        .getParameterizedCachedValue(element, cacheKey(rangeInElement), provider, false, this to meta)
         .let { PsiUtils.getValidResults(it) }
 
     companion object {
@@ -67,5 +67,5 @@ class OccBSBeanPropertyReference(
         }
     }
 
-    private fun occCacheKey(range: TextRange) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, Pair<OccBSBeanPropertyReference, BSGlobalMetaBean>>>("HYBRIS_OCCBSBEANPROPERTYREFERENCE_" + range)
+    private fun cacheKey(range: TextRange) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, Pair<OccBSBeanPropertyReference, BSGlobalMetaBean>>>("HYBRIS_OCCBSBEANPROPERTYREFERENCE_" + range)
 }
