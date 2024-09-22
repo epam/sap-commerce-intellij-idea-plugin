@@ -154,13 +154,15 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
                 }
                 tempPropertyName.clear()
             } else if (c == ')') {
-                val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString().trim())
+                if (tempPropertyName.isNotEmpty()) {
+                    val newProperty = OccPropertyMapping(newPropertyIndex, tempPropertyName.toString().trim())
 
-                parentProperties.lastOrNull()
-                    ?.let {
-                        it.children.add(newProperty)
-                        newProperty.parent = it
-                    }
+                    parentProperties.lastOrNull()
+                        ?.let {
+                            it.children.add(newProperty)
+                            newProperty.parent = it
+                        }
+                }
 
                 parentProperties.removeLastOrNull()
 
