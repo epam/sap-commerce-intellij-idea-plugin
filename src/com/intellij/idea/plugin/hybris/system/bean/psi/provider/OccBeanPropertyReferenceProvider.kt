@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.system.bean.psi.provider
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.psi.BSConstants
 import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.OccBSBeanPropertyReference
@@ -64,17 +65,52 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
 
         val levelMappings = currentLevelMappings + HybrisConstants.OCC_DEFAULT_LEVEL_MAPPINGS
 
-        val references = processProperties(attributeValue.value)
-            .map {
-                return@map if (levelMappings.contains(it.value)) OccLevelMappingReference(meta, attributeValue, it)
-                else OccBSBeanPropertyReference(meta, attributeValue, it)
-            }
+        val properties = processProperties(attributeValue.value)
+        val ignoredProperties = listOf<String>()
+        val references = collectReferences(meta, attributeValue, properties, levelMappings, ignoredProperties, 0)
             .toTypedArray()
 
         CachedValueProvider.Result.createSingleDependency(
             references,
             PsiModificationTracker.MODIFICATION_COUNT,
         );
+    }
+
+    private fun collectReferences(
+        meta: BSGlobalMetaBean,
+        attributeValue: XmlAttributeValue,
+        properties: List<OccPropertyMapping>,
+        levelMappings: List<String>,
+        ignoredProperties: List<String>,
+        recursiveLevel: Int
+    ): List<PsiReference> {
+        val ownReferences = properties
+            .mapNotNull {
+                if (ignoredProperties.contains(it.value)) return@mapNotNull null
+
+                return@mapNotNull if (levelMappings.contains(it.value)) OccLevelMappingReference(meta, attributeValue, it)
+                else OccBSBeanPropertyReference(meta, attributeValue, it)
+            }
+
+        if (recursiveLevel > 10) return ownReferences
+
+        // we cannot detect valid Level mapping for nested properties without global OCC Meta Model
+        val nestedIgnoredProperties = listOf("BASIC", "DEFAULT", "FULL")
+
+        val nestedReferences = properties
+            .filter { it.children.isNotEmpty() }
+            .mapNotNull {
+                val metaProperty = meta.allProperties[it.value]
+                    ?.referencedType
+                    ?: return@mapNotNull null
+                val nestedMeta = BSMetaModelAccess.getInstance(attributeValue.project).findMetaBeanByName(metaProperty)
+                    ?: return@mapNotNull null
+
+                collectReferences(nestedMeta, attributeValue, it.children, emptyList(), nestedIgnoredProperties, recursiveLevel + 1)
+            }
+            .flatten()
+
+        return ownReferences + nestedReferences
     }
 
     private fun processProperties(text: String): List<OccPropertyMapping> {

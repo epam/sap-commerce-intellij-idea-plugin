@@ -13,6 +13,7 @@
 - Cache bean references [#1219](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1219)
 
 ### `OCC` enhancements
+- Added reference resolution and code completion for nested properties [#1226](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1226)
 - Improved resolution of the OCC level references [#1223](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1223)
 - Highlight only unresolved references [#1216](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1216)
 - Respect spaces in the property reference [#1217](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1217)

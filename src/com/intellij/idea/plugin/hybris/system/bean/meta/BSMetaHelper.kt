@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,8 +30,14 @@ import java.util.*
 object BSMetaHelper {
     private val flattenTypeRegex = Regex("""\w+\.""")
 
-    fun flattenType(meta: BSMetaProperty) = flattenType(meta.type)
     fun flattenType(meta: BSMetaBean) = flattenType(meta.fullName)
+    fun flattenType(meta: BSMetaProperty) = flattenType(meta.type)
+    fun referencedType(meta: BSMetaProperty) = meta.type
+        ?.replace(BS_SIGN_LESS_THAN_ESCAPED, BS_SIGN_LESS_THAN)
+        ?.replace(BS_SIGN_GREATER_THAN_ESCAPED, BS_SIGN_GREATER_THAN)
+        ?.replace(" ", "")
+        ?.substringAfter(BS_SIGN_LESS_THAN)
+        ?.substringBefore(BS_SIGN_GREATER_THAN)
 
     fun getShortName(name: String?) = name?.split(".")?.lastOrNull()
     fun getNameWithGeneric(name: String?, generic: String?) = (name ?: "") + (generic?.let { "<$it>" } ?: "")
