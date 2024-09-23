@@ -4,6 +4,7 @@
 - Cache item and attribute references [#1221](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1221)
 
 ### `Cockpit NG` enhancements
+- Added folding for `na:notifications` [#1227](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1227)
 - Added code completion and reference resolution for `wz:assign`:`property` [#1225](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1225)
 - Improved resolution of the flow references [#1224](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1224)
 - Improved resolution of the nested references to editors [#1222](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1222)

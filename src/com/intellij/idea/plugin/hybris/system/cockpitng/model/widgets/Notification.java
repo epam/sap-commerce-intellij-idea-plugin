@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,12 +22,7 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.util.xml.DomElement;
-import com.intellij.util.xml.GenericAttributeValue;
-import com.intellij.util.xml.GenericDomValue;
-import com.intellij.util.xml.Namespace;
-import com.intellij.util.xml.Required;
-import com.intellij.util.xml.SubTag;
+import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -36,13 +31,16 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface Notification extends DomElement, NotificationRenderingInfo {
 
+    String TYPE = "eventType";
+    String LEVEL = "level";
+
     /**
      * Returns the value of the eventType child.
      *
      * @return the value of the eventType child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("eventType")
+    @com.intellij.util.xml.Attribute(TYPE)
     @Required
     GenericAttributeValue<String> getEventType();
 
@@ -53,7 +51,7 @@ public interface Notification extends DomElement, NotificationRenderingInfo {
      * @return the value of the level child.
      */
     @NotNull
-    @com.intellij.util.xml.Attribute("level")
+    @com.intellij.util.xml.Attribute(LEVEL)
     @Required
     GenericAttributeValue<ImportanceLevel> getLevel();
 

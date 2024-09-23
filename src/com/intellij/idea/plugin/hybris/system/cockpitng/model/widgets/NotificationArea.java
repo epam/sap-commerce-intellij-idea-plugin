@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 @Namespace(HybrisConstants.COCKPIT_NG_NAMESPACE_KEY)
 public interface NotificationArea extends DomElement {
 
+    String NOTIFICATIONS = "notifications";
+
     /**
      * Returns the value of the defaults child.
      *
@@ -50,7 +52,7 @@ public interface NotificationArea extends DomElement {
      * @return the list of notifications children.
      */
     @NotNull
-    @SubTagList("notifications")
+    @SubTagList(NOTIFICATIONS)
     java.util.List<Notification> getNotificationses();
 
     /**
@@ -58,7 +60,7 @@ public interface NotificationArea extends DomElement {
      *
      * @return created child
      */
-    @SubTagList("notifications")
+    @SubTagList(NOTIFICATIONS)
     Notification addNotifications();
 
 

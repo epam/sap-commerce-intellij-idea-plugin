@@ -30,9 +30,7 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor.Attribu
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.itemEditor.Section
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListColumn
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.listView.ListView
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.ExplorerNode
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.ExplorerTree
-import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.TypeNode
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.widgets.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.AdditionalParam
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.ComposedHandler
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.Property
@@ -58,7 +56,8 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                 PropertyList.PROPERTY,
                 Property.EDITOR_PARAMETER,
                 ComposedHandler.ADDITIONAL_PARAMS,
-                Parameter.TAG_NAME -> true
+                Parameter.TAG_NAME,
+                NotificationArea.NOTIFICATIONS -> true
 
                 else -> false
             }
@@ -95,6 +94,14 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
                                 else "single"
                             }
                     )
+            )
+
+            NotificationArea.NOTIFICATIONS -> fold(
+                psi, NotificationArea.NOTIFICATIONS, Notification.TYPE,
+                true,
+                computeExtraAttributes(
+                    psi.getAttributeValue(Notification.LEVEL)
+                )
             )
 
             Parameter.TAG_NAME,
@@ -223,7 +230,8 @@ class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, 
             PropertyList.PROPERTY,
             Property.EDITOR_PARAMETER,
             ComposedHandler.ADDITIONAL_PARAMS,
-            Parameter.TAG_NAME -> true
+            Parameter.TAG_NAME,
+            NotificationArea.NOTIFICATIONS -> true
 
             else -> false
         }
