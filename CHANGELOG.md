@@ -1,7 +1,7 @@
 ## [2024.3.0]
 
 ### Other
-- Added 2024.3 IntelliJ IDEA support [#1130](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1130)
+- Added 2024.3 IntelliJ IDEA support [#1231](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1231)
 
 ## [2024.2.4]
 
