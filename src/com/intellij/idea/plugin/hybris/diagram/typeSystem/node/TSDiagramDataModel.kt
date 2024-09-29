@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,7 @@ import com.intellij.diagram.DiagramDataModel
 import com.intellij.diagram.DiagramNode
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.TSGraphNode
-import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.project.Project
 import org.jetbrains.annotations.Contract
 import java.io.Serial
@@ -30,8 +30,7 @@ import java.io.Serial
 /**
  * We need to override addElement method to ensure that Node will be re-added when Type System Diagram generated from the DiagramState (2nd+ generation)
  */
-class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
-    : DiagramDataModel<TSGraphNode>(myProject, provider) {
+class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider) : DiagramDataModel<TSGraphNode>(myProject, provider) {
 
     private val edges: MutableCollection<TSDiagramEdge> = mutableSetOf()
     private val nodesMap: MutableMap<String, TSDiagramNode> = mutableMapOf()
@@ -69,9 +68,14 @@ class TSDiagramDataModel(val myProject: Project, provider: TSDiagramProvider)
         }
     }
 
-    override fun refreshDataModel() = DumbService.getInstance(myProject).runReadActionInSmartMode {
-        TSDiagramRefresher.refresh(this, nodesMap, edges)
-        this.incModificationCount()
+    override fun refreshDataModel() {
+        ReadAction
+            .nonBlocking<Unit> {
+                TSDiagramRefresher.refresh(this, nodesMap, edges)
+                this.incModificationCount()
+            }
+            .inSmartMode(project)
+            .executeSynchronously()
     }
 
     fun collapseAllNodes() {

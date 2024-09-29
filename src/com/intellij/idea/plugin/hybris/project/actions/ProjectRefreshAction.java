@@ -35,6 +35,7 @@ import com.intellij.idea.plugin.hybris.project.wizard.RefreshSupport;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.module.Module;
@@ -65,11 +66,13 @@ public class ProjectRefreshAction extends AnAction {
     public static void triggerAction(final DataContext dataContext) {
         ApplicationManager.getApplication().invokeLater(() -> {
             final AnAction action = new ProjectRefreshAction();
-            final AnActionEvent actionEvent = AnActionEvent.createFromAnAction(
+            final AnActionEvent actionEvent = AnActionEvent.createEvent(
                 action,
+                dataContext,
                 null,
                 ActionPlaces.UNKNOWN,
-                dataContext
+                ActionUiKind.NONE,
+                null
             );
             action.actionPerformed(actionEvent);
         }, ModalityState.nonModal());
@@ -114,17 +117,13 @@ public class ProjectRefreshAction extends AnAction {
             presentation.setVisible(false);
             return;
         }
+        presentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true);
         presentation.setIcon(HybrisIcons.Y.INSTANCE.getLOGO_BLUE());
         presentation.setVisible(ProjectSettingsComponent.getInstance(project).isHybrisProject());
     }
 
     @Override
     public boolean isDumbAware() {
-        return true;
-    }
-
-    @Override
-    public boolean displayTextInToolbar() {
         return true;
     }
 

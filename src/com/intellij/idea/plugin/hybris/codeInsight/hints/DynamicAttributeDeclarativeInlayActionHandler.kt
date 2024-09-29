@@ -21,14 +21,14 @@ import com.intellij.codeInsight.hints.declarative.InlayActionHandler
 import com.intellij.codeInsight.hints.declarative.InlayActionPayload
 import com.intellij.codeInsight.hints.declarative.PsiPointerInlayActionPayload
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiClass
 import com.intellij.util.asSafely
 
 class DynamicAttributeDeclarativeInlayActionHandler : InlayActionHandler {
 
-    override fun handleClick(editor: Editor, payload: InlayActionPayload) {
+    override fun handleClick(e: EditorMouseEvent, payload: InlayActionPayload) {
         (payload as? PsiPointerInlayActionPayload)
             ?.pointer
             ?.element

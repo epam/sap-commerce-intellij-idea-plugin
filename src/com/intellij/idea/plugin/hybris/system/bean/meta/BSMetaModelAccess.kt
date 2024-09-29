@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
@@ -86,8 +87,8 @@ class BSMetaModelAccess(private val myProject: Project) {
         override fun run(indicator: ProgressIndicator) {
             indicator.text2 = HybrisI18NBundleUtils.message("hybris.bs.access.progress.subTitle.waitingForIndex")
 
-            DumbService.getInstance(project).runReadActionInSmartMode(
-                Computable {
+            ReadAction
+                .nonBlocking<Unit> {
                     val lock = semaphore.tryAcquire()
 
                     if (lock) {
@@ -103,7 +104,8 @@ class BSMetaModelAccess(private val myProject: Project) {
                         }
                     }
                 }
-            )
+                .inSmartMode(project)
+                .executeSynchronously()
         }
     }
 

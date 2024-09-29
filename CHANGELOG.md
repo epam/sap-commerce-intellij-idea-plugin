@@ -1,3 +1,8 @@
+## [2024.3.0]
+
+### Other
+- Added 2024.3 IntelliJ IDEA support [#1130](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1130)
+
 ## [2024.2.4]
 
 ### `Type System` enhancements

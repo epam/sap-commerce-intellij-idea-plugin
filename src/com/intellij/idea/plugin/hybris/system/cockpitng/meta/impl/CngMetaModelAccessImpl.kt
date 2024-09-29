@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.EditorDefinit
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.WidgetDefinition
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -63,8 +64,10 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
 
     private val myGlobalMetaModel = CngGlobalMetaModel()
     private val myMessageBus = myProject.messageBus
+
     @Volatile
     private var building: Boolean = false
+
     @Volatile
     private var initialized: Boolean = false
     private val semaphore = Semaphore(1)
@@ -122,8 +125,8 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
         override fun run(indicator: ProgressIndicator) {
             indicator.text2 = message("hybris.cng.access.progress.subTitle.waitingForIndex")
 
-            DumbService.getInstance(project).runReadActionInSmartMode(
-                Computable {
+            ReadAction
+                .nonBlocking<Unit> {
                     val lock = semaphore.tryAcquire()
 
                     if (lock) {
@@ -138,7 +141,8 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
                         }
                     }
                 }
-            )
+                .inSmartMode(project)
+                .executeSynchronously()
         }
     }
 

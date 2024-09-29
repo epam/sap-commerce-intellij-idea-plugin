@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -127,8 +128,8 @@ class TSMetaModelAccess(private val project: Project) {
         override fun run(indicator: ProgressIndicator) {
             indicator.text2 = message("hybris.ts.access.progress.subTitle.waitingForIndex")
 
-            DumbService.getInstance(project).runReadActionInSmartMode(
-                Computable {
+            ReadAction
+                .nonBlocking<Unit> {
                     if (DumbService.isDumb(project)) throw ProcessCanceledException()
                     val lock = semaphore.tryAcquire()
 
@@ -144,7 +145,8 @@ class TSMetaModelAccess(private val project: Project) {
                         }
                     }
                 }
-            )
+                .inSmartMode(project)
+                .executeSynchronously()
         }
     }
 

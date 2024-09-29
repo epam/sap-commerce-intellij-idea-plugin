@@ -108,8 +108,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             customProjectIconChooser = cell(
                 textFieldWithBrowseButton(
                     null,
-                    "Select Custom Project SVG Icon.",
                     FileChooserDescriptorFactory.createSingleFileDescriptor(SvgFileType.INSTANCE)
+                        .withTitle("Select Custom Project SVG Icon.")
                 )
             )
                 .align(AlignX.FILL)
@@ -125,8 +125,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             storeModuleFilesInChooser = cell(
                 textFieldWithBrowseButton(
                     null,
-                    message("hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"),
                     FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                        .withTitle(message("hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"))
                 )
             )
                 .enabledIf(storeModuleFilesInCheckBox.selected)
@@ -188,8 +188,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 hybrisDistributionDirectoryFilesInChooser = cell(
                     textFieldWithBrowseButton(
                         null,
-                        message("hybris.import.label.select.hybris.distribution.directory"),
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                            .withTitle(message("hybris.import.label.select.hybris.distribution.directory"))
                     )
                 )
                     .align(AlignX.FILL)
@@ -208,8 +208,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 sourceCodeFilesInChooser = cell(
                     textFieldWithBrowseButton(
                         null,
-                        message("hybris.import.label.select.hybris.src.file"),
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                            .withTitle(message("hybris.import.label.select.hybris.src.file"))
                     )
                 )
                     .align(AlignX.FILL)
@@ -258,8 +258,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 overrideCustomDirChooser = cell(
                     textFieldWithBrowseButton(
                         null,
-                        message("hybris.import.label.select.custom.extensions.directory"),
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                            .withTitle(message("hybris.import.label.select.custom.extensions.directory"))
                     )
                 )
                     .align(AlignX.FILL)
@@ -279,8 +279,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 overrideConfigDirChooser = cell(
                     textFieldWithBrowseButton(
                         null,
-                        message("hybris.import.label.select.config.extensions.directory"),
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                            .withTitle(message("hybris.import.label.select.config.extensions.directory"))
                     )
                 )
                     .align(AlignX.FILL)
@@ -295,8 +295,8 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 overrideDBDriverDirChooser = cell(
                     textFieldWithBrowseButton(
                         null,
-                        message("hybris.import.label.select.dbdriver.extensions.directory"),
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
+                            .withTitle(message("hybris.import.label.select.dbdriver.extensions.directory"))
                     )
                 )
                     .align(AlignX.FILL)

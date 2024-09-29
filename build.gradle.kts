@@ -192,7 +192,7 @@ intellijPlatform {
 
     }
 
-    verifyPlugin {
+    pluginVerification {
         freeArgs = listOf("-mute", "TemplateWordInPluginId,TemplateWordInPluginName,ForbiddenPluginIdPrefix")
 
         ides {
@@ -330,15 +330,15 @@ dependencies {
 
         // Ant:
         // https://plugins.jetbrains.com/plugin/23025-ant
-        plugin("AntSupport:242.20224.159")
+        plugin("AntSupport:243.16718.32")
 
         // PsiViewer:
         // https://plugins.jetbrains.com/plugin/227-psiviewer
-        plugin("PsiViewer:242.4697")
+        plugin("PsiViewer:243.7768")
 
         // JRebel and XRebel:
         // https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-        plugin("JRebelPlugin:2024.3.1")
+        plugin("JRebelPlugin:2024.3.2")
 
         // Big Data Tools:
         // incredibly sad, but as for now API cannot be used by 3rd-party plugins

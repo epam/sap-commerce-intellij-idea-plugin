@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -63,10 +63,10 @@ public class DomGenPanel {
         mySchemaLocation = new TextFieldWithBrowseButton();
         final String title = "Choose XSD or DTD schema";
         mySchemaLocation.addBrowseFolderListener(
-            title,
-            "Make sure there are only necessary schemes in directory where your XSD or DTD schema is located",
             myProject,
             new FileTypeDescriptor(title, "xsd", "dtd")
+                .withTitle(title)
+                .withDescription("Make sure there are only necessary schemes in directory where your XSD or DTD schema is located")
         );
         mySchemaLocation.getTextField().setEditable(false);
         mySchemaLocation.addActionListener(e -> {
@@ -102,8 +102,9 @@ public class DomGenPanel {
             }
         });
         myOutputDir = new TextFieldWithBrowseButton();
-        final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor();
-        myOutputDir.addBrowseFolderListener("Select Output Directory For Generated Files", "", myProject, descriptor);
+        final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
+            .withTitle("Select Output Directory For Generated Files");
+        myOutputDir.addBrowseFolderListener(myProject, descriptor);
     }
 
     public JComponent getComponent() {
