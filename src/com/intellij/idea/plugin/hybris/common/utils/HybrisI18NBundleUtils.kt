@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,45 +16,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.common.utils
 
-package com.intellij.idea.plugin.hybris.common.utils;
+import com.intellij.AbstractBundle
+import org.apache.commons.lang3.StringUtils
+import org.jetbrains.annotations.PropertyKey
 
-import com.intellij.AbstractBundle;
-import com.intellij.BundleBase;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.PropertyKey;
+const val PATH_TO_BUNDLE: String = "i18n.HybrisBundle"
 
-public final class HybrisI18NBundleUtils extends AbstractBundle {
+object HybrisI18NBundleUtils : AbstractBundle(PATH_TO_BUNDLE) {
 
-    public static final String PATH_TO_BUNDLE = "i18n.HybrisBundle";
-
-    private static final AbstractBundle BUNDLE = new HybrisI18NBundleUtils();
-
-    private HybrisI18NBundleUtils() {
-        super(PATH_TO_BUNDLE);
-    }
-
-    @NotNull
-    public static String message(
-        @NotNull @PropertyKey(resourceBundle = PATH_TO_BUNDLE) final String key,
-        @NotNull final Object... params
-    ) {
+    @JvmStatic
+    fun message(
+        @PropertyKey(resourceBundle = PATH_TO_BUNDLE) key: String,
+        vararg params: Any
+    ): String {
         if (StringUtils.isBlank(key)) {
-            return "";
+            return ""
         }
 
-        final String message = BUNDLE.getMessage(key, params);
+        val message = getMessage(key, *params)
 
-        return StringUtils.isBlank(message) ? key : message;
+        return if (StringUtils.isBlank(message)) key else message
     }
 
-    @NotNull
-    public static String messageFallback(
-        @NotNull @PropertyKey(resourceBundle = PATH_TO_BUNDLE) final String key,
-        @NotNull final String fallback,
-        @NotNull final Object... params
-    ) {
-        return BundleBase.messageOrDefault(BUNDLE.getResourceBundle(), key, fallback, params);
-    }
+    fun messageFallback(
+        @PropertyKey(resourceBundle = PATH_TO_BUNDLE) key: String,
+        fallback: String,
+        vararg params: Any
+    ) = messageOrDefault(key, fallback, *params)!!
 }
