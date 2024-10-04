@@ -7,6 +7,7 @@
 ### Deprecated
 - Use `IDE` modality [#1232](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1232)
 - Resource bundle fallback message [#1233](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1233)
+- AnAction text in toolbar configuration [#1236](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1236)
 
 ## [2024.2.4]
 
