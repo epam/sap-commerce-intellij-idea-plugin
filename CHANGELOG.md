@@ -3,6 +3,7 @@
 ### Other
 - Added 2024.3 IntelliJ IDEA support [#1231](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1231)
 - Updated libraries versions [#1235](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1235)
+- MavenProjectBuilder API migration [#1237](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1237)
 
 ### Deprecated
 - Use `IDE` modality [#1232](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1232)
