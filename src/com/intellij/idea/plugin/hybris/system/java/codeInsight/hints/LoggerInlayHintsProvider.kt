@@ -34,10 +34,15 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
+import com.intellij.psi.impl.java.stubs.JavaStubElementTypes
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.endOffset
@@ -59,8 +64,6 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         get() = emptyList()
 
     override fun computeLenses(editor: Editor, psiFile: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
-        //todo check it is hybris
-
         val entries = mutableListOf<Pair<TextRange, CodeVisionEntry>>()
 
         psiFile.accept(object : PsiRecursiveElementVisitor() {
@@ -70,15 +73,17 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
                     is PsiClass -> {
                         val psiKeyword = PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)?.first()?.text
                         if (psiKeyword == "class")
-                             element.nameIdentifier
+                            element.nameIdentifier
                         else null
                     }
+
                     is PsiPackageStatement -> {
                         val psiKeyword = PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)?.first()?.text
                         if (psiKeyword == "package")
                             element.packageReference
                         else null
                     }
+
                     else -> null
                 }
                 if (targetElement == null) return
@@ -137,7 +142,9 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             )
 
         // Calculate the position for the popup
-        val offset = element.endOffset
+        val implementsPsiElement = PsiTreeUtil.findSiblingForward(element, JavaStubElementTypes.IMPLEMENTS_LIST, null) ?:element
+
+        val offset = implementsPsiElement.endOffset
         val logicalPosition = editor.offsetToLogicalPosition(offset)
         val visualPosition = editor.logicalToVisualPosition(logicalPosition)
         val point = editor.visualPositionToXY(visualPosition)
@@ -155,21 +162,30 @@ class LoggerAction(private val logLevel: String, val logIdentifier: String, val 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
 
-        val result = HybrisHacHttpClient.getInstance(project).executeLogUpdate(
-            project,
-            logIdentifier,
-            logLevel,
-            AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
-        )
+        ApplicationManager.getApplication().runReadAction {
+            ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to SAP Commerce...") {
+                override fun run(indicator: ProgressIndicator) {
+                    try {
+                        val result = HybrisHacHttpClient.getInstance(project).executeLogUpdate(
+                            project,
+                            logIdentifier,
+                            logLevel,
+                            AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
+                        )
 
-        val resultMessage = if (result.statusCode == 200) "Success" else "Failed"
-        val title = "Logger - $resultMessage"
-        Notifications.create(
-            NotificationType.INFORMATION, title,
-            "Set the log level: $logLevel for $logIdentifier. Server response: ${result.statusCode}"
-        )
-            .hideAfter(5)
-            .notify(project)
+                        val resultMessage = if (result.statusCode == 200) "Success" else "Failed"
+                        val title = "Updating the log level: $resultMessage"
+                        Notifications.create(
+                            NotificationType.INFORMATION, title,
+                            "The log level: $logLevel for $logIdentifier. Server response: ${result.statusCode}"
+                        )
+                            .hideAfter(5)
+                            .notify(project)
+                    } finally {
+                    }
+                }
+            })
+        }
     }
 }
 
