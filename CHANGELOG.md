@@ -1,7 +1,7 @@
 ## [2024.3.0]
 
 ### `CCv2` enhancements
-- Added support for the `enabledRepositories` for `js-storefront` [#1215](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1215)
+- Added support for the `enabledRepositories` for `js-storefront` [#1240](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1240)
 
 ### Other
 - Added 2024.3 IntelliJ IDEA support [#1231](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1231)
