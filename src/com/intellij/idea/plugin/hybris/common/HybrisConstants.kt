@@ -202,7 +202,9 @@ object HybrisConstants {
     const val PROPERTY_IMPEX_HEADER_REPLACEMENT = "impex.header.replacement"
     const val PROPERTY_ENV_PROPERTY_PREFIX = "env.properties.prefix"
 
+    const val PROPERTY_STANDALONE_JAVAOPTIONS = "standalone.javaoptions"
     const val PROPERTY_STANDALONE_JDKMODULESEXPORTS = "standalone.jdkmodulesexports"
+    const val PROPERTY_BUNDLED_SERVER_TYPE = "bundled.server.type"
 
     const val DEFAULT_LANGUAGE_ISOCODE = "en"
 
@@ -431,6 +433,7 @@ object HybrisConstants {
 
     @JvmField
     val HYBRIS_SERVER_SHELL_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.sh")
+
     @JvmField
     val HYBRIS_SERVER_BASH_SCRIPT_NAME = FileUtilRt.toSystemDependentName("bin/platform/hybrisserver.bat")
 

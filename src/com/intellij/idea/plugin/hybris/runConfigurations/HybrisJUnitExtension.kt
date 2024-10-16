@@ -24,14 +24,18 @@ import com.intellij.execution.configurations.ParametersList
 import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunnerSettings
 import com.intellij.execution.junit.JUnitConfiguration
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ENV_HYBRIS_DATA_DIR
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.HYBRIS_DATA_DIRECTORY
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_BUNDLED_SERVER_TYPE
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JAVAOPTIONS
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JDKMODULESEXPORTS
 import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
-import com.intellij.openapi.util.io.FileUtil
-import java.io.File
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.CompilerModuleExtension
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.roots.OrderEnumerator
 import java.util.*
 import java.util.regex.Pattern
 
@@ -50,22 +54,61 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
 
         addVmParameterIfNotExist(vmParameters, "-ea")
 
+        addPlatformHome(vmParameters, project)
+        addJavaRunProperties(project, vmParameters)
+        addHybrisDirProperties(project, vmParameters)
+
+        enhanceClassPath(params, project)
+    }
+
+    private fun enhanceClassPath(params: JavaParameters, project: Project) {
+        val classPathEntries = HashSet<String>()
+
+        val modules: Array<Module> = ModuleManager.getInstance(project).modules
+        for (module in modules) {
+            // Get the module's output paths (both production and test)
+            val moduleRootManager = ModuleRootManager.getInstance(module)
+
+            // Get the compiler output paths for production and test
+            val productionOutput = moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPath
+            val testOutput = moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPathForTests
+
+            // Add the output paths to the classpath
+            if (productionOutput != null && classPathEntries.add(productionOutput.path)) {
+                params.classPath.add(productionOutput.path)
+            }
+            if (testOutput != null && classPathEntries.add(testOutput.path)) {
+                params.classPath.add(testOutput.path)
+            }
+
+            // **Add module dependencies to classpath**
+            OrderEnumerator.orderEntries(module).recursively().classes().roots.forEach {
+                val path = it.presentableUrl
+                if (classPathEntries.add(path)) {
+                    params.classPath.add(it)
+                }
+            }
+        }
+    }
+
+    private fun addPlatformHome(vmParameters: ParametersList, project: Project) {
         if (vmParameters.parameters.none { it.startsWith("-Dplatformhome=") }) {
             HybrisRootUtil.findPlatformRootDirectory(project)
                 ?.path
                 ?.let { vmParameters.add("-Dplatformhome=$it") }
         }
+    }
 
-        if (!params.env.containsKey(ENV_HYBRIS_DATA_DIR)) {
-            val settings = ProjectSettingsComponent.getInstance(project).state
-            val hybrisDataDirPath = FileUtil.toCanonicalPath(
-                "${project.basePath}/${settings.hybrisDirectory}/$HYBRIS_DATA_DIRECTORY"
-            )
-
-            if (File(hybrisDataDirPath).exists()) {
-                params.addEnv(ENV_HYBRIS_DATA_DIR, hybrisDataDirPath)
+    private fun addJavaRunProperties(project: Project, vmParameters: ParametersList) {
+        PropertyService.getInstance(project)
+            ?.findProperty(PROPERTY_STANDALONE_JAVAOPTIONS)
+            ?.let { property -> StringTokenizer(property.trim { it <= ' ' }) }
+            ?.let {
+                while (it.hasMoreTokens()) {
+                    val newParam = PATTERN.matcher(it.nextToken()).replaceAll("")
+                    addVmParameterIfNotExist(vmParameters, newParam)
+                }
             }
-        }
 
         PropertyService.getInstance(project)
             ?.findProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS)
@@ -75,6 +118,30 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
                     val newParam = PATTERN.matcher(it.nextToken()).replaceAll("")
                     addVmParameterIfNotExist(vmParameters, newParam)
                 }
+            }
+
+        PropertyService.getInstance(project)
+            ?.findProperty(PROPERTY_BUNDLED_SERVER_TYPE)
+            ?.let {
+                addVmParameterIfNotExist(vmParameters, "-Ddeployed.server.typ=\"$it\"")
+            }
+    }
+
+    private fun addHybrisDirProperties(project: Project, vmParameters: ParametersList) {
+        addVmParameter(project, vmParameters, "HYBRIS_BIN_DIR");
+        addVmParameter(project, vmParameters, "HYBRIS_TEMP_DIR");
+        addVmParameter(project, vmParameters, "HYBRIS_ROLES_DIR");
+        addVmParameter(project, vmParameters, "HYBRIS_LOG_DIR");
+        addVmParameter(project, vmParameters, "HYBRIS_BOOTSTRAP_BIN_DIR");
+        addVmParameter(project, vmParameters, "HYBRIS_DATA_DIR");
+        addVmParameter(project, vmParameters, "HYBRIS_CONFIG_DIR");
+    }
+
+    private fun addVmParameter(project: Project, vmParameters: ParametersList, propertyKey: String) {
+        PropertyService.getInstance(project)
+            ?.findProperty(propertyKey)
+            ?.let {
+                addVmParameterIfNotExist(vmParameters, "-D$propertyKey=$it")
             }
     }
 

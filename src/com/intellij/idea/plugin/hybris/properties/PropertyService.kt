@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.properties
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.yExtensionName
+import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
@@ -137,6 +138,9 @@ class PropertyService(val project: Project) {
                 .filter { it.value != null && it.key != null }
                 .associateTo(LinkedHashMap()) { it.key!! to it.value!! }
                 .let { properties ->
+                    HybrisRootUtil.findPlatformRootDirectory(project)
+                        ?.path
+                        ?.let { properties["platformhome"] = it }
                     addEnvironmentProperties(properties)
                     properties
                         .filter { it.value.contains(nestedPropertyPrefix) }
@@ -242,7 +246,7 @@ class PropertyService(val project: Project) {
         val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ADVANCED_PROPERTIES_FILE }
         val localPropertiesScope = configModule.moduleContentScope.filter { it.name == HybrisConstants.LOCAL_PROPERTIES_FILE }
 
-        return projectPropertiesScope.or(envPropertiesScope.or(advancedPropertiesScope.or(localPropertiesScope)))
+        return envPropertiesScope.or(advancedPropertiesScope).or(localPropertiesScope).or(projectPropertiesScope)
     }
 
     private fun obtainConfigModule() = ModuleManager.getInstance(project)
