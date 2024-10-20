@@ -12,8 +12,8 @@
 - Use `IDE` modality [#1232](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1232)
 - Resource bundle fallback message [#1233](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1233)
 - AnAction text in toolbar configuration [#1236](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1236)
-- Migrate Gradle project import API [#1236](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1236)
-- Migrate Gradle project import API [#1236](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1236)
+- Omit usage of the internal Java Compiler API [#1242](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1242)
+- Migrate Gradle project import API [#1243](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1243)
 
 ## [2024.2.4]
 
