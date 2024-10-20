@@ -27,18 +27,10 @@ import com.intellij.codeInsight.hints.InlayHintsUtils
 import com.intellij.codeInsight.hints.settings.language.isInlaySettingsEditor
 import com.intellij.ide.DataManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.notification.NotificationType
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -49,14 +41,13 @@ import com.intellij.psi.util.endOffset
 import com.intellij.ui.awt.RelativePoint
 import java.awt.Point
 import java.awt.event.MouseEvent
-import javax.swing.Icon
 
 
 class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     override val defaultAnchor: CodeVisionAnchorKind
         get() = CodeVisionAnchorKind.Default
     override val id: String
-        get() = "LoggerInlayHintsProvider"
+        get() = "SAPCxLoggerInlayHintsProvider"
     override val name: String
         get() = "SAP Commerce Cloud Logger"
 
@@ -64,18 +55,19 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         get() = emptyList()
 
     override fun computeLenses(editor: Editor, psiFile: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
+        if (!ProjectSettingsComponent.getInstance(psiFile.project).isHybrisProject()) return emptyList()
+
         val entries = mutableListOf<Pair<TextRange, CodeVisionEntry>>()
 
         psiFile.accept(object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
                 super.visitElement(element)
                 val targetElement = when (element) {
-                    is PsiClass -> {
-                        val psiKeyword = PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)?.first()?.text
-                        if (psiKeyword == "class")
-                            element.nameIdentifier
-                        else null
-                    }
+                    is PsiClass -> PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)
+                        ?.first()
+                        ?.text
+                        ?.takeIf { it == "class" }
+                        ?.let { element.nameIdentifier }
 
                     is PsiPackageStatement -> {
                         val psiKeyword = PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)?.first()?.text
@@ -92,7 +84,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
                 val handler = ClickHandler(targetElement, loggerIdentifier)
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(targetElement)
-                entries.add(range to ClickableTextCodeVisionEntry("log level", id, handler, HybrisIcons.Log.TOGGLE, "", "Setup the logger for SAP Commerce Cloud"))
+                entries.add(range to ClickableTextCodeVisionEntry("[y] log level", id, handler, HybrisIcons.Log.TOGGLE, "", "Setup the logger for SAP Commerce Cloud"))
             }
         })
 
@@ -120,29 +112,26 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
     fun handleClick(editor: Editor, element: PsiElement, loggerIdentifier: String) {
         val actionGroup = DefaultActionGroup().apply {
-            add(LoggerAction("TRACE", loggerIdentifier, HybrisIcons.Log.Level.TRACE))
-            add(LoggerAction("DEBUG", loggerIdentifier, HybrisIcons.Log.Level.DEBUG))
-            add(LoggerAction("INFO", loggerIdentifier, HybrisIcons.Log.Level.INFO))
-            add(LoggerAction("WARN", loggerIdentifier, HybrisIcons.Log.Level.WARN))
-            add(LoggerAction("ERROR", loggerIdentifier, HybrisIcons.Log.Level.ERROR))
-            add(LoggerAction("FATAL", loggerIdentifier, HybrisIcons.Log.Level.FATAL))
-            add(LoggerAction("SEVERE", loggerIdentifier, HybrisIcons.Log.Level.SEVERE))
+            val loggingActions = ActionManager.getInstance().getAction("logging.actions")
+            add(loggingActions)
         }
 
         val dataManager = DataManager.getInstance()
 
-        // Show the popup menu
+        val dataContext = dataManager.getDataContext(editor.component)
+        dataManager.saveInDataContext(dataContext, LoggerConstants.LOGGER_IDENTIFIER_DATA_CONTEXT_KEY, loggerIdentifier)
+
         val popup = JBPopupFactory.getInstance()
             .createActionGroupPopup(
                 "Select an Option",
                 actionGroup,
-                dataManager.getDataContext(editor.component),
+                dataContext,
                 JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
                 true
             )
 
         // Calculate the position for the popup
-        val implementsPsiElement = PsiTreeUtil.findSiblingForward(element, JavaStubElementTypes.IMPLEMENTS_LIST, null) ?:element
+        val implementsPsiElement = PsiTreeUtil.findSiblingForward(element, JavaStubElementTypes.IMPLEMENTS_LIST, null) ?: element
 
         val offset = implementsPsiElement.endOffset
         val logicalPosition = editor.offsetToLogicalPosition(offset)
@@ -154,38 +143,6 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
         // Show the popup at the calculated relative point
         popup.show(relativePoint)
-    }
-}
-
-class LoggerAction(private val logLevel: String, val logIdentifier: String, val icon: Icon) : AnAction(logLevel, "", icon) {
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-
-        ApplicationManager.getApplication().runReadAction {
-            ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to SAP Commerce...") {
-                override fun run(indicator: ProgressIndicator) {
-                    try {
-                        val result = HybrisHacHttpClient.getInstance(project).executeLogUpdate(
-                            project,
-                            logIdentifier,
-                            logLevel,
-                            AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
-                        )
-
-                        val resultMessage = if (result.statusCode == 200) "Success" else "Failed"
-                        val title = "Updating the log level: $resultMessage"
-                        Notifications.create(
-                            NotificationType.INFORMATION, title,
-                            "The log level: $logLevel for $logIdentifier. Server response: ${result.statusCode}"
-                        )
-                            .hideAfter(5)
-                            .notify(project)
-                    } finally {
-                    }
-                }
-            })
-        }
     }
 }
 
