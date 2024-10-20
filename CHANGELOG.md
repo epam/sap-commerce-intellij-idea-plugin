@@ -11,6 +11,7 @@
 - Updated libraries versions [#1235](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1235)
 - MavenProjectBuilder API migration [#1237](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1237)
 - Improved navigation to the file located in the virtual `Junk` directory [#1245](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1245)
+- Added explicit dependency on a [JSON](https://plugins.jetbrains.com/plugin/25364-json) plugin [#1246](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1246)
 
 ### Deprecated
 - Use `IDE` modality [#1232](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1232)
