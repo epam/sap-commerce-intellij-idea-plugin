@@ -1,5 +1,8 @@
 ## [2024.3.0]
 
+### `Project Import` enhancements
+- Ensure that dependencies on non-custom extensions are properly configured [#1244](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1244)
+
 ### `CCv2` enhancements
 - Added support for the `enabledRepositories` for `js-storefront` [#1240](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1240)
 
