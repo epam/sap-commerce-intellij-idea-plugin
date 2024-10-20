@@ -296,8 +296,8 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         }
     }
 
-    public @NotNull
-    HybrisHttpResult executeLogUpdate(
+    @NotNull
+    public HybrisHttpResult executeLogUpdate(
         final Project project,
         final String loggerName,
         final String logLevel,
@@ -337,9 +337,10 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
                 .build();
         }
 
-        if (json.get("stacktraceText") != null && isNotEmpty(json.get("stacktraceText").toString())) {
+        final var stacktraceText = json.get("stacktraceText");
+        if (stacktraceText != null && isNotEmpty(stacktraceText.toString())) {
             return createResult()
-                .errorMessage(json.get("stacktraceText").toString())
+                .errorMessage(stacktraceText.toString())
                 .build();
         }
 
