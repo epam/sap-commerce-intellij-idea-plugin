@@ -7,7 +7,7 @@
   "properties": {
     "nodeVersion": {
       "$ref": "#/$types/nodeVersion",
-      "description": "Global Node.js version used during the build. The available versions are 18 and 20."
+      "description": "Global Node.js version used during the build. The available versions are 18* and 20.\n\n*Node.js 18 is no longer supported starting January 1, 2025."
     },
     "disableImageReuse": {
       "type": "boolean",
@@ -74,7 +74,14 @@
           },
           "nodeVersion": {
             "$ref": "#/$types/nodeVersion",
-            "description": "Node.js version used during the build for a specific application. The available versions are 18 and 20."
+            "description": "Node.js version used during the build for a specific application. The available versions are 18* and 20.\n\n*Node.js 18 is no longer supported starting January 1, 2025."
+          },
+          "enabledRepositories": {
+            "type": "array",
+            "description": "Include 'spartacus-6' in the enabledRepositories to allow SAP Commerce Cloud, composable storefront library versions 5.X, 6.X, or 2211.X to be available during the build process.",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }

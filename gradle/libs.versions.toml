@@ -31,14 +31,14 @@ okhttp = "4.12.0"
 
 # plugins
 # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
-kotlin = "1.9.24"
+kotlin = "2.1.0-Beta1"
 # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
-gradleIntelliJPlugin = "2.0.0"
+gradleIntelliJPlugin = "2.1.0"
 # https://plugins.gradle.org/plugin/org.jetbrains.changelog
-changelog = "2.2.0"
+changelog = "2.2.1"
 # Dependency: https://plugins.gradle.org/plugin/org.openapi.generator
 # Generator: https://openapi-generator.tech/docs/generators/kotlin
-openAPIGenerator = "7.7.0"
+openAPIGenerator = "7.8.0"
 
 [libraries]
 commons-io = { group = "commons-io", name = "commons-io", version.ref = "commonsIO" }

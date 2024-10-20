@@ -35,9 +35,10 @@ import com.intellij.openapi.projectRoots.JavaSdkVersion
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtil
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.io.ZipUtil
 import com.intellij.util.lang.JavaVersion
-import org.jetbrains.jps.incremental.java.JavaBuilder
+import org.jetbrains.jps.model.java.compiler.AnnotationProcessingConfiguration
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -192,7 +193,7 @@ class ProjectBeforeCompilerTask : CompileTask {
                 "-target",
                 sourceOption
             )
-            JavaBuilder.addAnnotationProcessingOptions(options, profile)
+            addAnnotationProcessingOptions(options, profile)
 
             val rootManager = ModuleRootManager.getInstance(platformModule)
             val classpath = rootManager.orderEntries().compileOnly().recursively().exportedOnly().withoutSdk().pathsList.pathList
@@ -275,4 +276,28 @@ class ProjectBeforeCompilerTask : CompileTask {
         context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Cleaned: $pathToBeDeleted", null, -1, -1)
     }
 
+    fun addAnnotationProcessingOptions(options: MutableList<String>, profile: AnnotationProcessingConfiguration): Boolean {
+        if (!profile.isEnabled) {
+            options.add("-proc:none")
+            return false
+        }
+
+        if (!profile.isObtainProcessorsFromClasspath) {
+            val processorsPath = profile.processorPath
+            options.add(if (profile.isUseProcessorModulePath) "--processor-module-path" else "-processorpath")
+            options.add(FileUtil.toSystemDependentName(processorsPath.trim { it <= ' ' }))
+        }
+
+        val processors = profile.processors
+        if (processors.isNotEmpty()) {
+            options.add("-processor")
+            options.add(StringUtil.join(processors, ","))
+        }
+
+        profile.processorOptions.entries.forEach {
+            options.add("-A" + it.key + "=" + it.value)
+        }
+
+        return true
+    }
 }

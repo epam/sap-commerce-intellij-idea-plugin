@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.system.type.model.generator;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
-import com.intellij.openapi.fileChooser.FileTypeDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -61,11 +60,11 @@ public class DomGenPanel {
 
     private void createUIComponents() {
         mySchemaLocation = new TextFieldWithBrowseButton();
-        final String title = "Choose XSD or DTD schema";
         mySchemaLocation.addBrowseFolderListener(
             myProject,
-            new FileTypeDescriptor(title, "xsd", "dtd")
-                .withTitle(title)
+            FileChooserDescriptorFactory.createSingleFileDescriptor()
+                .withExtensionFilter("Files (.xsd, .dtd)", "xsd", "dtd")
+                .withTitle("Choose XSD or DTD Schema")
                 .withDescription("Make sure there are only necessary schemes in directory where your XSD or DTD schema is located")
         );
         mySchemaLocation.getTextField().setEditable(false);
