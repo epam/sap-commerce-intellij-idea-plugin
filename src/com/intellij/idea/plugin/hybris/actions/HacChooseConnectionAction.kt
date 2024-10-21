@@ -27,6 +27,7 @@ import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
@@ -48,10 +49,10 @@ class HacChooseConnectionAction : ActionGroup() {
     init {
         isPopup = true
         templatePresentation.isPerformGroup = true
+        templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
-    override fun displayTextInToolbar() = true
     override fun getChildren(e: AnActionEvent?) = emptyArray<AnAction>()
 
     override fun update(e: AnActionEvent) {
