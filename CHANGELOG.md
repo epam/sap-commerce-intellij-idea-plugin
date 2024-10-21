@@ -10,6 +10,9 @@
 - Resource bundle fallback message [#1233](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1233)
 - AnAction text in toolbar configuration [#1236](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1236)
 
+### Fixes
+- Add all module Classpaths and necessary Properties to JUnit Tests [#1241](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1241)
+
 ## [2024.2.4]
 
 ### `Type System` enhancements

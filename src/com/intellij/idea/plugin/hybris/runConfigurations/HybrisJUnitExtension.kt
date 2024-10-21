@@ -25,6 +25,14 @@ import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunnerSettings
 import com.intellij.execution.junit.JUnitConfiguration
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_BUNDLED_SERVER_TYPE
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_BIN_DIR
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_BOOTSTRAP_BIN_DIR
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_CONFIG_DIR
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_DATA_DIR
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_LOG_DIR
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_ROLES_DIR
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_TEMP_DIR
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_PLATFORMHOME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JAVAOPTIONS
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JDKMODULESEXPORTS
 import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil
@@ -37,9 +45,6 @@ import com.intellij.openapi.roots.CompilerModuleExtension
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.OrderEnumerator
 import java.util.*
-import java.util.regex.Pattern
-
-private val PATTERN = Pattern.compile("\"")
 
 class HybrisJUnitExtension : RunConfigurationExtension() {
 
@@ -56,7 +61,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
 
         addPlatformHome(vmParameters, project)
         addJavaRunProperties(project, vmParameters)
-        addHybrisDirProperties(project, vmParameters)
+        addHybrisEnvProperties(project, vmParameters)
 
         enhanceClassPath(params, project)
     }
@@ -92,10 +97,11 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
     }
 
     private fun addPlatformHome(vmParameters: ParametersList, project: Project) {
-        if (vmParameters.parameters.none { it.startsWith("-Dplatformhome=") }) {
+        val platforhomePrefix = "-D$PROPERTY_PLATFORMHOME="
+        if (vmParameters.parameters.none { it.startsWith(platforhomePrefix) }) {
             HybrisRootUtil.findPlatformRootDirectory(project)
                 ?.path
-                ?.let { vmParameters.add("-Dplatformhome=$it") }
+                ?.let { vmParameters.add("$platforhomePrefix=$it") }
         }
     }
 
@@ -105,7 +111,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
             ?.let { property -> StringTokenizer(property.trim { it <= ' ' }) }
             ?.let {
                 while (it.hasMoreTokens()) {
-                    val newParam = PATTERN.matcher(it.nextToken()).replaceAll("")
+                    val newParam = sanitizeParameter(it.nextToken())
                     addVmParameterIfNotExist(vmParameters, newParam)
                 }
             }
@@ -115,7 +121,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
             ?.let { property -> StringTokenizer(property.trim { it <= ' ' }) }
             ?.let {
                 while (it.hasMoreTokens()) {
-                    val newParam = PATTERN.matcher(it.nextToken()).replaceAll("")
+                    val newParam = sanitizeParameter(it.nextToken())
                     addVmParameterIfNotExist(vmParameters, newParam)
                 }
             }
@@ -123,21 +129,25 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
         PropertyService.getInstance(project)
             ?.findProperty(PROPERTY_BUNDLED_SERVER_TYPE)
             ?.let {
-                addVmParameterIfNotExist(vmParameters, "-Ddeployed.server.typ=\"$it\"")
+                addVmParameterIfNotExist(vmParameters, "-D$PROPERTY_BUNDLED_SERVER_TYPE=\"$it\"")
             }
     }
 
-    private fun addHybrisDirProperties(project: Project, vmParameters: ParametersList) {
-        addVmParameter(project, vmParameters, "HYBRIS_BIN_DIR");
-        addVmParameter(project, vmParameters, "HYBRIS_TEMP_DIR");
-        addVmParameter(project, vmParameters, "HYBRIS_ROLES_DIR");
-        addVmParameter(project, vmParameters, "HYBRIS_LOG_DIR");
-        addVmParameter(project, vmParameters, "HYBRIS_BOOTSTRAP_BIN_DIR");
-        addVmParameter(project, vmParameters, "HYBRIS_DATA_DIR");
-        addVmParameter(project, vmParameters, "HYBRIS_CONFIG_DIR");
+    private fun sanitizeParameter(param: String): String {
+        return param.replace("\"", "")
     }
 
-    private fun addVmParameter(project: Project, vmParameters: ParametersList, propertyKey: String) {
+    private fun addHybrisEnvProperties(project: Project, vmParameters: ParametersList) {
+        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_BIN_DIR);
+        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_TEMP_DIR);
+        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_ROLES_DIR);
+        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_LOG_DIR);
+        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_BOOTSTRAP_BIN_DIR);
+        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_DATA_DIR);
+        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_CONFIG_DIR);
+    }
+
+    private fun addPropertyToVmParameter(project: Project, vmParameters: ParametersList, propertyKey: String) {
         PropertyService.getInstance(project)
             ?.findProperty(propertyKey)
             ?.let {

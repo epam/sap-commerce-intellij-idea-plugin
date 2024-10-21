@@ -189,6 +189,17 @@ object HybrisConstants {
     const val DEBUG_HOST = "localhost"
     const val DEBUG_PORT = "8000"
 
+    // Properties defined in the env.properties File
+    const val PROPERTY_HYBRIS_BIN_DIR = "HYBRIS_BIN_DIR"
+    const val PROPERTY_HYBRIS_TEMP_DIR = "HYBRIS_TEMP_DIR"
+    const val PROPERTY_HYBRIS_ROLES_DIR = "HYBRIS_ROLES_DIR"
+    const val PROPERTY_HYBRIS_LOG_DIR = "HYBRIS_LOG_DIR"
+    const val PROPERTY_HYBRIS_BOOTSTRAP_BIN_DIR = "HYBRIS_BOOTSTRAP_BIN_DIR"
+    const val PROPERTY_HYBRIS_DATA_DIR = "HYBRIS_DATA_DIR"
+    const val PROPERTY_HYBRIS_CONFIG_DIR = "HYBRIS_CONFIG_DIR"
+
+    const val PROPERTY_PLATFORMHOME = "platformhome"
+
     const val PROPERTY_HAC_WEBROOT = "hac.webroot"
     const val PROPERTY_ADMIN_INITIAL_PASSWORD = "initialpassword.admin"
     const val PROPERTY_TOMCAT_SSL_PORT = "tomcat.ssl.port"
@@ -222,7 +233,7 @@ object HybrisConstants {
     const val ADDRESS = "address="
 
     const val ANT_ENCODING = "-Dfile.encoding=UTF-8"
-    const val ANT_HYBRIS_CONFIG_DIR = "-J-DHYBRIS_CONFIG_DIR="
+    const val ANT_HYBRIS_CONFIG_DIR = "-J-D$PROPERTY_HYBRIS_CONFIG_DIR="
     const val ANT_XMX = "-Xmx"
     const val ANT_PLATFORM_HOME = "PLATFORM_HOME"
     const val ANT_OPTS = "ANT_OPTS"
@@ -346,11 +357,10 @@ object HybrisConstants {
     const val ADDITIONAL_WEB_SPRING_CONFIG_FILES = "additionalWebSpringConfigs"
     const val GLOBAL_CONTEXT_SPRING_FILES = "global-context"
 
-    const val ENV_HYBRIS_CONFIG_DIR = "HYBRIS_CONFIG_DIR"
+    const val ENV_HYBRIS_CONFIG_DIR = PROPERTY_HYBRIS_CONFIG_DIR
     const val ENV_HYBRIS_RUNTIME_PROPERTIES = "HYBRIS_RUNTIME_PROPERTIES"
     const val ENV_HYBRIS_OPT_CONFIG_DIR = "HYBRIS_OPT_CONFIG_DIR"
-    const val ENV_HYBRIS_DATA_DIR = "HYBRIS_DATA_DIR"
-    const val ENV_HYBRIS_BOOTSTRAP_BIN_DIR = "HYBRIS_BOOTSTRAP_BIN_DIR"
+    const val ENV_HYBRIS_BOOTSTRAP_BIN_DIR = PROPERTY_HYBRIS_BOOTSTRAP_BIN_DIR
 
     const val HYBRIS_API_VERSION_KEY = "version.api"
     const val HYBRIS_VERSION_KEY = "version"
