@@ -11,7 +11,7 @@
 - AnAction text in toolbar configuration [#1236](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1236)
 
 ### Fixes
-- Correctly define Scope to filter for Properties File ()[]
+- Correctly define Scope to filter for Properties File (#1247)[https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247]
 
 ## [2024.2.4]
 
