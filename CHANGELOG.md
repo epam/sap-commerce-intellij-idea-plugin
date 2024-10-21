@@ -2,10 +2,13 @@
 
 ### Other
 - Added 2024.3 IntelliJ IDEA support [#1231](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1231)
+- Updated libraries versions [#1235](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1235)
+- MavenProjectBuilder API migration [#1237](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1237)
 
 ### Deprecated
 - Use `IDE` modality [#1232](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1232)
 - Resource bundle fallback message [#1233](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1233)
+- AnAction text in toolbar configuration [#1236](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1236)
 
 ## [2024.2.4]
 

@@ -93,6 +93,9 @@
                                    implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.hints.ItemsXmlInlayHintsProvider"/>
         <codeInsight.inlayProvider language="XML"
                                    implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.hints.BeansXmlInlayHintsProvider"/>
+
+        <codeInsight.daemonBoundCodeVisionProvider implementation="com.intellij.idea.plugin.hybris.system.java.codeInsight.hints.LoggerInlayHintsProvider"/>
+        
     </extensions>
 
 </idea-plugin>
