@@ -27,6 +27,7 @@ import com.intellij.lang.properties.psi.PropertiesFile
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
@@ -234,7 +235,7 @@ class PropertyService(val project: Project) {
         }
     }
 
-    private fun createSearchScope(configModule: java.lang.Module, platformModule: java.lang.Module): GlobalSearchScope {
+    private fun createSearchScope(configModule: Module, platformModule: Module): GlobalSearchScope {
         val projectPropertiesScope = GlobalSearchScope.getScopeRestrictedByFileTypes(GlobalSearchScope.everythingScope(project), PropertiesFileType.INSTANCE)
             .filter { it.name == HybrisConstants.PROJECT_PROPERTIES_FILE }
         val envPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ENV_PROPERTIES_FILE }
