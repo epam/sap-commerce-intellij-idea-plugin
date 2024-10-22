@@ -26,10 +26,15 @@ import com.intellij.codeInsight.daemon.impl.JavaCodeVisionProviderBase
 import com.intellij.codeInsight.hints.InlayHintsUtils
 import com.intellij.codeInsight.hints.settings.language.isInlaySettingsEditor
 import com.intellij.ide.DataManager
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.CustomizedDataContext
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.TextRange
@@ -49,7 +54,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     override val id: String
         get() = "SAPCxLoggerInlayHintsProvider"
     override val name: String
-        get() = "SAP Commerce Cloud Logger"
+        get() = "SAP CX Logger"
 
     override val relativeOrderings: List<CodeVisionRelativeOrdering>
         get() = emptyList()
@@ -69,12 +74,11 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
                         ?.takeIf { it == "class" }
                         ?.let { element.nameIdentifier }
 
-                    is PsiPackageStatement -> {
-                        val psiKeyword = PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)?.first()?.text
-                        if (psiKeyword == "package")
-                            element.packageReference
-                        else null
-                    }
+                    is PsiPackageStatement -> PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)
+                        ?.first()
+                        ?.text
+                        ?.takeIf { it == "package" }
+                        ?.let { element.packageReference }
 
                     else -> null
                 }
@@ -92,7 +96,9 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     }
 
     fun extractIdentifierForLogger(element: PsiElement, file: PsiFile): String? = when (element) {
-        is PsiClass -> file.packageName()?.let { "$it.${element.name}" }
+        is PsiClass -> file.packageName()
+            ?.let { "$it.${element.name}" }
+
         is PsiPackageStatement -> element.packageName
         else -> null
     }
@@ -111,15 +117,14 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     }
 
     fun handleClick(editor: Editor, element: PsiElement, loggerIdentifier: String) {
-        val actionGroup = DefaultActionGroup().apply {
-            val loggingActions = ActionManager.getInstance().getAction("logging.actions")
-            add(loggingActions)
-        }
+        val actionGroup = ActionManager.getInstance().getAction("sap.cx.logging.actions") as ActionGroup
 
-        val dataManager = DataManager.getInstance()
-
-        val dataContext = dataManager.getDataContext(editor.component)
-        dataManager.saveInDataContext(dataContext, LoggerConstants.LOGGER_IDENTIFIER_DATA_CONTEXT_KEY, loggerIdentifier)
+        val project = editor.project ?: return
+        val dataContext = SimpleDataContext.builder()
+            .add(CommonDataKeys.PROJECT, project)
+            .add(CommonDataKeys.EDITOR, editor)
+            .add(HybrisConstants.LOGGER_IDENTIFIER_DATA_CONTEXT_KEY, loggerIdentifier)
+            .build()
 
         val popup = JBPopupFactory.getInstance()
             .createActionGroupPopup(

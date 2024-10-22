@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
+import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.psi.tree.IFileElementType
@@ -693,6 +694,8 @@ object HybrisConstants {
     @JvmStatic
     val KEY_FINALIZE_PROJECT_IMPORT: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create("hybrisProjectImportFinalize")
     val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
+
+    val LOGGER_IDENTIFIER_DATA_CONTEXT_KEY = DataKey.create<String>("sap.cx.logger.identifier")
 
     const val FXS_DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
     val FXS_SUPPORTED_ELEMENT_TYPES = setOf(

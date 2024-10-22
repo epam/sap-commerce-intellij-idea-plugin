@@ -18,8 +18,8 @@
 
 <idea-plugin>
     <actions>
-        <group id="logging.actions">
-            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.TraceLoggerAction"/>
+        <group id="sap.cx.logging.actions">
+            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.TraceLoggerAction" />
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.DebugLoggerAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.InfoLoggerAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.WarnLoggerAction"/>

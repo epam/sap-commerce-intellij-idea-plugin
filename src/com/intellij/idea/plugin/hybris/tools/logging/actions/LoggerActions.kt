@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.tools.logging.actions
 
 import com.intellij.ide.DataManager
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.system.java.codeInsight.hints.LoggerConstants
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
@@ -36,7 +36,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import javax.swing.Icon
 
-open class LoggerAction(private val logLevel: String, val icon: Icon) : AnAction(logLevel, "", icon) {
+abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon) : AnAction(logLevel, "", icon) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -44,7 +44,7 @@ open class LoggerAction(private val logLevel: String, val icon: Icon) : AnAction
         val project = e.project ?: return
 
         val dataContext = e.dataContext
-        val logIdentifier = DataManager.getInstance().loadFromDataContext(dataContext, LoggerConstants.LOGGER_IDENTIFIER_DATA_CONTEXT_KEY) ?: return
+        val logIdentifier = dataContext.getData(HybrisConstants.LOGGER_IDENTIFIER_DATA_CONTEXT_KEY)
 
         ApplicationManager.getApplication().runReadAction {
             ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to SAP Commerce...") {
@@ -56,9 +56,6 @@ open class LoggerAction(private val logLevel: String, val icon: Icon) : AnAction
                             logLevel,
                             AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
                         )
-
-                        val resultMessage = if (result.statusCode == 200) "Success" else "Failed"
-                        val title = "Updating the log level: $resultMessage"
 
                         val serverName = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris).displayName
 
@@ -81,10 +78,10 @@ open class LoggerAction(private val logLevel: String, val icon: Icon) : AnAction
 
 }
 
-class TraceLoggerAction : LoggerAction("TRACE", HybrisIcons.Log.Level.TRACE)
-class DebugLoggerAction : LoggerAction("DEBUG", HybrisIcons.Log.Level.DEBUG)
-class InfoLoggerAction : LoggerAction("INFO", HybrisIcons.Log.Level.INFO)
-class WarnLoggerAction : LoggerAction("WARN", HybrisIcons.Log.Level.WARN)
-class ErrorLoggerAction : LoggerAction("ERROR", HybrisIcons.Log.Level.ERROR)
-class FatalLoggerAction : LoggerAction("FATAL", HybrisIcons.Log.Level.FATAL)
-class SevereLoggerAction : LoggerAction("SEVERE", HybrisIcons.Log.Level.SEVERE)
+class TraceLoggerAction : AbstractLoggerAction("TRACE", HybrisIcons.Log.Level.TRACE)
+class DebugLoggerAction : AbstractLoggerAction("DEBUG", HybrisIcons.Log.Level.DEBUG)
+class InfoLoggerAction : AbstractLoggerAction("INFO", HybrisIcons.Log.Level.INFO)
+class WarnLoggerAction : AbstractLoggerAction("WARN", HybrisIcons.Log.Level.WARN)
+class ErrorLoggerAction : AbstractLoggerAction("ERROR", HybrisIcons.Log.Level.ERROR)
+class FatalLoggerAction : AbstractLoggerAction("FATAL", HybrisIcons.Log.Level.FATAL)
+class SevereLoggerAction : AbstractLoggerAction("SEVERE", HybrisIcons.Log.Level.SEVERE)
