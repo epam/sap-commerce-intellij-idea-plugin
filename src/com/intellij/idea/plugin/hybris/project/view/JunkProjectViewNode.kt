@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.view
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ViewSettings
+import com.intellij.ide.projectView.impl.ProjectViewPane
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -36,10 +37,7 @@ class JunkProjectViewNode(
 
     override fun getChildren(): Collection<AbstractTreeNode<*>> = this.value
 
-    override fun contains(file: VirtualFile) = this.value
-        .filterIsInstance<ProjectViewNode<*>>()
-        .mapNotNull { it.virtualFile }
-        .any { it == file && file.path.startsWith(it.path) }
+    override fun contains(file: VirtualFile) = ProjectViewPane.canBeSelectedInProjectView(myProject, file)
 
     public override fun update(presentation: PresentationData) {
         with(presentation) {

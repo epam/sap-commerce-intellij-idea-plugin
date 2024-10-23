@@ -1,14 +1,25 @@
 ## [2024.3.0]
 
+### `Project Import` enhancements
+- Ensure that dependencies on non-custom extensions are properly configured [#1244](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1244)
+
+### `CCv2` enhancements
+- Added support for the `enabledRepositories` for `js-storefront` [#1240](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1240)
+
 ### Other
 - Added 2024.3 IntelliJ IDEA support [#1231](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1231)
 - Updated libraries versions [#1235](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1235)
 - MavenProjectBuilder API migration [#1237](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1237)
+- Improved navigation to the file located in the virtual `Junk` directory [#1245](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1245)
+- Added explicit dependency on a [JSON](https://plugins.jetbrains.com/plugin/25364-json) plugin [#1246](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1246)
+- Added additional dependencies on a [JSON](https://plugins.jetbrains.com/plugin/25364-json) plugin [#1249](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1249)
 
 ### Deprecated
 - Use `IDE` modality [#1232](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1232)
 - Resource bundle fallback message [#1233](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1233)
 - AnAction text in toolbar configuration [#1236](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1236)
+- Omit usage of the internal Java Compiler API [#1242](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1242)
+- Migrate Gradle project import API [#1243](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1243)
 
 ### Fixes
 - Add all module Classpaths and necessary Properties to JUnit Tests [#1241](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1241)

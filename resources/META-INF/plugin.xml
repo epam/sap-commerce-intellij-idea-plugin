@@ -40,6 +40,7 @@
     <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.modules.xml</depends>
     <depends>com.intellij.modules.xdebugger</depends>
+    <depends>com.intellij.modules.json</depends>
 
     <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-java.xml">com.intellij.modules.java</depends>
     <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-properties.xml">com.intellij.properties</depends>

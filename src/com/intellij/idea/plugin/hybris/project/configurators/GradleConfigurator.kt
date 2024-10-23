@@ -20,10 +20,12 @@ package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.GradleModuleDescriptor
 import com.intellij.openapi.project.Project
-import org.jetbrains.plugins.gradle.service.project.open.linkAndRefreshGradleProject
+import com.intellij.platform.backend.observation.launchTracked
+import kotlinx.coroutines.CoroutineScope
+import org.jetbrains.plugins.gradle.service.project.open.linkAndSyncGradleProject
 import org.jetbrains.plugins.gradle.settings.GradleSettings
 
-class GradleConfigurator {
+class GradleConfigurator(private val coroutineScope: CoroutineScope) {
 
     fun configure(
         project: Project,
@@ -31,7 +33,11 @@ class GradleConfigurator {
     ) {
         gradleModules
             .mapNotNull { it.gradleFile.path }
-            .forEach { linkAndRefreshGradleProject(it, project) }
+            .forEach { externalProjectPath ->
+                coroutineScope.launchTracked {
+                    linkAndSyncGradleProject(project, externalProjectPath)
+                }
+            }
     }
 
     fun clearLinkedProjectSettings(project: Project) {
