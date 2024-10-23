@@ -1,3 +1,8 @@
+## [2024.3.1]
+
+### Fixes
+- Correctly define Scope to filter for Properties File (#1247)[https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247]
+
 ## [2024.3.0]
 
 ### Other
@@ -9,9 +14,6 @@
 - Use `IDE` modality [#1232](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1232)
 - Resource bundle fallback message [#1233](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1233)
 - AnAction text in toolbar configuration [#1236](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1236)
-
-### Fixes
-- Correctly define Scope to filter for Properties File (#1247)[https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247]
 
 ## [2024.2.4]
 
