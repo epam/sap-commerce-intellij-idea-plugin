@@ -242,7 +242,7 @@ class PropertyService(val project: Project) {
         val advancedPropertiesScope = platformModule.moduleContentScope.filter { it.name == HybrisConstants.ADVANCED_PROPERTIES_FILE }
         val localPropertiesScope = configModule.moduleContentScope.filter { it.name == HybrisConstants.LOCAL_PROPERTIES_FILE }
 
-        return projectPropertiesScope.or(envPropertiesScope.or(advancedPropertiesScope.or(localPropertiesScope)))
+        return envPropertiesScope.or(advancedPropertiesScope).or(localPropertiesScope).or(projectPropertiesScope)
     }
 
     private fun obtainConfigModule() = ModuleManager.getInstance(project)
