@@ -1,3 +1,8 @@
+## [2024.3.1]
+
+### Fixes
+- Add all module Classpaths and necessary Properties to JUnit Tests [#1241](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1241)
+
 ## [2024.3.0]
 
 ### `Project Import` enhancements
@@ -20,9 +25,6 @@
 - AnAction text in toolbar configuration [#1236](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1236)
 - Omit usage of the internal Java Compiler API [#1242](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1242)
 - Migrate Gradle project import API [#1243](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1243)
-
-### Fixes
-- Add all module Classpaths and necessary Properties to JUnit Tests [#1241](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1241)
 
 ## [2024.2.4]
 
