@@ -1,5 +1,8 @@
 ## [2024.3.0]
 
+### SAP CX Logging enhancements
+- Added an inlay hint to the logger popup, allowing users to select a log level and apply it to the active server [#1239](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1239)
+
 ### `Project Import` enhancements
 - Ensure that dependencies on non-custom extensions are properly configured [#1244](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1244)
 
