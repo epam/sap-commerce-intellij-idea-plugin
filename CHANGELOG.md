@@ -6,6 +6,7 @@
 
 ### SAP CX Logging enhancements
 - Fixed the notification message when a server is NULL [#1253](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1253)
+- Improved the notification type if the server responds with an error [#1254](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1254)
 
 ## [2024.3.0]
 
