@@ -60,7 +60,7 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
                         val serverName = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris).toString()
 
                         Notifications.create(
-                            NotificationType.INFORMATION,
+                            if (result.statusCode == 200) NotificationType.INFORMATION else NotificationType.ERROR,
                             if (result.statusCode == 200) "Updating the log level: Success" else "Updating the log level: Failed",
                             if (result.statusCode == 200)
                                 "The log level set to $logLevel for $logIdentifier, server $serverName."
