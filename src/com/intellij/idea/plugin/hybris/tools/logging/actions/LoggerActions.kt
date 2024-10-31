@@ -63,9 +63,13 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
                             NotificationType.INFORMATION,
                             if (result.statusCode == 200) "Updating the log level: Success" else "Updating the log level: Failed",
                             if (result.statusCode == 200)
-                                "The log level set to $logLevel for $logIdentifier, server $serverName. "
+                                serverName
+                                    ?.let { "The log level set to $logLevel for $logIdentifier, server $serverName." }
+                                    ?: "The log level set to $logLevel for $logIdentifier."
                             else
-                                "The log level is not set to $logLevel for $logIdentifier, server $serverName. "
+                                serverName
+                                    ?.let { "The log level is not set to $logLevel for $logIdentifier, server $serverName." }
+                                    ?: "The log level is not set to $logLevel for $logIdentifier"
                         )
                             .hideAfter(5)
                             .notify(project)
