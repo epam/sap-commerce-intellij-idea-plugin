@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging.actions
 
-import com.intellij.ide.DataManager
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
@@ -57,15 +56,15 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
                             AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
                         )
 
-                        val serverName = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris).toString()
+                        val server = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
 
                         Notifications.create(
                             if (result.statusCode == 200) NotificationType.INFORMATION else NotificationType.ERROR,
                             if (result.statusCode == 200) "Updating the log level: Success" else "Updating the log level: Failed",
                             if (result.statusCode == 200)
-                                "The log level set to $logLevel for $logIdentifier, server $serverName."
+                                "The log level set to $logLevel for $logIdentifier, server $server."
                             else
-                                "The log level is not set to $logLevel for $logIdentifier, server $serverName."
+                                "The log level is not set to $logLevel for $logIdentifier, server $server."
                         )
                             .hideAfter(5)
                             .notify(project)
