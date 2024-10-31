@@ -57,19 +57,15 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
                             AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
                         )
 
-                        val serverName = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris).displayName
+                        val serverName = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris).toString()
 
                         Notifications.create(
                             NotificationType.INFORMATION,
                             if (result.statusCode == 200) "Updating the log level: Success" else "Updating the log level: Failed",
                             if (result.statusCode == 200)
-                                serverName
-                                    ?.let { "The log level set to $logLevel for $logIdentifier, server $serverName." }
-                                    ?: "The log level set to $logLevel for $logIdentifier."
+                                "The log level set to $logLevel for $logIdentifier, server $serverName."
                             else
-                                serverName
-                                    ?.let { "The log level is not set to $logLevel for $logIdentifier, server $serverName." }
-                                    ?: "The log level is not set to $logLevel for $logIdentifier"
+                                "The log level is not set to $logLevel for $logIdentifier, server $serverName."
                         )
                             .hideAfter(5)
                             .notify(project)
