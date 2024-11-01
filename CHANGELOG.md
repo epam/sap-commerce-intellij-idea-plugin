@@ -1,5 +1,8 @@
 ## [2024.3.1]
 
+### `ImpEx` enhancements
+- Improved Groovy language injection for Script type [#1255](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1255)
+
 ### Fixes
 - Correctly define Scope to filter for Properties File [#1247](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247)
 - Add all module Classpaths and necessary Properties to JUnit Tests [#1241](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1241)

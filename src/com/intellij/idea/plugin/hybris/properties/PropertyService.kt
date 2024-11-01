@@ -45,8 +45,11 @@ import java.io.File
 import java.util.*
 import java.util.regex.Pattern
 
-/*
-Improve order of the properties - https://help.sap.com/docs/SAP_COMMERCE/b490bb4e85bc42a7aa09d513d0bcb18e/8b8e13c9866910149d40b151a9196543.html?locale=en-US
+/**
+ * Currently there is an issue with Order and Properties that are included in lookup and suggestion.
+ *
+ * @see <a href="https://help.sap.com/docs/SAP_COMMERCE/b490bb4e85bc42a7aa09d513d0bcb18e/8b8e13c9866910149d40b151a9196543.html?locale=en-US">Configuring the Behavior of SAP Commerce</a> to improve order of the properties.
+ * @see <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/1be46286b36a4aa48205be5a96240672/d090fb3dd48a418d967a1dfdca9fcac6.html?locale=en-US">SAP Commerce Cloud Properties</a> to support CCv2 properties.
  */
 @Service(Service.Level.PROJECT)
 class PropertyService(val project: Project) {
