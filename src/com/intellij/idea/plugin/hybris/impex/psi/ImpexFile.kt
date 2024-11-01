@@ -78,8 +78,7 @@ class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, Impe
         )
     }, false)
 
-
-    fun resolveIncludeExternalData(impexScript: ImpexScript): ImpexFile? {
+    private fun resolveIncludeExternalData(impexScript: ImpexScript): ImpexFile? {
         val text = impexScript.text
         val streamIndex = text.indexOf("impex.includeExternalData")
             .takeIf { it != -1 }

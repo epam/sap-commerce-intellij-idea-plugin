@@ -8,7 +8,10 @@
 - Cache macro declaration references [#1259](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1259)
 - Use closest macro declaration value for folded macro usage [#1260](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1260)
 - Use macros imported via `impex.includeExtenalData(Resource)` in the folded values [#1261](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1261)
-- Resolve macros defined in external ImpEx file and imported via `impex.includeExtenalData(Resource)` [#1262](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1262)
+- Resolve macros defined in the external ImpEx file and imported via `impex.includeExtenalData(Resource)` [#1262](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1262)
+
+### `ImpEx` inspection rules
+- Adjusted Unknown Macro inspection in case of external ImpEx files [#1263](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1263)
 
 ### Fixes
 - Correctly define Scope to filter for Properties File [#1247](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247)
