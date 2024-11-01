@@ -26,8 +26,11 @@ import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.module.ModuleUtil;
+import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
@@ -39,7 +42,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfAnyType;
 
@@ -70,8 +75,8 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             }
 
             @Override
-            public void visitString(@NotNull final ImpexString o) {
-                super.visitString(o);
+            public void visitScript(@NotNull final ImpexScript o) {
+                super.visitScript(o);
                 resolveIncludeExternalData(o);
             }
         });
@@ -82,8 +87,8 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         return results.toArray(FoldingDescriptor.EMPTY_ARRAY);
     }
 
-    private void resolveIncludeExternalData(final ImpexString impexString) {
-        final String text = impexString.getText();
+    private void resolveIncludeExternalData(final ImpexScript impexScript) {
+        final String text = impexScript.getText();
         int index = text.indexOf("impex.includeExternalData");
         if (index == -1) return;
         index = text.indexOf("getResourceAsStream");
@@ -94,16 +99,21 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         if (endIndex == -1) return;
 
         final var resource = StringUtils.strip(text.substring(startIndex + 1, endIndex), "\"' ");
-        final var impexFile = (ImpexFile) impexString.getContainingFile();
-        final var containingDirectory = impexFile.getContainingDirectory();
 
-        if (containingDirectory == null) return;
+        final var module = ModuleUtil.findModuleForPsiElement(impexScript);
+        if (module == null) return;
+        final var referencedFile = Arrays.stream(ModuleRootManager.getInstance(module).getSourceRoots())
+            .filter(it -> it.getPath().endsWith("/resources"))
+            .map(it -> new File(it.getPath(), resource))
+            .map(it -> LocalFileSystem.getInstance().findFileByIoFile(it))
+            .filter(Objects::nonNull)
+            .filter(VirtualFile::exists)
+            .findFirst()
+            .orElse(null);
 
-        final var dirPath = containingDirectory.getVirtualFile().getCanonicalPath();
-        final var referencedFile = LocalFileSystem.getInstance().findFileByIoFile(new File(dirPath, resource));
-        if (referencedFile == null || !referencedFile.exists()) return;
+        if (referencedFile == null) return;
 
-        final var referencedPsi = PsiManager.getInstance(impexString.getProject()).findFile(referencedFile);
+        final var referencedPsi = PsiManager.getInstance(impexScript.getProject()).findFile(referencedFile);
         if (!(referencedPsi instanceof final ImpexFile referencedImpExFile)) return;
 
         var referencedCache = referencedImpExFile.getMacroDescriptors();
@@ -111,16 +121,19 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             final var document = FileDocumentManager.getInstance().getDocument(referencedFile);
             if (document == null) return;
 
-            preventRecursion(impexString, referencedCache);
+            preventRecursion(impexScript, referencedCache);
             buildFoldRegions(referencedPsi.getNode(), document);
             referencedCache = referencedImpExFile.getMacroDescriptors();
         }
-        impexFile.getMacroDescriptors().putAll(referencedCache);
+
+        ((ImpexFile) impexScript.getContainingFile())
+            .getMacroDescriptors()
+            .putAll(referencedCache);
     }
 
-    private void preventRecursion(final ImpexString impexString, final MultiValuedMap<String, ImpexMacroDescriptor> cache) {
+    private void preventRecursion(final ImpexScript impexScript, final MultiValuedMap<String, ImpexMacroDescriptor> cache) {
         if (cache.isEmpty()) {
-            cache.put("!", new ImpexMacroDescriptor("!", "!", impexString));
+            cache.put("!", new ImpexMacroDescriptor("!", "!", impexScript));
         }
     }
 

@@ -7,6 +7,7 @@
 - Properly resolve references to macro declaration [#1258](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1258)
 - Cache macro declaration references [#1259](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1259)
 - Use closest macro declaration value for folded macro usage [#1260](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1260)
+- Use macros imported via `impex.includeExtenalData(Resource)` in the folded values [#1261](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1261)
 
 ### Fixes
 - Correctly define Scope to filter for Properties File [#1247](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247)
