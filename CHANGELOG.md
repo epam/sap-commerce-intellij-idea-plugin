@@ -1,7 +1,8 @@
 ## [2024.3.1]
 
 ### `ImpEx` enhancements
-- Added **CronExp** language injection for **Trigger** type [#1256](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1256)
+- Added **CronExp** language injection for **Trigger** type into String literal [#1256](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1256)
+- Added **CronExp** language injection for **Trigger** type into non-String literal [#1257](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1257)
 - Improved **Groovy** language injection for **Script** type [#1255](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1255)
 
 ### Fixes

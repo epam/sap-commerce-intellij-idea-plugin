@@ -332,11 +332,11 @@ dependencies {
 
         // JSON:
         // https://plugins.jetbrains.com/plugin/25364-json
-        plugin("com.intellij.modules.json:243.20847.40")
+        plugin("com.intellij.modules.json:243.21565.23")
 
         // Ant:
         // https://plugins.jetbrains.com/plugin/23025-ant
-        plugin("AntSupport:243.19420.21")
+        plugin("AntSupport:243.21565.23")
 
         // PsiViewer:
         // https://plugins.jetbrains.com/plugin/227-psiviewer

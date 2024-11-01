@@ -20,12 +20,15 @@ package com.intellij.idea.plugin.hybris.psi.injector
 import com.intellij.cron.CronExpLanguage
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.util.childrenOfType
 
 class CronExpLanguageInjector : LanguageInjector {
 
@@ -45,22 +48,29 @@ class CronExpLanguageInjector : LanguageInjector {
     private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
         when (host) {
             is ImpexString -> {
-                if (isTriggerCronExpression(host)) {
+                val valueGroup = host.valueGroup ?: return
+                if (isTriggerCronExpression(valueGroup)) {
                     injectLanguage(injectionPlacesRegistrar, host.getTextLength() - quoteSymbolLength - 1, quoteSymbolLength)
+                }
+            }
+
+            is ImpexValue -> {
+                if (host.childrenOfType<ImpexString>().isNotEmpty()) return
+
+                val valueGroup = host.valueGroup ?: return
+                if (isTriggerCronExpression(valueGroup)) {
+                    injectLanguage(injectionPlacesRegistrar, host.getTextLength(), 0)
                 }
             }
         }
     }
 
-    fun isTriggerCronExpression(impexString: ImpexString): Boolean {
-        val valueGroup = impexString
-            .valueGroup
-            ?: return false
+    private fun isTriggerCronExpression(valueGroup: ImpexValueGroup): Boolean {
         val fullHeaderParameter = valueGroup
             .fullHeaderParameter
             ?.takeIf { it.anyHeaderParameterName.textMatches("cronExpression") }
             ?: return false
-        val header = fullHeaderParameter
+        fullHeaderParameter
             .headerLine
             ?.takeIf {
                 it.fullHeaderType
