@@ -65,10 +65,8 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexMacroReference> { ref ->
             val element = ref.element
-            val text = element.text
-            val macroUsageLineNumber = element.getLineNumber()
             val result = ref.findMacroDeclaration()
-                ?.let { PsiElementResolveResult.createResults(it.originalElement) }
+                ?.let { PsiElementResolveResult.createResults(it.macroNameDec) }
                 ?: ResolveResult.EMPTY_ARRAY
 
             CachedValueProvider.Result.create(

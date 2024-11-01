@@ -6,6 +6,7 @@
 - Improved **Groovy** language injection for **Script** type [#1255](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1255)
 - Properly resolve references to macro declaration [#1258](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1258)
 - Cache macro declaration references [#1259](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1259)
+- Use closest macro declaration value for folded macro usage [#1260](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1260)
 
 ### Fixes
 - Correctly define Scope to filter for Properties File [#1247](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247)

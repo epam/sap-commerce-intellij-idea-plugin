@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,10 +29,10 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.SmartList;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +40,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfAnyType;
 
@@ -67,7 +66,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             @Override
             public void visitMacroDeclaration(@NotNull final ImpexMacroDeclaration macroDeclaration) {
                 super.visitMacroDeclaration(macroDeclaration);
-                resolveMacroDeclaration(macroDeclaration, results);
+                resolveMacroDeclaration(macroDeclaration);
             }
 
             @Override
@@ -86,61 +85,51 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
     private void resolveIncludeExternalData(final ImpexString impexString) {
         final String text = impexString.getText();
         int index = text.indexOf("impex.includeExternalData");
-        if (index == -1) {
-            return;
-        }
+        if (index == -1) return;
         index = text.indexOf("getResourceAsStream");
-        if (index == -1) {
-            return;
-        }
+        if (index == -1) return;
         final int startIndex = text.indexOf('(', index);
-        if (startIndex == -1) {
-            return;
-        }
+        if (startIndex == -1) return;
         final int endIndex = text.indexOf(')', startIndex);
-        if (endIndex == -1) {
-            return;
-        }
+        if (endIndex == -1) return;
+
         final var resource = StringUtils.strip(text.substring(startIndex + 1, endIndex), "\"' ");
-        final var directory = impexString.getContainingFile().getContainingDirectory().getVirtualFile();
-        final var dirPath = directory.getCanonicalPath();
+        final var impexFile = (ImpexFile) impexString.getContainingFile();
+        final var containingDirectory = impexFile.getContainingDirectory();
+
+        if (containingDirectory == null) return;
+
+        final var dirPath = containingDirectory.getVirtualFile().getCanonicalPath();
         final var referencedFile = LocalFileSystem.getInstance().findFileByIoFile(new File(dirPath, resource));
-        if (referencedFile == null || !referencedFile.exists()) {
-            return;
-        }
-        final PsiFile referencedPsi = PsiManager.getInstance(impexString.getProject()).findFile(referencedFile);
-        if (!(referencedPsi instanceof ImpexFile)) {
-            return;
-        }
-        Map<String, ImpexMacroDescriptor> referencedCache = ImpexMacroUtils.getFileCache(referencedPsi).getValue();
+        if (referencedFile == null || !referencedFile.exists()) return;
+
+        final var referencedPsi = PsiManager.getInstance(impexString.getProject()).findFile(referencedFile);
+        if (!(referencedPsi instanceof final ImpexFile referencedImpExFile)) return;
+
+        var referencedCache = referencedImpExFile.getMacroDescriptors();
         if (referencedCache.isEmpty()) {
-            final Document document = FileDocumentManager.getInstance().getDocument(referencedFile);
-            if (document == null) {
-                return;
-            }
-            preventRecursion(impexString);
+            final var document = FileDocumentManager.getInstance().getDocument(referencedFile);
+            if (document == null) return;
+
+            preventRecursion(impexString, referencedCache);
             buildFoldRegions(referencedPsi.getNode(), document);
-            referencedCache = ImpexMacroUtils.getFileCache(referencedPsi).getValue();
+            referencedCache = referencedImpExFile.getMacroDescriptors();
         }
-        final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(impexString.getContainingFile()).getValue();
-        cache.putAll(referencedCache);
+        impexFile.getMacroDescriptors().putAll(referencedCache);
     }
 
-    private void preventRecursion(final ImpexString impexString) {
-        final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(impexString.getContainingFile()).getValue();
+    private void preventRecursion(final ImpexString impexString, final MultiValuedMap<String, ImpexMacroDescriptor> cache) {
         if (cache.isEmpty()) {
             cache.put("!", new ImpexMacroDescriptor("!", "!", impexString));
         }
     }
 
-    private void resolveMacroDeclaration(
-        final ImpexMacroDeclaration macroLine,
-        final SmartList<FoldingDescriptor> results
-    ) {
+    private void resolveMacroDeclaration(final ImpexMacroDeclaration macroLine) {
         final List<PsiElement> lineElements = getAllChildren(macroLine);
         String macroName = null;
         final StringBuilder sb = new StringBuilder();
-        final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroLine.getContainingFile()).getValue();
+        final var impexFile = (ImpexFile) macroLine.getContainingFile();
+        final var cache = impexFile.getMacroDescriptors();
         PsiElement anchor = macroLine;
         for (PsiElement child : lineElements) {
             if (child instanceof final LeafPsiElement leafPsiElement) {
@@ -152,8 +141,8 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
                 macroName = child.getText();
                 anchor = child;
             } else {
-                if (child instanceof ImpexMacroUsageDec) {
-                    final ImpexMacroDescriptor descriptor = findInCache(cache, child.getText());
+                if (child instanceof final ImpexMacroUsageDec macroUsage) {
+                    final ImpexMacroDescriptor descriptor = findInCache(impexFile, cache, macroUsage);
                     if (descriptor != null) {
                         sb.append(descriptor.resolvedValue());
                         final int delta = child.getText().length() - descriptor.macroName().length();
@@ -209,8 +198,8 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         if (text.length() <= HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length()) {
             return;
         }
-        final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroUsage.getContainingFile()).getValue();
-        ImpexMacroDescriptor descriptor = cache.get(text);
+        final var impexFile = (ImpexFile) macroUsage.getContainingFile();
+        ImpexMacroDescriptor descriptor = impexFile.getSuitableMacroDescriptor(text, macroUsage);
         if (descriptor == null) {
             final var propertyName = text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "");
             final var propertyService = PropertyService.getInstance(macroUsage.getProject());
@@ -224,7 +213,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             final var propertyKey = HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX + iProperty.getKey();
 
             descriptor = new ImpexMacroDescriptor(propertyKey, iProperty.getValue(), iProperty.getPsiElement());
-            cache.put(text, descriptor);
+            impexFile.getMacroDescriptors().put(text, descriptor);
         }
         final int start = macroUsage.getTextRange().getStartOffset();
         final TextRange range = new TextRange(start, start + descriptor.macroName().length());
@@ -232,37 +221,43 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
     }
 
     private void resolveLocalMacro(final ImpexMacroUsageDec macroUsage, final SmartList<FoldingDescriptor> results) {
-        final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(macroUsage.getContainingFile()).getValue();
+        final var impexFile = (ImpexFile) macroUsage.getContainingFile();
+        final var cache = impexFile.getMacroDescriptors();
         String currentKey = "";
-        for (String key : cache.keySet()) {
-            if (macroUsage.getText().startsWith(key)) {
+        final var macroUsageText = macroUsage.getText();
+        for (final var key : cache.keySet()) {
+            if (macroUsageText.startsWith(key)) {
                 if (key.length() > currentKey.length()) {
                     currentKey = key;
                 }
             }
         }
-        if (currentKey.isEmpty()) {
-            return;
-        }
-        final ImpexMacroDescriptor descriptor = cache.get(currentKey);
-        final int start = macroUsage.getTextRange().getStartOffset();
-        final TextRange range = new TextRange(start, start + descriptor.macroName().length());
+        if (currentKey.isEmpty()) return;
+
+        final var descriptor = impexFile.getSuitableMacroDescriptor(currentKey, macroUsage);
+        if (descriptor == null) return;
+
+        final var start = macroUsage.getTextRange().getStartOffset();
+        final var range = new TextRange(start, start + descriptor.macroName().length());
+
         results.add(new FoldingDescriptor(macroUsage.getNode(), range, null));
 
-        cache.put(macroUsage.getText(), descriptor);
+        cache.put(macroUsageText, descriptor);
     }
 
+    @Nullable
     private ImpexMacroDescriptor findInCache(
-        final Map<String, ImpexMacroDescriptor> cache,
-        final String text
+        final ImpexFile impexFile,
+        final MultiValuedMap<String, ImpexMacroDescriptor> cache,
+        final ImpexMacroUsageDec macroUsageDec
     ) {
-        final ImpexMacroDescriptor impexMacroDescriptor = cache.get(text);
-        if (impexMacroDescriptor != null) {
-            return impexMacroDescriptor;
-        }
-        for (ImpexMacroDescriptor md : cache.values()) {
-            if (text.startsWith(md.macroName())) {
-                cache.put(text, md);
+        final var macroName = macroUsageDec.getName();
+        final var impexMacroDescriptor = impexFile.getSuitableMacroDescriptor(macroName, macroUsageDec);
+        if (impexMacroDescriptor != null) return impexMacroDescriptor;
+
+        for (final var md : cache.values()) {
+            if (macroName.startsWith(md.macroName())) {
+                cache.put(macroName, md);
                 return md;
             }
         }
@@ -272,37 +267,37 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
     @Nullable
     @Override
     public String getPlaceholderText(@NotNull final ASTNode node) {
-        final Map<String, ImpexMacroDescriptor> cache = ImpexMacroUtils.getFileCache(node.getPsi().getContainingFile()).getValue();
-        final ImpexMacroDescriptor descriptor = cache.get(node.getText());
-        if (descriptor != null) {
-            final var resolvedValue = descriptor.resolvedValue();
+        final var psi = node.getPsi();
+        final var descriptor = ((ImpexFile) psi.getContainingFile()).getSuitableMacroDescriptor(node.getText(), psi);
 
-            if (resolvedValue.startsWith("jar:")) {
-                final var blocks = resolvedValue.substring("jar:".length()).split("&");
-                if (blocks.length == 2) {
-                    final var loaderClass = blocks[0];
-                    return "jar:"
-                        + loaderClass.substring(loaderClass.lastIndexOf('.') + 1)
-                        + '&'
-                        + getFileName(blocks[1]);
-                }
-            } else if (resolvedValue.startsWith("zip:")) {
-                final var blocks = resolvedValue.substring("zip:".length()).split("&");
-                if (blocks.length == 2) {
-                    final var zipName = getFileName(blocks[0]);
-                    return "zip:" + zipName + '&' + blocks[1];
-                }
-            } else if (resolvedValue.startsWith("file:")) {
-                final var blocks = resolvedValue.split(":");
-                if (blocks.length == 2) {
-                    final var fileName = getFileName(blocks[1]);
-                    return "file:" + fileName;
-                }
+        if (descriptor == null) return node.getText();
+
+        final var resolvedValue = descriptor.resolvedValue();
+
+        if (resolvedValue.startsWith("jar:")) {
+            final var blocks = resolvedValue.substring("jar:".length()).split("&");
+            if (blocks.length == 2) {
+                final var loaderClass = blocks[0];
+                return "jar:"
+                    + loaderClass.substring(loaderClass.lastIndexOf('.') + 1)
+                    + '&'
+                    + getFileName(blocks[1]);
             }
-
-            return resolvedValue;
+        } else if (resolvedValue.startsWith("zip:")) {
+            final var blocks = resolvedValue.substring("zip:".length()).split("&");
+            if (blocks.length == 2) {
+                final var zipName = getFileName(blocks[0]);
+                return "zip:" + zipName + '&' + blocks[1];
+            }
+        } else if (resolvedValue.startsWith("file:")) {
+            final var blocks = resolvedValue.split(":");
+            if (blocks.length == 2) {
+                final var fileName = getFileName(blocks[1]);
+                return "file:" + fileName;
+            }
         }
-        return node.getText();
+
+        return resolvedValue;
     }
 
     @NotNull

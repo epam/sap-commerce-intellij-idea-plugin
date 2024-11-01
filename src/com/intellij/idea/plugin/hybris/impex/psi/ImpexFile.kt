@@ -21,9 +21,14 @@ package com.intellij.idea.plugin.hybris.impex.psi
 import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroDescriptor
+import com.intellij.idea.plugin.hybris.psi.util.getLineNumber
 import com.intellij.openapi.util.Key
 import com.intellij.psi.FileViewProvider
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.*
+import org.apache.commons.collections4.MultiValuedMap
+import org.apache.commons.collections4.multimap.HashSetValuedHashMap
 import java.io.Serial
 
 class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ImpexLanguage) {
@@ -42,9 +47,24 @@ class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, Impe
         )
     }, false)
 
+    fun getMacroDescriptors(): MultiValuedMap<String, ImpexMacroDescriptor> = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_MACRO_DESCRIPTORS, {
+        CachedValueProvider.Result.createSingleDependency(
+            HashSetValuedHashMap(),
+            PsiModificationTracker.MODIFICATION_COUNT,
+        )
+    }, false)
+
+    fun getSuitableMacroDescriptor(macroName: String, macroUsage: PsiElement) = getMacroDescriptors()[macroName]
+        ?.asSequence()
+        ?.map { it.psiElement.getLineNumber() to it }
+        ?.filter { macroUsage.getLineNumber() >= it.first }
+        ?.sortedByDescending { it.first }
+        ?.map { it.second }
+        ?.firstOrNull()
+
     companion object {
         val CACHE_KEY_HEADER_LINES = Key.create<CachedValue<Map<ImpexHeaderLine, Collection<ImpexValueLine>>>>("SAP_CX_IMPEX_HEADER_LINES")
-        val CACHE_KEY_MACRO_DESCRIPTORS = Key.create<CachedValue<Map<ImpexHeaderLine, Collection<ImpexValueLine>>>>("SAP_CX_IMPEX_MACRO_DESCRIPTORS")
+        val CACHE_KEY_MACRO_DESCRIPTORS = Key.create<CachedValue<MultiValuedMap<String, ImpexMacroDescriptor>>>("SAP_CX_IMPEX_MACRO_DESCRIPTORS")
 
         @Serial
         private val serialVersionUID: Long = 5112646813557523662L
