@@ -4,6 +4,7 @@
 - Added **CronExp** language injection for **Trigger** type into String literal [#1256](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1256)
 - Added **CronExp** language injection for **Trigger** type into non-String literal [#1257](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1257)
 - Improved **Groovy** language injection for **Script** type [#1255](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1255)
+- Properly resolve references to macro declaration [#1258](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1258)
 
 ### Fixes
 - Correctly define Scope to filter for Properties File [#1247](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247)

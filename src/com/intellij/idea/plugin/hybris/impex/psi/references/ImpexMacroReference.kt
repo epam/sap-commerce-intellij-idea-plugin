@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManipulator
+import com.intellij.idea.plugin.hybris.psi.util.getLineNumber
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
@@ -38,12 +40,17 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
         ?.let { PsiElementResolveResult.createResults(it.macroNameDec) }
         ?: ResolveResult.EMPTY_ARRAY
 
-    private fun findMacroDeclaration() = PsiTreeUtil.findChildrenOfType(
-        element.containingFile,
-        ImpexMacroDeclaration::class.java
-    )
-        .reversed()
-        .find { element.text.startsWith(escapeName(it.macroNameDec.text)) }
+    private fun findMacroDeclaration(): ImpexMacroDeclaration? {
+        val text = element.text
+        val macroUsageLineNumber = element.getLineNumber()
+
+        return PsiTreeUtil.findChildrenOfType(
+            element.containingFile,
+            ImpexMacroDeclaration::class.java
+        )
+            .reversed()
+            .find { it.getLineNumber() <= macroUsageLineNumber && text.startsWith(escapeName(it.macroNameDec.text)) }
+    }
 
     override fun handleElementRename(newElementName: String) = ImpexMacrosManipulator().handleContentChange(element, rangeInElement, newElementName)
 

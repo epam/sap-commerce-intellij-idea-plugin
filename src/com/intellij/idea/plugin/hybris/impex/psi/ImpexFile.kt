@@ -32,7 +32,7 @@ class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, Impe
     override fun toString() = "ImpEx File"
     override fun getIcon(flags: Int) = super.getIcon(flags)
 
-    fun getHeaderLines() = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_HEADER_LINES, {
+    fun getHeaderLines(): Map<ImpexHeaderLine, Collection<ImpexValueLine>> = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_HEADER_LINES, {
         val headerLines = childrenOfType<ImpexHeaderLine>()
             .associateWith { it.valueLines }
 
@@ -44,6 +44,7 @@ class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, Impe
 
     companion object {
         val CACHE_KEY_HEADER_LINES = Key.create<CachedValue<Map<ImpexHeaderLine, Collection<ImpexValueLine>>>>("SAP_CX_IMPEX_HEADER_LINES")
+        val CACHE_KEY_MACRO_DESCRIPTORS = Key.create<CachedValue<Map<ImpexHeaderLine, Collection<ImpexValueLine>>>>("SAP_CX_IMPEX_MACRO_DESCRIPTORS")
 
         @Serial
         private val serialVersionUID: Long = 5112646813557523662L
