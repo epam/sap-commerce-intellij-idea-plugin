@@ -18,6 +18,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManipulator
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
@@ -54,7 +55,13 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
         )
             .reversed()
             .find { it.getLineNumber() <= macroUsageLineNumber && text.startsWith(escapeName(it.macroNameDec.text)) }
+            ?: findExternalMacroDeclaration(text)
     }
+
+    private fun findExternalMacroDeclaration(text: String) = (element.containingFile as ImpexFile).getExternalImpExFiles()
+        .map { PsiTreeUtil.findChildrenOfType(it, ImpexMacroDeclaration::class.java) }
+        .flatMap { it.reversed() }
+        .find { text.startsWith(escapeName(it.macroNameDec.text)) }
 
     companion object {
         private val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpexMacroReference>>("SAP_CX_IMPEXMACRO_REFERENCE")
@@ -64,7 +71,6 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
             .replace("\n", "")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexMacroReference> { ref ->
-            val element = ref.element
             val result = ref.findMacroDeclaration()
                 ?.let { PsiElementResolveResult.createResults(it.macroNameDec) }
                 ?: ResolveResult.EMPTY_ARRAY

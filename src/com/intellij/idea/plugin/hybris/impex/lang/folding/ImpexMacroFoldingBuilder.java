@@ -26,13 +26,8 @@ import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.module.ModuleUtil;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.SmartList;
 import org.apache.commons.collections4.MultiValuedMap;
@@ -40,11 +35,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfAnyType;
 
@@ -69,17 +61,15 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         // then resolve other macros
         root.acceptChildren(new ImpexVisitor() {
             @Override
-            public void visitMacroDeclaration(@NotNull final ImpexMacroDeclaration macroDeclaration) {
-                super.visitMacroDeclaration(macroDeclaration);
-                resolveMacroDeclaration(macroDeclaration);
-            }
-
-            @Override
-            public void visitScript(@NotNull final ImpexScript o) {
-                super.visitScript(o);
-                resolveIncludeExternalData(o);
+            public void visitMacroDeclaration(@NotNull final ImpexMacroDeclaration o) {
+                super.visitMacroDeclaration(o);
+                resolveMacroDeclaration(o);
             }
         });
+        // resolve external ImpEx files
+        root.getExternalImpExFiles().forEach(
+            referencedImpExFile -> resolveIncludeExternalData(root, referencedImpExFile)
+        );
 
         // resolve local macro last
         localMacroList.forEach(macroUsage -> resolveLocalMacro(macroUsage, results));
@@ -87,53 +77,25 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         return results.toArray(FoldingDescriptor.EMPTY_ARRAY);
     }
 
-    private void resolveIncludeExternalData(final ImpexScript impexScript) {
-        final String text = impexScript.getText();
-        int index = text.indexOf("impex.includeExternalData");
-        if (index == -1) return;
-        index = text.indexOf("getResourceAsStream");
-        if (index == -1) return;
-        final int startIndex = text.indexOf('(', index);
-        if (startIndex == -1) return;
-        final int endIndex = text.indexOf(')', startIndex);
-        if (endIndex == -1) return;
-
-        final var resource = StringUtils.strip(text.substring(startIndex + 1, endIndex), "\"' ");
-
-        final var module = ModuleUtil.findModuleForPsiElement(impexScript);
-        if (module == null) return;
-        final var referencedFile = Arrays.stream(ModuleRootManager.getInstance(module).getSourceRoots())
-            .filter(it -> it.getPath().endsWith("/resources"))
-            .map(it -> new File(it.getPath(), resource))
-            .map(it -> LocalFileSystem.getInstance().findFileByIoFile(it))
-            .filter(Objects::nonNull)
-            .filter(VirtualFile::exists)
-            .findFirst()
-            .orElse(null);
-
-        if (referencedFile == null) return;
-
-        final var referencedPsi = PsiManager.getInstance(impexScript.getProject()).findFile(referencedFile);
-        if (!(referencedPsi instanceof final ImpexFile referencedImpExFile)) return;
-
+    private void resolveIncludeExternalData(final ImpexFile currentFile, final ImpexFile referencedImpExFile) {
         var referencedCache = referencedImpExFile.getMacroDescriptors();
         if (referencedCache.isEmpty()) {
-            final var document = FileDocumentManager.getInstance().getDocument(referencedFile);
+            final var document = FileDocumentManager.getInstance().getDocument(referencedImpExFile.getVirtualFile());
             if (document == null) return;
 
-            preventRecursion(impexScript, referencedCache);
-            buildFoldRegions(referencedPsi.getNode(), document);
+            preventRecursion(currentFile, referencedCache);
+            buildFoldRegions(referencedImpExFile.getNode(), document);
             referencedCache = referencedImpExFile.getMacroDescriptors();
         }
 
-        ((ImpexFile) impexScript.getContainingFile())
+        currentFile
             .getMacroDescriptors()
             .putAll(referencedCache);
     }
 
-    private void preventRecursion(final ImpexScript impexScript, final MultiValuedMap<String, ImpexMacroDescriptor> cache) {
-        if (cache.isEmpty()) {
-            cache.put("!", new ImpexMacroDescriptor("!", "!", impexScript));
+    private void preventRecursion(final ImpexFile referencedImpExFile, final MultiValuedMap<String, ImpexMacroDescriptor> referencedCache) {
+        if (referencedCache.isEmpty()) {
+            referencedCache.put("!", new ImpexMacroDescriptor("!", "!", referencedImpExFile));
         }
     }
 
