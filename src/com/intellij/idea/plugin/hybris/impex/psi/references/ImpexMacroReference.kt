@@ -20,13 +20,15 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManipulator
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.psi.util.getLineNumber
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.*
 
 class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?>(owner, false) {
 
@@ -36,9 +38,11 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
 
     override fun getVariants(): Array<ResolveResult> = ResolveResult.EMPTY_ARRAY
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = findMacroDeclaration()
-        ?.let { PsiElementResolveResult.createResults(it.macroNameDec) }
-        ?: ResolveResult.EMPTY_ARRAY
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
+        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+        .let { PsiUtils.getValidResults(it) }
+
+    override fun handleElementRename(newElementName: String) = ImpexMacrosManipulator().handleContentChange(element, rangeInElement, newElementName)
 
     private fun findMacroDeclaration(): ImpexMacroDeclaration? {
         val text = element.text
@@ -52,11 +56,25 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
             .find { it.getLineNumber() <= macroUsageLineNumber && text.startsWith(escapeName(it.macroNameDec.text)) }
     }
 
-    override fun handleElementRename(newElementName: String) = ImpexMacrosManipulator().handleContentChange(element, rangeInElement, newElementName)
-
     companion object {
+        private val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpexMacroReference>>("SAP_CX_IMPEXMACRO_REFERENCE")
+
         fun escapeName(macroName: String) = macroName
             .replace("\\", "")
             .replace("\n", "")
+
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexMacroReference> { ref ->
+            val element = ref.element
+            val text = element.text
+            val macroUsageLineNumber = element.getLineNumber()
+            val result = ref.findMacroDeclaration()
+                ?.let { PsiElementResolveResult.createResults(it.originalElement) }
+                ?: ResolveResult.EMPTY_ARRAY
+
+            CachedValueProvider.Result.create(
+                result,
+                PsiModificationTracker.MODIFICATION_COUNT
+            )
+        }
     }
 }
