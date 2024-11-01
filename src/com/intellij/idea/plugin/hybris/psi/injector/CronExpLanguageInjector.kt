@@ -17,50 +17,66 @@
  */
 package com.intellij.idea.plugin.hybris.psi.injector
 
+import com.intellij.cron.CronExpLanguage
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
-import com.intellij.idea.plugin.hybris.system.type.ScriptType
-import com.intellij.lang.javascript.JavascriptLanguage
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
-import com.intellij.psi.xml.XmlFile
 
-class JavaScriptLanguageInjector : LanguageInjector {
+class CronExpLanguageInjector : LanguageInjector {
+
+    private val quoteSymbolLength = 1
 
     override fun getLanguagesToInject(
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
         handleImpex(host, injectionPlacesRegistrar)
-        handleBusinessProcess(host, injectionPlacesRegistrar)
     }
 
-    private fun handleBusinessProcess(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
-        val xmlFile = host.containingFile as? XmlFile
-            ?: return
-
-        LanguageInjectionUtil.tryInject(xmlFile, host, ScriptType.JAVASCRIPT) { length, offset -> injectLanguage(injectionPlacesRegistrar, length, offset) }
-    }
-
+    /**
+     * INSERT_UPDATE Trigger; cronJob(code)[unique = true]; cronExpression; cronExpression
+     *                      ; cronjobLogCleanupCronjob    ; 0 0 0/1 * * ? ; "0 0 0/1 * * ?"
+     */
     private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
-        val impexString = host as? ImpexString
-            ?: return
-
-        if (LanguageInjectionUtil.getScriptType(impexString) == ScriptType.JAVASCRIPT) {
-            injectLanguage(
-                injectionPlacesRegistrar, impexString.textLength - QUOTE_SYMBOL_LENGTH - 1, QUOTE_SYMBOL_LENGTH
-            )
+        when (host) {
+            is ImpexString -> {
+                if (isTriggerCronExpression(host)) {
+                    injectLanguage(injectionPlacesRegistrar, host.getTextLength() - quoteSymbolLength - 1, quoteSymbolLength)
+                }
+            }
         }
     }
 
+    fun isTriggerCronExpression(impexString: ImpexString): Boolean {
+        val valueGroup = impexString
+            .valueGroup
+            ?: return false
+        val fullHeaderParameter = valueGroup
+            .fullHeaderParameter
+            ?.takeIf { it.anyHeaderParameterName.textMatches("cronExpression") }
+            ?: return false
+        val header = fullHeaderParameter
+            .headerLine
+            ?.takeIf {
+                it.fullHeaderType
+                    ?.headerTypeName
+                    ?.textMatches(HybrisConstants.TS_TYPE_TRIGGER)
+                    ?: false
+            }
+            ?: return false
+
+        return true
+    }
+
     private fun injectLanguage(injectionPlacesRegistrar: InjectedLanguagePlaces, length: Int, offset: Int) {
-        val language = JavascriptLanguage.INSTANCE
         try {
             injectionPlacesRegistrar.addPlace(
-                language,
+                CronExpLanguage,
                 TextRange.from(offset, length), null, null
             )
         } catch (e: ProcessCanceledException) {
@@ -71,7 +87,6 @@ class JavaScriptLanguageInjector : LanguageInjector {
     }
 
     companion object {
-        private const val QUOTE_SYMBOL_LENGTH = 1
-        private val LOG = Logger.getInstance(JavaScriptLanguageInjector::class.java)
+        private val LOG by lazy { Logger.getInstance(GroovyLanguageInjector::class.java) }
     }
 }

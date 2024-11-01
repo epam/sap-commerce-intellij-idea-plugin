@@ -33,7 +33,7 @@ import com.intellij.util.xml.DomManager
 
 object LanguageInjectionUtil {
 
-    fun getLanguageForInjection(impexString: ImpexString): ScriptType? {
+    fun getScriptType(impexString: ImpexString): ScriptType? {
         val valueGroup = impexString
             .valueGroup
             ?: return null

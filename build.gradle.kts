@@ -305,6 +305,7 @@ dependencies {
         bundledPlugins(
             "com.intellij.java",
             "com.intellij.java-i18n",
+            "com.intellij.cron",
             "org.intellij.intelliLang",
             "com.intellij.copyright",
             "com.intellij.database",
