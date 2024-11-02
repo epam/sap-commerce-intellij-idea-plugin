@@ -41,7 +41,7 @@ abstract class ImpexMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node
             .map {
                 when (it) {
                     is ImpexMacroUsageDec -> it.resolveValue()
-                        ?.let { value ->
+                        .let { value ->
                             val ref = it.reference ?: return@let null
                             value + ref.element.text.substringAfter(ref.canonicalText, "")
                         }

@@ -19,26 +19,21 @@
 package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.impex.psi.*;
-import com.intellij.idea.plugin.hybris.properties.PropertyService;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.util.SmartList;
-import org.apache.commons.collections4.MultiValuedMap;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.intellij.psi.util.PsiTreeUtil.findChildrenOfAnyType;
+import java.util.Objects;
 
 public class ImpexMacroFoldingBuilder implements FoldingBuilder {
 
@@ -51,110 +46,27 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             return FoldingDescriptor.EMPTY_ARRAY;
         }
 
-        final SmartList<FoldingDescriptor> results = new SmartList<>();
-        final SmartList<ImpexMacroUsageDec> localMacroList = new SmartList<>();
+        final var macroUsages = PsiTreeUtil.findChildrenOfAnyType(root, ImpexMacroUsageDec.class).stream()
+            .map(this::acceptMacroUsage)
+            .filter(Objects::nonNull)
+            .toList();
 
-        // resolve $config- first
-        findChildrenOfAnyType(root, ImpexMacroUsageDec.class)
-            .forEach(macroUsage -> resolveMacroUsage(macroUsage, results, localMacroList));
-
-        // then resolve other macros
-        root.acceptChildren(new ImpexVisitor() {
-            @Override
-            public void visitMacroDeclaration(@NotNull final ImpexMacroDeclaration o) {
-                super.visitMacroDeclaration(o);
-                resolveMacroDeclaration(o);
-            }
-        });
-        // resolve external ImpEx files
-        root.getExternalImpExFiles().forEach(
-            referencedImpExFile -> resolveIncludeExternalData(root, referencedImpExFile)
-        );
-
-        // resolve local macro last
-        localMacroList.forEach(macroUsage -> resolveLocalMacro(macroUsage, results));
-
-        return results.toArray(FoldingDescriptor.EMPTY_ARRAY);
+        return macroUsages.stream()
+            .map(this::buildFoldRegion)
+            .filter(Objects::nonNull)
+            .toArray(FoldingDescriptor[]::new);
     }
 
-    private void resolveIncludeExternalData(final ImpexFile currentFile, final ImpexFile referencedImpExFile) {
-        var referencedCache = referencedImpExFile.getMacroDescriptors();
-        if (referencedCache.isEmpty()) {
-            final var document = FileDocumentManager.getInstance().getDocument(referencedImpExFile.getVirtualFile());
-            if (document == null) return;
+    @Nullable
+    private ImpexMacroUsageDec acceptMacroUsage(final ImpexMacroUsageDec macroUsage) {
+        final var text = macroUsage.getText();
 
-            preventRecursion(currentFile, referencedCache);
-            buildFoldRegions(referencedImpExFile.getNode(), document);
-            referencedCache = referencedImpExFile.getMacroDescriptors();
-        }
+        // local macro needs to be resolved later when evaluating macro declarations
+        final var parent = macroUsage.getParent();
+        if (parent instanceof ImpexMacroUsageDec) return null;
+        if (getRootPsi(parent) instanceof ImpexHeaderLine) return null;
 
-        currentFile
-            .getMacroDescriptors()
-            .putAll(referencedCache);
-    }
-
-    private void preventRecursion(final ImpexFile referencedImpExFile, final MultiValuedMap<String, ImpexMacroDescriptor> referencedCache) {
-        if (referencedCache.isEmpty()) {
-            referencedCache.put("!", new ImpexMacroDescriptor("!", "!", referencedImpExFile));
-        }
-    }
-
-    private void resolveMacroDeclaration(final ImpexMacroDeclaration macroLine) {
-        final List<PsiElement> lineElements = getAllChildren(macroLine);
-        String macroName = null;
-        final StringBuilder sb = new StringBuilder();
-        final var impexFile = (ImpexFile) macroLine.getContainingFile();
-        final var cache = impexFile.getMacroDescriptors();
-        PsiElement anchor = macroLine;
-        for (PsiElement child : lineElements) {
-            if (child instanceof final LeafPsiElement leafPsiElement) {
-                if (leafPsiElement.getElementType() == ImpexTypes.ASSIGN_VALUE) {
-                    continue;
-                }
-            }
-            if (child instanceof ImpexMacroNameDec) {
-                macroName = child.getText();
-                anchor = child;
-            } else {
-                if (child instanceof final ImpexMacroUsageDec macroUsage) {
-                    final ImpexMacroDescriptor descriptor = findInCache(impexFile, cache, macroUsage);
-                    if (descriptor != null) {
-                        sb.append(descriptor.resolvedValue());
-                        final int delta = child.getText().length() - descriptor.macroName().length();
-                        if (delta > 0) {
-                            sb.append(child.getText().substring(descriptor.macroName().length()));
-                        }
-                    } else {
-                        sb.append(child.getText());
-                    }
-                } else {
-                    sb.append(child.getText());
-                }
-            }
-        }
-
-        cache.put(macroName, new ImpexMacroDescriptor(macroName, sb.toString().trim(), anchor));
-    }
-
-    private void resolveMacroUsage(
-        final ImpexMacroUsageDec macroUsage,
-        final SmartList<FoldingDescriptor> results,
-        final SmartList<ImpexMacroUsageDec> localMacroList
-    ) {
-        final String text = macroUsage.getText();
-        if (text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
-            resolveProperty(macroUsage, results);
-        } else {
-            // local macro needs to be resolved later when evaluating macro declarations
-            final PsiElement parent = macroUsage.getParent();
-            if (parent instanceof ImpexMacroUsageDec) {
-                return;
-            }
-            if (getRootPsi(parent) instanceof ImpexHeaderLine) {
-                return;
-            }
-            localMacroList.add(macroUsage);
-        }
+        return macroUsage;
     }
 
     private PsiElement getRootPsi(final PsiElement psiElement) {
@@ -168,75 +80,22 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
         return root;
     }
 
-    private void resolveProperty(final ImpexMacroUsageDec macroUsage, final SmartList<FoldingDescriptor> results) {
-        final String text = macroUsage.getText();
-        if (text.length() <= HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length()) {
-            return;
-        }
-        final var impexFile = (ImpexFile) macroUsage.getContainingFile();
-        ImpexMacroDescriptor descriptor = impexFile.getSuitableMacroDescriptor(text, macroUsage);
-        if (descriptor == null) {
-            final var propertyName = text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "");
-            final var propertyService = PropertyService.getInstance(macroUsage.getProject());
+    @Nullable
+    private FoldingDescriptor buildFoldRegion(final ImpexMacroUsageDec macroUsage) {
+        final var configPropertyMacro = macroUsage.getText().startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX);
 
-            if (propertyService == null) return;
+        if (configPropertyMacro && macroUsage.getText().length() == HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length()) return null;
 
-            final var iProperty = propertyService.findMacroProperty(propertyName);
-
-            if (iProperty == null) return;
-
-            final var propertyKey = HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX + iProperty.getKey();
-
-            descriptor = new ImpexMacroDescriptor(propertyKey, iProperty.getValue(), iProperty.getPsiElement());
-            impexFile.getMacroDescriptors().put(text, descriptor);
-        }
-        final int start = macroUsage.getTextRange().getStartOffset();
-        final TextRange range = new TextRange(start, start + descriptor.macroName().length());
-        results.add(new FoldingDescriptor(macroUsage.getNode(), range, null));
-    }
-
-    private void resolveLocalMacro(final ImpexMacroUsageDec macroUsage, final SmartList<FoldingDescriptor> results) {
-        final var impexFile = (ImpexFile) macroUsage.getContainingFile();
-        final var cache = impexFile.getMacroDescriptors();
-        String currentKey = "";
-        final var macroUsageText = macroUsage.getText();
-        for (final var key : cache.keySet()) {
-            if (macroUsageText.startsWith(key)) {
-                if (key.length() > currentKey.length()) {
-                    currentKey = key;
-                }
-            }
-        }
-        if (currentKey.isEmpty()) return;
-
-        final var descriptor = impexFile.getSuitableMacroDescriptor(currentKey, macroUsage);
-        if (descriptor == null) return;
+        final var reference = macroUsage.getReference();
+        if (reference == null) return null;
 
         final var start = macroUsage.getTextRange().getStartOffset();
-        final var range = new TextRange(start, start + descriptor.macroName().length());
+        final var end = configPropertyMacro
+            ? start + reference.getCanonicalText().length() + HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length()
+            : start + reference.getCanonicalText().length();
+        final var range = new TextRange(start, end);
 
-        results.add(new FoldingDescriptor(macroUsage.getNode(), range, null));
-
-        cache.put(macroUsageText, descriptor);
-    }
-
-    @Nullable
-    private ImpexMacroDescriptor findInCache(
-        final ImpexFile impexFile,
-        final MultiValuedMap<String, ImpexMacroDescriptor> cache,
-        final ImpexMacroUsageDec macroUsageDec
-    ) {
-        final var macroName = macroUsageDec.getName();
-        final var impexMacroDescriptor = impexFile.getSuitableMacroDescriptor(macroName, macroUsageDec);
-        if (impexMacroDescriptor != null) return impexMacroDescriptor;
-
-        for (final var md : cache.values()) {
-            if (macroName.startsWith(md.macroName())) {
-                cache.put(macroName, md);
-                return md;
-            }
-        }
-        return null;
+        return new FoldingDescriptor(macroUsage.getNode(), range, null);
     }
 
     @Nullable
@@ -292,16 +151,6 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
     @Override
     public boolean isCollapsedByDefault(@NotNull final ASTNode node) {
         return true;
-    }
-
-    private List<PsiElement> getAllChildren(final ImpexMacroDeclaration psiElement) {
-        final List<PsiElement> result = new ArrayList<>();
-        PsiElement psiChild = psiElement.getFirstChild();
-        while (psiChild != null) {
-            result.add(psiChild);
-            psiChild = psiChild.getNextSibling();
-        }
-        return result;
     }
 
 }

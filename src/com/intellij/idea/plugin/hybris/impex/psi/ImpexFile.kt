@@ -21,18 +21,13 @@ package com.intellij.idea.plugin.hybris.impex.psi
 import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroDescriptor
-import com.intellij.idea.plugin.hybris.psi.util.getLineNumber
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.FileViewProvider
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.*
-import org.apache.commons.collections4.MultiValuedMap
-import org.apache.commons.collections4.multimap.HashSetValuedHashMap
 import org.apache.commons.lang3.StringUtils
 import java.io.File
 import java.io.Serial
@@ -49,13 +44,6 @@ class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, Impe
 
         CachedValueProvider.Result.createSingleDependency(
             headerLines,
-            PsiModificationTracker.MODIFICATION_COUNT,
-        )
-    }, false)
-
-    fun getMacroDescriptors(): MultiValuedMap<String, ImpexMacroDescriptor> = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_MACRO_DESCRIPTORS, {
-        CachedValueProvider.Result.createSingleDependency(
-            HashSetValuedHashMap(),
             PsiModificationTracker.MODIFICATION_COUNT,
         )
     }, false)
@@ -85,9 +73,11 @@ class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, Impe
             ?.let { text.indexOf("getResourceAsStream") }
             ?.takeIf { it != -1 }
             ?: return null
-        val startIndex = text.indexOf('(', streamIndex).takeIf { it != -1 }
+        val startIndex = text.indexOf('(', streamIndex)
+            .takeIf { it != -1 }
             ?: return null
-        val endIndex = text.indexOf(')', startIndex).takeIf { it != -1 }
+        val endIndex = text.indexOf(')', startIndex)
+            .takeIf { it != -1 }
             ?: return null
 
         val resource = StringUtils.strip(text.substring(startIndex + 1, endIndex), "\"' ")
@@ -103,17 +93,8 @@ class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, Impe
             ?.let { it as? ImpexFile }
     }
 
-    fun getSuitableMacroDescriptor(macroName: String, macroUsage: PsiElement) = getMacroDescriptors()[macroName]
-        ?.asSequence()
-        ?.map { it.psiElement.getLineNumber() to it }
-        ?.filter { macroUsage.getLineNumber() > it.first }
-        ?.sortedByDescending { it.first }
-        ?.map { it.second }
-        ?.firstOrNull()
-
     companion object {
         val CACHE_KEY_HEADER_LINES = Key.create<CachedValue<Map<ImpexHeaderLine, Collection<ImpexValueLine>>>>("SAP_CX_IMPEX_HEADER_LINES")
-        val CACHE_KEY_MACRO_DESCRIPTORS = Key.create<CachedValue<MultiValuedMap<String, ImpexMacroDescriptor>>>("SAP_CX_IMPEX_MACRO_DESCRIPTORS")
         val CACHE_KEY_EXTERNAL_FILES = Key.create<CachedValue<Collection<ImpexFile>>>("SAP_CX_IMPEX_EXTERNAL_FILES")
 
         @Serial
