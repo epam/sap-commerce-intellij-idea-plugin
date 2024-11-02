@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
 import com.intellij.lang.ASTNode
 import java.io.Serial
 
-abstract class ImpexDocumentIdDecMixin(node: ASTNode) : ImpexPsiNamedElementImpl(node), ImpexDocumentIdDec {
+abstract class ImpexDocumentIdDecMixin(node: ASTNode) : ImpexPsiNamedElementMixin(node), ImpexDocumentIdDec {
 
     companion object {
         @Serial

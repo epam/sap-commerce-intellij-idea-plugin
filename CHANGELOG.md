@@ -11,6 +11,7 @@
 - Resolve macros defined in the external ImpEx file and imported via `impex.includeExtenalData(Resource)` [#1262](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1262)
 - Removed legacy macro reference search [#1264](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1264)
 - Macro shouldn't resolve itself in own declaration [#1265](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1265)
+- Rely on references during resolution of the folded values [#1266](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1266)
 
 ### `ImpEx` inspection rules
 - Adjusted Unknown Macro inspection in case of external ImpEx files [#1263](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1263)

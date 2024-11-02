@@ -243,11 +243,10 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
     @Override
     public String getPlaceholderText(@NotNull final ASTNode node) {
         final var psi = node.getPsi();
-        final var descriptor = ((ImpexFile) psi.getContainingFile()).getSuitableMacroDescriptor(node.getText(), psi);
 
-        if (descriptor == null) return node.getText();
+        if (!(psi instanceof final ImpexMacroUsageDec impexMacroUsageDec)) return node.getText();
 
-        final var resolvedValue = descriptor.resolvedValue();
+        final var resolvedValue = impexMacroUsageDec.resolveValue();
 
         if (resolvedValue.startsWith("jar:")) {
             final var blocks = resolvedValue.substring("jar:".length()).split("&");

@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,17 +20,14 @@ package com.intellij.idea.plugin.hybris.impex.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexPsiNamedElementImpl;
+import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroNameDecMixin;
 
 public interface ImpexMacroNameDec extends ImpexPsiNamedElement {
 
   @NotNull
-  String getName();
+  ImpexMacroNameDecMixin getNameIdentifier();
 
   @NotNull
-  PsiElement setName(@NotNull String newName);
-
-  @NotNull
-  ImpexPsiNamedElementImpl getNameIdentifier();
+  String resolveValue();
 
 }
