@@ -106,7 +106,7 @@ class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, Impe
     fun getSuitableMacroDescriptor(macroName: String, macroUsage: PsiElement) = getMacroDescriptors()[macroName]
         ?.asSequence()
         ?.map { it.psiElement.getLineNumber() to it }
-        ?.filter { macroUsage.getLineNumber() >= it.first }
+        ?.filter { macroUsage.getLineNumber() > it.first }
         ?.sortedByDescending { it.first }
         ?.map { it.second }
         ?.firstOrNull()

@@ -54,7 +54,7 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
             ImpexMacroDeclaration::class.java
         )
             .reversed()
-            .find { it.getLineNumber() <= macroUsageLineNumber && text.startsWith(escapeName(it.macroNameDec.text)) }
+            .find { it.getLineNumber() < macroUsageLineNumber && text.startsWith(escapeName(it.macroNameDec.text)) }
             ?: findExternalMacroDeclaration(text)
     }
 
