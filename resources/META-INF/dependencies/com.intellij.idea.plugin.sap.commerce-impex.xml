@@ -74,7 +74,6 @@
         <highlightUsagesHandlerFactory
                 implementation="com.intellij.idea.plugin.hybris.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
 
-        <referencesSearch implementation="com.intellij.idea.plugin.hybris.impex.search.ImpexReferenceSearcher"/>
         <lang.findUsagesProvider language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
 
         <annotator language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.annotation.ImpexAnnotator"/>

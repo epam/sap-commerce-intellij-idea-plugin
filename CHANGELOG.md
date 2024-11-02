@@ -9,6 +9,7 @@
 - Use closest macro declaration value for folded macro usage [#1260](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1260)
 - Use macros imported via `impex.includeExtenalData(Resource)` in the folded values [#1261](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1261)
 - Resolve macros defined in the external ImpEx file and imported via `impex.includeExtenalData(Resource)` [#1262](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1262)
+- Removed legacy macro reference search [#1263](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1263)
 
 ### `ImpEx` inspection rules
 - Adjusted Unknown Macro inspection in case of external ImpEx files [#1263](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1263)
