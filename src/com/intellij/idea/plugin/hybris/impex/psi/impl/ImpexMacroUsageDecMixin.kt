@@ -50,23 +50,27 @@ abstract class ImpexMacroUsageDecMixin(node: ASTNode) : ASTWrapperReferencePsiEl
     override fun getName() = getKey(node)
     override fun getNameIdentifier() = this
 
-    override fun resolveValue(): String = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_RESOLVED_VALUE, {
-        val resolvedValue = when (val targetPsi = reference?.resolve()) {
-            is ImpexMacroNameDec -> targetPsi.resolveValue()
-            is Property -> targetPsi.value
-                ?: text
+    override fun resolveValue(evaluatedMacroUsages: MutableSet<ImpexMacroUsageDec?>): String = CachedValuesManager.getManager(project).getCachedValue(
+        this,
+        Key.create<CachedValue<String>>("SAP_CX_IMPEX_RESOLVED_VALUE_" + evaluatedMacroUsages.size),
+        {
+            val resolvedValue = when (val targetPsi = reference?.resolve()) {
+                is ImpexMacroNameDec -> targetPsi.resolveValue(evaluatedMacroUsages)
 
-            else -> text
-        }
+                is Property -> targetPsi.value
+                    ?: text
 
-        CachedValueProvider.Result.createSingleDependency(
-            resolvedValue,
-            PsiModificationTracker.MODIFICATION_COUNT,
-        )
-    }, false)
+                else -> text
+            }
+
+            CachedValueProvider.Result.create(
+                resolvedValue,
+                PsiModificationTracker.MODIFICATION_COUNT
+            )
+        }, false
+    )
 
     companion object {
-        private val CACHE_KEY_RESOLVED_VALUE = Key.create<CachedValue<String>>("SAP_CX_IMPEX_RESOLVED_VALUE")
 
         @Serial
         private val serialVersionUID: Long = -7539604143961775427L

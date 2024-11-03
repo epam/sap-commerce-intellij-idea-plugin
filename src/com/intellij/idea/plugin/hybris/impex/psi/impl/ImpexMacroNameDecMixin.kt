@@ -36,34 +36,41 @@ abstract class ImpexMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node
     override fun toString() = text
         ?: super.toString()
 
-    override fun resolveValue(): String = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_RESOLVED_VALUE, {
-        val resolvedValue = siblings(forward = true, withSelf = false)
-            .map {
-                when (it) {
-                    is ImpexMacroUsageDec -> it.resolveValue()
-                        .let { value ->
-                            val ref = it.reference ?: return@let null
-                            value + ref.element.text.substringAfter(ref.canonicalText, "")
+    override fun resolveValue(evaluatedMacroUsages: MutableSet<ImpexMacroUsageDec?>): String = CachedValuesManager.getManager(project).getCachedValue(
+        this,
+        Key.create<CachedValue<String>>("SAP_CX_IMPEX_RESOLVED_VALUE_" + evaluatedMacroUsages.size),
+        {
+            val resolvedValue = siblings(forward = true, withSelf = false)
+                .map {
+                    when (it) {
+                        is ImpexMacroUsageDec -> {
+                            if (evaluatedMacroUsages.contains(it)) return@map it.text
+
+                            evaluatedMacroUsages.add(it)
+                            it.resolveValue(evaluatedMacroUsages)
+                                .let { value ->
+                                    val ref = it.reference ?: return@let null
+                                    value + ref.element.text.substringAfter(ref.canonicalText, "")
+                                }
+                                ?: it.text
                         }
-                        ?: it.text
 
-                    else -> it.text
+                        else -> it.text
+                    }
                 }
-            }
-            .joinToString("")
-            .trim()
-            .trimStart('=')
-            .trimStart()
+                .joinToString("")
+                .trim()
+                .trimStart('=')
+                .trimStart()
 
-        CachedValueProvider.Result.createSingleDependency(
-            resolvedValue,
-            PsiModificationTracker.MODIFICATION_COUNT,
-        )
-    }, false)
+            CachedValueProvider.Result.createSingleDependency(
+                resolvedValue,
+                PsiModificationTracker.MODIFICATION_COUNT,
+            )
+        }, false
+    )
 
     companion object {
-        private val CACHE_KEY_RESOLVED_VALUE = Key.create<CachedValue<String>>("SAP_CX_IMPEX_RESOLVED_VALUE")
-
         @Serial
         private val serialVersionUID: Long = 1984651966859085911L
     }

@@ -21,6 +21,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroNameDecMixin;
+import java.util.Set;
 
 public interface ImpexMacroNameDec extends ImpexPsiNamedElement {
 
@@ -28,6 +29,6 @@ public interface ImpexMacroNameDec extends ImpexPsiNamedElement {
   ImpexMacroNameDecMixin getNameIdentifier();
 
   @NotNull
-  String resolveValue();
+  String resolveValue(@NotNull Set<ImpexMacroUsageDec> evaluatedMacroUsages);
 
 }

@@ -33,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.Objects;
 
 public class ImpexMacroFoldingBuilder implements FoldingBuilder {
@@ -105,7 +106,7 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
 
         if (!(psi instanceof final ImpexMacroUsageDec impexMacroUsageDec)) return node.getText();
 
-        final var resolvedValue = impexMacroUsageDec.resolveValue();
+        final var resolvedValue = impexMacroUsageDec.resolveValue(new HashSet<>());
 
         if (resolvedValue.startsWith("jar:")) {
             final var blocks = resolvedValue.substring("jar:".length()).split("&");
