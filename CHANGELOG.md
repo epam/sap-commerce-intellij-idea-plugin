@@ -3,6 +3,7 @@
 ### `Search Everywhere` enhancements
 - Introduced possibility to search through Type System via _Search Everywhere_ [#1267](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1267)
 - Added scope and preview for Type System Search Everywhere [#1269](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1269)
+- Added possibility to search through Bean System via _Search Everywhere_ [#1270](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1270)
 
 ### `ImpEx` enhancements
 - Added **CronExp** language injection for **Trigger** type into String literal [#1256](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1256)

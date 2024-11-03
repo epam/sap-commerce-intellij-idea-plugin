@@ -21,6 +21,8 @@ import com.intellij.ide.actions.SearchEverywherePsiRenderer
 import com.intellij.ide.actions.searcheverywhere.*
 import com.intellij.ide.util.gotoByName.FilteringGotoByModel
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.navigation.ChooseByNameContributor
@@ -59,6 +61,10 @@ class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSECont
                 EnumTypes.ENUMTYPE -> HybrisIcons.TypeSystem.Types.ENUM
                 Relations.RELATION -> HybrisIcons.TypeSystem.Types.RELATION
                 MapTypes.MAPTYPE -> HybrisIcons.TypeSystem.Types.MAP
+
+                Beans.BEAN -> HybrisIcons.BeanSystem.BEAN
+                Beans.ENUM -> HybrisIcons.BeanSystem.ENUM
+
                 else -> null
             }
 
@@ -86,18 +92,23 @@ class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSECont
     private class TypeChooseByNameContributor : ChooseByNameContributor {
         override fun getNames(project: Project?, includeNonProjectItems: Boolean): Array<String> {
             if (project == null) return emptyArray()
-            return TSMetaModelAccess.getInstance(project).getAll()
+            val types = TSMetaModelAccess.getInstance(project).getAll()
                 .mapNotNull { it.name }
                 .toTypedArray()
+            val beans = BSMetaModelAccess.getInstance(project).getAllBeans()
+                .mapNotNull { it.name }
+                .toTypedArray()
+            val enums = BSMetaModelAccess.getInstance(project).getAllEnums()
+                .mapNotNull { it.name }
+                .toTypedArray()
+            return types + beans + enums
         }
 
         override fun getItemsByName(name: String?, pattern: String?, project: Project?, includeNonProjectItems: Boolean): Array<NavigationItem> {
-            if (project == null) return emptyArray()
-            if (name == null) return emptyArray()
-            if (pattern == null) return emptyArray()
+            if (project == null || name == null || pattern == null) return emptyArray()
 
-            return TSMetaModelAccess.getInstance(project).getAll()
-                .filter { it.name?.lowercase()?.contains(pattern.lowercase()) ?: false }
+            val types = TSMetaModelAccess.getInstance(project).getAll()
+                .filter { it.name?.lowercase()?.contains(pattern.lowercase()) == true }
                 .flatMap { it.retrieveAllDoms() }
                 .mapNotNull {
                     when (it) {
@@ -111,6 +122,22 @@ class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSECont
                 }
                 .mapNotNull { it as? NavigationItem }
                 .toTypedArray()
+
+            val beans = BSMetaModelAccess.getInstance(project).getAllBeans()
+                .filter { it.name?.lowercase()?.contains(pattern.lowercase()) == true }
+                .flatMap { it.retrieveAllDoms() }
+                .mapNotNull { it.clazz.xmlAttributeValue }
+                .mapNotNull { it as? NavigationItem }
+                .toTypedArray()
+
+            val enums = BSMetaModelAccess.getInstance(project).getAllEnums()
+                .filter { it.name?.lowercase()?.contains(pattern.lowercase()) == true }
+                .flatMap { it.retrieveAllDoms() }
+                .mapNotNull { it.clazz.xmlAttributeValue }
+                .mapNotNull { it as? NavigationItem }
+                .toTypedArray()
+
+            return types + beans + enums
         }
     }
 }

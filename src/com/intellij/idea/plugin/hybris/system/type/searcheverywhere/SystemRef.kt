@@ -19,24 +19,36 @@
 package com.intellij.idea.plugin.hybris.system.type.searcheverywhere
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription
+import com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription
 import com.intellij.navigation.NavigationItem
 import com.intellij.psi.PsiElement
+import com.intellij.psi.xml.XmlFile
+import com.intellij.util.xml.DomManager
 import javax.swing.Icon
 
 data class SystemRef(val id: String, val displayName: String, val icon: Icon?) {
 
     companion object {
         private val typeSystem = SystemRef("type", "Type System", HybrisIcons.TypeSystem.FILE)
-//        private val beanSystem = SystemRef("bean", "Bean System", HybrisIcons.BeanSystem.FILE)
+        private val beanSystem = SystemRef("bean", "Bean System", HybrisIcons.BeanSystem.FILE)
 
         fun forNavigationItem(item: NavigationItem): SystemRef? = when (item) {
-            is PsiElement -> typeSystem
+            is PsiElement -> {
+                val file = item.containingFile as? XmlFile
+                    ?: return null
+
+                when (DomManager.getDomManager(item.project).getDomFileDescription(file)) {
+                    is TSDomFileDescription -> typeSystem
+                    is BSDomFileDescription -> beanSystem
+                    else -> null
+                }
+
+            }
+
             else -> null
         }
 
-        fun forAllSystems(): List<SystemRef> {
-//            return listOf(typeSystem, beanSystem)
-            return listOf(typeSystem)
-        }
+        fun forAllSystems() = listOf(typeSystem, beanSystem)
     }
 }
