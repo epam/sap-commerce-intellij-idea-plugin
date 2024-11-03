@@ -20,13 +20,13 @@ package com.intellij.idea.plugin.hybris.system.type.searcheverywhere
 import com.intellij.ide.actions.SearchEverywherePsiRenderer
 import com.intellij.ide.actions.searcheverywhere.*
 import com.intellij.ide.util.gotoByName.FilteringGotoByModel
-import com.intellij.ide.util.gotoByName.LanguageRef
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
@@ -35,11 +35,13 @@ import com.intellij.psi.xml.XmlTag
 import javax.swing.ListCellRenderer
 
 class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSEContributor(event), SearchEverywherePreviewProvider {
-//    private val filter = createLanguageFilter(event.getRequiredData(CommonDataKeys.PROJECT))
 
-    override fun createModel(project: Project): FilteringGotoByModel<LanguageRef> {
+    private val filter = createSystemFilter(event.getRequiredData(CommonDataKeys.PROJECT))
+
+    override fun createModel(project: Project): FilteringGotoByModel<SystemRef> {
         val model = GotoTypeModel(project, listOf(TypeChooseByNameContributor()))
-//        model.setFilterItems(filter.selectedElements)
+
+        model.setFilterItems(filter.selectedElements)
         return model
     }
 
@@ -47,10 +49,10 @@ class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSECont
     override fun getGroupName() = "SAP Types"
     override fun getFullGroupName() = "SAP Types/"
     override fun getSortWeight() = 2000
+    override fun getActions(onChanged: Runnable) = doGetActions(filter, null, onChanged)
 
     override fun getElementsRenderer(): ListCellRenderer<in Any?> {
         return object : SearchEverywherePsiRenderer(this) {
-
             override fun getIcon(element: PsiElement?) = when (element?.parentOfType<XmlTag>()?.localName) {
                 ItemTypes.ITEMTYPE -> HybrisIcons.TypeSystem.Types.ITEM
                 CollectionTypes.COLLECTIONTYPE -> HybrisIcons.TypeSystem.Types.COLLECTION
@@ -73,16 +75,15 @@ class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSECont
     }
 
     companion object {
-        // TODO: introduce custom "LanguageRef"
-//        @JvmStatic
-//        fun createLanguageFilter(project: Project): PersistentSearchEverywhereContributorFilter<LanguageRef> {
-//            val items = forAllLanguages()
-//            val persistentConfig = GotoTypeConfiguration.getInstance(project)
-//            return PersistentSearchEverywhereContributorFilter(items, persistentConfig, LanguageRef::displayName, LanguageRef::icon)
-//        }
+        fun createSystemFilter(project: Project) = PersistentSearchEverywhereContributorFilter(
+            SystemRef.forAllSystems(),
+            GotoTypeConfiguration.getInstance(project),
+            SystemRef::displayName,
+            SystemRef::icon
+        )
     }
 
-    class TypeChooseByNameContributor : ChooseByNameContributor {
+    private class TypeChooseByNameContributor : ChooseByNameContributor {
         override fun getNames(project: Project?, includeNonProjectItems: Boolean): Array<String> {
             if (project == null) return emptyArray()
             return TSMetaModelAccess.getInstance(project).getAll()

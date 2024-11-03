@@ -26,7 +26,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.IdeUICustomization
 
-class GotoTypeModel(project: Project, contributors: List<ChooseByNameContributor>) : FilteringGotoByModel<LanguageRef>(project, contributors) {
+class GotoTypeModel(project: Project, contributors: List<ChooseByNameContributor>) : FilteringGotoByModel<SystemRef>(project, contributors) {
 
     override fun getPromptText(): String = "Enter SAP CX type name:"
     override fun getNotInMessage() = IdeUICustomization.getInstance().projectMessage("label.no.matches.found.in.project")
@@ -49,6 +49,6 @@ class GotoTypeModel(project: Project, contributors: List<ChooseByNameContributor
         return getElementName(element)
     }
 
-    override fun filterValueFor(item: NavigationItem) = LanguageRef.forNavigationitem(item)
+    override fun filterValueFor(item: NavigationItem) = SystemRef.forNavigationItem(item)
 
 }

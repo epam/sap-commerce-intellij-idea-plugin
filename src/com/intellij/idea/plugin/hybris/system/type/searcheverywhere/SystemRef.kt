@@ -18,20 +18,25 @@
 
 package com.intellij.idea.plugin.hybris.system.type.searcheverywhere
 
-import com.intellij.ide.util.gotoByName.ChooseByNameFilterConfiguration
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
-import com.intellij.openapi.components.StoragePathMacros
-import com.intellij.openapi.project.Project
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.navigation.NavigationItem
+import com.intellij.psi.PsiElement
+import javax.swing.Icon
 
-@Service(Service.Level.PROJECT)
-@State(name = "GotoTypeConfiguration", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
-class GotoTypeConfiguration(private val project: Project) : ChooseByNameFilterConfiguration<SystemRef>() {
-
-    override fun nameForElement(type: SystemRef) = type.id
+data class SystemRef(val id: String, val displayName: String, val icon: Icon?) {
 
     companion object {
-        fun getInstance(project: Project): GotoTypeConfiguration = project.getService(GotoTypeConfiguration::class.java)
+        private val typeSystem = SystemRef("type", "Type System", HybrisIcons.TypeSystem.FILE)
+//        private val beanSystem = SystemRef("bean", "Bean System", HybrisIcons.BeanSystem.FILE)
+
+        fun forNavigationItem(item: NavigationItem): SystemRef? = when (item) {
+            is PsiElement -> typeSystem
+            else -> null
+        }
+
+        fun forAllSystems(): List<SystemRef> {
+//            return listOf(typeSystem, beanSystem)
+            return listOf(typeSystem)
+        }
     }
 }
