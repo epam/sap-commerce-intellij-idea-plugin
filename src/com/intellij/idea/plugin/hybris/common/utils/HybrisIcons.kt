@@ -198,7 +198,6 @@ object HybrisIcons {
         val GROUP_RELATION = getIcon("/icons/typeSystem/groupByRelation.svg")
         val DESCRIPTION = AllIcons.Windows.Help
         val ENUM_VALUE = getIcon("/icons/typeSystem/enumValue.svg")
-        val ITEM = getIcon("/icons/typeSystem/item.svg")
         val CUSTOM_PROPERTY = getIcon("/icons/typeSystem/customProperty.svg")
         val ATTRIBUTE = getIcon("/icons/typeSystem/attribute.svg")
         val ORDERING_ATTRIBUTE = getIcon("/icons/typeSystem/orderingAttribute.svg")
@@ -213,6 +212,7 @@ object HybrisIcons {
         val SIBLING = AllIcons.Gutter.OverridenMethod
 
         object Types {
+            val ITEM = getIcon("/icons/typeSystem/item.svg")
             val ATOMIC = getIcon("/icons/typeSystem/atomic.svg")
             val MAP = getIcon("/icons/typeSystem/map.svg")
             val RELATION = getIcon("/icons/typeSystem/relation.svg")

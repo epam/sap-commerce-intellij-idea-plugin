@@ -91,7 +91,7 @@ class ItemsXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHint
                 ?.let { inlayPresentation(HybrisIcons.TypeSystem.Types.RELATION, arrayOf(it), "Navigate to Relation declaration") }
                 ?: findItemClass(project, name)
                     .takeIf { it.isNotEmpty() }
-                    ?.let { inlayPresentation(HybrisIcons.TypeSystem.ITEM, it) }
+                    ?.let { inlayPresentation(HybrisIcons.TypeSystem.Types.ITEM, it) }
                 ?: unknown
 
             parent.name == "value" -> {

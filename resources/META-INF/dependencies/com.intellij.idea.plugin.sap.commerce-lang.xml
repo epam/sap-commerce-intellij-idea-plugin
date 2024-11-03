@@ -44,6 +44,8 @@
         <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.WhatsNewStartupActivity"/>
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisPluginUpdateCheckerStartupActivity"/>
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.PreLoadSystemsStartupActivity"/>
+
+        <searchEverywhereContributor implementation="com.intellij.idea.plugin.hybris.system.type.searcheverywhere.TypeSearchEverywhereContributor$Factory"/>
     </extensions>
 
     <actions>

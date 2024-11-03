@@ -37,7 +37,7 @@ class TSDiagramNode(val graphNode: TSGraphNode, provider: DiagramProvider<TSGrap
         ?.let {
             when (it.meta) {
                 is TSGlobalMetaEnum -> HybrisIcons.TypeSystem.Types.ENUM
-                is TSGlobalMetaItem -> HybrisIcons.TypeSystem.ITEM
+                is TSGlobalMetaItem -> HybrisIcons.TypeSystem.Types.ITEM
                 is TSGlobalMetaCollection -> HybrisIcons.TypeSystem.Types.COLLECTION
                 is TSGlobalMetaMap -> HybrisIcons.TypeSystem.Types.MAP
                 is TSGlobalMetaRelation -> HybrisIcons.TypeSystem.Types.RELATION
