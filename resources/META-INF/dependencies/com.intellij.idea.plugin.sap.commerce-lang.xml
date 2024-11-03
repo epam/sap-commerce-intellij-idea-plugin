@@ -35,7 +35,7 @@
         <!-- ####################################################################################################### -->
         <!--                                            Facet                                                        -->
         <!-- ####################################################################################################### -->
-        
+
         <facetType implementation="com.intellij.idea.plugin.hybris.facet.YFacetType"/>
 
         <postStartupActivity order="first" id="hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
@@ -53,6 +53,12 @@
                 text="Refresh SAP Commerce Project"
                 description="Re-imports the current hybris project with default values">
             <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
+        </action>
+
+        <action id="GotoType" class="com.intellij.idea.plugin.hybris.project.actions.GotoTypeAction"
+                text="SAP Type...">
+            <keyboard-shortcut first-keystroke="control shift H" keymap="$default"/>
+            <add-to-group group-id="GoToTargetEx"/>
         </action>
 
         <group id="hybris.hac.chooseConnection" class="com.intellij.idea.plugin.hybris.actions.HacChooseConnectionAction"/>
