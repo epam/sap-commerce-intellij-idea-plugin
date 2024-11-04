@@ -74,7 +74,8 @@ public class ProjectRefreshAction extends AnAction {
                 ActionUiKind.NONE,
                 null
             );
-            action.actionPerformed(actionEvent);
+
+            ActionUtil.performActionDumbAwareWithCallbacks(action, actionEvent);
         }, ModalityState.nonModal());
     }
 
