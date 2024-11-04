@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.util.PackageUtils
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -33,6 +34,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
+import com.intellij.openapi.project.Project
 import javax.swing.Icon
 
 abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon) : AnAction(logLevel, "", icon) {
@@ -44,6 +46,16 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
 
         val dataContext = e.dataContext
         val logIdentifier = dataContext.getData(HybrisConstants.LOGGER_IDENTIFIER_DATA_CONTEXT_KEY)
+
+        if (logIdentifier == null) {
+            notify(
+                project,
+                NotificationType.ERROR,
+                "Updating the log level: Error",
+                "The logger name is NULL."
+            )
+            return
+        }
 
         ApplicationManager.getApplication().runReadAction {
             ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to SAP Commerce...") {
@@ -57,23 +69,44 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
                         )
 
                         val server = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+                        val abbreviationLogIdentifier = PackageUtils.abbreviatePackageName(logIdentifier)
 
-                        val isSuccess = result.statusCode == 200
-                        Notifications.create(
-                            if (isSuccess) NotificationType.INFORMATION else NotificationType.ERROR,
-                            if (isSuccess) "Updating the log level: Success" else "Updating the log level: Failed",
-                            if (isSuccess)
-                                "The log level set to $logLevel for $logIdentifier, server $server."
-                            else
-                                "The log level is not set to $logLevel for $logIdentifier, server $server."
-                        )
-                            .hideAfter(5)
-                            .notify(project)
+                        if (result.statusCode == 200) {
+                            notify(
+                                project,
+                                NotificationType.INFORMATION,
+                                "Updating the log level: Success",
+                                "The log level set to $logLevel for $abbreviationLogIdentifier, server $server."
+
+                            )
+                        } else {
+                            notify(
+                                project,
+                                NotificationType.ERROR,
+                                "Updating the log level: Failed",
+                                "The log level is not set to $logLevel for $abbreviationLogIdentifier, server $server."
+                            )
+                        }
                     } finally {
                     }
                 }
             })
         }
+    }
+
+    private fun notify(
+        project: Project,
+        notificationType: NotificationType,
+        title: String,
+        content: String
+    ) {
+        Notifications.create(
+            notificationType,
+            title,
+            content
+        )
+            .hideAfter(5)
+            .notify(project)
     }
 
 }
