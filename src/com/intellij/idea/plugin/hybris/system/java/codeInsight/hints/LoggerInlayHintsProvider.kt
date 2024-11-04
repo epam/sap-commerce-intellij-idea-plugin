@@ -71,7 +71,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
                     is PsiClass -> PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)
                         ?.first()
                         ?.text
-                        ?.takeIf { it == "class" }
+                        ?.takeIf { it == "class" || it == "enum" || it == "interface" || it == "record" }
                         ?.let { element.nameIdentifier }
 
                     is PsiPackageStatement -> PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)
