@@ -100,6 +100,13 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
         }
     }
 
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        val isRightPlace = "GoToAction" != e.place
+        e.presentation.isEnabled = isRightPlace
+        e.presentation.isVisible = isRightPlace
+    }
+
     private fun notify(
         project: Project,
         notificationType: NotificationType,
