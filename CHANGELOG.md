@@ -29,11 +29,6 @@
 ### `ImpEx` inspection rules
 - Adjusted Unknown Macro inspection in case of external ImpEx files [#1263](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1263)
 
-### `SAP CX Logging` enhancements
-- Fixed the notification message when a server is NULL [#1253](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1253)
-- Improved the notification type if the server responds with an error [#1254](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1254)
-- Added logging support for enum, record and interface types [#1273](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1273)
-
 ### Fixes
 - Correctly define Scope to filter for Properties File [#1247](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247)
 - Add all module Classpaths and necessary Properties to JUnit Tests [#1241](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1241)
