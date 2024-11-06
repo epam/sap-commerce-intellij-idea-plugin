@@ -1,3 +1,10 @@
+## [2024.3.2]
+### SAP CX Logging enhancements
+- Fixed the notification message when a server is NULL [#1253](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1253)
+- Improved the notification type if the server responds with an error [#1254](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1254)
+- Shorten a logger name in the notification message, i.e. converts each package segment to its first letter [#1272](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1272)
+- Added logging support for enum, record and interface types [#1273](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1273)
+
 ## [2024.3.1]
 
 ### `Search Everywhere` enhancements

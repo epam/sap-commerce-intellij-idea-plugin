@@ -88,7 +88,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
                 val handler = ClickHandler(targetElement, loggerIdentifier)
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(targetElement)
-                entries.add(range to ClickableTextCodeVisionEntry("[y] log level", id, handler, HybrisIcons.Log.TOGGLE, "", "Setup the logger for SAP Commerce Cloud"))
+                entries.add(range to ClickableTextCodeVisionEntry("[y] log level", id, handler, HybrisIcons.Y.REMOTE, "", "Setup the logger for SAP Commerce Cloud"))
             }
         })
 

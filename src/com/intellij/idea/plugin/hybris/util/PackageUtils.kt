@@ -18,19 +18,29 @@
 
 package com.intellij.idea.plugin.hybris.util
 
-import ai.grazie.utils.isUppercase
-
 object PackageUtils {
 
     fun abbreviatePackageName(fullName: String): String {
-        return fullName
-            .split(".")
-            .joinToString(".") {
-                val firstChar = it.firstOrNull()?.toString() ?: ""
-                if (firstChar.isUppercase())
-                    it
-                else
-                    firstChar
-            }
+        val parts = fullName.split(".")
+        if (parts.isEmpty()) return fullName
+
+        val lastPart = parts.last()
+        val isClassName = lastPart.firstOrNull()?.isUpperCase() == true
+
+        return if (isClassName) {
+            parts.dropLast(1)
+                .map { it.firstOrNull()?.toString() ?: "" }
+                .joinToString(".") + ".$lastPart"
+        } else {
+            var numOfLastSegments = if (parts.size in 1..3) 1
+            else if (parts.size in 4..5) parts.size % 3
+            else 3
+
+            val abbreviatedParts = parts.dropLast(numOfLastSegments)
+                .map { it.firstOrNull()?.toString() ?: "" }
+            val lastThreeSegments = parts.takeLast(numOfLastSegments)
+
+            (abbreviatedParts + lastThreeSegments).joinToString(".")
+        }
     }
 }

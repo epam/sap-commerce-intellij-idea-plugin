@@ -75,16 +75,22 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
                             notify(
                                 project,
                                 NotificationType.INFORMATION,
-                                "Updating the log level: Success",
-                                "The log level set to $logLevel for $abbreviationLogIdentifier, server $server."
+                                "Log level updated",
+                                """
+                                    <p>Level  : $logLevel</p>
+                                    <p>Logger : $abbreviationLogIdentifier</p>
+                                    <p><a href="${server.generatedURL}">${server.displayName ?: server.generatedURL}</a></p>"""
 
                             )
                         } else {
                             notify(
                                 project,
                                 NotificationType.ERROR,
-                                "Updating the log level: Failed",
-                                "The log level is not set to $logLevel for $abbreviationLogIdentifier, server $server."
+                                "Failed to update log level",
+                                """
+                                    <p>Level  : $logLevel</p>
+                                    <p>Logger : $abbreviationLogIdentifier</p>
+                                    <p><a href="${server.generatedURL}">${server.displayName ?: server.generatedURL}</a></p>"""
                             )
                         }
                     } finally {
