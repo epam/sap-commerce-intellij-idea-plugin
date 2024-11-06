@@ -6,10 +6,11 @@
 - Shorten a logger name in the notification message, i.e. converts each package segment to its first letter [#1272](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1272)
 - Added logging support for enum, record and interface types [#1273](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1273)
 - Removed logger actions from the Actions tab in the Search Everywhere popup [#1275](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1275)
-- Fixed running Integration Tests via IntelliJ JUnit [#1279](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1279)
+- Added ALL and OFF modes for logging [#1277](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1277)
 
 ### `Other` enhancements
 - Do not check for Ultimate plugins when using the Community edition during project import [#1276](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1276)
+- Fixed running Integration Tests via IntelliJ JUnit [#1279](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1279)
 
 ## [2024.3.1]
 
