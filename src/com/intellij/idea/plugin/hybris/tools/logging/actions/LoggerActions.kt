@@ -124,6 +124,8 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
 
 }
 
+class AllLoggerAction : AbstractLoggerAction("ALL", HybrisIcons.Log.Level.ALL)
+class OffLoggerAction : AbstractLoggerAction("OFF", HybrisIcons.Log.Level.OFF)
 class TraceLoggerAction : AbstractLoggerAction("TRACE", HybrisIcons.Log.Level.TRACE)
 class DebugLoggerAction : AbstractLoggerAction("DEBUG", HybrisIcons.Log.Level.DEBUG)
 class InfoLoggerAction : AbstractLoggerAction("INFO", HybrisIcons.Log.Level.INFO)

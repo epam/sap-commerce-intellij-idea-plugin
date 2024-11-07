@@ -434,6 +434,8 @@ object HybrisIcons {
 
     object Log {
         object Level {
+            val OFF = getIcon("/icons/logging/level/off.svg")
+            val ALL = getIcon("/icons/logging/level/all.svg")
             val TRACE = getIcon("/icons/logging/level/trace.svg")
             val DEBUG = getIcon("/icons/logging/level/debug.svg")
             val INFO = getIcon("/icons/logging/level/info.svg")

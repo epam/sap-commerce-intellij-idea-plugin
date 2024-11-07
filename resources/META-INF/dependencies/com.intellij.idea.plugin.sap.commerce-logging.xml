@@ -19,6 +19,8 @@
 <idea-plugin>
     <actions>
         <group id="sap.cx.logging.actions">
+            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.OffLoggerAction" />
+            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.AllLoggerAction" />
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.TraceLoggerAction" />
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.DebugLoggerAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.InfoLoggerAction"/>
@@ -26,7 +28,6 @@
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.ErrorLoggerAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.FatalLoggerAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.SevereLoggerAction"/>
-
         </group>
     </actions>
 </idea-plugin>
