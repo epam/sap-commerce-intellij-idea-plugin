@@ -433,8 +433,6 @@ object HybrisIcons {
     }
 
     object Log {
-        val TOGGLE = getIcon("/icons/logging/toggle.svg")
-
         object Level {
             val TRACE = getIcon("/icons/logging/level/trace.svg")
             val DEBUG = getIcon("/icons/logging/level/debug.svg")

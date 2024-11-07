@@ -51,8 +51,8 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
             notify(
                 project,
                 NotificationType.ERROR,
-                "Updating the log level: Error",
-                "The logger name is NULL."
+                "Unable to change the log level",
+                "Cannot retrieve a logger name."
             )
             return
         }
@@ -79,7 +79,7 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
                                 """
                                     <p>Level  : $logLevel</p>
                                     <p>Logger : $abbreviationLogIdentifier</p>
-                                    <p><a href="${server.generatedURL}">${server.displayName ?: server.generatedURL}</a></p>"""
+                                    <p>${server.displayName ?: server.generatedURL}</p>"""
 
                             )
                         } else {
@@ -90,7 +90,7 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
                                 """
                                     <p>Level  : $logLevel</p>
                                     <p>Logger : $abbreviationLogIdentifier</p>
-                                    <p><a href="${server.generatedURL}">${server.displayName ?: server.generatedURL}</a></p>"""
+                                    <p>${server.displayName ?: server.generatedURL}</p>"""
                             )
                         }
                     } finally {

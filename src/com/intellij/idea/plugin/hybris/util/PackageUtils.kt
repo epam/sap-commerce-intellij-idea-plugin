@@ -28,13 +28,13 @@ object PackageUtils {
         val isClassName = lastPart.firstOrNull()?.isUpperCase() == true
 
         return if (isClassName) {
-            parts.dropLast(1)
-                .map { it.firstOrNull()?.toString() ?: "" }
-                .joinToString(".") + ".$lastPart"
+            parts.dropLast(1).joinToString(".") { it.firstOrNull()?.toString() ?: "" } + ".$lastPart"
         } else {
-            var numOfLastSegments = if (parts.size in 1..3) 1
-            else if (parts.size in 4..5) parts.size % 3
-            else 3
+            val numOfLastSegments = when (parts.size) {
+                in 1..3 -> 1
+                in 4..5 -> parts.size % 3
+                else -> 3
+            }
 
             val abbreviatedParts = parts.dropLast(numOfLastSegments)
                 .map { it.firstOrNull()?.toString() ?: "" }
