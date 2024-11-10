@@ -7,7 +7,7 @@
 - Added logging support for enum, record and interface types [#1273](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1273)
 
 ### `Other` enhancements
-- Do not check for Ultimate plugins when using the Community edition during project import [#1274](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1274)
+- Do not check for Ultimate plugins when using the Community edition during project import [#1276](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1276)
 
 ## [2024.3.1]
 
