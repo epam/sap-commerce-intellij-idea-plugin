@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,11 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
+import com.intellij.openapi.application.readActionBlocking
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.ProjectScope
@@ -37,10 +36,8 @@ class TSMetaModelCollector(private val myProject: Project) {
 
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
-    fun collectDependencies(): Set<PsiFile> {
+    suspend fun collectDependencies(): Set<PsiFile> = readActionBlocking {
         val files = HashSet<PsiFile>()
-
-        ProgressManager.getInstance().progressIndicator.text2 = HybrisI18NBundleUtils.message("hybris.ts.access.progress.subTitle.collectingDependencies")
 
         StubIndex.getInstance().processElements(
             DomElementClassIndex.KEY,
@@ -60,10 +57,10 @@ class TSMetaModelCollector(private val myProject: Project) {
                 }
             }
         )
-        ProgressManager.getInstance().progressIndicator.text2 = HybrisI18NBundleUtils.message("hybris.ts.access.progress.subTitle.collectedDependencies", files.size)
 
-        return Collections.unmodifiableSet(files)
+        files
     }
+        .let { Collections.unmodifiableSet(it) }
 
     companion object {
         fun getInstance(project: Project): TSMetaModelCollector = project.getService(TSMetaModelCollector::class.java)

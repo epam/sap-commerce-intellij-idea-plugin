@@ -19,37 +19,41 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.yExtensionName
+import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelNameProvider
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.ReadAction
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProcessCanceledException
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
-import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
+import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.progress.reportSequentialProgress
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.apache.commons.collections4.CollectionUtils
 import java.util.*
-import java.util.concurrent.Semaphore
 import kotlin.io.path.exists
 import kotlin.io.path.inputStream
+import kotlin.time.measureTime
 
 /**
  * Global Meta Model can be retrieved at any time and will ensure that only a single Thread can perform its initialization/update
@@ -64,7 +68,7 @@ import kotlin.io.path.inputStream
  * It is quite important to take into account the possibility of interruption of the process, especially during Inspection and other heavy operations
  */
 @Service(Service.Level.PROJECT)
-class TSMetaModelAccess(private val project: Project) {
+class TSMetaModelAccess(private val project: Project, private val coroutineScope: CoroutineScope) {
 
     companion object {
         val TOPIC = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", TSChangeListener::class.java)
@@ -73,7 +77,6 @@ class TSMetaModelAccess(private val project: Project) {
         @JvmStatic
         fun getInstance(project: Project): TSMetaModelAccess = project.getService(TSMetaModelAccess::class.java)
     }
-
 
     private val myGlobalMetaModel = TSGlobalMetaModel()
     private val myMessageBus = project.messageBus
@@ -103,59 +106,67 @@ class TSMetaModelAccess(private val project: Project) {
 
     @Volatile
     private var initialized: Boolean = false
-    private val semaphore = Semaphore(1)
 
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(project).createCachedValue(
         {
-            val collectDependencies = TSMetaModelCollector.getInstance(project).collectDependencies()
+            val asyncLocalMetaModels = coroutineScope.async {
+                withContext(NonCancellable) {
+                    withBackgroundProgress(project, "Re-building Type System...", true) {
+                        val collectedDependencies = TSMetaModelCollector.getInstance(project).collectDependencies()
 
-            val localMetaModels = collectDependencies
-                .map { retrieveSingleMetaModelPerFile(it) }
-                .map { it.value }
-                .sortedBy { !it.custom }
+                        val localMetaModels = reportSequentialProgress(collectedDependencies.size) { progressReporter ->
+                            collectedDependencies
+                                .map {
+
+                                    progressReporter.sizedStep(1, "Processing: ${it.name}...") {
+                                        retrieveSingleMetaModelPerFile(it)
+                                    }
+                                }
+                                .sortedBy { !it.custom }
+                        }
+
+                        TSMetaModelMerger.getInstance(project).merge(myGlobalMetaModel, localMetaModels)
+
+                        localMetaModels
+                    }
+                }
+            }
+
+            val localMetaModels = runBlocking {
+                asyncLocalMetaModels.await()
+            }
 
             val dependencies = localMetaModels
                 .map { it.psiFile }
                 .toTypedArray()
 
-            TSMetaModelMerger.getInstance(project).merge(myGlobalMetaModel, localMetaModels)
-
             CachedValueProvider.Result.create(myGlobalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
         }, false
     )
-
-    private val task = object : Task.Backgroundable(project, message("hybris.ts.access.progress.title.building")) {
-        override fun run(indicator: ProgressIndicator) {
-            indicator.text2 = message("hybris.ts.access.progress.subTitle.waitingForIndex")
-
-            ReadAction
-                .nonBlocking<Unit> {
-                    if (DumbService.isDumb(project)) throw ProcessCanceledException()
-                    val lock = semaphore.tryAcquire()
-
-                    if (lock) {
-                        try {
-                            building = true
-                            val globalMetaModel = myGlobalMetaModelCache.value
-                            building = false
-                            initialized = true
-                            myMessageBus.syncPublisher(TOPIC).typeSystemChanged(globalMetaModel)
-                        } finally {
-                            semaphore.release()
-                        }
-                    }
-                }
-                .inSmartMode(project)
-                .executeSynchronously()
-        }
-    }
 
     fun isInitialized() = initialized
 
     fun initMetaModel() {
         building = true
 
-        ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, BackgroundableProcessIndicator(task))
+        coroutineScope.launch {
+            val measureTime = measureTime {
+                myGlobalMetaModelCache.value
+            }
+
+            withContext(Dispatchers.EDT) {
+                Notifications.create(
+                    NotificationType.INFORMATION,
+                    "TS loaded in: $measureTime"
+                )
+                    .notify(project)
+            }
+
+            building = false
+            initialized = true
+
+            myMessageBus.syncPublisher(TOPIC).typeSystemChanged(myGlobalMetaModel)
+        }
     }
 
     fun getMetaModel(): TSGlobalMetaModel {
@@ -220,23 +231,15 @@ class TSMetaModelAccess(private val project: Project) {
     private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? =
         getMetaModel().getMetaType<T>(metaType)[name]
 
-    private fun retrieveSingleMetaModelPerFile(psiFile: PsiFile): CachedValue<TSMetaModel> {
-        return Optional.ofNullable(psiFile.getUserData(SINGLE_MODEL_CACHE_KEY))
-            .orElseGet {
-                val cachedValue = createSingleMetaModelCachedValue(project, psiFile)
-                psiFile.putUserData(SINGLE_MODEL_CACHE_KEY, cachedValue)
-                cachedValue
+    private fun retrieveSingleMetaModelPerFile(psiFile: PsiFile): TSMetaModel = CachedValuesManager.getManager(project).getCachedValue(
+        psiFile, SINGLE_MODEL_CACHE_KEY,
+        {
+            val value = runBlocking {
+                TSMetaModelProcessor.getInstance(project).process(psiFile)
             }
-    }
 
-    private fun createSingleMetaModelCachedValue(project: Project, psiFile: PsiFile): CachedValue<TSMetaModel> {
-        return CachedValuesManager.getManager(project).createCachedValue(
-            {
-                ApplicationManager.getApplication().runReadAction(
-                    Computable {
-                        CachedValueProvider.Result.create(TSMetaModelProcessor.getInstance(project).process(psiFile), psiFile)
-                    } as Computable<CachedValueProvider.Result<TSMetaModel>>)
-            }, false
-        )
-    }
+            CachedValueProvider.Result.create(value, psiFile)
+        },
+        false
+    )
 }
