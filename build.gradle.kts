@@ -332,11 +332,11 @@ dependencies {
 
         // JSON:
         // https://plugins.jetbrains.com/plugin/25364-json
-        plugin("com.intellij.modules.json:243.21565.23")
+        plugin("com.intellij.modules.json:243.21565.129")
 
         // Ant:
         // https://plugins.jetbrains.com/plugin/23025-ant
-        plugin("AntSupport:243.21565.23")
+        plugin("AntSupport:243.21565.129")
 
         // PsiViewer:
         // https://plugins.jetbrains.com/plugin/227-psiviewer
@@ -344,7 +344,7 @@ dependencies {
 
         // JRebel and XRebel:
         // https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-        plugin("JRebelPlugin:2024.4.0")
+        plugin("JRebelPlugin:2024.4.1")
 
         // Big Data Tools:
         // incredibly sad, but as for now API cannot be used by 3rd-party plugins

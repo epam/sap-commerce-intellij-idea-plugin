@@ -51,7 +51,9 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
             JAVAEE,
             JAVAEE_WEB,
             JAVAEE_EL,
-            DIAGRAM
+            DIAGRAM,
+            JAVASCRIPT,
+            CRON,
         )
             .map { it.id }
     }
@@ -74,7 +76,6 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         JAVASCRIPT.id to JAVASCRIPT,
         INTELLILANG.id to INTELLILANG,
     )
-    private val excludedIdPrefix = "com.intellij.modules"
 
     private val cellRenderer = object : ColoredListCellRenderer<PluginId>() {
         @Serial
@@ -160,11 +161,33 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
     }
 
     override fun isStepVisible(): Boolean {
-        validateDependencies()
+        val isUltimate = HybrisConstants.IDEA_EDITION_ULTIMATE.equals(ApplicationNamesInfo.getInstance().editionName, true)
+        val isCommunity = !isUltimate
+
+        notInstalledModel.removeAll()
+        notEnabledModel.removeAll()
+
+        val hybrisPlugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))
+            ?: return false
+
+        hybrisPlugin.dependencies
+            .filter { it.isOptional }
+            .map { it.pluginId }
+            .map { pluginId ->
+                if (isCommunity && ultimateEditionOnly.contains(pluginId.idString)) return@map
+
+                if (!PluginManager.isPluginInstalled(pluginId)) {
+                    notInstalledModel.add(pluginId)
+                    return@map
+                }
+                PluginManagerCore.getPlugin(pluginId)
+                    ?.takeUnless { it.isEnabled }
+                    ?.let { notEnabledModel.add(pluginId) }
+            }
 
         enablePlugins.isEnabled = !notEnabledModel.isEmpty
 
-        return isAnyMissing()
+        return !notInstalledModel.isEmpty || !notEnabledModel.isEmpty
     }
 
     private fun enablePlugins(pluginIds: Collection<PluginId>) {
@@ -174,35 +197,6 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         ApplicationManager.getApplication()
             .asSafely<ApplicationEx>()
             ?.restart(true)
-    }
-
-    private fun validateDependencies() {
-        notInstalledModel.removeAll()
-        notEnabledModel.removeAll()
-
-        val hybrisPlugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)) ?: return
-
-        hybrisPlugin.dependencies
-            .filter { it.isOptional }
-            .map { it.pluginId }
-            .filterNot { it.idString.startsWith(excludedIdPrefix) }
-            .map { pluginId ->
-                if (!PluginManager.isPluginInstalled(pluginId)) {
-                    notInstalledModel.add(pluginId)
-                    return@map
-                }
-                PluginManagerCore.getPlugin(pluginId)
-                    ?.takeUnless { it.isEnabled }
-                    ?.let { notEnabledModel.add(pluginId) }
-            }
-    }
-
-    private fun isAnyMissing(): Boolean {
-        if (!notEnabledModel.isEmpty) return true
-        if (HybrisConstants.IDEA_EDITION_ULTIMATE.equals(ApplicationNamesInfo.getInstance().editionName, true)) return !notInstalledModel.isEmpty
-
-        return notInstalledModel.items
-            .any { !ultimateEditionOnly.contains(it.idString) }
     }
 
 }
