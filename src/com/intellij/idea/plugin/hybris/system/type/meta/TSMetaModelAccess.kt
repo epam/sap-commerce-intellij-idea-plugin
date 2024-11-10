@@ -35,7 +35,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.platform.ide.progress.withBackgroundProgress
-import com.intellij.platform.util.progress.reportSequentialProgress
+import com.intellij.platform.util.progress.reportProgress
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
@@ -46,6 +46,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -114,14 +115,16 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
                     withBackgroundProgress(project, "Re-building Type System...", true) {
                         val collectedDependencies = TSMetaModelCollector.getInstance(project).collectDependencies()
 
-                        val localMetaModels = reportSequentialProgress(collectedDependencies.size) { progressReporter ->
+                        val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
                             collectedDependencies
                                 .map {
-
                                     progressReporter.sizedStep(1, "Processing: ${it.name}...") {
-                                        retrieveSingleMetaModelPerFile(it)
+                                        this.async {
+                                            retrieveSingleMetaModelPerFile(it)
+                                        }
                                     }
                                 }
+                                .awaitAll()
                                 .sortedBy { !it.custom }
                         }
 
