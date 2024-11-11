@@ -109,7 +109,7 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
 
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(project).createCachedValue(
         {
-            val asyncLocalMetaModels = coroutineScope.async {
+            val localMetaModels = runBlocking {
                 withBackgroundProgress(project, "Re-building Type System...", true) {
                     val collectedDependencies = TSMetaModelCollector.getInstance(project).collectDependencies()
 
@@ -132,10 +132,6 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
                 }
             }
 
-            val localMetaModels = runBlocking {
-                asyncLocalMetaModels.await()
-            }
-
             val dependencies = localMetaModels
                 .map { it.psiFile }
                 .toTypedArray()
@@ -149,7 +145,7 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
     fun initMetaModel() {
         building = true
 
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.IO) {
             val measureTime = measureTime {
                 myGlobalMetaModelCache.value
             }
