@@ -44,7 +44,6 @@ import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -111,27 +110,25 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(project).createCachedValue(
         {
             val asyncLocalMetaModels = coroutineScope.async {
-                withContext(NonCancellable) {
-                    withBackgroundProgress(project, "Re-building Type System...", true) {
-                        val collectedDependencies = TSMetaModelCollector.getInstance(project).collectDependencies()
+                withBackgroundProgress(project, "Re-building Type System...", true) {
+                    val collectedDependencies = TSMetaModelCollector.getInstance(project).collectDependencies()
 
-                        val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
-                            collectedDependencies
-                                .map {
-                                    progressReporter.sizedStep(1, "Processing: ${it.name}...") {
-                                        this.async {
-                                            retrieveSingleMetaModelPerFile(it)
-                                        }
+                    val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
+                        collectedDependencies
+                            .map {
+                                progressReporter.sizedStep(1, "Processing: ${it.name}...") {
+                                    this.async {
+                                        retrieveSingleMetaModelPerFile(it)
                                     }
                                 }
-                                .awaitAll()
-                                .sortedBy { !it.custom }
-                        }
-
-                        TSMetaModelMerger.getInstance(project).merge(myGlobalMetaModel, localMetaModels)
-
-                        localMetaModels
+                            }
+                            .awaitAll()
+                            .sortedBy { !it.custom }
                     }
+
+                    TSMetaModelMerger.getInstance(project).merge(myGlobalMetaModel, localMetaModels)
+
+                    localMetaModels
                 }
             }
 
@@ -164,12 +161,13 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
                 )
                     .notify(project)
             }
-
-            building = false
-            initialized = true
-
-            myMessageBus.syncPublisher(TOPIC).typeSystemChanged(myGlobalMetaModel)
         }
+            .invokeOnCompletion {
+                building = false
+                initialized = true
+
+                myMessageBus.syncPublisher(TOPIC).typeSystemChanged(myGlobalMetaModel)
+            }
     }
 
     fun getMetaModel(): TSGlobalMetaModel {
