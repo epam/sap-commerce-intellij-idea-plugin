@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelBuilder
 import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.model.TypeGroup
 import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.openapi.application.readActionBlocking
 import com.intellij.openapi.components.Service
@@ -27,16 +26,18 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
-import java.util.stream.Collectors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 
 @Service(Service.Level.PROJECT)
 class TSMetaModelProcessor(myProject: Project) {
 
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
-    suspend fun process(psiFile: PsiFile): TSMetaModel? = readActionBlocking {
-
-
+    suspend fun process(coroutineScope: CoroutineScope, psiFile: PsiFile): TSMetaModel? = readActionBlocking {
         psiFile.virtualFile ?: return@readActionBlocking null
         val module = TSUtils.getModuleForFile(psiFile) ?: return@readActionBlocking null
         val custom = TSUtils.isCustomExtensionFile(psiFile)
@@ -46,17 +47,23 @@ class TSMetaModelProcessor(myProject: Project) {
 
         val items = rootWrapper.rootElement
 
-        TSMetaModelBuilder(module, psiFile, custom)
-            .withItemTypes(items.itemTypes.itemTypes)
-            .withItemTypes(items.itemTypes.typeGroups.stream()
-                .flatMap { tg: TypeGroup -> tg.itemTypes.stream() }
-                .collect(Collectors.toList()))
-            .withEnumTypes(items.enumTypes.enumTypes)
-            .withAtomicTypes(items.atomicTypes.atomicTypes)
-            .withCollectionTypes(items.collectionTypes.collectionTypes)
-            .withRelationTypes(items.relations.relations)
-            .withMapTypes(items.mapTypes.mapTypes)
-            .build()
+        val builder = TSMetaModelBuilder(module, psiFile, custom)
+
+        val operations = listOf(
+            coroutineScope.async { readActionBlocking { builder.withItemTypes(items.itemTypes.itemTypes) } },
+            coroutineScope.async { readActionBlocking { builder.withItemTypes(items.itemTypes.typeGroups.flatMap { it.itemTypes }) } },
+            coroutineScope.async { readActionBlocking { builder.withEnumTypes(items.enumTypes.enumTypes) } },
+            coroutineScope.async { readActionBlocking { builder.withAtomicTypes(items.atomicTypes.atomicTypes) } },
+            coroutineScope.async { readActionBlocking { builder.withCollectionTypes(items.collectionTypes.collectionTypes) } },
+            coroutineScope.async { readActionBlocking { builder.withRelationTypes(items.relations.relations) } },
+            coroutineScope.async { readActionBlocking { builder.withMapTypes(items.mapTypes.mapTypes) } },
+        )
+
+        runBlocking(Dispatchers.IO) {
+            operations.awaitAll()
+        }
+
+        builder.build()
     }
 
     companion object {

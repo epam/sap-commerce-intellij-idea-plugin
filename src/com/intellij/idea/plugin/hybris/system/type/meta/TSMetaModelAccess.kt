@@ -238,7 +238,7 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
         psiFile, SINGLE_MODEL_CACHE_KEY,
         {
             val value = runBlocking {
-                TSMetaModelProcessor.getInstance(project).process(psiFile)
+                TSMetaModelProcessor.getInstance(project).process(this, psiFile)
             }
 
             CachedValueProvider.Result.create(value, psiFile)
