@@ -21,6 +21,7 @@
         <group id="sap.cx.logging.actions">
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.OffLoggerAction" />
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.AllLoggerAction" />
+            <separator/>
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.TraceLoggerAction" />
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.DebugLoggerAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.InfoLoggerAction"/>
