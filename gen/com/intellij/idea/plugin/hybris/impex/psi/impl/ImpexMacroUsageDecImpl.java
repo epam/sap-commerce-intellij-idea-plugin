@@ -29,6 +29,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
+import java.util.Set;
 
 public class ImpexMacroUsageDecImpl extends ImpexMacroUsageDecMixin implements ImpexMacroUsageDec {
 

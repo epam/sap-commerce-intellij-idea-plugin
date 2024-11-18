@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramNode
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 
 class ExcludeTypeNameDiagramAction : DiagramAction(
     message("hybris.diagram.ts.provider.actions.exclude_type_name"),
@@ -43,7 +44,8 @@ class ExcludeTypeNameDiagramAction : DiagramAction(
                 .excludedTypeNames
                 .addAll(excludedTypeNames)
 
-            ActionManager.getInstance().getAction("Diagram.RefreshDataModelManually").actionPerformed(event)
+            val action = ActionManager.getInstance().getAction("Diagram.RefreshDataModelManually")
+            ActionUtil.performActionDumbAwareWithCallbacks(action, event)
         }
     }
 

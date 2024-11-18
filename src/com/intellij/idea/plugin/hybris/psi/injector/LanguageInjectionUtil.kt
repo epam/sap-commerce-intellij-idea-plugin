@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,10 +19,13 @@
 package com.intellij.idea.plugin.hybris.psi.injector
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameters
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.system.businessProcess.BpDomFileDescription
 import com.intellij.idea.plugin.hybris.system.type.ScriptType
 import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
@@ -30,7 +33,7 @@ import com.intellij.util.xml.DomManager
 
 object LanguageInjectionUtil {
 
-    fun getLanguageForInjection(impexString: ImpexString): ScriptType? {
+    fun getScriptType(impexString: ImpexString): ScriptType? {
         val valueGroup = impexString
             .valueGroup
             ?: return null
@@ -54,8 +57,26 @@ object LanguageInjectionUtil {
         return valueGroup.valueLine
             ?.getValueGroup(scriptTypeColumn.columnNumber)
             ?.computeValue()
+            ?.let { parseValue(it, scriptTypeColumn) }
             ?.let { ScriptType.byName(it) }
     }
+
+    /**
+     * It is also possible to use the following ImpEx:
+     *
+     * INSERT_UPDATE Script;code[unique=true]; content; scriptType(code,itemtype(code))[allownull=true]
+     *                     ;some             ; some   ; GROOVY:ScriptType
+     *
+     * In such a case, we have to identify "code" parameter index, split value by ":" and take value of the "code" index.
+     */
+    private fun parseValue(value: String, scriptTypeColumn: ImpexFullHeaderParameter) = scriptTypeColumn
+        .childrenOfType<ImpexParameters>()
+        .firstOrNull()
+        ?.parameterList
+        ?.map { it.text }
+        ?.indexOf("code")
+        ?.let { indexOfTheCodeParameter -> value.split(":").getOrNull(indexOfTheCodeParameter) }
+        ?: value
 
     fun tryInject(
         xmlFile: XmlFile,

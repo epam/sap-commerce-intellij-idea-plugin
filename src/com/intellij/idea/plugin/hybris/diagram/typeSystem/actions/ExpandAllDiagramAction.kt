@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramDataModel
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.util.asSafely
 
 class ExpandAllDiagramAction : DiagramAction(
@@ -38,7 +39,8 @@ class ExpandAllDiagramAction : DiagramAction(
             ?.let {
                 it.expandAllNodes()
 
-                ActionManager.getInstance().getAction("Diagram.RefreshDataModelManually").actionPerformed(event)
+                val action = ActionManager.getInstance().getAction("Diagram.RefreshDataModelManually")
+                ActionUtil.performActionDumbAwareWithCallbacks(action, event)
             }
     }
 

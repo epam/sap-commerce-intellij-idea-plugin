@@ -65,7 +65,7 @@ class GroovyLanguageInjector : LanguageInjector {
                         ?: offset
 
                     injectLanguage(injectionPlacesRegistrar, host.getTextLength() - markerOffset - quoteSymbolLength, markerOffset)
-                } else if (LanguageInjectionUtil.getLanguageForInjection(host) == ScriptType.GROOVY) {
+                } else if (LanguageInjectionUtil.getScriptType(host) == ScriptType.GROOVY) {
                     injectLanguage(injectionPlacesRegistrar, host.getTextLength() - quoteSymbolLength - 1, quoteSymbolLength)
                 }
             }
@@ -81,10 +81,9 @@ class GroovyLanguageInjector : LanguageInjector {
      * `line` is actually a Map returned by the de.hybris.platform.impex.jalo.AbstractCodeLine.
      */
     private fun injectLanguage(injectionPlacesRegistrar: InjectedLanguagePlaces, length: Int, offset: Int) {
-        val language = GroovyLanguage
         try {
             injectionPlacesRegistrar.addPlace(
-                language,
+                GroovyLanguage,
                 TextRange.from(offset, length), """
                     import de.hybris.platform.core.*
                     import de.hybris.platform.core.model.user.* 
@@ -111,6 +110,6 @@ class GroovyLanguageInjector : LanguageInjector {
     }
 
     companion object {
-        private val LOG = Logger.getInstance(GroovyLanguageInjector::class.java)
+        private val LOG by lazy { Logger.getInstance(GroovyLanguageInjector::class.java) }
     }
 }

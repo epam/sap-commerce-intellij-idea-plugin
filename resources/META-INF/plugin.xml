@@ -61,6 +61,7 @@
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-database.xml">com.intellij.database</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-intelliLang.xml">org.intellij.intelliLang</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-jrebel.xml">JRebelPlugin</depends>
+    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-cron.xml">com.intellij.cron</depends>
 
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-xdebugger.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
@@ -74,6 +75,7 @@
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-localextensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-polyglot-query.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-typeSystem.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-logging.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>

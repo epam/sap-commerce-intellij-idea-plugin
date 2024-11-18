@@ -15,64 +15,63 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexPropertyReference
 import com.intellij.idea.plugin.hybris.impex.psi.util.getKey
 import com.intellij.idea.plugin.hybris.impex.psi.util.setName
-import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
-import com.intellij.lang.properties.psi.Property
 import com.intellij.openapi.util.Key
-import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.*
 import java.io.Serial
 
-abstract class ImpexMacroUsageDecMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), ImpexMacroUsageDec, ImpexPsiNamedElement {
+abstract class ImpexMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpexMacroNameDec {
 
-    override fun createReference() = if (text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
-        ImpexPropertyReference(this)
-    } else if (text.startsWith("$")) {
-        ImpexMacroReference(this)
-    } else {
-        null
-    }
-
-    override fun setName(newName: String) = setName(this, newName)
-    override fun getName() = getKey(node)
+    override fun setName(newName: String): PsiElement = setName(this, newName)
     override fun getNameIdentifier() = this
+    override fun getName() = getKey(node)
+    override fun toString() = text
+        ?: super.toString()
 
     override fun resolveValue(evaluatedMacroUsages: MutableSet<ImpexMacroUsageDec?>): String = CachedValuesManager.getManager(project).getCachedValue(
         this,
         Key.create<CachedValue<String>>("SAP_CX_IMPEX_RESOLVED_VALUE_" + evaluatedMacroUsages.size),
         {
-            val resolvedValue = when (val targetPsi = reference?.resolve()) {
-                is ImpexMacroNameDec -> targetPsi.resolveValue(evaluatedMacroUsages)
+            val resolvedValue = siblings(forward = true, withSelf = false)
+                .map {
+                    when (it) {
+                        is ImpexMacroUsageDec -> {
+                            if (evaluatedMacroUsages.contains(it)) return@map it.text
 
-                is Property -> targetPsi.value
-                    ?: text
+                            evaluatedMacroUsages.add(it)
+                            it.resolveValue(evaluatedMacroUsages)
+                                .let { value ->
+                                    val ref = it.reference ?: return@let null
+                                    value + ref.element.text.substringAfter(ref.canonicalText, "")
+                                }
+                                ?: it.text
+                        }
 
-                else -> text
-            }
+                        else -> it.text
+                    }
+                }
+                .joinToString("")
+                .trim()
+                .trimStart('=')
+                .trimStart()
 
-            CachedValueProvider.Result.create(
+            CachedValueProvider.Result.createSingleDependency(
                 resolvedValue,
-                PsiModificationTracker.MODIFICATION_COUNT
+                PsiModificationTracker.MODIFICATION_COUNT,
             )
         }, false
     )
 
     companion object {
-
         @Serial
-        private val serialVersionUID: Long = -7539604143961775427L
+        private val serialVersionUID: Long = 1984651966859085911L
     }
 }

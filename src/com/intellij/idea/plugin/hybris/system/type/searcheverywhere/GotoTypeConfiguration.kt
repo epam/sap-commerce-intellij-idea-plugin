@@ -16,16 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.psi.impl
+package com.intellij.idea.plugin.hybris.system.type.searcheverywhere
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
-import com.intellij.lang.ASTNode
-import java.io.Serial
+import com.intellij.ide.util.gotoByName.ChooseByNameFilterConfiguration
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.StoragePathMacros
+import com.intellij.openapi.project.Project
 
-abstract class ImpexDocumentIdDecMixin(node: ASTNode) : ImpexPsiNamedElementMixin(node), ImpexDocumentIdDec {
+@Service(Service.Level.PROJECT)
+@State(name = "GotoTypeConfiguration", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
+class GotoTypeConfiguration(private val project: Project) : ChooseByNameFilterConfiguration<SystemRef>() {
+
+    override fun nameForElement(type: SystemRef) = type.id
 
     companion object {
-        @Serial
-        private val serialVersionUID: Long = 8447559537730205946L
+        fun getInstance(project: Project): GotoTypeConfiguration = project.getService(GotoTypeConfiguration::class.java)
     }
 }

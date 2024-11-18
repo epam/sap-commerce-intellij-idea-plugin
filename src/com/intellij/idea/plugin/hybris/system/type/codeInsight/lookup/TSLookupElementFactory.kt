@@ -50,8 +50,8 @@ object TSLookupElementFactory {
             LookupElementBuilder.create(it + suffix)
                 .withPresentableText(it)
                 .withTailText(if (meta.isAbstract) " (" + message("hybris.ts.type.abstract") + ")" else "", true)
-                .withIcon(HybrisIcons.TypeSystem.ITEM)
-                .withTypeText(":: ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}", HybrisIcons.TypeSystem.ITEM, true)
+                .withIcon(HybrisIcons.TypeSystem.Types.ITEM)
+                .withTypeText(":: ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}", HybrisIcons.TypeSystem.Types.ITEM, true)
                 .withTypeIconRightAligned(true)
                 .withCaseSensitivity(false)
         }
@@ -128,7 +128,7 @@ object TSLookupElementFactory {
             LookupElementBuilder.create(it)
                 .withTailText(if (meta.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
                 .withIcon(HybrisIcons.TypeSystem.Types.ENUM)
-                .withTypeText(":: ${HybrisConstants.TS_TYPE_ENUMERATION_VALUE}", HybrisIcons.TypeSystem.ITEM, true)
+                .withTypeText(":: ${HybrisConstants.TS_TYPE_ENUMERATION_VALUE}", HybrisIcons.TypeSystem.Types.ITEM, true)
                 .withTypeIconRightAligned(true)
                 .withCaseSensitivity(false)
         }
@@ -167,7 +167,7 @@ object TSLookupElementFactory {
     fun build(dom: ItemType) = dom.code.stringValue
         ?.let {
             LookupElementBuilder.create(it)
-                .withIcon(HybrisIcons.TypeSystem.ITEM)
+                .withIcon(HybrisIcons.TypeSystem.Types.ITEM)
         }
 
     fun buildPrimitive(dom: TypeMapping?) = dom

@@ -16,16 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.psi.impl
+package com.intellij.idea.plugin.hybris.psi.util
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
-import com.intellij.lang.ASTNode
-import java.io.Serial
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.psi.psiUtil.endOffset
+import org.jetbrains.kotlin.psi.psiUtil.startOffset
 
-abstract class ImpexDocumentIdDecMixin(node: ASTNode) : ImpexPsiNamedElementMixin(node), ImpexDocumentIdDec {
-
-    companion object {
-        @Serial
-        private val serialVersionUID: Long = 8447559537730205946L
-    }
+fun PsiElement.getLineNumber(start: Boolean = true): Int {
+    val document = containingFile.viewProvider.document ?: PsiDocumentManager.getInstance(project).getDocument(containingFile)
+    val index = if (start) this.startOffset else this.endOffset
+    if (index > (document?.textLength ?: 0)) return 0
+    return document?.getLineNumber(index) ?: 0
 }

@@ -1,10 +1,51 @@
+## [2024.3.2]
+
+### `SAP CX Logging` enhancements
+- Fixed the notification message when a server is NULL [#1253](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1253)
+- Improved the notification type if the server responds with an error [#1254](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1254)
+- Shorten a logger name in the notification message, i.e. converts each package segment to its first letter [#1272](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1272)
+- Added logging support for enum, record and interface types [#1273](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1273)
+- Removed logger actions from the Actions tab in the Search Everywhere popup [#1275](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1275)
+
+### `Other` enhancements
+- Do not check for Ultimate plugins when using the Community edition during project import [#1276](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1276)
+
 ## [2024.3.1]
 
+### `Search Everywhere` enhancements
+- Introduced possibility to search through Type System via _Search Everywhere_ [#1267](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1267)
+- Added scope and preview for Type System Search Everywhere [#1269](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1269)
+- Added possibility to search through Bean System via _Search Everywhere_ [#1270](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1270)
+- Quick access new _Search Everywhere_ via shortcut `control` + `shift` + `H` [#1271](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1271)
+
+### `ImpEx` enhancements
+- Added **CronExp** language injection for **Trigger** type into String literal [#1256](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1256)
+- Added **CronExp** language injection for **Trigger** type into non-String literal [#1257](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1257)
+- Improved **Groovy** language injection for **Script** type [#1255](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1255)
+- Properly resolve references to macro declaration [#1258](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1258)
+- Cache macro declaration references [#1259](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1259)
+- Use closest macro declaration value for folded macro usage [#1260](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1260)
+- Use macros imported via `impex.includeExtenalData(Resource)` in the folded values [#1261](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1261)
+- Resolve macros defined in the external ImpEx file and imported via `impex.includeExtenalData(Resource)` [#1262](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1262)
+- Removed legacy macro reference search [#1264](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1264)
+- Macro shouldn't resolve itself in own declaration [#1265](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1265)
+- Rely on references during resolution of the folded values [#1266](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1266)
+
+### `ImpEx` inspection rules
+- Adjusted Unknown Macro inspection in case of external ImpEx files [#1263](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1263)
+
 ### Fixes
-- Correctly define Scope to filter for Properties File (#1247)[https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247]
+- Correctly define Scope to filter for Properties File [#1247](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1247)
 - Add all module Classpaths and necessary Properties to JUnit Tests [#1241](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1241)
+- Hide CCv2 actions in the _Search Everywhere_ [#1268](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1268)
+
+### Other
+- Replaced direct usage of the `actionPerformed` [#1274](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1274)
 
 ## [2024.3.0]
+
+### `SAP CX Logging` enhancements
+- Added an inlay hint to the logger popup, allowing users to select a log level and apply it to the active server [#1239](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1239)
 
 ### `Project Import` enhancements
 - Ensure that dependencies on non-custom extensions are properly configured [#1244](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1244)
@@ -447,10 +488,10 @@
 - Added reference resolution for not quoted value of the `disable.interceptor.types` [#894](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/894)
 - Added reference resolution for not quoted value of the `disable.UniqueAttributesValidator.for.types` [#895](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/895)
 - Customized folding for `User Rights` permission flags [#897](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/897)
-- Improved Groovy language injection based on control markers [#912](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/912)
-- Prepend default imports for injected Groovy language [#913](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/913)
-- Inject `impex` variable type of `ImpExImportReader` into Groovy language [#914](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/914)
-- Inject `line` variable type of `Map<Integer, String>` into Groovy language [#915](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/915)
+- Improved **Groovy** language injection based on control markers [#912](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/912)
+- Prepend default imports for injected **Groovy** language [#913](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/913)
+- Inject `impex` variable type of `ImpExImportReader` into **Groovy** language [#914](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/914)
+- Inject `line` variable type of `Map<Integer, String>` into **Groovy** language [#915](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/915)
 - Parse and style field values `jar:`, `file:` and `zip:` [#918](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/918)
 - Parse and style field value `http:` [#929](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/929)
 - Parse and style field value `/medias/` for exploded jar [#930](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/930)
@@ -461,7 +502,7 @@
 - Removed a catalog version option from the ImpEx console [#934](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/934)
 - Enhanced Parser and Lexer with single line scripting `#%` elements [#937](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/937)
 - Style scripting action elements `beforeEach:`, `afterEach:`, `if:` and `endif:` [#938](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/938)
-- Inject Groovy language into a single line scripting block [#939](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/939)
+- Inject **Groovy** language into a single line scripting block [#939](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/939)
 - Style scripting marker and action within multi-line block [#940](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/940)
 - Enhanced ImpEx Console with additional execution settings [#941](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/941)
 - Improved language Lexer for scripting blocks [#951](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/951)
@@ -1245,10 +1286,10 @@
 ## [2023.1.5]
 
 ### Features
-- Added injection of the Groovy Language into `Script.content` in the ImpEx files [#361](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/361)
-- Added injection of the Groovy Language into `script.type=groovy` in the Business Process files [#363](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/363)
-- Added injection of the JavaScript Language into `script.type=javascript` in the Business Process files [#364](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/364)
-- Added injection of the JavaScript Language into `Script.content` in the ImpEx files [#362](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/362)
+- Added injection of the **Groovy** Language into `Script.content` in the ImpEx files [#361](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/361)
+- Added injection of the **Groovy** Language into `script.type=groovy` in the Business Process files [#363](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/363)
+- Added injection of the **JavaScript** Language into `script.type=javascript` in the Business Process files [#364](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/364)
+- Added injection of the **JavaScript** Language into `Script.content` in the ImpEx files [#362](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/362)
 - Improved support of the ImpEx nested attributes [#339](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/339)
 - Improved FlexibleSearch value parameters code completion [#345](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/345)
 - Improved FlexibleSearch & ImpEx code completion performance [#344](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/344)
@@ -1435,7 +1476,7 @@
 
 ### Features
 - Compatibility adjustments [#195](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/195)
-- Added CCv2 SAP Commerce `manifest.json` schema support [#225](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/225)
+- Added CCv2 SAP Commerce Cloud `manifest.json` schema support [#225](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/225)
 - Added CCv2 DataHub `manifest.json` schema support [#226](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/226)
 - Added CCv2 Javascript Storefront `manifest.json` schema support [#227](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/227)
 - Added completion of the available extensions for CCv2 SAP Commerce `manifest.json` file [#229](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/229)

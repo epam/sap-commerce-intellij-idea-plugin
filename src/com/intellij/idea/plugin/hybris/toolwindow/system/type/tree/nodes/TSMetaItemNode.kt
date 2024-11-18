@@ -35,7 +35,7 @@ class TSMetaItemNode(
 
     override fun update(project: Project, presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.TypeSystem.ITEM)
+        presentation.setIcon(HybrisIcons.TypeSystem.Types.ITEM)
         if (name != HybrisConstants.TS_TYPE_GENERIC_ITEM) {
             presentation.locationString = ": ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}"
         }

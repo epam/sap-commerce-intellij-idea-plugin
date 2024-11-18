@@ -31,7 +31,7 @@ import javax.swing.Icon
 class ModelItemLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass>() {
 
     override fun getName() = message("hybris.editor.gutter.ts.model.item.name")
-    override fun getIcon(): Icon = HybrisIcons.TypeSystem.ITEM
+    override fun getIcon(): Icon = HybrisIcons.TypeSystem.Types.ITEM
     override fun canProcess(psi: PsiClass) = TSUtils.isItemModelFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiClass)
         ?.takeIf { it.nameIdentifier != null }

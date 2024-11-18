@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,14 +18,18 @@
  */
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManipulator
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.psi.util.getLineNumber
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.*
 
 class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?>(owner, false) {
 
@@ -34,22 +39,46 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
 
     override fun getVariants(): Array<ResolveResult> = ResolveResult.EMPTY_ARRAY
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = findMacroDeclaration()
-        ?.let { PsiElementResolveResult.createResults(it.macroNameDec) }
-        ?: ResolveResult.EMPTY_ARRAY
-
-    private fun findMacroDeclaration() = PsiTreeUtil.findChildrenOfType(
-        element.containingFile,
-        ImpexMacroDeclaration::class.java
-    )
-        .reversed()
-        .find { element.text.startsWith(escapeName(it.macroNameDec.text)) }
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
+        .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+        .let { PsiUtils.getValidResults(it) }
 
     override fun handleElementRename(newElementName: String) = ImpexMacrosManipulator().handleContentChange(element, rangeInElement, newElementName)
 
+    private fun findMacroDeclaration(): ImpexMacroDeclaration? {
+        val text = element.text
+        val macroUsageLineNumber = element.getLineNumber()
+
+        return PsiTreeUtil.findChildrenOfType(
+            element.containingFile,
+            ImpexMacroDeclaration::class.java
+        )
+            .reversed()
+            .find { it.getLineNumber() < macroUsageLineNumber && text.startsWith(escapeName(it.macroNameDec.text)) }
+            ?: findExternalMacroDeclaration(text)
+    }
+
+    private fun findExternalMacroDeclaration(text: String) = (element.containingFile as ImpexFile).getExternalImpExFiles()
+        .map { PsiTreeUtil.findChildrenOfType(it, ImpexMacroDeclaration::class.java) }
+        .flatMap { it.reversed() }
+        .find { text.startsWith(escapeName(it.macroNameDec.text)) }
+
     companion object {
+        private val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpexMacroReference>>("SAP_CX_IMPEXMACRO_REFERENCE")
+
         fun escapeName(macroName: String) = macroName
             .replace("\\", "")
             .replace("\n", "")
+
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexMacroReference> { ref ->
+            val result = ref.findMacroDeclaration()
+                ?.let { PsiElementResolveResult.createResults(it.macroNameDec) }
+                ?: ResolveResult.EMPTY_ARRAY
+
+            CachedValueProvider.Result.create(
+                result,
+                PsiModificationTracker.MODIFICATION_COUNT
+            )
+        }
     }
 }

@@ -38,7 +38,8 @@ enum class Plugin(val id: String, val url: String? = null) {
     JAVAEE("com.intellij.javaee", "https://plugins.jetbrains.com/plugin/20207-jakarta-ee-platform"),
     JAVAEE_WEB("com.intellij.javaee.web", "https://plugins.jetbrains.com/plugin/20216-jakarta-ee-web-servlets"),
     JAVAEE_EL("com.intellij.javaee.el", "https://plugins.jetbrains.com/plugin/20208-jakarta-ee-expression-language-el-"),
-    SPRING("com.intellij.spring", "https://plugins.jetbrains.com/plugin/20221-spring");
+    SPRING("com.intellij.spring", "https://plugins.jetbrains.com/plugin/20221-spring"),
+    CRON("com.intellij.cron", "https://plugins.jetbrains.com/plugin/24438-cron-expressions");
 
     fun isActive() = PluginManagerCore.getPlugin(PluginId.getId(id))
         ?.isEnabled

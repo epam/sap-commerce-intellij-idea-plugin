@@ -169,7 +169,7 @@ class TSStructureTreeElement(
         is EnumValue -> HybrisIcons.TypeSystem.ENUM_VALUE
         is Attribute -> HybrisIcons.TypeSystem.ATTRIBUTE
         is Index -> HybrisIcons.TypeSystem.INDEX
-        is ItemType -> HybrisIcons.TypeSystem.ITEM
+        is ItemType -> HybrisIcons.TypeSystem.Types.ITEM
         is CollectionType -> HybrisIcons.TypeSystem.Types.COLLECTION
         is CustomProperty -> HybrisIcons.TypeSystem.CUSTOM_PROPERTY
         is MapType -> HybrisIcons.TypeSystem.Types.MAP

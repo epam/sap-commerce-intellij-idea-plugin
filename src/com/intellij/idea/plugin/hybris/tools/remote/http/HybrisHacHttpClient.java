@@ -295,4 +295,61 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             return null;
         }
     }
+
+    @NotNull
+    public HybrisHttpResult executeLogUpdate(
+        final Project project,
+        final String loggerName,
+        final String logLevel,
+        final int timeout
+    ) {
+
+        final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
+        final var params = Arrays.asList(
+            new BasicNameValuePair("loggerName", loggerName),
+            new BasicNameValuePair("levelName", logLevel)
+        );
+        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
+        final String actionUrl = settings.getGeneratedURL() + "/platform/log4j/changeLevel/";
+
+        final HttpResponse response = post(project, actionUrl, params, true, timeout, settings);
+        final StatusLine statusLine = response.getStatusLine();
+        resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
+        if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
+            return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
+                statusLine.getReasonPhrase()).build();
+        }
+        final Document document;
+        try {
+            document = parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "");
+        } catch (final IOException e) {
+            return resultBuilder.errorMessage(e.getMessage() + ' ' + actionUrl).httpCode(SC_BAD_REQUEST).build();
+        }
+        final Elements fsResultStatus = document.getElementsByTag("body");
+        if (fsResultStatus == null) {
+            return resultBuilder.errorMessage("No data in response").build();
+        }
+        final Map json = parseResponse(fsResultStatus);
+
+        if (json == null) {
+            return createResult()
+                .errorMessage("Cannot parse response from the server...")
+                .build();
+        }
+
+        final var stacktraceText = json.get("stacktraceText");
+        if (stacktraceText != null && isNotEmpty(stacktraceText.toString())) {
+            return createResult()
+                .errorMessage(stacktraceText.toString())
+                .build();
+        }
+
+        if (json.get("outputText") != null) {
+            resultBuilder.output(json.get("outputText").toString());
+        }
+        if (json.get("executionResult") != null) {
+            resultBuilder.result(json.get("executionResult").toString());
+        }
+        return resultBuilder.build();
+    }
 }

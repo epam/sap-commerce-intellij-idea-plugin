@@ -25,19 +25,17 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexMacroUsageDecMixin;
+import java.util.Set;
 
 public interface ImpexMacroUsageDec extends ImpexPsiNamedElement {
-
-  @NotNull
-  String getName();
-
-  @NotNull
-  PsiElement setName(@NotNull String newName);
 
   @NotNull
   ImpexMacroUsageDecMixin getNameIdentifier();
 
   @Nullable
   String getConfigPropertyKey();
+
+  @NotNull
+  String resolveValue(@NotNull Set<ImpexMacroUsageDec> evaluatedMacroUsages);
 
 }

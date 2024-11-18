@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.Hybr
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
@@ -110,7 +111,7 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
     private fun performAction(clazz: Class<out AnAction>) {
         val action = actionToolbar.actions.firstOrNull { clazz.isInstance(it) } ?: return
         val event = AnActionEvent.createEvent(actionToolbar.toolbarDataContext, action.templatePresentation, ActionPlaces.UNKNOWN, ActionUiKind.NONE, null)
-        action.actionPerformed(event)
+        ActionUtil.performActionDumbAwareWithCallbacks(action, event)
     }
 
     companion object {
