@@ -70,6 +70,10 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
 
         val modules: Array<Module> = ModuleManager.getInstance(project).modules
         for (module in modules) {
+            if (module.name.startsWith("CCv2")) {
+                continue
+            }
+
             // Get the module's output paths (both production and test)
             val moduleRootManager = ModuleRootManager.getInstance(module)
 
