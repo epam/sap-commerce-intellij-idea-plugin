@@ -35,7 +35,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_TE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_PLATFORMHOME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JAVAOPTIONS
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JDKMODULESEXPORTS
-import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.module.Module
@@ -97,10 +96,10 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
     }
 
     private fun addPlatformHome(vmParameters: ParametersList, project: Project) {
-        val platforhomePrefix = "-D$PROPERTY_PLATFORMHOME="
+        val platforhomePrefix = "-D$PROPERTY_PLATFORMHOME"
         if (vmParameters.parameters.none { it.startsWith(platforhomePrefix) }) {
-            HybrisRootUtil.findPlatformRootDirectory(project)
-                ?.path
+            PropertyService.getInstance(project)
+                ?.getPlatformHome()
                 ?.let { vmParameters.add("$platforhomePrefix=$it") }
         }
     }

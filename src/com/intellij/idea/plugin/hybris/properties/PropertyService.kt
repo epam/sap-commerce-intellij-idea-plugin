@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.properties
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.yExtensionName
+import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
@@ -92,10 +93,11 @@ class PropertyService(val project: Project) {
             loadHybrisRuntimeProperties(result)
             loadHybrisOptionalConfigDir(result)
 
-            CachedValueProvider.Result.create(result.values.toList(), propertiesFiles
-                .map { it.virtualFile }
-                .toTypedArray()
-                .ifEmpty { ModificationTracker.EVER_CHANGED }
+            CachedValueProvider.Result.create(
+                result.values.toList(), propertiesFiles
+                    .map { it.virtualFile }
+                    .toTypedArray()
+                    .ifEmpty { ModificationTracker.EVER_CHANGED }
             )
         }, false
     )
@@ -158,6 +160,9 @@ class PropertyService(val project: Project) {
     private fun findAllIProperties() = cachedProperties.value
 
     private fun addEnvironmentProperties(properties: MutableMap<String, String>) {
+        val platformHomePropertyKey = HybrisConstants.PROPERTY_PLATFORMHOME
+        getPlatformHome()?.let { properties[platformHomePropertyKey] = it }
+
         properties[HybrisConstants.PROPERTY_ENV_PROPERTY_PREFIX]
             ?.let { prefix ->
                 System.getenv()
@@ -170,6 +175,10 @@ class PropertyService(val project: Project) {
                         properties[key] = it.value
                     }
             }
+    }
+
+    fun getPlatformHome(): String? {
+        return HybrisRootUtil.findPlatformRootDirectory(project)?.path
     }
 
     private fun replacePlaceholder(result: LinkedHashMap<String, String>, key: String, visitedProperties: MutableSet<String>) {
