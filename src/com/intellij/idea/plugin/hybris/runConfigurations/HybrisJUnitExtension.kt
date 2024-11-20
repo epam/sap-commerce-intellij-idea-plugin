@@ -35,6 +35,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_TE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_PLATFORMHOME
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JAVAOPTIONS
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JDKMODULESEXPORTS
+import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.module.Module
@@ -70,7 +71,8 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
 
         val modules: Array<Module> = ModuleManager.getInstance(project).modules
         for (module in modules) {
-            if (module.name.startsWith("CCv2")) {
+
+            if (YFacet.getState(module)?.type?.name.equals("CCV2")) {
                 continue
             }
 
