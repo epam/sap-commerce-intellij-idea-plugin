@@ -34,6 +34,7 @@ import com.intellij.util.xmlb.annotations.Transient
 class RemoteConnectionSettings : BaseState(), Comparable<RemoteConnectionSettings> {
 
     var uuid by string(null)
+
     @Transient
     var credentials: Credentials? = null
     var displayName by string(null)
@@ -80,6 +81,11 @@ class RemoteConnectionSettings : BaseState(), Comparable<RemoteConnectionSetting
         && accessor.name != "username"
         && accessor.name != "password"
         && accessor.name != "scope"
+
+    fun connectionName() = displayName ?: generatedURL
+
+    fun shortenConnectionName() = (displayName ?: generatedURL)
+        .let { if (it.length > 20) it.take(20) + ".." else it }
 
     override fun compareTo(other: RemoteConnectionSettings) = uuid
         ?.compareTo(other.uuid ?: "")

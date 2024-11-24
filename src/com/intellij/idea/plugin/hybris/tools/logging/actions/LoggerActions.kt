@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.logging.actions
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.settings.options.ProjectIntegrationsSettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
@@ -31,10 +32,14 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
+import kotlinx.html.div
+import kotlinx.html.p
+import kotlinx.html.stream.createHTML
 import javax.swing.Icon
 
 abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon) : AnAction(logLevel, "", icon) {
@@ -79,7 +84,7 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
                                 """
                                     <p>Level  : $logLevel</p>
                                     <p>Logger : $abbreviationLogIdentifier</p>
-                                    <p>${server.displayName ?: server.generatedURL}</p>"""
+                                    <p>${server.shortenConnectionName()}</p>"""
 
                             )
                         } else {
@@ -90,7 +95,7 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
                                 """
                                     <p>Level  : $logLevel</p>
                                     <p>Logger : $abbreviationLogIdentifier</p>
-                                    <p>${server.displayName ?: server.generatedURL}</p>"""
+                                    <p>${server.shortenConnectionName()}</p>"""
                             )
                         }
                     } finally {
@@ -133,3 +138,28 @@ class WarnLoggerAction : AbstractLoggerAction("WARN", HybrisIcons.Log.Level.WARN
 class ErrorLoggerAction : AbstractLoggerAction("ERROR", HybrisIcons.Log.Level.ERROR)
 class FatalLoggerAction : AbstractLoggerAction("FATAL", HybrisIcons.Log.Level.FATAL)
 class SevereLoggerAction : AbstractLoggerAction("SEVERE", HybrisIcons.Log.Level.SEVERE)
+
+class ActiveHacConnection : AbstractLoggerAction("", HybrisIcons.Y.REMOTE_GREEN) {
+
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+
+        val project = e.project ?: return
+        val presentation = e.presentation
+
+        val hacSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+        presentation.text = hacSettings.shortenConnectionName()
+        presentation.description = hacSettings.connectionName()
+
+        presentation.isEnabledAndVisible = true
+    }
+
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+
+        ShowSettingsUtil.getInstance()
+            .showSettingsDialog(project, ProjectIntegrationsSettingsConfigurableProvider.SettingsConfigurable::class.java)
+    }
+
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+}
