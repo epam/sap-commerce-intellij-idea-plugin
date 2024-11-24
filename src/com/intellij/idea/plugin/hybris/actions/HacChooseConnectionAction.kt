@@ -64,7 +64,7 @@ class HacChooseConnectionAction : DefaultActionGroup() {
 
         val hacSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
         presentation.text = if (e.place == ActionPlaces.EDITOR_TOOLBAR) hacSettings.toString()
-        else hacSettings.connectionName()
+        else hacSettings.shortenConnectionName()
         presentation.isEnabledAndVisible = true
 
         presentation.description = createHTML().div {
