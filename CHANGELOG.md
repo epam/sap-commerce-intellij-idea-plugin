@@ -7,6 +7,7 @@
 - Added logging support for enum, record and interface types [#1273](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1273)
 - Removed logger actions from the Actions tab in the Search Everywhere popup [#1275](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1275)
 - Added ALL and OFF modes for logging [#1277](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1277)
+- Added the active HAC connection in the logging menu [#1281](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1281)
 
 ### `Other` enhancements
 - Do not check for Ultimate plugins when using the Community edition during project import [#1276](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1276)
