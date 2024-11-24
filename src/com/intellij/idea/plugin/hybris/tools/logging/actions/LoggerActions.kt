@@ -21,26 +21,20 @@ package com.intellij.idea.plugin.hybris.tools.logging.actions
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.options.ProjectIntegrationsSettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
 import com.intellij.idea.plugin.hybris.util.PackageUtils
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
-import java.awt.Component
-import java.awt.event.InputEvent
 import javax.swing.Icon
 
 abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon) : AnAction(logLevel, "", icon) {
@@ -139,76 +133,3 @@ class WarnLoggerAction : AbstractLoggerAction("WARN", HybrisIcons.Log.Level.WARN
 class ErrorLoggerAction : AbstractLoggerAction("ERROR", HybrisIcons.Log.Level.ERROR)
 class FatalLoggerAction : AbstractLoggerAction("FATAL", HybrisIcons.Log.Level.FATAL)
 class SevereLoggerAction : AbstractLoggerAction("SEVERE", HybrisIcons.Log.Level.SEVERE)
-
-abstract class AbstractHacConnectionAction(private val actionName: String, val icon: Icon) : AnAction(actionName, "", icon) {
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun update(e: AnActionEvent) {
-        super.update(e)
-
-        val presentation = e.presentation
-
-        presentation.text = actionName
-        presentation.icon = icon
-
-        presentation.isEnabledAndVisible = true
-    }
-}
-
-class AddHacConnectionAction : AbstractHacConnectionAction("Create new connection", HybrisIcons.Connection.ADD) {
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-        val inputEvent: InputEvent? = e.inputEvent
-        val eventSource = inputEvent?.source
-        val component = (eventSource as? Component)
-            ?: return
-
-        val settings = RemoteConnectionUtil.createDefaultRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
-        if (RemoteHacConnectionDialog(project, component, settings).showAndGet()) {
-            RemoteConnectionUtil.addRemoteConnection(project, settings)
-        }
-    }
-}
-
-class EditActiveHacConnectionAction : AbstractHacConnectionAction("Edit active connection", HybrisIcons.Connection.EDIT) {
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-        val inputEvent: InputEvent? = e.inputEvent
-        val eventSource = inputEvent?.source
-        val component = (eventSource as? Component)
-            ?: return
-
-        val settings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
-        RemoteHacConnectionDialog(project, component, settings).showAndGet()
-    }
-}
-
-class ConfigureHacConnectionAction : AbstractHacConnectionAction("Connection settings", HybrisIcons.SETTINGS) {
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-
-        ShowSettingsUtil.getInstance()
-            .showSettingsDialog(project, ProjectIntegrationsSettingsConfigurableProvider.SettingsConfigurable::class.java)
-    }
-}
-
-class ActiveHacConnectionAction : DefaultActionGroup() {
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun update(e: AnActionEvent) {
-        super.update(e)
-
-        val project = e.project ?: return
-        val presentation = e.presentation
-
-        val hacSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
-        presentation.text = hacSettings.shortenConnectionName()
-        presentation.icon = HybrisIcons.Y.REMOTE_GREEN
-        presentation.description = hacSettings.connectionName()
-
-        presentation.isEnabledAndVisible = true
-    }
-}

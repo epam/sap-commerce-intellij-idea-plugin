@@ -61,7 +61,12 @@
             <add-to-group group-id="GoToTargetEx"/>
         </action>
 
-        <group id="hybris.hac.chooseConnection" class="com.intellij.idea.plugin.hybris.actions.HacChooseConnectionAction"/>
+        <group id="hybris.hac.chooseConnection" popup="true" searchable="false"
+               class="com.intellij.idea.plugin.hybris.actions.HacChooseConnectionAction">
+            <action class="com.intellij.idea.plugin.hybris.actions.AddHacConnectionAction"/>
+            <action class="com.intellij.idea.plugin.hybris.actions.EditActiveHacConnectionAction"/>
+            <action class="com.intellij.idea.plugin.hybris.actions.ConfigureHacConnectionAction"/>
+        </group>
     </actions>
 
 </idea-plugin>

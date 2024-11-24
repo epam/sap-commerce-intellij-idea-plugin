@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.ide.actions.ToggleToolbarAction
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.openapi.editor.impl.EditorHeaderComponent
@@ -44,8 +45,8 @@ abstract class AbstractHybrisFileToolbarInstaller(
         val headerComponent = EditorHeaderComponent()
         val leftGroup = actionManager.getAction(leftGroupId) as ActionGroup
         val rightGroup = actionManager.getAction(rightGroupId) as ActionGroup
-        val leftToolbar = actionManager.createActionToolbar("EditorToolbar", leftGroup, true)
-        val rightToolbar = actionManager.createActionToolbar("EditorToolbar", rightGroup, true)
+        val leftToolbar = actionManager.createActionToolbar(ActionPlaces.EDITOR_TOOLBAR, leftGroup, true)
+        val rightToolbar = actionManager.createActionToolbar(ActionPlaces.EDITOR_TOOLBAR, rightGroup, true)
         rightToolbar.setReservePlaceAutoPopupIcon(false)
         leftToolbar.targetComponent = editor.contentComponent
         rightToolbar.targetComponent = editor.contentComponent

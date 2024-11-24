@@ -11,6 +11,9 @@
 
 ### `Other` enhancements
 - Do not check for Ultimate plugins when using the Community edition during project import [#1276](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1276)
+- Unified HAC actions API [#1282](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1282)
+
+### Fixes
 - Fixed running Integration Tests via IntelliJ JUnit [#1279](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1279)
 
 ## [2024.3.1]
