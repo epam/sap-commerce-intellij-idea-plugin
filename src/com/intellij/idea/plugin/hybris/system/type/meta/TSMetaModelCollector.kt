@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
-import com.intellij.openapi.application.readActionBlocking
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
@@ -36,7 +36,7 @@ class TSMetaModelCollector(private val myProject: Project) {
 
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
-    suspend fun collectDependencies(): Set<PsiFile> = readActionBlocking {
+    suspend fun collectDependencies(): Set<PsiFile> = readAction {
         val files = HashSet<PsiFile>()
 
         StubIndex.getInstance().processElements(
