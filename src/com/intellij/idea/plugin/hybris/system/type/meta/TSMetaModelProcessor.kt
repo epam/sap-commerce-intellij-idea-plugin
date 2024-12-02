@@ -20,46 +20,42 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelBuilder
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
-import com.intellij.openapi.application.readActionBlocking
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 @Service(Service.Level.PROJECT)
 class TSMetaModelProcessor(myProject: Project) {
 
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
-    suspend fun process(coroutineScope: CoroutineScope, psiFile: PsiFile): TSMetaModel? = readActionBlocking {
-        psiFile.virtualFile ?: return@readActionBlocking null
-        val module = TSUtils.getModuleForFile(psiFile) ?: return@readActionBlocking null
+    suspend fun process(coroutineScope: CoroutineScope, psiFile: PsiFile): TSMetaModel? = coroutineScope {
+        psiFile.virtualFile ?: return@coroutineScope null
+        val module = TSUtils.getModuleForFile(psiFile) ?: return@coroutineScope null
         val custom = TSUtils.isCustomExtensionFile(psiFile)
         val rootWrapper = myDomManager.getFileElement(psiFile as XmlFile, Items::class.java)
 
-        rootWrapper ?: return@readActionBlocking null
+        rootWrapper ?: return@coroutineScope null
 
         val items = rootWrapper.rootElement
 
         val builder = TSMetaModelBuilder(module, psiFile, custom)
 
         val operations = listOf(
-            coroutineScope.async { readActionBlocking { builder.withItemTypes(items.itemTypes.itemTypes) } },
-            coroutineScope.async { readActionBlocking { builder.withItemTypes(items.itemTypes.typeGroups.flatMap { it.itemTypes }) } },
-            coroutineScope.async { readActionBlocking { builder.withEnumTypes(items.enumTypes.enumTypes) } },
-            coroutineScope.async { readActionBlocking { builder.withAtomicTypes(items.atomicTypes.atomicTypes) } },
-            coroutineScope.async { readActionBlocking { builder.withCollectionTypes(items.collectionTypes.collectionTypes) } },
-            coroutineScope.async { readActionBlocking { builder.withRelationTypes(items.relations.relations) } },
-            coroutineScope.async { readActionBlocking { builder.withMapTypes(items.mapTypes.mapTypes) } },
+            coroutineScope.async { readAction { builder.withItemTypes(items.itemTypes.itemTypes) } },
+            coroutineScope.async { readAction { builder.withItemTypes(items.itemTypes.typeGroups.flatMap { it.itemTypes }) } },
+            coroutineScope.async { readAction { builder.withEnumTypes(items.enumTypes.enumTypes) } },
+            coroutineScope.async { readAction { builder.withAtomicTypes(items.atomicTypes.atomicTypes) } },
+            coroutineScope.async { readAction { builder.withCollectionTypes(items.collectionTypes.collectionTypes) } },
+            coroutineScope.async { readAction { builder.withRelationTypes(items.relations.relations) } },
+            coroutineScope.async { readAction { builder.withMapTypes(items.mapTypes.mapTypes) } },
         )
 
-        runBlocking(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             operations.awaitAll()
         }
 

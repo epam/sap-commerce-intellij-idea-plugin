@@ -1,3 +1,7 @@
+## [2024.3.3]
+
+- Migrated the Type System Global Meta Model to coroutines [#XXXX](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/XXXX)
+
 ## [2024.3.2]
 
 ### `SAP CX Logging` enhancements

@@ -42,13 +42,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.apache.commons.collections4.CollectionUtils
 import java.util.*
 import kotlin.io.path.exists
@@ -145,19 +139,20 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
     fun initMetaModel() {
         building = true
 
-        coroutineScope.launch(Dispatchers.IO) {
-            val measureTime = measureTime {
-                myGlobalMetaModelCache.value
-            }
+        coroutineScope
+            .launch(Dispatchers.IO) {
+                val measureTime = measureTime {
+                    myGlobalMetaModelCache.value
+                }
 
-            withContext(Dispatchers.EDT) {
-                Notifications.create(
-                    NotificationType.INFORMATION,
-                    "TS loaded in: $measureTime"
-                )
-                    .notify(project)
+                withContext(Dispatchers.EDT) {
+                    Notifications.create(
+                        NotificationType.INFORMATION,
+                        "TS loaded in: $measureTime"
+                    )
+                        .notify(project)
+                }
             }
-        }
             .invokeOnCompletion {
                 building = false
                 initialized = true
