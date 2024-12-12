@@ -1,6 +1,6 @@
 ## [2024.3.3]
 
-- Migrated the Type System Global Meta Model to coroutines [#XXXX](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/XXXX)
+- Migrated the Type System Global Meta Model to coroutines [#1289](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1289)
 
 ## [2024.3.2]
 
