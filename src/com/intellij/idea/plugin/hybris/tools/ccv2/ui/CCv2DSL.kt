@@ -19,24 +19,114 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
 import com.intellij.ide.HelpTooltip
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.openapi.project.Project
+import com.intellij.ui.JBColor
+import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.Row
+import java.time.OffsetDateTime
 import javax.swing.Icon
 
-object CCv2DSL {
+fun Row.date(label: String, dateTime: OffsetDateTime?) {
+    label(CCv2Util.formatTime(dateTime))
+        .comment(label)
+}
 
-    fun Row.sUser(project: Project, sUserId: String, icon: Icon, label: String = "Created by") {
-        icon(icon)
-            .gap(RightGap.SMALL)
-        val sUser = DeveloperSettingsComponent.getInstance(project).getSUser(sUserId)
-        link(sUser.toString()) { SUserDetailsDialog(project, sUser).showAndGet() }
-            .comment(label)
-            .applyToComponent {
-                HelpTooltip()
-                    .setTitle("Define an alias for the S-User")
-                    .installOn(this);
+fun Row.sUser(project: Project, sUserId: String, icon: Icon, label: String = "Created by") {
+    icon(icon)
+        .gap(RightGap.SMALL)
+    val sUser = DeveloperSettingsComponent.getInstance(project).getSUser(sUserId)
+    link(sUser.toString()) { SUserDetailsDialog(project, sUser).showAndGet() }
+        .comment(label)
+        .applyToComponent {
+            HelpTooltip()
+                .setTitle("Define an alias for the S-User")
+                .installOn(this);
+        }
+}
+
+fun Row.dynatrace(environment: CCv2EnvironmentDto) {
+    icon(HybrisIcons.CCv2.DYNATRACE)
+        .gap(RightGap.SMALL)
+    browserLink("Dynatrace", environment.dynatraceLink ?: "")
+        .enabled(environment.dynatraceLink != null)
+        .comment(
+            environment.problems
+            ?.let { "problems: <strong>$it</strong>" } ?: "&nbsp;")
+}
+
+fun Panel.ccv2ServiceStatusRow(service: CCv2ServiceDto) {
+    row {
+        val statusLabel = when {
+            service.desiredReplicas == null -> label("--")
+            service.availableReplicas == 0 -> label("Stopped").also {
+                with(it.component) {
+                    foreground = JBColor.namedColor("hybris.ccv2.service.stopped", 0xDB5860, 0xC75450)
+                }
             }
+
+            service.availableReplicas == service.desiredReplicas -> label("Running").also {
+                with(it.component) {
+                    foreground = JBColor.namedColor("hybris.ccv2.service.running", 0x59A869, 0x499C54)
+                }
+            }
+
+            service.availableReplicas != service.desiredReplicas -> label("Deploying")
+            else -> label("--")
+        }
+
+        statusLabel
+            .comment("Status")
+    }
+}
+
+fun Panel.ccv2StatusYesNo(status: Boolean, comment: String) {
+    row {
+        val statusLabel = when (status) {
+            false -> label("No").also {
+                with(it.component) {
+                    foreground = JBColor.namedColor("hybris.ccv2.status.no", 0xDB5860, 0xC75450)
+                }
+            }
+
+            true -> label("Yes").also {
+                with(it.component) {
+                    foreground = JBColor.namedColor("hybris.ccv2.status.yes", 0x59A869, 0x499C54)
+                }
+            }
+        }
+
+        statusLabel
+            .comment(comment)
+    }
+}
+
+fun Panel.ccv2ServiceReplicasRow(service: CCv2ServiceDto) {
+    row {
+        val replicas = if (service.desiredReplicas != null && service.availableReplicas != null)
+            "${service.availableReplicas} / ${service.desiredReplicas}"
+        else "--"
+        label(replicas)
+            .comment("Replicas")
+    }
+}
+
+fun Panel.ccv2ServiceModifiedByRow(service: CCv2ServiceDto) {
+    row {
+        icon(HybrisIcons.CCv2.Service.MODIFIED_BY)
+            .gap(RightGap.SMALL)
+        label(service.modifiedBy)
+            .comment("Modified by")
+    }
+}
+
+fun Panel.ccv2ServiceModifiedTimeRow(service: CCv2ServiceDto) {
+    row {
+        date("Modified time", service.modifiedTime)
     }
 }

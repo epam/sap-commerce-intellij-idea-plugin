@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ShowEnvironmentDetailsAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.dynatrace
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2ViewUtil
 import com.intellij.idea.plugin.hybris.ui.Dsl
@@ -110,12 +111,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.CCv2.DYNATRACE)
-                        .gap(RightGap.SMALL)
-                    browserLink("Dynatrace", environment.dynatraceLink ?: "")
-                        .enabled(environment.dynatraceLink != null)
-                        .comment(environment.problems
-                            ?.let { "problems: <strong>$it</strong>" } ?: "&nbsp;")
+                    dynatrace(environment)
                 }
             }.gap(RightGap.SMALL)
 

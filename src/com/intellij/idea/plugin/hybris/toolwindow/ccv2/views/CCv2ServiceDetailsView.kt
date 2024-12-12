@@ -27,6 +27,10 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ServiceRestartRepl
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceProperties
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.ccv2ServiceModifiedByRow
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.ccv2ServiceModifiedTimeRow
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.ccv2ServiceReplicasRow
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.ccv2ServiceStatusRow
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable

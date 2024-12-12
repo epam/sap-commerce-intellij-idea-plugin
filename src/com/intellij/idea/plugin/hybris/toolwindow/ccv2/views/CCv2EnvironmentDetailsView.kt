@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DataBackupDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DSL.sUser
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.*
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
@@ -317,8 +317,7 @@ class CCv2EnvironmentDetailsView(
 
                 panel {
                     row {
-                        label(dataBackup.createdTimestampFormatted)
-                            .comment("Created")
+                        date("Created", dataBackup.createdTimestamp)
                     }
                 }
                     .gap(RightGap.COLUMNS)
@@ -395,12 +394,7 @@ class CCv2EnvironmentDetailsView(
 
                 panel {
                     row {
-                        icon(HybrisIcons.CCv2.DYNATRACE)
-                            .gap(RightGap.SMALL)
-                        browserLink("Dynatrace", environment.dynatraceLink ?: "")
-                            .enabled(environment.dynatraceLink != null)
-                            .comment(environment.problems
-                                ?.let { "problems: <strong>$it</strong>" } ?: "&nbsp;")
+                        dynatrace(environment)
                     }
                 }
                     .gap(RightGap.COLUMNS)

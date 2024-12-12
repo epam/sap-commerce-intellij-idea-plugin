@@ -21,7 +21,9 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentDetailDTO
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDatabaseUpdateModeEnum.entries
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum.entries
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStrategyEnum.entries
 import java.time.OffsetDateTime
 import javax.swing.Icon
 
@@ -39,17 +41,7 @@ data class CCv2DeploymentDto(
     val undeployedTime: OffsetDateTime?,
     val status: CCv2DeploymentStatusEnum,
     val link: String?,
-) : CCv2DTO {
-
-    val createdTimeFormatted
-        get() = CCv2Util.formatTime(createdTime)
-
-    val deployedTimeFormatted
-        get() = CCv2Util.formatTime(deployedTime)
-
-    val scheduledTimeFormatted
-        get() = CCv2Util.formatTime(scheduledTime)
-}
+) : CCv2DTO
 
 enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Icon, val apiMode: CreateDeploymentRequestDTO.DatabaseUpdateMode) {
     NONE("None", HybrisIcons.CCv2.Deployment.UpdateMode.NONE, CreateDeploymentRequestDTO.DatabaseUpdateMode.NONE),

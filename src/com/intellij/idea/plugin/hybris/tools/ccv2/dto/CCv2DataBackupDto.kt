@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv2.model.DatabackupDetailDTO
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
 import java.time.OffsetDateTime
 
 data class CCv2DataBackupDto(
@@ -35,9 +34,6 @@ data class CCv2DataBackupDto(
     val canBeDeleted: Boolean,
     val canBeCanceled: Boolean,
 ) {
-    val createdTimestampFormatted
-        get() = CCv2Util.formatTime(createdTimestamp)
-
     companion object {
         fun map(dto: DatabackupDetailDTO) = CCv2DataBackupDto(
             dataBackupCode = dto.databackupCode ?: "N/A",

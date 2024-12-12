@@ -22,7 +22,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DSL.sUser
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.date
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.sUser
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -111,15 +112,13 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
 
             panel {
                 row {
-                    label(build.startTimeFormatted)
-                        .comment("Start time")
+                    date("Start time", build.startTime)
                 }
             }.gap(RightGap.COLUMNS)
 
             panel {
                 row {
-                    label(build.endTimeFormatted)
-                        .comment("End time")
+                    date("End time", build.endTime)
                 }
             }
         }.layout(RowLayout.PARENT_GRID)

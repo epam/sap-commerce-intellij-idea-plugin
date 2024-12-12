@@ -1,5 +1,8 @@
 ## [2024.3.3]
 
+### `CCv2` enhancements
+- Unified UI elements [#1288](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1288)
+
 ### `Project Import` enhancements
 - Added Windows WSL support [#1286](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1286)
 

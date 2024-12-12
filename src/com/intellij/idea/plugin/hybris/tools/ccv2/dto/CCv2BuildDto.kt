@@ -39,10 +39,6 @@ data class CCv2BuildDto(
     val version: String,
     val link: String?,
 ) : CCv2DTO {
-    val startTimeFormatted
-        get() = CCv2Util.formatTime(startTime)
-    val endTimeFormatted
-        get() = CCv2Util.formatTime(endTime)
     val duration = CCv2Util.getTimeDiffInMinutes(startTime, endTime).takeIf { it.toInt() != -1 } ?: "N/A"
 
     fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN

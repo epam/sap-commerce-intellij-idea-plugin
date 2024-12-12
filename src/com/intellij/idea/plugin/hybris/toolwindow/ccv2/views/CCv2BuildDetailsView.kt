@@ -26,7 +26,8 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.actions.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DSL.sUser
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.date
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.sUser
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -172,13 +173,13 @@ class CCv2BuildDetailsView(
 
                 panel {
                     row {
-                        label(build.startTimeFormatted).comment("Start time")
+                        date("Start time", build.startTime)
                     }
                 }.gap(RightGap.COLUMNS)
 
                 panel {
                     row {
-                        label(build.endTimeFormatted).comment("End time")
+                        date("End time", build.endTime)
                     }
                 }
                 if (build.duration != "N/A") {
@@ -228,7 +229,7 @@ class CCv2BuildDetailsView(
                                 label(deployment.status.title)
                                     .comment("Status")
                             }
-                        }.gap(RightGap.COLUMNS)
+                        }.gap(RightGap.SMALL)
 
                         panel {
                             row {
@@ -250,15 +251,13 @@ class CCv2BuildDetailsView(
 
                         panel {
                             row {
-                                label(deployment.scheduledTimeFormatted)
-                                    .comment("Scheduled date")
+                                date("Scheduled date", deployment.scheduledTime)
                             }
                         }.gap(RightGap.COLUMNS)
 
                         panel {
                             row {
-                                label(deployment.deployedTimeFormatted)
-                                    .comment("Deployed date")
+                                date("Deployed date", deployment.deployedTime)
                             }
                         }.gap(RightGap.COLUMNS)
 
@@ -266,7 +265,7 @@ class CCv2BuildDetailsView(
                             row {
                                 sUser(project, deployment.createdBy, HybrisIcons.CCv2.Deployment.CREATED_BY, "Deployed by")
                             }
-                        }.gap(RightGap.COLUMNS)
+                        }
                     }
                 }
             }.expanded = true

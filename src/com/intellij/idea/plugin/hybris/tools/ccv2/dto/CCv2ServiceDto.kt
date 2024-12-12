@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 import com.intellij.idea.plugin.hybris.ccv1.model.ServiceDTO
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
 import com.intellij.util.asSafely
 import java.time.OffsetDateTime
 import java.util.*
@@ -43,9 +42,6 @@ data class CCv2ServiceDto(
     var initialPasswords: Map<String, String>? = null,
     var greenDeploymentSupported: Boolean? = null,
 ) {
-
-    val modifiedTimeFormatted
-        get() = CCv2Util.formatTime(modifiedTime)
 
     companion object {
         fun map(subscription: CCv2Subscription, environment: CCv2EnvironmentDto, dto: ServiceDTO) = CCv2ServiceDto(

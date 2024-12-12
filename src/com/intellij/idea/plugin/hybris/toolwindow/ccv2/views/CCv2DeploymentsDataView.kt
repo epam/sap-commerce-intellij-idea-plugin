@@ -21,7 +21,8 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DSL.sUser
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.date
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.sUser
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.project.Project
@@ -106,15 +107,13 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2DeploymentDto>() {
 
             panel {
                 row {
-                    label(deployment.createdTimeFormatted)
-                        .comment("Created time")
+                    date("Created time", deployment.createdTime)
                 }
             }.gap(RightGap.COLUMNS)
 
             panel {
                 row {
-                    label(deployment.deployedTimeFormatted)
-                        .comment("Deployed time")
+                    date("Deployed time", deployment.deployedTime)
                 }
             }
 
