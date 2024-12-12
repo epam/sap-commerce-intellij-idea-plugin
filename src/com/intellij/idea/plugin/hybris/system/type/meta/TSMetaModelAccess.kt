@@ -20,13 +20,10 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelNameProvider
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
-import com.intellij.notification.NotificationType
-import com.intellij.openapi.application.EDT
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -47,7 +44,6 @@ import org.apache.commons.collections4.CollectionUtils
 import java.util.*
 import kotlin.io.path.exists
 import kotlin.io.path.inputStream
-import kotlin.time.measureTime
 
 /**
  * Global Meta Model can be retrieved at any time and will ensure that only a single Thread can perform its initialization/update
@@ -141,17 +137,7 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
 
         coroutineScope
             .launch(Dispatchers.IO) {
-                val measureTime = measureTime {
-                    myGlobalMetaModelCache.value
-                }
-
-                withContext(Dispatchers.EDT) {
-                    Notifications.create(
-                        NotificationType.INFORMATION,
-                        "TS loaded in: $measureTime"
-                    )
-                        .notify(project)
-                }
+                myGlobalMetaModelCache.value
             }
             .invokeOnCompletion {
                 building = false
