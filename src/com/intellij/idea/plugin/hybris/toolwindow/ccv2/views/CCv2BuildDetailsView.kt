@@ -229,7 +229,7 @@ class CCv2BuildDetailsView(
                                 label(deployment.status.title)
                                     .comment("Status")
                             }
-                        }.gap(RightGap.SMALL)
+                        }.gap(RightGap.COLUMNS)
 
                         panel {
                             row {
