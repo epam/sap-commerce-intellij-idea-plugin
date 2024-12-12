@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.impl.*
-import com.intellij.openapi.application.readActionBlocking
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
@@ -31,7 +31,7 @@ class TSMetaModelMerger(private val coroutineScope: CoroutineScope) {
     suspend fun merge(globalMetaModel: TSGlobalMetaModel, localMetaModels: Collection<TSMetaModel>) = with(globalMetaModel) {
         globalMetaModel.clear()
 
-        readActionBlocking {
+        readAction {
             localMetaModels
                 // ideally, we have to get the same dependency order as SAP Commerce
                 .sortedBy { !it.custom }
