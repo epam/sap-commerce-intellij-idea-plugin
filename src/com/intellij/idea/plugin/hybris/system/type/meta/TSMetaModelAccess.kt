@@ -116,7 +116,7 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
                             .sortedBy { !it.custom }
                     }
 
-                    TSMetaModelMerger.getInstance(project).merge(myGlobalMetaModel, localMetaModels)
+                    TSMetaModelMerger.merge(myGlobalMetaModel, localMetaModels)
 
                     localMetaModels
                 }

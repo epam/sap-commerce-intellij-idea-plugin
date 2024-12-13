@@ -20,13 +20,9 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.impl.*
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
-import kotlinx.coroutines.CoroutineScope
 
-@Service(Service.Level.PROJECT)
-class TSMetaModelMerger(private val coroutineScope: CoroutineScope) {
+object TSMetaModelMerger {
 
     suspend fun merge(globalMetaModel: TSGlobalMetaModel, localMetaModels: Collection<TSMetaModel>) = with(globalMetaModel) {
         globalMetaModel.clear()
@@ -125,7 +121,4 @@ class TSMetaModelMerger(private val coroutineScope: CoroutineScope) {
             .forEach { globalMetaModel.addDeployment(it) }
     }
 
-    companion object {
-        fun getInstance(project: Project): TSMetaModelMerger = project.getService(TSMetaModelMerger::class.java)
-    }
 }

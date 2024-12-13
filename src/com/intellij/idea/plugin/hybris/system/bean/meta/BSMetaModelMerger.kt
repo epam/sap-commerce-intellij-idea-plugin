@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,40 +17,39 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.impl.BSGlobalMetaBeanImpl
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.impl.BSGlobalMetaEnumImpl
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.application.readAction
 import com.intellij.util.xml.DomElement
 
 object BSMetaModelMerger {
 
-    fun merge(globalMetaModel: BSGlobalMetaModel, localMetaModels: Collection<BSMetaModel>) = with(globalMetaModel) {
+    suspend fun merge(globalMetaModel: BSGlobalMetaModel, localMetaModels: Collection<BSMetaModel>) = with(globalMetaModel) {
         globalMetaModel.clear()
 
-        ProgressManager.getInstance().progressIndicator.text2 = HybrisI18NBundleUtils.message("hybris.bs.access.progress.subTitle.merging")
+        readAction {
+            localMetaModels
+                // ideally, we have to get the same dependency order as SAP Commerce
+                .sortedBy { !it.custom }
+                .forEach { merge(this, it) }
 
-        localMetaModels
-            // ideally, we have to get the same dependency order as SAP Commerce
-            .sortedBy { !it.custom }
-            .forEach { merge(this, it) }
+            val beans = getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN)
+            val wsBeans = beans.filter { it.value.hints.containsKey("wsRelated") }
 
-        val beans = getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN)
-        val wsBeans = beans.filter { it.value.hints.containsKey("wsRelated") }
+            getMetaType<BSGlobalMetaBean>(BSMetaType.META_WS_BEAN).putAll(wsBeans)
+            beans.keys.removeAll(wsBeans.keys)
 
-        getMetaType<BSGlobalMetaBean>(BSMetaType.META_WS_BEAN).putAll(wsBeans)
-        beans.keys.removeAll(wsBeans.keys)
+            // after merging all different declarations of the same bean we need to process properties which were declared via extends
+            val allBeans = wsBeans.values +
+                getMetaType<BSGlobalMetaBean>(BSMetaType.META_EVENT).values +
+                getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN).values
+            allBeans
+                .forEach { (it as? BSGlobalMetaBeanSelfMerge<*, *>)?.postMerge(this) }
 
-        // after merging all different declarations of the same bean we need to process properties which were declared via extends
-        val allBeans = wsBeans.values +
-            getMetaType<BSGlobalMetaBean>(BSMetaType.META_EVENT).values +
-            getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN).values
-        allBeans
-            .forEach { (it as? BSGlobalMetaBeanSelfMerge<*, *>)?.postMerge(this) }
-
-        wsBeans.values.forEach { it.metaType = BSMetaType.META_WS_BEAN }
-        getMetaType<BSGlobalMetaBean>(BSMetaType.META_EVENT).values.forEach { it.metaType = BSMetaType.META_EVENT }
+            wsBeans.values.forEach { it.metaType = BSMetaType.META_WS_BEAN }
+            getMetaType<BSGlobalMetaBean>(BSMetaType.META_EVENT).values.forEach { it.metaType = BSMetaType.META_EVENT }
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
