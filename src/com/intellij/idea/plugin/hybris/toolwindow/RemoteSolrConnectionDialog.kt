@@ -101,7 +101,7 @@ class RemoteSolrConnectionDialog(
 
             row {
                 sslProtocolCheckBox = checkBox("SSL")
-                    .selected(settings.isSsl)
+                    .bindSelected(settings::isSsl)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
