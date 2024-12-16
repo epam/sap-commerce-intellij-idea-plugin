@@ -119,7 +119,7 @@ class RemoteHacConnectionDialog(
 
             row {
                 sslProtocolCheckBox = checkBox("SSL:")
-                    .selected(settings.isSsl)
+                    .bindSelected(settings::isSsl)
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
                 sslProtocolComboBox = comboBox(
