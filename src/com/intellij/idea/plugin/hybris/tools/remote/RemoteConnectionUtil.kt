@@ -56,6 +56,7 @@ object RemoteConnectionUtil {
             ?: ""
     }
 
+
     fun getActiveRemoteConnectionSettings(project: Project, type: RemoteConnectionType): RemoteConnectionSettings {
         val instances = getRemoteConnections(project, type)
         if (instances.isEmpty()) return createDefaultRemoteConnectionSettings(project, type)

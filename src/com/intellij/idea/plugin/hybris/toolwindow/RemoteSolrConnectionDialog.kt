@@ -19,21 +19,35 @@
 package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.credentialStore.Credentials
+import com.intellij.execution.wsl.WSLDistribution
+import com.intellij.execution.wsl.WslDistributionManager
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.registry.Registry
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import java.awt.Component
+import java.util.*
+import javax.swing.DefaultComboBoxModel
+import javax.swing.JComboBox
+import javax.swing.JEditorPane
+import javax.swing.JLabel
 
 class RemoteSolrConnectionDialog(
     project: Project,
     parentComponent: Component,
     settings: RemoteConnectionSettings
 ) : AbstractRemoteConnectionDialog(project, parentComponent, settings, "Remote SOLR Instance") {
+
+    private lateinit var wslDistributionComboBox: JComboBox<String>
+    private lateinit var wslProxyCheckBox: JBCheckBox
+    private lateinit var wslProxyWarningComment: JEditorPane
+    private lateinit var wslDistributionText: Cell<JLabel>
 
     override fun panel() = panel {
         row {
@@ -114,6 +128,60 @@ class RemoteSolrConnectionDialog(
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
+            if (System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")) {
+                val distributions = WslDistributionManager.getInstance().installedDistributions
+                row {
+                    isWslCheckBox = checkBox("WSL")
+                        .selected(false)
+                        .visible(distributions.isNotEmpty())
+                        .onChanged {
+                            val selected = isWslCheckBox.isSelected
+                            val multipleDistros = distributions.isNotEmpty()
+                            wslDistributionComboBox.isVisible = selected && multipleDistros
+                            wslDistributionText.visible(selected)
+                            wslProxyCheckBox.isVisible = selected
+                            wslProxyWarningComment.isVisible = selected
+                            urlPreviewLabel.text = generateUrl()
+                        }
+                        .component
+                }.layout(RowLayout.PARENT_GRID)
+                val installedDistros = distributions.map { it.msId }
+                if (installedDistros.isNotEmpty()) {
+                    row {
+                        wslDistributionText = label("WSL distribution:").visible(false)
+                        wslDistributionComboBox = comboBox(DefaultComboBoxModel(installedDistros.toTypedArray()))
+                            .align(AlignX.FILL)
+                            .visible(false)
+                            .onChanged {
+                                updateWslIp(distributions)
+                            }
+                            .component
+                    }.layout(RowLayout.PARENT_GRID)
+                } else {
+                    row {
+                        comment("No WSL distributions are installed.")
+                            .visible(false)
+                            .component
+                    }.layout(RowLayout.PARENT_GRID)
+                }
+                row {
+                    wslProxyCheckBox = checkBox("Enable wsl.proxy.connect.localhost")
+                        .comment("This will use the wsl.proxy.connect.localhost registry setting if available.")
+                        .visible(false)
+                        .selected(Registry.`is`(WSL_PROXY_CONNECT_LOCALHOST))
+                        .onChanged {
+                            Registry.run { get(WSL_PROXY_CONNECT_LOCALHOST).setValue(!`is`(WSL_PROXY_CONNECT_LOCALHOST)) }
+                            updateWslIp(distributions)
+                        }
+                        .component
+                }.layout(RowLayout.PARENT_GRID)
+                row {
+                    wslProxyWarningComment =
+                        comment("<strong>Warning:</strong> Connect to 127.0.0.1 on WSLProxy instead of public WSL IP which might be inaccessible due to routing issues.")
+                            .visible(false)
+                            .component
+                }.layout(RowLayout.PARENT_GRID)
+            }
         }
 
         group("Credentials") {
@@ -153,6 +221,13 @@ class RemoteSolrConnectionDialog(
         null
     } catch (e: Exception) {
         e.message ?: ""
+    }
+
+    private fun updateWslIp(distributions: List<WSLDistribution>) {
+        val selected = wslDistributionComboBox.selectedItem as? String
+        val wslIp = distributions.find { it.msId == selected }?.wslIpAddress.toString()
+        hostTextField.text = wslIp?.replace("/", "").orEmpty()
+        urlPreviewLabel.text = generateUrl()
     }
 
 }
