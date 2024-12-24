@@ -114,6 +114,9 @@ class RemoteSolrConnectionDialog(
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
+            if (isWindows()) {
+                wslHostConfiguration()
+            }
         }
 
         group("Credentials") {
@@ -142,6 +145,7 @@ class RemoteSolrConnectionDialog(
         hostIP = hostTextField.text
         port = portTextField.text
         isSsl = sslProtocolCheckBox.isSelected
+        isWsl = isWslCheckBox.isSelected
         solrWebroot = webrootTextField.text
         credentials = Credentials(usernameTextField.text, String(passwordTextField.password))
         this
@@ -154,5 +158,4 @@ class RemoteSolrConnectionDialog(
     } catch (e: Exception) {
         e.message ?: ""
     }
-
 }

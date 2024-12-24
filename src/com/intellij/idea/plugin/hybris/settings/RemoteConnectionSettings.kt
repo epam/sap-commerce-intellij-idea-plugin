@@ -43,6 +43,7 @@ class RemoteConnectionSettings : BaseState(), Comparable<RemoteConnectionSetting
     var hostIP by string(HybrisConstants.DEFAULT_HOST_URL)
     var port by string(null)
     var isSsl by property(true)
+    var isWsl by property(false)
     var sslProtocol by string(HybrisConstants.DEFAULT_SSL_PROTOCOL)
 
     var solrWebroot by string("solr")

@@ -39,11 +39,13 @@ class RemoteHacConnectionDialog(
 
     private lateinit var sslProtocolComboBox: ComboBox<String>
 
+
     override fun createTestSettings() = with(RemoteConnectionSettings()) {
         type = settings.type
         hostIP = hostTextField.text
         port = portTextField.text
         isSsl = sslProtocolCheckBox.isSelected
+        isWsl = isWslCheckBox.isSelected
         sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: ""
         hacWebroot = webrootTextField.text
         credentials = Credentials(usernameTextField.text, String(passwordTextField.password))
@@ -144,6 +146,9 @@ class RemoteHacConnectionDialog(
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
+            if (isWindows()) {
+                wslHostConfiguration()
+            }
         }
 
         group("Credentials") {
@@ -166,5 +171,4 @@ class RemoteHacConnectionDialog(
             }.layout(RowLayout.PARENT_GRID)
         }
     }
-
 }
