@@ -1,7 +1,7 @@
 ## [2024.3.4]
 
 ### `items.xml` inspection rules
-- Enum values must be all uppercase (ignore `_`) [#1292](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1292)
+- Enum values must be all uppercase (ignore `_`) [#1294](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1294)
 
 ## [2024.3.3]
 
