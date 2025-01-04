@@ -1,3 +1,8 @@
+## [2024.3.4]
+
+### `items.xml` inspection rules
+- Enum values must be all uppercase (ignore `_`) [#1292](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1292)
+
 ## [2024.3.3]
 
 ### `CCv2` enhancements
