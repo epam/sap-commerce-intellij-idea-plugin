@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHigh
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExHeaderAbbreviationReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExTSStaticEnumValueReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
@@ -32,6 +33,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
+import com.intellij.util.asSafely
 
 class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstance()) {
 
@@ -134,6 +136,20 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
                 highlightReference(
                     ImpexTypes.HEADER_TYPE, holder, element,
                     "hybris.inspections.impex.unresolved.type.key",
+                    referenceHolder = element
+                )
+            }
+
+            ImpexTypes.VALUE_GROUP -> {
+                val value = element as? ImpexValueGroup ?: return
+                val enumValueElement = value.reference
+                    ?.asSafely<ImpExTSStaticEnumValueReference>()
+                    ?.getTargetElement()
+                    ?: return
+
+                highlightReference(
+                    ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, enumValueElement,
+                    "hybris.inspections.impex.unresolved.enumValue.key",
                     referenceHolder = element
                 )
             }

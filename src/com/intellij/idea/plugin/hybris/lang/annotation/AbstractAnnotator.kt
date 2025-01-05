@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -64,6 +64,25 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
 
         if (resolved) {
             highlight(tokenType, holder, element)
+        } else {
+            highlightError(holder, element, HybrisI18NBundleUtils.message(messageKey, element.text))
+        }
+    }
+
+    fun highlightReference(
+        textAttributesKey: TextAttributesKey?,
+        holder: AnnotationHolder,
+        element: PsiElement,
+        messageKey: String,
+        referenceHolder: PsiElement = element.parent
+    ) {
+        val resolved = (referenceHolder.reference as? PsiReferenceBase.Poly<*>)
+            ?.multiResolve(true)
+            ?.isNotEmpty()
+            ?: true
+
+        if (resolved) {
+            highlight(textAttributesKey, holder, element)
         } else {
             highlightError(holder, element, HybrisI18NBundleUtils.message(messageKey, element.text))
         }

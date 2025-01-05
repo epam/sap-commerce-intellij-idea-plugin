@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -40,6 +40,7 @@ object ImpexHighlighterColors {
     val HEADER_TYPE = key("HEADER_TYPE", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION)
     val VALUE_SUBTYPE = key("VALUE_SUBTYPE", DefaultLanguageHighlighterColors.METADATA)
     val VALUE_SUBTYPE_SAME = key("IMPEX_VALUE_SUBTYPE_SAME", CodeInsightColors.NOT_USED_ELEMENT_ATTRIBUTES)
+    val ENUM_VALUE = key("IMPEX_ENUM_VALUE", HighlighterColors.TEXT)
     val FIELD_VALUE_SEPARATOR = key("FIELD_VALUE_SEPARATOR", DefaultLanguageHighlighterColors.KEYWORD)
     val FIELD_LIST_ITEM_SEPARATOR = key("FIELD_LIST_ITEM_SEPARATOR", DefaultLanguageHighlighterColors.KEYWORD)
     val FIELD_VALUE = key("FIELD_VALUE", HighlighterColors.TEXT)

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -54,10 +54,10 @@ ${"$"}macro = qwe;qwe, qwe, ;qwe
 
 #% beforeEach: impex.setLocale( Locale.GERMAN );
 
-UPDATE Language ; ${unique("isoCode")}[unique=true]; fallbackLanguages(isoCode)
-; en ; (+) de
-; en ; (+?) zh
-; en ; (-) fr
+UPDATE Language; ${unique("isoCode")}[unique=true]; fallbackLanguages(isoCode); enumAttribute(code)
+               ; en                               ; (+) de                    ; <sev>SOME_ENUM_VALUE</sev>
+               ; en                               ; (+?) z                    ;
+               ; en                               ; (-) fr                    ;
 
 INSERT SomeType; param; param2; param3
 <vlo>; value; value; another value</vlo>
@@ -105,6 +105,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         put("attribute_header_abbreviation", ImpexHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION)
         put("vle", ImpexHighlighterColors.VALUE_LINE_EVEN)
         put("vlo", ImpexHighlighterColors.VALUE_LINE_ODD)
+        put("sev", ImpexHighlighterColors.ENUM_VALUE)
         put("unique", ImpexHighlighterColors.HEADER_UNIQUE_PARAMETER_NAME)
         this
     }
@@ -150,6 +151,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         AttributesDescriptor("Value//http: prefix", ImpexHighlighterColors.FIELD_VALUE_HTTP_PREFIX),
         AttributesDescriptor("Value//model: prefix", ImpexHighlighterColors.FIELD_VALUE_SCRIPT_PREFIX),
         AttributesDescriptor("Value//password encoding prefix", ImpexHighlighterColors.FIELD_VALUE_PASSWORD_ENCODING_PREFIX),
+        AttributesDescriptor("Value//Enum value", ImpexHighlighterColors.ENUM_VALUE),
 
         AttributesDescriptor("Scripting//Marker", ImpexHighlighterColors.SCRIPT_MARKER),
         AttributesDescriptor("Scripting//Action", ImpexHighlighterColors.SCRIPT_ACTION),
