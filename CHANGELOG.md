@@ -1,5 +1,8 @@
 ## [2024.3.4]
 
+### `ImpEx` enhancements
+- Introduced enum value reference resolution in the Value Lines [#1296](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1296)
+
 ### `items.xml` inspection rules
 - Enum values must be all uppercase (ignore `_`) [#1294](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1294)
 
