@@ -83,7 +83,6 @@ class TSCompletionService(private val project: Project) {
             .flatten()
     }
 
-    // TODO: optionally, include dynamic values, retrieve and cache from the server
     fun getCompletions(meta: TSGlobalMetaEnum) = meta.values.values
         .map { TSLookupElementFactory.build(it) }
 
