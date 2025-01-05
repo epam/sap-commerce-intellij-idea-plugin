@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,7 +43,7 @@ fun keyAttrPredicate(param: ImpexFullHeaderParameter) = param.modifiersList
 
 fun intersection(a: ByteArray, b: ByteArray) = a.filterIndexed { index, i -> b[index] != 0.toByte() && b[index] == i }.isNotEmpty()
 
-fun createDataTable(dataMap: Map<String, List<PsiElement>>, distinctCommonAttrsNames: List<String>, notKeyAttrsList: List<ImpexFullHeaderParameter>): DataTable {
+fun createDataTable(dataMap: Map<String, List<PsiElement?>>, distinctCommonAttrsNames: List<String>, notKeyAttrsList: List<ImpexFullHeaderParameter>): DataTable {
     val countKeyAttrs = dataMap.entries.size
     val countRows = dataMap.values.first().size
 
@@ -52,10 +52,10 @@ fun createDataTable(dataMap: Map<String, List<PsiElement>>, distinctCommonAttrsN
     return DataTable(keyRows, distinctCommonAttrsNames, notKeyAttrsList)
 }
 
-fun createRows(countRows: Int, countKeyAttrs: Int, dataMap: Map<String, List<PsiElement>>): MutableList<Key> {
+fun createRows(countRows: Int, countKeyAttrs: Int, dataMap: Map<String, List<PsiElement?>>): MutableList<Key> {
     val keyRows = mutableListOf<Key>()
     for (i in 0 until countRows) {
-        val k = mutableListOf<PsiElement>()
+        val k = mutableListOf<PsiElement?>()
         for (y in 0 until countKeyAttrs) {
             val entry = dataMap.entries.toList()[y]
             if ((entry.value as List<*>).isNotEmpty() && entry.value.size > i) {
@@ -145,8 +145,9 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
                                 ImpexTypes.COLLECTION_MERGE_PREFIX
                             ).isEmpty()
                         }
-                        .filter {
-                            val commonContext = PsiTreeUtil.findCommonContext(keyValue.keys.first(), it)
+                        .filter { valueGroup ->
+                            val commonContext = keyValue.keys.first()
+                                ?.let { PsiTreeUtil.findCommonContext(it, valueGroup) }
                             commonContext != null && commonContext !is ImpexFile
                         }
                         .toList()
@@ -187,6 +188,6 @@ class DataTable(private val keyRows: List<Key>, private val attrs: List<String>,
 
 class Row(val key: Key, val columns: ByteArray, val valueGroup: Array<PsiElement?>)
 
-class Key(val keys: List<PsiElement>) {
-    override fun toString(): String = keys.joinToString { "|" + it.text }
+class Key(val keys: List<PsiElement?>) {
+    override fun toString(): String = keys.joinToString { "|" + it?.text }
 }

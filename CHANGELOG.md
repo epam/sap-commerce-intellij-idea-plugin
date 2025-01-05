@@ -3,6 +3,9 @@
 ### `items.xml` inspection rules
 - Enum values must be all uppercase (ignore `_`) [#1294](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1294)
 
+### `ImpEx` inspection rules
+- Respect no value in the key column for `No Unique Value` inspection rule [#1295](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1295)
+
 ## [2024.3.3]
 
 ### `CCv2` enhancements
