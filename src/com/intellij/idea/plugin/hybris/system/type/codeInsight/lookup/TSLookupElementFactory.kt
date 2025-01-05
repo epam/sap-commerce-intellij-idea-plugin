@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum.TSMetaEnumValue
 import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
@@ -77,6 +78,13 @@ object TSLookupElementFactory {
             LookupElementBuilder.create(it)
                 .withTypeText(meta.flattenType)
                 .withIcon(HybrisIcons.TypeSystem.Types.MAP)
+                .withCaseSensitivity(false)
+        }
+
+    fun build(meta: TSMetaEnumValue) = meta.name
+        .let {
+            LookupElementBuilder.create(it)
+                .withIcon(HybrisIcons.TypeSystem.ENUM_VALUE)
                 .withCaseSensitivity(false)
         }
 
@@ -210,23 +218,24 @@ object TSLookupElementFactory {
     fun buildHeaderAbbreviation(lookupString: String) = LookupElementBuilder.create(lookupString)
         .withTypeText("Header Abbreviation", true)
         .withIcon(HybrisIcons.TypeSystem.HEADER_ABBREVIATION)
-        .withInsertHandler(lookupString.contains('@')
-            .takeIf { it }
-            ?.let {
-                object : AutoPopupInsertHandler() {
-                    override fun handle(context: InsertionContext, item: LookupElement) {
-                        lookupString.indexOf('@')
-                            .takeIf { it >= 0 }
-                            ?.let { index ->
-                                val cursorOffset = context.editor.caretModel.offset
-                                val moveBackTo = lookupString.length - index - 1
-                                val offset = cursorOffset - moveBackTo
-                                context.editor.caretModel.moveToOffset(offset)
-                                context.editor.selectionModel.setSelection(offset, offset + moveBackTo)
-                            }
+        .withInsertHandler(
+            lookupString.contains('@')
+                .takeIf { it }
+                ?.let {
+                    object : AutoPopupInsertHandler() {
+                        override fun handle(context: InsertionContext, item: LookupElement) {
+                            lookupString.indexOf('@')
+                                .takeIf { it >= 0 }
+                                ?.let { index ->
+                                    val cursorOffset = context.editor.caretModel.offset
+                                    val moveBackTo = lookupString.length - index - 1
+                                    val offset = cursorOffset - moveBackTo
+                                    context.editor.caretModel.moveToOffset(offset)
+                                    context.editor.selectionModel.setSelection(offset, offset + moveBackTo)
+                                }
+                        }
                     }
                 }
-            }
         )
         .let { PrioritizedLookupElement.withPriority(it, 2.0) }
 }

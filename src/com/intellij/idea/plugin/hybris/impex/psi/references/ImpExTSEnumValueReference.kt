@@ -18,9 +18,11 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumValueResolveResult
 import com.intellij.openapi.progress.ProgressManager
@@ -42,6 +44,12 @@ abstract class AbstractImpExTSEnumValueReference(owner: PsiElement, private val 
     override fun calculateDefaultRangeInElement(): TextRange = getTargetElement()
         ?.let { TextRange.from(it.startOffset - element.startOffset, it.textLength) }
         ?: super.calculateDefaultRangeInElement()
+
+    override fun getVariants(): Array<LookupElementBuilder> = TSMetaModelAccess.getInstance(project)
+        .findMetaEnumByName(metaName)
+        ?.let { TSCompletionService.getInstance(element.project).getCompletions(it) }
+        ?.toTypedArray()
+        ?: emptyArray()
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator
