@@ -85,6 +85,7 @@ object TSLookupElementFactory {
         .let {
             LookupElementBuilder.create(it)
                 .withIcon(HybrisIcons.TypeSystem.ENUM_VALUE)
+                .withTypeText(if (meta.isCustom) "" else "OOTB", true)
                 .withCaseSensitivity(false)
         }
 

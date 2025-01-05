@@ -4,6 +4,7 @@
 - Introduced enum value reference resolution in the Value Lines [#1296](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1296)
 - Added enum value completion in the Value Lines [#1297](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1297)
 - Added static enum value styling in the Value Lines [#1298](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1298)
+- Label OOTB enum value completion options [#1299](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1299)
 
 ### `items.xml` inspection rules
 - Enum values must be all uppercase (ignore `_`) [#1294](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1294)
