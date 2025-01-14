@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -47,8 +47,7 @@ object TSPatterns {
             .inFile(itemsXmlFile)
     )
 
-
-    val SPRING_INTERCEPTOR_TYPE_CODE: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue("value")
+    private val SPRING_INTERCEPTOR_TYPE_CODE: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue("value")
         .withSuperParent(
             2,
             XmlPatterns.xmlTag()
@@ -65,4 +64,27 @@ object TSPatterns {
                 .withLocalName("beans")
                 .withNamespace(HybrisConstants.SPRING_NAMESPACE)
         )
+
+    private val SPRING_CMS_RESTRICTION_EVALUATOR_MAPPING_RESTRICTIONTYPECODE: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue("value")
+        .withSuperParent(
+            2,
+            XmlPatterns.xmlTag()
+                .withLocalName("property")
+                .withAttributeValue("name", "restrictionTypeCode")
+                .withParent(
+                    XmlPatterns.xmlTag()
+                        .withLocalName("bean")
+                        .withAttributeValue("class", HybrisConstants.CLASS_FQN_CMS_RESTRICTION_EVALUATOR_MAPPING)
+                )
+        )
+        .inside(
+            XmlPatterns.xmlTag()
+                .withLocalName("beans")
+                .withNamespace(HybrisConstants.SPRING_NAMESPACE)
+        )
+
+    val SPRING_TYPE_CODE = XmlPatterns.or(
+        SPRING_INTERCEPTOR_TYPE_CODE,
+        SPRING_CMS_RESTRICTION_EVALUATOR_MAPPING_RESTRICTIONTYPECODE
+    )
 }
