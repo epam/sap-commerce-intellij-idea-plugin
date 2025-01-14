@@ -1,7 +1,7 @@
 ## [2024.3.5]
 
 ### `Type System` enhancements
-- Added completion and navigation for `restrictionTypeCode` property of the `CMSRestrictionEvaluatorMapping` within the Spring XML file [#326](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/326)
+- Added completion and navigation for `restrictionTypeCode` property of the `CMSRestrictionEvaluatorMapping` within the Spring XML file [#1300](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1300)
 
 ## [2024.3.4]
 
