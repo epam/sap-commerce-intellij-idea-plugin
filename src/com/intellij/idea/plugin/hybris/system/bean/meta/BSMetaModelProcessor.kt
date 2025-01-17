@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -39,10 +39,11 @@ class BSMetaModelProcessor(myProject: Project) {
 
     suspend fun process(coroutineScope: CoroutineScope, psiFile: PsiFile): BSMetaModel? = coroutineScope {
         psiFile.virtualFile ?: return@coroutineScope null
-        val module = BSUtils.getModuleForFile(psiFile) ?: return@coroutineScope null
+        val module = readAction { BSUtils.getModuleForFile(psiFile) }
+            ?: return@coroutineScope null
         val custom = BSUtils.isCustomExtensionFile(psiFile)
         val root = myDomManager.getFileElement(psiFile as XmlFile, Beans::class.java)
-            ?.rootElement
+            ?.let { readAction { it.rootElement } }
             ?: return@coroutineScope null
 
         val builder = BSMetaModelBuilder(module, psiFile, custom)
