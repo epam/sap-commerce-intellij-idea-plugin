@@ -1,5 +1,8 @@
 ## [2024.3.5]
 
+## `JUnit Tests` enhancements
+- For Pure JUnit Tests (annotated with `@UnitTest`) the Classpath is no longer added and for all other Tests only relevant Classpath is added. [#1302](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1302)
+
 ### `Type System` enhancements
 - Added completion and navigation for `restrictionTypeCode` property of the `CMSRestrictionEvaluatorMapping` within the Spring XML file [#1300](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1300)
 
