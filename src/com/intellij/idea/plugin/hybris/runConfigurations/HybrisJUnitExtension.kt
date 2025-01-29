@@ -71,8 +71,6 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
 		addPlatformHome(junitConfig, vmParameters, project)
 		addJavaRunProperties(project, vmParameters)
 		addHybrisEnvProperties(project, vmParameters)
-
-		enhanceClassPath(junitConfig, params, project)
 	}
 
 	private fun isPureUnitTest(configuration: JUnitConfiguration, project: Project): Boolean {
@@ -93,40 +91,6 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
 			PropertyService.getInstance(project)
 					?.getPlatformHome()
 					?.let { vmParameters.add("$platforhomePrefix=$it") }
-		}
-	}
-
-	private fun enhanceClassPath(junitConfig: JUnitConfiguration, params: JavaParameters, project: Project) {
-		val classPathEntries = HashSet<String>()
-
-		val modules = junitConfig.modules
-		for (module in modules) {
-			// Get the module's output paths (both production and test)
-			val moduleRootManager = ModuleRootManager.getInstance(module)
-
-			// Get the compiler output paths for production and test
-			val productionOutput =
-				moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPath
-			val testOutput =
-				moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPathForTests
-
-			// Add the output paths to the classpath
-			if (productionOutput != null && classPathEntries.add(productionOutput.path)) {
-				params.classPath.add(productionOutput.path)
-			}
-			if (testOutput != null && classPathEntries.add(testOutput.path)) {
-				params.classPath.add(testOutput.path)
-			}
-
-			// **Add module dependencies to classpath**
-			OrderEnumerator.orderEntries(module)
-					.recursively()
-					.classes().roots.forEach {
-						val path = it.presentableUrl
-						if (classPathEntries.add(path)) {
-							params.classPath.add(it)
-						}
-					}
 		}
 	}
 
