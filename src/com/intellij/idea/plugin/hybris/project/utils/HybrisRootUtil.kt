@@ -19,34 +19,19 @@ package com.intellij.idea.plugin.hybris.project.utils
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent.Companion.getInstance
-import com.intellij.lang.properties.psi.PropertiesFile
-import com.intellij.openapi.module.Module
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiManager
-import java.util.*
 
 object HybrisRootUtil {
 	fun findPlatformRootDirectory(project: Project): VirtualFile? {
-		val settingsComponent = getInstance(project)
-		val platformModule =
-			Arrays.stream(ModuleManager.getInstance(project).modules)
-					.filter { module: Module? -> settingsComponent.getModuleSettings(module!!).type == ModuleDescriptorType.PLATFORM }
-					.findAny()
-					.orElse(null)
-
-		return if (platformModule == null)
-			null
-		else
-			Arrays.stream(ModuleRootManager.getInstance(platformModule).contentRoots)
-					.filter { vFile: VirtualFile? -> vFile!!.findChild(HybrisConstants.EXTENSIONS_XML) != null }
-					.findAny()
-					.orElse(null)
+		val settingsComponent = ProjectSettingsComponent.getInstance(project)
+		return ModuleManager.getInstance(project).modules
+				.firstOrNull { settingsComponent.getModuleSettings(it).type == ModuleDescriptorType.PLATFORM }
+				?.let { ModuleRootManager.getInstance(it) }
+				?.contentRoots
+				?.firstOrNull { it.findChild(HybrisConstants.EXTENSIONS_XML) != null }
 	}
 }
