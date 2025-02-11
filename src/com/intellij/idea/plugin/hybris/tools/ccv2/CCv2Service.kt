@@ -581,9 +581,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         if (!dto.canTrack()) return
 
         coroutineScope.launch {
-            withBackgroundProgress(project, "Tracking Progress of the Build - ${dto.code}...", true) {
+            withBackgroundProgress(project, "Tracking Progress of the Build - ${dto.code}..", true) {
                 var totalProgress = 0
-                var externalProgress = 0
                 val ccv2Token = getCCv2Token(subscription)
 
                 reportProgress { progressReporter ->
@@ -592,12 +591,10 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
                         try {
                             val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, dto.code, ccv2Token!!, progressReporter)
-                            externalProgress = progress.percentage
+                            val reportProgress = progress.percentage - totalProgress
+                            totalProgress = progress.percentage
 
-                            val reportProgress = externalProgress - totalProgress
-                            totalProgress = externalProgress
-
-                            progressReporter.sizedStep(reportProgress, "Build ${progress.buildCode} progress ${progress.percentage}% (${progress.startedTasks.size} of tasks ${progress.numberOfTasks})") {
+                            progressReporter.sizedStep(reportProgress, "Build ${progress.buildCode} progress ${progress.percentage}% | ${progress.startedTasks.size} of ${progress.numberOfTasks} tasks") {
                                 if (totalProgress < 100) {
                                     delay(15.seconds)
                                 }
