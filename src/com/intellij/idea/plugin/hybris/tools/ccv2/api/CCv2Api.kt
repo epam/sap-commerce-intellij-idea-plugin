@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -223,6 +223,17 @@ class CCv2Api {
                 cCv2DeploymentDto(code, deployment, environmentCode, link)
             }
             ?: emptyList()
+    }
+
+    suspend fun fetchBuildProgress(
+        subscription: CCv2Subscription,
+        buildCode: String,
+        ccv2Token: String,
+        progressReporter: ProgressReporter
+    ) = progressReporter.indeterminateStep("Fetching the Build progress...") {
+        buildApi
+            .getBuildProgress(subscription.id!!, buildCode, requestHeaders = createRequestParams(ccv2Token))
+            .let { CCv2BuildProgressDto.map(it) }
     }
 
     suspend fun createBuild(

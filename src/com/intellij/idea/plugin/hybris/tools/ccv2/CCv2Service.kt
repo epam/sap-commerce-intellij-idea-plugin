@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.options.ShowSettingsUtil
+import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
@@ -45,6 +46,7 @@ import java.util.*
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.pathString
+import kotlin.time.Duration.Companion.seconds
 
 @Service(Service.Level.PROJECT)
 class CCv2Service(val project: Project, private val coroutineScope: CoroutineScope) {
@@ -569,6 +571,42 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                         notifyOnTimeout(subscription)
                     } catch (e: RuntimeException) {
                         notifyOnException(subscription, e)
+                    }
+                }
+            }
+        }
+    }
+
+    fun trackBuild(project: Project, subscription: CCv2Subscription, dto: CCv2BuildDto) {
+        if (!dto.canTrack()) return
+
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Tracking Progress of the Build - ${dto.code}...", true) {
+                var totalProgress = 0
+                var externalProgress = 0
+                val ccv2Token = getCCv2Token(subscription)
+
+                reportProgress { progressReporter ->
+                    while (totalProgress < 100) {
+                        checkCanceled()
+
+                        try {
+                            val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, dto.code, ccv2Token!!, progressReporter)
+                            externalProgress = progress.percentage
+
+                            val reportProgress = externalProgress - totalProgress
+                            totalProgress = externalProgress
+
+                            progressReporter.sizedStep(reportProgress, "Build ${progress.buildCode} progress ${progress.percentage}% (${progress.startedTasks.size} of tasks ${progress.numberOfTasks})") {
+                                if (totalProgress < 100) {
+                                    delay(15.seconds)
+                                }
+                            }
+                        } catch (e: SocketTimeoutException) {
+                            notifyOnTimeout(subscription)
+                        } catch (e: RuntimeException) {
+                            notifyOnException(subscription, e)
+                        }
                     }
                 }
             }

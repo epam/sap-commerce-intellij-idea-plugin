@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -86,6 +86,21 @@ class CCv2DeployBuildAction(
         val project = e.project ?: return
 
         CCv2DeployBuildDialog(project, subscription, build).showAndGet()
+    }
+}
+
+class CCv2TrackBuildAction(
+    private val subscription: CCv2Subscription,
+    private val build: CCv2BuildDto
+) : AbstractCCv2Action(
+    tab = CCv2Tab.BUILDS,
+    text = "Track Build",
+    icon = HybrisIcons.CCv2.Build.Actions.WATCH
+) {
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+
+        CCv2Service.getInstance(project).trackBuild(project, subscription, build)
     }
 }
 
