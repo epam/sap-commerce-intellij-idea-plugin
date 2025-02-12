@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,9 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentDetailDTO
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDatabaseUpdateModeEnum.entries
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStatusEnum.entries
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStrategyEnum.entries
 import java.time.OffsetDateTime
 import javax.swing.Icon
 
@@ -41,7 +38,9 @@ data class CCv2DeploymentDto(
     val undeployedTime: OffsetDateTime?,
     val status: CCv2DeploymentStatusEnum,
     val link: String?,
-) : CCv2DTO
+) : CCv2DTO {
+    fun canTrack() = status == CCv2DeploymentStatusEnum.DEPLOYING || status == CCv2DeploymentStatusEnum.SCHEDULED
+}
 
 enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Icon, val apiMode: CreateDeploymentRequestDTO.DatabaseUpdateMode) {
     NONE("None", HybrisIcons.CCv2.Deployment.UpdateMode.NONE, CreateDeploymentRequestDTO.DatabaseUpdateMode.NONE),

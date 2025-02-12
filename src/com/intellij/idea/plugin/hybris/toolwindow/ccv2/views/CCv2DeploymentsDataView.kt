@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,17 +20,16 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2TrackDeploymentAction
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.date
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.sUser
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.dsl.builder.RightGap
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 
 object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2DeploymentDto>() {
 
@@ -44,7 +43,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2DeploymentDto>() {
                 if (builds.isEmpty()) {
                     noData()
                 } else {
-                    builds.forEach { deployment(project, it) }
+                    builds.forEach { deployment(project, subscription, it) }
                 }
             }
                 .expanded = true
@@ -52,8 +51,18 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2DeploymentDto>() {
     }
         .let { Dsl.scrollPanel(it) }
 
-    private fun Panel.deployment(project: Project, deployment: CCv2DeploymentDto) {
+    private fun Panel.deployment(project: Project, subscription: CCv2Subscription, deployment: CCv2DeploymentDto) {
         row {
+            panel {
+                row {
+                    actionsButton(
+                        actions = listOfNotNull(
+                            CCv2TrackDeploymentAction(subscription, deployment)
+                        ).toTypedArray(),
+                        ActionPlaces.TOOLWINDOW_CONTENT
+                    )
+                }
+            }.gap(RightGap.SMALL)
             panel {
                 row {
                     val deploymentCode = deployment.link

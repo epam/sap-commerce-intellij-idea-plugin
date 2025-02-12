@@ -100,7 +100,7 @@ class CCv2TrackBuildAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
 
-        CCv2Service.getInstance(project).trackBuild(project, subscription, build)
+        CCv2Service.getInstance(project).trackBuild(project, subscription, build.code, build.canTrack())
     }
 }
 

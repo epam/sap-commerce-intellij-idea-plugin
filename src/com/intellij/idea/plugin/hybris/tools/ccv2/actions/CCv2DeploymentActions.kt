@@ -19,9 +19,11 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
+import com.intellij.openapi.actionSystem.AnActionEvent
 
 class CCv2FetchDeploymentsAction : AbstractCCv2FetchAction<CCv2DeploymentDto>(
     tab = CCv2Tab.DEPLOYMENTS,
@@ -31,3 +33,24 @@ class CCv2FetchDeploymentsAction : AbstractCCv2FetchAction<CCv2DeploymentDto>(
         CCv2Service.getInstance(project).fetchDeployments(subscriptions, onStartCallback, onCompleteCallback)
     }
 )
+
+class CCv2TrackDeploymentAction(
+    private val subscription: CCv2Subscription,
+    private val deployment: CCv2DeploymentDto
+) : AbstractCCv2Action(
+    tab = CCv2Tab.DEPLOYMENTS,
+    text = "Track Deployment",
+    icon = HybrisIcons.CCv2.Deployment.Actions.WATCH
+) {
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+
+        CCv2Service.getInstance(project).trackDeployment(project, subscription, deployment.code, deployment.buildCode)
+    }
+
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+
+        e.presentation.isEnabled = e.presentation.isEnabled && deployment.canTrack()
+    }
+}

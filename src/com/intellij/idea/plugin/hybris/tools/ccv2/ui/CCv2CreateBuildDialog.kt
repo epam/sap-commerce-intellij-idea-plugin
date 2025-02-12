@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,10 +26,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.selected
 import com.intellij.util.ui.JBUI
 
 class CCv2CreateBuildDialog(
@@ -46,6 +48,7 @@ class CCv2CreateBuildDialog(
     private lateinit var subscriptionComboBox: ComboBox<CCv2Subscription>
     private lateinit var nameTextField: JBTextField
     private lateinit var branchTextField: JBTextField
+    private lateinit var trackCheckBox: JBCheckBox
 
     override fun createCenterPanel() = panel {
         row {
@@ -81,6 +84,13 @@ class CCv2CreateBuildDialog(
                 .component
                 .also { it.text = build?.branch }
         }.layout(RowLayout.PARENT_GRID)
+
+        row {
+            trackCheckBox = checkBox("Track deployment progress")
+                .align(AlignX.FILL)
+                .selected(true)
+                .component
+        }.layout(RowLayout.PARENT_GRID)
     }.also {
         it.border = JBUI.Borders.empty(16)
     }
@@ -89,8 +99,9 @@ class CCv2CreateBuildDialog(
         val subscription = subscriptionComboBox.selectedItem as CCv2Subscription
         val name = nameTextField.text!!
         val branch = branchTextField.text!!
+        val trackBuild = trackCheckBox.isSelected
 
-        CCv2Service.getInstance(project).createBuild(subscription, name, branch)
+        CCv2Service.getInstance(project).createBuild(subscription, name, branch, trackBuild)
     }
 
     override fun getStyle() = DialogStyle.COMPACT
