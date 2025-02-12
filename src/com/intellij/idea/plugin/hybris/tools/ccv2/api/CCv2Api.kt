@@ -236,6 +236,17 @@ class CCv2Api {
             .let { CCv2BuildProgressDto.map(it) }
     }
 
+    suspend fun fetchDeploymentProgress(
+        subscription: CCv2Subscription,
+        deploymentCode: String,
+        ccv2Token: String,
+        progressReporter: ProgressReporter
+    ) = progressReporter.indeterminateStep("Fetching the Deployment progress...") {
+        deploymentApi
+            .getDeploymentProgress(subscription.id!!, deploymentCode, requestHeaders = createRequestParams(ccv2Token))
+            .let { CCv2DeploymentProgressDto.map(it) }
+    }
+
     suspend fun createBuild(
         ccv2Token: String,
         subscription: CCv2Subscription,

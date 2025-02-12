@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -33,9 +33,11 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.selected
 import com.intellij.util.ui.JBUI
 import java.util.*
 import javax.swing.JLabel
@@ -53,6 +55,7 @@ class CCv2DeployBuildDialog(
     private lateinit var modeComboBox: ComboBox<CCv2DeploymentDatabaseUpdateModeEnum>
     private lateinit var strategyComboBox: ComboBox<CCv2DeploymentStrategyEnum>
     private lateinit var fetchingLabel: JLabel
+    private lateinit var trackCheckBox: JBCheckBox
 
     private val environmentModel by lazy { CollectionComboBoxModel<CCv2EnvironmentDto>() }
     private val modeModel by lazy {
@@ -183,6 +186,13 @@ class CCv2DeployBuildDialog(
                     .label("Strategy:")
                     .component
             }.layout(RowLayout.PARENT_GRID)
+
+            row {
+                trackCheckBox = checkBox("Track deployment progress")
+                    .align(AlignX.FILL)
+                    .selected(true)
+                    .component
+            }.layout(RowLayout.PARENT_GRID)
         }
 
         panel {
@@ -210,8 +220,9 @@ class CCv2DeployBuildDialog(
         val environment = environmentComboBox.selectedItem as CCv2EnvironmentDto
         val mode = modeComboBox.selectedItem as CCv2DeploymentDatabaseUpdateModeEnum
         val strategy = strategyComboBox.selectedItem as CCv2DeploymentStrategyEnum
+        val trackDeployment = trackCheckBox.isSelected
 
-        CCv2Service.getInstance(project).deployBuild(project, subscription, environment, build, mode, strategy)
+        CCv2Service.getInstance(project).deployBuild(project, subscription, environment, build, mode, strategy, trackDeployment)
     }
 
     override fun getStyle() = DialogStyle.COMPACT

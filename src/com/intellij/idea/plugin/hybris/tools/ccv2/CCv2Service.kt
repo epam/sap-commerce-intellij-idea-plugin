@@ -422,7 +422,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         environment: CCv2EnvironmentDto,
         build: CCv2BuildDto,
         mode: CCv2DeploymentDatabaseUpdateModeEnum,
-        strategy: CCv2DeploymentStrategyEnum
+        strategy: CCv2DeploymentStrategyEnum,
+        trackDeployment: Boolean
     ) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Deploying CCv2 Build - ${build.code}...") {
@@ -438,16 +439,20 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                     CCv2Api.getInstance()
                         .deployBuild(ccv2Token, subscription, environment, build, mode, strategy)
                         .also {
-                            Notifications.create(
-                                NotificationType.INFORMATION,
-                                "CCv2: Build deployment has been requested.",
-                                """
+                            if (trackDeployment) {
+                                getInstance(project).trackDeployment(project, subscription, it, build.code)
+                            } else {
+                                Notifications.create(
+                                    NotificationType.INFORMATION,
+                                    "CCv2: Build deployment has been requested.",
+                                    """
                                     Code: ${build.code}<br>
                                     Subscription: $subscription<br>
                                 """.trimIndent()
-                            )
-                                .hideAfter(10)
-                                .notify(project)
+                                )
+                                    .hideAfter(10)
+                                    .notify(project)
+                            }
                         }
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription)
@@ -577,11 +582,11 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         }
     }
 
-    fun trackBuild(project: Project, subscription: CCv2Subscription, dto: CCv2BuildDto) {
-        if (!dto.canTrack()) return
+    fun trackBuild(project: Project, subscription: CCv2Subscription, build: CCv2BuildDto) {
+        if (!build.canTrack()) return
 
         coroutineScope.launch {
-            withBackgroundProgress(project, "Tracking Progress of the Build - ${dto.code}..", true) {
+            withBackgroundProgress(project, "Tracking Progress of the Build - ${build.code}..", true) {
                 var totalProgress = 0
                 val ccv2Token = getCCv2Token(subscription)
 
@@ -590,11 +595,14 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                         checkCanceled()
 
                         try {
-                            val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, dto.code, ccv2Token!!, progressReporter)
+                            val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, build.code, ccv2Token!!, progressReporter)
                             val reportProgress = progress.percentage - totalProgress
                             totalProgress = progress.percentage
 
-                            progressReporter.sizedStep(reportProgress, "Build ${progress.buildCode} progress ${progress.percentage}% | ${progress.startedTasks.size} of ${progress.numberOfTasks} tasks") {
+                            progressReporter.sizedStep(
+                                reportProgress,
+                                "Build ${progress.buildCode} progress ${progress.percentage}% | ${progress.startedTasks.size} of ${progress.numberOfTasks} tasks"
+                            ) {
                                 if (totalProgress < 100) {
                                     delay(15.seconds)
                                 }
@@ -605,6 +613,65 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                             notifyOnException(subscription, e)
                         }
                     }
+                }
+
+                if (totalProgress == 100) {
+                    Notifications
+                        .create(
+                            NotificationType.INFORMATION,
+                            "CCv2: Build Completed",
+                            """
+                                Subscription: $subscription<br>
+                                Build ${build.code} has been completed.
+                            """.trimIndent()
+                        )
+                        .hideAfter(15)
+                        .notify(project)
+                }
+            }
+        }
+    }
+
+    fun trackDeployment(project: Project, subscription: CCv2Subscription, deploymentCode: String, buildCode: String) {
+        coroutineScope.launch {
+            withBackgroundProgress(project, "Tracking Progress of the Deployment - $buildCode..", true) {
+                var totalProgress = 0
+                val ccv2Token = getCCv2Token(subscription)
+
+                reportProgress { progressReporter ->
+                    while (totalProgress < 100) {
+                        checkCanceled()
+
+                        try {
+                            val progress = CCv2Api.getInstance().fetchDeploymentProgress(subscription, deploymentCode, ccv2Token!!, progressReporter)
+                            val reportProgress = progress.percentage - totalProgress
+                            totalProgress = progress.percentage
+
+                            progressReporter.sizedStep(reportProgress, "Deployment $buildCode progress ${progress.percentage}%") {
+                                if (totalProgress < 100) {
+                                    delay(15.seconds)
+                                }
+                            }
+                        } catch (e: SocketTimeoutException) {
+                            notifyOnTimeout(subscription)
+                        } catch (e: RuntimeException) {
+                            notifyOnException(subscription, e)
+                        }
+                    }
+                }
+
+                if (totalProgress == 100) {
+                    Notifications
+                        .create(
+                            NotificationType.INFORMATION,
+                            "CCv2: Deployment Completed",
+                            """
+                                Subscription: $subscription<br>
+                                Deployment $buildCode has been completed.
+                            """.trimIndent()
+                        )
+                        .hideAfter(15)
+                        .notify(project)
                 }
             }
         }

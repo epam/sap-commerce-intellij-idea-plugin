@@ -3,6 +3,7 @@
 ### `CCv2` enhancements
 - Added possibility to Track progress of the Build [#1304](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1304)
 - Show revision of the Build [#1305](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1305)
+- Added possibility to Track progress of the Deployment [#1305](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1305)
 
 ### `JUnit Tests` enhancements
 - For Pure JUnit Tests (annotated with `@UnitTest`) the JUnit Tests is no longer enhanced. It is also not necessary to enhance the Classpath if the `platformhome` is properly set. [#1302](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1302)

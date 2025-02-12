@@ -371,6 +371,10 @@ object HybrisIcons {
                 val FAIL = AllIcons.RunConfigurations.TestError
                 val UNKNOWN = AllIcons.RunConfigurations.TestUnknown
             }
+
+            object Actions {
+                val WATCH = AllIcons.Debugger.Watch
+            }
         }
 
         object Environment {
