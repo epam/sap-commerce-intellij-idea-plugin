@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.actions.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.copyLink
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.date
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.sUser
 import com.intellij.idea.plugin.hybris.ui.Dsl
@@ -153,8 +154,15 @@ class CCv2BuildDetailsView(
 
                 panel {
                     row {
+                        icon(HybrisIcons.CCv2.Build.REVISION).gap(RightGap.SMALL)
+                        copyLink(project, "Revision", build.revision, "Build Revision copied to clipboard")
+                    }
+                }.gap(RightGap.SMALL)
+
+                panel {
+                    row {
                         icon(HybrisIcons.CCv2.Build.BRANCH).gap(RightGap.SMALL)
-                        label(build.branch).comment("Branch")
+                        copyLink(project, "Branch", build.branch, "Build Branch copied to clipboard")
                     }
                 }.gap(RightGap.COLUMNS)
 

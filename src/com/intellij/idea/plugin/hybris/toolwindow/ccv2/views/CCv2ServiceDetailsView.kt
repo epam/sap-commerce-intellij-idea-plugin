@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
-import com.intellij.ide.HelpTooltip
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentServiceAction
@@ -27,18 +25,13 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ServiceRestartRepl
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceProperties
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.ccv2ServiceModifiedByRow
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.ccv2ServiceModifiedTimeRow
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.ccv2ServiceReplicasRow
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.ccv2ServiceStatusRow
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.*
 import com.intellij.idea.plugin.hybris.ui.Dsl
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
@@ -50,7 +43,6 @@ import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import java.awt.GridBagLayout
-import java.awt.datatransfer.StringSelection
 import java.io.Serial
 import javax.swing.JPanel
 
@@ -210,33 +202,13 @@ class CCv2ServiceDetailsView(
             row {
                 panel {
                     row {
-                        link(key) {
-                            CopyPasteManager.getInstance().setContents(StringSelection(key))
-                            Notifications.create(NotificationType.INFORMATION, "Key copied to clipboard", "")
-                                .hideAfter(10)
-                                .notify(project)
-                        }
-                            .applyToComponent {
-                                HelpTooltip()
-                                    .setTitle("Click to copy to clipboard")
-                                    .installOn(this);
-                            }
+                        copyLink(project, null, key, "Key copied to clipboard")
                     }
                 }.gap(RightGap.SMALL)
 
                 panel {
                     row {
-                        link(value) {
-                            CopyPasteManager.getInstance().setContents(StringSelection(value))
-                            Notifications.create(NotificationType.INFORMATION, "Value copied to clipboard", "")
-                                .hideAfter(10)
-                                .notify(project)
-                        }
-                            .applyToComponent {
-                                HelpTooltip()
-                                    .setTitle("Click to copy to clipboard")
-                                    .installOn(this);
-                            }
+                        copyLink(project, null, value, "Value copied to clipboard")
                     }
                 }
             }

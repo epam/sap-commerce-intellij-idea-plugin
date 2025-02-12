@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -206,10 +206,15 @@ class CCv2EnvironmentDetailsView(
 
             panel {
                 row {
-                    icon(HybrisIcons.CCv2.Build.BRANCH)
-                        .gap(RightGap.SMALL)
-                    label(build.branch)
-                        .comment("Branch")
+                    icon(HybrisIcons.CCv2.Build.REVISION).gap(RightGap.SMALL)
+                    copyLink(project, "Revision", build.revision, "Build Revision copied to clipboard")
+                }
+            }.gap(RightGap.SMALL)
+
+            panel {
+                row {
+                    icon(HybrisIcons.CCv2.Build.BRANCH).gap(RightGap.SMALL)
+                    copyLink(project, "Branch", build.branch, "Build Branch copied to clipboard")
                 }
             }.gap(RightGap.COLUMNS)
 
@@ -458,18 +463,7 @@ class CCv2EnvironmentDetailsView(
 
                             panel {
                                 row {
-                                    link(mediaStorage.code) {
-                                        CopyPasteManager.getInstance().setContents(StringSelection(mediaStorage.accountName))
-                                        Notifications.create(NotificationType.INFORMATION, "Account name copied to clipboard", "")
-                                            .hideAfter(10)
-                                            .notify(project)
-                                    }
-                                        .comment("Account name")
-                                        .applyToComponent {
-                                            HelpTooltip()
-                                                .setTitle("Click to copy to clipboard")
-                                                .installOn(this);
-                                        }
+                                    copyLink(project, "Account name", mediaStorage.code, "Account name copied to clipboard")
                                 }
                             }.gap(RightGap.COLUMNS)
 

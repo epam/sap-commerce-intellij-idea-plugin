@@ -323,6 +323,7 @@ object HybrisIcons {
 
         object Build {
             val BRANCH = AllIcons.Vcs.Branch
+            val REVISION = AllIcons.Vcs.CommitNode
             val CREATED_BY = AllIcons.General.User
 
             object Status {

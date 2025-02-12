@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.ccv2.model.BuildDetailDTO
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
+import com.intellij.util.asSafely
 import java.time.OffsetDateTime
 import javax.swing.Icon
 
@@ -37,6 +38,7 @@ data class CCv2BuildDto(
     val endTime: OffsetDateTime?,
     val buildVersion: String,
     val version: String,
+    val revision: String,
     val link: String?,
 ) : CCv2DTO {
     val duration = CCv2Util.getTimeDiffInMinutes(startTime, endTime).takeIf { it.toInt() != -1 } ?: "N/A"
@@ -62,6 +64,11 @@ data class CCv2BuildDto(
                 ?.split("-")
                 ?.firstOrNull()
                 ?.takeIf { it.isNotBlank() }
+                ?: "N/A",
+            revision = build.properties
+                ?.firstOrNull { "project.repository.revision" == it.key }
+                ?.value
+                ?.asSafely<String>()
                 ?: "N/A",
             link = if (build.subscriptionCode != null && build.code != null)
                 "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${build.subscriptionCode}/applications/commerce-cloud/builds/${build.code}"

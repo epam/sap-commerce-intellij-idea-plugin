@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.copyLink
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.date
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.sUser
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
@@ -89,10 +90,15 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
 
             panel {
                 row {
-                    icon(HybrisIcons.CCv2.Build.BRANCH)
-                        .gap(RightGap.SMALL)
-                    label(build.branch)
-                        .comment("Branch")
+                    icon(HybrisIcons.CCv2.Build.REVISION).gap(RightGap.SMALL)
+                    copyLink(project, "Revision", build.revision, "Build Revision copied to clipboard")
+                }
+            }.gap(RightGap.SMALL)
+
+            panel {
+                row {
+                    icon(HybrisIcons.CCv2.Build.BRANCH).gap(RightGap.SMALL)
+                    copyLink(project, "Branch", build.branch, "Build Branch copied to clipboard")
                 }
             }.gap(RightGap.COLUMNS)
 
