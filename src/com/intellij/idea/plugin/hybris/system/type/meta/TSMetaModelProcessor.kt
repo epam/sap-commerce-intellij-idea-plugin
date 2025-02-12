@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelBuilder
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
@@ -35,25 +34,25 @@ class TSMetaModelProcessor(myProject: Project) {
 
     suspend fun process(coroutineScope: CoroutineScope, psiFile: PsiFile): TSMetaModel? = coroutineScope {
         psiFile.virtualFile ?: return@coroutineScope null
-        val module = readAction { TSUtils.getModuleForFile(psiFile) }
+        val module = TSUtils.getModuleForFile(psiFile)
             ?: return@coroutineScope null
         val custom = TSUtils.isCustomExtensionFile(psiFile)
         val rootWrapper = myDomManager.getFileElement(psiFile as XmlFile, Items::class.java)
 
         rootWrapper ?: return@coroutineScope null
 
-        val items = readAction { rootWrapper.rootElement }
+        val items = rootWrapper.rootElement
 
         val builder = TSMetaModelBuilder(module, psiFile, custom)
 
         val operations = listOf(
-            coroutineScope.async { readAction { builder.withItemTypes(items.itemTypes.itemTypes) } },
-            coroutineScope.async { readAction { builder.withItemTypes(items.itemTypes.typeGroups.flatMap { it.itemTypes }) } },
-            coroutineScope.async { readAction { builder.withEnumTypes(items.enumTypes.enumTypes) } },
-            coroutineScope.async { readAction { builder.withAtomicTypes(items.atomicTypes.atomicTypes) } },
-            coroutineScope.async { readAction { builder.withCollectionTypes(items.collectionTypes.collectionTypes) } },
-            coroutineScope.async { readAction { builder.withRelationTypes(items.relations.relations) } },
-            coroutineScope.async { readAction { builder.withMapTypes(items.mapTypes.mapTypes) } },
+            coroutineScope.async { builder.withItemTypes(items.itemTypes.itemTypes) },
+            coroutineScope.async { builder.withItemTypes(items.itemTypes.typeGroups.flatMap { it.itemTypes }) },
+            coroutineScope.async { builder.withEnumTypes(items.enumTypes.enumTypes) },
+            coroutineScope.async { builder.withAtomicTypes(items.atomicTypes.atomicTypes) },
+            coroutineScope.async { builder.withCollectionTypes(items.collectionTypes.collectionTypes) },
+            coroutineScope.async { builder.withRelationTypes(items.relations.relations) },
+            coroutineScope.async { builder.withMapTypes(items.mapTypes.mapTypes) },
         )
 
         withContext(Dispatchers.IO) {

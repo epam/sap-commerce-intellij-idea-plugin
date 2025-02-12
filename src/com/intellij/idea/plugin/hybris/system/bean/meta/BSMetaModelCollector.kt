@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.system.bean.meta
 
 import com.intellij.idea.plugin.hybris.system.bean.BSUtils
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
@@ -40,7 +39,7 @@ class BSMetaModelCollector(private val myProject: Project) {
 
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
-    suspend fun collectDependencies(): Set<PsiFile> = readAction {
+    suspend fun collectDependencies(): Set<PsiFile> {
         val files = HashSet<PsiFile>()
 
         StubIndex.getInstance().processElements(
@@ -62,7 +61,6 @@ class BSMetaModelCollector(private val myProject: Project) {
             }
         )
 
-        files
+        return Collections.unmodifiableSet(files)
     }
-        .let { Collections.unmodifiableSet(it) }
 }

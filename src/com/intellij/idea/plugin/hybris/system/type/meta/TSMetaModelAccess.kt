@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelNameProv
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -137,7 +138,9 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
 
         coroutineScope
             .launch(Dispatchers.IO) {
-                myGlobalMetaModelCache.value
+                readAction {
+                    myGlobalMetaModelCache.value
+                }
             }
             .invokeOnCompletion {
                 building = false

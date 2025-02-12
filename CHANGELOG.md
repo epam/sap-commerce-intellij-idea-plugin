@@ -14,6 +14,7 @@
 
 ### Fixes
 - Added read actions to build Type/Bean GlobalMetaModel [#1301](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1301)
+- Improved read action usage during creation of the Type and Bean Systems [#1307](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1307)
 
 ## [2024.3.4]
 

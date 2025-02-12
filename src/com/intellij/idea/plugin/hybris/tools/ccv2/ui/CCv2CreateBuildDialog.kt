@@ -86,7 +86,7 @@ class CCv2CreateBuildDialog(
         }.layout(RowLayout.PARENT_GRID)
 
         row {
-            trackCheckBox = checkBox("Track deployment progress")
+            trackCheckBox = checkBox("Track build progress")
                 .align(AlignX.FILL)
                 .selected(true)
                 .component
