@@ -3,8 +3,8 @@
 ### `CCv2` enhancements
 - Added possibility to Track progress of the Build [#1304](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1304)
 - Show revision of the Build [#1305](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1305)
-- Added possibility to Track progress of the Deployment [#1305](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1305)
-- Added Deployment specific action to Track its progress [#1306](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1306)
+- Added possibility to Track progress of the Deployment [#1306](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1306)
+- Added Deployment specific action to Track its progress [#1307](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1307)
 
 ### `JUnit Tests` enhancements
 - For Pure JUnit Tests (annotated with `@UnitTest`) the JUnit Tests is no longer enhanced. It is also not necessary to enhance the Classpath if the `platformhome` is properly set. [#1302](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1302)
@@ -14,7 +14,7 @@
 
 ### Fixes
 - Added read actions to build Type/Bean GlobalMetaModel [#1301](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1301)
-- Improved read action usage during creation of the Type and Bean Systems [#1307](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1307)
+- Improved read action usage during creation of the Type and Bean Systems [#1308](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1308)
 
 ## [2024.3.4]
 
