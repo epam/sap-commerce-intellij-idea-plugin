@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.ccv2.model.BuildProgressStartedTaskDTO
 import java.time.OffsetDateTime
 
 data class CCv2BuildProgressDto(
-    val buildStatus: String,
+    val buildStatus: CCv2BuildStatus,
     val buildCode: String,
     val errorMessage: String,
     val numberOfTasks: Int,
@@ -33,7 +33,7 @@ data class CCv2BuildProgressDto(
 
     companion object {
         fun map(buildProgress: BuildProgressDTO) = CCv2BuildProgressDto(
-            buildStatus = buildProgress.buildStatus ?: "N/A",
+            buildStatus = CCv2BuildStatus.tryValueOf(buildProgress.buildStatus),
             buildCode = buildProgress.buildCode ?: "N/A",
             errorMessage = buildProgress.errorMessage ?: "N/A",
             numberOfTasks = buildProgress.numberOfTasks ?: 0,

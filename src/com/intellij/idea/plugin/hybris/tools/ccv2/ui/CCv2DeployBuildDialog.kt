@@ -22,10 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDatabaseUpdateModeEnum
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentStrategyEnum
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -59,22 +56,10 @@ class CCv2DeployBuildDialog(
 
     private val environmentModel by lazy { CollectionComboBoxModel<CCv2EnvironmentDto>() }
     private val modeModel by lazy {
-        CollectionComboBoxModel(
-            listOf(
-                CCv2DeploymentDatabaseUpdateModeEnum.NONE,
-                CCv2DeploymentDatabaseUpdateModeEnum.UPDATE,
-                CCv2DeploymentDatabaseUpdateModeEnum.INITIALIZE
-            )
-        )
+        CollectionComboBoxModel(CCv2DeploymentDatabaseUpdateModeEnum.allowedOptions())
     }
     private val strategyModel by lazy {
-        CollectionComboBoxModel(
-            listOf(
-                CCv2DeploymentStrategyEnum.ROLLING_UPDATE,
-                CCv2DeploymentStrategyEnum.RECREATE,
-                CCv2DeploymentStrategyEnum.GREEN,
-            )
-        )
+        CollectionComboBoxModel(CCv2DeploymentStrategyEnum.allowedOptions())
     }
 
     init {
@@ -217,12 +202,15 @@ class CCv2DeployBuildDialog(
 
     override fun applyFields() {
         val subscription = subscriptionComboBox.selectedItem as CCv2Subscription
-        val environment = environmentComboBox.selectedItem as CCv2EnvironmentDto
-        val mode = modeComboBox.selectedItem as CCv2DeploymentDatabaseUpdateModeEnum
-        val strategy = strategyComboBox.selectedItem as CCv2DeploymentStrategyEnum
-        val trackDeployment = trackCheckBox.isSelected
+        val deploymentRequest = CCv2DeploymentRequest(
+            environmentComboBox.selectedItem as CCv2EnvironmentDto,
+            modeComboBox.selectedItem as CCv2DeploymentDatabaseUpdateModeEnum,
+            strategyComboBox.selectedItem as CCv2DeploymentStrategyEnum,
+            true,
+            trackCheckBox.isSelected
+        )
 
-        CCv2Service.getInstance(project).deployBuild(project, subscription, environment, build, mode, strategy, trackDeployment)
+        CCv2Service.getInstance(project).deployBuild(project, subscription, build, deploymentRequest)
     }
 
     override fun getStyle() = DialogStyle.COMPACT

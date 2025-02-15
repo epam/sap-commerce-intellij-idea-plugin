@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildRequest
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2CreateBuildDialog
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DeployBuildDialog
@@ -100,7 +101,8 @@ class CCv2TrackBuildAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
 
-        CCv2Service.getInstance(project).trackBuild(project, subscription, build.code, build.canTrack())
+        val buildRequest = CCv2BuildRequest(subscription, build.name, build.branch, build.canTrack())
+        CCv2Service.getInstance(project).trackBuild(project, buildRequest, build.code)
     }
 }
 

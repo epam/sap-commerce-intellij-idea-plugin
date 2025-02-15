@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 import com.intellij.idea.plugin.hybris.ccv2.model.BuildDetailDTO
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
 import com.intellij.util.asSafely
 import java.time.OffsetDateTime
@@ -92,3 +93,11 @@ enum class CCv2BuildStatus(val title: String, val icon: Icon) {
             ?: UNKNOWN
     }
 }
+
+data class CCv2BuildRequest(
+    val subscription: CCv2Subscription,
+    val name: String,
+    val branch: String,
+    val track: Boolean,
+    val deploymentRequests: Collection<CCv2DeploymentRequest> = listOf(),
+)

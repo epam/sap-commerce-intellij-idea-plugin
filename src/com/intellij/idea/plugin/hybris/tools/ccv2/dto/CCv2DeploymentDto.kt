@@ -56,6 +56,8 @@ enum class CCv2DeploymentDatabaseUpdateModeEnum(val title: String, val icon: Ico
         fun tryValueOf(mode: DeploymentDetailDTO.DatabaseUpdateMode?) = entries
             .find { it.name == mode?.name }
             ?: UNKNOWN
+
+        fun allowedOptions() = listOf(NONE, UPDATE, INITIALIZE)
     }
 }
 
@@ -73,6 +75,8 @@ enum class CCv2DeploymentStrategyEnum(val title: String, val icon: Icon, val api
         fun tryValueOf(strategy: DeploymentDetailDTO.Strategy?) = entries
             .find { it.name == strategy?.name }
             ?: UNKNOWN
+
+        fun allowedOptions() = listOf(ROLLING_UPDATE, RECREATE, GREEN)
     }
 }
 
@@ -90,3 +94,11 @@ enum class CCv2DeploymentStatusEnum(val title: String, val icon: Icon) {
             ?: UNKNOWN
     }
 }
+
+data class CCv2DeploymentRequest(
+    val environment: CCv2EnvironmentDto,
+    val mode: CCv2DeploymentDatabaseUpdateModeEnum,
+    val strategy: CCv2DeploymentStrategyEnum,
+    val deploy: Boolean,
+    val track: Boolean
+)

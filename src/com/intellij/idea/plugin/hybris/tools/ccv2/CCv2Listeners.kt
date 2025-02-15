@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,10 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 
 sealed interface CCv2Listener<T : CCv2DTO> {
     fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = Unit
@@ -42,6 +39,7 @@ interface CCv2DeploymentsListener : CCv2Listener<CCv2DeploymentDto>
 
 interface CCv2BuildsListener : CCv2Listener<CCv2BuildDto> {
     fun onBuildStarted() = Unit
+    fun onBuildCompleted(subscription: CCv2Subscription, buildCode: String, deploymentRequests: Collection<CCv2DeploymentRequest>) = Unit
     fun onBuildRemovalStarted(subscription: CCv2Subscription, build: CCv2BuildDto) = Unit
     fun onBuildRemovalRequested(subscription: CCv2Subscription, build: CCv2BuildDto) = Unit
 

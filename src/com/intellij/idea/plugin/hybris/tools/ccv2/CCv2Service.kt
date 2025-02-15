@@ -320,25 +320,28 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         }
     }
 
-    fun createBuild(subscription: CCv2Subscription, name: String, branch: String, trackBuild: Boolean) {
+    fun createBuild(buildRequest: CCv2BuildRequest) {
         coroutineScope.launch {
-            withBackgroundProgress(project, "Creating new CCv2 Build...") {
+            val isAutoDeploy = buildRequest.deploymentRequests.any { it.deploy }
+            val title = if (isAutoDeploy) "Creating new CCv2 Build (auto-deploy)..."
+            else "Creating new CCv2 Build..."
+            withBackgroundProgress(project, title) {
                 project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildStarted()
-                val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
+                val ccv2Token = getCCv2Token(buildRequest.subscription) ?: return@withBackgroundProgress
 
                 try {
-                    CCv2Api.getInstance().createBuild(ccv2Token, subscription, name, branch)
+                    CCv2Api.getInstance().createBuild(ccv2Token, buildRequest)
                         .also { buildCode ->
-                            if (trackBuild) {
-                                trackBuild(project, subscription, buildCode, true)
+                            if (buildRequest.track) {
+                                trackBuild(project, buildRequest, buildCode)
                             } else {
                                 Notifications.create(
                                     NotificationType.INFORMATION,
                                     "CCv2: New Build has been scheduled.",
                                     """
                                     Code: ${buildCode}<br>
-                                    Name: ${name}<br>
-                                    Branch: ${branch}<br>
+                                    Name: ${buildRequest.name}<br>
+                                    Branch: ${buildRequest.branch}<br>
                                 """.trimIndent()
                                 )
                                     .hideAfter(10)
@@ -346,9 +349,9 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                             }
                         }
                 } catch (e: SocketTimeoutException) {
-                    notifyOnTimeout(subscription)
+                    notifyOnTimeout(buildRequest.subscription)
                 } catch (e: RuntimeException) {
-                    notifyOnException(subscription, e)
+                    notifyOnException(buildRequest.subscription, e)
                 }
             }
         }
@@ -423,12 +426,11 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
     fun deployBuild(
         project: Project,
         subscription: CCv2Subscription,
-        environment: CCv2EnvironmentDto,
         build: CCv2BuildDto,
-        mode: CCv2DeploymentDatabaseUpdateModeEnum,
-        strategy: CCv2DeploymentStrategyEnum,
-        trackDeployment: Boolean
+        deploymentRequest: CCv2DeploymentRequest
     ) {
+        if (!deploymentRequest.deploy) return
+
         coroutineScope.launch {
             withBackgroundProgress(project, "Deploying CCv2 Build - ${build.code}...") {
                 project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildDeploymentStarted(subscription, build)
@@ -441,10 +443,10 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
                 try {
                     CCv2Api.getInstance()
-                        .deployBuild(ccv2Token, subscription, environment, build, mode, strategy)
-                        .also {
-                            if (trackDeployment) {
-                                getInstance(project).trackDeployment(project, subscription, it, build.code)
+                        .deployBuild(ccv2Token, subscription, deploymentRequest.environment, build, deploymentRequest.mode, deploymentRequest.strategy)
+                        .also { deploymentCode ->
+                            if (deploymentRequest.track) {
+                                trackDeployment(project, subscription, deploymentCode, build.code)
                             } else {
                                 Notifications.create(
                                     NotificationType.INFORMATION,
@@ -586,29 +588,45 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         }
     }
 
-    fun trackBuild(project: Project, subscription: CCv2Subscription, buildCode: String, canTrack: Boolean) {
-        if (!canTrack) return
+    fun trackBuild(project: Project, buildRequest: CCv2BuildRequest, buildCode: String) {
+        if (!buildRequest.track) return
+
+        val subscription = buildRequest.subscription
 
         coroutineScope.launch {
             withBackgroundProgress(project, "Tracking Progress of the Build - $buildCode..", true) {
+                var buildStatus = CCv2BuildStatus.UNKNOWN
                 var totalProgress = 0
                 val ccv2Token = getCCv2Token(subscription)
 
                 reportProgress { progressReporter ->
-                    while (totalProgress < 100) {
+                    while (buildStatus != CCv2BuildStatus.FAIL && (totalProgress < 100 || buildStatus == CCv2BuildStatus.UNKNOWN)) {
                         checkCanceled()
 
                         try {
-                            val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token!!, progressReporter)
-                            val reportProgress = progress.percentage - totalProgress
-                            totalProgress = progress.percentage
-
-                            progressReporter.sizedStep(
-                                reportProgress,
-                                "Build ${progress.buildCode} progress ${progress.percentage}% | ${progress.startedTasks.size} of ${progress.numberOfTasks} tasks"
-                            ) {
-                                if (totalProgress < 100) {
+                            if (buildStatus == CCv2BuildStatus.UNKNOWN) {
+                                // at this point, although the progress is 100, build may be in the UNKNOWN status
+                                // we have to wait for non-UNKNOWN status to proceed with the next steps
+                                val statusMessage = if (totalProgress < 100) "Build $buildCode scheduled, warming-up..."
+                                else "Build $buildCode completed, waiting for status update..."
+                                progressReporter.indeterminateStep(statusMessage) {
+                                    buildStatus = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token!!, progressReporter)
+                                        .buildStatus
                                     delay(15.seconds)
+                                }
+                            } else {
+                                val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token!!, progressReporter)
+                                val reportProgress = progress.percentage - totalProgress
+                                totalProgress = progress.percentage
+                                buildStatus = progress.buildStatus
+
+                                progressReporter.sizedStep(
+                                    reportProgress,
+                                    "Build $buildCode progress ${progress.percentage}% | ${progress.startedTasks.size} of ${progress.numberOfTasks} tasks"
+                                ) {
+                                    if (totalProgress < 100) {
+                                        delay(15.seconds)
+                                    }
                                 }
                             }
                         } catch (e: SocketTimeoutException) {
@@ -619,18 +637,36 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                     }
                 }
 
-                if (totalProgress == 100) {
+                if (buildStatus == CCv2BuildStatus.FAIL) {
+                    Notifications
+                        .create(
+                            NotificationType.INFORMATION,
+                            "CCv2: Build Failed",
+                            """
+                                Subscription: $subscription<br>
+                                Build $buildCode has been failed.
+                            """.trimIndent()
+                        )
+                        .hideAfter(15)
+                        .notify(project)
+                } else {
                     Notifications
                         .create(
                             NotificationType.INFORMATION,
                             "CCv2: Build Completed",
                             """
                                 Subscription: $subscription<br>
-                                Build $buildCode has been completed.
+                                Build $buildCode has been completed with ${buildStatus.title}.
                             """.trimIndent()
                         )
                         .hideAfter(15)
                         .notify(project)
+
+                    project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildCompleted(
+                        subscription,
+                        buildCode,
+                        buildRequest.deploymentRequests
+                    )
                 }
             }
         }

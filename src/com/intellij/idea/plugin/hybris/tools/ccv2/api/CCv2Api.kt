@@ -249,13 +249,11 @@ class CCv2Api {
 
     suspend fun createBuild(
         ccv2Token: String,
-        subscription: CCv2Subscription,
-        name: String,
-        branch: String
+        buildRequest: CCv2BuildRequest
     ): String = buildApi
         .createBuild(
-            subscriptionCode = subscription.id!!,
-            createBuildRequestDTO = CreateBuildRequestDTO(branch, name),
+            subscriptionCode = buildRequest.subscription.id!!,
+            createBuildRequestDTO = CreateBuildRequestDTO(buildRequest.branch, buildRequest.name),
             requestHeaders = createRequestParams(ccv2Token)
         )
         .code

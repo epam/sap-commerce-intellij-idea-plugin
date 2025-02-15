@@ -230,24 +230,16 @@ class CCv2ServiceDetailsView(
                 .bottomGap(BottomGap.SMALL)
 
             row {
-                panel {
-                    ccv2ServiceStatusRow(service)
-                }
+                panel { ccv2ServiceStatusRow(service) }
                     .gap(RightGap.COLUMNS)
 
-                panel {
-                    ccv2ServiceReplicasRow(service)
-                }
+                panel { ccv2ServiceReplicasRow(service) }
                     .gap(RightGap.COLUMNS)
 
-                panel {
-                    ccv2ServiceModifiedByRow(service)
-                }
+                panel { ccv2ServiceModifiedByRow(service) }
                     .gap(RightGap.COLUMNS)
 
-                panel {
-                    ccv2ServiceModifiedTimeRow(service)
-                }
+                panel { ccv2ServiceModifiedTimeRow(service) }
 
                 if (service.supportedProperties.contains(CCv2ServiceProperties.GREEN_DEPLOYMENT_SUPPORTED)) {
                     panel {

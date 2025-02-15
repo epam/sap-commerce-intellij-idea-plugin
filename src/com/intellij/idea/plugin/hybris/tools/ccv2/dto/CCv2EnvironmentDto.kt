@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -40,6 +40,9 @@ data class CCv2EnvironmentDto(
     var services: Collection<CCv2ServiceDto>? = null,
     var dataBackups: Collection<CCv2DataBackupDto>? = null,
 ) : CCv2DTO, Comparable<CCv2EnvironmentDto> {
+
+    fun canDeploy() = (status in listOf(CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT, CCv2EnvironmentStatus.AVAILABLE))
+        && deploymentStatus in listOf(CCv2DeploymentStatusEnum.DEPLOYED)
 
     override fun compareTo(other: CCv2EnvironmentDto) = name.compareTo(other.name)
 
