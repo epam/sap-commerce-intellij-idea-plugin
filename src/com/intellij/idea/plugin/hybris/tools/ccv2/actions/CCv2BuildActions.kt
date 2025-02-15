@@ -117,7 +117,11 @@ class CCv2DeleteBuildAction(
 
         if (Messages.showYesNoDialog(
                 project,
-                "Are you sure you want to delete '${build.code}' build within the '$subscription' subscription?",
+                """
+                    Are you certain that you want to delete build '${build.code}' within the '$subscription' subscription?<br>
+                    The build will be deleted permanently in 14 day(s).<br>
+                    During this period you can request a restore via ticket to your system administrator.
+                """.trimIndent(),
                 "Delete CCv2 Build",
                 HybrisIcons.CCv2.Build.Actions.DELETE
             ) != Messages.YES

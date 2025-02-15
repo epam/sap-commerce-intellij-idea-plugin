@@ -2,6 +2,7 @@
 
 ### `CCv2` enhancements
 - Allow downloading build logs for Builds in Unknown status [#1309](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1309)
+- Aligned Build removal confirmation message with SAP's one [#1310](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1310)
 
 ## [2024.3.5]
 
