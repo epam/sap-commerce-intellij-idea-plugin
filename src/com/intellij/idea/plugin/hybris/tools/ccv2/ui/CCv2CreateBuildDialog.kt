@@ -33,6 +33,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.layout.selected
 import com.intellij.util.ui.JBUI
 import java.util.*
 import javax.swing.Icon
@@ -231,8 +232,8 @@ class CCv2CreateBuildDialog(
                                         label.icon = value.icon
                                     }
                                 )
+                                    .enabledIf(deployCheckBox!!.selected)
                                     .comment("Mode")
-                                    .enabled(environment.canDeploy())
                                     .component
                             }
                         }.gap(RightGap.SMALL)
@@ -246,8 +247,8 @@ class CCv2CreateBuildDialog(
                                         label.icon = value.icon
                                     }
                                 )
+                                    .enabledIf(deployCheckBox!!.selected)
                                     .comment("Strategy")
-                                    .enabled(environment.canDeploy())
                                     .component
                             }
                         }.gap(RightGap.SMALL)
