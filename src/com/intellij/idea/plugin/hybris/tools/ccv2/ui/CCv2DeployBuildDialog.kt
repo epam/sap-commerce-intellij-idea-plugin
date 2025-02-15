@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.help.HybrisWebHelpProvider
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
@@ -215,4 +216,5 @@ class CCv2DeployBuildDialog(
 
     override fun getStyle() = DialogStyle.COMPACT
     override fun getPreferredFocusedComponent() = subscriptionComboBox
+    override fun getHelpId() = HybrisWebHelpProvider.CCV2_DEPLOYMENTS
 }

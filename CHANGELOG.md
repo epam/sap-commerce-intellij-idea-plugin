@@ -5,6 +5,7 @@
 - Allow downloading build logs for Builds in Unknown status [#1309](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1309)
 - Aligned Build removal confirmation message with SAP's one [#1310](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1310)
 - Enable `mode` & `strategy` only if `Deploy` is selected in the Build dialog [#1312](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1312)
+- Added Help pointing to SAP Help Portal for both Deploy and Build dialogs [#1313](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1313)
 
 ## [2024.3.5]
 
