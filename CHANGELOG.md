@@ -1,3 +1,8 @@
+## [2024.3.6]
+
+### `CCv2` enhancements
+- Allow downloading build logs for Builds in Unknown status [#1309](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1309)
+
 ## [2024.3.5]
 
 ### `CCv2` enhancements

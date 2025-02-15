@@ -44,7 +44,7 @@ data class CCv2BuildDto(
     val duration = CCv2Util.getTimeDiffInMinutes(startTime, endTime).takeIf { it.toInt() != -1 } ?: "N/A"
 
     fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
-    fun canDownloadLogs() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
+    fun canDownloadLogs() = status != CCv2BuildStatus.DELETED
     fun canDeploy() = status == CCv2BuildStatus.SUCCESS
     fun canTrack() = status == CCv2BuildStatus.SCHEDULED || status == CCv2BuildStatus.BUILDING || status == CCv2BuildStatus.UNKNOWN
 
