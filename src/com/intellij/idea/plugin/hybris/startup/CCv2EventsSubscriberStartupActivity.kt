@@ -45,7 +45,7 @@ class CCv2EventsSubscriberStartupActivity : ProjectActivity {
                                     "Build $buildCode could not be deployed.",
                                     "Build status: ${build.status}"
                                 )
-                                .hideAfter(15)
+                                .system(true)
                                 .notify(project)
                         }
                     }

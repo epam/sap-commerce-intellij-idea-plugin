@@ -345,6 +345,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 """.trimIndent()
                                 )
                                     .hideAfter(10)
+                                    .system(true)
                                     .notify(project)
                             }
                         }
@@ -381,6 +382,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 """.trimIndent()
                             )
                                 .hideAfter(10)
+                                .system(true)
                                 .notify(project)
                         }
                 } catch (e: SocketTimeoutException) {
@@ -412,6 +414,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 """.trimIndent()
                             )
                                 .hideAfter(10)
+                                .system(true)
                                 .notify(project)
                         }
                 } catch (e: SocketTimeoutException) {
@@ -457,6 +460,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 """.trimIndent()
                                 )
                                     .hideAfter(10)
+                                    .system(true)
                                     .notify(project)
                             }
                         }
@@ -604,7 +608,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                         checkCanceled()
 
                         try {
-                            if (buildStatus == CCv2BuildStatus.UNKNOWN) {
+                            if (buildStatus == CCv2BuildStatus.UNKNOWN || buildStatus == CCv2BuildStatus.BUILDING) {
                                 // at this point, although the progress is 100, build may be in the UNKNOWN status
                                 // we have to wait for non-UNKNOWN status to proceed with the next steps
                                 val statusMessage = if (totalProgress < 100) "Build $buildCode scheduled, warming-up..."
@@ -647,7 +651,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 Build $buildCode has been failed.
                             """.trimIndent()
                         )
-                        .hideAfter(15)
+                        .system(true)
                         .notify(project)
                 } else {
                     Notifications
@@ -659,7 +663,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 Build $buildCode has been completed with ${buildStatus.title}.
                             """.trimIndent()
                         )
-                        .hideAfter(15)
+                        .system(true)
                         .notify(project)
 
                     project.messageBus.syncPublisher(TOPIC_BUILDS).onBuildCompleted(
@@ -714,7 +718,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 Deployment $buildCode has been completed.
                             """.trimIndent()
                         )
-                        .hideAfter(15)
+                        .system(true)
                         .notify(project)
                 }
             }
@@ -739,6 +743,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
             }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(10)
+            .system(true)
             .notify(project)
         return null
     }
@@ -757,6 +762,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
             }
             .hideAfter(10)
+            .system(true)
             .notify(project)
     }
 
@@ -775,6 +781,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
             }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(15)
+            .system(true)
             .notify(project)
     }
 

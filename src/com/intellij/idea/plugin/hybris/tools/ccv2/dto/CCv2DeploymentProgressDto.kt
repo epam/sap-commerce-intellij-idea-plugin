@@ -26,7 +26,7 @@ import java.time.OffsetDateTime
 data class CCv2DeploymentProgressDto(
     val subscriptionCode: String,
     val deploymentCode: String,
-    val deploymentStatus: String,
+    val deploymentStatus: CCv2DeploymentStatusEnum,
     val percentage: Int,
     val stages: Collection<CCv2DeploymentProgressStageDto>,
 ) : CCv2DTO {
@@ -35,7 +35,7 @@ data class CCv2DeploymentProgressDto(
         fun map(progress: DeploymentProgressDTO) = CCv2DeploymentProgressDto(
             subscriptionCode = progress.subscriptionCode ?: "N/A",
             deploymentCode = progress.deploymentCode ?: "N/A",
-            deploymentStatus = progress.deploymentStatus ?: "N/A",
+            deploymentStatus = CCv2DeploymentStatusEnum.tryValueOf(progress.deploymentStatus),
             percentage = progress.percentage ?: 0,
             stages = progress.stages
                 ?.map { CCv2DeploymentProgressStageDto.map(it) }

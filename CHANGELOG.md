@@ -8,6 +8,7 @@
 - Added Help pointing to SAP Help Portal for both Deploy and Build dialogs [#1313](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1313)
 - Allow re-deployment for environments in `failed` state [#1314](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1314)
 - Interrupt deployment tracking in case of `fail` during the deployment [#1315](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1315)
+- Do not hide confirmation notifications [#1316](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1316)
 
 ## [2024.3.5]
 

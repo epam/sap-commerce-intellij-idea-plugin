@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -47,9 +47,15 @@ class Notifications private constructor(type: NotificationType, title: String, c
         )
 
     private var delay: Long? = null
+    private var system: Boolean = false
 
     fun important(important: Boolean): Notifications {
         notification.isImportant = important
+        return this
+    }
+
+    fun system(system: Boolean): Notifications {
+        this.system = system
         return this
     }
 
@@ -77,6 +83,13 @@ class Notifications private constructor(type: NotificationType, title: String, c
         if (delay != null) {
             AppExecutorUtil.getAppScheduledExecutorService().schedule({ notification.expire() }, delay!!, TimeUnit.SECONDS)
         }
+
+        if (system) {
+            val frame = WindowManager.getInstance().getFrame(project) ?: return
+            if (!frame.hasFocus()) {
+                SystemNotifications.getInstance().notify("SAP CX", notification.title!!, notification.content)
+            }
+        }
     }
 
     companion object {
@@ -89,7 +102,7 @@ class Notifications private constructor(type: NotificationType, title: String, c
         ) {
             val frame = WindowManager.getInstance().getFrame(project) ?: return
             if (!frame.hasFocus()) {
-                SystemNotifications.getInstance().notify(notificationName, notificationTitle, notificationText)
+                SystemNotifications.getInstance().notify("SAP CX", notificationTitle, notificationText)
             }
         }
 
