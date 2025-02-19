@@ -6,6 +6,7 @@
 - Aligned Build removal confirmation message with SAP's one [#1310](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1310)
 - Enable `mode` & `strategy` only if `Deploy` is selected in the Build dialog [#1312](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1312)
 - Added Help pointing to SAP Help Portal for both Deploy and Build dialogs [#1313](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1313)
+- Allow re-deployment for environments in `failed` state [#1314](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1314)
 
 ## [2024.3.5]
 

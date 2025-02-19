@@ -42,7 +42,7 @@ data class CCv2EnvironmentDto(
 ) : CCv2DTO, Comparable<CCv2EnvironmentDto> {
 
     fun canDeploy() = (status in listOf(CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT, CCv2EnvironmentStatus.AVAILABLE))
-        && deploymentStatus in listOf(CCv2DeploymentStatusEnum.DEPLOYED)
+        && deploymentStatus in listOf(CCv2DeploymentStatusEnum.DEPLOYED, CCv2DeploymentStatusEnum.FAIL)
 
     override fun compareTo(other: CCv2EnvironmentDto) = name.compareTo(other.name)
 
