@@ -1,10 +1,10 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -18,13 +18,13 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
-import com.intellij.psi.PsiFile
+import com.intellij.openapi.vfs.VirtualFile
 
 class CngContextMeta(
-    myPsiFile: PsiFile,
+    virtualFile: VirtualFile,
     myDom: Context,
     val name: String
-) : CngMeta<Context>(myPsiFile, myDom) {
+) : CngMeta<Context>(virtualFile, myDom) {
 
     val attributes = myDom.xmlTag
         ?.attributes

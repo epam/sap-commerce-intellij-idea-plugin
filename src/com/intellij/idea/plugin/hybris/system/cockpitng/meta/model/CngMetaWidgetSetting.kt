@@ -1,10 +1,10 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -18,16 +18,16 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Setting
-import com.intellij.psi.PsiFile
+import com.intellij.openapi.vfs.VirtualFile
 
 class CngMetaWidgetSetting(
-    myPsiFile: PsiFile,
+    virtualFile: VirtualFile,
     myDom: Setting,
-) : CngMeta<Setting>(myPsiFile, myDom) {
+) : CngMeta<Setting>(virtualFile, myDom) {
 
-    val id: String = dom.key.stringValue!!
-    val type: String? = dom.type.stringValue
-    val defaultValue: String? = dom.defaultValue.stringValue
+    val id: String = myDom.key.stringValue!!
+    val type: String? = myDom.type.stringValue
+    val defaultValue: String? = myDom.defaultValue.stringValue
 
     override fun toString() = id
 }

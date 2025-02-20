@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,7 +37,7 @@ object TSUtils {
     private val ENUM_MODEL_KEY = Key.create<Boolean>("Y_IS_ENUM_MODEL_CLASS")
 
     fun isTypeSystemFile(file: PsiFile): Boolean = (file is XmlFile && file.getName().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING))
-        && DomManager.getDomManager(file.getProject()).getFileElement(file, Items::class.java) != null
+        && DomManager.getDomManager(file.project).getFileElement(file, Items::class.java) != null
 
     fun isCustomExtensionFile(file: PsiFile): Boolean = CachedValuesManager.getCachedValue(file) {
         if (!isTypeSystemFile(file)) return@getCachedValue CachedValueProvider.Result.create<Boolean>(false, file)

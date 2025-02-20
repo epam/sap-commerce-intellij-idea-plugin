@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,14 +22,14 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.module.Module
-import com.intellij.psi.PsiFile
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.containers.MultiMap
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 
 class BSMetaModel(
     val module: Module,
-    val psiFile: PsiFile,
+    val virtualFile: VirtualFile,
     val custom: Boolean
 ) : Disposable {
 
@@ -52,5 +52,5 @@ class BSMetaModel(
         myMetaCache.clear()
     }
 
-    override fun toString() = "Module: ${module.yExtensionName()} | psi file: ${psiFile.name}"
+    override fun toString() = "Module: ${module.yExtensionName()} | file: ${virtualFile.name}"
 }

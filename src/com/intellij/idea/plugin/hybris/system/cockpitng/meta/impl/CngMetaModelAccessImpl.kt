@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -37,6 +37,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Computable
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
@@ -110,13 +111,13 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
         clazz: Class<D>,
         resultProcessor: (input: PsiFile) -> T?,
         shouldCollect: (DomFileElement<D>) -> Boolean
-    ): Pair<List<T>, Array<PsiFile>> {
+    ): Pair<List<T>, Array<VirtualFile>> {
         val localConfigMetaModels = CngMetaModelCollector.getInstance(myProject).collectDependencies(clazz, shouldCollect)
             .map { retrieveSingleMetaModelPerFile(it, key, resultProcessor) }
             .map { it.value }
 
         val dependencies = localConfigMetaModels
-            .map { it.psiFile }
+            .map { it.virtualFile }
             .toTypedArray()
         return Pair(localConfigMetaModels, dependencies)
     }

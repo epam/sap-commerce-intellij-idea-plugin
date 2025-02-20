@@ -84,7 +84,7 @@ class BSMetaModelAccess(private val project: Project, private val coroutineScope
                 }
             }
             val dependencies = localMetaModels
-                .map { it.psiFile }
+                .map { it.virtualFile }
                 .toTypedArray()
 
             CachedValueProvider.Result.create(myGlobalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })

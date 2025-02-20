@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,14 +24,14 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.module.Module
-import com.intellij.psi.PsiFile
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.containers.MultiMap
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 
 class TSMetaModel(
     val module: Module,
-    val psiFile: PsiFile,
+    val virtualFile: VirtualFile,
     val custom: Boolean
 ) : Disposable {
 
@@ -57,5 +57,5 @@ class TSMetaModel(
         myRelationsBySourceTypeName.clear()
     }
 
-    override fun toString() = "Module: ${module.yExtensionName()} | psi file: ${psiFile.name}"
+    override fun toString() = "Module: ${module.yExtensionName()} | file: ${virtualFile.name}"
 }
