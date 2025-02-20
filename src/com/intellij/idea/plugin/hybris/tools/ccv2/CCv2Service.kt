@@ -692,7 +692,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                             totalProgress = progress.percentage
 
                             if (progress.deploymentStatus == CCv2DeploymentStatusEnum.FAIL) {
-                                this.coroutineContext.cancel(CancellationException("Deployment failed"))
+                                cancel(CancellationException("Deployment failed"))
                             }
 
                             progressReporter.sizedStep(reportProgress, "Deployment $buildCode progress ${progress.percentage}%") {
