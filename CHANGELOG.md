@@ -10,6 +10,7 @@
 - Interrupt deployment tracking in case of `fail` during the deployment [#1315](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1315)
 - Do not hide confirmation notifications [#1316](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1316)
 - Improved cancellation of the deployment tracking [#1317](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1317)
+- Ensure build progress update during the warming-up phase [#1319](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1319)
 
 ### Other
 - Adjusted dependencies used by Type/Bean/CNG MetaModels [#1318](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1318)

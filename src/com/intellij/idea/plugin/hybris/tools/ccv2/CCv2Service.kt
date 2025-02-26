@@ -614,8 +614,9 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                 val statusMessage = if (totalProgress < 100) "Build $buildCode scheduled, warming-up..."
                                 else "Build $buildCode completed, waiting for status update..."
                                 progressReporter.indeterminateStep(statusMessage) {
-                                    buildStatus = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token!!, progressReporter)
-                                        .buildStatus
+                                    val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token!!, progressReporter)
+                                    buildStatus = progress.buildStatus
+                                    totalProgress = progress.percentage
                                     delay(15.seconds)
                                 }
                             } else {
