@@ -604,41 +604,38 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 val ccv2Token = getCCv2Token(subscription)
 
                 reportProgress { progressReporter ->
-                    while (buildStatus != CCv2BuildStatus.FAIL && (totalProgress < 100 || buildStatus == CCv2BuildStatus.UNKNOWN)) {
-                        checkCanceled()
+                    try {
+                        while (buildStatus == CCv2BuildStatus.UNKNOWN || buildStatus == CCv2BuildStatus.SCHEDULED) {
+                            checkCanceled()
 
-                        try {
-                            if (buildStatus == CCv2BuildStatus.UNKNOWN || buildStatus == CCv2BuildStatus.BUILDING) {
-                                // at this point, although the progress is 100, build may be in the UNKNOWN status
-                                // we have to wait for non-UNKNOWN status to proceed with the next steps
-                                val statusMessage = if (totalProgress < 100) "Build $buildCode scheduled, warming-up..."
-                                else "Build $buildCode completed, waiting for status update..."
-                                progressReporter.indeterminateStep(statusMessage) {
-                                    val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token!!, progressReporter)
-                                    buildStatus = progress.buildStatus
-                                    totalProgress = progress.percentage
+                            progressReporter.indeterminateStep("Build $buildCode scheduled, warming-up...") {
+                                val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token!!, progressReporter)
+                                buildStatus = progress.buildStatus
+                                delay(15.seconds)
+                            }
+                        }
+
+                        while (buildStatus == CCv2BuildStatus.BUILDING) {
+                            checkCanceled()
+
+                            val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token!!, progressReporter)
+                            val reportProgress = progress.percentage - totalProgress
+                            totalProgress = progress.percentage
+                            buildStatus = progress.buildStatus
+
+                            progressReporter.sizedStep(
+                                reportProgress,
+                                "Build $buildCode progress ${progress.percentage}% | ${progress.startedTasks.size} of ${progress.numberOfTasks} tasks"
+                            ) {
+                                if (totalProgress < 100) {
                                     delay(15.seconds)
                                 }
-                            } else {
-                                val progress = CCv2Api.getInstance().fetchBuildProgress(subscription, buildCode, ccv2Token!!, progressReporter)
-                                val reportProgress = progress.percentage - totalProgress
-                                totalProgress = progress.percentage
-                                buildStatus = progress.buildStatus
-
-                                progressReporter.sizedStep(
-                                    reportProgress,
-                                    "Build $buildCode progress ${progress.percentage}% | ${progress.startedTasks.size} of ${progress.numberOfTasks} tasks"
-                                ) {
-                                    if (totalProgress < 100) {
-                                        delay(15.seconds)
-                                    }
-                                }
                             }
-                        } catch (e: SocketTimeoutException) {
-                            notifyOnTimeout(subscription)
-                        } catch (e: RuntimeException) {
-                            notifyOnException(subscription, e)
                         }
+                    } catch (e: SocketTimeoutException) {
+                        notifyOnTimeout(subscription)
+                    } catch (e: RuntimeException) {
+                        notifyOnException(subscription, e)
                     }
                 }
 
