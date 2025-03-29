@@ -12,6 +12,7 @@
 - Improved cancellation of the deployment tracking [#1317](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1317)
 - Ensure build progress update during the warming-up phase [#1319](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1319)
 - Improved deployment tracking [#1321](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1321)
+- Improved deployment history representation per build [#1322](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1322)
 
 ### Other
 - Adjusted dependencies used by Type/Bean/CNG MetaModels [#1318](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1318)

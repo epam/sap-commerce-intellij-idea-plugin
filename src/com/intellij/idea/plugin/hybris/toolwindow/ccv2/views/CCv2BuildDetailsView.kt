@@ -274,7 +274,7 @@ class CCv2BuildDetailsView(
                                 sUser(project, deployment.createdBy, HybrisIcons.CCv2.Deployment.CREATED_BY, "Deployed by")
                             }
                         }
-                    }
+                    }.layout(RowLayout.PARENT_GRID)
                 }
             }.expanded = true
         }
