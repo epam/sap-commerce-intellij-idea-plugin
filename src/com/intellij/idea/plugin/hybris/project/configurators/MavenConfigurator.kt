@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,11 +21,11 @@ package com.intellij.idea.plugin.hybris.project.configurators
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.openapi.vfs.VfsUtil
+import org.jetbrains.idea.maven.buildtool.MavenSyncSpec
 import org.jetbrains.idea.maven.model.MavenConstants
 import org.jetbrains.idea.maven.project.MavenProjectsManager
-import org.jetbrains.idea.maven.wizards.MavenProjectBuilder
+import org.jetbrains.idea.maven.wizards.MavenProjectAsyncBuilder
 import java.io.File
 
 class MavenConfigurator {
@@ -45,34 +45,16 @@ class MavenConfigurator {
             .map { File(it, MavenConstants.POM_XML) }
             .filter { it.exists() && it.isFile }
             .mapNotNull { VfsUtil.findFileByIoFile(it, true) }
-            .map { vf ->
-                MavenProjectBuilder()
-                    .also {
-                        it.setUpdate(MavenProjectsManager.getInstance(project).isMavenizedProject)
-                        it.setFileToImport(vf)
-                    }
-            }
-            .filter {
-                val path = it.rootPath
-                    ?.toAbsolutePath()
-                    ?.toString()
-
-                mavenModules.any { module: MavenModuleDescriptor -> module.moduleRootDirectory.absolutePath == path }
-            }
             .map {
                 {
-                    try {
-                        it.commit(project, null, ModulesProvider.EMPTY_MODULES_PROVIDER)
-                    } finally {
-                        it.cleanup()
-                    }
+                    MavenProjectAsyncBuilder().commitSync(project, it, null)
                     Unit
                 }
             }
             .toMutableList()
 
         actions.add() {
-            MavenProjectsManager.getInstance(project).importProjects()
+            MavenProjectsManager.getInstance(project).scheduleUpdateAllMavenProjects(MavenSyncSpec.full("MavenProjectsManager.importProjects"));
         }
 
         return actions

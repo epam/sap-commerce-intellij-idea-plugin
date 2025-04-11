@@ -299,7 +299,6 @@ dependencies {
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version"), useInstaller = false)
 
-        instrumentationTools()
         pluginVerifier()
 
         // printBundledPlugins for bundled plugins
@@ -333,19 +332,19 @@ dependencies {
 
         // JSON:
         // https://plugins.jetbrains.com/plugin/25364-json
-        plugin("com.intellij.modules.json:243.23654.117")
+        plugin("com.intellij.modules.json:251.23774.318")
 
         // Ant:
         // https://plugins.jetbrains.com/plugin/23025-ant
-        plugin("AntSupport:243.23654.117")
+        plugin("AntSupport:251.23774.318")
 
         // PsiViewer:
         // https://plugins.jetbrains.com/plugin/227-psiviewer
-        plugin("PsiViewer:243.7768")
+        plugin("PsiViewer:251.175")
 
         // JRebel and XRebel:
         // https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-        plugin("JRebelPlugin:2025.1.1")
+        plugin("JRebelPlugin:2025.2.0")
 
         // Big Data Tools:
         // incredibly sad, but as for now API cannot be used by 3rd-party plugins

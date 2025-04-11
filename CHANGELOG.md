@@ -1,3 +1,8 @@
+## [2025.1.0]
+
+### Other
+- Compatibility release [#1323](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1323)
+
 ## [2024.3.6]
 
 ### `CCv2` enhancements

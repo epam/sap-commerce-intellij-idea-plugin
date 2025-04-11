@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -61,7 +61,7 @@ class AntUpdateMavenDependenciesNotificationProvider : EditorNotificationProvide
                         val targets = listOf(HybrisConstants.ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES)
                         ExecutionHandler.runBuild(buildFile, targets, null, DataContext.EMPTY_CONTEXT, emptyList())
                         { _, _ ->
-                            EditorNotifications.getInstance(project).updateNotifications(this)
+                            EditorNotifications.getInstance(project).removeNotificationsForProvider(this)
                             file.removeUserData(HybrisConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES)
                         }
                         ToolWindowManager.getInstance(project).activateEditorComponent()

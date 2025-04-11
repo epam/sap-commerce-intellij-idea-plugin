@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -56,7 +56,7 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
             super.apply()
 
             EditorNotificationProvider.EP_NAME.findExtension(FxSReservedWordsCaseEditorNotificationProvider::class.java, project)
-                ?.let { EditorNotifications.getInstance(project).updateNotifications(it) }
+                ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }
         }
 
         override fun createPanel() = panel {
