@@ -57,10 +57,9 @@ class JavaScriptLanguageInjector : LanguageInjector {
     }
 
     private fun injectLanguage(injectionPlacesRegistrar: InjectedLanguagePlaces, length: Int, offset: Int) {
-        val language = JavascriptLanguage
         try {
             injectionPlacesRegistrar.addPlace(
-                language,
+                JavascriptLanguage,
                 TextRange.from(offset, length), null, null
             )
         } catch (e: ProcessCanceledException) {
