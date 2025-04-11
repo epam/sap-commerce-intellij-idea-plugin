@@ -1,7 +1,7 @@
 ## [2025.1.0]
 
 ### Other
-- Compatibility release [#1323](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1323)
+- Compatibility release [#1324](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1324)
 
 ## [2024.3.6]
 
