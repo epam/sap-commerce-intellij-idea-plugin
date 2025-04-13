@@ -1,3 +1,8 @@
+## [2025.1.1]
+
+### Other
+- Disable failing JRebelPlugin during build of the Searchable Options [#1325](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1325)
+
 ## [2025.1.0]
 
 ### Other

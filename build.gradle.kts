@@ -19,8 +19,10 @@ import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
+import org.jetbrains.intellij.platform.gradle.extensions.IntelliJPlatformDependenciesExtension
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
+import org.jetbrains.intellij.pluginRepository.PluginRepositoryFactory
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 fun properties(key: String) = providers.gradleProperty(key)
@@ -254,6 +256,22 @@ tasks {
             productsReleases.get().max()
         }
     }
+
+    buildSearchableOptions {
+        var originalDisabledPluginsContent = ""
+
+        doFirst {
+            // There is an issue with JRebelPlugin which blocks creation of the searchable options
+            sandboxConfigDirectory.file("disabled_plugins.txt").get().asFile
+                .also { originalDisabledPluginsContent = it.readText() }
+                .writeText("JRebelPlugin")
+        }
+
+        doLast {
+            sandboxConfigDirectory.file("disabled_plugins.txt").get().asFile
+                .writeText(originalDisabledPluginsContent)
+        }
+    }
 }
 
 intellijPlatformTesting {
@@ -295,6 +313,7 @@ dependencies {
         exclude("org.apache.httpcomponents", "httpmime")
     }
     testImplementation(kotlin("test"))
+    testRuntimeOnly("junit:junit:4.13.2")
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version"), useInstaller = false)
@@ -332,19 +351,19 @@ dependencies {
 
         // JSON:
         // https://plugins.jetbrains.com/plugin/25364-json
-        plugin("com.intellij.modules.json:251.23774.318")
+        pluginsInLatestCompatibleVersion("com.intellij.modules.json")
 
         // Ant:
         // https://plugins.jetbrains.com/plugin/23025-ant
-        plugin("AntSupport:251.23774.318")
+        pluginsInLatestCompatibleVersion("AntSupport")
 
         // PsiViewer:
         // https://plugins.jetbrains.com/plugin/227-psiviewer
-        plugin("PsiViewer:251.175")
+        pluginsInLatestCompatibleVersion("PsiViewer")
 
         // JRebel and XRebel:
         // https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-        plugin("JRebelPlugin:2025.2.0")
+        pluginsInLatestCompatibleVersion("JRebelPlugin")
 
         // Big Data Tools:
         // incredibly sad, but as for now API cannot be used by 3rd-party plugins
@@ -378,3 +397,23 @@ fun RunIdeTask.applyRunIdeSystemSettings() {
     systemProperty("idea.trust.all.projects", true)
     systemProperty("jb.consents.confirmation.enabled", false)
 }
+
+val IntelliJPlatformDependenciesExtension.pluginRepository by lazy {
+    PluginRepositoryFactory.create("https://plugins.jetbrains.com")
+}
+
+fun IntelliJPlatformDependenciesExtension.pluginsInLatestCompatibleVersion(vararg pluginIds: String) =
+    plugins(provider {
+        pluginIds.map { pluginId ->
+            val platformType = intellijPlatform.productInfo.productCode
+            val platformVersion = intellijPlatform.productInfo.buildNumber
+
+            val plugin = pluginRepository.pluginManager.searchCompatibleUpdates(
+                build = "$platformType-$platformVersion",
+                xmlIds = listOf(pluginId),
+            ).firstOrNull()
+                ?: throw GradleException("No plugin update with id='$pluginId' compatible with '$platformType-$platformVersion' found in JetBrains Marketplace")
+
+            "${plugin.pluginXmlId}:${plugin.version}"
+        }
+    })
