@@ -1,4 +1,4 @@
-## [2024.3.6]
+## [2024.3.7]
 
 ### `CCv2` enhancements
 - Added Node.js version 22 to the CCv2 js-storefront manifest file [#1326](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1326)
