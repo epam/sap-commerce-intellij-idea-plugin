@@ -1,6 +1,11 @@
 ## [2024.3.6]
 
 ### `CCv2` enhancements
+- Added Node.js version 22 to the CCv2 js-storefront manifest file [#1326](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1326)
+
+## [2024.3.6]
+
+### `CCv2` enhancements
 - Introduced possibility to schedule an auto-deployment of the Build [#1311](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1311)
 - Allow downloading build logs for Builds in Unknown status [#1309](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1309)
 - Aligned Build removal confirmation message with SAP's one [#1310](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1310)
