@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,7 +32,6 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
-import org.apache.batik.ext.swing.GridBagConstants
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
@@ -72,7 +71,7 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
         panel.add(timeComboBox, constraints)
 
         constraints.weightx = 1.0
-        constraints.fill = GridBagConstants.HORIZONTAL
+        constraints.fill = GridBagConstraints.HORIZONTAL
 
         panel.add(workingDirLabel, constraints)
 

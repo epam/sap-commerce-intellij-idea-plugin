@@ -1,7 +1,10 @@
 ## [2024.3.7]
 
 ### `CCv2` enhancements
-- Added Node.js version 22 to the CCv2 js-storefront manifest file [#1326](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1326)
+- Added Node.js version 22 to the CCv2 js-storefront manifest file [#1327](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1327)
+
+### Fixes
+- Fixed incorrect class import in the ImpEx Monitor [#1328](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1328)
 
 ## [2024.3.6]
 
