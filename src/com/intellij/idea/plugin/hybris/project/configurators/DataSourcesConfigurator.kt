@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -79,6 +79,7 @@ class DataSourcesConfigurator {
                  * you need to call it from coroutine context
                  * the current version returning AsyncTask (completable future) is deprecated
                  */
+                // see replacement: https://intellij-support.jetbrains.com/hc/en-us/community/posts/21964027826706-Replacement-from-DataSourceUiUtil-performAutoSyncTask
                 DataSourceUtil.performAutoSyncTask(project, dataSource)
                 loadDatabaseDriver(project, dataSource)
             }
