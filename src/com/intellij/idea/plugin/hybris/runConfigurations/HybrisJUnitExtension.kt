@@ -18,26 +18,24 @@
  */
 package com.intellij.idea.plugin.hybris.runConfigurations
 
+import com.intellij.execution.Executor
 import com.intellij.execution.RunConfigurationExtension
+import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.configurations.ParametersList
 import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunnerSettings
+import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.junit.JUnitConfiguration
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_BUNDLED_SERVER_TYPE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_BIN_DIR
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_BOOTSTRAP_BIN_DIR
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_CONFIG_DIR
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_DATA_DIR
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_LOG_DIR
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_ROLES_DIR
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_HYBRIS_TEMP_DIR
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_PLATFORMHOME
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JAVAOPTIONS
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PROPERTY_STANDALONE_JDKMODULESEXPORTS
+import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.CompilerModuleExtension
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.roots.OrderEnumerator
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.search.GlobalSearchScope
@@ -45,105 +43,150 @@ import java.util.*
 
 class HybrisJUnitExtension : RunConfigurationExtension() {
 
-    override fun isApplicableFor(configuration: RunConfigurationBase<*>) =
-        if (configuration !is JUnitConfiguration) false
-        else ProjectSettingsComponent.getInstance(configuration.project).isHybrisProject()
+	private companion object {
+		const val JVM_ADDITIONAL_PREFIX = "wrapper.java.additional."
+		const val STRIP_QUOTES_SUFFIX = ".stripquotes"
+	}
 
-    override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
-        configuration: T & Any, params: JavaParameters, runnerSettings: RunnerSettings?
-    ) {
 
-        if (runnerSettings != null || !isApplicableFor(configuration)) return
+	override fun isApplicableFor(configuration: RunConfigurationBase<*>) =
+		if (configuration !is JUnitConfiguration) false
+		else ProjectSettingsComponent.getInstance(configuration.project)
+				.isHybrisProject()
 
-        val junitConfig = (configuration as JUnitConfiguration)
-        val project = configuration.project
+	override fun patchCommandLine(
+		configuration: RunConfigurationBase<*>,
+		runnerSettings: RunnerSettings?,
+		cmdLine: GeneralCommandLine,
+		runnerId: String,
+		executor: Executor
+	) {
+		super.patchCommandLine(configuration, runnerSettings, cmdLine, runnerId, executor)
 
-        if (isPureUnitTest(junitConfig, project)) return
+	}
 
-        val vmParameters = params.vmParametersList
+	override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
+		configuration: T & Any,
+		params: JavaParameters,
+		runnerSettings: RunnerSettings?,
+		executor: Executor
+	) {
+		val project = configuration.project
 
-        addVmParameterIfNotExist(vmParameters, "-ea")
 
-        addPlatformHome(junitConfig, vmParameters, project)
-        addJavaRunProperties(project, vmParameters)
-        addHybrisEnvProperties(project, vmParameters)
-    }
+		PropertyService.getInstance(project)
+				?.let { propertyService ->
 
-    private fun isPureUnitTest(configuration: JUnitConfiguration, project: Project): Boolean {
-        val runClass = configuration.runClass ?: return false
-        val psiClass = JavaPsiFacade.getInstance(project)
-            .findClass(runClass, GlobalSearchScope.allScope(project)) ?: return false
+					val vmParameters = params.vmParametersList
 
-        return hasSpecificAnnotation(psiClass, "de.hybris.bootstrap.annotations.UnitTest")
-    }
+					val tomcatWrapperProperties = when {
+						executor.id == DefaultDebugExecutor.EXECUTOR_ID -> propertyService.getTomcatWrapperProperties("debug")
+						else -> propertyService.getTomcatWrapperProperties()
+					}
 
-    private fun hasSpecificAnnotation(psiClass: PsiClass, annotationFQN: String): Boolean {
-        return psiClass.annotations.any { it.qualifiedName == annotationFQN }
-    }
+					getTomcatWrapperProperties(tomcatWrapperProperties).forEach {
+						addVmParameterIfNotExist(vmParameters, it)
+					}
+				}
 
-    private fun addPlatformHome(junitConfig: JUnitConfiguration, vmParameters: ParametersList, project: Project) {
-        val platforhomePrefix = "-D$PROPERTY_PLATFORMHOME"
-        if (vmParameters.parameters.none { it.startsWith(platforhomePrefix) }) {
-            PropertyService.getInstance(project)
-                ?.getPlatformHome()
-                ?.let { vmParameters.add("$platforhomePrefix=$it") }
-        }
-    }
+		super.updateJavaParameters(configuration, params, runnerSettings, executor)
+	}
 
-    private fun addJavaRunProperties(project: Project, vmParameters: ParametersList) {
-        PropertyService.getInstance(project)
-            ?.findProperty(PROPERTY_STANDALONE_JAVAOPTIONS)
-            ?.let { property -> StringTokenizer(property.trim { it <= ' ' }) }
-            ?.let {
-                while (it.hasMoreTokens()) {
-                    val newParam = sanitizeParameter(it.nextToken())
-                    addVmParameterIfNotExist(vmParameters, newParam)
-                }
-            }
+	override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
+		configuration: T & Any, params: JavaParameters, runnerSettings: RunnerSettings?
+	) {
 
-        PropertyService.getInstance(project)
-            ?.findProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS)
-            ?.let { property -> StringTokenizer(property.trim { it <= ' ' }) }
-            ?.let {
-                while (it.hasMoreTokens()) {
-                    val newParam = sanitizeParameter(it.nextToken())
-                    addVmParameterIfNotExist(vmParameters, newParam)
-                }
-            }
+		if (runnerSettings != null || !isApplicableFor(configuration)) return
 
-        PropertyService.getInstance(project)
-            ?.findProperty(PROPERTY_BUNDLED_SERVER_TYPE)
-            ?.let {
-                addVmParameterIfNotExist(vmParameters, "-D$PROPERTY_BUNDLED_SERVER_TYPE=\"$it\"")
-            }
-    }
+		val junitConfig = (configuration as JUnitConfiguration)
+		val project = configuration.project
 
-    private fun sanitizeParameter(param: String): String {
-        return param.replace("\"", "")
-    }
+		if (isPureUnitTest(junitConfig, project)) return
 
-    private fun addHybrisEnvProperties(project: Project, vmParameters: ParametersList) {
-        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_BIN_DIR);
-        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_TEMP_DIR);
-        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_ROLES_DIR);
-        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_LOG_DIR);
-        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_BOOTSTRAP_BIN_DIR);
-        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_DATA_DIR);
-        addPropertyToVmParameter(project, vmParameters, PROPERTY_HYBRIS_CONFIG_DIR);
-    }
+		enhanceClassPath(params, project)
+	}
 
-    private fun addPropertyToVmParameter(project: Project, vmParameters: ParametersList, propertyKey: String) {
-        PropertyService.getInstance(project)
-            ?.findProperty(propertyKey)
-            ?.let {
-                addVmParameterIfNotExist(vmParameters, "-D$propertyKey=$it")
-            }
-    }
+	private fun isPureUnitTest(configuration: JUnitConfiguration, project: Project): Boolean {
+		val runClass = configuration.runClass ?: return false
+		val psiClass = JavaPsiFacade.getInstance(project)
+				.findClass(runClass, GlobalSearchScope.allScope(project)) ?: return false
 
-    private fun addVmParameterIfNotExist(vmParameters: ParametersList, newParam: String) {
-        if (!vmParameters.hasParameter(newParam)) {
-            vmParameters.add(newParam)
-        }
-    }
+		return hasSpecificAnnotation(psiClass, "de.hybris.bootstrap.annotations.UnitTest")
+	}
+
+	private fun hasSpecificAnnotation(psiClass: PsiClass, annotationFQN: String): Boolean {
+		return psiClass.annotations.any { it.qualifiedName == annotationFQN }
+	}
+
+
+	private fun enhanceClassPath(params: JavaParameters, project: Project) {
+		val classPathEntries = HashSet<String>()
+
+		val modules: Array<Module> = ModuleManager.getInstance(project).modules
+		for (module in modules) {
+
+			if (YFacet.getState(module)?.type?.name.equals("CCV2")) {
+				continue
+			}
+
+			// Get the module's output paths (both production and test)
+			val moduleRootManager = ModuleRootManager.getInstance(module)
+
+			// Get the compiler output paths for production and test
+			val productionOutput =
+				moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPath
+			val testOutput =
+				moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPathForTests
+
+			// Add the output paths to the classpath
+			if (productionOutput != null && classPathEntries.add(productionOutput.path)) {
+				params.classPath.add(productionOutput.path)
+			}
+			if (testOutput != null && classPathEntries.add(testOutput.path)) {
+				params.classPath.add(testOutput.path)
+			}
+
+			// **Add module dependencies to classpath**
+			OrderEnumerator.orderEntries(module)
+					.recursively()
+					.classes().roots.forEach {
+						val path = it.presentableUrl
+						if (classPathEntries.add(path)) {
+							params.classPath.add(it)
+						}
+					}
+		}
+	}
+
+	private fun getTomcatWrapperProperties(
+		properties: Properties
+	): MutableList<String> = properties.entries
+			.asSequence()
+			.map { it.key.toString() to it.value.toString() }
+			.filter { (key, _) -> key.startsWith(JVM_ADDITIONAL_PREFIX) }
+			.filter { (key, _) -> !key.endsWith(STRIP_QUOTES_SUFFIX) }
+			.sortedBy { (key, _) ->
+				key.removePrefix(JVM_ADDITIONAL_PREFIX)
+						.toIntOrNull() ?: Int.MAX_VALUE
+			}
+			.map { (key, value) ->
+				val stripQuotesKey = "$key$STRIP_QUOTES_SUFFIX"
+				val shouldStripQuotes = properties[stripQuotesKey]
+						?.toString()
+						?.uppercase() == "TRUE"
+
+				when {
+					shouldStripQuotes -> value.replace("\"", "").trim()
+					else -> value.trim()
+				}
+			}
+			.toMutableList()
+
+
+	private fun addVmParameterIfNotExist(vmParameters: ParametersList, newParam: String) {
+		if (!vmParameters.hasParameter(newParam)) {
+			vmParameters.add(newParam)
+		}
+	}
 
 }
