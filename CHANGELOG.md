@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed incorrect class import in the ImpEx Monitor [#1328](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1328)
+- Load VM Properties no longer from the Properties File. Use instead the wrapper.conf files from the Tomcat Folder [#1293](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1293)
 
 ## [2024.3.6]
 
