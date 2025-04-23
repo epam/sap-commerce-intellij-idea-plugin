@@ -43,150 +43,149 @@ import java.util.*
 
 class HybrisJUnitExtension : RunConfigurationExtension() {
 
-	private companion object {
-		const val JVM_ADDITIONAL_PREFIX = "wrapper.java.additional."
-		const val STRIP_QUOTES_SUFFIX = ".stripquotes"
-	}
+    private companion object {
+        const val JVM_ADDITIONAL_PREFIX = "wrapper.java.additional."
+        const val STRIP_QUOTES_SUFFIX = ".stripquotes"
+    }
 
 
-	override fun isApplicableFor(configuration: RunConfigurationBase<*>) =
-		if (configuration !is JUnitConfiguration) false
-		else ProjectSettingsComponent.getInstance(configuration.project)
-				.isHybrisProject()
+    override fun isApplicableFor(configuration: RunConfigurationBase<*>) =
+        if (configuration !is JUnitConfiguration) false
+        else ProjectSettingsComponent.getInstance(configuration.project)
+            .isHybrisProject()
 
-	override fun patchCommandLine(
-		configuration: RunConfigurationBase<*>,
-		runnerSettings: RunnerSettings?,
-		cmdLine: GeneralCommandLine,
-		runnerId: String,
-		executor: Executor
-	) {
-		super.patchCommandLine(configuration, runnerSettings, cmdLine, runnerId, executor)
+    override fun patchCommandLine(
+        configuration: RunConfigurationBase<*>,
+        runnerSettings: RunnerSettings?,
+        cmdLine: GeneralCommandLine,
+        runnerId: String,
+        executor: Executor
+    ) {
+        super.patchCommandLine(configuration, runnerSettings, cmdLine, runnerId, executor)
 
-	}
+    }
 
-	override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
-		configuration: T & Any,
-		params: JavaParameters,
-		runnerSettings: RunnerSettings?,
-		executor: Executor
-	) {
-		val project = configuration.project
-
-
-		PropertyService.getInstance(project)
-				?.let { propertyService ->
-
-					val vmParameters = params.vmParametersList
-
-					val tomcatWrapperProperties = when {
-						executor.id == DefaultDebugExecutor.EXECUTOR_ID -> propertyService.getTomcatWrapperProperties("debug")
-						else -> propertyService.getTomcatWrapperProperties()
-					}
-
-					getTomcatWrapperProperties(tomcatWrapperProperties).forEach {
-						addVmParameterIfNotExist(vmParameters, it)
-					}
-				}
-
-		super.updateJavaParameters(configuration, params, runnerSettings, executor)
-	}
-
-	override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
-		configuration: T & Any, params: JavaParameters, runnerSettings: RunnerSettings?
-	) {
-
-		if (runnerSettings != null || !isApplicableFor(configuration)) return
-
-		val junitConfig = (configuration as JUnitConfiguration)
-		val project = configuration.project
-
-		if (isPureUnitTest(junitConfig, project)) return
-
-		enhanceClassPath(params, project)
-	}
-
-	private fun isPureUnitTest(configuration: JUnitConfiguration, project: Project): Boolean {
-		val runClass = configuration.runClass ?: return false
-		val psiClass = JavaPsiFacade.getInstance(project)
-				.findClass(runClass, GlobalSearchScope.allScope(project)) ?: return false
-
-		return hasSpecificAnnotation(psiClass, "de.hybris.bootstrap.annotations.UnitTest")
-	}
-
-	private fun hasSpecificAnnotation(psiClass: PsiClass, annotationFQN: String): Boolean {
-		return psiClass.annotations.any { it.qualifiedName == annotationFQN }
-	}
+    override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
+        configuration: T & Any,
+        params: JavaParameters,
+        runnerSettings: RunnerSettings?,
+        executor: Executor
+    ) {
+        val project = configuration.project
 
 
-	private fun enhanceClassPath(params: JavaParameters, project: Project) {
-		val classPathEntries = HashSet<String>()
+        PropertyService.getInstance(project)
+            ?.let { propertyService ->
 
-		val modules: Array<Module> = ModuleManager.getInstance(project).modules
-		for (module in modules) {
+                val vmParameters = params.vmParametersList
 
-			if (YFacet.getState(module)?.type?.name.equals("CCV2")) {
-				continue
-			}
+                val tomcatWrapperProperties = when {
+                    executor.id == DefaultDebugExecutor.EXECUTOR_ID -> propertyService.getTomcatWrapperProperties("debug")
+                    else -> propertyService.getTomcatWrapperProperties()
+                }
 
-			// Get the module's output paths (both production and test)
-			val moduleRootManager = ModuleRootManager.getInstance(module)
+                getTomcatWrapperProperties(tomcatWrapperProperties).forEach {
+                    addVmParameterIfNotExist(vmParameters, it)
+                }
+            }
 
-			// Get the compiler output paths for production and test
-			val productionOutput =
-				moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPath
-			val testOutput =
-				moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPathForTests
+        super.updateJavaParameters(configuration, params, runnerSettings, executor)
+    }
 
-			// Add the output paths to the classpath
-			if (productionOutput != null && classPathEntries.add(productionOutput.path)) {
-				params.classPath.add(productionOutput.path)
-			}
-			if (testOutput != null && classPathEntries.add(testOutput.path)) {
-				params.classPath.add(testOutput.path)
-			}
+    override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
+        configuration: T & Any, params: JavaParameters, runnerSettings: RunnerSettings?
+    ) {
 
-			// **Add module dependencies to classpath**
-			OrderEnumerator.orderEntries(module)
-					.recursively()
-					.classes().roots.forEach {
-						val path = it.presentableUrl
-						if (classPathEntries.add(path)) {
-							params.classPath.add(it)
-						}
-					}
-		}
-	}
+        if (runnerSettings != null || !isApplicableFor(configuration)) return
 
-	private fun getTomcatWrapperProperties(
-		properties: Properties
-	): MutableList<String> = properties.entries
-			.asSequence()
-			.map { it.key.toString() to it.value.toString() }
-			.filter { (key, _) -> key.startsWith(JVM_ADDITIONAL_PREFIX) }
-			.filter { (key, _) -> !key.endsWith(STRIP_QUOTES_SUFFIX) }
-			.sortedBy { (key, _) ->
-				key.removePrefix(JVM_ADDITIONAL_PREFIX)
-						.toIntOrNull() ?: Int.MAX_VALUE
-			}
-			.map { (key, value) ->
-				val stripQuotesKey = "$key$STRIP_QUOTES_SUFFIX"
-				val shouldStripQuotes = properties[stripQuotesKey]
-						?.toString()
-						?.uppercase() == "TRUE"
+        val junitConfig = (configuration as JUnitConfiguration)
+        val project = configuration.project
 
-				when {
-					shouldStripQuotes -> value.replace("\"", "").trim()
-					else -> value.trim()
-				}
-			}
-			.toMutableList()
+        if (isPureUnitTest(junitConfig, project)) return
+
+        enhanceClassPath(params, project)
+    }
+
+    private fun isPureUnitTest(configuration: JUnitConfiguration, project: Project): Boolean {
+        val runClass = configuration.runClass ?: return false
+        val psiClass = JavaPsiFacade.getInstance(project)
+            .findClass(runClass, GlobalSearchScope.allScope(project)) ?: return false
+
+        return hasSpecificAnnotation(psiClass, "de.hybris.bootstrap.annotations.UnitTest")
+    }
+
+    private fun hasSpecificAnnotation(psiClass: PsiClass, annotationFQN: String): Boolean {
+        return psiClass.annotations.any { it.qualifiedName == annotationFQN }
+    }
 
 
-	private fun addVmParameterIfNotExist(vmParameters: ParametersList, newParam: String) {
-		if (!vmParameters.hasParameter(newParam)) {
-			vmParameters.add(newParam)
-		}
-	}
+    private fun enhanceClassPath(params: JavaParameters, project: Project) {
+        val classPathEntries = HashSet<String>()
+
+        val modules: Array<Module> = ModuleManager.getInstance(project).modules
+        for (module in modules) {
+
+            if (YFacet.getState(module)?.type?.name.equals("CCV2")) {
+                continue
+            }
+
+            // Get the module's output paths (both production and test)
+            val moduleRootManager = ModuleRootManager.getInstance(module)
+
+            // Get the compiler output paths for production and test
+            val productionOutput =
+                moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPath
+            val testOutput =
+                moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPathForTests
+
+            // Add the output paths to the classpath
+            if (productionOutput != null && classPathEntries.add(productionOutput.path)) {
+                params.classPath.add(productionOutput.path)
+            }
+            if (testOutput != null && classPathEntries.add(testOutput.path)) {
+                params.classPath.add(testOutput.path)
+            }
+
+            // **Add module dependencies to classpath**
+            OrderEnumerator.orderEntries(module)
+                .recursively()
+                .classes().roots.forEach {
+                    val path = it.presentableUrl
+                    if (classPathEntries.add(path)) {
+                        params.classPath.add(it)
+                    }
+                }
+        }
+    }
+
+    private fun getTomcatWrapperProperties(
+        properties: Properties
+    ): MutableList<String> = properties.entries
+        .asSequence()
+        .map { it.key.toString() to it.value.toString() }
+        .filter { (key, _) -> key.startsWith(JVM_ADDITIONAL_PREFIX) }
+        .filter { (key, _) -> !key.endsWith(STRIP_QUOTES_SUFFIX) }
+        .sortedBy { (key, _) ->
+            key.removePrefix(JVM_ADDITIONAL_PREFIX)
+                .toIntOrNull() ?: Int.MAX_VALUE
+        }
+        .map { (key, value) ->
+            val stripQuotesKey = "$key$STRIP_QUOTES_SUFFIX"
+            val shouldStripQuotes = properties[stripQuotesKey]
+                ?.toString()
+                ?.uppercase() == "TRUE"
+
+            when {
+                shouldStripQuotes -> value.replace("\"", "").trim()
+                else -> value.trim()
+            }
+        }
+        .toMutableList()
+
+    private fun addVmParameterIfNotExist(vmParameters: ParametersList, newParam: String) {
+        if (!vmParameters.hasParameter(newParam)) {
+            vmParameters.add(newParam)
+        }
+    }
 
 }
