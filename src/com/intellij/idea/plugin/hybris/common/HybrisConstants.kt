@@ -169,9 +169,7 @@ object HybrisConstants {
     const val PLATFORM_DATABASE_DRIVER_LIBRARY = "Database Drivers"
 
     const val TOMCAT_WRAPPER_CONFIG_DIR = "conf"
-	const val WRAPPER_FILE_PREFIX = "wrapper"
-	const val WRAPPER_FILE_SUFFIX = ".conf"
-	const val DEFAULT_WRAPPER_FILENAME = "wrapper.conf"
+    const val DEFAULT_WRAPPER_FILENAME = "wrapper.conf"
 
     const val NODE_MODULES_DIRECTORY = "node_modules"
     const val JS_TARGET_DIRECTORY = "jsTarget"

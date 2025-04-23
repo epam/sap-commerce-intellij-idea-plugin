@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.runConfigurations
 
 import com.intellij.execution.Executor
 import com.intellij.execution.RunConfigurationExtension
-import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.configurations.ParametersList
 import com.intellij.execution.configurations.RunConfigurationBase
@@ -48,22 +47,10 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
         const val STRIP_QUOTES_SUFFIX = ".stripquotes"
     }
 
-
     override fun isApplicableFor(configuration: RunConfigurationBase<*>) =
         if (configuration !is JUnitConfiguration) false
         else ProjectSettingsComponent.getInstance(configuration.project)
             .isHybrisProject()
-
-    override fun patchCommandLine(
-        configuration: RunConfigurationBase<*>,
-        runnerSettings: RunnerSettings?,
-        cmdLine: GeneralCommandLine,
-        runnerId: String,
-        executor: Executor
-    ) {
-        super.patchCommandLine(configuration, runnerSettings, cmdLine, runnerId, executor)
-
-    }
 
     override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
         configuration: T & Any,
@@ -72,7 +59,6 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
         executor: Executor
     ) {
         val project = configuration.project
-
 
         PropertyService.getInstance(project)
             ?.let { propertyService ->
@@ -84,7 +70,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
                     else -> propertyService.getTomcatWrapperProperties()
                 }
 
-                getTomcatWrapperProperties(tomcatWrapperProperties).forEach {
+                getTomcatWrapperJVMProperties(tomcatWrapperProperties).forEach {
                     addVmParameterIfNotExist(vmParameters, it)
                 }
             }
@@ -158,9 +144,9 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
         }
     }
 
-    private fun getTomcatWrapperProperties(
+    private fun getTomcatWrapperJVMProperties(
         properties: Properties
-    ): MutableList<String> = properties.entries
+    ): List<String> = properties.entries
         .asSequence()
         .map { it.key.toString() to it.value.toString() }
         .filter { (key, _) -> key.startsWith(JVM_ADDITIONAL_PREFIX) }
@@ -180,7 +166,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
                 else -> value.trim()
             }
         }
-        .toMutableList()
+        .toList()
 
     private fun addVmParameterIfNotExist(vmParameters: ParametersList, newParam: String) {
         if (!vmParameters.hasParameter(newParam)) {
