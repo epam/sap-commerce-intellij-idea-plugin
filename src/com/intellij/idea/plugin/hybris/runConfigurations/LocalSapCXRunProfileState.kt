@@ -27,9 +27,13 @@ import com.intellij.execution.process.ProcessHandlerFactory
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.DEBUG_HOST
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.DEBUG_PORT
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.SystemUtils
+import java.io.IOException
+import java.net.Socket
 import java.nio.file.Paths
 
 class LocalSapCXRunProfileState(
@@ -67,9 +71,25 @@ class LocalSapCXRunProfileState(
 
         val processHandler = ProcessHandlerFactory.getInstance().createColoredProcessHandler(commandLine)
         ProcessTerminatedListener.attach(processHandler)
+
+        if (executor is DefaultDebugExecutor) {
+            waitForPort(sapCXOptions.remoteDebugHost ?: DEBUG_HOST, Integer.valueOf(sapCXOptions.remoteDebugPort ?: DEBUG_PORT), 30000)
+        }
+
         return processHandler
     }
 
+    private fun waitForPort(host: String, port: Int, timeoutMillis: Long = 30000) {
+        val startTime = System.currentTimeMillis()
+        while (System.currentTimeMillis() - startTime < timeoutMillis) {
+            try {
+                Socket(host, port).use { return } // success
+            } catch (e: IOException) {
+                Thread.sleep(500)
+            }
+        }
+        throw RuntimeException("Timeout waiting for debug port $host:$port")
+    }
 
     private fun updateDebugPort(debugPort: String) {
         val debuggerRunnerSettings = environment.runnerSettings as GenericDebuggerRunnerSettings
