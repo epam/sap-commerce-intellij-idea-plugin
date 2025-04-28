@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -75,7 +76,6 @@ import static org.apache.http.HttpVersion.HTTP_1_1;
 public abstract class AbstractHybrisHacHttpClient {
 
     private static final Logger LOG = Logger.getInstance(AbstractHybrisHacHttpClient.class);
-    private static final String COOKIE_JSESSIONID = "JSESSIONID";
     public static final int DEFAULT_HAC_TIMEOUT = 6000;
     private static final X509TrustManager X_509_TRUST_MANAGER = new X509TrustManager() {
 
@@ -99,8 +99,9 @@ public abstract class AbstractHybrisHacHttpClient {
     public String login(@NotNull final Project project, @NotNull final RemoteConnectionSettings settings) {
         final var hostHacURL = settings.getGeneratedURL();
         retrieveCookies(hostHacURL, project, settings);
+        final var cookieName = getCookieName(settings);
         final var sessionId = Optional.ofNullable(cookiesPerSettings.get(settings))
-            .map(it -> it.get(COOKIE_JSESSIONID))
+            .map(it -> it.get(cookieName))
             .orElse(null);
         if (sessionId == null) {
             return "Unable to obtain sessionId for " + hostHacURL;
@@ -122,7 +123,7 @@ public abstract class AbstractHybrisHacHttpClient {
         final var newSessionId = CookieParser.getInstance().getSpecialCookie(response.getAllHeaders());
         if (newSessionId != null) {
             Optional.ofNullable(cookiesPerSettings.get(settings))
-                .ifPresent(cookies -> cookies.put(COOKIE_JSESSIONID, newSessionId));
+                .ifPresent(cookies -> cookies.put(cookieName, newSessionId));
             return StringUtils.EMPTY;
         }
         final int statusCode = response.getStatusLine().getStatusCode();
@@ -147,15 +148,16 @@ public abstract class AbstractHybrisHacHttpClient {
         final long timeout,
         final RemoteConnectionSettings settings
     ) {
+        final String cookieName = getCookieName(settings);
         var cookies = cookiesPerSettings.get(settings);
-        if (cookies == null || !cookies.containsKey(COOKIE_JSESSIONID)) {
+        if (cookies == null || !cookies.containsKey(cookieName)) {
             final String errorMessage = login(project, settings);
             if (StringUtils.isNotBlank(errorMessage)) {
                 return createErrorResponse(errorMessage);
             }
         }
         cookies = cookiesPerSettings.get(settings);
-        final var sessionId = cookies.get(COOKIE_JSESSIONID);
+        final var sessionId = cookies.get(cookieName);
         final var csrfToken = getCsrfToken(settings.getGeneratedURL(), settings);
         if (csrfToken == null) {
             cookiesPerSettings.remove(settings);
@@ -255,6 +257,11 @@ public abstract class AbstractHybrisHacHttpClient {
         if (res == null) return;
 
         cookies.putAll(res.cookies());
+    }
+
+    protected String getCookieName(@NotNull final RemoteConnectionSettings settings) {
+        final var sessionCookieName = settings.getSessionCookieName();
+        return StringUtils.isNotBlank(sessionCookieName) ? sessionCookieName : HybrisConstants.DEFAULT_SESSION_COOKIE_NAME;
     }
 
     @Nullable

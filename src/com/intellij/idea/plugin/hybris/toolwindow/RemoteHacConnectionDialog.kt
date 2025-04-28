@@ -27,6 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import java.awt.Component
@@ -38,7 +39,7 @@ class RemoteHacConnectionDialog(
 ) : AbstractRemoteConnectionDialog(project, parentComponent, settings, "Remote SAP Commerce Instance") {
 
     private lateinit var sslProtocolComboBox: ComboBox<String>
-
+    private lateinit var sessionCookieNameTextField: JBTextField
 
     override fun createTestSettings() = with(RemoteConnectionSettings()) {
         type = settings.type
@@ -48,6 +49,7 @@ class RemoteHacConnectionDialog(
         isWsl = isWslCheckBox?.isSelected ?: false
         sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: ""
         hacWebroot = webrootTextField.text
+        sessionCookieName = sessionCookieNameTextField.text.takeIf { !it.isNullOrBlank() } ?: HybrisConstants.DEFAULT_SESSION_COOKIE_NAME
         credentials = Credentials(usernameTextField.text, String(passwordTextField.password))
         this
     }
@@ -146,6 +148,17 @@ class RemoteHacConnectionDialog(
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .component
             }.layout(RowLayout.PARENT_GRID)
+
+            row {
+                label("Session Cookie Name:")
+                sessionCookieNameTextField = textField()
+                    .comment("Optional: override the session cookie name. Default is JSESSIONID.")
+                    .align(AlignX.FILL)
+                    .bindText(settings::sessionCookieName.toNonNullableProperty(HybrisConstants.DEFAULT_SESSION_COOKIE_NAME))
+                    .apply { component.text = "" }
+                    .component
+            }.layout(RowLayout.PARENT_GRID)
+
             if (isWindows()) {
                 wslHostConfiguration()
             }
