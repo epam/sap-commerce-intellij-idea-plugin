@@ -45,7 +45,7 @@ class RemoteHacConnectionDialog(
         hostIP = hostTextField.text
         port = portTextField.text
         isSsl = sslProtocolCheckBox.isSelected
-        isWsl = isWslCheckBox.isSelected
+        isWsl = isWslCheckBox?.isSelected ?: false
         sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: ""
         hacWebroot = webrootTextField.text
         credentials = Credentials(usernameTextField.text, String(passwordTextField.password))

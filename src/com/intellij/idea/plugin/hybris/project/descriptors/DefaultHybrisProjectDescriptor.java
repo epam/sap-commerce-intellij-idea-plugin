@@ -722,6 +722,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 final var name = rootProjectDirectory.getName();
                 if (name.endsWith(HybrisConstants.CCV2_JS_STOREFRONT_NAME) || name.endsWith(HybrisConstants.CCV2_DATAHUB_NAME)) {
                     // faster import: no need to process sub-folders of the CCv2 js-storefront and datahub directories
+                    // TODO: parse manifest.json and register corresponding modules under js-storefront module
                     return;
                 }
             }

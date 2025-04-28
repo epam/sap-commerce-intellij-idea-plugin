@@ -68,11 +68,11 @@ abstract class AbstractRemoteConnectionDialog(
     protected lateinit var passwordTextField: JBPasswordField
     protected lateinit var testConnectionLabel: Cell<JLabel>
     protected lateinit var testConnectionComment: Cell<JEditorPane>
-    protected lateinit var isWslCheckBox: JBCheckBox
     private lateinit var wslDistributionComboBox: JComboBox<String>
     private lateinit var wslProxyCheckBox: JBCheckBox
     private lateinit var wslProxyWarningComment: JEditorPane
     private lateinit var wslDistributionText: Cell<JLabel>
+    protected var isWslCheckBox: JBCheckBox? = null
     private var testConnectionButton: Action = object : DialogWrapperAction("Test Connection") {
 
         @Serial
@@ -194,7 +194,7 @@ abstract class AbstractRemoteConnectionDialog(
                 .selected(false)
                 .visible(distributions.isNotEmpty())
                 .onChanged {
-                    val selected = isWslCheckBox.isSelected
+                    val selected = isWslCheckBox?.isSelected ?: false
                     val multipleDistros = distributions.isNotEmpty()
                     wslDistributionComboBox.isVisible = selected && multipleDistros
                     wslDistributionText.visible(selected)
