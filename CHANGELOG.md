@@ -1,9 +1,13 @@
+## [2025.1.2]
+
+### Other
+- Allow "REMOVE" header for non-dynamic enums [#1335](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1335)
+
 ## [2025.1.1]
 
 ### Other
 - Disable failing JRebelPlugin during build of the Searchable Options [#1325](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1325)
 - Support configurable session cookie name for remote HAC connection [#1334](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1334)
-- Allow "REMOVE" header for non-dynamic enums [#1335](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1335)
 
 ## [2025.1.0]
 
