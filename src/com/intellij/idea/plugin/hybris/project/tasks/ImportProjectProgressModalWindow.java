@@ -176,15 +176,16 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         int counter = 0;
 
-        for (ModuleDescriptor moduleDescriptor : allModules) {
-            final Module javaModule = createJavaModule(indicator, allYModules, rootProjectModifiableModel, moduleDescriptor, appSettings);
+        final var application = ApplicationManager.getApplication();
+
+        for (final var moduleDescriptor : allModules) {
+            final var javaModule = createJavaModule(indicator, allYModules, rootProjectModifiableModel, moduleDescriptor, appSettings);
             modules.add(javaModule);
             counter++;
 
             if (counter >= COMMITTED_CHUNK_SIZE) {
                 counter = 0;
-                ApplicationManager.getApplication().invokeAndWait(
-                    () -> ApplicationManager.getApplication().runWriteAction(modifiableModelsProvider::commit));
+                application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
 
                 modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
 
@@ -204,8 +205,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         indicator.setText(message("hybris.project.import.saving.project"));
 
-        ApplicationManager.getApplication().invokeAndWait(
-            () -> ApplicationManager.getApplication().runWriteAction(modifiableModelsProvider::commit));
+        application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
 
         configuratorFactory.getLoadedConfigurator().configure(project, hybrisProjectDescriptor.getModulesChosenForImport());
 
@@ -420,10 +420,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             configureModuleFacet(descriptor, module, modifiableRootModel, modifiableModelsProvider);
         });
 
-        ApplicationManager.getApplication().invokeAndWait(
-            () -> ApplicationManager.getApplication().runWriteAction(modifiableModelsProvider::commit));
+        final var application = ApplicationManager.getApplication();
+        application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
 
-        configurator.configure(project, modules);
+//        configurator.configure(project, modules.values());
     }
 
     private void updateProjectDictionary(

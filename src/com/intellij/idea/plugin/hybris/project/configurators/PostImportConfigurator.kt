@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,7 +34,7 @@ class PostImportConfigurator(val project: Project) {
 
     fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        allHybrisModules: List<ModuleDescriptor>,
+        allModules: List<ModuleDescriptor>,
         refresh: Boolean,
     ) {
         ReadAction
@@ -50,16 +50,19 @@ class PostImportConfigurator(val project: Project) {
                             ?.configureAfterImport(project),
 
                         getAntConfigurator()
-                            ?.configureAfterImport(project, hybrisProjectDescriptor, allHybrisModules),
+                            ?.configureAfterImport(project, hybrisProjectDescriptor, allModules),
 
                         getXsdSchemaConfigurator()
-                            ?.configureAfterImport(project, allHybrisModules),
+                            ?.configureAfterImport(project, allModules),
 
                         getJRebelConfigurator()
-                            ?.configureAfterImport(project, allHybrisModules),
+                            ?.configureAfterImport(project, allModules),
 
                         getMavenConfigurator()
-                            ?.configureAfterImport(project, hybrisProjectDescriptor)
+                            ?.configureAfterImport(project, hybrisProjectDescriptor),
+
+                        getAngularConfigurator()
+                            ?.configureAfterImport(project, allModules)
                     )
                         .flatten()
                 }

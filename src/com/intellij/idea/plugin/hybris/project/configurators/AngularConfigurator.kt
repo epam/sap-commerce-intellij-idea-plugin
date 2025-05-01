@@ -18,25 +18,28 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.AngularModuleDescriptor
-import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VfsUtil
+import org.angular2.cli.Angular2ProjectConfigurator
 
 class AngularConfigurator {
 
-    fun configure(project: Project, modules: Map<AngularModuleDescriptor, Module>) {
-        if (modules.isEmpty()) return
+    fun configureAfterImport(project: Project, moduleDescriptors: List<ModuleDescriptor>): List<() -> Unit> = moduleDescriptors
+        .filterIsInstance<AngularModuleDescriptor>()
+        .mapNotNull {
+            val vfs = VfsUtil.findFileByIoFile(it.moduleRootDirectory, true)
+                ?: return@mapNotNull null
+            val moduleRef = ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName())
+                ?.let { Ref.create(it) }
+                ?: return@mapNotNull null
 
-        modules.forEach { descriptor, module ->
-            VfsUtil.findFileByIoFile(descriptor.moduleRootDirectory, true)
-                ?.let { vfs ->
-                    val moduleRef = Ref.create(module)
-
-//                    Angular2ProjectConfigurator().configureProject(project, vfs, moduleRef, true);
-                }
+            {
+                Angular2ProjectConfigurator().configureProject(project, vfs, moduleRef, true)
+            }
         }
-    }
 
 }
