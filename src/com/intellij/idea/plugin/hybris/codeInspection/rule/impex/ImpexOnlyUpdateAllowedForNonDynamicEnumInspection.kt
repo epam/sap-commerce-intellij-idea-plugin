@@ -54,22 +54,29 @@ class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
                 ?: return
 
             val impexModeUpdate = HeaderMode.UPDATE.name
+            val impexModeRemove = HeaderMode.REMOVE.name
 
             val modeName = mode.text
                 ?.uppercase()
-                ?.takeUnless { it == impexModeUpdate }
+                ?.takeUnless { it == impexModeUpdate || it == impexModeRemove }
                 ?: return
 
             val enumName = meta.name ?: typeName
 
             problemsHolder.registerProblem(
                 mode,
-                message("hybris.inspections.impex.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection.key", modeName, enumName, impexModeUpdate),
+                message("hybris.inspections.impex.ImpexOnlyUpdateOrRemoveAllowedForNonDynamicEnumInspection.key", modeName, impexModeUpdate),
                 ProblemHighlightType.ERROR,
                 ImpexChangeHeaderModeQuickFix(
                     headerMode = mode,
                     elementName = enumName,
-                    headerModeReplacement = HeaderMode.UPDATE)
+                    headerModeReplacement = HeaderMode.UPDATE
+                ),
+                ImpexChangeHeaderModeQuickFix(
+                    headerMode = mode,
+                    elementName = enumName,
+                    headerModeReplacement = HeaderMode.REMOVE
+                )
             )
         }
     }
