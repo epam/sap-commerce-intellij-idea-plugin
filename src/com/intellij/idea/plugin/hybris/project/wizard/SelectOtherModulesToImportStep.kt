@@ -37,10 +37,11 @@ class SelectOtherModulesToImportStep(context: WizardContext) : AbstractSelectMod
         for (index in 0 until fileChooser.elementCount) {
             val descriptor = fileChooser.getElementAt(index)
 
-            if (descriptor is EclipseModuleDescriptor || descriptor is CCv2ModuleDescriptor) {
+            if (descriptor.isPreselected()) {
                 fileChooser.setElementMarked(descriptor, true)
             }
-            if (descriptor is CCv2ModuleDescriptor && descriptor.isPreselected()) {
+
+            if (descriptor is CCv2ModuleDescriptor || descriptor is AngularModuleDescriptor) {
                 descriptor.importStatus = ModuleDescriptorImportStatus.MANDATORY
             }
         }
