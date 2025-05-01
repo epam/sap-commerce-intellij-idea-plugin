@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.facet.YFacet
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
@@ -120,6 +121,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
                 if (yFacet == null && (projectService.isGradleModule(file)
                         || projectService.isEclipseModule(file)
                         || projectService.isGradleKtsModule(file)
+                        || projectService.isAngularModule(file)
                         || projectService.isMavenModule(file))
                 ) {
                     otherNodes.add(child)
@@ -188,7 +190,11 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
         return YFacet.getState(module)
             ?.let {
-                if (it.subModuleType == null) true
+                // show CCv2 Angular modules only under js-storefront
+                if (it.type == ModuleDescriptorType.ANGULAR
+                    && module.name.contains(HybrisConstants.CCV2_JS_STOREFRONT_NAME)
+                ) parent !is YProjectViewModuleGroupNode
+                else if (it.subModuleType == null) true
                 else parent !is ProjectViewModuleGroupNode
             }
             ?: true

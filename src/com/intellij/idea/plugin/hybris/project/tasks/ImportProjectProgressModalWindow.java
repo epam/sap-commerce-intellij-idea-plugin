@@ -213,7 +213,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configureKotlinCompiler(indicator, cache);
         configureEclipseModules(indicator);
         configureGradleModules(indicator);
-        configureAngularModules(indicator, groupModuleConfigurator);
+        configureAngularModules(indicator, groupModuleConfigurator, appSettings);
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
@@ -272,7 +272,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private Module createJavaModule(final @NotNull ProgressIndicator indicator,
                                     final Map<String, YModuleDescriptor> allYModules,
                                     final ModifiableModuleModel rootProjectModifiableModel,
-                                    final ModuleDescriptor moduleDescriptor, final @NotNull ApplicationSettings appSettings
+                                    final ModuleDescriptor moduleDescriptor,
+                                    final @NotNull ApplicationSettings appSettings
     ) {
         indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
         indicator.setText2(message("hybris.project.import.module.settings"));
@@ -384,13 +385,18 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
-    private void configureAngularModules(final @NotNull ProgressIndicator indicator, final GroupModuleConfigurator groupModuleConfigurator) {
+    private void configureAngularModules(
+        final @NotNull ProgressIndicator indicator,
+        final GroupModuleConfigurator groupModuleConfigurator,
+        final ApplicationSettings appSettings
+    ) {
         final var configurator = configuratorFactory.getAngularConfigurator();
 
         if (configurator == null) return;
 
         indicator.setText(message("hybris.project.import.angular"));
 
+        final var contentRootConfigurator = configuratorFactory.getContentRootConfigurator();
         final var modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
         final var rootProjectModifiableModel = model == null
             ? modifiableModelsProvider.getModifiableModuleModel()
@@ -410,6 +416,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         modules.forEach((descriptor, module) -> {
             final var modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
 
+            contentRootConfigurator.configure(indicator, modifiableRootModel, descriptor, appSettings);
             configureModuleFacet(descriptor, module, modifiableRootModel, modifiableModelsProvider);
         });
 
