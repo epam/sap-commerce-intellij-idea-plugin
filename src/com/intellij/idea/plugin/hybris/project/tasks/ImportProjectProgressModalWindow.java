@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -148,6 +148,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final var projectSettingsComponent = ProjectSettingsComponent.getInstance(project);
         final var projectSettings = projectSettingsComponent.getState();
 
+        final var groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
         final var modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
         if (modulesFilesDirectory != null && !modulesFilesDirectory.exists()) {
             modulesFilesDirectory.mkdirs();
@@ -174,7 +175,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             : model;
 
         configuratorFactory.getSpringConfigurator().process(indicator, hybrisProjectDescriptor, allModuleDescriptors);
-        configuratorFactory.getGroupModuleConfigurator().process(indicator, allModules);
+        groupModuleConfigurator.process(indicator, allModules);
 
         int counter = 0;
 
@@ -215,6 +216,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configureKotlinCompiler(indicator, cache);
         configureEclipseModules(indicator);
         configureGradleModules(indicator);
+        configureAngularModules(indicator, groupModuleConfigurator);
+
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
 
@@ -309,6 +312,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .filter(e -> !(e instanceof MavenModuleDescriptor)
                 && !(e instanceof EclipseModuleDescriptor)
                 && !(e instanceof GradleModuleDescriptor)
+                && !(e instanceof AngularModuleDescriptor)
             )
             .toList();
     }
@@ -373,6 +377,35 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         } catch (Exception e) {
             LOG.error("Can not import Gradle modules due to an error.", e);
         }
+    }
+
+    private void configureAngularModules(final @NotNull ProgressIndicator indicator, final GroupModuleConfigurator groupModuleConfigurator) {
+        final var configurator = configuratorFactory.getAngularConfigurator();
+
+        if (configurator == null) return;
+
+        indicator.setText(message("hybris.project.import.angular"));
+
+        final var modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
+        final var rootProjectModifiableModel = model == null
+            ? modifiableModelsProvider.getModifiableModuleModel()
+            : model;
+
+        final var modules = hybrisProjectDescriptor
+            .getModulesChosenForImport()
+            .stream()
+            .filter(AngularModuleDescriptor.class::isInstance)
+            .map(AngularModuleDescriptor.class::cast)
+            .peek(module -> groupModuleConfigurator.process(module, module.getDirectDependencies()))
+            .collect(Collectors.toMap(Function.identity(), module -> rootProjectModifiableModel.newModule(
+                module.ideaModuleFile().getAbsolutePath(),
+                StdModuleTypes.JAVA.getId()
+            )));
+
+        ApplicationManager.getApplication().invokeAndWait(
+            () -> ApplicationManager.getApplication().runWriteAction(modifiableModelsProvider::commit));
+
+        configurator.configure(project, modules);
     }
 
     private void updateProjectDictionary(
