@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.view
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewNodeDecorator
-import com.intellij.ide.projectView.impl.nodes.ProjectViewModuleGroupNode
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -28,6 +27,7 @@ import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 
 class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
@@ -49,16 +49,23 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
                 ?.let { data.coloredText.remove(it) }
         }
 
-        if (node.parent !is ProjectViewModuleGroupNode || node.parent == null) return
+        ModuleRootManager.getInstance(module).contentRoots
+            .find { it == node.virtualFile }
+            ?: return
 
-        val descriptorType = projectSettings.getModuleSettings(module).type
+        val extensionDescriptor = projectSettings.getModuleSettings(module)
 
         if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && Plugin.KOTLIN.isActive()) {
             data.setIcon(HybrisIcons.Extension.KOTLIN_NATURE)
             return
         }
 
-        when (descriptorType) {
+        if (extensionDescriptor.subModuleType != null) {
+            data.setIcon(extensionDescriptor.subModuleType!!.icon)
+            return
+        }
+
+        when (extensionDescriptor.type) {
             ModuleDescriptorType.CCV2 -> data.setIcon(HybrisIcons.Module.CCV2_GROUP)
             ModuleDescriptorType.ANGULAR -> data.setIcon(HybrisIcons.Module.ANGULAR)
             ModuleDescriptorType.CONFIG -> data.setIcon(HybrisIcons.Extension.CONFIG)

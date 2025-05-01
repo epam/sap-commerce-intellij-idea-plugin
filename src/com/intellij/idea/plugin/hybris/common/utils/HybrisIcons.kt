@@ -110,10 +110,10 @@ object HybrisIcons {
         val OOTB = getIcon("/icons/extension/ootb.svg")
         val WEB = AllIcons.Nodes.WebFolder
         val COMMON_WEB = AllIcons.Nodes.WebFolder
-        val ADDON = AllIcons.Nodes.WebFolder
-        val BACKOFFICE = AllIcons.Nodes.Folder
-        val HMC = AllIcons.Nodes.Folder
-        val HAC = AllIcons.Nodes.Folder
+        val ADDON = AllIcons.Nodes.Plugin
+        val BACKOFFICE = AllIcons.Nodes.Plugin
+        val HMC = AllIcons.Nodes.Plugin
+        val HAC = AllIcons.Nodes.Plugin
         val KOTLIN_NATURE = if (Plugin.KOTLIN.isActive()) KotlinIcons.SMALL_LOGO else AllIcons.Nodes.Module
     }
 
