@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,21 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.project.configurators
+package com.intellij.idea.plugin.hybris.project.descriptors.impl
 
+import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
+import java.io.File
 
-interface GroupModuleConfigurator {
+class AngularModuleDescriptor(
+    moduleRootDirectory: File,
+    rootProjectDescriptor: HybrisProjectDescriptor,
+    name: String = moduleRootDirectory.name,
+    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ANGULAR
+) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
-    fun process(
-        indicator: ProgressIndicator,
-        modulesChosenForImport: Collection<ModuleDescriptor>
-    )
-
-    fun process(
-        moduleDescriptor: ModuleDescriptor,
-        parents: MutableCollection<ModuleDescriptor>
-    )
-
+    override fun isPreselected() = true
+    override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = moduleDescriptors.values
+        .filter { this.moduleRootDirectory.toString().startsWith(it.moduleRootDirectory.toString()) }
+        .filter { this != it }
+        .map { it.name }
+        .take(1)
+        .toSet()
 }

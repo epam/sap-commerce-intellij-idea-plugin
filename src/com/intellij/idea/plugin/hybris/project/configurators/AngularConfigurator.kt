@@ -16,21 +16,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.project.descriptors
+package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import javax.swing.Icon
+import com.intellij.idea.plugin.hybris.project.descriptors.impl.AngularModuleDescriptor
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Ref
+import com.intellij.openapi.vfs.VfsUtil
+import org.angular2.cli.Angular2ProjectConfigurator
 
-enum class ModuleDescriptorType(val icon: Icon = HybrisIcons.Y.LOGO_BLUE) {
-    CONFIG(HybrisIcons.Extension.CONFIG),
-    CUSTOM(HybrisIcons.Extension.CUSTOM),
-    EXT(HybrisIcons.Extension.EXT),
-    NONE,
-    OOTB(HybrisIcons.Extension.OOTB),
-    PLATFORM(HybrisIcons.Extension.PLATFORM),
-    ECLIPSE,
-    MAVEN,
-    GRADLE,
-    CCV2(HybrisIcons.Extension.CLOUD),
-    ANGULAR(HybrisIcons.Module.ANGULAR),
+class AngularConfigurator {
+
+    fun configure(project: Project, modules: Map<AngularModuleDescriptor, Module>) {
+        if (modules.isEmpty()) return
+
+        modules.forEach { descriptor, module ->
+            VfsUtil.findFileByIoFile(descriptor.moduleRootDirectory, true)
+                ?.let { vfs ->
+                    val moduleRef = Ref.create(module)
+
+                    Angular2ProjectConfigurator().configureProject(project, vfs, moduleRef, true);
+                }
+        }
+    }
+
 }

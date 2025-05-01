@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.common.utils
 import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.openapi.util.IconLoader
+import icons.AngularIcons
 import icons.GradleIcons
 import icons.OpenapiIcons
 import org.jetbrains.kotlin.idea.KotlinIcons
@@ -77,6 +78,7 @@ object HybrisIcons {
         val MAVEN = OpenapiIcons.RepositoryLibraryLogo
         val CONFLICT = AllIcons.Actions.Cancel
         val GRADLE = if (Plugin.GRADLE.isActive()) GradleIcons.Gradle else AllIcons.Nodes.Module
+        val ANGULAR = if (Plugin.ANGULAR.isActive()) AngularIcons.Angular2 else AllIcons.Nodes.Module
         val CCV2 = getIcon("/icons/module/cloud.svg")
         val CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg")
         val COMMERCE_GROUP = Y.LOGO_GREEN

@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -720,11 +720,17 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 LOG.info("Detected CCv2 module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(CCV2).add(rootProjectDirectory);
                 final var name = rootProjectDirectory.getName();
-                if (name.endsWith(HybrisConstants.CCV2_JS_STOREFRONT_NAME) || name.endsWith(HybrisConstants.CCV2_DATAHUB_NAME)) {
+                if (name.endsWith(HybrisConstants.CCV2_DATAHUB_NAME)) {
                     // faster import: no need to process sub-folders of the CCv2 js-storefront and datahub directories
-                    // TODO: parse manifest.json and register corresponding modules under js-storefront module
                     return;
                 }
+            }
+
+            if (hybrisProjectService.isAngularModule(rootProjectDirectory)) {
+                LOG.info("Detected Angular module " + rootProjectDirectory.getAbsolutePath());
+                moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                // do not go deeper
+                return;
             }
         }
 

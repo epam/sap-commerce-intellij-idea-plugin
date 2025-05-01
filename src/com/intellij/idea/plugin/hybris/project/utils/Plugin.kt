@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,6 +29,7 @@ enum class Plugin(val id: String, val url: String? = null) {
     KOTLIN("org.jetbrains.kotlin", "https://plugins.jetbrains.com/plugin/6954-kotlin"),
     GROOVY("org.intellij.groovy", "https://plugins.jetbrains.com/plugin/1524-groovy"),
     GRADLE("com.intellij.gradle"),
+    ANGULAR("AngularJS", "https://plugins.jetbrains.com/plugin/6971-angular"),
     DATABASE("com.intellij.database", "https://plugins.jetbrains.com/plugin/10925-database-tools-and-sql-for-webstorm"),
     DIAGRAM("com.intellij.diagram"),
     PROPERTIES("com.intellij.properties", "https://plugins.jetbrains.com/plugin/11594-properties"),

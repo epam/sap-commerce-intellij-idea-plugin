@@ -119,10 +119,10 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
             val moduleRootManager = ModuleRootManager.getInstance(module)
 
             // Get the compiler output paths for production and test
-            val productionOutput =
-                moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPath
-            val testOutput =
-                moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)?.compilerOutputPathForTests
+            val productionOutput = moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)
+                ?.compilerOutputPath
+            val testOutput = moduleRootManager.getModuleExtension(CompilerModuleExtension::class.java)
+                ?.compilerOutputPathForTests
 
             // Add the output paths to the classpath
             if (productionOutput != null && classPathEntries.add(productionOutput.path)) {

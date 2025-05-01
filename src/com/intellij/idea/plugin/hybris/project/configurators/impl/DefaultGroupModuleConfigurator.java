@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor;
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -46,7 +47,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     @Override
     public void process(
         @NotNull final ProgressIndicator indicator,
-        @NotNull final List<? extends ModuleDescriptor> modulesChosenForImport
+        @NotNull final Collection<? extends ModuleDescriptor> modulesChosenForImport
     ) {
         indicator.setText2(message("hybris.project.import.module.groups"));
         final var applicationSettings = ApplicationSettingsComponent.getInstance().getState();
@@ -64,15 +65,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
                 requiredYModuleDescriptorList.addAll(it.getAllDependencies());
             });
 
-        final var groups = Map.of(
-            "groupCustom", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupCustom()),
-            "groupNonHybris", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupNonHybris()),
-            "groupOtherCustom", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupOtherCustom()),
-            "groupHybris", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupHybris()),
-            "groupOtherHybris", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupOtherHybris()),
-            "groupPlatform", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupPlatform()),
-            "groupCCv2", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupCCv2())
-        );
+        final var groups = getPredefinedGroups(applicationSettings);
         modulesChosenForImport.forEach(it -> {
             final @Nullable String[] groupNames = getGroupName(it, requiredYModuleDescriptorList, groups);
             if (groupNames != null) {
@@ -83,8 +76,36 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         indicator.setText2("");
     }
 
+    @Override
+    public void process(final ModuleDescriptor moduleDescriptor, final Collection<ModuleDescriptor> parents) {
+        final var applicationSettings = ApplicationSettingsComponent.getInstance().getState();
+        if (!applicationSettings.getGroupModules()) {
+            return;
+        }
+
+        final var predefinedGroups = getPredefinedGroups(applicationSettings);
+        final var groupNames = getGroupName(moduleDescriptor, parents, predefinedGroups);
+
+        if (groupNames != null) {
+            moduleDescriptor.setGroupNames(groupNames);
+        }
+    }
+
+    private Map<String, String[]> getPredefinedGroups(final ApplicationSettings applicationSettings) {
+        // TODO, fix the map, it cannot have null values
+        return Map.of(
+            "groupCustom", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupCustom()),
+            "groupNonHybris", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupNonHybris()),
+            "groupOtherCustom", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupOtherCustom()),
+            "groupHybris", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupHybris()),
+            "groupOtherHybris", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupOtherHybris()),
+            "groupPlatform", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupPlatform()),
+            "groupCCv2", ApplicationSettingsComponent.toIdeaGroup(applicationSettings.getGroupCCv2())
+        );
+    }
+
     @Nullable
-    private String[] getGroupName(@NotNull final ModuleDescriptor moduleDescriptor, final Set<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
+    private String[] getGroupName(@NotNull final ModuleDescriptor moduleDescriptor, final Collection<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
         if (!(moduleDescriptor instanceof ConfigModuleDescriptor)) {
             final String[] groupPathOverride = getLocalGroupPathOverride(moduleDescriptor);
             if (groupPathOverride != null) {
@@ -160,13 +181,23 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         return ApplicationSettingsComponent.toIdeaGroup(rawGroupText);
     }
 
-    private String[] getGroupPath(@NotNull final ModuleDescriptor moduleDescriptor, final Set<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
+    private String[] getGroupPath(@NotNull final ModuleDescriptor moduleDescriptor, final Collection<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
         if (moduleDescriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor) {
             return getGroupPath(ySubModuleDescriptor.getOwner(), requiredYModuleDescriptorList, groups);
         }
 
         if (moduleDescriptor instanceof CCv2ModuleDescriptor) {
             return groups.get("groupCCv2");
+        }
+
+        if (moduleDescriptor instanceof AngularModuleDescriptor && requiredYModuleDescriptorList.size() == 1) {
+            // assumption that there can be only 1 parent
+            final var parent = requiredYModuleDescriptorList.iterator().next();
+            final var parentPath = getGroupPath(parent, List.of(), groups);
+            final var completeGroup = Arrays.copyOf(parentPath, parentPath.length + 1);
+            completeGroup[completeGroup.length - 1] = parent.getName();
+
+            return completeGroup;
         }
 
         if (moduleDescriptor instanceof PlatformModuleDescriptor) {

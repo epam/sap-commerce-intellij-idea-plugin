@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -117,6 +117,11 @@ object ModuleDescriptorFactory {
             hybrisProjectService.isMavenModule(resolvedFile) -> {
                 LOG.info("Creating maven module for $path")
                 MavenModuleDescriptor(resolvedFile, rootProjectDescriptor)
+            }
+
+            hybrisProjectService.isAngularModule(resolvedFile) -> {
+                LOG.info("Creating Angular module for $path")
+                AngularModuleDescriptor(resolvedFile, rootProjectDescriptor)
             }
 
             else -> {

@@ -1,8 +1,11 @@
 ## [2025.1.2]
 
+### `Project Import` enhancements
+- Added support of the Angular modules [#1337](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1337)
+
 ### `ImpEx` enhancements
 - Allow "REMOVE" header for non-dynamic enums [#1335](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1335)
-- Allow "REMOVE" header for non-dynamic enums [#1336](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1336)
+- Fix the message in quick-fix for non-dynamic enums in ImpEx files [#1336](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1336)
 
 ## [2025.1.1]
 

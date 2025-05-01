@@ -349,21 +349,13 @@ dependencies {
 
         // https://plugins.jetbrains.com/intellij-platform-explorer/extensions
 
-        // JSON:
-        // https://plugins.jetbrains.com/plugin/25364-json
-        pluginsInLatestCompatibleVersion("com.intellij.modules.json")
-
-        // Ant:
-        // https://plugins.jetbrains.com/plugin/23025-ant
-        pluginsInLatestCompatibleVersion("AntSupport")
-
-        // PsiViewer:
-        // https://plugins.jetbrains.com/plugin/227-psiviewer
-        pluginsInLatestCompatibleVersion("PsiViewer")
-
-        // JRebel and XRebel:
-        // https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-        pluginsInLatestCompatibleVersion("JRebelPlugin")
+        pluginsInLatestCompatibleVersion(
+            "com.intellij.modules.json",    // JSON                 https://plugins.jetbrains.com/plugin/25364-json
+            "AntSupport",                   // Ant                  https://plugins.jetbrains.com/plugin/23025-ant
+            "PsiViewer",                    // PsiViewer            https://plugins.jetbrains.com/plugin/227-psiviewer
+            "JRebelPlugin",                 // JRebel and XRebel    https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
+            "AngularJS"                     // Angular              https://plugins.jetbrains.com/plugin/6971-angular
+        )
 
         // Big Data Tools:
         // incredibly sad, but as for now API cannot be used by 3rd-party plugins
