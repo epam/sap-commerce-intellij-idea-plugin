@@ -60,6 +60,7 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
 
         when (descriptorType) {
             ModuleDescriptorType.CCV2 -> data.setIcon(HybrisIcons.Module.CCV2_GROUP)
+            ModuleDescriptorType.ANGULAR -> data.setIcon(HybrisIcons.Module.ANGULAR)
             ModuleDescriptorType.CONFIG -> data.setIcon(HybrisIcons.Extension.CONFIG)
             ModuleDescriptorType.CUSTOM -> data.setIcon(HybrisIcons.Extension.CUSTOM)
             ModuleDescriptorType.EXT -> data.setIcon(HybrisIcons.Extension.EXT)
