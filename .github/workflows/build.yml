@@ -47,7 +47,7 @@ jobs:
 
       # Validate wrapper
       - name: Gradle Wrapper Validation
-        uses: gradle/wrapper-validation-action@v1.0.6
+        uses: gradle/actions/wrapper-validation@v3
 
       # Setup Java 21 environment for the next steps
       - name: Setup Java
