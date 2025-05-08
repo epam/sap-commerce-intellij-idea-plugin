@@ -21,12 +21,14 @@ package com.intellij.idea.plugin.hybris.system.java.codeInsight.hints
 import com.intellij.codeInsight.codeVision.CodeVisionAnchorKind
 import com.intellij.codeInsight.codeVision.CodeVisionEntry
 import com.intellij.codeInsight.codeVision.CodeVisionRelativeOrdering
-import com.intellij.codeInsight.codeVision.ui.model.ClickableTextCodeVisionEntry
+import com.intellij.codeInsight.codeVision.ui.model.ClickableRichTextCodeVisionEntry
+import com.intellij.codeInsight.codeVision.ui.model.richText.RichText
 import com.intellij.codeInsight.daemon.impl.JavaCodeVisionProviderBase
 import com.intellij.codeInsight.hints.InlayHintsUtils
 import com.intellij.codeInsight.hints.settings.language.isInlaySettingsEditor
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
@@ -40,25 +42,23 @@ import com.intellij.psi.impl.java.stubs.JavaStubElementTypes
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.endOffset
+import com.intellij.ui.JBColor
+import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.awt.RelativePoint
 import java.awt.Point
 import java.awt.event.MouseEvent
 
 
 class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
-    override val defaultAnchor: CodeVisionAnchorKind
-        get() = CodeVisionAnchorKind.Default
-    override val id: String
-        get() = "SAPCxLoggerInlayHintsProvider"
-    override val name: String
-        get() = "SAP CX Logger"
-
-    override val relativeOrderings: List<CodeVisionRelativeOrdering>
-        get() = emptyList()
+    override val defaultAnchor: CodeVisionAnchorKind = CodeVisionAnchorKind.Default
+    override val id: String = "SAPCxLoggerInlayHintsProvider"
+    override val name: String = "SAP CX Logger"
+    override val relativeOrderings: List<CodeVisionRelativeOrdering> = emptyList()
 
     override fun computeLenses(editor: Editor, psiFile: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
         if (psiFile.isNotHybrisProject) return emptyList()
 
+        val project = psiFile.project
         val entries = mutableListOf<Pair<TextRange, CodeVisionEntry>>()
 
         psiFile.accept(object : PsiRecursiveElementVisitor() {
@@ -83,9 +83,18 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
                 val loggerIdentifier = extractIdentifierForLogger(element, psiFile) ?: return
 
-                val handler = ClickHandler(targetElement, loggerIdentifier)
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(targetElement)
-                entries.add(range to ClickableTextCodeVisionEntry("[y] log level", id, handler, HybrisIcons.Y.REMOTE, "", "Setup the logger for SAP Commerce Cloud"))
+
+                val text = RichText("[y] log level")
+                project.getService(CxLoggerAccess::class.java)
+                    .loggers[loggerIdentifier]
+                    ?.effectiveLevel
+                    ?.let { text.append(" [$it]", SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.green)) }
+
+                val handler = ClickHandler(targetElement, loggerIdentifier, text)
+
+                val clickableRichTextCodeVisionEntry = ClickableRichTextCodeVisionEntry(id, text, handler, HybrisIcons.Y.REMOTE, "", "Setup the logger for SAP Commerce Cloud")
+                entries.add(range to clickableRichTextCodeVisionEntry)
             }
         })
 
@@ -103,19 +112,19 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     private inner class ClickHandler(
         element: PsiElement,
         private val loggerIdentifier: String,
+        val text: RichText,
     ) : (MouseEvent?, Editor) -> Unit {
         private val elementPointer = SmartPointerManager.createPointer(element)
 
         override fun invoke(event: MouseEvent?, editor: Editor) {
             if (isInlaySettingsEditor(editor)) return
             val element = elementPointer.element ?: return
-            handleClick(editor, element, loggerIdentifier)
+            handleClick(editor, element, loggerIdentifier, text)
         }
     }
 
-    fun handleClick(editor: Editor, element: PsiElement, loggerIdentifier: String) {
+    fun handleClick(editor: Editor, element: PsiElement, loggerIdentifier: String, text: RichText) {
         val actionGroup = ActionManager.getInstance().getAction("sap.cx.logging.actions") as ActionGroup
-
         val project = editor.project ?: return
         val dataContext = SimpleDataContext.builder()
             .add(CommonDataKeys.PROJECT, project)

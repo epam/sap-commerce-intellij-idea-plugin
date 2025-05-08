@@ -1,5 +1,8 @@
 ## [2025.1.6]
 
+### `SAP CX Logging` enhancements
+- Display a log level status from a remote server [1457](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1457)
+
 ### `items.xml` enhancements
 - Show attribute non-property persistence for contribution results [#1448](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1448)
 

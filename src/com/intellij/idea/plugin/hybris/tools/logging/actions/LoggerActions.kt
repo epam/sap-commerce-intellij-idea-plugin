@@ -19,7 +19,10 @@
 package com.intellij.idea.plugin.hybris.tools.logging.actions
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
@@ -30,8 +33,15 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
+import com.intellij.openapi.components.service
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
+import com.intellij.openapi.project.Project
+import com.intellij.util.application
+import javax.swing.Icon
 
-abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(logLevel.name, null, logLevel.icon) {
+abstract class AbstractLoggerAction(private val logLevel: LogLevel, val icon: Icon) : AnAction(logLevel.name, "", icon) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -67,6 +77,7 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(l
                 )
                     .hideAfter(5)
                     .notify(project)
+                CxLoggerAccess.getInstance(project).refresh()
             } else {
                 Notifications.error(
                     "Failed to update log level",
@@ -83,18 +94,39 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(l
     override fun update(e: AnActionEvent) {
         super.update(e)
         val isRightPlace = "GoToAction" != e.place
-        e.presentation.isEnabled = isRightPlace
+        val project = e.project ?: return
+
+        e.presentation.isEnabled = isRightPlace && project.service<CxLoggerAccess>().canRefresh
         e.presentation.isVisible = isRightPlace
     }
 
 }
 
-class AllLoggerAction : AbstractLoggerAction(LogLevel.ALL)
-class OffLoggerAction : AbstractLoggerAction(LogLevel.OFF)
-class TraceLoggerAction : AbstractLoggerAction(LogLevel.TRACE)
-class DebugLoggerAction : AbstractLoggerAction(LogLevel.DEBUG)
-class InfoLoggerAction : AbstractLoggerAction(LogLevel.INFO)
-class WarnLoggerAction : AbstractLoggerAction(LogLevel.WARN)
-class ErrorLoggerAction : AbstractLoggerAction(LogLevel.ERROR)
-class FatalLoggerAction : AbstractLoggerAction(LogLevel.FATAL)
-class SevereLoggerAction : AbstractLoggerAction(LogLevel.SEVERE)
+class AllLoggerAction : AbstractLoggerAction(LogLevel.ALL, HybrisIcons.Log.Level.ALL)
+class OffLoggerAction : AbstractLoggerAction(LogLevel.OFF, HybrisIcons.Log.Level.OFF)
+class TraceLoggerAction : AbstractLoggerAction(LogLevel.TRACE, HybrisIcons.Log.Level.TRACE)
+class DebugLoggerAction : AbstractLoggerAction(LogLevel.DEBUG, HybrisIcons.Log.Level.DEBUG)
+class InfoLoggerAction : AbstractLoggerAction(LogLevel.INFO, HybrisIcons.Log.Level.INFO)
+class WarnLoggerAction : AbstractLoggerAction(LogLevel.WARN, HybrisIcons.Log.Level.WARN)
+class ErrorLoggerAction : AbstractLoggerAction(LogLevel.ERROR, HybrisIcons.Log.Level.ERROR)
+class FatalLoggerAction : AbstractLoggerAction(LogLevel.FATAL, HybrisIcons.Log.Level.FATAL)
+class SevereLoggerAction : AbstractLoggerAction(LogLevel.SEVERE, HybrisIcons.Log.Level.SEVERE)
+
+class FetchLoggerStateAction : AnAction("Fetch Logger State", "", HybrisIcons.Log.Action.FETCH) {
+
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val loggerAccessService = project.service<CxLoggerAccess>()
+
+        loggerAccessService.refresh()
+
+    }
+
+    override fun update(e: AnActionEvent) {
+        val isRightPlace = "GoToAction" != e.place
+        val project = e.project ?: return
+
+        e.presentation.isEnabled = isRightPlace && project.service<CxLoggerAccess>().canRefresh
+        e.presentation.isVisible = isRightPlace
+    }
+}

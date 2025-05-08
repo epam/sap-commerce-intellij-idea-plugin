@@ -19,8 +19,9 @@
 <idea-plugin>
     <actions>
         <group id="sap.cx.logging.actions" popup="true">
-            <separator text="Active Connection"/>
+            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.FetchLoggerStateAction"/>
 
+            <separator text="Active Connection"/>
             <reference ref="hybris.hac.chooseConnection"/>
 
             <separator text="Log Levels"/>

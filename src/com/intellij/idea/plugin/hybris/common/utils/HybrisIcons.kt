@@ -474,6 +474,11 @@ object HybrisIcons {
             val FATAL = getIcon("/icons/logging/level/fatal.svg")
             val SEVERE = getIcon("/icons/logging/level/severe.svg")
         }
+
+        object Action {
+            val FETCH = getIcon("/icons/logging/action/fetch.svg")
+            val REFRESH = getIcon("/icons/logging/action/refresh.svg")
+        }
     }
 
     private fun getIcon(path: String): Icon = IconLoader.getIcon(path, HybrisIcons::class.java.classLoader)
