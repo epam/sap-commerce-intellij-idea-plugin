@@ -50,6 +50,7 @@ import java.io.InputStreamReader
 import java.util.*
 import java.util.regex.Pattern
 import com.intellij.openapi.diagnostic.logger
+import java.io.BufferedReader
 
 /**
  * Currently there is an issue with Order and Properties that are included in lookup and suggestion.
@@ -218,8 +219,18 @@ class PropertyService(val project: Project) {
 
         try {
             confFile?.inputStream?.let { inputStream ->
-                InputStreamReader(inputStream).use { reader ->
-                    properties.load(reader)
+                // Create a BufferedReader to read the input stream line by line
+                BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                    val modifiedContent = StringBuilder()
+
+                    // Read each line, replace backslashes with forward slashes, and append to StringBuilder
+                    reader.forEachLine { line ->
+                        val modifiedLine = line.replace("\\", "\\\\")
+                        modifiedContent.appendLine(modifiedLine)
+                    }
+
+                    // Now load the modified content into the Properties object
+                    properties.load(InputStreamReader(modifiedContent.toString().byteInputStream()))
                 }
             }
         } catch (e: Exception) {
