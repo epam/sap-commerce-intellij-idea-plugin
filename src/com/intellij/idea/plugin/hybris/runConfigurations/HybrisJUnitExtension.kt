@@ -26,6 +26,7 @@ import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunnerSettings
 import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.junit.JUnitConfiguration
+import com.intellij.idea.plugin.hybris.common.HybrisUtil
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
@@ -71,6 +72,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
                 }
 
                 getTomcatWrapperJVMProperties(tomcatWrapperProperties).forEach {
+                    System.out.println(it)
                     addVmParameterIfNotExist(vmParameters, it)
                 }
             }
@@ -156,17 +158,17 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
                 .toIntOrNull() ?: Int.MAX_VALUE
         }
         .map { (key, value) ->
-            val stripQuotesKey = "$key$STRIP_QUOTES_SUFFIX"
-            val shouldStripQuotes = properties[stripQuotesKey]
-                ?.toString()
-                ?.uppercase() == "TRUE"
-
             when {
-                shouldStripQuotes -> value.replace("\"", "").trim()
+                shouldStripQuotes(key, properties) -> value.replace("\"", "").trim()
                 else -> value.trim()
             }
         }
         .toList()
+
+    private fun shouldStripQuotes(key: String, properties: Properties): Boolean =
+        properties["$key$STRIP_QUOTES_SUFFIX"]
+            ?.toString()
+            ?.uppercase() == "TRUE"
 
     private fun addVmParameterIfNotExist(vmParameters: ParametersList, newParam: String) {
         if (!vmParameters.hasParameter(newParam)) {

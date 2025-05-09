@@ -1,3 +1,8 @@
+## [2024.3.8]
+
+### `JUnit` enhancements
+- Fix File Path Handling on Windows [#1338](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1338)
+
 ## [2024.3.7]
 
 ### `CCv2` enhancements
