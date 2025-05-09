@@ -4,6 +4,10 @@
 - Allow "REMOVE" header for non-dynamic enums [#1335](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1335)
 - Allow "REMOVE" header for non-dynamic enums [#1336](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1336)
 
+### `JUnit` enhancements
+- Fix File Path Handling on Windows [#1338](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1338)
+
+
 ## [2025.1.1]
 
 ### Other
