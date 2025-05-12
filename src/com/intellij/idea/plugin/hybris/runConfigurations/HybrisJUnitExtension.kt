@@ -72,7 +72,6 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
                 }
 
                 getTomcatWrapperJVMProperties(tomcatWrapperProperties).forEach {
-                    System.out.println(it)
                     addVmParameterIfNotExist(vmParameters, it)
                 }
             }
