@@ -1,7 +1,7 @@
 ## [2025.1.3]
 
 ### 'Terminal' integration
-- Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1341](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1341)
+- Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1342](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1342)
 
 ## [2025.1.2]
 
