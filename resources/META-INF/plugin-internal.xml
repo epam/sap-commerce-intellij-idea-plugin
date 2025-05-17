@@ -22,21 +22,15 @@
 
         <notificationGroup id="[y] SAP Commerce" displayType="BALLOON" isLogByDefault="true"/>
 
-        <indexedRootsProvider
-                implementation="com.intellij.idea.plugin.hybris.indexing.HybrisProjectRootIndexedRootsProvider"/>
+        <indexedRootsProvider implementation="com.intellij.idea.plugin.hybris.indexing.HybrisProjectRootIndexedRootsProvider"/>
 
-        <treeStructureProvider order="first"
-                               implementation="com.intellij.idea.plugin.hybris.project.view.HybrisProjectView"/>
+        <treeStructureProvider order="first" implementation="com.intellij.idea.plugin.hybris.project.view.HybrisProjectView"/>
 
-        <projectViewNodeDecorator order="last"
-                                  implementation="com.intellij.idea.plugin.hybris.project.view.HybrisProjectViewNodeDecorator"/>
+        <projectViewNodeDecorator order="last" implementation="com.intellij.idea.plugin.hybris.project.view.HybrisProjectViewNodeDecorator"/>
 
-        <psi.referenceContributor language="XML"
-                                  implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
-        <psi.referenceContributor language="XML"
-                                  implementation="com.intellij.idea.plugin.hybris.system.bean.psi.contributor.BSReferenceContributor"/>
-        <psi.referenceContributor language="XML"
-                                  implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.TSReferenceContributor"/>
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor.CngReferenceContributor"/>
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.bean.psi.contributor.BSReferenceContributor"/>
+        <psi.referenceContributor language="XML" implementation="com.intellij.idea.plugin.hybris.system.type.psi.contributor.TSReferenceContributor"/>
 
         <projectService serviceInterface="com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper"
                         serviceImplementation="com.intellij.idea.plugin.hybris.project.view.impl.HybrisProjectViewDirectoryHelper"
@@ -44,14 +38,11 @@
                         overrides="true"/>
 
         <gotoClassContributor implementation="com.intellij.idea.plugin.hybris.gotoClass.CustomGotoClassContributor"/>
-        <directoryIndexExcludePolicy
-                implementation="com.intellij.idea.plugin.hybris.project.indexing.HybrisDirectoryIndexExcludePolicy"/>
+        <directoryIndexExcludePolicy implementation="com.intellij.idea.plugin.hybris.project.indexing.HybrisDirectoryIndexExcludePolicy"/>
 
-        <applicationConfigurable id="hybris.settings" parentId="root"
-                                 displayName="[y] SAP CX"
+        <applicationConfigurable id="hybris.settings" parentId="root" displayName="[y] SAP CX"
                                  provider="com.intellij.idea.plugin.hybris.settings.options.ApplicationSettingsConfigurableProvider"/>
-        <applicationConfigurable id="hybris.settings.ccv2" parentId="hybris.settings"
-                                 displayName="CCv2"
+        <applicationConfigurable id="hybris.settings.ccv2" parentId="hybris.settings" displayName="CCv2"
                                  provider="com.intellij.idea.plugin.hybris.settings.options.ApplicationCCv2SettingsConfigurableProvider"/>
         <applicationConfigurable id="hybris.project.import.settings" parentId="hybris.settings"
                                  key="hybris.settings.application.project_import.title"
@@ -71,8 +62,7 @@
 
         <iconProvider order="first" implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectIconProvider"/>
 
-        <configurationType
-                implementation="com.intellij.idea.plugin.hybris.runConfigurations.LocalSapCXConfigurationType"/>
+        <configurationType implementation="com.intellij.idea.plugin.hybris.runConfigurations.LocalSapCXConfigurationType"/>
 
         <errorHandler implementation="com.intellij.diagnostic.JetBrainsMarketplaceErrorReportSubmitter"/>
 

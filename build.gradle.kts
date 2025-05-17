@@ -19,10 +19,8 @@ import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
-import org.jetbrains.intellij.platform.gradle.extensions.IntelliJPlatformDependenciesExtension
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
-import org.jetbrains.intellij.pluginRepository.PluginRepositoryFactory
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 fun properties(key: String) = providers.gradleProperty(key)
@@ -337,24 +335,24 @@ dependencies {
             "com.intellij.javaee.el",
             "com.intellij.javaee.web",
             "com.intellij.platform.images",
+            "com.intellij.modules.json",
             "org.jetbrains.idea.maven",
             "org.jetbrains.idea.maven.model",
             "org.jetbrains.idea.maven.server.api",
             "org.jetbrains.idea.eclipse",
             "org.jetbrains.kotlin",
+            "org.jetbrains.plugins.terminal",
             "JavaScript",
             "JUnit",
-            "com.intellij.modules.json",
         )
 
         // https://plugins.jetbrains.com/intellij-platform-explorer/extensions
 
-        pluginsInLatestCompatibleVersion(
-            "com.intellij.modules.json",    // JSON                 https://plugins.jetbrains.com/plugin/25364-json
-            "AntSupport",                   // Ant                  https://plugins.jetbrains.com/plugin/23025-ant
-            "PsiViewer",                    // PsiViewer            https://plugins.jetbrains.com/plugin/227-psiviewer
-            "JRebelPlugin",                 // JRebel and XRebel    https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
-            "AngularJS"                     // Angular              https://plugins.jetbrains.com/plugin/6971-angular
+        compatiblePlugins(
+            "AntSupport",                       // Ant                  https://plugins.jetbrains.com/plugin/23025-ant
+            "PsiViewer",                        // PsiViewer            https://plugins.jetbrains.com/plugin/227-psiviewer
+            "JRebelPlugin",                     // JRebel and XRebel    https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel
+            "AngularJS"                         // Angular              https://plugins.jetbrains.com/plugin/6971-angular
         )
 
         // Big Data Tools:
@@ -389,23 +387,3 @@ fun RunIdeTask.applyRunIdeSystemSettings() {
     systemProperty("idea.trust.all.projects", true)
     systemProperty("jb.consents.confirmation.enabled", false)
 }
-
-val IntelliJPlatformDependenciesExtension.pluginRepository by lazy {
-    PluginRepositoryFactory.create("https://plugins.jetbrains.com")
-}
-
-fun IntelliJPlatformDependenciesExtension.pluginsInLatestCompatibleVersion(vararg pluginIds: String) =
-    plugins(provider {
-        pluginIds.map { pluginId ->
-            val platformType = intellijPlatform.productInfo.productCode
-            val platformVersion = intellijPlatform.productInfo.buildNumber
-
-            val plugin = pluginRepository.pluginManager.searchCompatibleUpdates(
-                build = "$platformType-$platformVersion",
-                xmlIds = listOf(pluginId),
-            ).firstOrNull()
-                ?: throw GradleException("No plugin update with id='$pluginId' compatible with '$platformType-$platformVersion' found in JetBrains Marketplace")
-
-            "${plugin.pluginXmlId}:${plugin.version}"
-        }
-    })
