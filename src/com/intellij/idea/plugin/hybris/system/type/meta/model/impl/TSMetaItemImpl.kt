@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.system.type.meta.model.impl
 
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelException
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaItem.TSMetaItemAttribute
@@ -159,7 +160,15 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
     override fun postMerge(globalMetaModel: TSGlobalMetaModel) {
         val extends = this.retrieveAllDoms()
             .map { it.extends.stringValue }
-            .flatMap { TSMetaHelper.getAllExtends(globalMetaModel, name, it) }
+            .flatMap {
+                try {
+                    return@flatMap TSMetaHelper.getAllExtends(globalMetaModel, name, it)
+                } catch (e: TSMetaModelException) {
+                    e.message?.let { message -> this.mergeConflicts.add(message) }
+
+                    return@flatMap emptyList()
+                }
+            }
             .toSet()
         val currentRelationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, emptySet())
         val combinedRelationEnds = TSMetaHelper.getAllRelationEnds(globalMetaModel, this, extends)

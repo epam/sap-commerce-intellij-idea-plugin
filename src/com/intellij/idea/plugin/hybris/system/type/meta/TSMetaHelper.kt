@@ -102,11 +102,11 @@ object TSMetaHelper {
 
     fun getAllExtends(metaModel: TSGlobalMetaModel, itemName: String?, extendsName: String?): Set<TSGlobalMetaItem> {
         val tempParents = LinkedHashSet<TSGlobalMetaItem>()
-        var metaItem = getExtendsMetaItem(metaModel, itemName, extendsName)
+        var metaItem = getExtendsMetaItem(metaModel, tempParents, itemName, extendsName)
 
         while (metaItem != null) {
             tempParents.add(metaItem)
-            metaItem = getExtendsMetaItem(metaModel, metaItem.name, metaItem.extendedMetaItemName)
+            metaItem = getExtendsMetaItem(metaModel, tempParents, metaItem.name, metaItem.extendedMetaItemName)
         }
         return Collections.unmodifiableSet(tempParents)
     }
@@ -140,13 +140,15 @@ object TSMetaHelper {
     // Magic starts here, see official documentation: https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/8bb46096866910149208fae7c4ec7596.html?locale=en-US
     fun getAttributeHandlerId(typeCode: String, attributeQualifier: String) = typeCode + "_" + attributeQualifier + "AttributeHandler"
 
-    private fun getExtendsMetaItem(metaModel: TSGlobalMetaModel, itemName: String?, extendsName: String?): TSGlobalMetaItem? {
-        val realExtendedMetaItemName = extendsName
-            // prevent deadlock when the type extends itself
-            ?.takeIf { it != itemName }
-            ?: HybrisConstants.TS_TYPE_GENERIC_ITEM
+    private fun getExtendsMetaItem(metaModel: TSGlobalMetaModel, extends: Set<TSGlobalMetaItem>, itemName: String?, extendsName: String?): TSGlobalMetaItem? {
+        // prevent deadlock when the type extends itself
+        if (extendsName == itemName) throw TSMetaModelException("Item cannot extend itself")
 
-        return metaModel.getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)[realExtendedMetaItemName]
+        val extendsMeta = metaModel.getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)[extendsName]
+
+        if (extends.contains(extendsMeta)) throw TSMetaModelException("Circular extension is not allowed")
+
+        return extendsMeta
     }
 
     private fun getMetaRelationEnds(metaModel: TSGlobalMetaModel, meta: TSGlobalMetaItem): Collection<TSMetaRelation.TSMetaRelationElement> {
