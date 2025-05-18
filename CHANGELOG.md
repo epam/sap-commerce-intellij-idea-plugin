@@ -5,6 +5,9 @@
 - Added multi-resolve for `type` for Relation Types [#1344](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1344)
 - Added support of the `metatype` for Item Types [#1345](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1345)
 
+### `items.xml` inspection rules
+- Item Type `metatype` must be a type extending ComposedType [#1346](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1346)
+
 ### `Terminal` integration
 - Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1342](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1342)
 

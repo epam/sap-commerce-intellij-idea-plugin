@@ -23,13 +23,12 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.all
 
-class TSItemAttributeMetaTypeNameMustPointToValidMetaType : AbstractTSMetaTypeInspection(
-    "hybris.inspections.ts.ItemAttributeMetaTypeNameMustPointToValidMetaType.details.key"
+class TSItemMetaTypeNameMustPointToValidMetaType : AbstractTSMetaTypeInspection(
+    "hybris.inspections.ts.ItemMetaTypeNameMustPointToValidMetaType.details.key"
 ) {
     override fun collectMetaTypes(dom: Items) = dom.itemTypes.all
-        .flatMap { it.attributes.attributes }
         .map { it.metaType }
 
-    override fun isValidMetaType(meta: TSGlobalMetaItem) = TSMetaHelper.isItemAttributeMetaType(meta)
+    override fun isValidMetaType(meta: TSGlobalMetaItem) = TSMetaHelper.isItemMetaType(meta)
 
 }
