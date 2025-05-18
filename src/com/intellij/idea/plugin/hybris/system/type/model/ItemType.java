@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@
 package com.intellij.idea.plugin.hybris.system.type.model;
 
 import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.ItemTypeConverter;
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.ItemTypeReferenceConverter;
 import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.*;
@@ -99,6 +100,7 @@ public interface ItemType extends DomElement {
     @NotNull
     @com.intellij.util.xml.Attribute(EXTENDS)
     @Convert(ItemTypeConverter.class)
+    @Referencing(ItemTypeReferenceConverter.class)
     GenericAttributeValue<String> getExtends();
 
 
