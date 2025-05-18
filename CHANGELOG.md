@@ -3,6 +3,7 @@
 ### `Type System` enhancements
 - Added multi-resolve for `extends` for Item Types [#1343](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1343)
 - Added multi-resolve for `type` for Relation Types [#1344](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1344)
+- Added support of the `metatype` for Item Types [#1345](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1345)
 
 ### `Terminal` integration
 - Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1342](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1342)

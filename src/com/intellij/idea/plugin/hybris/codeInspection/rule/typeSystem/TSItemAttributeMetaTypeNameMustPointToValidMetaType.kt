@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,7 +29,7 @@ import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 
-class TSMetaTypeNameMustPointToValidMetaType : AbstractTSInspection() {
+class TSItemAttributeMetaTypeNameMustPointToValidMetaType : AbstractTSInspection() {
 
     override fun inspect(
         project: Project,
@@ -58,11 +58,11 @@ class TSMetaTypeNameMustPointToValidMetaType : AbstractTSInspection() {
 
         val meta = metaModel.getMetaItem(typeCode)
 
-        if (meta == null || !TSMetaHelper.isAttributeDescriptor(meta)) {
+        if (meta == null || !TSMetaHelper.isItemAttributeMetaType(meta)) {
             holder.createProblem(
                 dom,
                 severity,
-                HybrisI18NBundleUtils.message("hybris.inspections.ts.MetaTypeNameMustPointToValidMetaType.details.key", typeCode)
+                HybrisI18NBundleUtils.message("hybris.inspections.ts.ItemAttributeMetaTypeNameMustPointToValidMetaType.details.key", typeCode)
             )
         }
     }

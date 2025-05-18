@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.openapi.util.Key
@@ -35,7 +34,7 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class ItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
+open class ItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
     override fun calculateDefaultRangeInElement(): TextRange =
         if (element.textLength == 0) super.calculateDefaultRangeInElement()
@@ -56,8 +55,10 @@ class ItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element),
             val metaModelAccess = TSMetaModelAccess.getInstance(ref.project)
 
             val name = ref.value
-            val result = metaModelAccess.findMetaItemByName(name)
-                ?.let { resolve(it) }
+            val result: Array<ResolveResult> = metaModelAccess.findMetaItemByName(name)
+                ?.declarations
+                ?.map { ItemResolveResult(it) }
+                ?.toTypedArray()
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(
@@ -65,11 +66,6 @@ class ItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(element),
                 metaModelAccess.getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
-
-        private fun resolve(meta: TSGlobalMetaItem): Array<ResolveResult> = meta.declarations
-            .map { ItemResolveResult(it) }
-            .toTypedArray()
-
     }
 
 }

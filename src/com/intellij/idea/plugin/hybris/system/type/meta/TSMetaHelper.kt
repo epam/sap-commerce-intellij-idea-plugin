@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -121,8 +121,11 @@ object TSMetaHelper {
         return currentMetaRelationEnds + extendsMetaRelationEnds
     }
 
-    fun isAttributeDescriptor(it: TSGlobalMetaItem) = (HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == it.name
+    fun isItemAttributeMetaType(it: TSGlobalMetaItem) = (HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == it.name
         || it.allExtends.any { extends -> HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == extends.name })
+
+    fun isItemMetaType(it: TSGlobalMetaItem) = (HybrisConstants.TS_META_COMPOSED_TYPE == it.name
+        || it.allExtends.any { extends -> HybrisConstants.TS_META_COMPOSED_TYPE == extends.name })
 
     fun getAttributeHandler(itemTypeDom: ItemType, attributeDom: Attribute, persistence: Persistence): String? {
         if (persistence.type.value != PersistenceType.DYNAMIC) return null

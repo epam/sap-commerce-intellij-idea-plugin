@@ -22,6 +22,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.model;
 
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.ItemMetaTypeReferenceConverter;
 import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.ItemTypeReferenceConverter;
 import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
@@ -214,6 +215,7 @@ public interface ItemType extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(META_TYPE)
+    @Referencing(ItemMetaTypeReferenceConverter.class)
     GenericAttributeValue<String> getMetaType();
 
 
