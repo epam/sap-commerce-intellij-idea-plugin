@@ -273,7 +273,10 @@ object HybrisConstants {
     const val TS_TYPE_LINK = "Link"
     const val TS_TYPE_SEARCH_RESTRICTION = "SearchRestriction"
     const val TS_TYPE_ENUMERATION_VALUE = "EnumerationValue"
-    const val TS_META_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
+    const val TS_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
+    const val TS_TYPE_RELATION_DESCRIPTOR = "RelationDescriptor"
+    const val TS_META_VIEW_TYPE = "ViewType"
+    const val TS_COMPOSED_TYPE = "ComposedType"
     const val TS_JAVA_LANG_PREFIX = JAVA_LANG_PREFIX
     const val TS_ATTRIBUTE_LOCALIZED_PREFIX = "localized:"
     const val TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER = "uniqueKeyAttributeQualifier"
@@ -287,8 +290,6 @@ object HybrisConstants {
     const val TS_PRIMITIVE_DOUBLE = "double"
     const val TS_PRIMITIVE_CHAR = "char"
     const val TS_PRIMITIVE_BOOLEAN = "boolean"
-    const val TS_META_VIEW_TYPE = "ViewType"
-    const val TS_META_COMPOSED_TYPE = "ComposedType"
     val TS_PRIMITIVE_TYPES =
         setOf(TS_PRIMITIVE_BYTE, TS_PRIMITIVE_SHORT, TS_PRIMITIVE_INT, TS_PRIMITIVE_LONG, TS_PRIMITIVE_FLOAT, TS_PRIMITIVE_DOUBLE, TS_PRIMITIVE_CHAR, TS_PRIMITIVE_BOOLEAN)
 

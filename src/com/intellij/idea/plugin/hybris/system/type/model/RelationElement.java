@@ -23,6 +23,7 @@
 package com.intellij.idea.plugin.hybris.system.type.model;
 
 import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.ItemTypeReferenceConverter;
+import com.intellij.idea.plugin.hybris.system.type.util.xml.converter.RelationElementMetaTypeReferenceConverter;
 import com.intellij.idea.plugin.hybris.util.xml.FalseAttributeValue;
 import com.intellij.idea.plugin.hybris.util.xml.TrueAttributeValue;
 import com.intellij.util.xml.*;
@@ -86,6 +87,7 @@ public interface RelationElement extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(META_TYPE)
+    @Referencing(RelationElementMetaTypeReferenceConverter.class)
     GenericAttributeValue<String> getMetaType();
 
 

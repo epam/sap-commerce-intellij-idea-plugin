@@ -4,6 +4,7 @@
 - Added multi-resolve for `extends` for Item Types [#1343](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1343)
 - Added multi-resolve for `type` for Relation Types [#1344](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1344)
 - Added support of the `metatype` for Item Types [#1345](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1345)
+- Added support of the `metatype` for Relation Elements [#1345](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1345)
 
 ### `items.xml` inspection rules
 - Item Type `metatype` must be a type extending ComposedType [#1346](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1346)

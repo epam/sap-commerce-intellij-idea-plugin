@@ -87,14 +87,13 @@ class TSCompletionService(private val project: Project) {
     fun getCompletions(meta: TSGlobalMetaEnum) = meta.values.values
         .map { TSLookupElementFactory.build(it) }
 
-    fun getItemMetaTypeCompletions() = TSMetaModelAccess.getInstance(project)
-        .getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-        .filter { TSMetaHelper.isItemMetaType(it) }
-        .mapNotNull { TSLookupElementFactory.build(it) }
+    fun getItemMetaTypeCompletions() = getMetaTypeCompletions { TSMetaHelper.isItemMetaType(it) }
+    fun getItemAttributeMetaTypeCompletions() = getMetaTypeCompletions { TSMetaHelper.isItemAttributeMetaType(it) }
+    fun getRelationElementMetaTypeCompletions() = getMetaTypeCompletions { TSMetaHelper.isRelationElementMetaType(it) }
 
-    fun getItemAttributeMetaTypeCompletions() = TSMetaModelAccess.getInstance(project)
+    private fun getMetaTypeCompletions(filterByMetaType: (TSGlobalMetaItem) -> Boolean) = TSMetaModelAccess.getInstance(project)
         .getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-        .filter { TSMetaHelper.isItemAttributeMetaType(it) }
+        .filter(filterByMetaType)
         .mapNotNull { TSLookupElementFactory.build(it) }
 
     fun getImpExInlineTypeCompletions(project: Project, element: ImpexParameter): List<LookupElement> {

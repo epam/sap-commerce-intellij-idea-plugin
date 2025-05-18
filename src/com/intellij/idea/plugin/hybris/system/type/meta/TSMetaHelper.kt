@@ -121,11 +121,9 @@ object TSMetaHelper {
         return currentMetaRelationEnds + extendsMetaRelationEnds
     }
 
-    fun isItemAttributeMetaType(it: TSGlobalMetaItem) = (HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == it.name
-        || it.allExtends.any { extends -> HybrisConstants.TS_META_TYPE_ATTRIBUTE_DESCRIPTOR == extends.name })
-
-    fun isItemMetaType(it: TSGlobalMetaItem) = (HybrisConstants.TS_META_COMPOSED_TYPE == it.name
-        || it.allExtends.any { extends -> HybrisConstants.TS_META_COMPOSED_TYPE == extends.name })
+    fun isItemAttributeMetaType(meta: TSGlobalMetaItem) = isMetaType(meta, HybrisConstants.TS_TYPE_ATTRIBUTE_DESCRIPTOR)
+    fun isItemMetaType(meta: TSGlobalMetaItem) = isMetaType(meta, HybrisConstants.TS_COMPOSED_TYPE)
+    fun isRelationElementMetaType(meta: TSGlobalMetaItem) = isMetaType(meta, HybrisConstants.TS_TYPE_RELATION_DESCRIPTOR)
 
     fun getAttributeHandler(itemTypeDom: ItemType, attributeDom: Attribute, persistence: Persistence): String? {
         if (persistence.type.value != PersistenceType.DYNAMIC) return null
@@ -155,4 +153,7 @@ object TSMetaHelper {
         val name = meta.name ?: return emptyList()
         return metaModel.getRelations(name) ?: emptyList()
     }
+
+    private fun isMetaType(meta: TSGlobalMetaItem, type: String) = (type == meta.name
+        || meta.allExtends.any { extends -> type == extends.name })
 }
