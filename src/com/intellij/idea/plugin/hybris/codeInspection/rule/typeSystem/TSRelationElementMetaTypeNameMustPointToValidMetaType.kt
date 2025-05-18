@@ -16,14 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result
+package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngMetaEditorDefinition
-import com.intellij.psi.ResolveResult
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.model.Items
 
-class EditorDefinitionResolveResult(
-    val meta: CngMetaEditorDefinition
-) : ResolveResult {
-    override fun getElement() = meta.retrieveDom()?.id?.xmlAttributeValue
-    override fun isValidResult() = element != null && (meta.retrieveDom()?.isValid ?: false)
+class TSRelationElementMetaTypeNameMustPointToValidMetaType : AbstractTSMetaTypeInspection(
+    "hybris.inspections.ts.RelationElementMetaTypeNameMustPointToValidMetaType.details.key"
+) {
+    override fun collectMetaTypes(dom: Items) = dom.relations.relations
+        .flatMap { listOf(it.sourceElement.metaType, it.targetElement.metaType) }
+
+    override fun isValidMetaType(meta: TSGlobalMetaItem) = TSMetaHelper.isRelationElementMetaType(meta)
+
 }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,9 +22,8 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngMetaWidget
 import com.intellij.psi.ResolveResult
 
 class WidgetSettingResolveResult(
-    meta: CngMetaWidgetSetting
+    val meta: CngMetaWidgetSetting
 ) : ResolveResult {
-    private val myDom = meta.retrieveDom()
-    override fun getElement() = myDom?.key?.xmlAttributeValue
-    override fun isValidResult() = element != null && myDom?.isValid ?: false
+    override fun getElement() = meta.retrieveDom()?.key?.xmlAttributeValue
+    override fun isValidResult() = element != null && (meta.retrieveDom()?.isValid ?: false)
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -65,16 +65,15 @@ abstract class AbstractModelAttributeLineMarkerProvider<T : PsiElement> : Abstra
 
     open fun getAttributeElements(meta: TSGlobalMetaItem, name: String) = meta.allAttributes[name]
         ?.declarations
-        ?.map { it.domAnchor }
-        ?.mapNotNull { it.retrieveDomElement() }
+        ?.mapNotNull { it.retrieveDom() }
         ?.map { it.qualifier }
         ?.mapNotNull { it.xmlAttributeValue }
 
     open fun getRelations(meta: TSGlobalMetaItem, name: String) = meta.allRelationEnds
         .filter { it.qualifier == name }
         .filter { it.isNavigable }
-        .filter { it.domAnchor.retrieveDomElement()?.qualifier?.xmlAttributeValue != null }
-        .groupBy({ it.end }, { it.domAnchor.retrieveDomElement()!!.qualifier.xmlAttributeValue!! })
+        .filter { it.retrieveDom()?.qualifier?.xmlAttributeValue != null }
+        .groupBy({ it.end }, { it.retrieveDom()!!.qualifier.xmlAttributeValue!! })
 
     open fun getRelationMarkers(
         groupedRelElements: Map<RelationEnd, List<XmlElement>>,

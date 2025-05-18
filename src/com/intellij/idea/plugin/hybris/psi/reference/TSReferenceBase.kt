@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,44 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.psi.reference
 
-package com.intellij.idea.plugin.hybris.psi.reference;
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceBase
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.ResolveResult;
-import org.jetbrains.annotations.NotNull;
+abstract class TSReferenceBase<PSI : PsiElement> : PsiReferenceBase.Poly<PSI> {
 
-public abstract class TSReferenceBase<PSI extends PsiElement> extends PsiReferenceBase.Poly<PSI> {
+    constructor(owner: PSI) : super(owner, false)
+    constructor(owner: PSI, soft: Boolean) : super(owner, soft)
+    constructor(element: PSI?, rangeInElement: TextRange?) : super(element, rangeInElement, false)
 
-    public TSReferenceBase(@NotNull final PSI owner) {
-        super(owner, false);
-    }
+    override fun calculateDefaultRangeInElement() = TextRange.from(0, element.textLength)
 
-    public TSReferenceBase(@NotNull final PSI owner, final boolean soft) {
-        super(owner, soft);
-    }
-
-    public TSReferenceBase(final PSI element, final TextRange rangeInElement) {
-        super(element, rangeInElement, false);
-    }
-
-    @Override
-    protected TextRange calculateDefaultRangeInElement() {
-        return TextRange.from(0, getElement().getTextLength());
-    }
-
-    @NotNull
-    @Override
-    public Object[] getVariants() {
-        return ResolveResult.EMPTY_ARRAY;
-    }
-
-    @NotNull
-    protected final Project getProject() {
-        return getElement().getProject();
-    }
-
+    protected val project: Project
+        get() = element.project
 }

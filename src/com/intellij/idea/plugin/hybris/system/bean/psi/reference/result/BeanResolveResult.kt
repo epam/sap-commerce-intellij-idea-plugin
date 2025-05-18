@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,17 +19,11 @@
 package com.intellij.idea.plugin.hybris.system.bean.psi.reference.result
 
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaBean
-import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 
 class BeanResolveResult(
     val meta: BSMetaBean
 ) : ResolveResult {
-    private val myDom = meta.retrieveDom()
-
-    override fun getElement(): PsiElement? = myDom
-        ?.clazz
-        ?.xmlAttributeValue
-
-    override fun isValidResult() = (myDom?.isValid ?: false) && element != null
+    override fun getElement() = meta.retrieveDom()?.clazz?.xmlAttributeValue
+    override fun isValidResult() = element != null && (meta.retrieveDom()?.isValid ?: false)
 }
