@@ -14,6 +14,9 @@
 ### `Terminal` integration
 - Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1342](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1342)
 
+### Fixes
+- Do not populate Tomcat JVM Properties for pure Unit Tests [#1350](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1350)
+
 ## [2025.1.2]
 
 ### `Project Import` enhancements

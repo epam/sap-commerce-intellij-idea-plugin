@@ -59,7 +59,16 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
         executor: Executor
     ) {
         val project = configuration.project
+        val junitConfig = (configuration as JUnitConfiguration)
 
+        if (isApplicableFor(configuration) && !isPureUnitTest(junitConfig, project)) {
+            updateSapCXJVMProperties(project, params, executor)
+        }
+
+        super.updateJavaParameters(configuration, params, runnerSettings, executor)
+    }
+
+    private fun updateSapCXJVMProperties(project: Project, params: JavaParameters, executor: Executor) {
         PropertyService.getInstance(project)
             ?.let { propertyService ->
 
@@ -74,8 +83,6 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
                     addVmParameterIfNotExist(vmParameters, it)
                 }
             }
-
-        super.updateJavaParameters(configuration, params, runnerSettings, executor)
     }
 
     override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
