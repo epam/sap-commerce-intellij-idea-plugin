@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.vfs.listeners
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.TSModificationTracker
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -62,7 +61,6 @@ class TSBulkFileListener : BulkFileListener {
             // re-triggering GlobalMetaModel state on file changes
             try {
                 TSModificationTracker.resetCache(suitableEvents.map { it.second })
-                TSMetaModelAccess.getInstance(project).getMetaModel()
             } catch (e: ProcessCanceledException) {
                 // do nothing; once done, model access service will notify all listeners
             }
