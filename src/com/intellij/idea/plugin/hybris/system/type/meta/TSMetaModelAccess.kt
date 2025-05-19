@@ -20,10 +20,12 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
+import com.intellij.idea.plugin.hybris.system.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelNameProvider
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.ModuleManager
@@ -59,16 +61,17 @@ import kotlin.io.path.inputStream
  * It is quite important to take into account the possibility of interruption of the process, especially during Inspection and other heavy operations
  */
 @Service(Service.Level.PROJECT)
-class TSMetaModelAccess(private val project: Project, private val coroutineScope: CoroutineScope) {
+class TSMetaModelAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
 
     companion object {
         val TOPIC = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", TSChangeListener::class.java)
-        private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<TSMetaModel>>("SINGLE_TS_MODEL_CACHE")
+//        private val SINGLE_MODEL_CACHE_KEYS = mutableMapOf<String, Key<CachedValue<TSMetaModel>>>()
 
         @JvmStatic
         fun getInstance(project: Project): TSMetaModelAccess = project.getService(TSMetaModelAccess::class.java)
     }
 
+    //    private val vfPointerContainer = VirtualFilePointerManager.getInstance().createContainer(this)
     private val myGlobalMetaModel = TSGlobalMetaModel()
     private val myMessageBus = project.messageBus
     private val myReservedTypeCodes by lazy {
@@ -109,7 +112,8 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
                             .map {
                                 progressReporter.sizedStep(1, "Processing: ${it.name}...") {
                                     this.async {
-                                        retrieveSingleMetaModelPerFile(it)
+                                        val cacheKey = TSModificationTracker.getCacheKey(it)
+                                        retrieveSingleMetaModelPerFile(it, cacheKey)
                                     }
                                 }
                             }
@@ -123,8 +127,10 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
                 }
             }
 
-            val dependencies = localMetaModels
-                .map { it.virtualFile }
+            val dependencies = (
+                listOf(TSModificationTracker) + localMetaModels
+                    .map { it.virtualFile }
+                )
                 .toTypedArray()
 
             CachedValueProvider.Result.create(myGlobalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
@@ -212,15 +218,18 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
     private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? =
         getMetaModel().getMetaType<T>(metaType)[name]
 
-    private fun retrieveSingleMetaModelPerFile(psiFile: PsiFile): TSMetaModel = CachedValuesManager.getManager(project).getCachedValue(
-        psiFile, SINGLE_MODEL_CACHE_KEY,
+    private fun retrieveSingleMetaModelPerFile(psiFile: PsiFile, cacheKey: Key<CachedValue<TSMetaModel>>): TSMetaModel = CachedValuesManager.getManager(project).getCachedValue(
+        TSModificationTracker, cacheKey,
         {
             val value = runBlocking {
                 TSMetaModelProcessor.getInstance(project).process(this, psiFile)
             }
 
-            CachedValueProvider.Result.create(value, psiFile)
+            CachedValueProvider.Result.create(value, psiFile.virtualFile)
         },
         false
     )
+
+    override fun dispose() {
+    }
 }

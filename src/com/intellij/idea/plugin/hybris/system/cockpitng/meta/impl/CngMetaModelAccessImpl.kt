@@ -186,8 +186,8 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
             {
                 ApplicationManager.getApplication().runReadAction(
                     Computable {
-                        CachedValueProvider.Result.create(resultProcessor.invoke(psiFile), psiFile)
-                    } as Computable<CachedValueProvider.Result<T>>)
+                        CachedValueProvider.Result.create(resultProcessor.invoke(psiFile), psiFile.virtualFile)
+                    })
             }, false
         )
     }
@@ -195,13 +195,9 @@ class CngMetaModelAccessImpl(private val myProject: Project) : CngMetaModelAcces
     companion object {
         val topic = Topic("HYBRIS_COCKPITNG_SYSTEM_LISTENER", CngChangeListener::class.java)
         private val SINGLE_CONFIG_CACHE_KEY = Key.create<CachedValue<CngConfigMeta>>("SINGLE_CNG_CONFIG_CACHE")
-        private val SINGLE_ACTION_DEFINITION_CACHE_KEY =
-            Key.create<CachedValue<CngMetaActionDefinition>>("SINGLE_ACTION_DEFINITION_CACHE")
-        private val SINGLE_WIDGET_DEFINITION_CACHE_KEY =
-            Key.create<CachedValue<CngMetaWidgetDefinition>>("SINGLE_WIDGET_DEFINITION_CACHE")
-        private val SINGLE_EDITOR_DEFINITION_CACHE_KEY =
-            Key.create<CachedValue<CngMetaEditorDefinition>>("SINGLE_EDITOR_DEFINITION_CACHE")
-        private val SINGLE_WIDGETS_MODEL_CACHE_KEY =
-            Key.create<CachedValue<CngMetaWidgets>>("SINGLE_WIDGETS_CACHE")
+        private val SINGLE_ACTION_DEFINITION_CACHE_KEY = Key.create<CachedValue<CngMetaActionDefinition>>("SINGLE_ACTION_DEFINITION_CACHE")
+        private val SINGLE_WIDGET_DEFINITION_CACHE_KEY = Key.create<CachedValue<CngMetaWidgetDefinition>>("SINGLE_WIDGET_DEFINITION_CACHE")
+        private val SINGLE_EDITOR_DEFINITION_CACHE_KEY = Key.create<CachedValue<CngMetaEditorDefinition>>("SINGLE_EDITOR_DEFINITION_CACHE")
+        private val SINGLE_WIDGETS_MODEL_CACHE_KEY = Key.create<CachedValue<CngMetaWidgets>>("SINGLE_WIDGETS_CACHE")
     }
 }

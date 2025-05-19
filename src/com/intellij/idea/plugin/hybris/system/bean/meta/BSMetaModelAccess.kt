@@ -168,7 +168,7 @@ class BSMetaModelAccess(private val project: Project, private val coroutineScope
                 BSMetaModelProcessor.getInstance(project).process(this, psiFile)
             }
 
-            CachedValueProvider.Result.create(value, psiFile)
+            CachedValueProvider.Result.create(value, psiFile.virtualFile)
         },
         false
     )
