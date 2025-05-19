@@ -75,10 +75,8 @@ class PreLoadSystemsStartupActivity : ProjectActivity {
                     ?.containingFile
                     ?: return@DomEventListener)
 
-                with (TSMetaModelAccess.getInstance(project)) {
-                    TSModificationTracker.resetCache(psiFile)
-                    getMetaModel()
-                }
+                TSModificationTracker.resetCache(psiFile)
+                TSMetaModelAccess.getInstance(project).getMetaModel()
             }, this)
         }
 
