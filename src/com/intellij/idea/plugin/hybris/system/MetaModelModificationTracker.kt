@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system
 
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModel
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.UserDataHolderBase
@@ -27,7 +28,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import java.io.Serial
 
-object TSModificationTracker : MetaModelModificationTracker<TSMetaModel>("SINGLE_TS_MODEL_CACHE")
+@Service(Service.Level.PROJECT)
+class TSModificationTracker : MetaModelModificationTracker<TSMetaModel>("SINGLE_TS_MODEL_CACHE")
 
 abstract class MetaModelModificationTracker<T>(private val prefix: String) : UserDataHolderBase(), ModificationTracker {
 

@@ -38,7 +38,7 @@ class TSMetaModelCollector(private val myProject: Project) {
     fun collectDependencies(): Set<PsiFile> {
         val files = HashSet<PsiFile>()
 
-        StubIndex.getInstance().processElements(
+         StubIndex.getInstance().processElements(
             DomElementClassIndex.KEY,
             Items::class.java.name,
             myProject,

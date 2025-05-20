@@ -19,13 +19,13 @@
 <idea-plugin>
 
     <applicationListeners>
-        <listener class="com.intellij.idea.plugin.hybris.vfs.listeners.TSBulkFileListener"
-                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
         <listener class="com.intellij.idea.plugin.hybris.vfs.listeners.BSBulkFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
 
     <extensions defaultExtensionNs="com.intellij">
+        <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.vfs.listeners.TSAsyncFileListener"/>
+
         <!-- ####################################################################################################### -->
         <!--                                        Run Contributors                                                 -->
         <!-- ####################################################################################################### -->
