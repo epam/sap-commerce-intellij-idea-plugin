@@ -25,6 +25,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.vfs.listeners.TSAsyncFileListener"/>
+        <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.psi.listeners.PsiTreeChangeListener"/>
 
         <!-- ####################################################################################################### -->
         <!--                                        Run Contributors                                                 -->
