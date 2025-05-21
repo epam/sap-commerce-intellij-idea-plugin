@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system
 
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModel
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.ModificationTracker
@@ -31,7 +32,7 @@ import java.io.Serial
 @Service(Service.Level.PROJECT)
 class TSModificationTracker : MetaModelModificationTracker<TSMetaModel>("SINGLE_TS_MODEL_CACHE")
 
-abstract class MetaModelModificationTracker<T>(private val prefix: String) : UserDataHolderBase(), ModificationTracker {
+abstract class MetaModelModificationTracker<T>(private val prefix: String) : UserDataHolderBase(), ModificationTracker, Disposable {
 
     private val singleMetaCacheKeys = mutableMapOf<String, Key<CachedValue<T>>>()
     private var modificationTracker = 0L;
@@ -49,14 +50,13 @@ abstract class MetaModelModificationTracker<T>(private val prefix: String) : Use
 
     fun clear() = singleMetaCacheKeys.clear()
 
-    fun resetCache(psiFile: PsiFile) {
-        modify()
-        resetCache(psiFile.name)
-    }
-
     fun resetCache(keys: Collection<String>) {
         modify()
         keys.forEach { resetCache(it) }
+    }
+
+    override fun dispose() {
+        singleMetaCacheKeys.clear()
     }
 
     private fun resetCache(keyName: String) {

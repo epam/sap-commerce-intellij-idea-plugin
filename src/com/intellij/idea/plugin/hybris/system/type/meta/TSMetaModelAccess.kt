@@ -66,13 +66,11 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
 
     companion object {
         val TOPIC = Topic("HYBRIS_TYPE_SYSTEM_LISTENER", TSChangeListener::class.java)
-//        private val SINGLE_MODEL_CACHE_KEYS = mutableMapOf<String, Key<CachedValue<TSMetaModel>>>()
 
         @JvmStatic
         fun getInstance(project: Project): TSMetaModelAccess = project.getService(TSMetaModelAccess::class.java)
     }
 
-    //    private val vfPointerContainer = VirtualFilePointerManager.getInstance().createContainer(this)
     private val myGlobalMetaModel = TSGlobalMetaModel()
     private val myMessageBus = project.messageBus
     private val myReservedTypeCodes by lazy {
@@ -220,18 +218,20 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
     private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? =
         getMetaModel().getMetaType<T>(metaType)[name]
 
-    private fun retrieveSingleMetaModelPerFile(modificationTracker: TSModificationTracker, psiFile: PsiFile, cacheKey: Key<CachedValue<TSMetaModel>>): TSMetaModel = CachedValuesManager.getManager(project).getCachedValue(
-        modificationTracker, cacheKey,
-        {
-            val value = runBlocking {
-                TSMetaModelProcessor.getInstance(project).process(this, psiFile)
-            }
+    private fun retrieveSingleMetaModelPerFile(modificationTracker: TSModificationTracker, psiFile: PsiFile, cacheKey: Key<CachedValue<TSMetaModel>>): TSMetaModel =
+        CachedValuesManager.getManager(project).getCachedValue(
+            modificationTracker, cacheKey,
+            {
+                val value = runBlocking {
+                    TSMetaModelProcessor.getInstance(project).process(this, psiFile)
+                }
 
-            CachedValueProvider.Result.create(value, psiFile.virtualFile)
-        },
-        false
-    )
+                CachedValueProvider.Result.create(value, psiFile.virtualFile)
+            },
+            false
+        )
 
     override fun dispose() {
+        myGlobalMetaModel.dispose()
     }
 }
