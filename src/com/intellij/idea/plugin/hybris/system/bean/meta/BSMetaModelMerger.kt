@@ -24,7 +24,7 @@ import com.intellij.util.xml.DomElement
 
 object BSMetaModelMerger {
 
-    suspend fun merge(globalMetaModel: BSGlobalMetaModel, localMetaModels: Collection<BSMetaModel>) = with(globalMetaModel) {
+    fun merge(globalMetaModel: BSGlobalMetaModel, localMetaModels: Collection<BSMetaModel>) = with(globalMetaModel) {
         globalMetaModel.clear()
 
         localMetaModels

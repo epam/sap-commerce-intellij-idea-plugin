@@ -23,7 +23,7 @@ import com.intellij.util.xml.DomElement
 
 object TSMetaModelMerger {
 
-    suspend fun merge(globalMetaModel: TSGlobalMetaModel, localMetaModels: Collection<TSMetaModel>) = with(globalMetaModel) {
+    fun merge(globalMetaModel: TSGlobalMetaModel, localMetaModels: Collection<TSMetaModel>) = with(globalMetaModel) {
         globalMetaModel.clear()
 
         localMetaModels

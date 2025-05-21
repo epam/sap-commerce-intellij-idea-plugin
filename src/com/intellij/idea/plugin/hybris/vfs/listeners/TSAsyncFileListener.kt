@@ -61,6 +61,7 @@ class TSAsyncFileListener : AsyncFileListener {
                 override fun beforeVfsChange() {
                     processEvents.forEach { (tracker, events) ->
                         // re-triggering GlobalMetaModel state on file changes
+                        // extra cases on a file, not covered by CacheValue upToDate evaluation: create, remove, rename
                         try {
                             tracker.resetCache(events)
                         } catch (e: ProcessCanceledException) {

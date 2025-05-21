@@ -39,7 +39,7 @@ class BSMetaModelCollector(private val myProject: Project) {
 
     private val myDomManager: DomManager = DomManager.getDomManager(myProject)
 
-    suspend fun collectDependencies(): Set<PsiFile> {
+    fun collectDependencies(): Set<PsiFile> {
         val files = HashSet<PsiFile>()
 
         StubIndex.getInstance().processElements(
