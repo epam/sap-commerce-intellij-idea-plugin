@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system
 
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
@@ -31,6 +32,8 @@ import java.io.Serial
 
 @Service(Service.Level.PROJECT)
 class TSModificationTracker : MetaModelModificationTracker<TSMetaModel>("SINGLE_TS_MODEL_CACHE")
+@Service(Service.Level.PROJECT)
+class BSModificationTracker : MetaModelModificationTracker<BSMetaModel>("SINGLE_BS_MODEL_CACHE")
 
 abstract class MetaModelModificationTracker<T>(private val prefix: String) : UserDataHolderBase(), ModificationTracker, Disposable {
 

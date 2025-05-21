@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.psi.listeners
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.system.BSModificationTracker
 import com.intellij.idea.plugin.hybris.system.TSModificationTracker
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
@@ -55,9 +56,11 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
         val fileName = event.file
             ?.asSafely<XmlFile>()
             ?.name
-            ?.takeIf { it.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) }
             ?: return
 
-        project.service<TSModificationTracker>().resetCache(listOf(fileName))
+        when {
+            fileName.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> project.service<TSModificationTracker>().resetCache(listOf(fileName))
+            fileName.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING) -> project.service<BSModificationTracker>().resetCache(listOf(fileName))
+        }
     }
 }

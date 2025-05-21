@@ -19,53 +19,59 @@ package com.intellij.idea.plugin.hybris.vfs.listeners
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.system.BSModificationTracker
+import com.intellij.idea.plugin.hybris.system.MetaModelModificationTracker
 import com.intellij.idea.plugin.hybris.system.TSModificationTracker
 import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import com.intellij.util.PathUtil
 import com.intellij.util.asSafely
 
-class TSAsyncFileListener : AsyncFileListener {
+class MetaSystemsAsyncFileListener : AsyncFileListener {
 
     override fun prepareChange(events: List<VFileEvent>) = ProjectManager.getInstance().openProjects
         .filterNot { DumbService.isDumb(it) }
         .filter { ProjectSettingsComponent.getInstance(it).isHybrisProject() }
         .mapNotNull { project ->
-            val fileIndex = ProjectRootManager.getInstance(project).fileIndex
-
-            val suitableFileNames = events
+            events
                 .mapNotNull { event ->
+                    val mapToMetaFile: (String) -> Pair<MetaModelModificationTracker<out Any>, String>? = {
+                        when {
+                            it.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> project.service<TSModificationTracker>() to it
+                            it.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING) -> project.service<BSModificationTracker>() to it
+                            else -> null
+                        }
+                    }
                     event.asSafely<VFilePropertyChangeEvent>()
                         ?.takeIf { it.isRename }
                         ?.oldValue
                         ?.asSafely<String>()
-                        ?.takeIf { it.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) }
+                        ?.let(mapToMetaFile)
                         ?: PathUtil.getFileName(event.path)
-                            .takeIf { it.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) }
+                            .let(mapToMetaFile)
+                        ?: return@mapNotNull null
                 }
+                .groupBy({ it.first }, { it.second })
                 .takeIf { it.isNotEmpty() }
-                ?: return@mapNotNull null
-            suitableFileNames
-
-            project.service<TSModificationTracker>() to suitableFileNames
         }
         .takeIf { it.isNotEmpty() }
         ?.let { processEvents ->
             object : AsyncFileListener.ChangeApplier {
                 override fun beforeVfsChange() {
-                    processEvents.forEach { (tracker, events) ->
-                        // re-triggering GlobalMetaModel state on file changes
-                        // extra cases on a file, not covered by CacheValue upToDate evaluation: create, remove, rename
-                        try {
-                            tracker.resetCache(events)
-                        } catch (e: ProcessCanceledException) {
-                            // do nothing; once done, model access service will notify all listeners
+                    processEvents.forEach { metaToFileNames ->
+                        metaToFileNames.forEach { (tracker, fileNames) ->
+                            // re-triggering GlobalMetaModel state on file changes
+                            // extra cases on a file, not covered by CacheValue upToDate evaluation: create, remove, rename
+                            try {
+                                tracker.resetCache(fileNames)
+                            } catch (e: ProcessCanceledException) {
+                                // do nothing; once done, model access service will notify all listeners
+                            }
                         }
                     }
                 }

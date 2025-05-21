@@ -8,6 +8,9 @@
 - Addressed deadlock for circular extends of two Item Types [#1348](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1348)
 - Reworked caching mechanism for Global TS Meta Model [#1351](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1351)
 
+### `Bean System` enhancements
+- Reworked caching mechanism for Global BS Meta Model [#1353](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1353)
+
 ### `items.xml` inspection rules
 - Item Type `metatype` must be a type extending ComposedType [#1346](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1346)
 - Relation Element `metatype` must be a type extending RelationDescriptor [#1349](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1349)

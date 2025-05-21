@@ -18,13 +18,8 @@
 
 <idea-plugin>
 
-    <applicationListeners>
-        <listener class="com.intellij.idea.plugin.hybris.vfs.listeners.BSBulkFileListener"
-                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
-    </applicationListeners>
-
     <extensions defaultExtensionNs="com.intellij">
-        <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.vfs.listeners.TSAsyncFileListener"/>
+        <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.vfs.listeners.MetaSystemsAsyncFileListener"/>
         <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.psi.listeners.PsiTreeChangeListener"/>
 
         <!-- ####################################################################################################### -->

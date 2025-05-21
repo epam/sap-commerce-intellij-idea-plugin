@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
+import com.intellij.idea.plugin.hybris.system.BSModificationTracker
 import com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelNameProvider
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaClassifier
@@ -24,8 +25,10 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -41,10 +44,12 @@ import com.intellij.util.messages.Topic
 import kotlinx.coroutines.*
 
 @Service(Service.Level.PROJECT)
-class BSMetaModelAccess(private val project: Project, private val coroutineScope: CoroutineScope) {
+class BSMetaModelAccess(
+    private val project: Project,
+    private val coroutineScope: CoroutineScope,
+) : Disposable {
 
     companion object {
-        private val SINGLE_MODEL_CACHE_KEY = Key.create<CachedValue<BSMetaModel>>("SINGLE_BEAN_SYSTEM_MODEL_CACHE")
         val TOPIC = Topic("HYBRIS_BEANS_LISTENER", BSChangeListener::class.java)
 
         fun getInstance(project: Project): BSMetaModelAccess = project.getService(BSMetaModelAccess::class.java)
@@ -61,6 +66,7 @@ class BSMetaModelAccess(private val project: Project, private val coroutineScope
 
     private val myGlobalMetaModelCache = CachedValuesManager.getManager(project).createCachedValue(
         {
+            val modificationTracker = project.service<BSModificationTracker>()
             val localMetaModels = runBlocking {
                 withBackgroundProgress(project, "Re-building Bean System...", true) {
                     val collectedDependencies = BSMetaModelCollector.getInstance(project).collectDependencies()
@@ -70,7 +76,8 @@ class BSMetaModelAccess(private val project: Project, private val coroutineScope
                             .map {
                                 progressReporter.sizedStep(1, "Processing: ${it.name}...") {
                                     this.async {
-                                        retrieveSingleMetaModelPerFile(it)
+                                        val cacheKey = modificationTracker.getCacheKey(it)
+                                        retrieveSingleMetaModelPerFile(modificationTracker, it, cacheKey)
                                     }
                                 }
                             }
@@ -83,9 +90,9 @@ class BSMetaModelAccess(private val project: Project, private val coroutineScope
                     localMetaModels
                 }
             }
-            val dependencies = localMetaModels
-                .map { it.virtualFile }
-                .toTypedArray()
+
+            val dependencies = (listOf(modificationTracker) + localMetaModels.map { it.virtualFile })
+                .toTypedArray<ModificationTracker>()
 
             CachedValueProvider.Result.create(myGlobalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
         }, false
@@ -161,15 +168,20 @@ class BSMetaModelAccess(private val project: Project, private val coroutineScope
     private fun <T : BSGlobalMetaClassifier<*>> findMetaByName(metaType: BSMetaType, name: String?): T? =
         getMetaModel().getMetaType<T>(metaType)[name]
 
-    private fun retrieveSingleMetaModelPerFile(psiFile: PsiFile): BSMetaModel = CachedValuesManager.getManager(project).getCachedValue(
-        psiFile, SINGLE_MODEL_CACHE_KEY,
-        {
-            val value = runBlocking {
-                BSMetaModelProcessor.getInstance(project).process(this, psiFile)
-            }
+    private fun retrieveSingleMetaModelPerFile(modificationTracker: BSModificationTracker, psiFile: PsiFile, cacheKey: Key<CachedValue<BSMetaModel>>): BSMetaModel =
+        CachedValuesManager.getManager(project).getCachedValue(
+            modificationTracker, cacheKey,
+            {
+                val value = runBlocking {
+                    BSMetaModelProcessor.getInstance(project).process(this, psiFile)
+                }
 
-            CachedValueProvider.Result.create(value, psiFile.virtualFile)
-        },
-        false
-    )
+                CachedValueProvider.Result.create(value, psiFile.virtualFile)
+            },
+            false
+        )
+
+    override fun dispose() {
+        myGlobalMetaModel.dispose()
+    }
 }

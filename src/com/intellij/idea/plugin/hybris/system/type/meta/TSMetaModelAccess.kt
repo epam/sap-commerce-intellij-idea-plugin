@@ -127,10 +127,7 @@ class TSMetaModelAccess(private val project: Project, private val coroutineScope
                 }
             }
 
-            val dependencies = (
-                listOf(modificationTracker) + localMetaModels
-                    .map { it.virtualFile }
-                )
+            val dependencies = (listOf(modificationTracker) + localMetaModels.map { it.virtualFile })
                 .toTypedArray<ModificationTracker>()
 
             CachedValueProvider.Result.create(myGlobalMetaModel, dependencies.ifEmpty { ModificationTracker.EVER_CHANGED })
