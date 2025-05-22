@@ -38,6 +38,7 @@ class TSMetaModelStateService(project: Project, private val coroutineScope: Coro
 
     private val metaModelCollector = project.service<TSMetaModelCollector>()
     private val metaModelProcessor = project.service<TSMetaModelProcessor>()
+    private val dumbService = DumbService.Companion.getInstance(project)
 
     override fun processState(metaModels: Collection<String>) {
         if (metaModelState.value.computing) return
@@ -46,7 +47,7 @@ class TSMetaModelStateService(project: Project, private val coroutineScope: Coro
 
         _metaModelState.value = CachedState(null, computed = false, computing = true)
 
-        DumbService.Companion.getInstance(project).runWhenSmart {
+        dumbService.runWhenSmart {
             coroutineScope.launch {
                 val duration = measureTime {
                     val newState = withBackgroundProgress(project, "Re-building Type System...", true) {
