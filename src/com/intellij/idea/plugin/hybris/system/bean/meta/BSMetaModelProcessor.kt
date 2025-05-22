@@ -25,30 +25,24 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.coroutineScope
-import kotlin.time.measureTimedValue
 
 @Service(Service.Level.PROJECT)
 class BSMetaModelProcessor(private val project: Project) {
 
     suspend fun process(foundMeta: FoundMeta<Beans>): BSMetaModel? = coroutineScope {
         readAction {
-            val (v, d) = measureTimedValue {
-                val moduleName = foundMeta.moduleName
-                val extensionName = foundMeta.extensionName
-                val beans = foundMeta.rootElement
-                val fileName = foundMeta.name
-                val custom = PsiUtils.isCustomExtensionFile(foundMeta.virtualFile, project)
+            val moduleName = foundMeta.moduleName
+            val extensionName = foundMeta.extensionName
+            val beans = foundMeta.rootElement
+            val fileName = foundMeta.name
+            val custom = PsiUtils.isCustomExtensionFile(foundMeta.virtualFile, project)
 
-                with(BSMetaModelBuilder(moduleName, extensionName, fileName, custom)) {
-                    withEnumTypes(beans.enums)
-                    withBeanTypes(beans.beans)
-                    withEventTypes(beans.beans)
-                    build()
-                }
+            with(BSMetaModelBuilder(moduleName, extensionName, fileName, custom)) {
+                withEnumTypes(beans.enums)
+                withBeanTypes(beans.beans)
+                withEventTypes(beans.beans)
+                build()
             }
-            println("bs new process - ${foundMeta.name}- ${d.inWholeMilliseconds}")
-
-            return@readAction v
         }
     }
 }

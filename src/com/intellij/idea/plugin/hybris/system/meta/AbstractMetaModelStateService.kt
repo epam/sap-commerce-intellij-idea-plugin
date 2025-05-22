@@ -71,7 +71,6 @@ abstract class AbstractMetaModelStateService<M, G>(protected val project: Projec
         } else {
             _recomputeMetas.value = (metas + metaModels).toSet()
         }
-        println("update request: ${_recomputeMetas.value}")
     }
 
     protected fun getCurrentState(): G {

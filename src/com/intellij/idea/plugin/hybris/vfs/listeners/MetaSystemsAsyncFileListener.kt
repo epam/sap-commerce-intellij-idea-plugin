@@ -49,9 +49,10 @@ class MetaSystemsAsyncFileListener : AsyncFileListener {
                     }
                     event.asSafely<VFilePropertyChangeEvent>()
                         ?.takeIf { it.isRename }
-                        ?.oldValue
-                        ?.asSafely<String>()
-                        ?.let(mapToMetaFile)
+                        ?.let {
+                            it.oldValue?.asSafely<String>()?.let(mapToMetaFile)
+                                ?: it.newValue?.asSafely<String>()?.let(mapToMetaFile)
+                        }
                         ?: PathUtil.getFileName(event.path)
                             .let(mapToMetaFile)
                         ?: return@mapNotNull null

@@ -25,34 +25,28 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.coroutineScope
-import kotlin.time.measureTimedValue
 
 @Service(Service.Level.PROJECT)
 class TSMetaModelProcessor(private val project: Project) {
 
     suspend fun process(foundMeta: FoundMeta<Items>): TSMetaModel? = coroutineScope {
         readAction {
-            val (v, d) = measureTimedValue {
-                val moduleName = foundMeta.moduleName
-                val extensionName = foundMeta.extensionName
-                val items = foundMeta.rootElement
-                val fileName = foundMeta.name
-                val custom = PsiUtils.isCustomExtensionFile(foundMeta.virtualFile, project)
+            val moduleName = foundMeta.moduleName
+            val extensionName = foundMeta.extensionName
+            val items = foundMeta.rootElement
+            val fileName = foundMeta.name
+            val custom = PsiUtils.isCustomExtensionFile(foundMeta.virtualFile, project)
 
-                with(TSMetaModelBuilder(moduleName, extensionName, fileName, custom)) {
-                    withItemTypes(items.itemTypes.itemTypes)
-                    withItemTypes(items.itemTypes.typeGroups.flatMap { it.itemTypes })
-                    withEnumTypes(items.enumTypes.enumTypes)
-                    withAtomicTypes(items.atomicTypes.atomicTypes)
-                    withCollectionTypes(items.collectionTypes.collectionTypes)
-                    withRelationTypes(items.relations.relations)
-                    withMapTypes(items.mapTypes.mapTypes)
-                    build()
-                }
+            with(TSMetaModelBuilder(moduleName, extensionName, fileName, custom)) {
+                withItemTypes(items.itemTypes.itemTypes)
+                withItemTypes(items.itemTypes.typeGroups.flatMap { it.itemTypes })
+                withEnumTypes(items.enumTypes.enumTypes)
+                withAtomicTypes(items.atomicTypes.atomicTypes)
+                withCollectionTypes(items.collectionTypes.collectionTypes)
+                withRelationTypes(items.relations.relations)
+                withMapTypes(items.mapTypes.mapTypes)
+                build()
             }
-            println("ts new process - ${foundMeta.name} - ${d.inWholeMilliseconds}")
-
-            return@readAction v
         }
     }
 }

@@ -31,7 +31,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import kotlin.time.measureTime
 
 @Service(Service.Level.PROJECT)
 class BSMetaModelStateService(project: Project, private val coroutineScope: CoroutineScope) : AbstractMetaModelStateService<BSMetaModel, BSGlobalMetaModel>(project) {
@@ -42,54 +41,45 @@ class BSMetaModelStateService(project: Project, private val coroutineScope: Coro
     override fun processState(metaModels: Collection<String>) {
         if (metaModelState.value.computing) return
 
-        println("Processing meta models - $metaModels")
-
         _metaModelState.value = CachedState(null, computed = false, computing = true)
 
         DumbService.Companion.getInstance(project).runWhenSmart {
             coroutineScope.launch {
-                val duration = measureTime {
-                    val newState = withBackgroundProgress(project, "Re-building Bean System...", true) {
-                        val collectedDependencies = readAction { metaModelCollector.collectDependencies() }
+                val newState = withBackgroundProgress(project, "Re-building Bean System...", true) {
+                    val collectedDependencies = readAction { metaModelCollector.collectDependencies() }
 
-                        val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
-                            collectedDependencies
-                                .map {
-                                    progressReporter.sizedStep(1, "Processing: ${it.name}...") {
-                                        async {
-                                            val cachedMetaModel = metaModelsState.value[it.name]
-                                            if (cachedMetaModel == null || metaModels.contains(it.name)) {
-                                                it.name to metaModelProcessor.process(it)
-                                            } else {
-                                                it.name to cachedMetaModel
-                                            }
+                    val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
+                        collectedDependencies
+                            .map {
+                                progressReporter.sizedStep(1, "Processing: ${it.name}...") {
+                                    async {
+                                        val cachedMetaModel = metaModelsState.value[it.name]
+                                        if (cachedMetaModel == null || metaModels.contains(it.name)) {
+                                            it.name to metaModelProcessor.process(it)
+                                        } else {
+                                            it.name to cachedMetaModel
                                         }
                                     }
                                 }
-                                .awaitAll()
-                                .filter { (_, model) -> model != null }
-                                .distinctBy { it.first }
-                                .associate { it.first to it.second!! }
-                        }
-
-                        _metaModelsState.value = localMetaModels
-
-                        BSGlobalMetaModel().also { globalMetaModel ->
-                            val metaModelsToMerge = metaModelsState.value.values.sortedBy { !it.custom }
-                            val measureTime = measureTime {
-                                readAction { BSMetaModelMerger.merge(globalMetaModel, metaModelsToMerge) }
                             }
-                            println("Merge - ${measureTime.inWholeMilliseconds}")
-                        }
+                            .awaitAll()
+                            .filter { (_, model) -> model != null }
+                            .distinctBy { it.first }
+                            .associate { it.first to it.second!! }
                     }
 
-                    _metaModelState.value = CachedState(newState, computed = true, computing = false)
-                    _recomputeMetas.value = null
+                    _metaModelsState.value = localMetaModels
 
-                    project.messageBus.syncPublisher(TOPIC).beanSystemChanged(newState)
+                    BSGlobalMetaModel().also { globalMetaModel ->
+                        val metaModelsToMerge = metaModelsState.value.values.sortedBy { !it.custom }
+                        readAction { BSMetaModelMerger.merge(globalMetaModel, metaModelsToMerge) }
+                    }
                 }
 
-                println("Re-building Bean System - ${duration.inWholeMilliseconds}")
+                _metaModelState.value = CachedState(newState, computed = true, computing = false)
+                _recomputeMetas.value = null
+
+                project.messageBus.syncPublisher(TOPIC).beanSystemChanged(newState)
             }
         }
     }

@@ -57,7 +57,6 @@ class ImpexUnknownTypeNameInspection : LocalInspectionTool() {
             val result = firstReference.multiResolve(false)
             if (result.isNotEmpty()) return
 
-            println("Inspection - ${parameter.text}")
             problemsHolder.registerProblem(
                 parameter,
                 message("hybris.inspections.UnknownTypeNameInspection.key", parameter.text),
