@@ -23,16 +23,15 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.impl.*
 import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
-import com.intellij.openapi.module.Module
-import com.intellij.psi.PsiFile
 
 class BSMetaModelBuilder(
-    private val myModule: Module,
-    myPsiFile: PsiFile,
-    private val myCustom: Boolean
+    private val moduleName: String,
+    private val extensionName: String,
+    fileName: String,
+    private val custom: Boolean,
 ) {
 
-    private val myMetaModel = BSMetaModel(myModule, myPsiFile.virtualFile, myCustom)
+    private val myMetaModel = BSMetaModel(extensionName, fileName, custom)
 
     fun build() = myMetaModel
 
@@ -50,7 +49,7 @@ class BSMetaModelBuilder(
 
     private fun withBeanTypes(types: List<Bean>, type: BeanType, targetType: BSMetaType): BSMetaModelBuilder {
         types
-            .filter { (it.type.value ?: BeanType.BEAN) == type}
+            .filter { (it.type.value ?: BeanType.BEAN) == type }
             .mapNotNull { create(it) }
             .forEach { myMetaModel.addMetaModel(it, targetType) }
 
@@ -60,7 +59,7 @@ class BSMetaModelBuilder(
     private fun create(dom: Enum): BSMetaEnum? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null
         return BSMetaEnumImpl(
-            dom, myModule, name, myCustom,
+            dom, moduleName, extensionName, name, custom,
             values = createEnumValues(dom)
         )
     }
@@ -68,7 +67,7 @@ class BSMetaModelBuilder(
     private fun create(dom: Bean): BSMetaBean? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null
         return BSMetaBeanImpl(
-            dom, myModule, name, myCustom,
+            dom, moduleName, extensionName, name, custom,
             imports = createImports(dom.imports),
             annotations = createAnnotations(dom.annotationses),
             properties = createProperties(dom.properties),
@@ -96,17 +95,17 @@ class BSMetaModelBuilder(
 
     private fun create(dom: EnumValue): BSMetaEnum.BSMetaEnumValue? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null
-        return BSMetaEnumImpl.BSMetaEnumValueImpl(dom, myModule, myCustom, name)
+        return BSMetaEnumImpl.BSMetaEnumValueImpl(dom, moduleName, extensionName, custom, name)
     }
 
-    private fun create(dom: Annotations) = BSMetaAnnotationsImpl(dom, myModule, myCustom, null)
+    private fun create(dom: Annotations) = BSMetaAnnotationsImpl(dom, moduleName, extensionName, custom, null)
 
-    private fun create(dom: Import) = BSMetaImportImpl(dom, myModule, myCustom)
+    private fun create(dom: Import) = BSMetaImportImpl(dom, moduleName, extensionName, custom)
 
     private fun create(dom: Property): BSMetaProperty? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null
         return BSMetaPropertyImpl(
-            dom, myModule, myCustom, name,
+            dom, moduleName, extensionName, custom, name,
             createAnnotations(dom.annotationses),
             createHints(dom.hints)
         )
@@ -114,7 +113,7 @@ class BSMetaModelBuilder(
 
     private fun create(dom: Hint): BSMetaHint? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null
-        return BSMetaHintImpl(dom, myModule, myCustom, name)
+        return BSMetaHintImpl(dom, moduleName, extensionName, custom, name)
     }
 
 }

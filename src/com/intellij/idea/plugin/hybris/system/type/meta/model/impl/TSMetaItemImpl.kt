@@ -28,14 +28,15 @@ import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.CreationMode
 import com.intellij.idea.plugin.hybris.system.type.model.Index
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
-import com.intellij.openapi.module.Module
+import com.intellij.idea.plugin.hybris.util.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 import java.util.*
 
 internal class TSMetaItemImpl(
     dom: ItemType,
-    override val module: Module,
+    override val moduleName: String,
+    override val extensionName: String,
     override val name: String?,
     override var isCustom: Boolean,
     override val attributes: Map<String, TSMetaItemAttribute>,
@@ -45,29 +46,30 @@ internal class TSMetaItemImpl(
 ) : TSMetaItem {
 
     override val domAnchor: DomAnchor<ItemType> = DomService.getInstance().createAnchor(dom)
-    override val isAbstract = dom.abstract.value
-    override val isAutoCreate = dom.autoCreate.value
-    override val isGenerate = dom.generate.value
-    override val isSingleton = dom.singleton.value
-    override val isJaloOnly = dom.jaloOnly.value
+    override val isAbstract = dom.abstract.toBoolean()
+    override val isAutoCreate = dom.autoCreate.toBoolean()
+    override val isGenerate = dom.generate.toBoolean()
+    override val isSingleton = dom.singleton.toBoolean()
+    override val isJaloOnly = dom.jaloOnly.toBoolean()
     override val isCatalogAware = TSMetaHelper.isCatalogAware(dom.customProperties)
     override val jaloClass = dom.jaloClass.stringValue
     override val description = dom.description.xmlTag?.value?.text
     override var extendedMetaItemName = dom.extends.stringValue
 
-    override fun toString() = "Item(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Item(module=$extensionName, name=$name, isCustom=$isCustom)"
 
     internal class TSMetaItemIndexImpl(
         dom: Index,
-        override val module: Module,
+        override val moduleName: String,
+        override val extensionName: String,
         override val name: String,
         override var isCustom: Boolean
     ) : TSMetaItemIndex {
 
         override val domAnchor: DomAnchor<Index> = DomService.getInstance().createAnchor(dom)
-        override val isRemove = dom.remove.value
-        override val isReplace = dom.replace.value
-        override val isUnique = dom.unique.value
+        override val isRemove = dom.remove.toBoolean()
+        override val isReplace = dom.replace.toBoolean()
+        override val isUnique = dom.unique.toBoolean()
         override val creationMode = dom.creationMode.value ?: CreationMode.ALL
         override val keys = dom.keys
             .mapNotNull { it.attribute.stringValue }
@@ -76,12 +78,13 @@ internal class TSMetaItemImpl(
             .mapNotNull { it.attribute.stringValue }
             .toSet()
 
-        override fun toString() = "Index(module=$module, name=$name, isCustom=$isCustom)"
+        override fun toString() = "Index(module=$extensionName, name=$name, isCustom=$isCustom)"
     }
 
     internal class TSMetaItemAttributeImpl(
         dom: Attribute,
-        override val module: Module,
+        override val moduleName: String,
+        override val extensionName: String,
         override val name: String,
         override var isCustom: Boolean,
         override val persistence: TSMetaPersistence,
@@ -95,14 +98,14 @@ internal class TSMetaItemImpl(
         override val defaultValue = dom.defaultValue.stringValue
         override val type = dom.type.stringValue
         override val isDeprecated = TSMetaHelper.isDeprecated(dom.model, name)
-        override val isAutoCreate = dom.autoCreate.value
-        override val isGenerate = dom.generate.value
-        override val isRedeclare = dom.redeclare.value
+        override val isAutoCreate = dom.autoCreate.toBoolean()
+        override val isGenerate = dom.generate.toBoolean()
+        override val isRedeclare = dom.redeclare.toBoolean()
         override val isSelectionOf = dom.isSelectionOf.stringValue
         override val isLocalized = TSMetaHelper.isLocalized(type)
         override val isDynamic = TSMetaHelper.isDynamic(persistence)
 
-        override fun toString() = "Attribute(module=$module, name=$name, isCustom=$isCustom)"
+        override fun toString() = "Attribute(module=$extensionName, name=$name, isCustom=$isCustom)"
     }
 }
 
@@ -121,7 +124,8 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
     override val allExtends = LinkedHashSet<TSGlobalMetaItem>()
 
     override var domAnchor = localMeta.domAnchor
-    override var module = localMeta.module
+    override var moduleName = localMeta.moduleName
+    override var extensionName = localMeta.extensionName
     override var extendedMetaItemName = localMeta.extendedMetaItemName
     override var isAbstract = localMeta.isAbstract
     override var isAutoCreate = localMeta.isAutoCreate
@@ -140,7 +144,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
         mergeCustomProperties(localMeta)
     }
 
-    override fun toString() = "Item(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Item(module=$extensionName, name=$name, isCustom=$isCustom)"
 
     @Suppress("UNCHECKED_CAST")
     private fun mergeAttributes(localMeta: TSMetaItem, globalMeta: TSGlobalMetaItemImpl) = localMeta.attributes.values.forEach {
@@ -158,8 +162,8 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
     private fun mergeCustomProperties(localMeta: TSMetaItem) = customProperties.putAll(localMeta.customProperties)
 
     override fun postMerge(globalMetaModel: TSGlobalMetaModel) {
-        val extends = this.retrieveAllDoms()
-            .map { it.extends.stringValue }
+        val extends = declarations
+            .map { it.extendedMetaItemName }
             .flatMap {
                 try {
                     return@flatMap TSMetaHelper.getAllExtends(globalMetaModel, name, it)
@@ -210,7 +214,8 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
 
         override val name: String = localMeta.name
         override var domAnchor = localMeta.domAnchor
-        override var module = localMeta.module
+        override var moduleName = localMeta.moduleName
+        override var extensionName = localMeta.extensionName
         override var isRemove = localMeta.isRemove
         override var isReplace = localMeta.isReplace
         override var isUnique = localMeta.isUnique
@@ -229,7 +234,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
             }
         }
 
-        override fun toString() = "Index(module=$module, name=$name, isCustom=$isCustom)"
+        override fun toString() = "Index(module=$extensionName, name=$name, isCustom=$isCustom)"
     }
 
     internal class TSGlobalMetaItemAttributeImpl(
@@ -240,7 +245,8 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
 
         override val customProperties = CaseInsensitiveConcurrentHashMap<String, TSMetaCustomProperty>()
         override val name: String = localMeta.name
-        override var module = localMeta.module
+        override var moduleName = localMeta.moduleName
+        override var extensionName = localMeta.extensionName
         override var modifiers = localMeta.modifiers
         override var persistence = localMeta.persistence
         override var domAnchor = localMeta.domAnchor
@@ -276,7 +282,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
             }
         }
 
-        override fun toString() = "Attribute(module=$module, name=$name, isCustom=$isCustom)"
+        override fun toString() = "Attribute(module=$extensionName, name=$name, isCustom=$isCustom)"
 
     }
 }

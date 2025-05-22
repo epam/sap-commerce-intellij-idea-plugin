@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.system.type.util
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiClass
@@ -40,14 +39,11 @@ object TSUtils {
         && DomManager.getDomManager(file.project).getFileElement(file, Items::class.java) != null
 
     fun isCustomExtensionFile(file: PsiFile): Boolean = CachedValuesManager.getCachedValue(file) {
-        if (!isTypeSystemFile(file)) return@getCachedValue CachedValueProvider.Result.create<Boolean>(false, file)
+        if (!isTypeSystemFile(file)) return@getCachedValue CachedValueProvider.Result.create(false, file)
 
         val vFile = file.virtualFile
         CachedValueProvider.Result.create(vFile != null && PsiUtils.isCustomExtensionFile(vFile, file.project), file)
     }
-
-    fun getModuleForFile(file: PsiFile): Module? = if (!isTypeSystemFile(file)) null
-    else PsiUtils.getModule(file)
 
     fun cleanItemModelSearchName(searchName: String?): String? {
         if (searchName == null) return null

@@ -1,10 +1,10 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -22,13 +22,14 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaMap
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaMap
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaSelfMerge
 import com.intellij.idea.plugin.hybris.system.type.model.MapType
-import com.intellij.openapi.module.Module
+import com.intellij.idea.plugin.hybris.util.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
 internal class TSMetaMapImpl(
     dom: MapType,
-    override val module: Module,
+    override val moduleName: String,
+    override val extensionName: String,
     override val name: String?,
     override var isCustom: Boolean
 ) : TSMetaMap {
@@ -36,18 +37,20 @@ internal class TSMetaMapImpl(
     override val domAnchor: DomAnchor<MapType> = DomService.getInstance().createAnchor(dom)
     override val argumentType = dom.argumentType.stringValue
     override val returnType = dom.returnType.stringValue
-    override val isAutoCreate = dom.autoCreate.value
-    override val isGenerate = dom.generate.value
-    override val isRedeclare = dom.redeclare.value
+    override val isAutoCreate = dom.autoCreate.toBoolean()
+    override val isGenerate = dom.generate.toBoolean()
+    override val isRedeclare = dom.redeclare.toBoolean()
 
-    override fun toString() = "Map(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Map(module=$extensionName, name=$name, isCustom=$isCustom)"
 }
+
 
 internal class TSGlobalMetaMapImpl(localMeta: TSMetaMap)
     : TSMetaSelfMerge<MapType, TSMetaMap>(localMeta), TSGlobalMetaMap {
 
     override val domAnchor = localMeta.domAnchor
-    override val module = localMeta.module
+    override val moduleName = localMeta.moduleName
+    override val extensionName = localMeta.extensionName
     override var argumentType = localMeta.argumentType
     override var returnType = localMeta.returnType
     override var isAutoCreate = localMeta.isAutoCreate
@@ -66,5 +69,5 @@ internal class TSGlobalMetaMapImpl(localMeta: TSMetaMap)
         }
     }
 
-    override fun toString() = "Map(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Map(module=$extensionName, name=$name, isCustom=$isCustom)"
 }

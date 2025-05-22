@@ -1,10 +1,10 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -24,13 +24,14 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaSelfMerge
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.idea.plugin.hybris.system.bean.model.EnumValue
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
-import com.intellij.openapi.module.Module
+import com.intellij.idea.plugin.hybris.util.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
 internal class BSMetaEnumImpl(
     dom: Enum,
-    override val module: Module,
+    override val moduleName: String,
+    override val extensionName: String,
     override val name: String?,
     override val isCustom: Boolean,
     override val values: Map<String, BSMetaEnum.BSMetaEnumValue>
@@ -41,20 +42,21 @@ internal class BSMetaEnumImpl(
     override val template = dom.template.stringValue
     override val deprecatedSince = dom.deprecatedSince.stringValue
     override val shortName = BSMetaHelper.getShortName(name)
-    override val isDeprecated = dom.deprecated.value
+    override val isDeprecated = dom.deprecated.toBoolean()
 
-    override fun toString() = "Enum(module=$module, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
+    override fun toString() = "Enum(module=$extensionName, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
 
     internal class BSMetaEnumValueImpl(
         dom: EnumValue,
-        override val module: Module,
+        override val moduleName: String,
+        override val extensionName: String,
         override val isCustom: Boolean,
         override val name: String?
     ) : BSMetaEnum.BSMetaEnumValue {
 
         override val domAnchor: DomAnchor<EnumValue> = DomService.getInstance().createAnchor(dom)
 
-        override fun toString() = "EnumValue(module=$module, name=$name, isCustom=$isCustom)"
+        override fun toString() = "EnumValue(module=$extensionName, name=$name, isCustom=$isCustom)"
     }
 }
 
@@ -64,7 +66,8 @@ internal class BSGlobalMetaEnumImpl(localMeta: BSMetaEnum)
     override val values = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, BSMetaEnum.BSMetaEnumValue>()
     override val domAnchor = localMeta.domAnchor
     override val shortName = localMeta.shortName
-    override val module = localMeta.module
+    override val moduleName = localMeta.moduleName
+    override val extensionName = localMeta.extensionName
     override val template = localMeta.template
     override var description = localMeta.description
     override var deprecatedSince = localMeta.deprecatedSince
@@ -80,5 +83,5 @@ internal class BSGlobalMetaEnumImpl(localMeta: BSMetaEnum)
             .forEach { values[it.name] = it }
     }
 
-    override fun toString() = "Enum(module=$module, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
+    override fun toString() = "Enum(module=$extensionName, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
 }

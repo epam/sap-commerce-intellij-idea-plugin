@@ -19,10 +19,11 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -50,7 +51,7 @@ abstract class AbstractTSMetaTypeInspection(private val messageKey: String) : Ab
         project: Project
     ) {
         val name = dom.stringValue ?: return
-        TSMetaModelAccess.getInstance(project).getMetaModel()
+        project.service<TSMetaModelStateService>().get()
             .getMetaItem(name)
             ?.takeUnless { isValidMetaType(it) }
             ?: return

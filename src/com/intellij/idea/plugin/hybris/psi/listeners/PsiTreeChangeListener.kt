@@ -19,8 +19,8 @@ package com.intellij.idea.plugin.hybris.psi.listeners
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.system.BSModificationTracker
-import com.intellij.idea.plugin.hybris.system.TSModificationTracker
+import com.intellij.idea.plugin.hybris.system.meta.BSModificationTracker
+import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
 import com.intellij.openapi.project.Project

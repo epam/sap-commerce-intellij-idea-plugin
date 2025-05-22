@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
@@ -29,6 +30,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelati
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -67,7 +69,8 @@ open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngTSItemReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, CngTSItemReference> { ref ->
-            val metaModelAccess = TSMetaModelAccess.getInstance(ref.project)
+            val project = ref.project
+            val metaModelAccess = TSMetaModelAccess.getInstance(project)
 
             val name = ref.value
             val result = metaModelAccess.findMetaItemByName(name)
@@ -80,7 +83,7 @@ open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>
 
             CachedValueProvider.Result.create(
                 result,
-                metaModelAccess.getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
+                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
 

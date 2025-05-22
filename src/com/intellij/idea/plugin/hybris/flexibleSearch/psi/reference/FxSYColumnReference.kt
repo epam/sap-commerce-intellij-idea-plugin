@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,12 +31,14 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnN
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.OrderingAttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -163,13 +165,14 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
                     }
                 }
 
+            val project = ref.element.project
             val result = type
-                ?.let { resolve(ref.element.project, it, featureName) }
+                ?.let { resolve(project, it, featureName) }
                 ?: ResolveResult.EMPTY_ARRAY
 
             CachedValueProvider.Result.create(
                 result,
-                TSMetaModelAccess.getInstance(ref.element.project).getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
+                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
 

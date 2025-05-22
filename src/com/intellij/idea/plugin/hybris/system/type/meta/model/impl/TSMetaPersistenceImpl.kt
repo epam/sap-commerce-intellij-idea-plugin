@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Persistence
 import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
-import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
@@ -31,7 +30,8 @@ internal class TSMetaPersistenceImpl(
     itemTypeDom: ItemType,
     attributeDom: Attribute,
     dom: Persistence,
-    override val module: Module,
+    override val moduleName: String,
+    override val extensionName: String,
     override val name: String?,
     override var isCustom: Boolean
 ) : TSMetaPersistence {
@@ -41,5 +41,5 @@ internal class TSMetaPersistenceImpl(
     override val qualifier: String? = dom.qualifier.stringValue
     override val attributeHandler: String? = TSMetaHelper.getAttributeHandler(itemTypeDom, attributeDom, dom)
 
-    override fun toString() = "Persistence(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Persistence(module=$extensionName, name=$name, isCustom=$isCustom)"
 }

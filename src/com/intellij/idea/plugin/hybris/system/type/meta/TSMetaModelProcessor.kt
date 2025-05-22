@@ -17,52 +17,42 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta
 
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.meta.FoundMeta
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelBuilder
 import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiFile
-import com.intellij.psi.xml.XmlFile
-import com.intellij.util.xml.DomManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.coroutineScope
+import kotlin.time.measureTimedValue
 
 @Service(Service.Level.PROJECT)
-class TSMetaModelProcessor(myProject: Project) {
+class TSMetaModelProcessor(private val project: Project) {
 
-    private val myDomManager: DomManager = DomManager.getDomManager(myProject)
+    suspend fun process(foundMeta: FoundMeta<Items>): TSMetaModel? = coroutineScope {
+        readAction {
+            val (v, d) = measureTimedValue {
+                val moduleName = foundMeta.moduleName
+                val extensionName = foundMeta.extensionName
+                val items = foundMeta.rootElement
+                val fileName = foundMeta.name
+                val custom = PsiUtils.isCustomExtensionFile(foundMeta.virtualFile, project)
 
-    suspend fun process(coroutineScope: CoroutineScope, psiFile: PsiFile): TSMetaModel? = coroutineScope {
-        psiFile.virtualFile ?: return@coroutineScope null
-        val module = TSUtils.getModuleForFile(psiFile)
-            ?: return@coroutineScope null
-        val custom = TSUtils.isCustomExtensionFile(psiFile)
-        val rootWrapper = myDomManager.getFileElement(psiFile as XmlFile, Items::class.java)
+                with(TSMetaModelBuilder(moduleName, extensionName, fileName, custom)) {
+                    withItemTypes(items.itemTypes.itemTypes)
+                    withItemTypes(items.itemTypes.typeGroups.flatMap { it.itemTypes })
+                    withEnumTypes(items.enumTypes.enumTypes)
+                    withAtomicTypes(items.atomicTypes.atomicTypes)
+                    withCollectionTypes(items.collectionTypes.collectionTypes)
+                    withRelationTypes(items.relations.relations)
+                    withMapTypes(items.mapTypes.mapTypes)
+                    build()
+                }
+            }
+            println("ts new process - ${foundMeta.name} - ${d.inWholeMilliseconds}")
 
-        rootWrapper ?: return@coroutineScope null
-
-        val items = rootWrapper.rootElement
-
-        val builder = TSMetaModelBuilder(module, psiFile, custom)
-
-        val operations = listOf(
-            coroutineScope.async { builder.withItemTypes(items.itemTypes.itemTypes) },
-            coroutineScope.async { builder.withItemTypes(items.itemTypes.typeGroups.flatMap { it.itemTypes }) },
-            coroutineScope.async { builder.withEnumTypes(items.enumTypes.enumTypes) },
-            coroutineScope.async { builder.withAtomicTypes(items.atomicTypes.atomicTypes) },
-            coroutineScope.async { builder.withCollectionTypes(items.collectionTypes.collectionTypes) },
-            coroutineScope.async { builder.withRelationTypes(items.relations.relations) },
-            coroutineScope.async { builder.withMapTypes(items.mapTypes.mapTypes) },
-        )
-
-        withContext(Dispatchers.IO) {
-            operations.awaitAll()
+            return@readAction v
         }
-
-        builder.build()
-    }
-
-    companion object {
-        fun getInstance(project: Project): TSMetaModelProcessor = project.getService(TSMetaModelProcessor::class.java)
     }
 }

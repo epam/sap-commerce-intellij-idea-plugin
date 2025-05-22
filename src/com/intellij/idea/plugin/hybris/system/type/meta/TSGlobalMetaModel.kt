@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,26 +19,16 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
-import com.intellij.openapi.Disposable
-import com.intellij.openapi.util.ModificationTracker
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
-class TSGlobalMetaModel : ModificationTracker, Disposable {
+class TSGlobalMetaModel {
 
-    private var modificationTracker = 0L
     private val myMetaCache: MutableMap<TSMetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
     private val myReferencesBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
     private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>()
     private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>()
-
-    fun clear() {
-        cleanup()
-
-        if (modificationTracker == Long.MAX_VALUE) modificationTracker = 0L
-        modificationTracker++
-    }
 
     fun getDeploymentForTable(table: String?): TSMetaDeployment? = if (table != null) myDeploymentTables[table] else null
     fun getDeploymentForTypeCode(typeCode: Int?): TSMetaDeployment? = if (typeCode != null) myDeploymentTypeCodes[typeCode] else null
@@ -70,14 +60,4 @@ class TSGlobalMetaModel : ModificationTracker, Disposable {
         }
     }
 
-    override fun getModificationCount() = modificationTracker
-    override fun dispose() = cleanup()
-
-    @Synchronized
-    private fun cleanup() {
-        myMetaCache.clear()
-        myReferencesBySourceTypeName.clear()
-        myDeploymentTables.clear()
-        myDeploymentTypeCodes.clear()
-    }
 }

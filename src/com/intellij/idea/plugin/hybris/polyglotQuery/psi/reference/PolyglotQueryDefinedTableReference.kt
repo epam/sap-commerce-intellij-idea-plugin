@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,11 +20,13 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypeKeyName
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReferenceBase
@@ -53,7 +55,8 @@ class PolyglotQueryDefinedTableReference(owner: PolyglotQueryTypeKeyName) : PsiR
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, PolyglotQueryDefinedTableReference> { ref ->
             val lookingForName = ref.element.typeName
-            val modelAccess = TSMetaModelAccess.getInstance(ref.element.project)
+            val project = ref.element.project
+            val modelAccess = TSMetaModelAccess.getInstance(project)
 
             val result: Array<ResolveResult> = modelAccess.findMetaItemByName(lookingForName)
                 ?.declarations
@@ -65,7 +68,7 @@ class PolyglotQueryDefinedTableReference(owner: PolyglotQueryTypeKeyName) : PsiR
 
             CachedValueProvider.Result.create(
                 result,
-                modelAccess.getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
+                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

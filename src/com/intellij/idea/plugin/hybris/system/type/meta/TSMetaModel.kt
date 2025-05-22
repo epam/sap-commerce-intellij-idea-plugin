@@ -17,21 +17,18 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta
 
-import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaClassifier
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.containers.MultiMap
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 
 class TSMetaModel(
-    val module: Module,
-    val virtualFile: VirtualFile,
+    val extensionName: String,
+    val fileName: String,
     val custom: Boolean
 ) : Disposable {
 
@@ -57,5 +54,5 @@ class TSMetaModel(
         myRelationsBySourceTypeName.clear()
     }
 
-    override fun toString() = "Module: ${module.yExtensionName()} | file: ${virtualFile.name}"
+    override fun toString() = "Module: $extensionName | file: $fileName"
 }

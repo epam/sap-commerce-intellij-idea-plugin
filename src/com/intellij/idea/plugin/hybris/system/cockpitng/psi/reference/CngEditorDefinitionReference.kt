@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -44,7 +44,7 @@ class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : 
             val project = element.project
             val metaModel = CngMetaModelAccess.getInstance(project).getMetaModel()
 
-            val result = CngMetaModelAccess.getInstance(element.project).getMetaModel()
+            val result = metaModel
                 .editorDefinitions[value]
                 ?.let { PsiUtils.getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
                 ?: emptyArray()

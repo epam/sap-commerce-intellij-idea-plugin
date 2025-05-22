@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.*
-import java.util.*
+import io.ktor.util.*
 
 object TSMetaHelper {
 
@@ -108,7 +108,7 @@ object TSMetaHelper {
             tempParents.add(metaItem)
             metaItem = getExtendsMetaItem(metaModel, tempParents, metaItem.name, metaItem.extendedMetaItemName)
         }
-        return Collections.unmodifiableSet(tempParents)
+        return tempParents.unmodifiable()
     }
 
     fun getAllRelationEnds(

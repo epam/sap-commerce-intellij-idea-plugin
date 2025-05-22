@@ -19,10 +19,11 @@ package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -33,8 +34,8 @@ class PreLoadSystemsStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) return
 
-        refreshSystem(project) { TSMetaModelAccess.getInstance(project).initMetaModel() }
-        refreshSystem(project) { BSMetaModelAccess.getInstance(project).initMetaModel() }
+        refreshSystem(project) { project.service<TSMetaModelStateService>().init() }
+        refreshSystem(project) { project.service<BSMetaModelStateService>().init() }
         refreshSystem(project) { CngMetaModelAccess.getInstance(project).initMetaModel() }
 
         SimpleSpringService.getService(project)

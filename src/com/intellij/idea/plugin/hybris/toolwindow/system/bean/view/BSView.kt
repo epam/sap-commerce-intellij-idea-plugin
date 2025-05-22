@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,13 +23,15 @@ import com.intellij.ide.IdeBundle
 import com.intellij.idea.ActionsBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSChangeListener
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelStateService
+import com.intellij.idea.plugin.hybris.system.meta.AbstractMetaModelStateService
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -45,6 +47,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     private val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
     private val mySettings = BSViewSettings.getInstance(myProject)
     private val myTreePane = BSTreePanel(myProject)
+    private val metaModelStateService = myProject.service<BSMetaModelStateService>()
 
     override fun dispose() {
         //NOP
@@ -59,7 +62,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
                 setContent(this)
             }
 
-            !BSMetaModelAccess.getInstance(myProject).isInitialized() -> setContentInitializing()
+            !metaModelStateService.initialized() -> setContentInitializing()
 
             else -> refreshContent(BSViewSettings.ChangeType.FULL)
         }
@@ -88,7 +91,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
                     refreshContent(changeType)
                 }
             })
-            subscribe(BSMetaModelAccess.TOPIC, object : BSChangeListener {
+            subscribe(AbstractMetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) {
                     refreshContent(globalMetaModel, BSViewSettings.ChangeType.FULL)
                 }
@@ -98,7 +101,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
 
     private fun refreshContent(changeType: BSViewSettings.ChangeType) {
         try {
-            refreshContent(BSMetaModelAccess.getInstance(myProject).getMetaModel(), changeType)
+            refreshContent(metaModelStateService.get(), changeType)
         } catch (e: ProcessCanceledException) {
             setContentInitializing()
         }

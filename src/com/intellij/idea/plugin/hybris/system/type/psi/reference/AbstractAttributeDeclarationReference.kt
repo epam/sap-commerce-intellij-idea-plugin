@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,15 +21,18 @@ package com.intellij.idea.plugin.hybris.system.type.psi.reference
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
-import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -69,19 +72,19 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
             val project = ref.element.project
             val metaModelAccess = TSMetaModelAccess.getInstance(project)
             val metaItemService = TSMetaItemService.getInstance(project)
-            val metaModel = metaModelAccess.getMetaModel()
+            val metaModel = project.service<TSMetaModelStateService>().get()
 
-            val type = ref.resolveType(ref.element) ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
+            val type = ref.resolveType(ref.element) ?: return@ParameterizedCachedValueProvider emptyResult(project)
 
             val metaItem = when (val meta = metaModelAccess.findMetaClassifierByName(type)) {
                 is TSGlobalMetaItem -> meta
                 is TSGlobalMetaRelation -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
-                    ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
+                    ?: return@ParameterizedCachedValueProvider emptyResult(project)
 
                 is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
-                    ?: return@ParameterizedCachedValueProvider emptyResult(metaModel)
+                    ?: return@ParameterizedCachedValueProvider emptyResult(project)
 
-                else -> return@ParameterizedCachedValueProvider emptyResult(metaModel)
+                else -> return@ParameterizedCachedValueProvider emptyResult(project)
             }
 
             val originalValue = ref.value
@@ -95,13 +98,13 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
 
             CachedValueProvider.Result.create(
                 result,
-                metaModel, PsiModificationTracker.MODIFICATION_COUNT
+                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
 
-        private fun emptyResult(metModel: TSGlobalMetaModel): CachedValueProvider.Result<Array<ResolveResult>> = CachedValueProvider.Result.create(
+        private fun emptyResult(project: Project): CachedValueProvider.Result<Array<ResolveResult>> = CachedValueProvider.Result.create(
             emptyArray(),
-            metModel, PsiModificationTracker.MODIFICATION_COUNT
+            project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
         )
     }
 }

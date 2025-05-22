@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
-import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum
 import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable
@@ -33,7 +32,7 @@ class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTa
     override fun select(item: TSMetaEnum.TSMetaEnumValue) = selectRowWithValue(item.name, COLUMN_VALUE)
     override fun getItems(owner: TSGlobalMetaEnum) = owner.values.values.sortedWith(compareBy(
         { !it.isCustom },
-        { it.module.name },
+        { it.moduleName },
         { it.name })
     )
         .toMutableList()
@@ -48,7 +47,7 @@ class TSMetaEnumValuesTable private constructor(myProject: Project) : AbstractTa
             ),
             createColumn(
                 name = COLUMN_MODULE,
-                valueProvider = { attr -> attr.module.yExtensionName() }
+                valueProvider = { attr -> attr.extensionName }
             ),
             createColumn(
                 name = COLUMN_VALUE,

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.meta.model
 
-import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomElement
 
@@ -26,7 +25,8 @@ interface BSMetaClassifier<DOM : DomElement> {
 
     val name: String?
         get() = null
-    val module: Module
+    val moduleName: String
+    val extensionName: String
     val isCustom: Boolean
     val domAnchor: DomAnchor<DOM>
     fun retrieveDom(): DOM? = domAnchor.retrieveDomElement()

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,13 +23,15 @@ import com.intellij.ide.IdeBundle
 import com.intellij.idea.ActionsBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.type.meta.TSChangeListener
+import com.intellij.idea.plugin.hybris.system.meta.AbstractMetaModelStateService
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -45,6 +47,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     private val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
     private val mySettings = TSViewSettings.getInstance(myProject)
     private val myTreePane = TSTreePanel(myProject)
+    private val metaModelStateService = myProject.service<TSMetaModelStateService>()
 
     override fun dispose() {
         //NOP
@@ -59,7 +62,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
                 setContent(this)
             }
 
-            !TSMetaModelAccess.getInstance(myProject).isInitialized() -> setContentInitializing()
+            !metaModelStateService.initialized() -> setContentInitializing()
 
             else -> refreshContent(TSViewSettings.ChangeType.FULL)
         }
@@ -88,7 +91,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
                     refreshContent(changeType)
                 }
             })
-            subscribe(TSMetaModelAccess.TOPIC, object : TSChangeListener {
+            subscribe(AbstractMetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
                     refreshContent(globalMetaModel, TSViewSettings.ChangeType.FULL)
                 }
@@ -98,7 +101,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
 
     private fun refreshContent(changeType: TSViewSettings.ChangeType) {
         try {
-            refreshContent(TSMetaModelAccess.getInstance(myProject).getMetaModel(), changeType)
+            refreshContent(metaModelStateService.get(), changeType)
         } catch (e: ProcessCanceledException) {
             setContentInitializing()
         }

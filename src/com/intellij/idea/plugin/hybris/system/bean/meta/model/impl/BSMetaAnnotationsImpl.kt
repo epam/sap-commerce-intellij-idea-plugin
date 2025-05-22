@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,13 +21,13 @@ package com.intellij.idea.plugin.hybris.system.bean.meta.model.impl
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaAnnotations
 import com.intellij.idea.plugin.hybris.system.bean.model.Annotations
 import com.intellij.idea.plugin.hybris.system.bean.model.Scope
-import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
 internal class BSMetaAnnotationsImpl(
     dom: Annotations,
-    override val module: Module,
+    override val moduleName: String,
+    override val extensionName: String,
     override val isCustom: Boolean,
     override val name: String?,
 ) : BSMetaAnnotations {
@@ -36,5 +36,5 @@ internal class BSMetaAnnotationsImpl(
     override val value = dom.value
     override val scope = dom.scope.value ?: Scope.ALL
 
-    override fun toString() = "Annotations(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Annotations(module=$extensionName, name=$name, isCustom=$isCustom)"
 }

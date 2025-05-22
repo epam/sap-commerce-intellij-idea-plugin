@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,10 +22,12 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -60,9 +62,10 @@ class ImpexFunctionTSItemReference(owner: ImpexParameter) : TSReferenceBase<Impe
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexFunctionTSItemReference> { ref ->
             val lookingForName = ref.value.trim()
-            val metaService = TSMetaModelAccess.getInstance(ref.project)
+            val project = ref.project
+            val metaService = TSMetaModelAccess.getInstance(project)
 
-            val result: Array<ResolveResult> = TSMetaModelAccess.getInstance(ref.project).findMetaClassifierByName(lookingForName)
+            val result: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(lookingForName)
                 ?.declarations
                 ?.mapNotNull {
                     when (it) {
@@ -80,7 +83,7 @@ class ImpexFunctionTSItemReference(owner: ImpexParameter) : TSReferenceBase<Impe
             // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
             CachedValueProvider.Result.create(
                 result,
-                metaService.getMetaModel()
+                project.service<TSModificationTracker>()
             )
         }
     }

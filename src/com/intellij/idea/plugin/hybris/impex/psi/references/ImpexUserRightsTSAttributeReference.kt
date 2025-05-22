@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsSingleValue
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
@@ -33,6 +34,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.OrderingAttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.ResolveResult
@@ -68,7 +70,8 @@ class ImpexUserRightsTSAttributeReference(owner: ImpexUserRightsAttributeValue) 
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpexUserRightsTSAttributeReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexUserRightsTSAttributeReference> { ref ->
-            val metaModelAccess = TSMetaModelAccess.getInstance(ref.project)
+            val project = ref.project
+            val metaModelAccess = TSMetaModelAccess.getInstance(project)
             val featureName = ref.value
             val type = ref.getType()
             val result: Array<ResolveResult> = metaModelAccess.findMetaClassifierByName(type)
@@ -100,7 +103,7 @@ class ImpexUserRightsTSAttributeReference(owner: ImpexUserRightsAttributeValue) 
             // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
             CachedValueProvider.Result.create(
                 result,
-                metaModelAccess.getMetaModel()
+                project.service<TSModificationTracker>()
             )
         }
 

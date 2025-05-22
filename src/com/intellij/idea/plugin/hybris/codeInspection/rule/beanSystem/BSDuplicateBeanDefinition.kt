@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
@@ -35,17 +36,19 @@ class BSDuplicateBeanDefinition : AbstractBSInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
+        val metaModelAccess = project.service<BSMetaModelAccess>()
+
         dom.beans
-            .forEach { inspect(it, holder, severity, project) }
+            .forEach { inspect(it, holder, severity, metaModelAccess) }
     }
 
     private fun inspect(
         dom: Bean,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity,
-        project: Project
+        metaModelAccess: BSMetaModelAccess
     ) {
-        val metas = BSMetaModelAccess.getInstance(project).findMetasForDom(dom)
+        val metas = metaModelAccess.findMetasForDom(dom)
 
         if (metas.isEmpty()) return
 

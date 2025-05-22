@@ -19,7 +19,6 @@
 
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
-import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomElement
 
@@ -27,7 +26,8 @@ interface TSMetaClassifier<DOM : DomElement> {
 
     val name: String?
         get() = null
-    val module: Module
+    val moduleName: String
+    val extensionName: String
     var isCustom: Boolean
     val domAnchor: DomAnchor<DOM>
     fun retrieveDom(): DOM? = domAnchor.retrieveDomElement()

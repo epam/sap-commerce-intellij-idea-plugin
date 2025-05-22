@@ -17,46 +17,38 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
-import com.intellij.idea.plugin.hybris.system.bean.BSUtils
+import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelBuilder
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
+import com.intellij.idea.plugin.hybris.system.meta.FoundMeta
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiFile
-import com.intellij.psi.xml.XmlFile
-import com.intellij.util.xml.DomManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.coroutineScope
+import kotlin.time.measureTimedValue
 
 @Service(Service.Level.PROJECT)
-class BSMetaModelProcessor(myProject: Project) {
+class BSMetaModelProcessor(private val project: Project) {
 
-    companion object {
-        fun getInstance(project: Project): BSMetaModelProcessor = project.getService(BSMetaModelProcessor::class.java)
-    }
+    suspend fun process(foundMeta: FoundMeta<Beans>): BSMetaModel? = coroutineScope {
+        readAction {
+            val (v, d) = measureTimedValue {
+                val moduleName = foundMeta.moduleName
+                val extensionName = foundMeta.extensionName
+                val beans = foundMeta.rootElement
+                val fileName = foundMeta.name
+                val custom = PsiUtils.isCustomExtensionFile(foundMeta.virtualFile, project)
 
-    private val myDomManager: DomManager = DomManager.getDomManager(myProject)
+                with(BSMetaModelBuilder(moduleName, extensionName, fileName, custom)) {
+                    withEnumTypes(beans.enums)
+                    withBeanTypes(beans.beans)
+                    withEventTypes(beans.beans)
+                    build()
+                }
+            }
+            println("bs new process - ${foundMeta.name}- ${d.inWholeMilliseconds}")
 
-    suspend fun process(coroutineScope: CoroutineScope, psiFile: PsiFile): BSMetaModel? = coroutineScope {
-        psiFile.virtualFile ?: return@coroutineScope null
-        val module = BSUtils.getModuleForFile(psiFile)
-            ?: return@coroutineScope null
-        val custom = BSUtils.isCustomExtensionFile(psiFile)
-        val root = myDomManager.getFileElement(psiFile as XmlFile, Beans::class.java)
-            ?.rootElement
-            ?: return@coroutineScope null
-
-        val builder = BSMetaModelBuilder(module, psiFile, custom)
-
-        val operations = listOf(
-            coroutineScope.async { builder.withEnumTypes(root.enums) },
-            coroutineScope.async { builder.withBeanTypes(root.beans) },
-            coroutineScope.async { builder.withEventTypes(root.beans) },
-        )
-
-        withContext(Dispatchers.IO) {
-            operations.awaitAll()
+            return@readAction v
         }
-
-        builder.build()
     }
 }

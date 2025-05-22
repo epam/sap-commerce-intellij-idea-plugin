@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,10 +21,11 @@ package com.intellij.idea.plugin.hybris.system.bean.psi.reference
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.psi.BSConstants
 import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
+import com.intellij.idea.plugin.hybris.system.meta.BSModificationTracker
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -67,9 +68,10 @@ class OccLevelMappingReference(
                 ?.let { PsiUtils.getValidResults(it) }
                 ?: emptyArray()
 
+            val project = element.project
             CachedValueProvider.Result.create(
                 result,
-                BSMetaModelAccess.getInstance(element.project).getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
+                project.service<BSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

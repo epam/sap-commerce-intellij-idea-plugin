@@ -17,50 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta
 
+import com.intellij.idea.plugin.hybris.system.meta.AbstractMetaModelCollector
 import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.idea.plugin.hybris.system.type.util.TSUtils
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiFile
-import com.intellij.psi.search.ProjectScope
-import com.intellij.psi.stubs.StubIndex
-import com.intellij.psi.xml.XmlFile
-import com.intellij.util.Processor
-import com.intellij.util.xml.DomManager
-import com.intellij.util.xml.stubs.index.DomElementClassIndex
-import java.util.*
 
 @Service(Service.Level.PROJECT)
-class TSMetaModelCollector(private val myProject: Project) {
-
-    private val myDomManager: DomManager = DomManager.getDomManager(myProject)
-
-    fun collectDependencies(): Set<PsiFile> {
-        val files = HashSet<PsiFile>()
-
-         StubIndex.getInstance().processElements(
-            DomElementClassIndex.KEY,
-            Items::class.java.name,
-            myProject,
-            ProjectScope.getAllScope(myProject),
-            PsiFile::class.java,
-            object : Processor<PsiFile> {
-                override fun process(psiFile: PsiFile): Boolean {
-                    psiFile.virtualFile ?: return true
-                    // cannot process a file without a module
-                    TSUtils.getModuleForFile(psiFile) ?: return true
-                    myDomManager.getFileElement(psiFile as XmlFile, Items::class.java) ?: return true
-
-                    files.add(psiFile)
-                    return true
-                }
-            }
-        )
-
-        return Collections.unmodifiableSet(files)
-    }
-
-    companion object {
-        fun getInstance(project: Project): TSMetaModelCollector = project.getService(TSMetaModelCollector::class.java)
-    }
-}
+class TSMetaModelCollector(myProject: Project) : AbstractMetaModelCollector<Items>(myProject, Items::class.java)

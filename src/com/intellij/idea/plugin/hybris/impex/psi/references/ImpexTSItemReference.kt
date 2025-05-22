@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,12 +21,14 @@ import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
@@ -57,7 +59,8 @@ class ImpexTSItemReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owne
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexTSItemReference> { ref ->
             val lookingForName = ref.value
-            val metaService = TSMetaModelAccess.getInstance(ref.project)
+            val project = ref.project
+            val metaService = TSMetaModelAccess.getInstance(project)
 
             val result: Array<ResolveResult> = metaService.findMetaItemByName(lookingForName)
                 ?.declarations
@@ -72,7 +75,7 @@ class ImpexTSItemReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owne
             // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
             CachedValueProvider.Result.create(
                 result,
-                metaService.getMetaModel()
+                project.service<TSModificationTracker>()
             )
         }
     }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.components
 
-import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaImport
 import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable
@@ -35,7 +34,7 @@ class BSMetaImportsTable private constructor(myProject: Project) :
     override fun getItems(owner: BSGlobalMetaBean) = owner.imports.sortedWith(
         compareBy(
             { !it.isCustom },
-            { it.module.name },
+            { it.moduleName },
             { it.type })
     )
         .toMutableList()
@@ -56,7 +55,7 @@ class BSMetaImportsTable private constructor(myProject: Project) :
             ),
             createColumn(
                 name = COLUMN_MODULE,
-                valueProvider = { attr -> attr.module.yExtensionName() }
+                valueProvider = { attr -> attr.extensionName }
             ),
             createColumn(
                 name = COLUMN_TYPE,

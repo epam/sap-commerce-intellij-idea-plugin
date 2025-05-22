@@ -22,17 +22,16 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.impl.*
 import com.intellij.idea.plugin.hybris.system.type.model.*
-import com.intellij.openapi.module.Module
-import com.intellij.psi.PsiFile
 import org.apache.commons.lang3.StringUtils
 
 class TSMetaModelBuilder(
-    private val myModule: Module,
-    myPsiFile: PsiFile,
-    private val myCustom: Boolean
+    private val moduleName: String,
+    private val extensionName: String,
+    fileName: String,
+    private val custom: Boolean
 ) {
 
-    private val myMetaModel = TSMetaModel(myModule, myPsiFile.virtualFile, myCustom)
+    private val myMetaModel = TSMetaModel(extensionName, fileName, custom)
 
     fun build() = myMetaModel
 
@@ -91,7 +90,7 @@ class TSMetaModelBuilder(
     private fun create(dom: ItemType): TSMetaItem? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
         return TSMetaItemImpl(
-            dom, myModule, name, myCustom,
+            dom, moduleName, extensionName, name, custom,
             attributes = create(dom, dom.attributes),
             indexes = create(dom.indexes),
             customProperties = create(dom.customProperties),
@@ -102,19 +101,19 @@ class TSMetaModelBuilder(
     private fun create(dom: EnumType): TSMetaEnum? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
         return TSMetaEnumImpl(
-            dom, myModule, name, myCustom,
+            dom, moduleName, extensionName, name, custom,
             values = createEnumValues(dom)
         )
     }
 
     private fun create(dom: AtomicType): TSMetaAtomic? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
-        return TSMetaAtomicImpl(dom, myModule, name, myCustom)
+        return TSMetaAtomicImpl(dom, moduleName, extensionName, name, custom)
     }
 
     private fun create(dom: CollectionType): TSMetaCollection? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
-        return TSMetaCollectionImpl(dom, myModule, name, myCustom)
+        return TSMetaCollectionImpl(dom, moduleName, extensionName, name, custom)
     }
 
     private fun create(dom: Relation): TSMetaRelation? {
@@ -124,7 +123,7 @@ class TSMetaModelBuilder(
         val orderingAttribute = create(source, target)
 
         return TSMetaRelationImpl(
-            dom, myModule, name, myCustom,
+            dom, moduleName, extensionName, name, custom,
             deployment = create(dom.deployment),
             source = source,
             target = target,
@@ -150,14 +149,15 @@ class TSMetaModelBuilder(
     ) = TSMetaRelationImpl.TSMetaOrderingAttributeImpl(
         dom = dom,
         owner = owner,
-        module = myModule,
-        isCustom = myCustom,
+        moduleName = moduleName,
+        extensionName = extensionName,
+        isCustom = custom,
         qualifier = qualifierPrefix + HybrisConstants.TS_RELATION_ORDERING_POSTFIX
     )
 
     private fun create(dom: RelationElement, end: TSMetaRelation.RelationEnd): TSMetaRelation.TSMetaRelationElement {
         return TSMetaRelationImpl.TSMetaRelationElementImpl(
-            dom, myModule, myCustom, end,
+            dom, moduleName, extensionName, custom, end,
             modifiers = create(dom.modifiers),
             customProperties = create(dom.customProperties)
         )
@@ -165,46 +165,47 @@ class TSMetaModelBuilder(
 
     private fun create(dom: MapType): TSMetaMap? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
-        return TSMetaMapImpl(dom, myModule, name, myCustom)
+        return TSMetaMapImpl(dom, moduleName, extensionName, name, custom)
     }
 
     private fun create(dom: Modifiers): TSMetaModifiers {
-        return TSMetaModifiersImpl(dom, myModule, myCustom)
+        return TSMetaModifiersImpl(dom, moduleName, extensionName, custom)
     }
 
     private fun create(dom: EnumValue): TSMetaEnum.TSMetaEnumValue? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
-        return TSMetaEnumImpl.TSMetaEnumValueImpl(dom, myModule, myCustom, name)
+        return TSMetaEnumImpl.TSMetaEnumValueImpl(dom, moduleName, extensionName, custom, name)
     }
 
     private fun create(dom: CustomProperty): TSMetaCustomProperty? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
-        return TSMetaCustomPropertyImpl(dom, myModule, myCustom, name)
+        return TSMetaCustomPropertyImpl(dom, moduleName, extensionName, custom, name)
     }
 
     private fun create(dom: Index): TSMetaItem.TSMetaItemIndex? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
-        return TSMetaItemImpl.TSMetaItemIndexImpl(dom, myModule, name, myCustom)
+        return TSMetaItemImpl.TSMetaItemIndexImpl(dom, moduleName, extensionName, name, custom)
     }
 
     private fun create(dom: Deployment) =
         if (dom.exists())
-            TSMetaDeploymentImpl(dom, myModule, TSMetaModelNameProvider.extract(dom), myCustom)
+            TSMetaDeploymentImpl(dom, moduleName, extensionName, TSMetaModelNameProvider.extract(dom), custom)
         else null
 
     private fun create(itemTypeDom: ItemType, attributeDom: Attribute, dom: Persistence) = TSMetaPersistenceImpl(
         itemTypeDom,
         attributeDom,
         dom,
-        myModule,
+        moduleName,
+        extensionName,
         TSMetaModelNameProvider.extract(dom),
-        myCustom
+        custom
     )
 
     private fun create(itemTypeDom: ItemType, dom: Attribute): TSMetaItem.TSMetaItemAttribute? {
         val name = TSMetaModelNameProvider.extract(dom) ?: return null
         return TSMetaItemImpl.TSMetaItemAttributeImpl(
-            dom, myModule, name, myCustom,
+            dom, moduleName, extensionName, name, custom,
             customProperties = create(dom.customProperties),
             persistence = create(itemTypeDom, dom, dom.persistence),
             modifiers = create(dom.modifiers)

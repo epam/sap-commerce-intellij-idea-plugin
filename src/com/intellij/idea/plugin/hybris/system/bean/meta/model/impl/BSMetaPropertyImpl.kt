@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,13 +23,14 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaAnnotations
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaHint
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaProperty
 import com.intellij.idea.plugin.hybris.system.bean.model.Property
-import com.intellij.openapi.module.Module
+import com.intellij.idea.plugin.hybris.util.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
 internal class BSMetaPropertyImpl(
     dom: Property,
-    override val module: Module,
+    override val moduleName: String,
+    override val extensionName: String,
     override val isCustom: Boolean,
     override val name: String?,
     override val annotations: List<BSMetaAnnotations>,
@@ -39,10 +40,10 @@ internal class BSMetaPropertyImpl(
     override val domAnchor: DomAnchor<Property> = DomService.getInstance().createAnchor(dom)
     override val type = dom.type.stringValue
     override val description = dom.description.stringValue
-    override val isEquals = dom.equals.value
-    override val isDeprecated = dom.deprecated.value
+    override val isEquals = dom.equals.toBoolean()
+    override val isDeprecated = dom.deprecated.toBoolean()
     override var flattenType: String? = BSMetaHelper.flattenType(this)
     override var referencedType: String? = BSMetaHelper.referencedType(this)
 
-    override fun toString() = "Property(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Property(module=$extensionName, name=$name, isCustom=$isCustom)"
 }

@@ -1,5 +1,8 @@
 ## [2025.1.3]
 
+### `Meta System` enchancements
+- TS & BS Meta Model 2.0 re-implemented using `StateFlow` [#1354](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1354)
+
 ### `Type System` enhancements
 - Added multi-resolve for `extends` for Item Types [#1343](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1343)
 - Added multi-resolve for `type` for Relation Types [#1344](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1344)

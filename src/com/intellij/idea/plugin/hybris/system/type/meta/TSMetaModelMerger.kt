@@ -24,8 +24,6 @@ import com.intellij.util.xml.DomElement
 object TSMetaModelMerger {
 
     fun merge(globalMetaModel: TSGlobalMetaModel, localMetaModels: Collection<TSMetaModel>) = with(globalMetaModel) {
-        globalMetaModel.clear()
-
         localMetaModels
             // ideally, we have to get the same dependency order as SAP Commerce
             .sortedBy { !it.custom }

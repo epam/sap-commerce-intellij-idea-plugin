@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,13 +23,14 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.BeanType
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.CaseInsensitive
-import com.intellij.openapi.module.Module
+import com.intellij.idea.plugin.hybris.util.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
 internal class BSMetaBeanImpl(
     dom: Bean,
-    override val module: Module,
+    override val moduleName: String,
+    override val extensionName: String,
     override val name: String,
     override val isCustom: Boolean,
     override val imports: List<BSMetaImport>,
@@ -50,11 +51,11 @@ internal class BSMetaBeanImpl(
     override val fullName = BSMetaHelper.getNameWithGeneric(name, genericName)
     override val fullExtends = BSMetaHelper.getNameWithGeneric(extends, extendsGenericName)
     override val deprecatedSince = dom.deprecatedSince.stringValue
-    override val isDeprecated = dom.deprecated.value
-    override val isAbstract = dom.abstract.value
-    override val isSuperEquals = dom.superEquals.value
+    override val isDeprecated = dom.deprecated.toBoolean()
+    override val isAbstract = dom.abstract.toBoolean()
+    override val isSuperEquals = dom.superEquals.toBoolean()
 
-    override fun toString() = "Bean(module=$module, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
+    override fun toString() = "Bean(module=$extensionName, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
 
 }
 
@@ -66,7 +67,8 @@ internal class BSGlobalMetaBeanImpl(localMeta: BSMetaBean) : BSGlobalMetaBeanSel
     override val type = localMeta.type
     override val shortName = localMeta.shortName
     override var genericName = localMeta.genericName
-    override val module = localMeta.module
+    override val moduleName = localMeta.moduleName
+    override val extensionName = localMeta.extensionName
     override var template = localMeta.template
     override var description = localMeta.description
     override var deprecatedSince = localMeta.deprecatedSince
@@ -121,5 +123,5 @@ internal class BSGlobalMetaBeanImpl(localMeta: BSMetaBean) : BSGlobalMetaBeanSel
         annotations.addAll(localMeta.annotations)
     }
 
-    override fun toString() = "Bean(module=$module, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
+    override fun toString() = "Bean(module=$extensionName, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
 }

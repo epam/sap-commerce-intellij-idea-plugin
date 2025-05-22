@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,13 +20,13 @@ package com.intellij.idea.plugin.hybris.system.bean.meta.model.impl
 
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaHint
 import com.intellij.idea.plugin.hybris.system.bean.model.Hint
-import com.intellij.openapi.module.Module
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 
 internal class BSMetaHintImpl(
     dom: Hint,
-    override val module: Module,
+    override val moduleName: String,
+    override val extensionName: String,
     override val isCustom: Boolean,
     override val name: String?,
 ) : BSMetaHint {
@@ -34,5 +34,5 @@ internal class BSMetaHintImpl(
     override val domAnchor: DomAnchor<Hint> = DomService.getInstance().createAnchor(dom)
     override val value = dom.stringValue
 
-    override fun toString() = "Hint(module=$module, name=$name, isCustom=$isCustom)"
+    override fun toString() = "Hint(module=$extensionName, name=$name, isCustom=$isCustom)"
 }

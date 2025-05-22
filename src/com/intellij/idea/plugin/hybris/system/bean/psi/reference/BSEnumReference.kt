@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,8 @@ import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSComp
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.psi.reference.result.EnumResolveResult
+import com.intellij.idea.plugin.hybris.system.meta.BSModificationTracker
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -49,7 +51,8 @@ class BSEnumReference(
         fun cacheKey(postfix: String) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, BSEnumReference>>("HYBRIS_BS_CACHED_REFERENCE_" + postfix)
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, BSEnumReference> { ref ->
-            val metaModelAccess = BSMetaModelAccess.getInstance(ref.element.project)
+            val project = ref.element.project
+            val metaModelAccess = BSMetaModelAccess.getInstance(project)
             val classFQN = ref.value
             val result: Array<ResolveResult> = metaModelAccess.findMetaEnumByName(classFQN)
                 ?.let { EnumResolveResult(it) }
@@ -58,7 +61,7 @@ class BSEnumReference(
 
             CachedValueProvider.Result.create(
                 result,
-                metaModelAccess.getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
+                project.service<BSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

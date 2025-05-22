@@ -17,50 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
-import com.intellij.idea.plugin.hybris.system.bean.BSUtils
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
+import com.intellij.idea.plugin.hybris.system.meta.AbstractMetaModelCollector
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiFile
-import com.intellij.psi.search.ProjectScope
-import com.intellij.psi.stubs.StubIndex
-import com.intellij.psi.xml.XmlFile
-import com.intellij.util.Processor
-import com.intellij.util.xml.DomManager
-import com.intellij.util.xml.stubs.index.DomElementClassIndex
-import java.util.*
 
 @Service(Service.Level.PROJECT)
-class BSMetaModelCollector(private val myProject: Project) {
-
-    companion object {
-        fun getInstance(project: Project): BSMetaModelCollector = project.getService(BSMetaModelCollector::class.java)
-    }
-
-    private val myDomManager: DomManager = DomManager.getDomManager(myProject)
-
-    fun collectDependencies(): Set<PsiFile> {
-        val files = HashSet<PsiFile>()
-
-        StubIndex.getInstance().processElements(
-            DomElementClassIndex.KEY,
-            Beans::class.java.name,
-            myProject,
-            ProjectScope.getAllScope(myProject),
-            PsiFile::class.java,
-            object : Processor<PsiFile> {
-                override fun process(psiFile: PsiFile): Boolean {
-                    psiFile.virtualFile ?: return true
-                    // cannot process a file without a module
-                    BSUtils.getModuleForFile(psiFile) ?: return true
-                    myDomManager.getFileElement(psiFile as XmlFile, Beans::class.java) ?: return true
-
-                    files.add(psiFile)
-                    return true
-                }
-            }
-        )
-
-        return Collections.unmodifiableSet(files)
-    }
-}
+class BSMetaModelCollector(myProject: Project) : AbstractMetaModelCollector<Beans>(myProject, Beans::class.java)

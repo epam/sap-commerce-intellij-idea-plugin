@@ -23,10 +23,12 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -52,7 +54,8 @@ open class ItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(elem
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ItemReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ItemReference> { ref ->
-            val metaModelAccess = TSMetaModelAccess.getInstance(ref.project)
+            val project = ref.project
+            val metaModelAccess = TSMetaModelAccess.getInstance(project)
 
             val name = ref.value
             val result: Array<ResolveResult> = metaModelAccess.findMetaItemByName(name)
@@ -63,7 +66,7 @@ open class ItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(elem
 
             CachedValueProvider.Result.create(
                 result,
-                metaModelAccess.getMetaModel(), PsiModificationTracker.MODIFICATION_COUNT
+                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

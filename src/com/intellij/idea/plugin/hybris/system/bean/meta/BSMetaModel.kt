@@ -17,19 +17,16 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
-import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.containers.MultiMap
 import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 
 class BSMetaModel(
-    val module: Module,
-    val virtualFile: VirtualFile,
+    val extensionName: String,
+    val fileName: String,
     val custom: Boolean
 ) : Disposable {
 
@@ -52,5 +49,5 @@ class BSMetaModel(
         myMetaCache.clear()
     }
 
-    override fun toString() = "Module: ${module.yExtensionName()} | file: ${virtualFile.name}"
+    override fun toString() = "Module: $extensionName | file: $fileName"
 }

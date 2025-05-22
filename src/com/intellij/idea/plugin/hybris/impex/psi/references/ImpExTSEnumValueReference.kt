@@ -22,9 +22,11 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumValueResolveResult
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -66,7 +68,8 @@ abstract class AbstractImpExTSEnumValueReference(owner: PsiElement, private val 
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AbstractImpExTSEnumValueReference>>("HYBRIS_TS_CACHED_REFERENCE")
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AbstractImpExTSEnumValueReference> { ref ->
             val lookingForName = ref.value
-            val metaService = TSMetaModelAccess.getInstance(ref.project)
+            val project = ref.project
+            val metaService = TSMetaModelAccess.getInstance(project)
 
             val result: Array<ResolveResult> = metaService.findMetaEnumByName(ref.metaName)
                 ?.values[lookingForName]
@@ -75,8 +78,7 @@ abstract class AbstractImpExTSEnumValueReference(owner: PsiElement, private val 
 
             CachedValueProvider.Result.create(
                 result,
-                PsiModificationTracker.MODIFICATION_COUNT,
-                metaService.getMetaModel()
+                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT,
             )
         }
     }
