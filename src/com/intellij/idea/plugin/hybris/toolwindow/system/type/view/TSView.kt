@@ -23,8 +23,8 @@ import com.intellij.ide.IdeBundle
 import com.intellij.idea.ActionsBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.meta.AbstractMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSTreePanel
@@ -91,7 +91,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
                     refreshContent(changeType)
                 }
             })
-            subscribe(AbstractMetaModelStateService.TOPIC, object : MetaModelChangeListener {
+            subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
                     refreshContent(globalMetaModel, TSViewSettings.ChangeType.FULL)
                 }

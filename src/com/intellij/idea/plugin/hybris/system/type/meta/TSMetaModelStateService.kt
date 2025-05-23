@@ -18,70 +18,27 @@
 
 package com.intellij.idea.plugin.hybris.system.type.meta
 
-import com.intellij.idea.plugin.hybris.system.meta.AbstractMetaModelStateService
-import com.intellij.idea.plugin.hybris.system.meta.CachedState
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
+import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.platform.ide.progress.withBackgroundProgress
-import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)
-class TSMetaModelStateService(project: Project, private val coroutineScope: CoroutineScope) : AbstractMetaModelStateService<TSMetaModel, TSGlobalMetaModel>(project) {
+class TSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<TSGlobalMetaModel, TSMetaModel, Items>(
+    project, coroutineScope, "Type",
+    project.service<TSMetaModelCollector>(),
+    project.service<TSMetaModelProcessor>()
+) {
 
-    private val metaModelCollector = project.service<TSMetaModelCollector>()
-    private val metaModelProcessor = project.service<TSMetaModelProcessor>()
-    private val dumbService = DumbService.Companion.getInstance(project)
-
-    override fun processState(metaModels: Collection<String>) {
-        if (metaModelState.value.computing) return
-
-        _metaModelState.value = CachedState(null, computed = false, computing = true)
-
-        dumbService.runWhenSmart {
-            coroutineScope.launch {
-                val newState = withBackgroundProgress(project, "Re-building Type System...", true) {
-                    val collectedDependencies = readAction { metaModelCollector.collectDependencies() }
-
-                    val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
-                        collectedDependencies
-                            .map {
-                                progressReporter.sizedStep(1, "Processing: ${it.name}...") {
-                                    async {
-                                        val cachedMetaModel = metaModelsState.value[it.name]
-                                        if (cachedMetaModel == null || metaModels.contains(it.name)) {
-                                            it.name to metaModelProcessor.process(it)
-                                        } else {
-                                            it.name to cachedMetaModel
-                                        }
-                                    }
-                                }
-                            }
-                            .awaitAll()
-                            .filter { (_, model) -> model != null }
-                            .distinctBy { it.first }
-                            .associate { it.first to it.second!! }
-                    }
-
-                    _metaModelsState.value = localMetaModels
-
-                    TSGlobalMetaModel().also { globalMetaModel ->
-                        val metaModelsToMerge = metaModelsState.value.values.sortedBy { !it.custom }
-                        readAction { TSMetaModelMerger.merge(globalMetaModel, metaModelsToMerge) }
-                    }
-                }
-
-                _metaModelState.value = CachedState(newState, computed = true, computing = false)
-                _recomputeMetas.value = null
-
-                project.messageBus.syncPublisher(TOPIC).typeSystemChanged(newState)
-            }
-        }
+    override fun onCompletion(newState: TSGlobalMetaModel) {
+        project.messageBus.syncPublisher(TOPIC).typeSystemChanged(newState)
     }
+
+    override suspend fun create(metaModelsToMerge: Collection<TSMetaModel>): TSGlobalMetaModel = TSGlobalMetaModel().also {
+        readAction { TSMetaModelMerger.merge(it, metaModelsToMerge.sortedBy { meta -> !meta.custom }) }
+    }
+
 }

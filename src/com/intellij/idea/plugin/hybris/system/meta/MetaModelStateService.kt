@@ -19,12 +19,20 @@
 package com.intellij.idea.plugin.hybris.system.meta
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.progress.reportProgress
 import com.intellij.util.messages.Topic
+import com.intellij.util.xml.DomElement
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 data class CachedState<T>(
     val value: T?,
@@ -32,7 +40,13 @@ data class CachedState<T>(
     val computing: Boolean
 )
 
-abstract class AbstractMetaModelStateService<M, G>(protected val project: Project) : Disposable {
+abstract class MetaModelStateService<G, M, D : DomElement>(
+    protected val project: Project,
+    private val coroutineScope: CoroutineScope,
+    private val systemName: String,
+    private val metaModelCollector: MetaModelCollector<D>,
+    private val metaModelProcessor: MetaModelProcessor<D, M>
+) : Disposable {
 
     companion object {
         val TOPIC = Topic("HYBRIS_META_SYSTEM_LISTENER", MetaModelChangeListener::class.java)
@@ -45,7 +59,8 @@ abstract class AbstractMetaModelStateService<M, G>(protected val project: Projec
     protected val metaModelsState = _metaModelsState.asStateFlow()
     protected val metaModelState = _metaModelState.asStateFlow()
 
-    protected abstract fun processState(metaModels: Collection<String> = emptyList())
+    protected abstract suspend fun create(metaModelsToMerge: Collection<M>): G
+    protected abstract fun onCompletion(newState: G)
 
     fun init() {
         processState()
@@ -62,6 +77,49 @@ abstract class AbstractMetaModelStateService<M, G>(protected val project: Projec
 
         processState(modifiedMetas)
         throw ProcessCanceledException()
+    }
+
+    private fun processState(metaModels: Collection<String> = emptyList()) {
+        if (metaModelState.value.computing) return
+
+        _metaModelState.value = CachedState(null, computed = false, computing = true)
+
+        DumbService.Companion.getInstance(project).runWhenSmart {
+            coroutineScope.launch {
+                val newState = withBackgroundProgress(project, "Re-building $systemName System...", true) {
+                    val collectedDependencies = readAction { metaModelCollector.collectDependencies() }
+
+                    val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
+                        collectedDependencies
+                            .map {
+                                progressReporter.sizedStep(1, "Processing: ${it.name}...") {
+                                    async {
+                                        val cachedMetaModel = metaModelsState.value[it.name]
+                                        if (cachedMetaModel == null || metaModels.contains(it.name)) {
+                                            it.name to metaModelProcessor.process(it)
+                                        } else {
+                                            it.name to cachedMetaModel
+                                        }
+                                    }
+                                }
+                            }
+                            .awaitAll()
+                            .filter { (_, model) -> model != null }
+                            .distinctBy { it.first }
+                            .associate { it.first to it.second!! }
+                    }
+
+                    _metaModelsState.value = localMetaModels
+
+                    create(metaModelsState.value.values)
+                }
+
+                _metaModelState.value = CachedState(newState, computed = true, computing = false)
+                _recomputeMetas.value = null
+
+                onCompletion(newState)
+            }
+        }
     }
 
     fun update(metaModels: Collection<String>) {
@@ -85,7 +143,3 @@ abstract class AbstractMetaModelStateService<M, G>(protected val project: Projec
     override fun dispose() {
     }
 }
-
-abstract class MetaModelStateService<M, G>(project: Project): AbstractMetaModelStateService<M, G>(project) {
-}
-

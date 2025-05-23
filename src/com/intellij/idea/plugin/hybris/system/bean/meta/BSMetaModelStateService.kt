@@ -18,69 +18,27 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
-import com.intellij.idea.plugin.hybris.system.meta.AbstractMetaModelStateService
-import com.intellij.idea.plugin.hybris.system.meta.CachedState
+import com.intellij.idea.plugin.hybris.system.bean.model.Beans
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.platform.ide.progress.withBackgroundProgress
-import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)
-class BSMetaModelStateService(project: Project, private val coroutineScope: CoroutineScope) : AbstractMetaModelStateService<BSMetaModel, BSGlobalMetaModel>(project) {
+class BSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<BSGlobalMetaModel, BSMetaModel, Beans>(
+    project, coroutineScope, "Bean",
+    project.service<BSMetaModelCollector>(),
+    project.service<BSMetaModelProcessor>()
+) {
 
-    private val metaModelCollector = project.service<BSMetaModelCollector>()
-    private val metaModelProcessor = project.service<BSMetaModelProcessor>()
-
-    override fun processState(metaModels: Collection<String>) {
-        if (metaModelState.value.computing) return
-
-        _metaModelState.value = CachedState(null, computed = false, computing = true)
-
-        DumbService.Companion.getInstance(project).runWhenSmart {
-            coroutineScope.launch {
-                val newState = withBackgroundProgress(project, "Re-building Bean System...", true) {
-                    val collectedDependencies = readAction { metaModelCollector.collectDependencies() }
-
-                    val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
-                        collectedDependencies
-                            .map {
-                                progressReporter.sizedStep(1, "Processing: ${it.name}...") {
-                                    async {
-                                        val cachedMetaModel = metaModelsState.value[it.name]
-                                        if (cachedMetaModel == null || metaModels.contains(it.name)) {
-                                            it.name to metaModelProcessor.process(it)
-                                        } else {
-                                            it.name to cachedMetaModel
-                                        }
-                                    }
-                                }
-                            }
-                            .awaitAll()
-                            .filter { (_, model) -> model != null }
-                            .distinctBy { it.first }
-                            .associate { it.first to it.second!! }
-                    }
-
-                    _metaModelsState.value = localMetaModels
-
-                    BSGlobalMetaModel().also { globalMetaModel ->
-                        val metaModelsToMerge = metaModelsState.value.values.sortedBy { !it.custom }
-                        readAction { BSMetaModelMerger.merge(globalMetaModel, metaModelsToMerge) }
-                    }
-                }
-
-                _metaModelState.value = CachedState(newState, computed = true, computing = false)
-                _recomputeMetas.value = null
-
-                project.messageBus.syncPublisher(TOPIC).beanSystemChanged(newState)
-            }
-        }
+    override fun onCompletion(newState: BSGlobalMetaModel) {
+        project.messageBus.syncPublisher(TOPIC).beanSystemChanged(newState)
     }
+
+    override suspend fun create(metaModelsToMerge: Collection<BSMetaModel>): BSGlobalMetaModel = BSGlobalMetaModel().also {
+        readAction { BSMetaModelMerger.merge(it, metaModelsToMerge.sortedBy { meta -> !meta.custom }) }
+    }
+
 }

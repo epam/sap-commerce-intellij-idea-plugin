@@ -17,36 +17,24 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta
 
-import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
-import com.intellij.idea.plugin.hybris.system.meta.FoundMeta
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelProcessor
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelBuilder
 import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
-import kotlinx.coroutines.coroutineScope
 
 @Service(Service.Level.PROJECT)
-class TSMetaModelProcessor(private val project: Project) {
+class TSMetaModelProcessor(project: Project) : MetaModelProcessor<Items, TSMetaModel>(project) {
 
-    suspend fun process(foundMeta: FoundMeta<Items>): TSMetaModel? = coroutineScope {
-        readAction {
-            val moduleName = foundMeta.moduleName
-            val extensionName = foundMeta.extensionName
-            val items = foundMeta.rootElement
-            val fileName = foundMeta.name
-            val custom = PsiUtils.isCustomExtensionFile(foundMeta.virtualFile, project)
-
-            with(TSMetaModelBuilder(moduleName, extensionName, fileName, custom)) {
-                withItemTypes(items.itemTypes.itemTypes)
-                withItemTypes(items.itemTypes.typeGroups.flatMap { it.itemTypes })
-                withEnumTypes(items.enumTypes.enumTypes)
-                withAtomicTypes(items.atomicTypes.atomicTypes)
-                withCollectionTypes(items.collectionTypes.collectionTypes)
-                withRelationTypes(items.relations.relations)
-                withMapTypes(items.mapTypes.mapTypes)
-                build()
-            }
+    override fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: Items): TSMetaModel =
+        with(TSMetaModelBuilder(moduleName, extensionName, fileName, custom)) {
+            withItemTypes(dom.itemTypes.itemTypes)
+            withItemTypes(dom.itemTypes.typeGroups.flatMap { it.itemTypes })
+            withEnumTypes(dom.enumTypes.enumTypes)
+            withAtomicTypes(dom.atomicTypes.atomicTypes)
+            withCollectionTypes(dom.collectionTypes.collectionTypes)
+            withRelationTypes(dom.relations.relations)
+            withMapTypes(dom.mapTypes.mapTypes)
+            build()
         }
-    }
 }

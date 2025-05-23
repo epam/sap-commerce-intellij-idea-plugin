@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta
 
-import com.intellij.idea.plugin.hybris.system.meta.AbstractMetaModelCollector
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelCollector
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
-class TSMetaModelCollector(myProject: Project) : AbstractMetaModelCollector<Items>(myProject, Items::class.java)
+class TSMetaModelCollector(myProject: Project) : MetaModelCollector<Items>(myProject, Items::class.java)

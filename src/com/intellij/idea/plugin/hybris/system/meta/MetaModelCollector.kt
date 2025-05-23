@@ -42,7 +42,7 @@ data class FoundMeta<T : DomElement>(
     val name: String = virtualFile.name
 )
 
-abstract class AbstractMetaModelCollector<T : DomElement>(private val project: Project, private val clazz: Class<T>) {
+abstract class MetaModelCollector<T : DomElement>(private val project: Project, private val clazz: Class<T>) {
 
     private val myDomManager: DomManager = DomManager.getDomManager(project)
     private val projectFileIndex = ProjectFileIndex.getInstance(project)
