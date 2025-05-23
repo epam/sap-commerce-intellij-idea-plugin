@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.BS_SIGN_LESS_THAN
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.util.xml.DomElement
-import io.ktor.util.*
+import kotlinx.collections.immutable.toImmutableSet
 
 object BSMetaHelper {
     private val flattenTypeRegex = Regex("""\w+\.""")
@@ -74,7 +74,7 @@ object BSMetaHelper {
             tempParents.add(metaItem)
             metaItem = getExtendsMetaItem(metaModel, metaItem)
         }
-        return tempParents.unmodifiable()
+        return tempParents.toImmutableSet()
     }
 
     fun getEscapedName(name: String) = name

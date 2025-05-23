@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.*
 import com.intellij.util.asSafely
-import io.ktor.util.*
+import kotlinx.collections.immutable.toImmutableSet
 import org.apache.commons.collections4.CollectionUtils
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
@@ -44,7 +44,7 @@ abstract class AbstractModuleDescriptor(
     private val directDependencies = mutableSetOf<ModuleDescriptor>()
     private val dependencies: Set<ModuleDescriptor> by lazy {
         recursivelyCollectDependenciesPlainSet(this, TreeSet())
-            .unmodifiable()
+            .toImmutableSet()
     }
     private val myExtensionDescriptor by lazy {
         ExtensionDescriptor(

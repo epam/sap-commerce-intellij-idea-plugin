@@ -31,7 +31,7 @@ import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.stubs.index.DomElementClassIndex
-import io.ktor.util.*
+import kotlinx.collections.immutable.toImmutableSet
 
 data class FoundMeta<T : DomElement>(
     val moduleName: String,
@@ -71,6 +71,6 @@ abstract class AbstractMetaModelCollector<T : DomElement>(private val project: P
             }
         )
 
-        return files.unmodifiable()
+        return files.toImmutableSet()
     }
 }
