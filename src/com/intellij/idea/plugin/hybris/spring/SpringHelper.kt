@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleUtilCore
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NotNullLazyValue
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
@@ -37,24 +38,24 @@ import com.intellij.spring.model.xml.beans.SpringBean
 object SpringHelper {
 
     fun resolveBeanDeclaration(element: PsiElement, beanId: String): XmlTag? {
-        val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return null
-
-        return if (Plugin.SPRING.isActive()) springResolveBean(module, beanId)
-            ?.springBean
-            ?.xmlTag
-        else plainResolveBean(module, beanId)
+        return Plugin.SPRING.ifActive {
+            ModuleUtilCore.findModuleForPsiElement(element)
+                ?.let { springResolveBean(it, beanId) }
+                ?.springBean
+                ?.xmlTag
+        } ?: plainResolveBean(element.project, beanId)
     }
 
-    fun resolveBeanClass(element: PsiElement, beanId: String): PsiClass? {
-        val module = ModuleUtilCore.findModuleForPsiElement(element) ?: return null
-        val project = module.project
-
-        return if (Plugin.SPRING.isActive()) springResolveBean(module, beanId)
+    fun resolveBeanClass(element: PsiElement, beanId: String) = Plugin.SPRING.ifActive {
+        ModuleUtilCore.findModuleForPsiElement(element)
+            ?.let { springResolveBean(it, beanId) }
             ?.beanClass
-        else plainResolveBean(module, beanId)
-            ?.getAttributeValue("class")
-            ?.let { JavaPsiFacade.getInstance(project).findClass(it, GlobalSearchScope.allScope(project)) }
     }
+        ?: plainResolveBean(element.project, beanId)
+            ?.getAttributeValue("class")
+            ?.let {
+                JavaPsiFacade.getInstance(element.project).findClass(it, GlobalSearchScope.allScope(element.project))
+            }
 
     fun resolveInterceptorBeansLazy(
         clazz: PsiClass,
@@ -78,7 +79,7 @@ object SpringHelper {
     private fun springResolveBean(module: Module, beanId: String) = SpringManager.getInstance(module.project).getAllModels(module)
         .firstNotNullOfOrNull { SpringModelSearchers.findBean(it, beanId) }
 
-    private fun plainResolveBean(module: Module, beanId: String) = SimpleSpringService.getService(module.project)
+    private fun plainResolveBean(project: Project, beanId: String) = SimpleSpringService.getService(project)
         ?.findBean(beanId)
 
 }

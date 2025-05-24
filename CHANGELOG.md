@@ -1,6 +1,9 @@
 ## [2025.1.3]
 
-### `Meta System` enchancements
+### `Project Import` enhancements
+- Ensure that `[y] Remote debug` Run Configuration selected after first project import [#1355](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1355)
+
+### `Meta System` enhancements
 - TS & BS Meta Model 2.0 re-implemented using `StateFlow` [#1354](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1354)
 
 ### `Type System` enhancements

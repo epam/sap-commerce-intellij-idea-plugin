@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDesc
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YPlatformExtModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.lang.ant.config.AntBuildFileBase
 import com.intellij.lang.ant.config.AntConfigurationBase
 import com.intellij.lang.ant.config.AntNoFileException
@@ -36,7 +35,6 @@ import com.intellij.lang.ant.config.execution.AntRunConfigurationType
 import com.intellij.lang.ant.config.impl.*
 import com.intellij.lang.ant.config.impl.AntBuildFileImpl.*
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.Logger
@@ -341,8 +339,8 @@ class AntConfigurator {
                 ?: return null
 
             return AntInstallation.fromHome(antFolderUrl)
-        } catch (ignored: IOException) {
-        } catch (ignored: AntInstallation.ConfigurationException) {
+        } catch (_: IOException) {
+        } catch (_: AntInstallation.ConfigurationException) {
         }
 
         return null
@@ -379,9 +377,5 @@ class AntConfigurator {
     companion object {
         private val LOG = Logger.getInstance(AntConfigurator::class.java)
         private val PATTERN_APACHE_ANT: Pattern = Pattern.compile("apache-ant.*")
-
-        fun getInstance(): AntConfigurator? =
-            if (Plugin.ANT_SUPPORT.isActive()) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
-            else null
     }
 }

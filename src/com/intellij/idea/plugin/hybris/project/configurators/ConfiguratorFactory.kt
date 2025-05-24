@@ -20,52 +20,49 @@ package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.configurators.impl.*
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.openapi.components.serviceOrNull
 
 @Service
 class ConfiguratorFactory {
 
-    fun getFacetConfigurators() = with(ApplicationManager.getApplication()) {
-        listOfNotNull(
-            getService(YFacetConfigurator::class.java),
-            getService(SpringFacetConfigurator::class.java),
-            getService(KotlinFacetConfigurator::class.java),
-            getService(WebFacetConfigurator::class.java)
-        )
-    }
+    fun getFacetConfigurators() = listOfNotNull(
+        serviceOrNull<YFacetConfigurator>(),
+        serviceOrNull<SpringFacetConfigurator>(),
+        serviceOrNull<KotlinFacetConfigurator>(),
+        serviceOrNull<WebFacetConfigurator>()
+    )
 
-    fun getSpringConfigurator(): SpringConfigurator = ApplicationManager.getApplication().getService(DefaultSpringConfigurator::class.java)
-        ?: ApplicationManager.getApplication().getService(DummySpringConfigurator::class.java)
+    fun getSpringConfigurator() = serviceOrNull<DefaultSpringConfigurator>()
+        ?: service<DummySpringConfigurator>()
 
-    fun getContentRootConfigurator(): ContentRootConfigurator = ApplicationManager.getApplication().getService(DefaultContentRootConfigurator::class.java)
-    fun getModuleDependenciesConfigurator(): ModuleDependenciesConfigurator = ApplicationManager.getApplication().getService(ModuleDependenciesConfigurator::class.java)
-    fun getCompilerOutputPathsConfigurator(): CompilerOutputPathsConfigurator = ApplicationManager.getApplication().getService(CompilerOutputPathsConfigurator::class.java)
-    fun getLibRootsConfigurator(): LibRootsConfigurator = ApplicationManager.getApplication().getService(LibRootsConfigurator::class.java)
-    fun getGroupModuleConfigurator(): GroupModuleConfigurator = ApplicationManager.getApplication().getService(GroupModuleConfigurator::class.java)
-    fun getJavadocSettingsConfigurator(): JavadocSettingsConfigurator = ApplicationManager.getApplication().getService(JavadocSettingsConfigurator::class.java)
-    fun getModuleSettingsConfigurator(): ModuleSettingsConfigurator = ApplicationManager.getApplication().getService(ModuleSettingsConfigurator::class.java)
-    fun getVersionControlSystemConfigurator(): VersionControlSystemConfigurator = ApplicationManager.getApplication().getService(VersionControlSystemConfigurator::class.java)
-    fun getSearchScopeConfigurator(): SearchScopeConfigurator = ApplicationManager.getApplication().getService(SearchScopeConfigurator::class.java)
-    fun getJavaCompilerConfigurator(): JavaCompilerConfigurator = ApplicationManager.getApplication().getService(JavaCompilerConfigurator::class.java)
-    fun getRunConfigurationConfigurator(): RunConfigurationConfigurator = ApplicationManager.getApplication().getService(DefaultRunConfigurationConfigurator::class.java)
+    fun getContentRootConfigurator() = service<DefaultContentRootConfigurator>()
+    fun getModuleDependenciesConfigurator() = service<ModuleDependenciesConfigurator>()
+    fun getCompilerOutputPathsConfigurator() = service<CompilerOutputPathsConfigurator>()
+    fun getLibRootsConfigurator() = service<LibRootsConfigurator>()
+    fun getGroupModuleConfigurator() = service<GroupModuleConfigurator>()
+    fun getJavadocSettingsConfigurator() = service<JavadocSettingsConfigurator>()
+    fun getModuleSettingsConfigurator() = service<ModuleSettingsConfigurator>()
+    fun getVersionControlSystemConfigurator() = service<VersionControlSystemConfigurator>()
+    fun getSearchScopeConfigurator() = service<SearchScopeConfigurator>()
+    fun getJavaCompilerConfigurator() = service<JavaCompilerConfigurator>()
+    fun getRunConfigurationConfigurator() = service<RunConfigurationConfigurator>()
 
-    fun getMavenConfigurator(): MavenConfigurator? = ApplicationManager.getApplication().getService(MavenConfigurator::class.java)
-    fun getEclipseConfigurator(): EclipseConfigurator? = ApplicationManager.getApplication().getService(EclipseConfigurator::class.java)
-    fun getGradleConfigurator(): GradleConfigurator? = ApplicationManager.getApplication().getService(GradleConfigurator::class.java)
-    fun getAngularConfigurator(): AngularConfigurator? = ApplicationManager.getApplication().getService(AngularConfigurator::class.java)
-    fun getLoadedConfigurator(): LoadedConfigurator = ApplicationManager.getApplication().getService(LoadedConfigurator::class.java)
+    fun getMavenConfigurator() = serviceOrNull<MavenConfigurator>()
+    fun getEclipseConfigurator() = serviceOrNull<EclipseConfigurator>()
+    fun getGradleConfigurator() = serviceOrNull<GradleConfigurator>()
+    fun getAngularConfigurator() = serviceOrNull<AngularConfigurator>()
+    fun getLoadedConfigurator() = service<LoadedConfigurator>()
 
-    fun getAntConfigurator(): AntConfigurator? =
-        if (Plugin.ANT_SUPPORT.isActive()) ApplicationManager.getApplication().getService(AntConfigurator::class.java)
-        else null
+    fun getAntConfigurator() = Plugin.ANT_SUPPORT.ifActive { serviceOrNull<AntConfigurator>() }
 
-    fun getDataSourcesConfigurator(): DataSourcesConfigurator? = ApplicationManager.getApplication().getService(DataSourcesConfigurator::class.java)
-    fun getJRebelConfigurator(): JRebelConfigurator? = ApplicationManager.getApplication().getService(JRebelConfigurator::class.java)
-    fun getXsdSchemaConfigurator(): XsdSchemaConfigurator? = ApplicationManager.getApplication().getService(XsdSchemaConfigurator::class.java)
-    fun getKotlinCompilerConfigurator(): KotlinCompilerConfigurator? = ApplicationManager.getApplication().getService(KotlinCompilerConfigurator::class.java)
+    fun getDataSourcesConfigurator() = serviceOrNull<DataSourcesConfigurator>()
+    fun getJRebelConfigurator() = serviceOrNull<JRebelConfigurator>()
+    fun getXsdSchemaConfigurator() = serviceOrNull<XsdSchemaConfigurator>()
+    fun getKotlinCompilerConfigurator() = serviceOrNull<KotlinCompilerConfigurator>()
 
     companion object {
-        fun getInstance(): ConfiguratorFactory = ApplicationManager.getApplication().getService(ConfiguratorFactory::class.java)
+        fun getInstance() = service<ConfiguratorFactory>()
     }
 }

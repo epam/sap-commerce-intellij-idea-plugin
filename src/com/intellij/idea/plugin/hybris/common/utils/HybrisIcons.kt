@@ -77,8 +77,8 @@ object HybrisIcons {
         val ECLIPSE = AllIcons.Providers.Eclipse
         val MAVEN = OpenapiIcons.RepositoryLibraryLogo
         val CONFLICT = AllIcons.Actions.Cancel
-        val GRADLE = if (Plugin.GRADLE.isActive()) GradleIcons.Gradle else AllIcons.Nodes.Module
-        val ANGULAR = if (Plugin.ANGULAR.isActive()) AngularIcons.Angular2 else AllIcons.Nodes.Module
+        val GRADLE = Plugin.GRADLE.ifActive { GradleIcons.Gradle } ?: AllIcons.Nodes.Module
+        val ANGULAR = Plugin.ANGULAR.ifActive { AngularIcons.Angular2 } ?: AllIcons.Nodes.Module
         val CCV2 = getIcon("/icons/module/cloud.svg")
         val CCV2_GROUP = getIcon("/icons/module/cloudGroup.svg")
         val COMMERCE_GROUP = Y.LOGO_GREEN
@@ -114,7 +114,7 @@ object HybrisIcons {
         val BACKOFFICE = AllIcons.Nodes.Plugin
         val HMC = AllIcons.Nodes.Plugin
         val HAC = AllIcons.Nodes.Plugin
-        val KOTLIN_NATURE = if (Plugin.KOTLIN.isActive()) KotlinIcons.SMALL_LOGO else AllIcons.Nodes.Module
+        val KOTLIN_NATURE = Plugin.KOTLIN.ifActive { KotlinIcons.SMALL_LOGO } ?: AllIcons.Nodes.Module
     }
 
     object Types {

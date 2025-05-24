@@ -62,7 +62,10 @@ class PostImportConfigurator(val project: Project) {
                             ?.configureAfterImport(project, hybrisProjectDescriptor),
 
                         getAngularConfigurator()
-                            ?.configureAfterImport(project, allModules)
+                            ?.configureAfterImport(project, allModules),
+
+                        getRunConfigurationConfigurator()
+                            .configureAfterImport(project, refresh)
                     )
                         .flatten()
                 }

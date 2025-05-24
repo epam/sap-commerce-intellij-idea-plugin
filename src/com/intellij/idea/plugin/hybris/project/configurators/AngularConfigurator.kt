@@ -34,7 +34,7 @@ class AngularConfigurator {
             val vfs = VfsUtil.findFileByIoFile(it.moduleRootDirectory, true)
                 ?: return@mapNotNull null
             val moduleRef = ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName())
-                ?.let { Ref.create(it) }
+                ?.let { module -> Ref.create(module) }
                 ?: return@mapNotNull null
 
             {

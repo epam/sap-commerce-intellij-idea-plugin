@@ -46,5 +46,7 @@ enum class Plugin(val id: String, val url: String? = null) {
         ?.isEnabled
         ?: false
 
+    fun <T> ifActive(operation: () -> T): T? = if (isActive()) operation() else null
+
     fun isDisabled() = !isActive()
 }
