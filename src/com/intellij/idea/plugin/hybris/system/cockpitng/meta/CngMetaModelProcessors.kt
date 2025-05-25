@@ -48,7 +48,6 @@ class CngMetaModelAggregatedProcessor(project: Project) : MetaModelProcessor<Dom
     }
         ?.asSafely<CngMeta<DomElement>>()
         ?: error("Unknown dom type - ${dom::class.java.simpleName}")
-
 }
 
 @Service(Service.Level.PROJECT)
