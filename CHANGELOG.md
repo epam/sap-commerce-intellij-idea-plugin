@@ -2,6 +2,7 @@
 
 ### `Project Import` enhancements
 - Ensure that `[y] Remote debug` Run Configuration selected after first project import [#1355](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1355)
+- Register various XSD Backoffice schemas during project import/refresh [#1359](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1359)
 
 ### `Meta System` enhancements
 - TS & BS Meta Model 2.0 re-implemented using `StateFlow` [#1354](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1354)

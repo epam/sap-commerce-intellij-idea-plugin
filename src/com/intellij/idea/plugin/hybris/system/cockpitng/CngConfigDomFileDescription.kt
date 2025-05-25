@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -73,6 +73,8 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
             NAMESPACE_COCKPIT_NG_CONFIG_EXPLORER_TREE,
             NAMESPACE_COCKPIT_NG_CONFIG_EXTENDED_SPLIT_LAYOUT,
             NAMESPACE_COCKPIT_NG_CONFIG_COLLECTION_BROWSER,
+            NAMESPACE_COCKPIT_NG_CONFIG_DEEP_LINK,
+            NAMESPACE_COCKPIT_NG_CONFIG_VIEW_SWITCHER,
             NAMESPACE_COCKPIT_NG_CONFIG_LINKS,
             NAMESPACE_COCKPIT_NG_SPRING,
             NAMESPACE_COCKPIT_NG_TEST,
@@ -107,6 +109,8 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
         const val NAMESPACE_COCKPIT_NG_CONFIG_EXPLORER_TREE = "http://www.hybris.com/cockpitng/config/explorertree"
         const val NAMESPACE_COCKPIT_NG_CONFIG_EXTENDED_SPLIT_LAYOUT = "http://www.hybris.com/cockpitng/config/extendedsplitlayout"
         const val NAMESPACE_COCKPIT_NG_CONFIG_COLLECTION_BROWSER = "http://www.hybris.com/cockpitng/config/collectionbrowser"
+        const val NAMESPACE_COCKPIT_NG_CONFIG_DEEP_LINK = "http://www.hybris.com/cockpitng/config/deeplink"
+        const val NAMESPACE_COCKPIT_NG_CONFIG_VIEW_SWITCHER = "http://www.hybris.com/cockpitng/config/viewSwitcher"
         const val NAMESPACE_COCKPIT_NG_CONFIG_LINKS = "http://www.hybris.com/cockpitng/config/links"
         const val NAMESPACE_COCKPIT_NG_SPRING = "http://www.hybris.com/cockpitng/spring"
         const val NAMESPACE_COCKPIT_NG_TEST = "http://www.hybris.com/cockpit/test"
