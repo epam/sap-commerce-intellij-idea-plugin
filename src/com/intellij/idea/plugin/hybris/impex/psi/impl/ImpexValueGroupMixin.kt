@@ -20,48 +20,17 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
-import com.intellij.idea.plugin.hybris.impex.psi.*
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExTSDynamicEnumValueReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExTSStaticEnumValueReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSAttributeReference
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.PsiReference
 import com.intellij.psi.util.*
-import com.intellij.util.asSafely
 import java.io.Serial
 
 abstract class ImpexValueGroupMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpexValueGroup {
-
-    override fun getReference() = references.firstOrNull()
-
-    override fun getReferences(): Array<out PsiReference?> {
-        val hasMacroUsage = children
-            .filterIsInstance<ImpexValue>()
-            .any { it.children.any { subChild -> subChild is ImpexMacroUsageDec } }
-        if (hasMacroUsage) return emptyArray()
-
-        return fullHeaderParameter
-            ?.anyHeaderParameterName
-            ?.reference
-            ?.asSafely<ImpexTSAttributeReference>()
-            ?.multiResolve(false)
-            ?.firstOrNull()
-            ?.asSafely<AttributeResolveResult>()
-            ?.meta
-            ?.type
-            ?.let { TSMetaModelAccess.getInstance(project).findMetaEnumByName(it) }
-            ?.let {
-                if (it.isDynamic) ImpExTSDynamicEnumValueReference(this, it.name!!)
-                else ImpExTSStaticEnumValueReference(this, it.name!!)
-            }
-            ?.let { arrayOf<PsiReference>(it) }
-            ?: emptyArray()
-    }
 
     override fun getValueLine(): ImpexValueLine? = CachedValuesManager.getManager(project).getCachedValue(this, CACHE_KEY_VALUE_LINE, {
         val valueLine = PsiTreeUtil

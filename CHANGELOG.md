@@ -28,6 +28,9 @@
 - Relation Element `metatype` must be a type extending RelationDescriptor [#1349](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1349)
 - Ensure that inspection rules are using latest TypeSystem [#1352](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1352)
 
+### `ImpEx` enhancements
+- Enhanced Enum values reference resolution within Enum column [#1360](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1360)
+
 ### `Terminal` integration
 - Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1342](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1342)
 

@@ -140,8 +140,8 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
                 )
             }
 
-            ImpexTypes.VALUE_GROUP -> {
-                val value = element as? ImpexValueGroup ?: return
+            ImpexTypes.VALUE -> {
+                val value = element as? ImpexValue ?: return
                 val enumValueElement = value.reference
                     ?.asSafely<ImpExTSStaticEnumValueReference>()
                     ?.getTargetElement()

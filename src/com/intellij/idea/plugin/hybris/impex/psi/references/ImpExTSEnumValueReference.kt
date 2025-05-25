@@ -35,13 +35,13 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 
-class ImpExTSDynamicEnumValueReference(owner: PsiElement, metaName: String) : AbstractImpExTSEnumValueReference(owner, metaName)
-class ImpExTSStaticEnumValueReference(owner: PsiElement, metaName: String) : AbstractImpExTSEnumValueReference(owner, metaName)
+class ImpExTSDynamicEnumValueReference(owner: ImpexValue, index: Int, metaName: String) : ImpExTSEnumValueReference(owner, index, metaName)
+class ImpExTSStaticEnumValueReference(owner: ImpexValue, index: Int, metaName: String) : ImpExTSEnumValueReference(owner, index, metaName)
 
-abstract class AbstractImpExTSEnumValueReference(owner: PsiElement, private val metaName: String) : TSReferenceBase<PsiElement>(owner), HighlightedReference {
+abstract class ImpExTSEnumValueReference(private val owner: ImpexValue, private val index: Int, private val metaName: String) : TSReferenceBase<PsiElement>(owner), HighlightedReference {
 
-    fun getTargetElement(): ImpexValue? = element.children.firstOrNull()
-        ?.asSafely<ImpexValue>()
+    fun getTargetElement(): PsiElement? = owner.getFieldValue(index)
+        ?.asSafely<PsiElement>()
 
     override fun calculateDefaultRangeInElement(): TextRange = getTargetElement()
         ?.let { TextRange.from(it.startOffset - element.startOffset, it.textLength) }
@@ -65,8 +65,8 @@ abstract class AbstractImpExTSEnumValueReference(owner: PsiElement, private val 
     companion object {
 
         @JvmStatic
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AbstractImpExTSEnumValueReference>>("HYBRIS_TS_CACHED_REFERENCE")
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AbstractImpExTSEnumValueReference> { ref ->
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExTSEnumValueReference>>("HYBRIS_TS_CACHED_REFERENCE")
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExTSEnumValueReference> { ref ->
             val lookingForName = ref.value
             val project = ref.project
             val metaService = TSMetaModelAccess.getInstance(project)
