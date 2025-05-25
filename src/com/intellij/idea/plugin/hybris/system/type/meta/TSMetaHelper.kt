@@ -144,7 +144,7 @@ object TSMetaHelper {
         // prevent deadlock when the type extends itself
         if (extendsName == itemName) throw TSMetaModelException("Item cannot extend itself")
 
-        val extendsMeta = metaModel.getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)[extendsName]
+        val extendsMeta = metaModel.getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)[extendsName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM]
 
         if (extends.contains(extendsMeta)) throw TSMetaModelException("Circular extension is not allowed")
 
