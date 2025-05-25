@@ -41,18 +41,16 @@ class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, Do
     private val metaWidgetDefinitionCollector = project.service<CngMetaWidgetDefinitionCollector>()
     private val metaEditorDefinitionCollector = project.service<CngMetaEditorDefinitionCollector>()
 
-    override fun collectDependencies(): Set<Meta<DomElement>> {
-        return flatten(
-            metaConfigCollector.collectDependencies(),
-            metaWidgetsCollector.collectDependencies(),
-            metaActionDefinitionCollector.collectDependencies(),
-            metaWidgetDefinitionCollector.collectDependencies(),
-            metaEditorDefinitionCollector.collectDependencies(),
-        )
-            .asSafely<Collection<Meta<DomElement>>>()
-            ?.toImmutableSet()
-            ?: emptySet()
-    }
+    override suspend fun collectDependencies(): Set<Meta<DomElement>> = flatten(
+        metaConfigCollector.collectDependencies(),
+        metaWidgetsCollector.collectDependencies(),
+        metaActionDefinitionCollector.collectDependencies(),
+        metaWidgetDefinitionCollector.collectDependencies(),
+        metaEditorDefinitionCollector.collectDependencies(),
+    )
+        .asSafely<Collection<Meta<DomElement>>>()
+        ?.toImmutableSet()
+        ?: emptySet()
 }
 
 @Service(Service.Level.PROJECT)

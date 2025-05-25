@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.system.meta
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -87,7 +86,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
         DumbService.Companion.getInstance(project).runWhenSmart {
             coroutineScope.launch {
                 val newState = withBackgroundProgress(project, "Re-building $systemName System...", true) {
-                    val collectedDependencies = readAction { metaCollector.collectDependencies() }
+                    val collectedDependencies = metaCollector.collectDependencies()
 
                     val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
                         collectedDependencies

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.meta
 
 import com.intellij.idea.plugin.hybris.common.yExtensionName
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.VirtualFile
@@ -52,31 +53,33 @@ abstract class MetaCollector<T : DomElement>(
     private val myDomManager: DomManager = DomManager.getDomManager(project)
     private val projectFileIndex = ProjectFileIndex.getInstance(project)
 
-    open fun collectDependencies(): Set<Meta<T>> {
+    open suspend fun collectDependencies(): Set<Meta<T>> {
         val files = HashSet<Meta<T>>()
 
-        StubIndex.getInstance().processElements(
-            DomElementClassIndex.KEY,
-            clazz.name,
-            project,
-            ProjectScope.getAllScope(project),
-            PsiFile::class.java,
-            object : Processor<PsiFile> {
-                override fun process(psiFile: PsiFile): Boolean {
-                    val xmlFile = psiFile.asSafely<XmlFile>() ?: return true
-                    val virtualFile = xmlFile.virtualFile ?: return true
-                    val module = projectFileIndex.getModuleForFile(virtualFile) ?: return true
-                    val rootElement = myDomManager.getFileElement(psiFile, clazz)
-                        ?.rootElement
-                        ?.takeIf(takeIf)
-                        ?: return true
+        readAction {
+            StubIndex.getInstance().processElements(
+                DomElementClassIndex.KEY,
+                clazz.name,
+                project,
+                ProjectScope.getAllScope(project),
+                PsiFile::class.java,
+                object : Processor<PsiFile> {
+                    override fun process(psiFile: PsiFile): Boolean {
+                        val xmlFile = psiFile.asSafely<XmlFile>() ?: return true
+                        val virtualFile = xmlFile.virtualFile ?: return true
+                        val module = projectFileIndex.getModuleForFile(virtualFile) ?: return true
+                        val rootElement = myDomManager.getFileElement(psiFile, clazz)
+                            ?.rootElement
+                            ?.takeIf(takeIf)
+                            ?: return true
 
-                    files.add(Meta(module.name, module.yExtensionName(), psiFile, virtualFile, rootElement, nameProvider.invoke(virtualFile)))
+                        files.add(Meta(module.name, module.yExtensionName(), psiFile, virtualFile, rootElement, nameProvider.invoke(virtualFile)))
 
-                    return true
+                        return true
+                    }
                 }
-            }
-        )
+            )
+        }
 
         return files.toImmutableSet()
     }
