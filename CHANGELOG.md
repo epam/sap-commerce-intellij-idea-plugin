@@ -5,6 +5,7 @@
 
 ### `Meta System` enhancements
 - TS & BS Meta Model 2.0 re-implemented using `StateFlow` [#1354](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1354)
+- Respect Meta declarations within Libraries (not Module-aware) [#1358](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1358)
 
 ### `Type System` enhancements
 - Added multi-resolve for `extends` for Item Types [#1343](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1343)

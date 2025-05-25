@@ -30,8 +30,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
 import kotlinx.collections.immutable.toImmutableSet
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
 @Service(Service.Level.PROJECT)
@@ -45,13 +43,13 @@ class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, Do
 
     override suspend fun collectDependencies(): Set<Meta<DomElement>> = coroutineScope {
         listOf(
-            async { metaConfigCollector.collectDependencies() },
-            async { metaWidgetsCollector.collectDependencies() },
-            async { metaActionDefinitionCollector.collectDependencies() },
-            async { metaWidgetDefinitionCollector.collectDependencies() },
-            async { metaEditorDefinitionCollector.collectDependencies() },
+            metaConfigCollector.collectDependencies(),
+            metaWidgetsCollector.collectDependencies(),
+            metaActionDefinitionCollector.collectDependencies(),
+            metaWidgetDefinitionCollector.collectDependencies(),
+            metaEditorDefinitionCollector.collectDependencies(),
         )
-            .awaitAll()
+//            .awaitAll()
             .flatten()
             .asSafely<Collection<Meta<DomElement>>>()
             ?.toImmutableSet()

@@ -26,8 +26,8 @@ import com.intellij.openapi.project.Project
 @Service(Service.Level.PROJECT)
 class BSMetaModelProcessor(project: Project) : MetaModelProcessor<Beans, BSMetaModel>(project) {
 
-    override fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: Beans): BSMetaModel =
-        with(BSMetaModelBuilder(moduleName, extensionName, fileName, custom)) {
+    override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: Beans): BSMetaModel =
+        with(BSMetaModelBuilder(container, yContainer, fileName, custom)) {
             withEnumTypes(dom.enums)
             withBeanTypes(dom.beans)
             withEventTypes(dom.beans)

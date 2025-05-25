@@ -21,7 +21,10 @@ package com.intellij.idea.plugin.hybris.system.meta
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
+import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.ProjectScope
@@ -35,8 +38,8 @@ import com.intellij.util.xml.stubs.index.DomElementClassIndex
 import kotlinx.collections.immutable.toImmutableSet
 
 data class Meta<T : DomElement>(
-    val moduleName: String,
-    val extensionName: String,
+    val container: String,
+    val yContainer: String,
     val psiFile: PsiFile,
     val virtualFile: VirtualFile,
     val rootElement: T,
@@ -52,6 +55,7 @@ abstract class MetaCollector<T : DomElement>(
 
     private val myDomManager: DomManager = DomManager.getDomManager(project)
     private val projectFileIndex = ProjectFileIndex.getInstance(project)
+    private val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
 
     open suspend fun collectDependencies(): Set<Meta<T>> {
         val files = HashSet<Meta<T>>()
@@ -67,13 +71,22 @@ abstract class MetaCollector<T : DomElement>(
                     override fun process(psiFile: PsiFile): Boolean {
                         val xmlFile = psiFile.asSafely<XmlFile>() ?: return true
                         val virtualFile = xmlFile.virtualFile ?: return true
-                        val module = projectFileIndex.getModuleForFile(virtualFile) ?: return true
+                        val metaContainer = projectFileIndex.getModuleForFile(virtualFile)
+                            ?.let { it.name to it.yExtensionName() }
+                            // Some files are part of the Library and, as a result, aren't associated with any Module
+                            ?: libraryTable.libraries
+                                .firstNotNullOfOrNull { library ->
+                                    library.getFiles(OrderRootType.CLASSES)
+                                        .firstOrNull { libraryVirtualFile -> VfsUtilCore.isAncestor(libraryVirtualFile, virtualFile, false) }
+                                        ?.let { library.presentableName to it.name }
+                                }
+                            ?: return true
                         val rootElement = myDomManager.getFileElement(psiFile, clazz)
                             ?.rootElement
                             ?.takeIf(takeIf)
                             ?: return true
 
-                        files.add(Meta(module.name, module.yExtensionName(), psiFile, virtualFile, rootElement, nameProvider.invoke(virtualFile)))
+                        files.add(Meta(metaContainer.first, metaContainer.second, psiFile, virtualFile, rootElement, nameProvider.invoke(virtualFile)))
 
                         return true
                     }

@@ -26,8 +26,8 @@ import com.intellij.openapi.project.Project
 @Service(Service.Level.PROJECT)
 class TSMetaModelProcessor(project: Project) : MetaModelProcessor<Items, TSMetaModel>(project) {
 
-    override fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: Items): TSMetaModel =
-        with(TSMetaModelBuilder(moduleName, extensionName, fileName, custom)) {
+    override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: Items): TSMetaModel =
+        with(TSMetaModelBuilder(container, yContainer, fileName, custom)) {
             withItemTypes(dom.itemTypes.itemTypes)
             withItemTypes(dom.itemTypes.typeGroups.flatMap { it.itemTypes })
             withEnumTypes(dom.enumTypes.enumTypes)

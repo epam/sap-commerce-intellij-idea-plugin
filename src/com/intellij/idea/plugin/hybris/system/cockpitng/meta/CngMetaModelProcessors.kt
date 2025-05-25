@@ -38,12 +38,12 @@ class CngMetaModelAggregatedProcessor(project: Project) : MetaModelProcessor<Dom
     private val metaWidgetDefinitionProcessor = project.service<CngMetaModelWidgetDefinitionProcessor>()
     private val metaEditorDefinitionProcessor = project.service<CngMetaModelEditorDefinitionProcessor>()
 
-    override fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: DomElement): CngMeta<DomElement> = when (dom) {
-        is Config -> metaConfigProcessor.process(moduleName, extensionName, fileName, custom, dom)
-        is Widgets -> metaWidgetsProcessor.process(moduleName, extensionName, fileName, custom, dom)
-        is ActionDefinition -> metaActionDefinitionProcessor.process(moduleName, extensionName, fileName, custom, dom)
-        is WidgetDefinition -> metaWidgetDefinitionProcessor.process(moduleName, extensionName, fileName, custom, dom)
-        is EditorDefinition -> metaEditorDefinitionProcessor.process(moduleName, extensionName, fileName, custom, dom)
+    override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: DomElement): CngMeta<DomElement> = when (dom) {
+        is Config -> metaConfigProcessor.process(container, yContainer, fileName, custom, dom)
+        is Widgets -> metaWidgetsProcessor.process(container, yContainer, fileName, custom, dom)
+        is ActionDefinition -> metaActionDefinitionProcessor.process(container, yContainer, fileName, custom, dom)
+        is WidgetDefinition -> metaWidgetDefinitionProcessor.process(container, yContainer, fileName, custom, dom)
+        is EditorDefinition -> metaEditorDefinitionProcessor.process(container, yContainer, fileName, custom, dom)
         else -> null
     }
         ?.asSafely<CngMeta<DomElement>>()
@@ -53,7 +53,7 @@ class CngMetaModelAggregatedProcessor(project: Project) : MetaModelProcessor<Dom
 @Service(Service.Level.PROJECT)
 class CngMetaModelConfigProcessor(project: Project) : MetaModelProcessor<Config, CngMetaConfig>(project) {
 
-    override fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: Config): CngMetaConfig {
+    override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: Config): CngMetaConfig {
         val contexts = dom.contexts
             .mapNotNull { dom ->
                 dom.component.stringValue
@@ -68,7 +68,7 @@ class CngMetaModelConfigProcessor(project: Project) : MetaModelProcessor<Config,
 @Service(Service.Level.PROJECT)
 class CngMetaModelWidgetsProcessor(project: Project) : MetaModelProcessor<Widgets, CngMetaWidgets>(project) {
 
-    override fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: Widgets): CngMetaWidgets = CngMetaWidgets(
+    override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: Widgets): CngMetaWidgets = CngMetaWidgets(
         dom, fileName, custom,
         processWidgets(fileName, custom, dom.widgets),
         dom.widgetExtensions.mapNotNull { dom ->
@@ -99,7 +99,7 @@ class CngMetaModelWidgetsProcessor(project: Project) : MetaModelProcessor<Widget
 @Service(Service.Level.PROJECT)
 class CngMetaModelActionDefinitionProcessor(project: Project) : MetaModelProcessor<ActionDefinition, CngMetaActionDefinition?>(project) {
 
-    override fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: ActionDefinition) = CngMetaModelNameProvider
+    override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: ActionDefinition) = CngMetaModelNameProvider
         .extract(dom)
         ?.let { id -> CngMetaActionDefinition(dom, fileName, id, custom) }
 }
@@ -107,7 +107,7 @@ class CngMetaModelActionDefinitionProcessor(project: Project) : MetaModelProcess
 @Service(Service.Level.PROJECT)
 class CngMetaModelEditorDefinitionProcessor(project: Project) : MetaModelProcessor<EditorDefinition, CngMetaEditorDefinition?>(project) {
 
-    override fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: EditorDefinition) = CngMetaModelNameProvider
+    override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: EditorDefinition) = CngMetaModelNameProvider
         .extract(dom)
         ?.let { id -> CngMetaEditorDefinition(dom, fileName, id, custom) }
 }
@@ -115,7 +115,7 @@ class CngMetaModelEditorDefinitionProcessor(project: Project) : MetaModelProcess
 @Service(Service.Level.PROJECT)
 class CngMetaModelWidgetDefinitionProcessor(project: Project) : MetaModelProcessor<WidgetDefinition, CngMetaWidgetDefinition?>(project) {
 
-    override fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: WidgetDefinition) = CngMetaModelNameProvider
+    override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: WidgetDefinition) = CngMetaModelNameProvider
         .extract(dom)
         ?.let { id ->
             val settings = CaseInsensitiveConcurrentHashMap<String, CngMetaWidgetSetting>()

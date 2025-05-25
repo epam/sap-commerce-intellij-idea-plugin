@@ -28,8 +28,8 @@ abstract class MetaModelProcessor<D : DomElement, M>(private val project: Projec
     suspend fun process(meta: Meta<D>): M? = coroutineScope {
         readAction {
             process(
-                meta.moduleName,
-                meta.extensionName,
+                meta.container,
+                meta.yContainer,
                 meta.name,
                 PsiUtils.isCustomExtensionFile(meta.virtualFile, project),
                 meta.rootElement
@@ -37,5 +37,5 @@ abstract class MetaModelProcessor<D : DomElement, M>(private val project: Projec
         }
     }
 
-    abstract fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: D): M
+    abstract fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: D): M
 }
