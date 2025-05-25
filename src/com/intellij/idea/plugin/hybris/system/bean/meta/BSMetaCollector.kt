@@ -18,9 +18,9 @@
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
-import com.intellij.idea.plugin.hybris.system.meta.MetaModelCollector
+import com.intellij.idea.plugin.hybris.system.meta.MetaCollector
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
-class BSMetaModelCollector(myProject: Project) : MetaModelCollector<Beans>(myProject, Beans::class.java)
+class BSMetaCollector(myProject: Project) : MetaCollector<Beans>(myProject, Beans::class.java)

@@ -16,29 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.bean.meta
+package com.intellij.idea.plugin.hybris.system.cockpitng.meta
 
-import com.intellij.idea.plugin.hybris.system.bean.model.Beans
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.CngMeta
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.util.xml.DomElement
 import kotlinx.coroutines.CoroutineScope
 
 @Service(Service.Level.PROJECT)
-class BSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<BSGlobalMetaModel, BSMetaModel, Beans>(
-    project, coroutineScope, "Bean",
-    project.service<BSMetaCollector>(),
-    project.service<BSMetaModelProcessor>()
+class CngMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<CngGlobalMetaModel, CngMeta<DomElement>, DomElement>(
+    project, coroutineScope, "Cockpit NG",
+    project.service<CngMetaCollector>(),
+    project.service<CngMetaModelAggregatedProcessor>()
 ) {
 
-    override fun onCompletion(newState: BSGlobalMetaModel) {
-        project.messageBus.syncPublisher(TOPIC).beanSystemChanged(newState)
+    override fun onCompletion(newState: CngGlobalMetaModel) {
+        project.messageBus.syncPublisher(TOPIC).cngSystemChanged(newState)
     }
 
-    override suspend fun create(metaModelsToMerge: Collection<BSMetaModel>): BSGlobalMetaModel = BSGlobalMetaModel().also {
-        readAction { BSMetaModelMerger.merge(it, metaModelsToMerge.sortedBy { meta -> !meta.custom }) }
+    override suspend fun create(metaModelsToMerge: Collection<CngMeta<DomElement>>): CngGlobalMetaModel = CngGlobalMetaModel().also {
+        readAction { CngMetaModelMerger.merge(it, metaModelsToMerge.sortedBy { meta -> !meta.custom }) }
     }
 
 }

@@ -18,22 +18,22 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widget
-import com.intellij.openapi.vfs.VirtualFile
 
 class CngMetaWidget(
-    virtualFile: VirtualFile,
-    myDom: Widget,
+    dom: Widget,
+    fileName: String,
+    val id: String,
+    custom: Boolean,
     val widgets: Collection<CngMetaWidget> = emptyList(),
-) : CngMeta<Widget>(virtualFile, myDom) {
+) : CngMeta<Widget>(dom, fileName, custom) {
 
-    val id: String = myDom.id.stringValue!!
-    val name: String? = myDom.title.stringValue
-    val slotId: String? = myDom.slotId.stringValue
-    val widgetDefinitionId: String? = myDom.widgetDefinitionId.stringValue
-    val access: String? = myDom.access.stringValue
-    val lastFocusedChildIndex: String? = myDom.lastFocusedChildIndex.stringValue
-    val lastFocusedTemplateInstanceId: String? = myDom.lastFocusedTemplateInstanceId.stringValue
-    val template = myDom.template.value ?: false
+    val name: String? = dom.title.stringValue
+    val slotId: String? = dom.slotId.stringValue
+    val widgetDefinitionId: String? = dom.widgetDefinitionId.stringValue
+    val access: String? = dom.access.stringValue
+    val lastFocusedChildIndex: String? = dom.lastFocusedChildIndex.stringValue
+    val lastFocusedTemplateInstanceId: String? = dom.lastFocusedTemplateInstanceId.stringValue
+    val template = dom.template.value ?: false
 
     override fun toString() = id
 }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,17 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.cockpitng.meta
+package com.intellij.idea.plugin.hybris.system.type.meta
 
+import com.intellij.idea.plugin.hybris.system.meta.MetaCollector
+import com.intellij.idea.plugin.hybris.system.type.model.Items
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 
-interface CngMetaModelAccess {
-
-    companion object {
-        fun getInstance(project: Project): CngMetaModelAccess = project.getService(CngMetaModelAccess::class.java)
-    }
-
-    fun initMetaModel()
-    fun getMetaModel(): CngGlobalMetaModel
-
-}
+@Service(Service.Level.PROJECT)
+class TSMetaCollector(myProject: Project) : MetaCollector<Items>(myProject, Items::class.java)

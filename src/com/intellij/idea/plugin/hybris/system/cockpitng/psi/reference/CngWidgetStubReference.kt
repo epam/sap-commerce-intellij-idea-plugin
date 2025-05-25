@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,9 +21,11 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.ActionDefinitionResolveResult
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.EditorDefinitionResolveResult
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -49,7 +51,7 @@ class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiEle
             val element = ref.element
             val value = ref.value
             val project = element.project
-            val metaModel = CngMetaModelAccess.getInstance(project).getMetaModel()
+            val metaModel = project.service<CngMetaModelStateService>().get()
 
             val result = metaModel
                 .editorDefinitions[value]
@@ -60,7 +62,7 @@ class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiEle
 
             CachedValueProvider.Result.create(
                 result,
-                metaModel, PsiModificationTracker.MODIFICATION_COUNT
+                project.service<CngModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

@@ -21,10 +21,10 @@ package com.intellij.idea.plugin.hybris.system.bean.psi.reference
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion.BSCompletionService
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSModificationTracker
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.psi.BSConstants
 import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
-import com.intellij.idea.plugin.hybris.system.meta.BSModificationTracker
 import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange

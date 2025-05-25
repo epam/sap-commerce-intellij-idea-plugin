@@ -18,16 +18,14 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.ActionDefinition
-import com.intellij.openapi.vfs.VirtualFile
 
 class CngMetaActionDefinition(
-    virtualFile: VirtualFile,
-    myDom: ActionDefinition,
+    dom: ActionDefinition,
+    fileName: String,
     val id: String,
-) : CngMeta<ActionDefinition>(virtualFile, myDom) {
+    custom: Boolean,
+) : CngMeta<ActionDefinition>(dom, fileName, custom) {
 
-    val name: String? = myDom.name.stringValue
-    val description: String? = myDom.description.stringValue
-
-    override fun toString() = id
+    val name: String? = dom.name.stringValue
+    val description: String? = dom.description.stringValue
 }

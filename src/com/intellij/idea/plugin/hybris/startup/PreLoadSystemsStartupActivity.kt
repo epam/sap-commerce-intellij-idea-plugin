@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.startup
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelStateService
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.openapi.components.service
@@ -36,7 +36,7 @@ class PreLoadSystemsStartupActivity : ProjectActivity {
 
         refreshSystem(project) { project.service<TSMetaModelStateService>().init() }
         refreshSystem(project) { project.service<BSMetaModelStateService>().init() }
-        refreshSystem(project) { CngMetaModelAccess.getInstance(project).initMetaModel() }
+        refreshSystem(project) { project.service<CngMetaModelStateService>().init() }
 
         SimpleSpringService.getService(project)
             ?.let { service -> refreshSystem(project) { service.initCache() } }

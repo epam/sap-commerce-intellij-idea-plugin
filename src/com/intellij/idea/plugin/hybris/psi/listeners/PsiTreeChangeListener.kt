@@ -17,10 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.psi.listeners
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.system.meta.BSModificationTracker
-import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
+import com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSModificationTracker
+import com.intellij.idea.plugin.hybris.system.cockpitng.*
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
+import com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription
+import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
 import com.intellij.openapi.project.Project
@@ -28,6 +31,7 @@ import com.intellij.psi.PsiTreeChangeEvent
 import com.intellij.psi.PsiTreeChangeListener
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.asSafely
+import com.intellij.util.xml.DomManager
 
 /**
  * Psi Tree Change Listener is required to reset Meta Cache before invocation of the Inspections.
@@ -38,6 +42,11 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
     init {
         if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) throw ExtensionNotApplicableException.create()
     }
+
+    private val domManager = DomManager.getDomManager(project)
+    private val tsModificationTracker = project.service<TSModificationTracker>()
+    private val bsModificationTracker = project.service<BSModificationTracker>()
+    private val cngModificationTracker = project.service<CngModificationTracker>()
 
     override fun beforeChildAddition(event: PsiTreeChangeEvent) = doChange(event)
     override fun beforeChildRemoval(event: PsiTreeChangeEvent) = doChange(event)
@@ -55,12 +64,21 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
     private fun doChange(event: PsiTreeChangeEvent) {
         val fileName = event.file
             ?.asSafely<XmlFile>()
-            ?.name
+            ?.let { xmlFile -> domManager.getDomFileDescription(xmlFile)?.let { it to xmlFile } }
             ?: return
 
-        when {
-            fileName.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> project.service<TSModificationTracker>().resetCache(listOf(fileName))
-            fileName.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING) -> project.service<BSModificationTracker>().resetCache(listOf(fileName))
+        val domFileDescription = fileName.first
+        val xmlFile = fileName.second
+        when (domFileDescription) {
+            is CngConfigDomFileDescription,
+            is CngWidgetsDomFileDescription,
+            is CngActionDefinitionDomFileDescription,
+            is CngEditorDefinitionDomFileDescription,
+            is CngWidgetDefinitionDomFileDescription -> cngModificationTracker.resetCache(listOf(xmlFile.virtualFile.path))
+
+            is BSDomFileDescription -> bsModificationTracker.resetCache(listOf(xmlFile.name))
+            is TSDomFileDescription -> tsModificationTracker.resetCache(listOf(xmlFile.name))
+
         }
     }
 }

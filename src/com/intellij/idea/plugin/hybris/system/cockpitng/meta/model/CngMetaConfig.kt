@@ -15,12 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.type.meta
+package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
-import com.intellij.idea.plugin.hybris.system.meta.MetaModelCollector
-import com.intellij.idea.plugin.hybris.system.type.model.Items
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.project.Project
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 
-@Service(Service.Level.PROJECT)
-class TSMetaModelCollector(myProject: Project) : MetaModelCollector<Items>(myProject, Items::class.java)
+class CngMetaConfig(
+    dom: Config,
+    fileName: String,
+    custom: Boolean,
+    val contexts: List<CngMetaContext>
+) : CngMeta<Config>(dom, fileName, custom) {
+
+}

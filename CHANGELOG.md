@@ -17,6 +17,9 @@
 ### `Bean System` enhancements
 - Reworked caching mechanism for Global BS Meta Model [#1353](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1353)
 
+### `Cockpit NG` enhancements
+- Incorporated Global Cockpit NG Meta Model into new Meta evaluation approach [#1356](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1356)
+
 ### `items.xml` inspection rules
 - Item Type `metatype` must be a type extending ComposedType [#1346](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1346)
 - Relation Element `metatype` must be a type extending RelationDescriptor [#1349](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1349)

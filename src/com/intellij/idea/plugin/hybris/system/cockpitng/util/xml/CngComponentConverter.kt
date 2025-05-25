@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.util.xml
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
+import com.intellij.openapi.components.service
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.ResolvingConverter
 
@@ -29,6 +30,6 @@ class CngComponentConverter : ResolvingConverter<String>() {
 
     override fun fromString(s: String?, context: ConvertContext) = s
 
-    override fun getVariants(context: ConvertContext) = CngMetaModelAccess.getInstance(context.project).getMetaModel().contextAttributes[Context.COMPONENT]
+    override fun getVariants(context: ConvertContext) = context.project.service<CngMetaModelStateService>().get().contextAttributes[Context.COMPONENT]
         ?: emptySet()
 }

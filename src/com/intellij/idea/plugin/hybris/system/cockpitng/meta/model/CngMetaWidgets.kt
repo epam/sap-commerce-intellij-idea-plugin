@@ -18,14 +18,12 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
-import com.intellij.openapi.vfs.VirtualFile
 
 class CngMetaWidgets(
-    virtualFile: VirtualFile,
-    myDom: Widgets,
+    dom: Widgets,
+    fileName: String,
+    custom: Boolean,
     val widgets: Collection<CngMetaWidget> = emptyList(),
     val widgetExtensions: Collection<CngMetaWidgetExtension> = emptyList(),
-) : CngMeta<Widgets>(virtualFile, myDom) {
-
-    override fun toString() = virtualFile.name
+) : CngMeta<Widgets>(dom, fileName, custom) {
 }

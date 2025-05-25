@@ -33,22 +33,27 @@ import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.stubs.index.DomElementClassIndex
 import kotlinx.collections.immutable.toImmutableSet
 
-data class FoundMeta<T : DomElement>(
+data class Meta<T : DomElement>(
     val moduleName: String,
     val extensionName: String,
     val psiFile: PsiFile,
     val virtualFile: VirtualFile,
     val rootElement: T,
-    val name: String = virtualFile.name
+    val name: String,
 )
 
-abstract class MetaModelCollector<T : DomElement>(private val project: Project, private val clazz: Class<T>) {
+abstract class MetaCollector<T : DomElement>(
+    protected val project: Project,
+    private val clazz: Class<T>,
+    private val takeIf: (T) -> Boolean = { true },
+    private val nameProvider: (VirtualFile, T) -> String = { vf, _ -> vf.name }
+) {
 
     private val myDomManager: DomManager = DomManager.getDomManager(project)
     private val projectFileIndex = ProjectFileIndex.getInstance(project)
 
-    fun collectDependencies(): Set<FoundMeta<T>> {
-        val files = HashSet<FoundMeta<T>>()
+    open fun collectDependencies(): Set<Meta<T>> {
+        val files = HashSet<Meta<T>>()
 
         StubIndex.getInstance().processElements(
             DomElementClassIndex.KEY,
@@ -61,10 +66,12 @@ abstract class MetaModelCollector<T : DomElement>(private val project: Project, 
                     val xmlFile = psiFile.asSafely<XmlFile>() ?: return true
                     val virtualFile = xmlFile.virtualFile ?: return true
                     val module = projectFileIndex.getModuleForFile(virtualFile) ?: return true
-                    val rootElement = myDomManager.getFileElement(psiFile, clazz)?.rootElement
+                    val rootElement = myDomManager.getFileElement(psiFile, clazz)
+                        ?.rootElement
+                        ?.takeIf(takeIf)
                         ?: return true
 
-                    files.add(FoundMeta(module.name, module.yExtensionName(), psiFile, virtualFile, rootElement))
+                    files.add(Meta(module.name, module.yExtensionName(), psiFile, virtualFile, rootElement, nameProvider.invoke(virtualFile, rootElement)))
 
                     return true
                 }

@@ -25,17 +25,17 @@ import kotlinx.coroutines.coroutineScope
 
 abstract class MetaModelProcessor<D : DomElement, M>(private val project: Project) {
 
-    suspend fun process(foundMeta: FoundMeta<D>): M? = coroutineScope {
+    suspend fun process(meta: Meta<D>): M? = coroutineScope {
         readAction {
             process(
-                foundMeta.moduleName,
-                foundMeta.extensionName,
-                foundMeta.name,
-                PsiUtils.isCustomExtensionFile(foundMeta.virtualFile, project),
-                foundMeta.rootElement
+                meta.moduleName,
+                meta.extensionName,
+                meta.name,
+                PsiUtils.isCustomExtensionFile(meta.virtualFile, project),
+                meta.rootElement
             )
         }
     }
 
-    protected abstract fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: D): M
+    abstract fun process(moduleName: String, extensionName: String, fileName: String, custom: Boolean, dom: D): M
 }

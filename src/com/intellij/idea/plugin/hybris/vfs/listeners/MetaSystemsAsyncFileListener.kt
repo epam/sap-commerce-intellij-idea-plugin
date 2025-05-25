@@ -19,9 +19,9 @@ package com.intellij.idea.plugin.hybris.vfs.listeners
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
-import com.intellij.idea.plugin.hybris.system.meta.BSModificationTracker
+import com.intellij.idea.plugin.hybris.system.bean.meta.BSModificationTracker
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelModificationTracker
-import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
+import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
@@ -40,7 +40,7 @@ class MetaSystemsAsyncFileListener : AsyncFileListener {
         .mapNotNull { project ->
             events
                 .mapNotNull { event ->
-                    val mapToMetaFile: (String) -> Pair<MetaModelModificationTracker<out Any>, String>? = {
+                    val mapToMetaFile: (String) -> Pair<MetaModelModificationTracker, String>? = {
                         when {
                             it.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> project.service<TSModificationTracker>() to it
                             it.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING) -> project.service<BSModificationTracker>() to it

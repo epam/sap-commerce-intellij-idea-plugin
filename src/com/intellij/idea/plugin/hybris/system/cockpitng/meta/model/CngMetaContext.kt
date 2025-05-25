@@ -15,22 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
-package com.intellij.idea.plugin.hybris.system.meta
+import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.SimpleModificationTracker
+class CngMetaContext(
+    dom: Context,
+    fileName: String,
+    val name: String,
+    custom: Boolean,
+) : CngMeta<Context>(dom, fileName, custom) {
 
-abstract class MetaModelModificationTracker(
-    protected val project: Project,
-) : SimpleModificationTracker() {
+    val attributes = dom.xmlTag
+        ?.attributes
+        ?.filter { it.value != null }
+        ?.associate { it.name to it.value!! }
+        ?: emptyMap()
 
-    fun resetCache(keys: Collection<String>) {
-        updateState(keys)
-
-        incModificationCount()
-    }
-
-    abstract fun updateState(keys: Collection<String>)
+    override fun toString() = name
 
 }

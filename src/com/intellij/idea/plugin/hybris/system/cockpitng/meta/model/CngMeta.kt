@@ -17,15 +17,17 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomService
 
 open class CngMeta<DOM : DomElement>(
-    val virtualFile: VirtualFile,
     dom: DOM,
+    val fileName: String,
+    val custom: Boolean,
     val domAnchor: DomAnchor<DOM> = DomService.getInstance().createAnchor(dom),
 ) {
     fun retrieveDom(): DOM? = domAnchor.retrieveDomElement()
+
+    override fun toString() = "Name: $fileName | custom: $custom"
 }

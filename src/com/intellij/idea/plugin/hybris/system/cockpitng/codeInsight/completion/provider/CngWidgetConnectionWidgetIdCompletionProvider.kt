@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,8 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
+import com.intellij.openapi.components.service
 import com.intellij.util.ProcessingContext
 
 class CngWidgetConnectionWidgetIdCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -36,7 +37,7 @@ class CngWidgetConnectionWidgetIdCompletionProvider : CompletionProvider<Complet
 
         val resultCaseInsensitive = result.caseInsensitive()
 
-        with(CngMetaModelAccess.getInstance(project).getMetaModel()) {
+        with(project.service<CngMetaModelStateService>().get()) {
             widgets
                 .values
                 .map { CngLookupElementFactory.build(it) }

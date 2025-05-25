@@ -18,16 +18,16 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta.model
 
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.EditorDefinition
-import com.intellij.openapi.vfs.VirtualFile
 
 class CngMetaEditorDefinition(
-    virtualFile: VirtualFile,
-    myDom: EditorDefinition,
+    dom: EditorDefinition,
+    fileName: String,
     val id: String,
-) : CngMeta<EditorDefinition>(virtualFile, myDom) {
+    custom: Boolean,
+) : CngMeta<EditorDefinition>(dom, fileName, custom) {
 
-    val name: String? = myDom.name.stringValue
-    val description: String? = myDom.description.stringValue
+    val name: String? = dom.name.stringValue
+    val description: String? = dom.description.stringValue
 
     override fun toString() = id
 }

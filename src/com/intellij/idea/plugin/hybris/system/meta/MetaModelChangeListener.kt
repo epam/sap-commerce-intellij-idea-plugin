@@ -19,10 +19,12 @@
 package com.intellij.idea.plugin.hybris.system.meta
 
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 
 interface MetaModelChangeListener {
 
     fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) = Unit
     fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) = Unit
+    fun cngSystemChanged(globalMetaModel: CngGlobalMetaModel) = Unit
 }

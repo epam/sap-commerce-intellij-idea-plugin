@@ -29,7 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 @Service(Service.Level.PROJECT)
 class TSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<TSGlobalMetaModel, TSMetaModel, Items>(
     project, coroutineScope, "Type",
-    project.service<TSMetaModelCollector>(),
+    project.service<TSMetaCollector>(),
     project.service<TSMetaModelProcessor>()
 ) {
 

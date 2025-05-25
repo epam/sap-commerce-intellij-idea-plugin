@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
-import com.intellij.idea.plugin.hybris.system.meta.TSModificationTracker
+import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement

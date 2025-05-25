@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,8 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
+import com.intellij.openapi.components.service
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
@@ -50,7 +51,7 @@ class CngWidgetSettingCompletionProvider : CompletionProvider<CompletionParamete
             }
             .forEach { resultCaseInsensitive.addElement(it) }
 
-        CngMetaModelAccess.getInstance(project).getMetaModel()
+        project.service<CngMetaModelStateService>().get()
             .widgetDefinitions[widgetDefinitionId]
             ?.settings
             ?.values

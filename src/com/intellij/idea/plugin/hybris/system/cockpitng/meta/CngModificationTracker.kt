@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,21 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.system.cockpitng.meta
 
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.model.*
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelModificationTracker
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiFile
 
-interface CngMetaModelProcessor {
+@Service(Service.Level.PROJECT)
+class CngModificationTracker(project: Project) : MetaModelModificationTracker(project) {
 
-    companion object {
-        fun getInstance(project: Project): CngMetaModelProcessor = project.getService(CngMetaModelProcessor::class.java)
+    private val stateService = project.service<CngMetaModelStateService>()
+
+    override fun updateState(keys: Collection<String>) {
+        stateService.update(keys)
     }
-
-    fun processConfig(psiFile: PsiFile): CngConfigMeta?
-    fun processActionDefinition(psiFile: PsiFile): CngMetaActionDefinition?
-    fun processWidgetDefinition(psiFile: PsiFile): CngMetaWidgetDefinition?
-    fun processEditorDefinition(psiFile: PsiFile): CngMetaEditorDefinition?
-    fun processWidgets(psiFile: PsiFile): CngMetaWidgets?
 }
