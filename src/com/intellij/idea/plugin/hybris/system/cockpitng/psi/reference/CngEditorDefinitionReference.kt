@@ -44,9 +44,8 @@ class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : 
             val element = ref.element
             val value = ref.value
             val project = element.project
-            val metaModel = project.service<CngMetaModelStateService>().get()
 
-            val result = metaModel
+            val result = project.service<CngMetaModelStateService>().get()
                 .editorDefinitions[value]
                 ?.let { PsiUtils.getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
                 ?: emptyArray()

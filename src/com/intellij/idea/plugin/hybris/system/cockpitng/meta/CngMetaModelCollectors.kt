@@ -57,10 +57,10 @@ class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, Do
 }
 
 @Service(Service.Level.PROJECT)
-class CngMetaConfigCollector(project: Project) : MetaCollector<Config>(project, Config::class.java, { true }, { vf, dom -> vf.path })
+class CngMetaConfigCollector(project: Project) : MetaCollector<Config>(project, Config::class.java, nameProvider = { vf, dom -> vf.path })
 
 @Service(Service.Level.PROJECT)
-class CngMetaWidgetsCollector(project: Project) : MetaCollector<Widgets>(project, Widgets::class.java, { true }, { vf, dom -> vf.path })
+class CngMetaWidgetsCollector(project: Project) : MetaCollector<Widgets>(project, Widgets::class.java, nameProvider = { vf, dom -> vf.path })
 
 @Service(Service.Level.PROJECT)
 class CngMetaActionDefinitionCollector(project: Project) :

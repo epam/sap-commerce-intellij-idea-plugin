@@ -47,14 +47,13 @@ class CngWidgetSettingReference(element: PsiElement) : PsiReferenceBase.Poly<Psi
             val element = ref.element
             val lookingForName = ref.value
             val project = element.project
-            val metaModel = project.service<CngMetaModelStateService>().get()
 
             val widgetDefinitionId = element.parentsOfType<XmlTag>()
                 .firstOrNull { it.localName == "widget" }
                 ?.getAttributeValue("widgetDefinitionId")
 
             val result = if (widgetDefinitionId == null) emptyArray()
-            else metaModel.widgetDefinitions[widgetDefinitionId]
+            else project.service<CngMetaModelStateService>().get().widgetDefinitions[widgetDefinitionId]
                 ?.settings
                 ?.get(lookingForName)
                 ?.let { PsiUtils.getValidResults(arrayOf(WidgetSettingResolveResult(it))) }

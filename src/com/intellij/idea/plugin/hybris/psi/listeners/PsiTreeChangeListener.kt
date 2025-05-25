@@ -74,7 +74,7 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
             is CngWidgetsDomFileDescription,
             is CngActionDefinitionDomFileDescription,
             is CngEditorDefinitionDomFileDescription,
-            is CngWidgetDefinitionDomFileDescription -> cngModificationTracker.resetCache(listOf(xmlFile.virtualFile.path))
+            is CngWidgetDefinitionDomFileDescription -> xmlFile.virtualFile?.path?.let { cngModificationTracker.resetCache(listOf(it)) }
 
             is BSDomFileDescription -> bsModificationTracker.resetCache(listOf(xmlFile.name))
             is TSDomFileDescription -> tsModificationTracker.resetCache(listOf(xmlFile.name))

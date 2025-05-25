@@ -32,6 +32,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import com.intellij.util.PathUtil
 import com.intellij.util.asSafely
 
+// TODO: Add support of the CNG-related files changes
 class MetaSystemsAsyncFileListener : AsyncFileListener {
 
     override fun prepareChange(events: List<VFileEvent>) = ProjectManager.getInstance().openProjects

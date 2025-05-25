@@ -45,9 +45,8 @@ class CngWidgetDefinitionReference(element: PsiElement) : PsiReferenceBase.Poly<
             val element = ref.element
             val lookingForName = ref.value
             val project = element.project
-            val metaModel = project.service<CngMetaModelStateService>().get()
 
-            val result = metaModel
+            val result = project.service<CngMetaModelStateService>().get()
                 .widgetDefinitions[lookingForName]
                 ?.let { PsiUtils.getValidResults(arrayOf(WidgetDefinitionResolveResult(it))) }
                 ?: emptyArray()
