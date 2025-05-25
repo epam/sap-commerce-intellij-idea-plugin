@@ -30,7 +30,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
 import kotlinx.collections.immutable.toImmutableSet
-import org.jetbrains.plugins.groovy.util.flatten
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 @Service(Service.Level.PROJECT)
 class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, DomElement::class.java, nameProvider = CngModificationTracker.KEY_PROVIDER) {
@@ -41,16 +43,20 @@ class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, Do
     private val metaWidgetDefinitionCollector = project.service<CngMetaWidgetDefinitionCollector>()
     private val metaEditorDefinitionCollector = project.service<CngMetaEditorDefinitionCollector>()
 
-    override suspend fun collectDependencies(): Set<Meta<DomElement>> = flatten(
-        metaConfigCollector.collectDependencies(),
-        metaWidgetsCollector.collectDependencies(),
-        metaActionDefinitionCollector.collectDependencies(),
-        metaWidgetDefinitionCollector.collectDependencies(),
-        metaEditorDefinitionCollector.collectDependencies(),
-    )
-        .asSafely<Collection<Meta<DomElement>>>()
-        ?.toImmutableSet()
-        ?: emptySet()
+    override suspend fun collectDependencies(): Set<Meta<DomElement>> = coroutineScope {
+        listOf(
+            async { metaConfigCollector.collectDependencies() },
+            async { metaWidgetsCollector.collectDependencies() },
+            async { metaActionDefinitionCollector.collectDependencies() },
+            async { metaWidgetDefinitionCollector.collectDependencies() },
+            async { metaEditorDefinitionCollector.collectDependencies() },
+        )
+            .awaitAll()
+            .flatten()
+            .asSafely<Collection<Meta<DomElement>>>()
+            ?.toImmutableSet()
+            ?: emptySet()
+    }
 }
 
 @Service(Service.Level.PROJECT)
