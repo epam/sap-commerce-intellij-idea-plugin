@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,6 +35,44 @@ object CngPatterns {
     private const val CONFIG_CONTEXT = "context"
     private val cngConfigFile = DomPatterns.inDomFile(Config::class.java)
     private val cngWidgetsFile = DomPatterns.inDomFile(Widgets::class.java)
+
+    val I18N_PROPERTY = XmlPatterns.or(
+        attributeValue("label", "attribute", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("name", "section", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("description", "section", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("name", "essentialSection", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("name", "tab", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("name", "panel", "editorArea", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_EDITOR_AREA)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+
+        attributeValue("label", "step", "flow", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("sublabel", "step", "flow", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("label", "custom", "flow", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+
+        attributeValue("label", "column", "list-view", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_CONFIG_SIMPLE_LIST)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+
+        attributeValue("label", "data-quality-group", "summary-view", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("label", "custom-attribute", "summary-view", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+        attributeValue("name", "section", "summary-view", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_SUMMARY_VIEW)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+
+        attributeValue("label", "option", "value-chooser", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_VALUE_CHOOSER)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+
+        attributeValue("name", "section", "compare-view", CngConfigDomFileDescription.NAMESPACE_COCKPIT_NG_COMPONENT_COMPARE_VIEW)
+            .inside(XmlPatterns.xmlTag().withLocalName(CONFIG_CONTEXT)).inFile(cngConfigFile),
+    )
 
     val WIDGET_SETTING = widgetPattern("key", "setting")
 

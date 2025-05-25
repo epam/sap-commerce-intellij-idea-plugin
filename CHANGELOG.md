@@ -19,6 +19,7 @@
 
 ### `Cockpit NG` enhancements
 - Incorporated Global Cockpit NG Meta Model into new Meta evaluation approach [#1356](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1356)
+- Added reference resolution & code contribution for various `i18n` attributes [#1357](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1357)
 
 ### `items.xml` inspection rules
 - Item Type `metatype` must be a type extending ComposedType [#1346](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1346)
