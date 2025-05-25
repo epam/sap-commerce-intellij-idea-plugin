@@ -79,7 +79,6 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
 
             is BSDomFileDescription -> bsModificationTracker.resetCache(xmlFile)
             is TSDomFileDescription -> tsModificationTracker.resetCache(xmlFile)
-
         }
     }
 }
