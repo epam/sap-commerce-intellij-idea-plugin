@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.system.meta
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SimpleModificationTracker
+import com.intellij.psi.xml.XmlFile
 
 abstract class MetaModelModificationTracker(
     protected val project: Project,
@@ -31,6 +32,10 @@ abstract class MetaModelModificationTracker(
         incModificationCount()
     }
 
+    fun resetCache(vararg xmlFiles: XmlFile) = getKeys(*xmlFiles)
+        ?.let { resetCache(it) }
+
+    abstract fun getKeys(vararg xmlFiles: XmlFile): Collection<String>?
     abstract fun updateState(keys: Collection<String>)
 
 }

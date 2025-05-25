@@ -69,15 +69,16 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
 
         val domFileDescription = fileName.first
         val xmlFile = fileName.second
+
         when (domFileDescription) {
             is CngConfigDomFileDescription,
             is CngWidgetsDomFileDescription,
             is CngActionDefinitionDomFileDescription,
             is CngEditorDefinitionDomFileDescription,
-            is CngWidgetDefinitionDomFileDescription -> xmlFile.virtualFile?.path?.let { cngModificationTracker.resetCache(listOf(it)) }
+            is CngWidgetDefinitionDomFileDescription -> cngModificationTracker.resetCache(xmlFile)
 
-            is BSDomFileDescription -> bsModificationTracker.resetCache(listOf(xmlFile.name))
-            is TSDomFileDescription -> tsModificationTracker.resetCache(listOf(xmlFile.name))
+            is BSDomFileDescription -> bsModificationTracker.resetCache(xmlFile)
+            is TSDomFileDescription -> tsModificationTracker.resetCache(xmlFile)
 
         }
     }

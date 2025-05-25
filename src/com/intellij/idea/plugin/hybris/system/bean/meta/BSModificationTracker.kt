@@ -22,13 +22,21 @@ import com.intellij.idea.plugin.hybris.system.meta.MetaModelModificationTracker
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.xml.XmlFile
 
 @Service(Service.Level.PROJECT)
 class BSModificationTracker(project: Project) : MetaModelModificationTracker(project) {
 
-    val stateService = project.service<BSMetaModelStateService>()
+    private val stateService = project.service<BSMetaModelStateService>()
+
+    override fun getKeys(vararg xmlFiles: XmlFile): Collection<String>? = xmlFiles.map { it.name }
 
     override fun updateState(keys: Collection<String>) {
         stateService.update(keys)
+    }
+
+    companion object {
+        val KEY_PROVIDER: (VirtualFile) -> String = { it.name }
     }
 }

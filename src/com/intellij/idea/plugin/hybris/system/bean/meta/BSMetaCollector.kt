@@ -23,4 +23,4 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
-class BSMetaCollector(myProject: Project) : MetaCollector<Beans>(myProject, Beans::class.java)
+class BSMetaCollector(project: Project) : MetaCollector<Beans>(project, Beans::class.java, nameProvider = BSModificationTracker.KEY_PROVIDER)

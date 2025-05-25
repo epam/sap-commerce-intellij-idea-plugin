@@ -33,7 +33,7 @@ import kotlinx.collections.immutable.toImmutableSet
 import org.jetbrains.plugins.groovy.util.flatten
 
 @Service(Service.Level.PROJECT)
-class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, DomElement::class.java) {
+class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, DomElement::class.java, nameProvider = CngModificationTracker.KEY_PROVIDER) {
 
     private val metaConfigCollector = project.service<CngMetaConfigCollector>()
     private val metaWidgetsCollector = project.service<CngMetaWidgetsCollector>()
@@ -53,23 +53,42 @@ class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, Do
             ?.toImmutableSet()
             ?: emptySet()
     }
-
 }
 
 @Service(Service.Level.PROJECT)
-class CngMetaConfigCollector(project: Project) : MetaCollector<Config>(project, Config::class.java, nameProvider = { vf, dom -> vf.path })
+class CngMetaConfigCollector(project: Project) : MetaCollector<Config>(
+    project,
+    Config::class.java,
+    nameProvider = CngModificationTracker.KEY_PROVIDER
+)
 
 @Service(Service.Level.PROJECT)
-class CngMetaWidgetsCollector(project: Project) : MetaCollector<Widgets>(project, Widgets::class.java, nameProvider = { vf, dom -> vf.path })
+class CngMetaWidgetsCollector(project: Project) : MetaCollector<Widgets>(
+    project,
+    Widgets::class.java,
+    nameProvider = CngModificationTracker.KEY_PROVIDER
+)
 
 @Service(Service.Level.PROJECT)
-class CngMetaActionDefinitionCollector(project: Project) :
-    MetaCollector<ActionDefinition>(project, ActionDefinition::class.java, { it.id.exists() }, { vf, dom -> vf.path })
+class CngMetaActionDefinitionCollector(project: Project) : MetaCollector<ActionDefinition>(
+    project,
+    ActionDefinition::class.java,
+    { it.id.exists() },
+    CngModificationTracker.KEY_PROVIDER
+)
 
 @Service(Service.Level.PROJECT)
-class CngMetaWidgetDefinitionCollector(project: Project) :
-    MetaCollector<WidgetDefinition>(project, WidgetDefinition::class.java, { it.id.exists() }, { vf, dom -> vf.path })
+class CngMetaWidgetDefinitionCollector(project: Project) : MetaCollector<WidgetDefinition>(
+    project,
+    WidgetDefinition::class.java,
+    { it.id.exists() },
+    CngModificationTracker.KEY_PROVIDER
+)
 
 @Service(Service.Level.PROJECT)
-class CngMetaEditorDefinitionCollector(project: Project) :
-    MetaCollector<EditorDefinition>(project, EditorDefinition::class.java, { it.id.exists() }, { vf, dom -> vf.path })
+class CngMetaEditorDefinitionCollector(project: Project) : MetaCollector<EditorDefinition>(
+    project,
+    EditorDefinition::class.java,
+    { it.id.exists() },
+    CngModificationTracker.KEY_PROVIDER
+)

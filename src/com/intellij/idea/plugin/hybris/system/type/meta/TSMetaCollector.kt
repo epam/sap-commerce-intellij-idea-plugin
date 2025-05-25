@@ -23,4 +23,4 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
-class TSMetaCollector(myProject: Project) : MetaCollector<Items>(myProject, Items::class.java)
+class TSMetaCollector(myProject: Project) : MetaCollector<Items>(myProject, Items::class.java, nameProvider = TSModificationTracker.KEY_PROVIDER)

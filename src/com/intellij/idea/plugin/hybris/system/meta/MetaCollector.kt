@@ -46,7 +46,7 @@ abstract class MetaCollector<T : DomElement>(
     protected val project: Project,
     private val clazz: Class<T>,
     private val takeIf: (T) -> Boolean = { true },
-    private val nameProvider: (VirtualFile, T) -> String = { vf, _ -> vf.name }
+    private val nameProvider: (VirtualFile) -> String,
 ) {
 
     private val myDomManager: DomManager = DomManager.getDomManager(project)
@@ -71,7 +71,7 @@ abstract class MetaCollector<T : DomElement>(
                         ?.takeIf(takeIf)
                         ?: return true
 
-                    files.add(Meta(module.name, module.yExtensionName(), psiFile, virtualFile, rootElement, nameProvider.invoke(virtualFile, rootElement)))
+                    files.add(Meta(module.name, module.yExtensionName(), psiFile, virtualFile, rootElement, nameProvider.invoke(virtualFile)))
 
                     return true
                 }
