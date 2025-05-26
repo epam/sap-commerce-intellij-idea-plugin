@@ -70,34 +70,25 @@ open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, CngTSItemReference> { ref ->
             val project = ref.project
-            val metaModelAccess = TSMetaModelAccess.getInstance(project)
-
             val name = ref.value
-            val result = metaModelAccess.findMetaItemByName(name)
-                ?.let { resolve(it) }
-                ?: metaModelAccess.findMetaEnumByName(name)
-                    ?.let { resolve(it) }
-                ?: metaModelAccess.findMetaRelationByName(name)
-                    ?.let { resolve(it) }
-                ?: emptyArray()
+
+            val results: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(name)
+                ?.let {
+                    when (it) {
+                        is TSGlobalMetaItem -> it.declarations.map { meta -> ItemResolveResult(meta) }
+                        is TSGlobalMetaEnum -> it.declarations.map { meta -> EnumResolveResult(meta) }
+                        is TSGlobalMetaRelation -> it.declarations.map { meta -> RelationResolveResult(meta) }
+                        else -> null
+                    }
+                }
+                ?.toTypedArray()
+                ?: ResolveResult.EMPTY_ARRAY
 
             CachedValueProvider.Result.create(
-                result,
+                results,
                 project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
-
-        private fun resolve(meta: TSGlobalMetaItem): Array<ResolveResult> = meta.declarations
-            .map { ItemResolveResult(it) }
-            .toTypedArray()
-
-        private fun resolve(meta: TSGlobalMetaEnum): Array<ResolveResult> = meta.declarations
-            .map { EnumResolveResult(it) }
-            .toTypedArray()
-
-        private fun resolve(meta: TSGlobalMetaRelation): Array<ResolveResult> = meta.declarations
-            .map { RelationResolveResult(it) }
-            .toTypedArray()
 
         private val regexes = arrayOf(
             // https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/9b5366ff6eb34df5be29881ff55f97d2/8bad5c918669101499c8d4802cd12214.html

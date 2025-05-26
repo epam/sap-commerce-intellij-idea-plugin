@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHigh
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExHeaderAbbreviationReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExTSComposedTypeValueReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExTSStaticEnumValueReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
@@ -33,7 +34,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
-import com.intellij.util.asSafely
 
 class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstance()) {
 
@@ -142,16 +142,27 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
 
             ImpexTypes.VALUE -> {
                 val value = element as? ImpexValue ?: return
-                val enumValueElement = value.reference
-                    ?.asSafely<ImpExTSStaticEnumValueReference>()
-                    ?.getTargetElement()
-                    ?: return
+                val reference = value.reference ?: return
 
-                highlightReference(
-                    ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, enumValueElement,
-                    "hybris.inspections.impex.unresolved.enumValue.key",
-                    referenceHolder = element
-                )
+                when (reference) {
+                    is ImpExTSStaticEnumValueReference -> {
+                        val valueElement = reference.getTargetElement() ?: return
+                        highlightReference(
+                            ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,
+                            "hybris.inspections.impex.unresolved.enumValue.key",
+                            referenceHolder = element
+                        )
+                    }
+
+                    is ImpExTSComposedTypeValueReference -> {
+                        val valueElement = reference.getTargetElement() ?: return
+                        highlightReference(
+                            ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,
+                            "hybris.inspections.impex.unresolved.composedType.key",
+                            referenceHolder = element
+                        )
+                    }
+                }
             }
 
             ImpexTypes.USER_RIGHTS_ATTRIBUTE_VALUE -> {
