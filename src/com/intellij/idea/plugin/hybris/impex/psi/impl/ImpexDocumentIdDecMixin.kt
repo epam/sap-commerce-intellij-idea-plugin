@@ -22,16 +22,25 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
 import com.intellij.lang.ASTNode
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.parentOfType
 import java.io.Serial
 
 abstract class ImpexDocumentIdDecMixin(node: ASTNode) : ImpexPsiNamedElementMixin(node), ImpexDocumentIdDec {
 
-    override fun getValues(): Map<String, Collection<ImpexValue>> = parentOfType<ImpexFullHeaderParameter>()
-        ?.valueGroups
-        ?.mapNotNull { it.value }
-        ?.groupBy { it.text }
-        ?: emptyMap()
+    override fun getValues(): Map<String, Collection<ImpexValue>> = CachedValuesManager.getCachedValue(this) {
+        val foundValues = (parentOfType<ImpexFullHeaderParameter>()
+            ?.valueGroups
+            ?.mapNotNull { it.value }
+            ?.groupBy { it.text }
+            ?: emptyMap())
+
+        CachedValueProvider.Result.create(
+            foundValues, PsiModificationTracker.MODIFICATION_COUNT
+        )
+    }
 
     companion object {
         @Serial
