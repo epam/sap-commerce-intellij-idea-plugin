@@ -45,7 +45,6 @@
         <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroFoldingBuilder"/>
         <lang.psiStructureViewFactory language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
         <lang.refactoringSupport language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpexRefactoringSupportProvider"/>
-<!--        <lang.elementManipulator forClass="com.intellij.idea.plugin.hybris.impex.psi.ImpexValue" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExValueElementManipulator"-->
 
         <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
