@@ -25,6 +25,9 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
@@ -51,7 +54,7 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : PsiRefer
     override fun getVariants(): Array<out Any> {
         val aliasText = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
         val suffixes = element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER)
-            .takeIf { it.isBlank() && aliasText.isNotBlank()}
+            .takeIf { it.isBlank() && aliasText.isNotBlank() }
             ?.let {
                 arrayOf(
                     FxSLookupElementFactory.buildTablePostfixExclamationMark(aliasText),
@@ -74,20 +77,21 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : PsiRefer
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSDefinedTableReference> { ref ->
             val lookingForName = ref.element.tableName
             val project = ref.element.project
-            val modelAccess = TSMetaModelAccess.getInstance(project)
 
-            val result: Array<ResolveResult> = modelAccess.findMetaItemByName(lookingForName)
-                ?.declarations
-                ?.map { ItemResolveResult(it) }
+            val results: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(lookingForName)
+                ?.let {
+                    when (it) {
+                        is TSGlobalMetaItem -> it.declarations.map { meta -> ItemResolveResult(meta) }
+                        is TSGlobalMetaEnum -> it.declarations.map { meta -> EnumResolveResult(meta) }
+                        is TSGlobalMetaRelation -> it.declarations.map { meta -> RelationResolveResult(meta) }
+                        else -> null
+                    }
+                }
                 ?.toTypedArray()
-                ?: modelAccess.findMetaEnumByName(lookingForName)
-                    ?.let { arrayOf(EnumResolveResult(it)) }
-                ?: modelAccess.findMetaRelationByName(lookingForName)
-                    ?.let { arrayOf(RelationResolveResult(it)) }
                 ?: ResolveResult.EMPTY_ARRAY
 
             CachedValueProvider.Result.create(
-                result,
+                results,
                 project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
             )
         }

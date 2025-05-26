@@ -63,7 +63,6 @@ class ImpexFunctionTSItemReference(owner: ImpexParameter) : TSReferenceBase<Impe
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexFunctionTSItemReference> { ref ->
             val lookingForName = ref.value.trim()
             val project = ref.project
-            val metaService = TSMetaModelAccess.getInstance(project)
 
             val result: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(lookingForName)
                 ?.declarations

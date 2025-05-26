@@ -24,6 +24,9 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
@@ -60,21 +63,22 @@ class ImpexTSItemReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owne
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexTSItemReference> { ref ->
             val lookingForName = ref.value
             val project = ref.project
-            val metaService = TSMetaModelAccess.getInstance(project)
 
-            val result: Array<ResolveResult> = metaService.findMetaItemByName(lookingForName)
-                ?.declarations
-                ?.map { ItemResolveResult(it) }
+            val results: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(lookingForName)
+                ?.let {
+                    when (it) {
+                        is TSGlobalMetaItem -> it.declarations.map { meta -> ItemResolveResult(meta) }
+                        is TSGlobalMetaEnum -> it.declarations.map { meta -> EnumResolveResult(meta) }
+                        is TSGlobalMetaRelation -> it.declarations.map { meta -> RelationResolveResult(meta) }
+                        else -> null
+                    }
+                }
                 ?.toTypedArray()
-                ?: metaService.findMetaEnumByName(lookingForName)
-                    ?.let { arrayOf(EnumResolveResult(it)) }
-                ?: metaService.findMetaRelationByName(lookingForName)
-                    ?.let { arrayOf(RelationResolveResult(it)) }
                 ?: ResolveResult.EMPTY_ARRAY
 
             // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
             CachedValueProvider.Result.create(
-                result,
+                results,
                 project.service<TSModificationTracker>()
             )
         }

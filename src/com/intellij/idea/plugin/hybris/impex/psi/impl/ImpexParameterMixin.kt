@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSAttributeReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexFunctionTSItemReference
@@ -28,6 +29,7 @@ import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.util.childrenOfType
 import java.io.Serial
 
 abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexParameter {
@@ -44,8 +46,12 @@ abstract class ImpexParameterMixin(astNode: ASTNode) : ASTWrapperPsiElement(astN
 
         if (myReferences.isEmpty() || previousText == null) {
             if (inlineTypeName != null) {
-                myReferences.add(ImpexFunctionTSAttributeReference(this))
                 myReferences.add(ImpexFunctionTSItemReference(this))
+
+                if (childrenOfType<ImpexMacroUsageDec>().isEmpty()) {
+                    // attribute can be a Macro item(CMSLinkComponent.$contentCV)
+                    myReferences.add(ImpexFunctionTSAttributeReference(this))
+                }
             } else {
                 myReferences.add(ImpexFunctionTSAttributeReference(this))
             }
