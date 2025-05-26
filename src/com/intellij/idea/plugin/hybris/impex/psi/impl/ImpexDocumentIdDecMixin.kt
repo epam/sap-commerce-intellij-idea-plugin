@@ -31,11 +31,11 @@ import java.io.Serial
 abstract class ImpexDocumentIdDecMixin(node: ASTNode) : ImpexPsiNamedElementMixin(node), ImpexDocumentIdDec {
 
     override fun getValues(): Map<String, Collection<ImpexValue>> = CachedValuesManager.getCachedValue(this) {
-        val foundValues = (parentOfType<ImpexFullHeaderParameter>()
+        val foundValues = parentOfType<ImpexFullHeaderParameter>()
             ?.valueGroups
             ?.mapNotNull { it.value }
             ?.groupBy { it.text }
-            ?: emptyMap())
+            ?: emptyMap()
 
         CachedValueProvider.Result.create(
             foundValues, PsiModificationTracker.MODIFICATION_COUNT
