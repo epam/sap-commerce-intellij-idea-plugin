@@ -18,11 +18,13 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.lang.documentation.renderer.hybrisDoc
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Relation
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.idea.plugin.hybris.system.type.model.Type
+import javax.swing.Icon
 
 interface TSMetaRelation : TSMetaClassifier<Relation> {
     val deployment: TSMetaDeployment?
@@ -78,6 +80,8 @@ interface TSMetaRelation : TSMetaClassifier<Relation> {
 }
 
 interface TSGlobalMetaRelation : TSMetaRelation, TSGlobalMetaClassifier<Relation>, TSTypedClassifier {
+    override val icon: Icon
+        get() = HybrisIcons.TypeSystem.Types.RELATION
     override val declarations: MutableSet<TSMetaRelation>
 
     override fun documentation() = hybrisDoc {

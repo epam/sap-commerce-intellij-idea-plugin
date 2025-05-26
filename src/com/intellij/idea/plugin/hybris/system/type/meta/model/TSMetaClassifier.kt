@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.system.type.meta.model
 
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomElement
+import javax.swing.Icon
 
 interface TSMetaClassifier<DOM : DomElement> {
 
@@ -37,6 +38,7 @@ interface TSMetaClassifier<DOM : DomElement> {
 
 interface TSGlobalMetaClassifier<DOM : DomElement> : TSMetaClassifier<DOM> {
     val declarations: MutableSet<out TSMetaClassifier<DOM>>
+    val icon: Icon
     fun retrieveAllDoms(): List<DOM> = declarations
         .mapNotNull { it.retrieveDom() }
 }

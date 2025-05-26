@@ -91,7 +91,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
                     val localMetaModels = reportProgress(collectedDependencies.size) { progressReporter ->
                         collectedDependencies
                             .map {
-                                progressReporter.sizedStep(1, "Processing: ${it.name}...") {
+                                progressReporter.sizedStep(1, "Processing: ${it.representationName}...") {
                                     async {
                                         val cachedMetaModel = metaModelsState.value[it.name]
                                         if (cachedMetaModel == null || metaModels.contains(it.name)) {

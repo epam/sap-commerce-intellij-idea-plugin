@@ -19,7 +19,9 @@
 
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
+import javax.swing.Icon
 
 interface TSMetaAtomic : TSMetaClassifier<AtomicType> {
 
@@ -31,4 +33,6 @@ interface TSMetaAtomic : TSMetaClassifier<AtomicType> {
 
 interface TSGlobalMetaAtomic : TSMetaAtomic, TSGlobalMetaClassifier<AtomicType>, TSTypedClassifier {
     override val declarations: MutableSet<TSMetaAtomic>
+    override val icon: Icon
+        get() = HybrisIcons.TypeSystem.Types.ATOMIC
 }

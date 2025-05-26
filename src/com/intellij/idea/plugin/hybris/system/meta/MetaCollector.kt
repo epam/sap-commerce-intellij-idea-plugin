@@ -44,6 +44,7 @@ data class Meta<T : DomElement>(
     val virtualFile: VirtualFile,
     val rootElement: T,
     val name: String,
+    val representationName: String = name,
 )
 
 abstract class MetaCollector<T : DomElement>(
@@ -51,6 +52,7 @@ abstract class MetaCollector<T : DomElement>(
     private val clazz: Class<T>,
     private val takeIf: (T) -> Boolean = { true },
     private val nameProvider: (VirtualFile) -> String,
+    private val representationNameProvider: (VirtualFile, T) -> String = { vf, _ -> vf.name },
 ) {
 
     private val myDomManager: DomManager = DomManager.getDomManager(project)
@@ -73,7 +75,7 @@ abstract class MetaCollector<T : DomElement>(
                         val virtualFile = xmlFile.virtualFile ?: return true
                         val metaContainer = projectFileIndex.getModuleForFile(virtualFile)
                             ?.let { it.name to it.yExtensionName() }
-                            // Some files are part of the Library and, as a result, aren't associated with any Module
+                        // Some files are part of the Library and, as a result, aren't associated with any Module
                             ?: libraryTable.libraries
                                 .firstNotNullOfOrNull { library ->
                                     library.getFiles(OrderRootType.CLASSES)
@@ -86,7 +88,12 @@ abstract class MetaCollector<T : DomElement>(
                             ?.takeIf(takeIf)
                             ?: return true
 
-                        files.add(Meta(metaContainer.first, metaContainer.second, psiFile, virtualFile, rootElement, nameProvider.invoke(virtualFile)))
+                        val meta = Meta(
+                            metaContainer.first, metaContainer.second, psiFile, virtualFile, rootElement,
+                            nameProvider.invoke(virtualFile),
+                            representationNameProvider.invoke(virtualFile, rootElement),
+                        )
+                        files.add(meta)
 
                         return true
                     }

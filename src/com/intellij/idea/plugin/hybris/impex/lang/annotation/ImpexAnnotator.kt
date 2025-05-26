@@ -23,10 +23,7 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifie
 import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
 import com.intellij.idea.plugin.hybris.impex.psi.*
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExHeaderAbbreviationReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExTSComposedTypeValueReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExTSStaticEnumValueReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexMacroReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.*
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
@@ -159,6 +156,14 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
                         highlightReference(
                             ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,
                             "hybris.inspections.impex.unresolved.composedType.key",
+                            referenceHolder = element
+                        )
+                    }
+
+                    is ImpExDocumentIdUsageReference -> {
+                        highlightReference(
+                            ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, value,
+                            "hybris.inspections.impex.unresolved.docUsage.key",
                             referenceHolder = element
                         )
                     }

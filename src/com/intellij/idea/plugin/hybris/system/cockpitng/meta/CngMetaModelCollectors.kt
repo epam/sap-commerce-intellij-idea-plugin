@@ -78,7 +78,8 @@ class CngMetaActionDefinitionCollector(project: Project) : MetaCollector<ActionD
     project,
     ActionDefinition::class.java,
     { it.id.exists() },
-    CngModificationTracker.KEY_PROVIDER
+    CngModificationTracker.KEY_PROVIDER,
+    { vf, dom -> dom.id.value ?: vf.name }
 )
 
 @Service(Service.Level.PROJECT)
@@ -86,7 +87,8 @@ class CngMetaWidgetDefinitionCollector(project: Project) : MetaCollector<WidgetD
     project,
     WidgetDefinition::class.java,
     { it.id.exists() },
-    CngModificationTracker.KEY_PROVIDER
+    CngModificationTracker.KEY_PROVIDER,
+    { vf, dom -> dom.id.value ?: vf.name }
 )
 
 @Service(Service.Level.PROJECT)
@@ -94,5 +96,6 @@ class CngMetaEditorDefinitionCollector(project: Project) : MetaCollector<EditorD
     project,
     EditorDefinition::class.java,
     { it.id.exists() },
-    CngModificationTracker.KEY_PROVIDER
+    CngModificationTracker.KEY_PROVIDER,
+    { vf, dom -> dom.id.value ?: vf.name }
 )

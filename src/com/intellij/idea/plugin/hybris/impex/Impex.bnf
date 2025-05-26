@@ -319,6 +319,7 @@ document_id_dec ::= DOCUMENT_ID
 {
     mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexDocumentIdDecMixin"
     implements = "com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement"
+    methods=[getValues]
 }
 document_id_usage ::= DOCUMENT_ID
 {

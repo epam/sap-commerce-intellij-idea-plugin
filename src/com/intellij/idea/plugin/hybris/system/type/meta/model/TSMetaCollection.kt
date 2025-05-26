@@ -19,8 +19,10 @@
 
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.model.CollectionType
 import com.intellij.idea.plugin.hybris.system.type.model.Type
+import javax.swing.Icon
 
 interface TSMetaCollection : TSMetaClassifier<CollectionType> {
 
@@ -32,4 +34,6 @@ interface TSMetaCollection : TSMetaClassifier<CollectionType> {
 
 interface TSGlobalMetaCollection : TSMetaCollection, TSGlobalMetaClassifier<CollectionType>, TSTypedClassifier {
     override val declarations: MutableSet<TSMetaCollection>
+    override val icon: Icon
+        get() = HybrisIcons.TypeSystem.Types.COLLECTION
 }

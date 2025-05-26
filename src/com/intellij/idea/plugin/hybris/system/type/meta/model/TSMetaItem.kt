@@ -19,11 +19,13 @@
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.lang.documentation.renderer.hybrisDoc
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.CreationMode
 import com.intellij.idea.plugin.hybris.system.type.model.Index
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+import javax.swing.Icon
 
 
 interface TSMetaItem : TSMetaClassifier<ItemType> {
@@ -72,6 +74,8 @@ interface TSMetaItem : TSMetaClassifier<ItemType> {
 }
 
 interface TSGlobalMetaItem : TSMetaItem, TSGlobalMetaClassifier<ItemType>, TSTypedClassifier {
+    override val icon: Icon
+        get() = HybrisIcons.TypeSystem.Types.ITEM
     override val declarations: MutableSet<TSMetaItem>
     override val attributes: Map<String, TSGlobalMetaItemAttribute>
     override val indexes: Map<String, TSGlobalMetaItemIndex>
@@ -106,10 +110,15 @@ interface TSGlobalMetaItem : TSMetaItem, TSGlobalMetaClassifier<ItemType>, TSTyp
 
     interface TSGlobalMetaItemIndex : TSMetaItem.TSMetaItemIndex, TSGlobalMetaClassifier<Index> {
         override val declarations: MutableSet<TSMetaItem.TSMetaItemIndex>
+        override val icon: Icon
+            get() = HybrisIcons.TypeSystem.INDEX
     }
 
     interface TSGlobalMetaItemAttribute : TSMetaItem.TSMetaItemAttribute, TSGlobalMetaClassifier<Attribute>, TSTypedClassifier {
         val owner: TSGlobalMetaItem
         override val declarations: MutableSet<TSMetaItem.TSMetaItemAttribute>
+        override val icon: Icon
+            get() = if (isLocalized) HybrisIcons.TypeSystem.LOCALIZED
+            else HybrisIcons.TypeSystem.ATTRIBUTE
     }
 }

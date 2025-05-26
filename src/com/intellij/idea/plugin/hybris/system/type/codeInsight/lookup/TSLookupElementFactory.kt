@@ -51,7 +51,7 @@ object TSLookupElementFactory {
             LookupElementBuilder.create(it + suffix)
                 .withPresentableText(it)
                 .withTailText(if (meta.isAbstract) " (" + message("hybris.ts.type.abstract") + ")" else "", true)
-                .withIcon(HybrisIcons.TypeSystem.Types.ITEM)
+                .withIcon(meta.icon)
                 .withTypeText(":: ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}", HybrisIcons.TypeSystem.Types.ITEM, true)
                 .withTypeIconRightAligned(true)
                 .withCaseSensitivity(false)
@@ -61,7 +61,7 @@ object TSLookupElementFactory {
         ?.let {
             LookupElementBuilder.create(it)
                 .withTypeText(meta.flattenType)
-                .withIcon(HybrisIcons.TypeSystem.Types.RELATION)
+                .withIcon(meta.icon)
                 .withCaseSensitivity(false)
         }
 
@@ -69,7 +69,7 @@ object TSLookupElementFactory {
         ?.let {
             LookupElementBuilder.create(it)
                 .withTypeText(meta.flattenType)
-                .withIcon(HybrisIcons.TypeSystem.Types.COLLECTION)
+                .withIcon(meta.icon)
                 .withCaseSensitivity(false)
         }
 
@@ -77,7 +77,7 @@ object TSLookupElementFactory {
         ?.let {
             LookupElementBuilder.create(it)
                 .withTypeText(meta.flattenType)
-                .withIcon(HybrisIcons.TypeSystem.Types.MAP)
+                .withIcon(meta.icon)
                 .withCaseSensitivity(false)
         }
 

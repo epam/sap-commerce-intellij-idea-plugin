@@ -20,16 +20,14 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdUsage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExTSComposedTypeValueReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExTSDynamicEnumValueReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExTSStaticEnumValueReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSAttributeReference
+import com.intellij.idea.plugin.hybris.impex.psi.references.*
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
@@ -39,8 +37,10 @@ import com.intellij.psi.*
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
+import com.intellij.psi.util.childrenOfType
 import com.intellij.sql.indexOf
 import com.intellij.util.asSafely
+import com.intellij.util.xml.DomElement
 import java.io.Serial
 
 abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiLanguageInjectionHost, ImpexValue {
@@ -62,47 +62,57 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
     }
 
     private fun calculateReferences(): Array<PsiReference> {
-        val hasMacroUsage = children
-            .filterIsInstance<ImpexValue>()
-            .any { it.children.any { subChild -> subChild is ImpexMacroUsageDec } }
-        if (hasMacroUsage) return emptyArray()
-
         val fullHeaderParameter = valueGroup?.fullHeaderParameter
             ?: return emptyArray()
 
-        return fullHeaderParameter
-            .anyHeaderParameterName
-            .reference
-            ?.asSafely<ImpexTSAttributeReference>()
-            ?.multiResolve(false)
-            ?.firstOrNull()
-            ?.asSafely<AttributeResolveResult>()
-            ?.meta
-            ?.type
-            ?.let { TSMetaModelAccess.getInstance(project).findMetaClassifierByName(it) }
-            ?.let { meta ->
-                val name = meta.name ?: return emptyArray()
-
-                when {
-                    meta is TSGlobalMetaEnum -> {
-                        val index = getParameterIndex(fullHeaderParameter) ?: return@let null
-
-                        if (meta.isDynamic) ImpExTSDynamicEnumValueReference(this, index, name)
-                        else ImpExTSStaticEnumValueReference(this, index, name)
-                    }
-
-                    meta is TSGlobalMetaItem && HybrisConstants.TS_COMPOSED_TYPE == name -> {
-                        val index = getParameterIndex(fullHeaderParameter) ?: return@let null
-
-                        ImpExTSComposedTypeValueReference(this, index, name)
-                    }
-
-                    else -> null
-                }
-
-            }
+        return calculateDocIdReference(fullHeaderParameter)
             ?.let { arrayOf(it) }
+            ?: fullHeaderParameter
+                .anyHeaderParameterName
+                .reference
+                ?.asSafely<ImpexTSAttributeReference>()
+                ?.multiResolve(false)
+                ?.firstOrNull()
+                ?.asSafely<AttributeResolveResult>()
+                ?.meta
+                ?.type
+                ?.let { TSMetaModelAccess.getInstance(project).findMetaClassifierByName(it) }
+                ?.let { meta ->
+                    meta.name?.let { calculateTSReference(fullHeaderParameter, meta, it) }
+                }
+                ?.let { arrayOf(it) }
             ?: emptyArray()
+    }
+
+    private fun calculateDocIdReference(fullHeaderParameter: ImpexFullHeaderParameter): PsiReferenceBase.Poly<PsiElement>? = fullHeaderParameter
+        .parametersList
+        .firstOrNull()
+        ?.parameterList
+        ?.takeIf { it.size == 1 }
+        ?.firstOrNull()
+        ?.childrenOfType<ImpexDocumentIdUsage>()
+        ?.firstOrNull()
+        ?.let { ImpExDocumentIdUsageReference(this) }
+
+    private fun calculateTSReference(
+        fullHeaderParameter: ImpexFullHeaderParameter,
+        meta: TSGlobalMetaClassifier<out DomElement>,
+        name: String
+    ): PsiReferenceBase.Poly<PsiElement>? = when {
+        meta is TSGlobalMetaEnum -> {
+            val index = getParameterIndex(fullHeaderParameter) ?: return null
+
+            if (meta.isDynamic) ImpExTSDynamicEnumValueReference(this, index, name)
+            else ImpExTSStaticEnumValueReference(this, index, name)
+        }
+
+        meta is TSGlobalMetaItem && HybrisConstants.TS_COMPOSED_TYPE == name -> {
+            val index = getParameterIndex(fullHeaderParameter) ?: return null
+
+            ImpExTSComposedTypeValueReference(this, index, name)
+        }
+
+        else -> null
     }
 
     private fun getParameterIndex(fullHeaderParameter: ImpexFullHeaderParameter, attributeName: String = "code") = fullHeaderParameter.parametersList

@@ -15,23 +15,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.system.type.meta.model
+package com.intellij.idea.plugin.hybris.impex.lang.refactoring
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.system.type.model.MapType
-import javax.swing.Icon
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.ElementManipulator
 
-interface TSMetaMap : TSMetaClassifier<MapType> {
+class ImpExValueElementManipulator : ElementManipulator<ImpexValue> {
+    override fun handleContentChange(
+        element: ImpexValue,
+        range: TextRange,
+        newContent: String?
+    ): ImpexValue? {
+        TODO("Not yet implemented")
+    }
 
-    val argumentType: String?
-    val returnType: String?
-    val isAutoCreate: Boolean
-    val isGenerate: Boolean
-    val isRedeclare: Boolean
-}
+    override fun handleContentChange(
+        element: ImpexValue,
+        newContent: String?
+    ): ImpexValue? {
+        TODO("Not yet implemented")
+    }
 
-interface TSGlobalMetaMap : TSMetaMap, TSGlobalMetaClassifier<MapType>, TSTypedClassifier {
-    override val icon: Icon
-        get() = HybrisIcons.TypeSystem.Types.MAP
-    override val declarations: MutableSet<TSMetaMap>
+    override fun getRangeInElement(element: ImpexValue): TextRange {
+        TODO("Not yet implemented")
+    }
 }
