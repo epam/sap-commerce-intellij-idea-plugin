@@ -57,6 +57,7 @@ class ImpexBlock(
         ImpexTypes.ATTRIBUTE_SEPARATOR -> ","
         ImpexTypes.LEFT_SQUARE_BRACKET -> "["
         ImpexTypes.RIGHT_SQUARE_BRACKET -> "]"
+        ImpexTypes.MACRO_USAGE_DEC -> "Macro Usage"
         else -> "Block"
     }
 
@@ -93,7 +94,6 @@ class ImpexBlock(
 
     private fun isNewBlockToBeMade(currentNode: ASTNode) = currentNode.elementType != TokenType.WHITE_SPACE
         && currentNode.elementType != ImpexTypes.CRLF
-        && currentNode.elementType != ImpexTypes.HEADER_PARAMETER_NAME
         && currentNode.elementType != ImpexTypes.ATTRIBUTE_NAME
         && currentNode.elementType != ImpexTypes.ATTRIBUTE_VALUE
         && currentNode.elementType != ImpexTypes.HEADER_TYPE
