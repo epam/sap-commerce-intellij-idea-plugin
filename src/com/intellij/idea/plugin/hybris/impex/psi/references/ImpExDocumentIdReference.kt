@@ -19,9 +19,12 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExPsiElementManipulator
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdUsage
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -30,7 +33,10 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 
-class ImpExDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
+class ImpExDocumentIdReference(impexDocumentId: ImpexDocumentIdUsage) : PsiReferenceBase.Poly<PsiElement>(impexDocumentId, false) {
+
+    override fun getVariants(): Array<LookupElementBuilder> = CachedValuesManager.getManager(element.project)
+        .getParameterizedCachedValue(element, KEY_LOOKUP_ELEMENTS, PROVIDER_LOOKUP_ELEMENTS, false, this)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
@@ -43,7 +49,8 @@ class ImpExDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<P
     override fun handleElementRename(newElementName: String) = ImpExPsiElementManipulator().handleContentChange(element, rangeInElement, newElementName)
 
     companion object {
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExDocumentIdReference>>("HYBRIS_IMPEXDOCUMENTID_REFERENCE")
+        private val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExDocumentIdReference>>("HYBRIS_IMPEXDOCUMENTID_REFERENCE")
+        private val KEY_LOOKUP_ELEMENTS = Key.create<ParameterizedCachedValue<Array<LookupElementBuilder>, ImpExDocumentIdReference>>("LOOKUP_ELEMENTS")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExDocumentIdReference> { ref ->
             val element = ref.element
@@ -59,6 +66,26 @@ class ImpExDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<P
                 result,
                 PsiModificationTracker.MODIFICATION_COUNT
             )
+        }
+
+        private val PROVIDER_LOOKUP_ELEMENTS = ParameterizedCachedValueProvider<Array<LookupElementBuilder>, ImpExDocumentIdReference> { ref ->
+            val lookupElements = PsiTreeUtil
+                .collectElementsOfType(ref.element.containingFile, ImpexDocumentIdDec::class.java)
+                .map { idDec ->
+                    val meta = idDec.headerType?.text
+                        ?.let { it -> TSMetaModelAccess.getInstance(ref.element.project).findMetaClassifierByName(it) }
+
+                    LookupElementBuilder.createWithSmartPointer(idDec.text, idDec).also { builder ->
+                        if (meta != null) {
+                            return@map builder
+                                .withTypeIconRightAligned(true)
+                                .withTypeText(meta.name, meta.icon, true)
+                        }
+                    }
+                }
+                .toTypedArray()
+
+            CachedValueProvider.Result.create(lookupElements, PsiModificationTracker.MODIFICATION_COUNT)
         }
     }
 }

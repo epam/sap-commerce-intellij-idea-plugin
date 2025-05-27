@@ -18,9 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
+import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
@@ -41,6 +39,10 @@ abstract class ImpexDocumentIdDecMixin(node: ASTNode) : ImpexPsiNamedElementMixi
             foundValues, PsiModificationTracker.MODIFICATION_COUNT
         )
     }
+
+    override fun getHeaderType(): ImpexHeaderTypeName? = parentOfType<ImpexHeaderLine>()
+        ?.fullHeaderType
+        ?.headerTypeName
 
     companion object {
         @Serial

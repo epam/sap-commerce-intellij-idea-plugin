@@ -31,4 +31,6 @@ public interface ImpexDocumentIdDec extends ImpexPsiNamedElement {
 
   @NotNull Map<String, Collection<ImpexValue>> getValues();
 
+  @Nullable ImpexHeaderTypeName getHeaderType();
+
 }
