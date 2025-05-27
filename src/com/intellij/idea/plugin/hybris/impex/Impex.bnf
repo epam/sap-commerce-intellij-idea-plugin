@@ -324,6 +324,7 @@ document_id_dec ::= DOCUMENT_ID
 document_id_usage ::= DOCUMENT_ID
 {
     mixin = "com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexDocumentIdUsageMixin"
+    implements = "com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement"
 }
 
 /*#################################################################################*/

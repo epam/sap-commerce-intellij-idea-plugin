@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdUsage
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExDocumentIdReference
 import com.intellij.lang.ASTNode
 import java.io.Serial
 
-abstract class ImpexDocumentIdUsageMixin(node: ASTNode) : ASTWrapperPsiElement(node) {
+abstract class ImpexDocumentIdUsageMixin(node: ASTNode) : ImpexPsiNamedElementMixin(node), ImpexDocumentIdUsage {
 
     override fun getReference() = references.firstOrNull()
 

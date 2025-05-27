@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExPsiElementManipulator
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
-import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManipulator
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.openapi.util.Key
@@ -40,7 +40,7 @@ class ImpExHeaderAbbreviationReference(owner: ImpexAnyHeaderParameterName) : Psi
 
     override fun calculateDefaultRangeInElement() = TextRange.from(0, element.textLength)
 
-    override fun handleElementRename(newElementName: String) = ImpexMacrosManipulator().handleContentChange(element, rangeInElement, newElementName)
+    override fun handleElementRename(newElementName: String) = ImpExPsiElementManipulator().handleContentChange(element, rangeInElement, newElementName)
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExHeaderAbbreviationReference>>("HYBRIS_IMPEXHEADERABBREVIATIONREFERENCE")

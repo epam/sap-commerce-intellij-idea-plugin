@@ -20,6 +20,7 @@
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExPsiElementManipulator
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdUsage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
@@ -47,6 +48,8 @@ class ImpExDocumentIdUsageReference(private val impexValue: ImpexValue) : PsiRef
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, KEY_RESOLVED_RESULTS, PROVIDER_RESOLVED_RESULTS, false, this)
+
+    override fun handleElementRename(newElementName: String) = ImpExPsiElementManipulator().handleContentChange(element, rangeInElement, newElementName)
 
     companion object {
         private val KEY_RESOLVED_RESULTS = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExDocumentIdUsageReference>>("RESOLVED_RESULTS")

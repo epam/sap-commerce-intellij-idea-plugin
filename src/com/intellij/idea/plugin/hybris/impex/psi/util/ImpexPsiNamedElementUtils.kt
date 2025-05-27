@@ -20,14 +20,12 @@
 package com.intellij.idea.plugin.hybris.impex.psi.util
 
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
+import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
+import com.jetbrains.rd.util.firstOrNull
 
 fun setName(element: PsiElement, newName: String): PsiElement {
     val keyNode = element.node.firstChildNode
@@ -35,6 +33,8 @@ fun setName(element: PsiElement, newName: String): PsiElement {
         val property = when (element) {
             is ImpexMacroNameDec -> createMacrosDecElement(element.project, newName)
             is ImpexMacroUsageDec -> createMacrosUsageElement(element.project, newName)
+            is ImpexDocumentIdDec -> createDocumentIdDecElement(element.project, newName)
+            is ImpexDocumentIdUsage -> createDocumentIdUsageElement(element.project, newName)
             else -> null
         }
         val newKeyNode = if (property == null) return element else property.node
@@ -52,7 +52,7 @@ fun getKey(node: ASTNode) = node.findChildByType(ImpexTypes.VALUE)
 fun createFile(project: Project, text: String): ImpexFile {
     val name = "dummy.impex"
     return PsiFileFactory.getInstance(project)
-            .createFileFromText(name, ImpexFileType, text) as ImpexFile
+        .createFileFromText(name, ImpexFileType, text) as ImpexFile
 }
 
 fun createMacrosUsageElement(project: Project, text: String): PsiElement? {
@@ -63,6 +63,38 @@ fun createMacrosUsageElement(project: Project, text: String): PsiElement? {
 fun createMacrosDecElement(project: Project, text: String): PsiElement? {
     val impexFile = createFile(project, "$text = \$dummy")
     return impexFile.firstChild.firstChild
+}
+
+fun createDocumentIdDecElement(project: Project, text: String): PsiElement? {
+    val impexFile = createFile(
+        project, """
+        INSERT Cart; $text
+    """.trimIndent()
+    )
+    return impexFile.getHeaderLines().firstOrNull()
+        ?.key
+        ?.fullHeaderParameterList
+        ?.firstOrNull()
+        ?.anyHeaderParameterName
+        ?.documentIdDec
+}
+
+
+fun createDocumentIdUsageElement(project: Project, text: String): PsiElement? {
+    val impexFile = createFile(
+        project, """
+        INSERT Address; owner($text)
+    """.trimIndent()
+    )
+    return impexFile.getHeaderLines().firstOrNull()
+        ?.key
+        ?.fullHeaderParameterList
+        ?.firstOrNull()
+        ?.parametersList
+        ?.firstOrNull()
+        ?.parameterList
+        ?.firstOrNull()
+        ?.documentIdUsage
 }
 
 

@@ -19,18 +19,18 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
+import com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExPsiElementManipulator
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
-import com.intellij.idea.plugin.hybris.impex.psi.util.setName
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementResolveResult
+import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import com.intellij.util.IncorrectOperationException
 
 class ImpExDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
-
-    override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
@@ -38,13 +38,9 @@ class ImpExDocumentIdReference(psiElement: PsiElement) : PsiReferenceBase.Poly<P
 
     override fun getRangeInElement() = TextRange.from(0, element.textLength)
 
-    @Throws(IncorrectOperationException::class)
-    override fun handleElementRename(newElementName: String) = getManipulator()
-        .handleContentChange(myElement, rangeInElement, newElementName)
+    override fun calculateDefaultRangeInElement() = TextRange.from(0, element.textLength)
 
-    private fun getManipulator() = object : AbstractElementManipulator<PsiElement>() {
-        override fun handleContentChange(element: PsiElement, range: TextRange, newContent: String) = setName(element, newContent)
-    }
+    override fun handleElementRename(newElementName: String) = ImpExPsiElementManipulator().handleContentChange(element, rangeInElement, newElementName)
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExDocumentIdReference>>("HYBRIS_IMPEXDOCUMENTID_REFERENCE")

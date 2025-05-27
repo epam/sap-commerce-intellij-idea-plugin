@@ -18,9 +18,9 @@
  */
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
+import com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExPsiElementManipulator
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
-import com.intellij.idea.plugin.hybris.impex.rename.manipulator.ImpexMacrosManipulator
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.psi.util.getLineNumber
 import com.intellij.openapi.util.Key
@@ -43,7 +43,7 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
         .let { PsiUtils.getValidResults(it) }
 
-    override fun handleElementRename(newElementName: String) = ImpexMacrosManipulator().handleContentChange(element, rangeInElement, newElementName)
+    override fun handleElementRename(newElementName: String) = ImpExPsiElementManipulator().handleContentChange(element, rangeInElement, newElementName)
 
     private fun findMacroDeclaration(): ImpexMacroDeclaration? {
         val text = element.text
