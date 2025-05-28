@@ -41,7 +41,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 
-class ImpExTSComposedTypeValueReference(private val owner: ImpexValue, private val index: Int, private val metaName: String) : TSReferenceBase<PsiElement>(owner),
+class ImpExTSComposedTypeValueReference(private val owner: ImpexValue, private val index: Int) : TSReferenceBase<PsiElement>(owner),
     HighlightedReference {
 
     fun getTargetElement(): PsiElement? = owner.getFieldValue(index)
@@ -54,6 +54,10 @@ class ImpExTSComposedTypeValueReference(private val owner: ImpexValue, private v
     override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
         .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
         .toTypedArray()
+
+    override fun resolve(): PsiElement? = multiResolve(false)
+        .firstOrNull()
+        ?.element
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator

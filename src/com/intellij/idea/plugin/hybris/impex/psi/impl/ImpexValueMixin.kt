@@ -69,11 +69,10 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         return calculateDocIdReference(fullHeaderParameter)
             ?.let { arrayOf(it) }
             ?: calculateTSReference(fullHeaderParameter)
-                ?.let { arrayOf(it) }
             ?: emptyArray()
     }
 
-    private fun calculateTSReference(fullHeaderParameter: ImpexFullHeaderParameter): PsiReferenceBase.Poly<PsiElement>? {
+    private fun calculateTSReference(fullHeaderParameter: ImpexFullHeaderParameter): Array<PsiReference>? {
         val resolveResult = fullHeaderParameter
             .anyHeaderParameterName
             .reference
@@ -86,12 +85,11 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             is AttributeResolveResult -> resolveResult.meta.type
             is RelationEndResolveResult -> resolveResult.meta.type
             else -> return null
-        }
+        } ?: return null
 
         return TSMetaModelAccess.getInstance(project).findMetaClassifierByName(type)
-            ?.let { meta ->
-                meta.name?.let { createTSReference(fullHeaderParameter, meta, it) }
-            }
+            ?.let { createTSReferences(fullHeaderParameter, it, type) }
+            ?.toTypedArray()
     }
 
     private fun calculateDocIdReference(fullHeaderParameter: ImpexFullHeaderParameter): PsiReferenceBase.Poly<PsiElement>? = fullHeaderParameter
@@ -104,28 +102,63 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         ?.firstOrNull()
         ?.let { ImpExDocumentIdUsageReference(this) }
 
-    private fun createTSReference(
+    private fun createTSReferences(
         fullHeaderParameter: ImpexFullHeaderParameter,
-        meta: TSGlobalMetaClassifier<out DomElement>,
-        name: String
-    ): PsiReferenceBase.Poly<PsiElement>? = when {
-        meta is TSGlobalMetaEnum -> {
+        attributeMeta: TSGlobalMetaClassifier<out DomElement>,
+        attributeType: String
+    ) = when {
+        attributeMeta is TSGlobalMetaEnum -> fullHeaderParameter
+            .parametersList
+            .firstOrNull()
+            ?.parameterList
+            ?.mapIndexedNotNull { index, parameter ->
+                parameter.reference.asSafely<ImpexFunctionTSAttributeReference>()
+                    ?.multiResolve(false)
+                    ?.firstOrNull()
+                    ?.asSafely<AttributeResolveResult>()
+                    ?.meta
+                    ?.let {
+                        when {
+                            it.name == HybrisConstants.ATTRIBUTE_CODE -> if (attributeMeta.isDynamic) ImpExTSDynamicEnumValueReference(this, index, attributeType)
+                            else ImpExTSStaticEnumValueReference(this, index, attributeType)
+
+                            it.type == HybrisConstants.TS_COMPOSED_TYPE -> ImpExTSComposedTypeValueReference(this, index)
+                            else -> null
+                        }
+                    }
+            }
+            ?.take(getFieldValues().size)
+
+        attributeMeta is TSGlobalMetaItem && HybrisConstants.TS_COMPOSED_TYPE == attributeType -> {
             val index = getParameterIndex(fullHeaderParameter) ?: return null
 
-            if (meta.isDynamic) ImpExTSDynamicEnumValueReference(this, index, name)
-            else ImpExTSStaticEnumValueReference(this, index, name)
+            listOf(ImpExTSComposedTypeValueReference(this, index))
         }
 
-        meta is TSGlobalMetaItem && HybrisConstants.TS_COMPOSED_TYPE == name -> {
-            val index = getParameterIndex(fullHeaderParameter) ?: return null
-
-            ImpExTSComposedTypeValueReference(this, index, name)
-        }
+        attributeMeta is TSGlobalMetaItem -> fullHeaderParameter
+            .parametersList
+            .firstOrNull()
+            ?.parameterList
+            ?.mapIndexedNotNull { index, parameter ->
+                parameter.reference.asSafely<ImpexFunctionTSAttributeReference>()
+                    ?.multiResolve(false)
+                    ?.firstOrNull()
+                    ?.let { resolveResult ->
+                        when (resolveResult) {
+                            is AttributeResolveResult -> resolveResult.meta.type
+                            is RelationEndResolveResult -> resolveResult.meta.type
+                            else -> null
+                        }
+                    }
+                    ?.takeIf { HybrisConstants.TS_COMPOSED_TYPE == it }
+                    ?.let { ImpExTSComposedTypeValueReference(this, index) }
+            }
+            ?.take(getFieldValues().size)
 
         else -> null
     }
 
-    private fun getParameterIndex(fullHeaderParameter: ImpexFullHeaderParameter, attributeName: String = "code") = fullHeaderParameter.parametersList
+    private fun getParameterIndex(fullHeaderParameter: ImpexFullHeaderParameter, attributeName: String = HybrisConstants.ATTRIBUTE_CODE) = fullHeaderParameter.parametersList
         .firstOrNull()
         ?.parameterList
         ?.indexOf { parameter ->

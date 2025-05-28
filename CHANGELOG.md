@@ -36,6 +36,7 @@
 - Added rename capabilities for Document ID `&DocId` elements [#1365](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1365)
 - Show variants for Document ID `&DocId` usage [#1366](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1366)
 - Added code completion and reference resolution within `ComposedType` relation columns [#1367](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1367)
+- Added code completion and reference resolution for values within nested `ComposedType` attribute columns [#1368](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1368)
 
 ### `Terminal` integration
 - Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1342](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1342)

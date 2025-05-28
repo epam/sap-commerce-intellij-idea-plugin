@@ -139,33 +139,34 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
 
             ImpexTypes.VALUE -> {
                 val value = element as? ImpexValue ?: return
-                val reference = value.reference ?: return
 
-                when (reference) {
-                    is ImpExTSStaticEnumValueReference -> {
-                        val valueElement = reference.getTargetElement() ?: return
-                        highlightReference(
-                            ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,
-                            "hybris.inspections.impex.unresolved.enumValue.key",
-                            referenceHolder = element
-                        )
-                    }
+                value.references.forEach { reference ->
+                    when (reference) {
+                        is ImpExTSStaticEnumValueReference -> {
+                            val valueElement = reference.getTargetElement() ?: return
+                            highlightReference(
+                                ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,
+                                "hybris.inspections.impex.unresolved.enumValue.key",
+                                reference = reference
+                            )
+                        }
 
-                    is ImpExTSComposedTypeValueReference -> {
-                        val valueElement = reference.getTargetElement() ?: return
-                        highlightReference(
-                            ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,
-                            "hybris.inspections.impex.unresolved.composedType.key",
-                            referenceHolder = element
-                        )
-                    }
+                        is ImpExTSComposedTypeValueReference -> {
+                            val valueElement = reference.getTargetElement() ?: return
+                            highlightReference(
+                                ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,
+                                "hybris.inspections.impex.unresolved.composedType.key",
+                                reference = reference
+                            )
+                        }
 
-                    is ImpExDocumentIdUsageReference -> {
-                        highlightReference(
-                            ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, value,
-                            "hybris.inspections.impex.unresolved.docUsage.key",
-                            referenceHolder = element
-                        )
+                        is ImpExDocumentIdUsageReference -> {
+                            highlightReference(
+                                ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, value,
+                                "hybris.inspections.impex.unresolved.docUsage.key",
+                                reference = reference
+                            )
+                        }
                     }
                 }
             }

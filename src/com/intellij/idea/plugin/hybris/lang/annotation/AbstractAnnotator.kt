@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.lang.annotation
 
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInspection.ProblemHighlightType
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
@@ -28,6 +28,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.tree.IElementType
 
@@ -65,7 +66,7 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
         if (resolved) {
             highlight(tokenType, holder, element)
         } else {
-            highlightError(holder, element, HybrisI18NBundleUtils.message(messageKey, element.text))
+            highlightError(holder, element, message(messageKey, element.text))
         }
     }
 
@@ -74,17 +75,12 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
         holder: AnnotationHolder,
         element: PsiElement,
         messageKey: String,
-        referenceHolder: PsiElement = element.parent
+        reference: PsiReference
     ) {
-        val resolved = (referenceHolder.reference as? PsiReferenceBase.Poly<*>)
-            ?.multiResolve(true)
-            ?.isNotEmpty()
-            ?: true
-
-        if (resolved) {
+        if (reference.resolve() != null) {
             highlight(textAttributesKey, holder, element)
         } else {
-            highlightError(holder, element, HybrisI18NBundleUtils.message(messageKey, element.text))
+            highlightError(holder, element, message(messageKey, element.text))
         }
     }
 

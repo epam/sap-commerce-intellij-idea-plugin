@@ -37,6 +37,8 @@ import com.intellij.psi.util.ParameterizedCachedValueProvider
 
 internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterName) : TSReferenceBase<ImpexAnyHeaderParameterName>(owner) {
 
+    override fun resolve() = multiResolve(false).firstOrNull()?.element
+
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator
         if (indicator != null && indicator.isCanceled) return ResolveResult.EMPTY_ARRAY
