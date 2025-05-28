@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.*
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollection
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
@@ -129,7 +130,8 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             }
             ?.take(getFieldValues().size)
 
-        attributeMeta is TSGlobalMetaItem && HybrisConstants.TS_COMPOSED_TYPE == attributeType -> {
+        (attributeMeta is TSGlobalMetaItem && HybrisConstants.TS_COMPOSED_TYPE == attributeType)
+            || (attributeMeta is TSGlobalMetaCollection && HybrisConstants.TS_COMPOSED_TYPE == attributeMeta.elementType) -> {
             val index = getParameterIndex(fullHeaderParameter) ?: return null
 
             listOf(ImpExTSComposedTypeValueReference(this, index))
