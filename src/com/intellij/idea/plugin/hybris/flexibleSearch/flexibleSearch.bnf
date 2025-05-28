@@ -41,7 +41,7 @@
   implements("from_table")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
   implements("select_core_select")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
 
-  generate=[java='17']
+  generate=[java='21']
 
   tokens = [
 

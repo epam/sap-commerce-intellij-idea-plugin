@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassi
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.psi.*
@@ -67,21 +68,30 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
 
         return calculateDocIdReference(fullHeaderParameter)
             ?.let { arrayOf(it) }
-            ?: fullHeaderParameter
-                .anyHeaderParameterName
-                .reference
-                ?.asSafely<ImpexTSAttributeReference>()
-                ?.multiResolve(false)
-                ?.firstOrNull()
-                ?.asSafely<AttributeResolveResult>()
-                ?.meta
-                ?.type
-                ?.let { TSMetaModelAccess.getInstance(project).findMetaClassifierByName(it) }
-                ?.let { meta ->
-                    meta.name?.let { calculateTSReference(fullHeaderParameter, meta, it) }
-                }
+            ?: calculateTSReference(fullHeaderParameter)
                 ?.let { arrayOf(it) }
             ?: emptyArray()
+    }
+
+    private fun calculateTSReference(fullHeaderParameter: ImpexFullHeaderParameter): PsiReferenceBase.Poly<PsiElement>? {
+        val resolveResult = fullHeaderParameter
+            .anyHeaderParameterName
+            .reference
+            ?.asSafely<ImpexTSAttributeReference>()
+            ?.multiResolve(false)
+            ?.firstOrNull()
+            ?: return null
+
+        val type = when (resolveResult) {
+            is AttributeResolveResult -> resolveResult.meta.type
+            is RelationEndResolveResult -> resolveResult.meta.type
+            else -> return null
+        }
+
+        return TSMetaModelAccess.getInstance(project).findMetaClassifierByName(type)
+            ?.let { meta ->
+                meta.name?.let { createTSReference(fullHeaderParameter, meta, it) }
+            }
     }
 
     private fun calculateDocIdReference(fullHeaderParameter: ImpexFullHeaderParameter): PsiReferenceBase.Poly<PsiElement>? = fullHeaderParameter
@@ -94,7 +104,7 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         ?.firstOrNull()
         ?.let { ImpExDocumentIdUsageReference(this) }
 
-    private fun calculateTSReference(
+    private fun createTSReference(
         fullHeaderParameter: ImpexFullHeaderParameter,
         meta: TSGlobalMetaClassifier<out DomElement>,
         name: String

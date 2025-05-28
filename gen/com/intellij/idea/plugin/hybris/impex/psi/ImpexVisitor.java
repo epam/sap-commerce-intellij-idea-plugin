@@ -60,7 +60,7 @@ public class ImpexVisitor extends PsiElementVisitor {
   }
 
   public void visitDocumentIdUsage(@NotNull ImpexDocumentIdUsage o) {
-    visitPsiElement(o);
+    visitPsiNamedElement(o);
   }
 
   public void visitFullHeaderParameter(@NotNull ImpexFullHeaderParameter o) {

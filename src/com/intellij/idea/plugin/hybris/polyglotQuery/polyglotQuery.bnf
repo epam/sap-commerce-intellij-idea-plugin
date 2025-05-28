@@ -21,7 +21,7 @@
     implements("where_clause")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
     implements("order_by")="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
 
-    generate=[java='17']
+    generate=[java='21']
     generateTokenAccessors(".*_name")=false
 
     tokens = [

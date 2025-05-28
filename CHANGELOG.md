@@ -29,12 +29,13 @@
 - Ensure that inspection rules are using latest TypeSystem [#1352](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1352)
 
 ### `ImpEx` enhancements
-- Enhanced Enum values reference resolution within Enum column [#1360](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1360)
-- Added Item values reference resolution within ComposedType attribute columns [#1361](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1361)
+- Enhanced Enum values reference resolution within `Enum` column [#1360](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1360)
+- Added Item values reference resolution within `ComposedType` attribute columns [#1361](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1361)
 - Resolve macro usages in the header parameter for attribute sub-type [#1362](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1362)
 - Added code completion and reference resolution for `&DocId` usages [#1364](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1364)
 - Added rename capabilities for Document ID `&DocId` elements [#1365](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1365)
 - Show variants for Document ID `&DocId` usage [#1366](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1366)
+- Added code completion and reference resolution within `ComposedType` relation columns [#1367](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1367)
 
 ### `Terminal` integration
 - Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1342](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1342)
