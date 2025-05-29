@@ -38,9 +38,9 @@ import com.intellij.util.asSafely
 class ImpExTSDynamicEnumValueReference(owner: ImpexValue, index: Int, metaName: String) : ImpExTSEnumValueReference(owner, index, metaName)
 class ImpExTSStaticEnumValueReference(owner: ImpexValue, index: Int, metaName: String) : ImpExTSEnumValueReference(owner, index, metaName)
 
-abstract class ImpExTSEnumValueReference(private val owner: ImpexValue, private val index: Int, private val metaName: String) : TSReferenceBase<PsiElement>(owner), HighlightedReference {
+abstract class ImpExTSEnumValueReference(owner: ImpexValue, private val index: Int, private val metaName: String) : TSReferenceBase<ImpexValue>(owner), HighlightedReference {
 
-    fun getTargetElement(): PsiElement? = owner.getFieldValue(index)
+    fun getTargetElement(): PsiElement? = element.getFieldValue(index)
         ?.asSafely<PsiElement>()
 
     override fun calculateDefaultRangeInElement(): TextRange = getTargetElement()

@@ -40,13 +40,14 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
         message: String,
         severity: HighlightSeverity = HighlightSeverity.ERROR,
         type: ProblemHighlightType = ProblemHighlightType.ERROR,
+        range: TextRange = element.textRange
     ) {
         annotation(
             message,
             holder,
             severity
         )
-            .range(element.textRange)
+            .range(range)
             .highlightType(type)
             .create()
     }
@@ -77,10 +78,11 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
         messageKey: String,
         reference: PsiReference
     ) {
+        val range = reference.absoluteRange
         if (reference.resolve() != null) {
-            highlight(textAttributesKey, holder, element)
+            highlight(textAttributesKey, holder, element, range = range)
         } else {
-            highlightError(holder, element, message(messageKey, element.text))
+            highlightError(holder, element, message(messageKey, reference.canonicalText), range = range)
         }
     }
 

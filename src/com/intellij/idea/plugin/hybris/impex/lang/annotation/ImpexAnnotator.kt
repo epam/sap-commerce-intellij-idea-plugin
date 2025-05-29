@@ -151,7 +151,7 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
                             )
                         }
 
-                        is ImpExTSComposedTypeValueReference -> {
+                        is ImpExValueTSClassifierReference -> {
                             val valueElement = reference.getTargetElement() ?: return
                             highlightReference(
                                 ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,

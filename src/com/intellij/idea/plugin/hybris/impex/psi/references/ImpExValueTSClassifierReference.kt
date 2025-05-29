@@ -25,13 +25,8 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
-import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
+import com.intellij.idea.plugin.hybris.system.type.meta.model.*
+import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
@@ -41,18 +36,26 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 
-class ImpExTSComposedTypeValueReference(private val owner: ImpexValue, private val index: Int) : TSReferenceBase<PsiElement>(owner),
-    HighlightedReference {
+class ImpExValueTSClassifierReference(
+    owner: ImpexValue,
+    private val index: Int?,
+    private val textRange: TextRange? = null,
+    private val cacheKey: Key<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSClassifierReference>> = Key.create("HYBRIS_TS_CACHED_REFERENCE"),
+    private val allowedTypes: List<TSMetaType> = listOf(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
+) : TSReferenceBase<ImpexValue>(owner), HighlightedReference {
 
-    fun getTargetElement(): PsiElement? = owner.getFieldValue(index)
+    fun getTargetElement(): PsiElement? = index
+        ?.let { element.getFieldValue(it) }
         ?.asSafely<PsiElement>()
+        ?: element
 
-    override fun calculateDefaultRangeInElement(): TextRange = getTargetElement()
-        ?.let { TextRange.from(it.startOffset - element.startOffset, it.textLength) }
+    override fun calculateDefaultRangeInElement(): TextRange = textRange
+        ?: getTargetElement()
+            ?.let { TextRange.from(it.startOffset - element.startOffset, it.textLength) }
         ?: super.calculateDefaultRangeInElement()
 
     override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
-        .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
+        .getCompletions(*allowedTypes.toTypedArray())
         .toTypedArray()
 
     override fun resolve(): PsiElement? = multiResolve(false)
@@ -64,24 +67,24 @@ class ImpExTSComposedTypeValueReference(private val owner: ImpexValue, private v
         if (indicator != null && indicator.isCanceled) return ResolveResult.EMPTY_ARRAY
 
         return CachedValuesManager.getManager(project)
-            .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+            .getParameterizedCachedValue(element, cacheKey, provider, false, this)
             .let { PsiUtils.getValidResults(it) }
     }
 
     companion object {
-
-        @JvmStatic
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExTSComposedTypeValueReference>>("HYBRIS_TS_CACHED_REFERENCE")
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExTSComposedTypeValueReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExValueTSClassifierReference> { ref ->
             val project = ref.project
             val lookingForName = ref.value
+            val allowedTypes = ref.allowedTypes
 
             val results: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(lookingForName)
                 ?.let {
-                    when (it) {
-                        is TSGlobalMetaItem -> it.declarations.map { meta -> ItemResolveResult(meta) }
-                        is TSGlobalMetaEnum -> it.declarations.map { meta -> EnumResolveResult(meta) }
-                        is TSGlobalMetaRelation -> it.declarations.map { meta -> RelationResolveResult(meta) }
+                    when {
+                        it is TSGlobalMetaItem && allowedTypes.contains(TSMetaType.META_ITEM) -> it.declarations.map { meta -> ItemResolveResult(meta) }
+                        it is TSGlobalMetaEnum && allowedTypes.contains(TSMetaType.META_ENUM) -> it.declarations.map { meta -> EnumResolveResult(meta) }
+                        it is TSGlobalMetaRelation && allowedTypes.contains(TSMetaType.META_RELATION) -> it.declarations.map { meta -> RelationResolveResult(meta) }
+                        it is TSGlobalMetaMap && allowedTypes.contains(TSMetaType.META_MAP) -> it.declarations.map { meta -> MapResolveResult(meta) }
+                        it is TSGlobalMetaAtomic && allowedTypes.contains(TSMetaType.META_ATOMIC) -> it.declarations.map { meta -> AtomicResolveResult(meta) }
                         else -> null
                     }
                 }
