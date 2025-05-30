@@ -148,6 +148,7 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
     ) = metaModelAccess.findMetaClassifierByName(attributeType)
         ?.let {
             when (it) {
+                is TSGlobalMetaAtomic -> collectTSReferencesForMetaAtomic(attributeType)
                 is TSGlobalMetaEnum -> collectTSReferencesForMetaEnum(fullHeaderParameter, it, attributeType)
                 is TSGlobalMetaItem -> collectTSReferencesForMetaItem(fullHeaderParameter, attributeType)
                 is TSGlobalMetaCollection -> collectTSReferencesForMetaCollection(fullHeaderParameter, it, metaModelAccess)
@@ -202,6 +203,13 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
                     ?.let { ranges.getOrNull(index) }
                     ?.let { ImpExValueTSClassifierReference(this, it) }
             }
+    }
+
+    private fun collectTSReferencesForMetaAtomic(attributeType: String): List<PsiReference>? {
+        if (HybrisConstants.TS_TYPE_JAVA_CLASS != attributeType) return null
+
+        return if (text.startsWith(HybrisConstants.IMPEX_PREFIX_MACRO)) null
+        else listOf(ImpExJavaClassReference(this))
     }
 
     private fun collectTSReferencesForMetaEnum(
