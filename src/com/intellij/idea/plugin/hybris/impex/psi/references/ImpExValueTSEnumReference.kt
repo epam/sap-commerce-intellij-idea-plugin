@@ -38,23 +38,22 @@ class ImpExValueTSDynamicEnumReference(
     owner: ImpexValue,
     metaName: String,
     textRange: TextRange,
-    cacheKey: Key<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSEnumReference>> = Key.create("HYBRIS_TS_CACHED_REFERENCE_$textRange")
-) : ImpExValueTSEnumReference(owner, metaName, true, textRange, cacheKey)
+) : ImpExValueTSEnumReference(owner, metaName, true, textRange)
 
 class ImpExValueTSStaticEnumReference(
     owner: ImpexValue,
     metaName: String,
     textRange: TextRange,
-    cacheKey: Key<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSEnumReference>> = Key.create("HYBRIS_TS_CACHED_REFERENCE_$textRange")
-) : ImpExValueTSEnumReference(owner, metaName, false, textRange, cacheKey)
+) : ImpExValueTSEnumReference(owner, metaName, false, textRange)
 
 abstract class ImpExValueTSEnumReference(
     owner: ImpexValue,
     private val metaName: String,
     soft: Boolean,
     textRange: TextRange,
-    private val cacheKey: Key<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSEnumReference>>,
 ) : TSReferenceBase<ImpexValue>(owner, soft, textRange), HighlightedReference {
+
+    private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSEnumReference>>("HYBRIS_TS_CACHED_REFERENCE_$textRange")
 
     fun getTargetElement(): PsiElement? = element
 
@@ -63,6 +62,10 @@ abstract class ImpExValueTSEnumReference(
         ?.let { TSCompletionService.getInstance(project).getCompletions(it) }
         ?.toTypedArray()
         ?: emptyArray()
+
+//    override fun resolve(): PsiElement? = multiResolve(false)
+//        .lastOrNull()
+//        ?.element
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator

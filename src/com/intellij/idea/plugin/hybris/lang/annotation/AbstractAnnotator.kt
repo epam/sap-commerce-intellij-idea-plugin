@@ -31,6 +31,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.tree.IElementType
+import com.intellij.util.asSafely
 
 abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : Annotator {
 
@@ -79,7 +80,12 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
         reference: PsiReference
     ) {
         val range = reference.absoluteRange
-        if (reference.resolve() != null) {
+        val isValid = reference.asSafely<PsiReferenceBase.Poly<PsiElement>>()
+            ?.multiResolve(false)
+            ?.isNotEmpty()
+            ?: (reference.resolve() != null)
+
+        if (isValid) {
             highlight(textAttributesKey, holder, element, range = range)
         } else {
             highlightError(holder, element, message(messageKey, reference.canonicalText), range = range)

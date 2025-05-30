@@ -34,25 +34,26 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 
-class ImpExDocumentIdUsageReference(private val impexValue: ImpexValue) : PsiReferenceBase.Poly<PsiElement>(impexValue, false) {
+class ImpExDocumentIdUsageReference(
+    private val impexValue: ImpexValue,
+    textRange: TextRange,
+) : PsiReferenceBase.Poly<PsiElement>(impexValue, textRange, false) {
 
-    override fun calculateDefaultRangeInElement() = TextRange.from(0, element.textLength)
-
-    override fun resolve(): PsiElement? = multiResolve(false)
-        .takeIf { it.size == 1 }
-        ?.firstOrNull()
-        ?.element
+    private val cacheKeyResolvedResults = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExDocumentIdUsageReference>>("RESOLVED_RESULTS_$textRange")
 
     override fun getVariants(): Array<LookupElementBuilder> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, KEY_LOOKUP_ELEMENTS, PROVIDER_LOOKUP_ELEMENTS, false, this)
 
+//    override fun resolve(): PsiElement? = multiResolve(false)
+//        .lastOrNull()
+//        ?.element
+
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
-        .getParameterizedCachedValue(element, KEY_RESOLVED_RESULTS, PROVIDER_RESOLVED_RESULTS, false, this)
+        .getParameterizedCachedValue(element, cacheKeyResolvedResults, PROVIDER_RESOLVED_RESULTS, false, this)
 
     override fun handleElementRename(newElementName: String) = ImpExPsiElementManipulator().handleContentChange(element, rangeInElement, newElementName)
 
     companion object {
-        private val KEY_RESOLVED_RESULTS = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExDocumentIdUsageReference>>("RESOLVED_RESULTS")
         private val KEY_LOOKUP_ELEMENTS = Key.create<ParameterizedCachedValue<Array<LookupElementBuilder>, ImpExDocumentIdUsageReference>>("LOOKUP_ELEMENTS")
 
         private val PROVIDER_LOOKUP_ELEMENTS = ParameterizedCachedValueProvider<Array<LookupElementBuilder>, ImpExDocumentIdUsageReference> { ref ->
@@ -74,6 +75,7 @@ class ImpExDocumentIdUsageReference(private val impexValue: ImpexValue) : PsiRef
                 ?.mapNotNull { it.element as? ImpexDocumentIdDec }
                 ?.flatMap { it.values.values }
                 ?.flatten()
+                ?.distinctBy { it.text }
                 ?.map { idDec ->
                     val meta = idDec.valueGroup?.fullHeaderParameter?.headerLine?.fullHeaderType?.headerTypeName?.text
                         ?.let { it -> TSMetaModelAccess.getInstance(ref.impexValue.project).findMetaClassifierByName(it) }

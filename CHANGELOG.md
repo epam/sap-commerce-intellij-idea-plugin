@@ -40,6 +40,7 @@
 - Added code completion and reference resolution within `ComposedType` _collection_ columns [#1369](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1369)
 - Added support for custom collection delimiter to inject references within _collection_ columns [#1370](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1370)
 - Added reference support for nested `ComposedType` attributes within _item_ columns [#1371](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1371)
+- Added support for multiple Document ID `&DocId` references within `_collection_` columns [#1372](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1372)
 
 ### `Terminal` integration
 - Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1342](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1342)

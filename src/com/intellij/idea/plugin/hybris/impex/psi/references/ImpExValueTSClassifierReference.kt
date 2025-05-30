@@ -38,9 +38,10 @@ import com.intellij.psi.util.*
 class ImpExValueTSClassifierReference(
     owner: ImpexValue,
     textRange: TextRange,
-    private val cacheKey: Key<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSClassifierReference>> = Key.create("HYBRIS_TS_CACHED_REFERENCE_$textRange"),
     private val allowedTypes: List<TSMetaType> = TSMetaType.entries
 ) : TSReferenceBase<ImpexValue>(owner, false, textRange), HighlightedReference {
+
+    private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSClassifierReference>>("HYBRIS_TS_CACHED_REFERENCE_$textRange")
 
     fun getTargetElement(): PsiElement? = element
 
@@ -48,9 +49,9 @@ class ImpExValueTSClassifierReference(
         .getCompletions(*allowedTypes.toTypedArray())
         .toTypedArray()
 
-    override fun resolve(): PsiElement? = multiResolve(false)
-        .firstOrNull()
-        ?.element
+//    override fun resolve(): PsiElement? = multiResolve(false)
+//        .lastOrNull()
+//        ?.element
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator

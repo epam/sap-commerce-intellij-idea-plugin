@@ -28,21 +28,23 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
 import com.intellij.idea.plugin.hybris.impex.psi.references.*
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaCollection
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.meta.model.*
+import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
+import com.intellij.psi.LiteralTextEscaper
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.PsiReference
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.childrenOfType
-import com.intellij.sql.indexOf
 import com.intellij.util.asSafely
+import com.intellij.util.xml.DomElement
 import java.io.Serial
 
 abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiLanguageInjectionHost, ImpexValue {
@@ -65,50 +67,87 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         val fullHeaderParameter = valueGroup?.fullHeaderParameter
             ?: return emptyArray()
 
-        return collectDocIdReferences(fullHeaderParameter)
-            ?: collectTSReferences(fullHeaderParameter)
-            ?: emptyArray()
-    }
-
-    // TODO: add support for collection type / relation attribute
-    private fun collectDocIdReferences(fullHeaderParameter: ImpexFullHeaderParameter): Array<PsiReference>? = fullHeaderParameter
-        .parametersList
-        .firstOrNull()
-        ?.parameterList
-        ?.takeIf { it.size == 1 }
-        ?.firstOrNull()
-        ?.childrenOfType<ImpexDocumentIdUsage>()
-        ?.firstOrNull()
-        ?.let { ImpExDocumentIdUsageReference(this) }
-        ?.let { arrayOf(it) }
-
-    private fun collectTSReferences(fullHeaderParameter: ImpexFullHeaderParameter): Array<PsiReference>? {
-        val resolveResult = fullHeaderParameter
-            .anyHeaderParameterName
-            .reference
-            ?.asSafely<ImpexTSAttributeReference>()
-            ?.multiResolve(false)
-            ?.firstOrNull()
-            ?: return null
-
-        val attributeType = when (resolveResult) {
-            is AttributeResolveResult -> resolveResult.meta.type
-            is RelationEndResolveResult -> resolveResult.meta.type
-            else -> return null
-        } ?: return null
-
-        val metaModelAccess = TSMetaModelAccess.getInstance(project)
-        return metaModelAccess.findMetaClassifierByName(attributeType)
-            ?.let {
+        val meta: TSMetaClassifier<out DomElement> = getAttribute(fullHeaderParameter)
+            .let {
                 when (it) {
-                    is TSGlobalMetaEnum -> collectTSReferencesForMetaEnum(fullHeaderParameter, it, attributeType)
-                    is TSGlobalMetaItem -> collectTSReferencesForMetaItem(fullHeaderParameter, attributeType)
-                    is TSGlobalMetaCollection -> collectTSReferencesForMetaCollection(fullHeaderParameter, it, metaModelAccess)
+                    is AttributeResolveResult -> it.meta
+                    is RelationEndResolveResult -> it.meta
                     else -> null
                 }
             }
-            ?.toTypedArray()
+            ?: return emptyArray()
+
+        val attributeType = when (meta) {
+            is TSGlobalMetaItem.TSGlobalMetaItemAttribute -> meta.type
+            is TSMetaRelation.TSMetaRelationElement -> meta.type
+            else -> null
+        } ?: return emptyArray()
+
+        val metaModelAccess = TSMetaModelAccess.getInstance(project)
+        return collectDocIdValuesReferences(fullHeaderParameter, meta, attributeType, metaModelAccess)
+            ?: collectTSReferences(fullHeaderParameter, attributeType, metaModelAccess)
+            ?: emptyArray()
     }
+
+    private fun collectDocIdValuesReferences(
+        fullHeaderParameter: ImpexFullHeaderParameter,
+        meta: TSMetaClassifier<out DomElement>,
+        attributeType: String,
+        metaModelAccess: TSMetaModelAccess,
+    ): Array<PsiReference>? {
+        val cardinality = when (meta) {
+            is TSMetaRelation.TSMetaRelationElement -> meta.cardinality
+            is TSGlobalMetaItem.TSGlobalMetaItemAttribute -> when (metaModelAccess.findMetaClassifierByName(attributeType)) {
+                is TSGlobalMetaCollection -> Cardinality.MANY
+                else -> null
+            }
+
+            else -> Cardinality.ONE
+        }
+
+        fullHeaderParameter
+            .parametersList
+            .firstOrNull()
+            ?.parameterList
+            ?.takeIf { it.size == 1 }
+            ?.firstOrNull()
+            ?.childrenOfType<ImpexDocumentIdUsage>()
+            ?.firstOrNull()
+            ?: return null
+
+        if (cardinality == Cardinality.ONE) return arrayOf(ImpExDocumentIdUsageReference(this, TextRange(0, textLength)))
+
+        /**
+         * INSERT_UPDATE ListAddToCartAction; uid[unique = true]  ; &actionRef
+         *                                  ; ListAddToCartAction ; ListAddToCartAction
+         *                                  ; Action_2            ; Action_2
+         *                                  ; Action_3            ; Action_3
+         *
+         * INSERT_UPDATE SearchResultsGridComponent; actions(&actionRef)[collection-delimiter = |]
+         *                                         ; Action_2 | Action_3 | ListAddToCartAction | Wrong
+         *
+         * Injection -> SearchResultsGridComponent : actions
+         */
+
+        return collectRanges(fullHeaderParameter, AttributeModifier.COLLECTION_DELIMITER, ",")
+            .map { ImpExDocumentIdUsageReference(this, it) }
+            .toTypedArray()
+    }
+
+    private fun collectTSReferences(
+        fullHeaderParameter: ImpexFullHeaderParameter,
+        attributeType: String,
+        metaModelAccess: TSMetaModelAccess
+    ) = metaModelAccess.findMetaClassifierByName(attributeType)
+        ?.let {
+            when (it) {
+                is TSGlobalMetaEnum -> collectTSReferencesForMetaEnum(fullHeaderParameter, it, attributeType)
+                is TSGlobalMetaItem -> collectTSReferencesForMetaItem(fullHeaderParameter, attributeType)
+                is TSGlobalMetaCollection -> collectTSReferencesForMetaCollection(fullHeaderParameter, it, metaModelAccess)
+                else -> null
+            }
+                ?.toTypedArray()
+        }
 
     private fun collectTSReferencesForMetaItem(fullHeaderParameter: ImpexFullHeaderParameter, attributeType: String): List<PsiReference>? {
         val parameters = fullHeaderParameter
@@ -139,7 +178,7 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
          * To be injected into -> ConsumedDestination
          */
 
-        val ranges = collectRangesForMetaCollection(fullHeaderParameter, AttributeModifier.PATH_DELIMITER, ":")
+        val ranges = collectRanges(fullHeaderParameter, AttributeModifier.PATH_DELIMITER, ":")
         return parameters
             .mapIndexedNotNull { index, parameter ->
                 parameter.reference.asSafely<ImpexFunctionTSAttributeReference>()
@@ -163,9 +202,9 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         attributeMeta: TSGlobalMetaEnum,
         attributeType: String
     ): List<PsiReference>? {
-        val ranges = collectRangesForMetaCollection(fullHeaderParameter, AttributeModifier.PATH_DELIMITER, ":")
+        val ranges = collectRanges(fullHeaderParameter, AttributeModifier.PATH_DELIMITER, ":")
 
-        val references = fullHeaderParameter
+        return fullHeaderParameter
             .parametersList
             .firstOrNull()
             ?.parameterList
@@ -190,7 +229,6 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
                     }
             }
             ?.take(getFieldValues().size)
-        return references
     }
 
     private fun collectTSReferencesForMetaCollection(
@@ -212,7 +250,7 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
 //                    }
 
                     targetMeta is TSGlobalMetaItem && targetMeta.name == HybrisConstants.TS_COMPOSED_TYPE -> {
-                        collectRangesForMetaCollection(fullHeaderParameter, AttributeModifier.COLLECTION_DELIMITER, ",")
+                        collectRanges(fullHeaderParameter, AttributeModifier.COLLECTION_DELIMITER, ",")
                             .map { ImpExValueTSClassifierReference(this, it) }
                     }
 
@@ -221,7 +259,7 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             }
     }
 
-    private fun collectRangesForMetaCollection(fullHeaderParameter: ImpexFullHeaderParameter, modifier: AttributeModifier, defaultDelimiter: String): List<TextRange> {
+    private fun collectRanges(fullHeaderParameter: ImpexFullHeaderParameter, modifier: AttributeModifier, defaultDelimiter: String): List<TextRange> {
         val delimiter = fullHeaderParameter.getAttributeValue(modifier, defaultDelimiter)
 
         return buildList {
@@ -242,24 +280,12 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         }
     }
 
-    private fun getValueElement(
-        fullHeaderParameter: ImpexFullHeaderParameter,
-        attributeName: String = HybrisConstants.ATTRIBUTE_CODE
-    ) = fullHeaderParameter.parametersList
-        .firstOrNull()
-        ?.parameterList
-        ?.indexOf { parameter ->
-            parameter.reference
-                ?.asSafely<PsiReferenceBase.Poly<PsiElement>>()
-                ?.multiResolve(false)
-                ?.firstOrNull()
-                ?.asSafely<AttributeResolveResult>()
-                ?.meta
-                ?.name
-                ?.let { it == attributeName }
-                ?: false
-        }
-        ?.takeIf { it >= 0 && getFieldValues().size > it }
+    private fun getAttribute(fullHeaderParameter: ImpexFullHeaderParameter) = fullHeaderParameter
+        .anyHeaderParameterName
+        .reference
+        ?.asSafely<ImpexTSAttributeReference>()
+        ?.multiResolve(false)
+        ?.firstOrNull()
 
     private fun getFieldValues(): Array<PsiElement> = findChildrenByType(ImpexTypes.FIELD_VALUE, PsiElement::class.java)
 
