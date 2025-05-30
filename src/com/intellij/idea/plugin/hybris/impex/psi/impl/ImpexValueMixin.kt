@@ -105,6 +105,7 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             else -> Cardinality.ONE
         }
 
+        // ensure that column has single parameter as a &DocumentID
         fullHeaderParameter
             .parametersList
             .firstOrNull()
@@ -115,7 +116,12 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
             ?.firstOrNull()
             ?: return null
 
-        if (cardinality == Cardinality.ONE) return arrayOf(ImpExDocumentIdUsageReference(this, TextRange(0, textLength)))
+        if (cardinality == Cardinality.ONE) {
+            return TextRange(0, textLength)
+                .takeUnless { it.isMacro(text) }
+                ?.let { ImpExDocumentIdUsageReference(this, it) }
+                ?.let { arrayOf(it) }
+        }
 
         /**
          * INSERT_UPDATE ListAddToCartAction; uid[unique = true]  ; &actionRef
@@ -130,6 +136,7 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
          */
 
         return collectRanges(fullHeaderParameter, AttributeModifier.COLLECTION_DELIMITER, ",")
+            .filterNot { it.isMacro(text) }
             .map { ImpExDocumentIdUsageReference(this, it) }
             .toTypedArray()
     }
@@ -215,13 +222,13 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
                     ?.asSafely<AttributeResolveResult>()
                     ?.meta
                     ?.let {
-                        val range = ranges.getOrNull(index) ?: return@let null
+                        val range = ranges.getOrNull(index)
+                            ?.takeUnless { range -> range.isMacro(text) }
+                            ?: return@let null
 
                         when {
-                            it.name == HybrisConstants.ATTRIBUTE_CODE -> {
-                                if (attributeMeta.isDynamic) ImpExValueTSDynamicEnumReference(this, attributeType, range)
-                                else ImpExValueTSStaticEnumReference(this, attributeType, range)
-                            }
+                            it.name == HybrisConstants.ATTRIBUTE_CODE -> if (attributeMeta.isDynamic) ImpExValueTSDynamicEnumReference(this, attributeType, range)
+                            else ImpExValueTSStaticEnumReference(this, attributeType, range)
 
                             it.type == HybrisConstants.TS_COMPOSED_TYPE -> ImpExValueTSClassifierReference(this, range)
                             else -> null
@@ -239,20 +246,13 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
         return metaModelAccess.findMetaClassifierByName(attributeMeta.elementType)
             ?.let { targetMeta ->
                 when {
-//                    targetMeta is TSGlobalMetaEnum -> {
-//                        collectRangesForMetaCollection(fullHeaderParameter)
-//                            .map {
-//                                ImpExValueTSClassifierReference(
-//                                    this, null, it,
-//                                    Key.create("HYBRIS_TS_CACHED_REFERENCE_$textRange")
-//                                )
-//                            }
-//                    }
-
-                    targetMeta is TSGlobalMetaItem && targetMeta.name == HybrisConstants.TS_COMPOSED_TYPE -> {
-                        collectRanges(fullHeaderParameter, AttributeModifier.COLLECTION_DELIMITER, ",")
-                            .map { ImpExValueTSClassifierReference(this, it) }
-                    }
+                    targetMeta is TSGlobalMetaItem && targetMeta.name == HybrisConstants.TS_COMPOSED_TYPE -> collectRanges(
+                        fullHeaderParameter,
+                        AttributeModifier.COLLECTION_DELIMITER,
+                        ","
+                    )
+                        .filterNot { range -> range.isMacro(text) }
+                        .map { ImpExValueTSClassifierReference(this, it) }
 
                     else -> null
                 }
@@ -295,3 +295,6 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
     }
 
 }
+
+private fun TextRange.isMacro(text: String): Boolean = substring(text)
+    .startsWith(HybrisConstants.IMPEX_PREFIX_MACRO)

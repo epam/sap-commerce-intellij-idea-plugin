@@ -44,10 +44,6 @@ class ImpExDocumentIdUsageReference(
     override fun getVariants(): Array<LookupElementBuilder> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, KEY_LOOKUP_ELEMENTS, PROVIDER_LOOKUP_ELEMENTS, false, this)
 
-//    override fun resolve(): PsiElement? = multiResolve(false)
-//        .lastOrNull()
-//        ?.element
-
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, cacheKeyResolvedResults, PROVIDER_RESOLVED_RESULTS, false, this)
 

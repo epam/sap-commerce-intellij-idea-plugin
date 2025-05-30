@@ -252,6 +252,9 @@ object HybrisConstants {
 
     private const val JAVA_LANG_PREFIX = "java.lang."
 
+    const val IMPEX_PREFIX_DOC_ID = "&"
+    const val IMPEX_PREFIX_MACRO = "$"
+
     const val BS_TYPE_OBJECT = "java.lang.Object"
     const val BS_SIGN_LESS_THAN = "<"
     const val BS_SIGN_GREATER_THAN = ">"

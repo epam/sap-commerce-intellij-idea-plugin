@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.lang.refactoring
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdUsage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec
@@ -41,10 +42,10 @@ class ImpExRenameInputValidator : RenameInputValidator {
 
     override fun isInputValid(newName: String, element: PsiElement, context: ProcessingContext) = when (element) {
         is ImpexDocumentIdDec,
-        is ImpexDocumentIdUsage -> newName.startsWith("&")
+        is ImpexDocumentIdUsage -> newName.startsWith(HybrisConstants.IMPEX_PREFIX_DOC_ID)
 
         is ImpexMacroNameDec,
-        is ImpexMacroUsageDec -> newName.startsWith("$")
+        is ImpexMacroUsageDec -> newName.startsWith(HybrisConstants.IMPEX_PREFIX_MACRO)
 
         else -> false
     }

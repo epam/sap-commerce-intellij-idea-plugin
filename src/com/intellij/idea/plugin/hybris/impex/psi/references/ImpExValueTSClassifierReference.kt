@@ -49,10 +49,6 @@ class ImpExValueTSClassifierReference(
         .getCompletions(*allowedTypes.toTypedArray())
         .toTypedArray()
 
-//    override fun resolve(): PsiElement? = multiResolve(false)
-//        .lastOrNull()
-//        ?.element
-
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val indicator = ProgressManager.getInstance().progressIndicator
         if (indicator != null && indicator.isCanceled) return ResolveResult.EMPTY_ARRAY
