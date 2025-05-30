@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupEl
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressManager
@@ -74,17 +73,11 @@ class ImpexTSSubTypeItemReference(owner: ImpexSubTypeName) : TSReferenceBase<Imp
             )
         }
 
-        private fun getAllowedVariants(element: ImpexSubTypeName): List<TSGlobalMetaItem> {
-            val headerTypeName = element.headerTypeName
-                ?.text
-                ?: return emptyList()
+        private fun getAllowedVariants(element: ImpexSubTypeName): Collection<TSGlobalMetaItem> = element.headerTypeName
+            ?.text
+            ?.let { TSMetaModelAccess.getInstance(element.project).findMetaItemByName(it) }
+            ?.allChildren
+            ?: emptyList()
 
-            return TSMetaModelAccess.getInstance(element.project).getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-                .filter {meta ->
-                    meta.allExtends.find { it.name == headerTypeName } != null
-                        // or itself, it will be highlighted as unnecessary via Inspection
-                        || meta.name == headerTypeName
-                }
-        }
     }
 }

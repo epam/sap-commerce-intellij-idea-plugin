@@ -35,7 +35,6 @@ import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.Attribut
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.components.service
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.util.CachedValueProvider
@@ -55,24 +54,33 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
     override fun getFieldValue(index: Int): PsiElement? = getFieldValues()
         .getOrNull(index)
 
-    override fun getReference() = references.firstOrNull()
-
     override fun getReferences(): Array<PsiReference> = CachedValuesManager.getManager(project).getCachedValue(this) {
         CachedValueProvider.Result.create(
-            calculateReferences(),
+            collectReferences(),
             project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
         )
     }
 
-    private fun calculateReferences(): Array<PsiReference> {
+    private fun collectReferences(): Array<PsiReference> {
         val fullHeaderParameter = valueGroup?.fullHeaderParameter
             ?: return emptyArray()
 
-        return calculateDocIdReference(fullHeaderParameter)
-            ?.let { arrayOf(it) }
+        return collectDocIdReferences(fullHeaderParameter)
             ?: collectTSReferences(fullHeaderParameter)
             ?: emptyArray()
     }
+
+    // TODO: add support for collection type / relation attribute
+    private fun collectDocIdReferences(fullHeaderParameter: ImpexFullHeaderParameter): Array<PsiReference>? = fullHeaderParameter
+        .parametersList
+        .firstOrNull()
+        ?.parameterList
+        ?.takeIf { it.size == 1 }
+        ?.firstOrNull()
+        ?.childrenOfType<ImpexDocumentIdUsage>()
+        ?.firstOrNull()
+        ?.let { ImpExDocumentIdUsageReference(this) }
+        ?.let { arrayOf(it) }
 
     private fun collectTSReferences(fullHeaderParameter: ImpexFullHeaderParameter): Array<PsiReference>? {
         val resolveResult = fullHeaderParameter
@@ -95,35 +103,45 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
                 when (it) {
                     is TSGlobalMetaEnum -> collectTSReferencesForMetaEnum(fullHeaderParameter, it, attributeType)
                     is TSGlobalMetaItem -> collectTSReferencesForMetaItem(fullHeaderParameter, attributeType)
-                    is TSGlobalMetaCollection -> collectTSReferencesForMetaCollection(fullHeaderParameter, it)
+                    is TSGlobalMetaCollection -> collectTSReferencesForMetaCollection(fullHeaderParameter, it, metaModelAccess)
                     else -> null
                 }
             }
             ?.toTypedArray()
     }
 
-    private fun calculateDocIdReference(fullHeaderParameter: ImpexFullHeaderParameter): PsiReferenceBase.Poly<PsiElement>? = fullHeaderParameter
-        .parametersList
-        .firstOrNull()
-        ?.parameterList
-        ?.takeIf { it.size == 1 }
-        ?.firstOrNull()
-        ?.childrenOfType<ImpexDocumentIdUsage>()
-        ?.firstOrNull()
-        ?.let { ImpExDocumentIdUsageReference(this) }
-
     private fun collectTSReferencesForMetaItem(fullHeaderParameter: ImpexFullHeaderParameter, attributeType: String): List<PsiReference>? {
-        if (HybrisConstants.TS_COMPOSED_TYPE == attributeType) {
-            val valueElement = getValueElement(fullHeaderParameter) ?: return null
-
-            listOf(ImpExValueTSClassifierReference(this, valueElement))
-        }
-
-        return fullHeaderParameter
+        val parameters = fullHeaderParameter
             .parametersList
             .firstOrNull()
             ?.parameterList
-            ?.mapIndexedNotNull { index, parameter ->
+            ?: return null
+
+        if (HybrisConstants.TS_COMPOSED_TYPE == attributeType) {
+            /**
+             * UPDATE BundleTemplateStatus[batchmode = true]; itemtype(code)[unique = true]
+             *                                              ; Address
+             *
+             * To be injected into -> Address
+             */
+            return parameters
+                .takeIf { it.size == 1 }
+                ?.firstOrNull()
+                ?.takeIf { HybrisConstants.ATTRIBUTE_CODE == it.text }
+                ?.let { ImpExValueTSClassifierReference(this, TextRange.create(0, textLength)) }
+                ?.let { listOf(it) }
+        }
+
+        /**
+         * INSERT AttributeConstraint; descriptor(enclosingType(code), qualifier)
+         *                           ; ConsumedDestination:url
+         *
+         * To be injected into -> ConsumedDestination
+         */
+
+        val ranges = collectRangesForMetaCollection(fullHeaderParameter, AttributeModifier.PATH_DELIMITER, ":")
+        return parameters
+            .mapIndexedNotNull { index, parameter ->
                 parameter.reference.asSafely<ImpexFunctionTSAttributeReference>()
                     ?.multiResolve(false)
                     ?.firstOrNull()
@@ -135,56 +153,81 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
                         }
                     }
                     ?.takeIf { HybrisConstants.TS_COMPOSED_TYPE == it }
-                    ?.let { ImpExValueTSClassifierReference(this, index) }
+                    ?.let { ranges.getOrNull(index) }
+                    ?.let { ImpExValueTSClassifierReference(this, it) }
             }
-            ?.take(getFieldValues().size)
     }
 
     private fun collectTSReferencesForMetaEnum(
         fullHeaderParameter: ImpexFullHeaderParameter,
         attributeMeta: TSGlobalMetaEnum,
         attributeType: String
-    ): List<PsiReference>? = fullHeaderParameter
-        .parametersList
-        .firstOrNull()
-        ?.parameterList
-        ?.mapIndexedNotNull { index, parameter ->
-            parameter.reference.asSafely<ImpexFunctionTSAttributeReference>()
-                ?.multiResolve(false)
-                ?.firstOrNull()
-                ?.asSafely<AttributeResolveResult>()
-                ?.meta
-                ?.let {
-                    when {
-                        it.name == HybrisConstants.ATTRIBUTE_CODE -> if (attributeMeta.isDynamic) ImpExTSDynamicEnumValueReference(this, index, attributeType)
-                        else ImpExTSStaticEnumValueReference(this, index, attributeType)
+    ): List<PsiReference>? {
+        val ranges = collectRangesForMetaCollection(fullHeaderParameter, AttributeModifier.PATH_DELIMITER, ":")
 
-                        it.type == HybrisConstants.TS_COMPOSED_TYPE -> ImpExValueTSClassifierReference(this, index)
-                        else -> null
+        val references = fullHeaderParameter
+            .parametersList
+            .firstOrNull()
+            ?.parameterList
+            ?.mapIndexedNotNull { index, parameter ->
+                parameter.reference.asSafely<ImpexFunctionTSAttributeReference>()
+                    ?.multiResolve(false)
+                    ?.firstOrNull()
+                    ?.asSafely<AttributeResolveResult>()
+                    ?.meta
+                    ?.let {
+                        val range = ranges.getOrNull(index) ?: return@let null
+
+                        when {
+                            it.name == HybrisConstants.ATTRIBUTE_CODE -> {
+                                if (attributeMeta.isDynamic) ImpExValueTSDynamicEnumReference(this, attributeType, range)
+                                else ImpExValueTSStaticEnumReference(this, attributeType, range)
+                            }
+
+                            it.type == HybrisConstants.TS_COMPOSED_TYPE -> ImpExValueTSClassifierReference(this, range)
+                            else -> null
+                        }
                     }
-                }
-        }
-        ?.take(getFieldValues().size)
+            }
+            ?.take(getFieldValues().size)
+        return references
+    }
 
     private fun collectTSReferencesForMetaCollection(
         fullHeaderParameter: ImpexFullHeaderParameter,
-        attributeMeta: TSGlobalMetaCollection
-    ): List<ImpExValueTSClassifierReference> {
-        // TODO: support every other type
-        if (HybrisConstants.TS_COMPOSED_TYPE != attributeMeta.elementType) return emptyList()
+        attributeMeta: TSGlobalMetaCollection,
+        metaModelAccess: TSMetaModelAccess
+    ): List<PsiReference>? {
+        return metaModelAccess.findMetaClassifierByName(attributeMeta.elementType)
+            ?.let { targetMeta ->
+                when {
+//                    targetMeta is TSGlobalMetaEnum -> {
+//                        collectRangesForMetaCollection(fullHeaderParameter)
+//                            .map {
+//                                ImpExValueTSClassifierReference(
+//                                    this, null, it,
+//                                    Key.create("HYBRIS_TS_CACHED_REFERENCE_$textRange")
+//                                )
+//                            }
+//                    }
 
-        val collectionDelimiter = fullHeaderParameter.modifiersList
-            .flatMap { it.attributeList }
-            .find { it.anyAttributeName.text == AttributeModifier.COLLECTION_DELIMITER.modifierName }
-            ?.anyAttributeValue
-            ?.text
-            ?.trim()
-            ?: ","
+                    targetMeta is TSGlobalMetaItem && targetMeta.name == HybrisConstants.TS_COMPOSED_TYPE -> {
+                        collectRangesForMetaCollection(fullHeaderParameter, AttributeModifier.COLLECTION_DELIMITER, ",")
+                            .map { ImpExValueTSClassifierReference(this, it) }
+                    }
+
+                    else -> null
+                }
+            }
+    }
+
+    private fun collectRangesForMetaCollection(fullHeaderParameter: ImpexFullHeaderParameter, modifier: AttributeModifier, defaultDelimiter: String): List<TextRange> {
+        val delimiter = fullHeaderParameter.getAttributeValue(modifier, defaultDelimiter)
 
         return buildList {
             var previousStart = 0
 
-            text.split(collectionDelimiter).forEachIndexed { index, part ->
+            text.split(delimiter).forEachIndexed { index, part ->
                 val partTrimmed = part.trim()
                 val trimStart = part.trimStart()
                 val startWhitespaces = part.length - trimStart.length
@@ -192,17 +235,11 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
                 val start = startWhitespaces + previousStart
                 val end = start + partTrimmed.length
 
-                previousStart += part.length + collectionDelimiter.length
+                previousStart += part.length + delimiter.length
 
                 add(TextRange.create(start, end))
             }
         }
-            .map {
-                ImpExValueTSClassifierReference(
-                    this, null, it,
-                    Key.create("HYBRIS_TS_CACHED_REFERENCE_$textRange")
-                )
-            }
     }
 
     private fun getValueElement(

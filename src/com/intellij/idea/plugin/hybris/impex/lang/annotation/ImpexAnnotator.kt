@@ -142,7 +142,7 @@ class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstan
 
                 value.references.forEach { reference ->
                     when (reference) {
-                        is ImpExTSStaticEnumValueReference -> {
+                        is ImpExValueTSStaticEnumReference -> {
                             val valueElement = reference.getTargetElement() ?: return
                             highlightReference(
                                 ImpexHighlighterColors.VALUE_SUBTYPE_SAME, holder, valueElement,

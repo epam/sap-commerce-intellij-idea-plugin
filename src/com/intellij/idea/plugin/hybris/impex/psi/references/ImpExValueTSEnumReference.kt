@@ -33,23 +33,34 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import com.intellij.util.asSafely
 
-class ImpExTSDynamicEnumValueReference(owner: ImpexValue, index: Int, metaName: String) : ImpExTSEnumValueReference(owner, index, metaName)
-class ImpExTSStaticEnumValueReference(owner: ImpexValue, index: Int, metaName: String) : ImpExTSEnumValueReference(owner, index, metaName)
+class ImpExValueTSDynamicEnumReference(
+    owner: ImpexValue,
+    metaName: String,
+    textRange: TextRange,
+    cacheKey: Key<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSEnumReference>> = Key.create("HYBRIS_TS_CACHED_REFERENCE_$textRange")
+) : ImpExValueTSEnumReference(owner, metaName, true, textRange, cacheKey)
 
-abstract class ImpExTSEnumValueReference(owner: ImpexValue, private val index: Int, private val metaName: String) : TSReferenceBase<ImpexValue>(owner), HighlightedReference {
+class ImpExValueTSStaticEnumReference(
+    owner: ImpexValue,
+    metaName: String,
+    textRange: TextRange,
+    cacheKey: Key<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSEnumReference>> = Key.create("HYBRIS_TS_CACHED_REFERENCE_$textRange")
+) : ImpExValueTSEnumReference(owner, metaName, false, textRange, cacheKey)
 
-    fun getTargetElement(): PsiElement? = element.getFieldValue(index)
-        ?.asSafely<PsiElement>()
+abstract class ImpExValueTSEnumReference(
+    owner: ImpexValue,
+    private val metaName: String,
+    soft: Boolean,
+    textRange: TextRange,
+    private val cacheKey: Key<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSEnumReference>>,
+) : TSReferenceBase<ImpexValue>(owner, soft, textRange), HighlightedReference {
 
-    override fun calculateDefaultRangeInElement(): TextRange = getTargetElement()
-        ?.let { TextRange.from(it.startOffset - element.startOffset, it.textLength) }
-        ?: super.calculateDefaultRangeInElement()
+    fun getTargetElement(): PsiElement? = element
 
     override fun getVariants(): Array<LookupElementBuilder> = TSMetaModelAccess.getInstance(project)
         .findMetaEnumByName(metaName)
-        ?.let { TSCompletionService.getInstance(element.project).getCompletions(it) }
+        ?.let { TSCompletionService.getInstance(project).getCompletions(it) }
         ?.toTypedArray()
         ?: emptyArray()
 
@@ -58,15 +69,12 @@ abstract class ImpExTSEnumValueReference(owner: ImpexValue, private val index: I
         if (indicator != null && indicator.isCanceled) return ResolveResult.EMPTY_ARRAY
 
         return CachedValuesManager.getManager(project)
-            .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
+            .getParameterizedCachedValue(element, cacheKey, provider, false, this)
             .let { PsiUtils.getValidResults(it) }
     }
 
     companion object {
-
-        @JvmStatic
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExTSEnumValueReference>>("HYBRIS_TS_CACHED_REFERENCE")
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExTSEnumValueReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpExValueTSEnumReference> { ref ->
             val lookingForName = ref.value
             val project = ref.project
             val metaService = TSMetaModelAccess.getInstance(project)

@@ -77,6 +77,16 @@ object TSMetaModelMerger {
                     ?: false
             }
             .forEach { metaItems.remove(it) }
+
+        metaItems.values.forEach { meta ->
+            val allChildren = metaItems.values.filter { otherMeta ->
+                otherMeta.allExtends.find { it.name == meta.name } != null
+                    // or itself, it will be highlighted as unnecessary via Inspection
+                    || otherMeta.name == meta.name
+            }
+
+            meta.addChildren(allChildren)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

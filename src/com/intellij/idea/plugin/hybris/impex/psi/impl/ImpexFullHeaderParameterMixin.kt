@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
@@ -53,6 +54,12 @@ abstract class ImpexFullHeaderParameterMixin(node: ASTNode) : ASTWrapperPsiEleme
             PsiModificationTracker.MODIFICATION_COUNT,
         )
     }, false)
+
+    override fun getAttributeValue(attributeModifier: AttributeModifier, defaultValue: String): String = getAttribute(attributeModifier)
+        ?.anyAttributeValue
+        ?.text
+        ?.trim()
+        ?: defaultValue
 
     companion object {
         val CACHE_KEY_COLUMN_NUMBER = Key.create<CachedValue<Int>>("SAP_CX_IMPEX_COLUMN_NUMBER")

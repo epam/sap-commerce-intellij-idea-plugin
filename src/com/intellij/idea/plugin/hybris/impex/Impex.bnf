@@ -305,7 +305,7 @@ full_header_parameter ::= any_header_parameter_name parameters? modifiers* param
     pin=1
     recoverWhile=not_line_break_or_parameters_separator
     mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexFullHeaderParameterMixin"
-    methods=[getHeaderLine getColumnNumber getAttribute getValueGroups]
+    methods=[getHeaderLine getColumnNumber getAttribute getAttributeValue getValueGroups]
 }
 
 any_header_parameter_name ::= HEADER_PARAMETER_NAME | HEADER_SPECIAL_PARAMETER_NAME | macro_usage_dec | document_id_dec | FUNCTION

@@ -34,25 +34,15 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import com.intellij.util.asSafely
 
 class ImpExValueTSClassifierReference(
     owner: ImpexValue,
-    private val index: Int?,
-    private val textRange: TextRange? = null,
-    private val cacheKey: Key<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSClassifierReference>> = Key.create("HYBRIS_TS_CACHED_REFERENCE"),
-    private val allowedTypes: List<TSMetaType> = listOf(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
-) : TSReferenceBase<ImpexValue>(owner), HighlightedReference {
+    textRange: TextRange,
+    private val cacheKey: Key<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSClassifierReference>> = Key.create("HYBRIS_TS_CACHED_REFERENCE_$textRange"),
+    private val allowedTypes: List<TSMetaType> = TSMetaType.entries
+) : TSReferenceBase<ImpexValue>(owner, false, textRange), HighlightedReference {
 
-    fun getTargetElement(): PsiElement? = index
-        ?.let { element.getFieldValue(it) }
-        ?.asSafely<PsiElement>()
-        ?: element
-
-    override fun calculateDefaultRangeInElement(): TextRange = textRange
-        ?: getTargetElement()
-            ?.let { TextRange.from(it.startOffset - element.startOffset, it.textLength) }
-        ?: super.calculateDefaultRangeInElement()
+    fun getTargetElement(): PsiElement? = element
 
     override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
         .getCompletions(*allowedTypes.toTypedArray())
@@ -85,6 +75,7 @@ class ImpExValueTSClassifierReference(
                         it is TSGlobalMetaRelation && allowedTypes.contains(TSMetaType.META_RELATION) -> it.declarations.map { meta -> RelationResolveResult(meta) }
                         it is TSGlobalMetaMap && allowedTypes.contains(TSMetaType.META_MAP) -> it.declarations.map { meta -> MapResolveResult(meta) }
                         it is TSGlobalMetaAtomic && allowedTypes.contains(TSMetaType.META_ATOMIC) -> it.declarations.map { meta -> AtomicResolveResult(meta) }
+                        it is TSGlobalMetaCollection && allowedTypes.contains(TSMetaType.META_COLLECTION) -> it.declarations.map { meta -> CollectionResolveResult(meta) }
                         else -> null
                     }
                 }

@@ -26,7 +26,7 @@ abstract class TSReferenceBase<PSI : PsiElement> : PsiReferenceBase.Poly<PSI> {
 
     constructor(owner: PSI) : super(owner, false)
     constructor(owner: PSI, soft: Boolean) : super(owner, soft)
-    constructor(element: PSI?, rangeInElement: TextRange?) : super(element, rangeInElement, false)
+    constructor(owner: PSI, soft: Boolean, rangeInElement: TextRange?) : super(owner, rangeInElement, soft)
 
     override fun calculateDefaultRangeInElement() = TextRange.from(0, element.textLength)
 

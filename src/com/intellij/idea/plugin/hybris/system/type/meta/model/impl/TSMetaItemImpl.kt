@@ -121,7 +121,8 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
     override val allIndexes = LinkedList<TSGlobalMetaItem.TSGlobalMetaItemIndex>()
     override val allCustomProperties = LinkedList<TSMetaCustomProperty>()
     override val allRelationEnds = LinkedList<TSMetaRelation.TSMetaRelationElement>()
-    override val allExtends = LinkedHashSet<TSGlobalMetaItem>()
+    override val allExtends = linkedSetOf<TSGlobalMetaItem>()
+    override val allChildren = linkedSetOf<TSGlobalMetaItem>()
 
     override var domAnchor = localMeta.domAnchor
     override var moduleName = localMeta.moduleName
@@ -142,6 +143,10 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
         mergeAttributes(localMeta, this)
         mergeIndexes(localMeta)
         mergeCustomProperties(localMeta)
+    }
+
+    override fun addChildren(children: Collection<TSGlobalMetaItem>) {
+        allChildren.addAll(children)
     }
 
     override fun toString() = "Item(module=$extensionName, name=$name, isCustom=$isCustom)"

@@ -86,6 +86,9 @@ interface TSGlobalMetaItem : TSMetaItem, TSGlobalMetaClassifier<ItemType>, TSTyp
     val allCustomProperties: List<TSMetaCustomProperty>
     val allRelationEnds: List<TSMetaRelation.TSMetaRelationElement>
     val allExtends: Set<TSGlobalMetaItem>
+    val allChildren: Set<TSGlobalMetaItem>
+
+    abstract fun addChildren(children: Collection<TSGlobalMetaItem>)
 
     override fun documentation() = hybrisDoc {
         title("Item type", name ?: "?")

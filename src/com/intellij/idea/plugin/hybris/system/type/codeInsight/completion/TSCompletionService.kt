@@ -107,22 +107,15 @@ class TSCompletionService(private val project: Project) {
             ""
         }
 
-        val metaModelAccess = TSMetaModelAccess.getInstance(project)
-        metaModelAccess.findMetaItemByName(referenceItemTypeName)
-            ?: return emptyList()
-
-        return metaModelAccess.getAll<TSGlobalMetaItem>(TSMetaType.META_ITEM)
-            .filter { meta ->
-                meta.allExtends.find { it.name.equals(referenceItemTypeName, true) } != null
-                    // or itself, it will be highlighted as unnecessary via Inspection
-                    || meta.name.equals(referenceItemTypeName, true)
-            }
-            .mapNotNull {
+        return TSMetaModelAccess.getInstance(project).findMetaItemByName(referenceItemTypeName)
+            ?.allChildren
+            ?.mapNotNull {
                 TSLookupElementFactory.build(it, suffix)
                     ?.withTypeText(" child of $referenceItemTypeName", true)
             }
-            .map { PrioritizedLookupElement.withPriority(it, TSLookupElementFactory.PRIORITY_2_0) }
-            .map { PrioritizedLookupElement.withGrouping(it, TSLookupElementFactory.GROUP_2) }
+            ?.map { PrioritizedLookupElement.withPriority(it, TSLookupElementFactory.PRIORITY_2_0) }
+            ?.map { PrioritizedLookupElement.withGrouping(it, TSLookupElementFactory.GROUP_2) }
+            ?: emptyList()
     }
 
     /**
