@@ -276,6 +276,7 @@ object HybrisConstants {
     const val TS_TYPE_CATALOG_VERSION = "CatalogVersion"
     const val TS_TYPE_LINK = "Link"
     const val TS_TYPE_SEARCH_RESTRICTION = "SearchRestriction"
+    const val TS_TYPE_AFTER_RETENTION_CLEANUP_RULE = "AfterRetentionCleanupRule"
     const val TS_TYPE_ENUMERATION_VALUE = "EnumerationValue"
     const val TS_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
     const val TS_TYPE_RELATION_DESCRIPTOR = "RelationDescriptor"

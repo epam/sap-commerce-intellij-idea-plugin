@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,14 +51,14 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
         when (host) {
             is ImpexString -> {
                 valueGroup = host.valueGroup
-                expression = StringUtil.unquoteString(host.getText()).lowercase(Locale.getDefault())
+                expression = StringUtil.unquoteString(host.text).lowercase(Locale.getDefault())
                 quoteLength = 1
             }
 
             is ImpexValue -> {
                 if (host.childrenOfType<ImpexString>().isNotEmpty()) return
                 valueGroup = host.valueGroup
-                expression = host.getText().lowercase(Locale.getDefault())
+                expression = host.text.lowercase(Locale.getDefault())
                 quoteLength = 0
             }
 
@@ -71,15 +71,16 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
         val valueLine = valueGroup
             ?.valueLine
 
+
         valueLine
             ?.headerLine
-            ?.takeIf {
-                it.fullHeaderType
+            ?.let { headerLine ->
+                headerLine.fullHeaderType
                     ?.headerTypeName
-                    ?.textMatches(HybrisConstants.TS_TYPE_SEARCH_RESTRICTION)
-                    ?: false
+                    ?.text
+                    ?.let { TypeDependantInjection.of(it) }
+                    ?.let { tryInjectAnotherColumnTypeDependant(valueLine, headerLine, injectionPlacesRegistrar, host, expression, quoteLength, it) }
             }
-            ?.let { tryInjectSearchRestriction(valueLine, it, injectionPlacesRegistrar, host, expression, quoteLength) }
             ?: injectSimple(injectionPlacesRegistrar, host, expression, quoteLength)
     }
 
@@ -94,22 +95,22 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
         }
     }
 
-    private fun tryInjectSearchRestriction(
+    private fun tryInjectAnotherColumnTypeDependant(
         valueLine: ImpexValueLine,
         headerLine: ImpexHeaderLine,
         injectionPlacesRegistrar: InjectedLanguagePlaces,
         host: PsiLanguageInjectionHost,
         expression: String,
-        quoteLength: Int
+        quoteLength: Int,
+        typeDependantInjection: TypeDependantInjection,
     ) {
-        // inject only into `query` column
         host.parentOfType<ImpexValueGroup>()
             ?.fullHeaderParameter
             ?.text
-            ?.takeIf { it.equals("query", true) }
+            ?.takeIf { it.equals(typeDependantInjection.parameterName, true) }
             ?: return
 
-        val restrictedTypeParameter = headerLine.getFullHeaderParameter("restrictedType")
+        val restrictedTypeParameter = headerLine.getFullHeaderParameter(typeDependantInjection.targetTypeParameterName)
             ?: return injectSimple(injectionPlacesRegistrar, host, expression, quoteLength = quoteLength)
         val restrictedType = valueLine.getValueGroup(restrictedTypeParameter.columnNumber)
             ?.computeValue()
@@ -129,5 +130,15 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
 
     companion object {
         fun getInstance(): FlexibleSearchToImpexInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToImpexInjectorProvider::class.java)
+    }
+
+}
+
+enum class TypeDependantInjection(val typeName: String, val parameterName: String, val targetTypeParameterName: String) {
+    SEARCH_RESTRICTION(HybrisConstants.TS_TYPE_SEARCH_RESTRICTION, "query", "restrictedType"),
+    AFTER_RETENTION_CLEANUP_RULE(HybrisConstants.TS_TYPE_AFTER_RETENTION_CLEANUP_RULE, "itemFilterExpression", "retirementItemType"), ;
+
+    companion object {
+        fun of(typeName: String): TypeDependantInjection? = entries.find { it.typeName == typeName }
     }
 }
