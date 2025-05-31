@@ -51,6 +51,7 @@
 ### Fixes
 - Do not populate Tomcat JVM Properties for pure Unit Tests [#1350](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1350)
 - Fixed ImpEx formatter for `item(CMSLinkComponent.$contentCV)` [#1363](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1363)
+- Omit blank default values in the ImpEx default value collector [#1376](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1376)
 
 ## [2025.1.2]
 
