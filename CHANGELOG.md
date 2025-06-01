@@ -48,6 +48,9 @@
 ### `Terminal` integration
 - Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1342](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1342)
 
+### `items.xml` inspection rules
+- Removed "_Boolean field cannot be optional_" inspection rule [#1377](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1377)
+
 ### Fixes
 - Do not populate Tomcat JVM Properties for pure Unit Tests [#1350](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1350)
 - Fixed ImpEx formatter for `item(CMSLinkComponent.$contentCV)` [#1363](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1363)

@@ -304,11 +304,6 @@
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSRelationElementMetaTypeNameMustPointToValidMetaType"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.BooleanFieldCannotBeOptional.key"
-                         shortName="BooleanFieldCannotBeOptional" level="WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSBooleanFieldCannotBeOptional"/>
-
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.JaloPersistanceTypeIsDeprecated.key"
                          shortName="JaloPersistanceTypeIsDeprecated" level="WARNING"
                          implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSJaloPersistanceTypeIsDeprecated"/>
