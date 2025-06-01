@@ -55,6 +55,7 @@ class TSEnumValueMustBeUppercase : AbstractTSInspection() {
         val enumName = enumType.code.stringValue ?: return
         val code = enumValue.code.stringValue
             ?.replace("_", "")
+            ?.let { numbers.replace(it, "") }
             ?: return
         if (StringUtil.isUpperCase(code)) return
 
@@ -64,5 +65,9 @@ class TSEnumValueMustBeUppercase : AbstractTSInspection() {
             message("hybris.inspections.fix.ts.TSEnumValueMustBeUppercase.key", enumName, code),
             XmlUpdateAttributeQuickFix(EnumType.CODE, code.uppercase(Locale.ROOT))
         )
+    }
+
+    companion object {
+        private val numbers = Regex("\\d")
     }
 }

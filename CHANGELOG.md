@@ -50,6 +50,7 @@
 
 ### `items.xml` inspection rules
 - Removed "_Boolean field cannot be optional_" inspection rule [#1377](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1377)
+- Ignore numbers in the "_Enum value must be uppercase_" inspection rule [#1378](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1378)
 
 ### Fixes
 - Do not populate Tomcat JVM Properties for pure Unit Tests [#1350](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1350)
