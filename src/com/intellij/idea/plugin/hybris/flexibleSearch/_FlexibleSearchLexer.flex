@@ -28,9 +28,14 @@ import static com.intellij.psi.TokenType.WHITE_SPACE;
 %%
 
 %{
-    public _FlexibleSearchLexer() {
-        this((java.io.Reader)null);
-    }
+  /**
+   * `true`  - represents beginning of the single brace `{` statement
+   * `false` - represents beginning of the double brace `{{` statement
+   */
+  private java.util.Deque<Boolean> braces = new java.util.ArrayDeque<Boolean>();
+  public _FlexibleSearchLexer() {
+      this((java.io.Reader)null);
+  }
 %}
 
 %public
@@ -63,11 +68,25 @@ LINE_COMMENT=--[^\r\n]*
   "!"                                { return EXCLAMATION_MARK; }
   "["                                { return LBRACKET; }
   "]"                                { yybegin(LOCALIZED_STATE); return RBRACKET; }
-  "{"                                { return LBRACE; }
-  "}"                                { return RBRACE; }
-  "{{"                               { return LDBRACE; }
-  "}}"                               { return RDBRACE; }
-  "}}}"                              { yypushback(2); return RBRACE; }
+  "{"                                { braces.push(true); return LBRACE; }
+  "}"                                {
+                                        if (!braces.isEmpty() && braces.getFirst()) braces.pop();
+
+                                        return RBRACE;
+                                     }
+  "{{"                               {
+                                        braces.push(false);
+                                        return LDBRACE;
+                                     }
+  "}}"                               {
+                                        if (!braces.isEmpty() && !braces.getFirst()) {
+                                            braces.pop();
+                                            return RDBRACE;
+                                        } else {
+                                            if (!braces.isEmpty()) braces.pop();
+                                            yypushback(1); return RBRACE;
+                                        }
+                                     }
   "("                                { return LPAREN; }
   ")"                                { return RPAREN; }
   "&"                                { return AMP; }

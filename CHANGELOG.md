@@ -28,6 +28,9 @@
 - Relation Element `metatype` must be a type extending RelationDescriptor [#1349](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1349)
 - Ensure that inspection rules are using latest TypeSystem [#1352](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1352)
 
+### `FlexibleSearch` enhancements
+- Improved language Lexer to recognize closing `}`, `}}` tokens [#1379](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1379)
+
 ### `ImpEx` enhancements
 - Enhanced Enum values reference resolution within `Enum` column [#1360](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1360)
 - Added Item values reference resolution within `ComposedType` attribute columns [#1361](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1361)

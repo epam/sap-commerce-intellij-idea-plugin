@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
@@ -38,7 +37,7 @@ import javax.swing.ListCellRenderer
 
 class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSEContributor(event), SearchEverywherePreviewProvider {
 
-    private val filter = createSystemFilter(event.getRequiredData(CommonDataKeys.PROJECT))
+    private val filter = createSystemFilter(project)
 
     override fun createModel(project: Project): FilteringGotoByModel<SystemRef> {
         val model = GotoTypeModel(project, listOf(TypeChooseByNameContributor()))
@@ -48,30 +47,28 @@ class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSECont
     }
 
     override fun isShownInSeparateTab() = true
-    override fun getGroupName() = "SAP Types"
-    override fun getFullGroupName() = "SAP Types/"
+    override fun getGroupName() = "[y] Types"
+    override fun getFullGroupName() = "[y] Types/"
     override fun getSortWeight() = 2000
     override fun getActions(onChanged: Runnable) = doGetActions(filter, null, onChanged)
 
-    override fun getElementsRenderer(): ListCellRenderer<in Any?> {
-        return object : SearchEverywherePsiRenderer(this) {
-            override fun getIcon(element: PsiElement?) = when (element?.parentOfType<XmlTag>()?.localName) {
-                ItemTypes.ITEMTYPE -> HybrisIcons.TypeSystem.Types.ITEM
-                CollectionTypes.COLLECTIONTYPE -> HybrisIcons.TypeSystem.Types.COLLECTION
-                EnumTypes.ENUMTYPE -> HybrisIcons.TypeSystem.Types.ENUM
-                Relations.RELATION -> HybrisIcons.TypeSystem.Types.RELATION
-                MapTypes.MAPTYPE -> HybrisIcons.TypeSystem.Types.MAP
+    override fun getElementsRenderer(): ListCellRenderer<in Any?> = object : SearchEverywherePsiRenderer(this) {
+        override fun getIcon(element: PsiElement?) = when (element?.parentOfType<XmlTag>()?.localName) {
+            ItemTypes.ITEMTYPE -> HybrisIcons.TypeSystem.Types.ITEM
+            CollectionTypes.COLLECTIONTYPE -> HybrisIcons.TypeSystem.Types.COLLECTION
+            EnumTypes.ENUMTYPE -> HybrisIcons.TypeSystem.Types.ENUM
+            Relations.RELATION -> HybrisIcons.TypeSystem.Types.RELATION
+            MapTypes.MAPTYPE -> HybrisIcons.TypeSystem.Types.MAP
 
-                Beans.BEAN -> HybrisIcons.BeanSystem.BEAN
-                Beans.ENUM -> HybrisIcons.BeanSystem.ENUM
+            Beans.BEAN -> HybrisIcons.BeanSystem.BEAN
+            Beans.ENUM -> HybrisIcons.BeanSystem.ENUM
 
-                else -> null
-            }
-
-            override fun getElementText(element: PsiElement?) = element
-                ?.text
-                ?.let { StringUtil.unquoteString(it) }
+            else -> null
         }
+
+        override fun getElementText(element: PsiElement?) = element
+            ?.text
+            ?.let { StringUtil.unquoteString(it) }
     }
 
     class Factory : SearchEverywhereContributorFactory<Any?> {
@@ -92,16 +89,13 @@ class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSECont
     private class TypeChooseByNameContributor : ChooseByNameContributor {
         override fun getNames(project: Project?, includeNonProjectItems: Boolean): Array<String> {
             if (project == null) return emptyArray()
-            val types = TSMetaModelAccess.getInstance(project).getAll()
-                .mapNotNull { it.name }
+
+            return buildList {
+                addAll(TSMetaModelAccess.getInstance(project).getAll().mapNotNull { it.name })
+                addAll(BSMetaModelAccess.getInstance(project).getAllBeans().mapNotNull { it.name })
+                addAll(BSMetaModelAccess.getInstance(project).getAllEnums().mapNotNull { it.name })
+            }
                 .toTypedArray()
-            val beans = BSMetaModelAccess.getInstance(project).getAllBeans()
-                .mapNotNull { it.name }
-                .toTypedArray()
-            val enums = BSMetaModelAccess.getInstance(project).getAllEnums()
-                .mapNotNull { it.name }
-                .toTypedArray()
-            return types + beans + enums
         }
 
         override fun getItemsByName(name: String?, pattern: String?, project: Project?, includeNonProjectItems: Boolean): Array<NavigationItem> {
@@ -120,24 +114,20 @@ class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSECont
                         else -> null
                     }
                 }
-                .mapNotNull { it as? NavigationItem }
-                .toTypedArray()
 
             val beans = BSMetaModelAccess.getInstance(project).getAllBeans()
                 .filter { it.name?.lowercase()?.contains(pattern.lowercase()) == true }
                 .flatMap { it.retrieveAllDoms() }
                 .mapNotNull { it.clazz.xmlAttributeValue }
-                .mapNotNull { it as? NavigationItem }
-                .toTypedArray()
 
             val enums = BSMetaModelAccess.getInstance(project).getAllEnums()
                 .filter { it.name?.lowercase()?.contains(pattern.lowercase()) == true }
                 .flatMap { it.retrieveAllDoms() }
                 .mapNotNull { it.clazz.xmlAttributeValue }
+
+            return (types + beans + enums)
                 .mapNotNull { it as? NavigationItem }
                 .toTypedArray()
-
-            return types + beans + enums
         }
     }
 }
