@@ -47,6 +47,7 @@
 - Prefer macro references over `&DocId` or column type specific [#1373](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1373)
 - Inject Java class references into `java.lang.Class` columns [#1374](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1374)
 - Inject FlexibleSearch language into `AfterRetentionCleanupRule`:`itemFilterExpression` columns [#1375](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1375)
+- Added possibility to apply custom Color Scheme for `Header Lines` [#1380](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1380)
 
 ### `Terminal` integration
 - Added support of the `Terminal` plugin and set default directory to the project root for new Terminal Windows [#1342](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1342)

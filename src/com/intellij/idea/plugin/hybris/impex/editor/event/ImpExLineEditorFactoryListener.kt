@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.impex.editor.ImpExEditorMarkupModelHelper
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
@@ -37,7 +38,7 @@ class ImpExLineEditorFactoryListener : EditorFactoryListener {
         val editor = event.editor
         val project = editor.project ?: return
 
-        project.getService(ImpExLineHighlighterService::class.java).highlight(editor)
+        project.service<ImpExLineHighlighterService>().highlight(editor)
     }
 }
 
@@ -54,8 +55,10 @@ private class ImpExLineHighlighterService(private val project: Project, private 
             } ?: return@launch
 
             headerLines.entries.forEach {
+                ImpExEditorMarkupModelHelper.highlightHeaderLine(editor, it.key.textOffset)
+
                 it.value.forEachIndexed { index, impexValueLine ->
-                    ImpExEditorMarkupModelHelper.highlightLine(editor, index, impexValueLine.textOffset)
+                    ImpExEditorMarkupModelHelper.highlightValueLine(editor, index, impexValueLine.textOffset)
                 }
             }
         }

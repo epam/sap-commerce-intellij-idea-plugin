@@ -59,7 +59,7 @@ UPDATE Language; ${unique("isoCode")}[unique=true]; fallbackLanguages(isoCode); 
                ; en                               ; (+?) z                    ;
                ; en                               ; (-) fr                    ;
 
-INSERT SomeType; param; param2; param3
+<hl>INSERT SomeType; param; param2; param3</hl>
 <vlo>; value; value; another value</vlo>
 <vle>; value; value; another value</vle>
 <vlo>; value; value; another value</vlo>
@@ -103,6 +103,7 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
     private val customTags = with (RainbowHighlighter.createRainbowHLM()) {
         put("permission_inherited", ImpexHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED)
         put("attribute_header_abbreviation", ImpexHighlighterColors.ATTRIBUTE_HEADER_ABBREVIATION)
+        put("hl", ImpexHighlighterColors.HEADER_LINE)
         put("vle", ImpexHighlighterColors.VALUE_LINE_EVEN)
         put("vlo", ImpexHighlighterColors.VALUE_LINE_ODD)
         put("sev", ImpexHighlighterColors.ENUM_VALUE)
@@ -134,8 +135,9 @@ INSERT Employee; uid[unique=true]; @password[translator=de.hybris.platform.impex
         AttributesDescriptor("Separators//Parameters separator", ImpexHighlighterColors.PARAMETERS_SEPARATOR),
         AttributesDescriptor("Separators//Multi-line separator", ImpexHighlighterColors.MULTI_LINE_SEPARATOR),
 
-        AttributesDescriptor("Value line//Even", ImpexHighlighterColors.VALUE_LINE_EVEN),
-        AttributesDescriptor("Value line//Odd", ImpexHighlighterColors.VALUE_LINE_ODD),
+        AttributesDescriptor("Lines//Header line", ImpexHighlighterColors.HEADER_LINE),
+        AttributesDescriptor("Lines//Even value line", ImpexHighlighterColors.VALUE_LINE_EVEN),
+        AttributesDescriptor("Lines//Odd value line", ImpexHighlighterColors.VALUE_LINE_ODD),
 
         AttributesDescriptor("Value//Field value", ImpexHighlighterColors.FIELD_VALUE),
         AttributesDescriptor("Value//Single string", ImpexHighlighterColors.SINGLE_STRING),
