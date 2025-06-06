@@ -2,6 +2,7 @@
 
 ### `Java` enhancements
 - Introduced `ysai` live template for Spring `@Autowired` declaration [#1382](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1382)
+- Introduced `ysaqi` live template for Spring `@Autowired` + `@Qualifier` declaration [#1383](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1383)
 
 ## [2025.1.3]
 
