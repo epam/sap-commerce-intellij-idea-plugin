@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -37,6 +37,17 @@
               value="@javax.annotation.Resource(name = &quot;$BEAN_NAME$&quot;)
               private $CLASS_NAME$ $BEAN_PROP_NAME$;"
               description="Inject a Spring dependency annotated via @Resource annotation" toReformat="true" toShortenFQNames="true">
+        <variable name="CLASS_NAME" alwaysStopAt="true"/>
+        <variable name="BEAN_PROP_NAME" expression="suggestVariableName()" alwaysStopAt="true"/>
+        <variable name="BEAN_NAME" expression="complete()" defaultValue="BEAN_PROP_NAME" alwaysStopAt="true"/>
+        <context>
+            <option name="JAVA_DECLARATION" value="true"/>
+        </context>
+    </template>
+    <template name="ysai"
+              value="@org.springframework.beans.factory.annotation.Autowired
+              private $CLASS_NAME$ $BEAN_PROP_NAME$;"
+              description="Inject a Spring dependency annotated via @Autowired annotation" toReformat="true" toShortenFQNames="true">
         <variable name="CLASS_NAME" alwaysStopAt="true"/>
         <variable name="BEAN_PROP_NAME" expression="suggestVariableName()" alwaysStopAt="true"/>
         <variable name="BEAN_NAME" expression="complete()" defaultValue="BEAN_PROP_NAME" alwaysStopAt="true"/>

@@ -1,3 +1,8 @@
+## [2025.1.4]
+
+### `Java` enhancements
+- Introduced `ysai` live template for Spring `@Autowired` declaration [#1382](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1382)
+
 ## [2025.1.3]
 
 ### `Project Import` enhancements
