@@ -6,6 +6,7 @@
 
 ### `Kotlin` enhancements
 - Introduced `ysai` live template for Spring `@Autowired` declaration [#1384](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1384)
+- Introduced `ysaqi` live template for Spring `@Autowired` + `@Qualifier` declaration [#1385](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1385)
 
 ## [2025.1.3]
 

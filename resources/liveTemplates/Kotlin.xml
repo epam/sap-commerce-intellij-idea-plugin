@@ -42,12 +42,22 @@
         </context>
     </template>
     <template name="ysai"
-              value="@org.springframework.beans.factory.annotation.Autowired
-              private lateinit var  $var$: $type$"
+              value="@org.springframework.beans.factory.annotation.Autowired private lateinit var  $var$: $type$"
               description="Inject a Spring dependency annotated via @Autowired annotation" toReformat="true"
               toShortenFQNames="true">
         <variable name="type" expression="complete()" alwaysStopAt="true"/>
         <variable name="var" expression="decapitalize(type)" alwaysStopAt="true"/>
+        <context>
+            <option name="KOTLIN_CLASS" value="true"/>
+        </context>
+    </template>
+    <template name="ysaqi"
+              value="@org.springframework.beans.factory.annotation.Autowired
+              @org.springframework.beans.factory.annotation.Qualifier(&quot;$alias$&quot;) private lateinit var  $var$: $type$"
+              description="Inject a Spring dependency annotated via @Autowired and @Qualifier annotations" toReformat="true" toShortenFQNames="true">
+        <variable name="type" expression="complete()" alwaysStopAt="true"/>
+        <variable name="var" expression="decapitalize(type)" alwaysStopAt="true"/>
+        <variable name="alias" expression="decapitalize(type)" alwaysStopAt="true"/>
         <context>
             <option name="KOTLIN_CLASS" value="true"/>
         </context>
