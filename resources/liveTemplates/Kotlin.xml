@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -34,9 +34,20 @@
     <template name="ysri"
               value="@javax.annotation.Resource(name = &quot;$alias$&quot;) private lateinit var  $var$: $type$"
               description="Inject a Spring dependency annotated via @Resource annotation" toReformat="true" toShortenFQNames="true">
-        <variable name="type" expression="complete()" default="Any" alwaysStopAt="true"/>
-        <variable name="var" expression="decapitalize(type)" default="" alwaysStopAt="true"/>
-        <variable name="alias" expression="decapitalize(type)" default="" alwaysStopAt="true"/>
+        <variable name="type" expression="complete()" alwaysStopAt="true"/>
+        <variable name="var" expression="decapitalize(type)" alwaysStopAt="true"/>
+        <variable name="alias" expression="decapitalize(type)" alwaysStopAt="true"/>
+        <context>
+            <option name="KOTLIN_CLASS" value="true"/>
+        </context>
+    </template>
+    <template name="ysai"
+              value="@org.springframework.beans.factory.annotation.Autowired
+              private lateinit var  $var$: $type$"
+              description="Inject a Spring dependency annotated via @Autowired annotation" toReformat="true"
+              toShortenFQNames="true">
+        <variable name="type" expression="complete()" alwaysStopAt="true"/>
+        <variable name="var" expression="decapitalize(type)" alwaysStopAt="true"/>
         <context>
             <option name="KOTLIN_CLASS" value="true"/>
         </context>
