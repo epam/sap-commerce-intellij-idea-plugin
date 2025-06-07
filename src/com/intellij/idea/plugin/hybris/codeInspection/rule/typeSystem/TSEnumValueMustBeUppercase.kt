@@ -55,7 +55,7 @@ class TSEnumValueMustBeUppercase : AbstractTSInspection() {
         val enumName = enumType.code.stringValue ?: return
         val code = enumValue.code.stringValue
             ?.replace("_", "")
-            ?.let { numbers.replace(it, "") }
+            ?.let { numbersRegex.replace(it, "") }
             ?: return
         if (StringUtil.isUpperCase(code)) return
 
@@ -67,7 +67,6 @@ class TSEnumValueMustBeUppercase : AbstractTSInspection() {
         )
     }
 
-    companion object {
-        private val numbers = Regex("\\d")
-    }
 }
+
+private val numbersRegex = Regex("\\d")

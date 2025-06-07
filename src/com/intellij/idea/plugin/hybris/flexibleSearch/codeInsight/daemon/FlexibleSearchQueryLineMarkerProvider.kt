@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -97,9 +97,10 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
         icon: Icon,
         tooltipProvider: Function<in PsiElement?, String>,
         val action: AnAction
-    ) :
-        MergeableLineMarkerInfo<PsiElement?>(element, element.textRange, icon, tooltipProvider, null, GutterIconRenderer.Alignment.CENTER,
-            Supplier { tooltipProvider.`fun`(element) }) {
+    ) : MergeableLineMarkerInfo<PsiElement?>(
+        element, element.textRange, icon, tooltipProvider, null, GutterIconRenderer.Alignment.CENTER,
+        Supplier { tooltipProvider.`fun`(element) }
+    ) {
 
         override fun createGutterRenderer(): GutterIconRenderer {
             return object : LineMarkerGutterIconRenderer<PsiElement?>(this) {
