@@ -20,7 +20,9 @@ package com.intellij.idea.plugin.hybris.impex.lang
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo
-import com.intellij.database.csv.CsvFormats
+import com.intellij.database.csv.CsvFormat
+import com.intellij.database.csv.CsvRecordFormat
+import com.intellij.database.csv.CsvRecordFormat.QuotationPolicy
 import com.intellij.database.vfs.fragment.CsvTableDataFragmentFile
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider.FlexibleSearchQueryLineMarkerInfo
@@ -31,9 +33,11 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import com.intellij.psi.SmartPointerManager
+import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.psi.util.firstLeaf
 import com.intellij.util.Function
 import java.util.function.Supplier
 import javax.swing.Icon
@@ -43,22 +47,36 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         if (element !is ImpexHeaderLine) return null
 
-        val tooltipProvider = Function { _: PsiElement? -> "Enter Data Edit Mode..." }
+        val headerLinePointer = SmartPointerManager.getInstance(element.project).createSmartPsiElementPointer(element)
 
         return FlexibleSearchQueryLineMarkerInfo(
-            element,
+            element.anyHeaderMode.firstLeaf(),
             HybrisIcons.ImpEx.Actions.TABLE_FRAGMENT_MODE,
-            tooltipProvider,
-            OpenInPreview(element.containingFile.virtualFile, element.tableRange)
+            Function { _: PsiElement? -> "Enter Data Edit Mode..." },
+            OpenInPreview(element.containingFile.virtualFile, headerLinePointer)
         )
     }
 
-    internal class OpenInPreview(val vf: VirtualFile, val tableRange: TextRange) : AnAction() {
+    internal class OpenInPreview(val vf: VirtualFile, val headerLinePointer: SmartPsiElementPointer<ImpexHeaderLine>) : AnAction() {
+
+        private val valueSeparator = ";"
+        private val quotationPolicy = QuotationPolicy.NEVER
+        private val xsvImpExFormat by lazy { xsvImpExFormat() }
+
         override fun actionPerformed(e: AnActionEvent) {
-            val project = e.project ?: return
-            val fragmentFile = CsvTableDataFragmentFile(vf, tableRange, CsvFormats.SEMICOLON_SEPARATED_FORMAT.get())
+            val project = headerLinePointer.project
+            val tableRange = headerLinePointer.element?.tableRange ?: return
+
+            val fragmentFile = CsvTableDataFragmentFile(vf, tableRange, xsvImpExFormat)
 
             FileEditorManager.getInstance(project).openFile(fragmentFile)
+        }
+
+        private fun xsvImpExFormat(): CsvFormat {
+            val headerFormat = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", false)
+            val dataFormat = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", false)
+
+            return CsvFormat("ImpEx", dataFormat, headerFormat, "ImpEx", false)
         }
     }
 
