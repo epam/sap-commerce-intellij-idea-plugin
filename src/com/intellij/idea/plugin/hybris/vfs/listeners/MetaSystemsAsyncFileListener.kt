@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSModificationTracker
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.AsyncFileListener
@@ -71,7 +70,7 @@ class MetaSystemsAsyncFileListener : AsyncFileListener {
                             // extra cases on a file, not covered by CacheValue upToDate evaluation: create, remove, rename
                             try {
                                 tracker.resetCache(fileNames)
-                            } catch (e: ProcessCanceledException) {
+                            } catch (_: Throwable) {
                                 // do nothing; once done, model access service will notify all listeners
                             }
                         }

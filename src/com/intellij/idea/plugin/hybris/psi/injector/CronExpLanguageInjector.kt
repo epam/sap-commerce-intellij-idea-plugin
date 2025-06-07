@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
@@ -84,16 +83,10 @@ class CronExpLanguageInjector : LanguageInjector {
     }
 
     private fun injectLanguage(injectionPlacesRegistrar: InjectedLanguagePlaces, length: Int, offset: Int) {
-        try {
-            injectionPlacesRegistrar.addPlace(
-                CronExpLanguage,
-                TextRange.from(offset, length), null, null
-            )
-        } catch (e: ProcessCanceledException) {
-            // ignore
-        } catch (e: Throwable) {
-            LOG.error(e)
-        }
+        injectionPlacesRegistrar.addPlace(
+            CronExpLanguage,
+            TextRange.from(offset, length), null, null
+        )
     }
 
     companion object {

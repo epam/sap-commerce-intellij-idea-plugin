@@ -21,7 +21,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.system.type.ScriptType
 import com.intellij.lang.javascript.JavascriptLanguage
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
@@ -57,16 +56,10 @@ class JavaScriptLanguageInjector : LanguageInjector {
     }
 
     private fun injectLanguage(injectionPlacesRegistrar: InjectedLanguagePlaces, length: Int, offset: Int) {
-        try {
-            injectionPlacesRegistrar.addPlace(
-                JavascriptLanguage,
-                TextRange.from(offset, length), null, null
-            )
-        } catch (e: ProcessCanceledException) {
-            // ignore
-        } catch (e: Throwable) {
-            LOG.error(e)
-        }
+        injectionPlacesRegistrar.addPlace(
+            JavascriptLanguage,
+            TextRange.from(offset, length), null, null
+        )
     }
 
     companion object {

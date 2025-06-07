@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,6 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexGroovyScriptBody
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.system.type.ScriptType
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
@@ -81,10 +80,9 @@ class GroovyLanguageInjector : LanguageInjector {
      * `line` is actually a Map returned by the de.hybris.platform.impex.jalo.AbstractCodeLine.
      */
     private fun injectLanguage(injectionPlacesRegistrar: InjectedLanguagePlaces, length: Int, offset: Int) {
-        try {
-            injectionPlacesRegistrar.addPlace(
-                GroovyLanguage,
-                TextRange.from(offset, length), """
+        injectionPlacesRegistrar.addPlace(
+            GroovyLanguage,
+            TextRange.from(offset, length), """
                     import de.hybris.platform.core.*
                     import de.hybris.platform.core.model.user.* 
                     import de.hybris.platform.core.HybrisEnumValue
@@ -101,12 +99,7 @@ class GroovyLanguageInjector : LanguageInjector {
                     def impex = new de.hybris.platform.impex.jalo.imp.ImpExImportReader(null);
                     
                 """.trimIndent(), null
-            )
-        } catch (e: ProcessCanceledException) {
-            // ignore
-        } catch (e: Throwable) {
-            LOG.error(e)
-        }
+        )
     }
 
     companion object {

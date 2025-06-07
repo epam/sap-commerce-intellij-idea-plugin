@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.impex.injection
 import com.intellij.idea.plugin.hybris.impex.psi.impl.ImpexStringImpl
 import com.intellij.lang.xml.XMLLanguage
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
@@ -41,17 +40,10 @@ class ImpexXmlLanguageInjector : LanguageInjector {
         val hostString = StringUtil.unquoteString(host.getText()).lowercase()
         if (StringUtil.trim(hostString).replaceFirst("\"", "").isXmlLike()) {
             val language = XMLLanguage.INSTANCE
-            try {
-                injectionPlacesRegistrar.addPlace(
-                    language,
-                    TextRange.from(QUOTE_SYMBOL_LENGTH, host.getTextLength() - 2), null, null
-                )
-            } catch (e: ProcessCanceledException) {
-                // ignore
-            } catch (e: Throwable) {
-                LOG.error(e)
-            }
-
+            injectionPlacesRegistrar.addPlace(
+                language,
+                TextRange.from(QUOTE_SYMBOL_LENGTH, host.getTextLength() - 2), null, null
+            )
         }
     }
 

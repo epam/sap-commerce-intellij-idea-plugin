@@ -32,7 +32,6 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
@@ -102,7 +101,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     private fun refreshContent(changeType: BSViewSettings.ChangeType) {
         try {
             refreshContent(metaModelStateService.get(), changeType)
-        } catch (e: ProcessCanceledException) {
+        } catch (_: Throwable) {
             setContentInitializing()
         }
     }

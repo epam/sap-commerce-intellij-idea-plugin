@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.lang.injection.impl
 
 import com.intellij.lang.Language
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiElement
@@ -51,18 +50,12 @@ abstract class AbstractLanguageInjectorProvider(private val injectLanguage: Lang
         suffix: String? = null,
         textRange: TextRange = TextRange.from(quoteLength, host.textLength - (quoteLength * 2))
     ) {
-        try {
-            injectionPlacesRegistrar.addPlace(
-                injectLanguage,
-                textRange,
-                prefix,
-                suffix
-            )
-        } catch (e: ProcessCanceledException) {
-            // ignore
-        } catch (e: Throwable) {
-            LOG.error(e)
-        }
+        injectionPlacesRegistrar.addPlace(
+            injectLanguage,
+            textRange,
+            prefix,
+            suffix
+        )
     }
 
     companion object {

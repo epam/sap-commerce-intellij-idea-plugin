@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateSe
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
@@ -48,7 +47,7 @@ class PreLoadSystemsStartupActivity : ProjectActivity {
         DumbService.getInstance(project).runWhenSmart {
             try {
                 refresher.invoke(project)
-            } catch (e: ProcessCanceledException) {
+            } catch (_: Throwable) {
                 // ignore
             }
         }
