@@ -11,6 +11,9 @@
 ### Fixes
 - Comply with _Companion object in extensions_ Plugin DevKit inspection [#1386](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1386)
 
+### Other
+- Added first version of the Privacy Policy [#1387](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1387)
+
 ## [2025.1.3]
 
 ### `Project Import` enhancements
