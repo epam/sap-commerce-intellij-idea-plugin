@@ -1,5 +1,8 @@
 ## [2025.1.4]
 
+### `ImpEx` enhancements
+- Introduced `Data Edit` mode per individual table statements per ImpEx file [#1392](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1392)
+
 ### `Java` enhancements
 - Introduced `ysai` live template for Spring `@Autowired` declaration [#1382](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1382)
 - Introduced `ysaqi` live template for Spring `@Autowired` + `@Qualifier` declaration [#1383](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1383)

@@ -318,8 +318,13 @@ dependencies {
 
         pluginVerifier()
 
+        bundledModules(
+            "intellij.grid.impl"
+        )
+
         // printBundledPlugins for bundled plugins
         bundledPlugins(
+            "intellij.grid.plugin",
             "com.intellij.java",
             "com.intellij.java-i18n",
             "com.intellij.cron",

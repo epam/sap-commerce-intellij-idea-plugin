@@ -142,6 +142,8 @@ object HybrisIcons {
             val REMOVE_TABLE = getIcon("/icons/impex/actions/tableRemove.svg")
             val SELECT_TABLE = getIcon("/icons/impex/actions/tableSelect.svg")
             val SPLIT_TABLE_VERTICALLY = getIcon("/icons/impex/actions/tableSplitVertically.svg")
+
+            val TABLE_FRAGMENT_MODE = getIcon("/icons/impex/actions/tableFragment.svg")
         }
     }
 
