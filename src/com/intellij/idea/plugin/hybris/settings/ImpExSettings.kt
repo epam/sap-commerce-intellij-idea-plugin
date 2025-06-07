@@ -29,6 +29,7 @@ data class ImpexSettings(
 
 data class ImpExEditModeSettings(
     var firstRowIsHeader: Boolean = true,
+    var trimWhitespace: Boolean = false,
 )
 
 data class ImpexFoldingSettings(

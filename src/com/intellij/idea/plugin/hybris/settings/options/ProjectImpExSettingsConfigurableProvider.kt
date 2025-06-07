@@ -49,7 +49,11 @@ class ProjectImpExSettingsConfigurableProvider(val project: Project) : Configura
                     checkBox("First row is header")
                         .bindSelected(projectSettings.editMode::firstRowIsHeader)
                 }
-            }
+                row {
+                    checkBox("Trim whitespace")
+                        .bindSelected(projectSettings.editMode::trimWhitespace)
+                }
+            }.rowComment("This functionality relies and expects that 'intellij.grid.plugin' is available and enabled.")
             group("Code Folding") {
                 row {
                     foldingEnableCheckBox = checkBox("Enable code folding")

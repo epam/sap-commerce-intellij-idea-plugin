@@ -22,25 +22,36 @@ import com.intellij.database.csv.CsvFormat
 import com.intellij.database.csv.CsvRecordFormat
 import com.intellij.database.csv.CsvRecordFormat.QuotationPolicy
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import java.util.*
 
-@Service(Service.Level.PROJECT)
 class ImpExXSVFormatService(private val project: Project) {
 
+    private val developerSettings = DeveloperSettingsComponent.getInstance(project)
     private val valueSeparator = ";"
     private val quotationPolicy = QuotationPolicy.NEVER
+    private val formats = mutableMapOf<BitSet, CsvFormat>()
 
-    private val defaultFormat by lazy { xsvImpExFormat() }
-    private val noHeaderFormat by lazy { xsvImpExFormat(false) }
+    fun getFormat(): CsvFormat {
+        val editModeSettings = developerSettings.state.impexSettings.editMode
 
-    fun getFormat() = if (DeveloperSettingsComponent.getInstance(project).state.impexSettings.editMode.firstRowIsHeader) defaultFormat
-    else noHeaderFormat
+        val key = BitSet(2).also {
+            it.set(0, editModeSettings.firstRowIsHeader)
+            it.set(1, editModeSettings.trimWhitespace)
+        }
 
-    private fun xsvImpExFormat(firstRowIsHeader: Boolean = true): CsvFormat {
-        val headerFormat = if (firstRowIsHeader) CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", false)
+        return formats.computeIfAbsent(key) {
+            xsvImpExFormat(
+                firstRowIsHeader = key.get(0),
+                trimWhitespace = key.get(1)
+            )
+        }
+    }
+
+    private fun xsvImpExFormat(firstRowIsHeader: Boolean, trimWhitespace: Boolean): CsvFormat {
+        val headerFormat = if (firstRowIsHeader) CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", trimWhitespace)
         else null
-        val dataFormat = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", false)
+        val dataFormat = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", trimWhitespace)
 
         return CsvFormat("ImpEx", dataFormat, headerFormat, "ImpEx", false)
     }
