@@ -9,7 +9,7 @@
 - Introduced `ysaqi` live template for Spring `@Autowired` + `@Qualifier` declaration [#1385](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1385)
 
 ### Fixes
-- Comply with _Companion object in extensions_ Plugin Devkit inspection [#1386](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1386)
+- Comply with _Companion object in extensions_ Plugin DevKit inspection [#1386](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1386)
 
 ## [2025.1.3]
 
