@@ -60,7 +60,7 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
     private fun process(
         element: PsiElement,
         expressionProvider: () -> String
-    ): FlexibleSearchQueryLineMarkerInfo? {
+    ): ImpExDataEditModeLineMarkerInfo? {
         val parent = element.parent
         if (parent !is PsiVariable || parent.nameIdentifier == null) return null
         if (!ProjectSettingsComponent.getInstance(element.project).isHybrisProject()) return null
@@ -74,7 +74,7 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
             "${message("hybris.editor.gutter.fsq.tooltip")}<br><hr>$formattedExpression"
         }
 
-        return FlexibleSearchQueryLineMarkerInfo(parent.nameIdentifier!!, icon, tooltipProvider, CopyToClipboard(formattedExpression))
+        return ImpExDataEditModeLineMarkerInfo(parent.nameIdentifier!!, icon, tooltipProvider, CopyToClipboard(formattedExpression))
     }
 
     private fun formatExpression(project: Project, expression: String): String {
@@ -92,7 +92,7 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
         }
     }
 
-    internal class FlexibleSearchQueryLineMarkerInfo(
+    internal class ImpExDataEditModeLineMarkerInfo(
         element: PsiElement,
         icon: Icon,
         tooltipProvider: Function<in PsiElement?, String>,
@@ -102,18 +102,14 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
         Supplier { tooltipProvider.`fun`(element) }
     ) {
 
-        override fun createGutterRenderer(): GutterIconRenderer {
-            return object : LineMarkerGutterIconRenderer<PsiElement?>(this) {
-                override fun getClickAction() = action
-                override fun isNavigateAction() = true
-                override fun getPopupMenuActions() = null
-            }
+        override fun createGutterRenderer(): GutterIconRenderer = object : LineMarkerGutterIconRenderer<PsiElement?>(this) {
+            override fun getClickAction() = action
+            override fun isNavigateAction() = true
+            override fun getPopupMenuActions() = null
         }
 
         override fun getEditorFilter(): MarkupEditorFilter = MarkupEditorFilterFactory.createIsNotDiffFilter()
-
-        override fun canMergeWith(info: MergeableLineMarkerInfo<*>) = info is FlexibleSearchQueryLineMarkerInfo && info.getIcon() === icon
-
+        override fun canMergeWith(info: MergeableLineMarkerInfo<*>) = info is ImpExDataEditModeLineMarkerInfo && info.icon === icon
         override fun getCommonIcon(infos: List<MergeableLineMarkerInfo<*>?>): Icon = icon
     }
 

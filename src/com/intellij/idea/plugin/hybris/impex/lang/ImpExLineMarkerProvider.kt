@@ -20,15 +20,13 @@ package com.intellij.idea.plugin.hybris.impex.lang
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo
-import com.intellij.database.csv.CsvFormat
-import com.intellij.database.csv.CsvRecordFormat
-import com.intellij.database.csv.CsvRecordFormat.QuotationPolicy
 import com.intellij.database.vfs.fragment.CsvTableDataFragmentFile
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider.FlexibleSearchQueryLineMarkerInfo
+import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider.ImpExDataEditModeLineMarkerInfo
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
@@ -49,7 +47,7 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
 
         val headerLinePointer = SmartPointerManager.getInstance(element.project).createSmartPsiElementPointer(element)
 
-        return FlexibleSearchQueryLineMarkerInfo(
+        return ImpExDataEditModeLineMarkerInfo(
             element.anyHeaderMode.firstLeaf(),
             HybrisIcons.ImpEx.Actions.TABLE_FRAGMENT_MODE,
             Function { _: PsiElement? -> "Enter Data Edit Mode..." },
@@ -58,25 +56,13 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
     }
 
     internal class OpenInPreview(val vf: VirtualFile, val headerLinePointer: SmartPsiElementPointer<ImpexHeaderLine>) : AnAction() {
-
-        private val valueSeparator = ";"
-        private val quotationPolicy = QuotationPolicy.NEVER
-        private val xsvImpExFormat by lazy { xsvImpExFormat() }
-
         override fun actionPerformed(e: AnActionEvent) {
             val project = headerLinePointer.project
             val tableRange = headerLinePointer.element?.tableRange ?: return
-
-            val fragmentFile = CsvTableDataFragmentFile(vf, tableRange, xsvImpExFormat)
+            val format = project.service<ImpExXSVFormatService>().getFormat()
+            val fragmentFile = CsvTableDataFragmentFile(vf, tableRange, format)
 
             FileEditorManager.getInstance(project).openFile(fragmentFile)
-        }
-
-        private fun xsvImpExFormat(): CsvFormat {
-            val headerFormat = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", false)
-            val dataFormat = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", false)
-
-            return CsvFormat("ImpEx", dataFormat, headerFormat, "ImpEx", false)
         }
     }
 

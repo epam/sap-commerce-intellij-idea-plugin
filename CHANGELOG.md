@@ -3,6 +3,7 @@
 ### `ImpEx` enhancements
 - Introduced `Data Edit` mode per individual table statements per ImpEx file [#1392](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1392)
 - Introduced ImpEx-like custom CSV Format for `Data Edit` mode [#1393](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1393)
+- Added new configurable setting _First row is header_ for `Data Edit` mode [#1394](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1394)
 
 ### `Java` enhancements
 - Introduced `ysai` live template for Spring `@Autowired` declaration [#1382](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1382)
