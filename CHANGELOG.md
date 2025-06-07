@@ -12,6 +12,7 @@
 - Comply with _Companion object in extensions_ Plugin DevKit inspection [#1386](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1386)
 - Comply with _Cancellation exception handled incorrectly_ Plugin DevKit inspection [#1388](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1388)
 - Comply with _Incorrect parentDisposable parameter_ Plugin DevKit inspection [#1389](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1389)
+- Comply with _Incorrect service retrieving_ Plugin DevKit inspection [#1390](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1390)
 
 ### Other
 - Added first version of the Privacy Policy [#1387](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1387)
