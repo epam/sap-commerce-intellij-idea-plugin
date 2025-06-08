@@ -22,20 +22,15 @@ import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo
 import com.intellij.database.vfs.fragment.CsvTableDataFragmentFile
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider.ImpExDataEditModeLineMarkerInfo
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import com.intellij.psi.SmartPointerManager
-import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.firstLeaf
+import com.intellij.psi.util.parentOfType
 import com.intellij.util.Function
 import java.util.function.Supplier
 import javax.swing.Icon
@@ -45,45 +40,34 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
         if (element !is ImpexHeaderLine) return null
 
-        val headerLinePointer = SmartPointerManager.getInstance(element.project).createSmartPsiElementPointer(element)
-
         return ImpExDataEditModeLineMarkerInfo(
             element.anyHeaderMode.firstLeaf(),
-            HybrisIcons.ImpEx.Actions.TABLE_FRAGMENT_MODE,
-            Function { _: PsiElement? -> "Enter Data Edit Mode..." },
-            OpenInPreview(element.containingFile.virtualFile, headerLinePointer)
+            HybrisIcons.ImpEx.Actions.TABLE_FRAGMENT_MODE
         )
     }
 
-    internal class OpenInPreview(val vf: VirtualFile, val headerLinePointer: SmartPsiElementPointer<ImpexHeaderLine>) : AnAction() {
-        override fun actionPerformed(e: AnActionEvent) {
-            val project = headerLinePointer.project
-            val tableRange = headerLinePointer.element?.tableRange ?: return
-            val format = project.service<ImpExXSVFormatService>().getFormat()
-            val fragmentFile = CsvTableDataFragmentFile(vf, tableRange, format)
+    private fun openEditMode(leaf: PsiElement?) {
+        val element = leaf?.parentOfType<ImpexHeaderLine>()
+        val project = element?.project ?: return
+        val tableRange = element.tableRange
+        val format = project.service<ImpExXSVFormatService>().getFormat()
+        val fragmentFile = CsvTableDataFragmentFile(leaf.containingFile.virtualFile, tableRange, format)
 
-            FileEditorManager.getInstance(project).openFile(fragmentFile)
-        }
+        FileEditorManager.getInstance(project).openFile(fragmentFile)
     }
 
-    internal class ImpExLineMarkerInfo(
-        element: PsiElement,
+    private inner class ImpExDataEditModeLineMarkerInfo(
+        leaf: PsiElement,
         icon: Icon,
-        tooltipProvider: Function<in PsiElement?, String>,
-        val action: AnAction
     ) : MergeableLineMarkerInfo<PsiElement?>(
-        element, element.textRange, icon, tooltipProvider, null, GutterIconRenderer.Alignment.CENTER,
-        Supplier { tooltipProvider.`fun`(element) }
+        leaf, leaf.textRange, icon,
+        Function { "Enter Data Edit Mode" },
+        { _, e -> openEditMode(e) },
+        GutterIconRenderer.Alignment.CENTER,
+        Supplier { "Enter Data Edit Mode" }
     ) {
-
-        override fun createGutterRenderer(): GutterIconRenderer = object : LineMarkerGutterIconRenderer<PsiElement?>(this) {
-            override fun getClickAction() = action
-            override fun isNavigateAction() = true
-            override fun getPopupMenuActions() = null
-        }
-
         override fun getEditorFilter(): MarkupEditorFilter = MarkupEditorFilterFactory.createIsNotDiffFilter()
         override fun getCommonIcon(infos: List<MergeableLineMarkerInfo<*>?>): Icon = icon
-        override fun canMergeWith(info: MergeableLineMarkerInfo<*>) = info is ImpExLineMarkerInfo && info.icon === icon
+        override fun canMergeWith(info: MergeableLineMarkerInfo<*>) = info is ImpExDataEditModeLineMarkerInfo && info.icon === icon
     }
 }

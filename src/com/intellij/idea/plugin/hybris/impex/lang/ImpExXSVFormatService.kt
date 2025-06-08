@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComp
 import com.intellij.openapi.project.Project
 import java.util.*
 
-class ImpExXSVFormatService(private val project: Project) {
+class ImpExXSVFormatService(project: Project) {
 
     private val developerSettings = DeveloperSettingsComponent.getInstance(project)
     private val valueSeparator = ";"

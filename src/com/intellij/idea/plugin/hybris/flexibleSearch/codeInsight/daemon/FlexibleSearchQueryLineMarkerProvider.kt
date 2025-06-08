@@ -28,88 +28,74 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementF
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
 import com.intellij.openapi.editor.markup.MarkupEditorFilterFactory
 import com.intellij.openapi.ide.CopyPasteManager
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.PsiPolyadicExpression
 import com.intellij.psi.PsiVariable
 import com.intellij.psi.codeStyle.CodeStyleManager
-import com.intellij.util.Function
 import java.awt.datatransfer.StringSelection
 import java.util.function.Supplier
 import javax.swing.Icon
-
 
 class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
 
     override fun getName() = message("hybris.editor.gutter.fsq.name")
     override fun getIcon(): Icon = HybrisIcons.FlexibleSearch.FILE
 
-    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? = when (element) {
-        is PsiPolyadicExpression -> process(element) { FxSUtils.computeExpression(element) }
-        is PsiLiteralExpression -> process(element) { FxSUtils.computeExpression(element) }
-        else -> null
+    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
+        if (!ProjectSettingsComponent.getInstance(element.project).isHybrisProject()) return null
+
+        return when (element) {
+            is PsiPolyadicExpression -> process(element) { FxSUtils.computeExpression(element) }
+            is PsiLiteralExpression -> process(element) { FxSUtils.computeExpression(element) }
+            else -> null
+        }
     }
 
     private fun process(
         element: PsiElement,
         expressionProvider: () -> String
-    ): ImpExDataEditModeLineMarkerInfo? {
+    ): FlexibleSearchDataEditModeLineMarkerInfo? {
         val parent = element.parent
         if (parent !is PsiVariable || parent.nameIdentifier == null) return null
-        if (!ProjectSettingsComponent.getInstance(element.project).isHybrisProject()) return null
 
         val expression = expressionProvider.invoke()
         if (!FxSUtils.isFlexibleSearchQuery(expression)) return null
 
-        val formattedExpression = formatExpression(element.project, expression)
-
-        val tooltipProvider = Function { _: PsiElement? ->
-            "${message("hybris.editor.gutter.fsq.tooltip")}<br><hr>$formattedExpression"
-        }
-
-        return ImpExDataEditModeLineMarkerInfo(parent.nameIdentifier!!, icon, tooltipProvider, CopyToClipboard(formattedExpression))
+        return FlexibleSearchDataEditModeLineMarkerInfo(parent.nameIdentifier!!, icon, expression)
     }
 
-    private fun formatExpression(project: Project, expression: String): String {
-        val fxsFile = FlexibleSearchElementFactory.createFile(project, expression)
+    private fun copyToClipboard(e: PsiElement?, expression: String) {
+        val project = e?.project ?: return
 
-        return CodeStyleManager.getInstance(project).reformat(fxsFile).text
+        val formattedExpression = FlexibleSearchElementFactory.createFile(project, expression)
+            .let { CodeStyleManager.getInstance(project).reformat(it) }
+            .text
+
+        CopyPasteManager.getInstance().setContents(StringSelection(formattedExpression))
+
+        Notifications.create(NotificationType.INFORMATION, message("hybris.editor.gutter.fsq.notification.title"), formattedExpression)
+            .hideAfter(10)
+            .notify(project)
     }
 
-    internal class CopyToClipboard(val content: String) : AnAction() {
-        override fun actionPerformed(e: AnActionEvent) {
-            CopyPasteManager.getInstance().setContents(StringSelection(content))
-            Notifications.create(NotificationType.INFORMATION, message("hybris.editor.gutter.fsq.notification.title"), content)
-                .hideAfter(10)
-                .notify(e.project)
-        }
-    }
-
-    internal class ImpExDataEditModeLineMarkerInfo(
+    private inner class FlexibleSearchDataEditModeLineMarkerInfo(
         element: PsiElement,
         icon: Icon,
-        tooltipProvider: Function<in PsiElement?, String>,
-        val action: AnAction
+        expression: String
     ) : MergeableLineMarkerInfo<PsiElement?>(
-        element, element.textRange, icon, tooltipProvider, null, GutterIconRenderer.Alignment.CENTER,
-        Supplier { tooltipProvider.`fun`(element) }
+        element, element.textRange, icon,
+        { _ -> message("hybris.editor.gutter.fsq.tooltip") },
+        { _, e -> copyToClipboard(e, expression) },
+        GutterIconRenderer.Alignment.CENTER,
+        Supplier { message("hybris.editor.gutter.fsq.tooltip") }
     ) {
-
-        override fun createGutterRenderer(): GutterIconRenderer = object : LineMarkerGutterIconRenderer<PsiElement?>(this) {
-            override fun getClickAction() = action
-            override fun isNavigateAction() = true
-            override fun getPopupMenuActions() = null
-        }
-
         override fun getEditorFilter(): MarkupEditorFilter = MarkupEditorFilterFactory.createIsNotDiffFilter()
-        override fun canMergeWith(info: MergeableLineMarkerInfo<*>) = info is ImpExDataEditModeLineMarkerInfo && info.icon === icon
+        override fun canMergeWith(info: MergeableLineMarkerInfo<*>) = info is FlexibleSearchDataEditModeLineMarkerInfo && info.icon === icon
         override fun getCommonIcon(infos: List<MergeableLineMarkerInfo<*>?>): Icon = icon
     }
 
