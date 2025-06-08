@@ -9,6 +9,9 @@
 ### `FlexibleSearch` enhancements
 - Simplified _Copy to Clipboard_ action for injected FxS into Java classes [#1396](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1396)
 
+### `Polyglot Query` enhancements
+- Simplified _Copy to Clipboard_ action for injected PgQ into Java classes [#1397](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1397)
+
 ### `Java` enhancements
 - Introduced `ysai` live template for Spring `@Autowired` declaration [#1382](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1382)
 - Introduced `ysaqi` live template for Spring `@Autowired` + `@Qualifier` declaration [#1383](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1383)
