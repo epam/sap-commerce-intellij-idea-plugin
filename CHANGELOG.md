@@ -11,6 +11,7 @@
 
 ### `Polyglot Query` enhancements
 - Simplified _Copy to Clipboard_ action for injected PgQ into Java classes [#1397](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1397)
+- Created new Language icon [#1398](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1398)
 
 ### `Java` enhancements
 - Introduced `ysai` live template for Spring `@Autowired` declaration [#1382](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1382)
