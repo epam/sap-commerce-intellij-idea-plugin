@@ -20,10 +20,12 @@ package com.intellij.idea.plugin.hybris.vfs.listeners
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSModificationTracker
-import com.intellij.idea.plugin.hybris.system.meta.MetaModelModificationTracker
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
+import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
@@ -31,32 +33,42 @@ import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import com.intellij.util.PathUtil
 import com.intellij.util.asSafely
 
-// TODO: Add support of the CNG-related files changes
+/**
+ * Limitation due performance restrictions:
+ *
+ * For CockpitNG changes only modification of already tracked files is supported (rename, remove, move, etc.)
+ * Anyway, any modification to file itself will trigger corresponding PsiTree change which will be tracked by {@see com.intellij.idea.plugin.hybris.psi.listeners.PsiTreeChangeListener}
+ * It means, that crete/move without modification of the file content may not always re-trigger cache re-evaluation.
+ */
 class MetaSystemsAsyncFileListener : AsyncFileListener {
+
+    private fun mapToTracker(fileName: String, fqn: String, project: Project, trackedCngModels: Set<String>) = when {
+        fileName.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> project.service<TSModificationTracker>() to fileName
+        fileName.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING) -> project.service<BSModificationTracker>() to fileName
+        // in case of the CockpitNG FQN is being tracked
+        trackedCngModels.contains(fqn) -> project.service<CngModificationTracker>() to fqn
+        else -> null
+    }
 
     override fun prepareChange(events: List<VFileEvent>) = ProjectManager.getInstance().openProjects
         .filterNot { DumbService.isDumb(it) }
         .filter { ProjectSettingsComponent.getInstance(it).isHybrisProject() }
         .mapNotNull { project ->
+            val trackedCngModels by lazy { project.service<CngMetaModelStateService>().getTrackedModels() }
+
             events
-                .mapNotNull { event ->
-                    val mapToMetaFile: (String) -> Pair<MetaModelModificationTracker, String>? = {
-                        when {
-                            it.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> project.service<TSModificationTracker>() to it
-                            it.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING) -> project.service<BSModificationTracker>() to it
-                            else -> null
-                        }
-                    }
+                .map { event ->
                     event.asSafely<VFilePropertyChangeEvent>()
                         ?.takeIf { it.isRename }
-                        ?.let {
-                            it.oldValue?.asSafely<String>()?.let(mapToMetaFile)
-                                ?: it.newValue?.asSafely<String>()?.let(mapToMetaFile)
+                        ?.let { propertyEvent ->
+                            propertyEvent.oldValue?.asSafely<String>()
+                                ?.let { it to propertyEvent.oldPath }
+                                ?: propertyEvent.newValue?.asSafely<String>()
+                                    ?.let { it to propertyEvent.newPath }
                         }
-                        ?: PathUtil.getFileName(event.path)
-                            .let(mapToMetaFile)
-                        ?: return@mapNotNull null
+                        ?: (PathUtil.getFileName(event.path) to event.path)
                 }
+                .mapNotNull { mapToTracker(it.first, it.second, project, trackedCngModels) }
                 .groupBy({ it.first }, { it.second })
                 .takeIf { it.isNotEmpty() }
         }

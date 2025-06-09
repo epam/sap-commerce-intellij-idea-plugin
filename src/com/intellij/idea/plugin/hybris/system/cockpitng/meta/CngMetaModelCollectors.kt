@@ -37,11 +37,11 @@ import kotlinx.coroutines.coroutineScope
 @Service(Service.Level.PROJECT)
 class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, DomElement::class.java, nameProvider = CngModificationTracker.KEY_PROVIDER) {
 
-    private val metaConfigCollector = project.service<CngMetaConfigCollector>()
-    private val metaWidgetsCollector = project.service<CngMetaWidgetsCollector>()
-    private val metaActionDefinitionCollector = project.service<CngMetaActionDefinitionCollector>()
-    private val metaWidgetDefinitionCollector = project.service<CngMetaWidgetDefinitionCollector>()
-    private val metaEditorDefinitionCollector = project.service<CngMetaEditorDefinitionCollector>()
+    private val metaConfigCollector by lazy { project.service<CngMetaConfigCollector>() }
+    private val metaWidgetsCollector by lazy { project.service<CngMetaWidgetsCollector>() }
+    private val metaActionDefinitionCollector by lazy { project.service<CngMetaActionDefinitionCollector>() }
+    private val metaWidgetDefinitionCollector by lazy { project.service<CngMetaWidgetDefinitionCollector>() }
+    private val metaEditorDefinitionCollector by lazy { project.service<CngMetaEditorDefinitionCollector>() }
 
     override suspend fun collectDependencies(): Set<Meta<DomElement>> = coroutineScope {
         listOf(

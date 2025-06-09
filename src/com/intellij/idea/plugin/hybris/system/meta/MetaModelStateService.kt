@@ -78,6 +78,8 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
         throw ProcessCanceledException()
     }
 
+    fun getTrackedModels() = metaModelsState.value.keys
+
     private fun processState(metaModels: Collection<String> = emptyList()) {
         if (metaModelState.value.computing) return
 

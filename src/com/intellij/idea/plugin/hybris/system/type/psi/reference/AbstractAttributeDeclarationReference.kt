@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
@@ -72,9 +71,8 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
             val project = ref.element.project
             val metaModelAccess = TSMetaModelAccess.getInstance(project)
             val metaItemService = TSMetaItemService.getInstance(project)
-            val metaModel = project.service<TSMetaModelStateService>().get()
-
-            val type = ref.resolveType(ref.element) ?: return@ParameterizedCachedValueProvider emptyResult(project)
+            val type = ref.resolveType(ref.element)
+                ?: return@ParameterizedCachedValueProvider emptyResult(project)
 
             val metaItem = when (val meta = metaModelAccess.findMetaClassifierByName(type)) {
                 is TSGlobalMetaItem -> meta

@@ -55,7 +55,7 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
         fun getInstance(project: Project): TSMetaModelAccess = project.getService(TSMetaModelAccess::class.java)
     }
 
-    private val metaModelStateService = project.service<TSMetaModelStateService>()
+    private val metaModelStateService by lazy { project.service<TSMetaModelStateService>() }
     private val myReservedTypeCodes by lazy {
         ModuleManager.getInstance(project)
             .modules

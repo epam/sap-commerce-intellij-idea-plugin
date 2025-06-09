@@ -32,11 +32,11 @@ import com.intellij.util.xml.DomElement
 @Service(Service.Level.PROJECT)
 class CngMetaModelAggregatedProcessor(project: Project) : MetaModelProcessor<DomElement, CngMeta<DomElement>>(project) {
 
-    private val metaConfigProcessor = project.service<CngMetaModelConfigProcessor>()
-    private val metaWidgetsProcessor = project.service<CngMetaModelWidgetsProcessor>()
-    private val metaActionDefinitionProcessor = project.service<CngMetaModelActionDefinitionProcessor>()
-    private val metaWidgetDefinitionProcessor = project.service<CngMetaModelWidgetDefinitionProcessor>()
-    private val metaEditorDefinitionProcessor = project.service<CngMetaModelEditorDefinitionProcessor>()
+    private val metaConfigProcessor by lazy { project.service<CngMetaModelConfigProcessor>() }
+    private val metaWidgetsProcessor by lazy { project.service<CngMetaModelWidgetsProcessor>() }
+    private val metaActionDefinitionProcessor by lazy { project.service<CngMetaModelActionDefinitionProcessor>() }
+    private val metaWidgetDefinitionProcessor by lazy { project.service<CngMetaModelWidgetDefinitionProcessor>() }
+    private val metaEditorDefinitionProcessor by lazy { project.service<CngMetaModelEditorDefinitionProcessor>() }
 
     override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: DomElement): CngMeta<DomElement> = when (dom) {
         is Config -> metaConfigProcessor.process(container, yContainer, fileName, custom, dom)

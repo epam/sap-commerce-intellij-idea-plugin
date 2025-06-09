@@ -28,7 +28,7 @@ import com.intellij.psi.xml.XmlFile
 @Service(Service.Level.PROJECT)
 class BSModificationTracker(project: Project) : MetaModelModificationTracker(project) {
 
-    private val stateService = project.service<BSMetaModelStateService>()
+    private val stateService by lazy { project.service<BSMetaModelStateService>() }
 
     override fun getKeys(vararg xmlFiles: XmlFile): Collection<String>? = xmlFiles.map { it.name }
 

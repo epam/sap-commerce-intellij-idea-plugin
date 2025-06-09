@@ -46,7 +46,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     private val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
     private val mySettings = TSViewSettings.getInstance(myProject)
     private val myTreePane = TSTreePanel(myProject)
-    private val metaModelStateService = myProject.service<TSMetaModelStateService>()
+    private val metaModelStateService by lazy { myProject.service<TSMetaModelStateService>() }
 
     override fun dispose() {
         //NOP

@@ -43,10 +43,10 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
         if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) throw ExtensionNotApplicableException.create()
     }
 
-    private val domManager = DomManager.getDomManager(project)
-    private val tsModificationTracker = project.service<TSModificationTracker>()
-    private val bsModificationTracker = project.service<BSModificationTracker>()
-    private val cngModificationTracker = project.service<CngModificationTracker>()
+    private val domManager by lazy { DomManager.getDomManager(project) }
+    private val tsModificationTracker by lazy { project.service<TSModificationTracker>() }
+    private val bsModificationTracker by lazy { project.service<BSModificationTracker>() }
+    private val cngModificationTracker by lazy { project.service<CngModificationTracker>() }
 
     override fun beforeChildAddition(event: PsiTreeChangeEvent) = doChange(event)
     override fun beforeChildRemoval(event: PsiTreeChangeEvent) = doChange(event)

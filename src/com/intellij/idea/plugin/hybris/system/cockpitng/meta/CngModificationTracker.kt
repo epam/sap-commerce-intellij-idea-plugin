@@ -28,7 +28,7 @@ import com.intellij.psi.xml.XmlFile
 @Service(Service.Level.PROJECT)
 class CngModificationTracker(project: Project) : MetaModelModificationTracker(project) {
 
-    private val stateService = project.service<CngMetaModelStateService>()
+    private val stateService by lazy { project.service<CngMetaModelStateService>() }
 
     override fun getKeys(vararg xmlFiles: XmlFile): Collection<String>? = xmlFiles
         .mapNotNull { it.virtualFile }

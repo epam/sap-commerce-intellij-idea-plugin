@@ -46,7 +46,7 @@ class BSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     private val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
     private val mySettings = BSViewSettings.getInstance(myProject)
     private val myTreePane = BSTreePanel(myProject)
-    private val metaModelStateService = myProject.service<BSMetaModelStateService>()
+    private val metaModelStateService by lazy { myProject.service<BSMetaModelStateService>() }
 
     override fun dispose() {
         //NOP

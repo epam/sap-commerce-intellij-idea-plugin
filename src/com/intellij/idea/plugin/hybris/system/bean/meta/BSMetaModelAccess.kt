@@ -35,7 +35,7 @@ class BSMetaModelAccess(project: Project) {
         fun getInstance(project: Project): BSMetaModelAccess = project.getService(BSMetaModelAccess::class.java)
     }
 
-    private val metaModelStateService = project.service<BSMetaModelStateService>()
+    private val metaModelStateService by lazy { project.service<BSMetaModelStateService>() }
 
     fun getAllBeans() = getAll<BSGlobalMetaBean>(BSMetaType.META_BEAN) +
         getAll(BSMetaType.META_WS_BEAN) +
