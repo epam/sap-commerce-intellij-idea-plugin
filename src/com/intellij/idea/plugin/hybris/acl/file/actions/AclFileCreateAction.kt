@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.file.actions
+package com.intellij.idea.plugin.hybris.acl.file.actions
 
 import com.intellij.ide.actions.CreateFileFromTemplateAction
 import com.intellij.ide.actions.CreateFileFromTemplateDialog
@@ -28,7 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 
-class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_FILE, "", HybrisIcons.ImpEx.FILE), DumbAware {
+class AclFileCreateAction : CreateFileFromTemplateAction(NEW_FILE, "", HybrisIcons.Acl.FILE), DumbAware {
 
     override fun buildDialog(
         project: Project,
@@ -36,7 +35,7 @@ class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_FILE, "", HybrisI
         builder: CreateFileFromTemplateDialog.Builder
     ) {
         builder.setTitle(NEW_FILE)
-            .addKind("Empty file", HybrisIcons.ImpEx.FILE, "ImpEx File")
+            .addKind("Empty file", HybrisIcons.Acl.FILE, "Acl File")
     }
 
     override fun postProcess(createdElement: PsiFile, templateName: String, customProperties: Map<String, String>?) {
@@ -47,9 +46,9 @@ class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_FILE, "", HybrisI
     override fun getActionName(directory: PsiDirectory, newName: String, templateName: String) = NEW_FILE
     override fun getDefaultTemplateProperty() = null
     override fun hashCode() = javaClass.hashCode()
-    override fun equals(other: Any?) = other is ImpexFileCreateAction
+    override fun equals(other: Any?) = other is AclFileCreateAction
 
     companion object {
-        private const val NEW_FILE = "ImpEx File"
+        private const val NEW_FILE = "Access Control Lists File"
     }
 }

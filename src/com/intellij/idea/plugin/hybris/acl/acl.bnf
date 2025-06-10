@@ -1,0 +1,123 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+{
+  parserClass="com.intellij.idea.plugin.hybris.acl.AclParser"
+  parserUtilClass="com.intellij.idea.plugin.hybris.acl.utils.AclParserUtils"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Acl"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.intellij.idea.plugin.hybris.acl.psi"
+  psiImplPackage="com.intellij.idea.plugin.hybris.acl.psi.impl"
+  psiImplUtilClass="com.intellij.idea.plugin.hybris.acl.psi.AclPsiUtil"
+
+  elementTypeHolderClass="com.intellij.idea.plugin.hybris.acl.psi.AclTypes"
+  elementTypeClass="com.intellij.idea.plugin.hybris.acl.psi.AclElementType"
+  tokenTypeClass="com.intellij.idea.plugin.hybris.acl.psi.AclTokenType"
+
+  classHeader="generatedFilesHeader.txt"
+
+  generate=[java='21']
+}
+
+aclFile ::= root*
+
+private root ::= (CRLF | ( !<<eof>> root_group (CRLF | <<eof>> )))
+{recoverWhile = recover_root}
+
+private root_group ::= (
+      user_rights
+    | comment
+    | (string (';')?)
+)
+{recoverWhile = not_line_break}
+
+private recover_root ::= !(
+     CRLF
+  |  user_rights_start
+  |  LINE_COMMENT
+)
+
+private not_line_break ::= !(CRLF)
+private not_line_break_or_parameters_separator ::= !(CRLF | PARAMETERS_SEPARATOR | MULTILINE_SEPARATOR)
+
+user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ user_rights_body user_rights_end {
+    pin=1
+    recoverWhile=recover_root
+}
+
+private user_rights_body ::= (user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*
+// this mapping may enable multiple Header lines
+// ((user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*)*
+{
+    recoverWhile=user_rights_body_recover
+}
+private user_rights_body_recover ::= !(user_rights_end)
+
+user_rights_header_line ::= user_rights_header_parameter (PARAMETERS_SEPARATOR user_rights_header_parameter)*  {
+    pin=1
+    recoverWhile=not_line_break
+}
+user_rights_start ::= START_USERRIGHTS
+user_rights_end ::= END_USERRIGHTS (PARAMETERS_SEPARATOR)*
+user_rights_header_parameter ::= TYPE
+ | UID
+ | MEMBEROFGROUPS
+ | PASSWORD
+ | TARGET
+ | PERMISSION
+{
+    recoverWhile=not_line_break_or_parameters_separator
+}
+
+user_rights_value_line ::= user_rights_first_value_group? user_rights_value_group+ {
+    recoverWhile=not_line_break
+}
+
+user_rights_first_value_group ::= user_rights_value {
+    recoverWhile=user_rights_value_group_recover
+}
+
+user_rights_value_group ::= FIELD_VALUE_SEPARATOR user_rights_value? {
+    pin=1
+    recoverWhile=user_rights_value_group_recover
+}
+private user_rights_value ::= user_rights_type_attribute_value
+    | user_rights_permission_value
+    | user_rights_multi_value
+    | user_rights_single_value {
+    recoverWhile=user_rights_value_recover
+}
+private user_rights_type_attribute_value ::= user_rights_single_value DOT user_rights_attribute_value {
+    pin=2
+}
+user_rights_permission_value ::= PERMISSION_DENIED | PERMISSION_ALLOWED | DOT {
+}
+user_rights_multi_value ::= FIELD_VALUE (COMMA FIELD_VALUE)+ {
+}
+user_rights_single_value ::= FIELD_VALUE {
+}
+user_rights_attribute_value ::= FIELD_VALUE {
+}
+private user_rights_value_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
+private user_rights_value_group_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
+
+comment ::= LINE_COMMENT
+{pin = 1}

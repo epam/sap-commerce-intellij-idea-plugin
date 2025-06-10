@@ -126,6 +126,10 @@ object HybrisIcons {
         val GENERIC = AllIcons.Nodes.AbstractClass
     }
 
+    object Acl {
+        val FILE = getIcon("/icons/fileTypes/aclFile.svg")
+    }
+
     object ImpEx {
         val FILE = getIcon("/icons/fileTypes/impexFile.svg")
         val MACROS = getIcon("/icons/macros.svg")

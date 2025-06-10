@@ -28,8 +28,6 @@
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpExDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpExDarcula.xml"/>
-        <additionalTextAttributes scheme="Default" file="colorSchemes/FlexibleSearchDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/FlexibleSearchDarcula.xml"/>
 
         <platform.backend.documentation.psiTargetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexPsiDocumentationTargetProvider" />
         <platform.backend.documentation.targetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexDocumentationTargetProvider"/>

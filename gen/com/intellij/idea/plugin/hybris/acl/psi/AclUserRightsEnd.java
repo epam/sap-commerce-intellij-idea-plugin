@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,13 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.highlighting
+package com.intellij.idea.plugin.hybris.acl.psi;
 
-import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.psi.PsiElement;
 
-class ImpexSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
+public interface AclUserRightsEnd extends PsiElement {
 
-    override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?) = ImpExSyntaxHighlighter.getInstance()
 }

@@ -30,7 +30,7 @@ import javax.swing.Icon
 class ImpexColorSettingsPage : ColorSettingsPage {
 
     override fun getIcon(): Icon = HybrisIcons.ImpEx.FILE
-    override fun getHighlighter() = DefaultImpexSyntaxHighlighter.getInstance()
+    override fun getHighlighter() = ImpExSyntaxHighlighter.getInstance()
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = customTags
     override fun getAttributeDescriptors() = descriptors
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY

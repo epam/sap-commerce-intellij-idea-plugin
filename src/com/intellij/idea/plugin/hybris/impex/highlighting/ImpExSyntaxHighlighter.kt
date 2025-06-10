@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,7 +28,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 
 @Service
-class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
+class ImpExSyntaxHighlighter : SyntaxHighlighterBase() {
 
     override fun getHighlightingLexer() = ImpexLexerAdapter()
 
@@ -36,7 +36,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         ?: emptyArray()
 
     companion object {
-        fun getInstance(): DefaultImpexSyntaxHighlighter = ApplicationManager.getApplication().getService(DefaultImpexSyntaxHighlighter::class.java)
+        fun getInstance(): ImpExSyntaxHighlighter = ApplicationManager.getApplication().getService(ImpExSyntaxHighlighter::class.java)
 
         private val USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS = pack(ImpexHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER)
         private val SCRIPT_MARKER_KEYS = pack(ImpexHighlighterColors.SCRIPT_MARKER)

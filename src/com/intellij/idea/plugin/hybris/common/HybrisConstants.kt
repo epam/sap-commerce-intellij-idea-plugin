@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.common
 
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.facet.FacetTypeId
+import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.facet.YFacetType
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
@@ -75,6 +76,9 @@ object HybrisConstants {
     const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
     const val IMPEX = "ImpEx"
     const val IMPEX_FILE_EXTENSION = "impex"
+
+    const val ACL = "Access Control Lists"
+    const val ACL_FILE_EXTENSION = "acl"
 
     const val CONSOLE_TITLE_IMPEX = "[y] ImpEx Console"
     const val CONSOLE_TITLE_IMPEX_MONITOR = "[y] Monitor Console"
@@ -734,6 +738,7 @@ object HybrisConstants {
 
     val IMPEX_FILE_NODE_TYPE = IFileElementType(ImpexLanguage)
     val FXS_FILE_NODE_TYPE = IFileElementType(FlexibleSearchLanguage)
+    val ACL_FILE_NODE_TYPE = IFileElementType(AclLanguage)
 
     val CHARS_UPPERCASE_REGEX = "[A-Z]".toRegex()
     val CHARS_LOWERCASE_REGEX = "[a-z]".toRegex()

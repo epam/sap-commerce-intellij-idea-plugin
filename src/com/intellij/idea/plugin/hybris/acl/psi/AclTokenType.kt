@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,13 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.highlighting
+package com.intellij.idea.plugin.hybris.acl.psi
 
-import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.idea.plugin.hybris.acl.AclLanguage
+import com.intellij.psi.tree.IElementType
+import java.util.regex.Pattern
 
-class ImpexSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
+class AclTokenType(debugName: String) : IElementType(debugName, AclLanguage) {
 
-    override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?) = ImpExSyntaxHighlighter.getInstance()
+    override fun toString(): String {
+        val name = super.toString()
+
+        if (name.isBlank()) return name
+
+        return PATTERN.matcher(name.lowercase()).replaceAll(" ")
+            .let { "<$it>" }
+    }
+
+    companion object {
+        private val PATTERN: Pattern = Pattern.compile("[_]")
+    }
 }

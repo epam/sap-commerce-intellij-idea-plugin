@@ -1,5 +1,8 @@
 <component name="CopyrightManager">
   <settings default="LGPL">
+    <module2copyright>
+      <element module="Not Generated" copyright="LGPL" />
+    </module2copyright>
     <LanguageOptions name="SVG">
       <option name="fileTypeOverride" value="1" />
     </LanguageOptions>

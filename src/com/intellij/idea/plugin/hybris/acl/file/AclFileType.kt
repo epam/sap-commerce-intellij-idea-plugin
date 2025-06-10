@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,13 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.highlighting
+package com.intellij.idea.plugin.hybris.acl.file
 
-import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.idea.plugin.hybris.acl.AclLanguage
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.openapi.fileTypes.LanguageFileType
+import javax.swing.Icon
 
-class ImpexSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
+object AclFileType : LanguageFileType(AclLanguage) {
 
-    override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?) = ImpExSyntaxHighlighter.getInstance()
+    override fun getName() = HybrisConstants.ACL
+    override fun getDescription() = "Access Control Lists language file"
+    override fun getDefaultExtension() = HybrisConstants.ACL_FILE_EXTENSION
+
+    override fun getIcon(): Icon = HybrisIcons.Acl.FILE
+
 }
