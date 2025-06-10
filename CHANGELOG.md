@@ -6,6 +6,9 @@
 - Added new configurable setting _First row is header_ for `Data Edit` mode [#1394](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1394)
 - Added new configurable setting _Trim whitespace_ for `Data Edit` mode [#1395](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1395)
 
+### `Access Control Lists` enhancements
+- Create Type/attributes references only within `Target` column [#1400](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1400)
+
 ### `FlexibleSearch` enhancements
 - Simplified _Copy to Clipboard_ action for injected FxS into Java classes [#1396](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1396)
 

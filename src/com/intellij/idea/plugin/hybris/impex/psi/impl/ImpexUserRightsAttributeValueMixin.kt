@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,16 +18,20 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexUserRightsTSAttributeReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.firstLeaf
 import java.io.Serial
 
 abstract class ImpexUserRightsAttributeValueMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), ImpexUserRightsAttributeValue {
 
-    override fun createReference() = ImpexUserRightsTSAttributeReference(this)
+    override fun createReference() = if (headerParameter?.firstLeaf()?.elementType == ImpexTypes.TARGET) ImpexUserRightsTSAttributeReference(this)
+    else null
 
     override fun subtreeChanged() {
         removeUserData(ImpexUserRightsTSAttributeReference.CACHE_KEY)
