@@ -65,6 +65,11 @@ class ProjectImpExSettingsConfigurableProvider(val project: Project) : Configura
                         .bindSelected(projectSettings.folding::useSmartFolding)
                         .enabledIf(foldingEnableCheckBox.selected)
                 }
+                row {
+                    checkBox("Fold macro usages in the parameters")
+                        .bindSelected(projectSettings.folding::foldMacroInParameters)
+                        .enabledIf(foldingEnableCheckBox.selected)
+                }
             }
             group("Code Completion") {
                 row {

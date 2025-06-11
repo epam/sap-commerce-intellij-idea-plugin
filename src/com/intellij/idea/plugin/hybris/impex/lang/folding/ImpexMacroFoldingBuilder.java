@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -47,8 +48,12 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             return FoldingDescriptor.EMPTY_ARRAY;
         }
 
+        final var foldMacroInParameters = DeveloperSettingsComponent.getInstance(root.getProject()).getState().getImpexSettings()
+            .getFolding()
+            .getFoldMacroInParameters();
+
         final var macroUsages = PsiTreeUtil.findChildrenOfAnyType(root, ImpexMacroUsageDec.class).stream()
-            .map(this::acceptMacroUsage)
+            .map(it -> acceptMacroUsage(it, foldMacroInParameters))
             .filter(Objects::nonNull)
             .toList();
 
@@ -59,13 +64,13 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
     }
 
     @Nullable
-    private ImpexMacroUsageDec acceptMacroUsage(final ImpexMacroUsageDec macroUsage) {
+    private ImpexMacroUsageDec acceptMacroUsage(final ImpexMacroUsageDec macroUsage, final boolean foldMacroInParameters) {
         final var text = macroUsage.getText();
 
         // local macro needs to be resolved later when evaluating macro declarations
         final var parent = macroUsage.getParent();
         if (parent instanceof ImpexMacroUsageDec) return null;
-        if (getRootPsi(parent) instanceof ImpexHeaderLine) return null;
+        if (!foldMacroInParameters && getRootPsi(parent) instanceof ImpexHeaderLine) return null;
 
         return macroUsage;
     }

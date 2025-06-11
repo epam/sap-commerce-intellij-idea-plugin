@@ -35,6 +35,7 @@ data class ImpExEditModeSettings(
 data class ImpexFoldingSettings(
     var enabled: Boolean = true,
     var useSmartFolding: Boolean = true,
+    var foldMacroInParameters: Boolean = true,
 )
 
 data class ImpexDocumentationSettings(

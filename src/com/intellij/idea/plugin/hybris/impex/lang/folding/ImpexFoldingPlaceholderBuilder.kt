@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,14 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.impex.lang.folding
 
-package com.intellij.idea.plugin.hybris.impex.lang.folding;
+import com.intellij.psi.PsiElement
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-
-public interface ImpexFoldingPlaceholderBuilder {
-
-    @NotNull
-    String getPlaceholder(@NotNull final PsiElement psiElement);
+interface ImpexFoldingPlaceholderBuilder {
+    fun getPlaceholder(psiElement: PsiElement): String
 }
