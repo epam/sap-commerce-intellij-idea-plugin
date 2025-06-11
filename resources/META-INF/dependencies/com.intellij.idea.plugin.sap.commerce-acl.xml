@@ -30,6 +30,7 @@
 
         <lang.parserDefinition language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.AclParserDefinition"/>
         <lang.syntaxHighlighterFactory language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.highlighting.AclSyntaxHighlighterFactory"/>
+        <lang.commenter language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.AclCommenter"/>
     </extensions>
 
 
