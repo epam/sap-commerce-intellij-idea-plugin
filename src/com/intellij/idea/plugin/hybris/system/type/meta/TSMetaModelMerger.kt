@@ -78,14 +78,15 @@ object TSMetaModelMerger {
             }
             .forEach { metaItems.remove(it) }
 
+        // init hierarchy for Meta Items
         metaItems.values.forEach { meta ->
-            val allChildren = metaItems.values.filter { otherMeta ->
+            val itemHierarchy = metaItems.values.filter { otherMeta ->
                 otherMeta.allExtends.find { it.name == meta.name } != null
                     // or itself, it will be highlighted as unnecessary via Inspection
                     || otherMeta.name == meta.name
             }
 
-            meta.addChildren(allChildren)
+            meta.addMetasToHierarchy(itemHierarchy)
         }
     }
 

@@ -76,7 +76,7 @@ class ImpexTSSubTypeItemReference(owner: ImpexSubTypeName) : TSReferenceBase<Imp
         private fun getAllowedVariants(element: ImpexSubTypeName): Collection<TSGlobalMetaItem> = element.headerTypeName
             ?.text
             ?.let { TSMetaModelAccess.getInstance(element.project).findMetaItemByName(it) }
-            ?.allChildren
+            ?.hierarchy
             ?: emptyList()
 
     }

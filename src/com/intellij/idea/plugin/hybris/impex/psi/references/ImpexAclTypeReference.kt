@@ -77,7 +77,7 @@ class ImpexAclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(own
                 findMetaItemByName(HybrisConstants.TS_TYPE_USER_GROUP),
                 findMetaItemByName(HybrisConstants.TS_TYPE_USER)
             )
-                .flatMap { it.allChildren }
+                .flatMap { it.hierarchy }
         }
     }
 }

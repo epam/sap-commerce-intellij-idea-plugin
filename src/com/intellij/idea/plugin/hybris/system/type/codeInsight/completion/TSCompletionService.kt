@@ -108,7 +108,7 @@ class TSCompletionService(private val project: Project) {
         }
 
         return TSMetaModelAccess.getInstance(project).findMetaItemByName(referenceItemTypeName)
-            ?.allChildren
+            ?.hierarchy
             ?.mapNotNull {
                 TSLookupElementFactory.build(it, suffix)
                     ?.withTypeText(" child of $referenceItemTypeName", true)
