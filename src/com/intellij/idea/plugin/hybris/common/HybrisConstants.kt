@@ -280,6 +280,8 @@ object HybrisConstants {
     const val TS_TYPE_ENUMERATION_VALUE = "EnumerationValue"
     const val TS_TYPE_ATTRIBUTE_DESCRIPTOR = "AttributeDescriptor"
     const val TS_TYPE_RELATION_DESCRIPTOR = "RelationDescriptor"
+    const val TS_TYPE_USER = "User"
+    const val TS_TYPE_USER_GROUP = "UserGroup"
     const val TS_META_VIEW_TYPE = "ViewType"
     const val TS_COMPOSED_TYPE = "ComposedType"
     const val TS_JAVA_LANG_PREFIX = JAVA_LANG_PREFIX

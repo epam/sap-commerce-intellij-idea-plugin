@@ -21,11 +21,14 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsSingleValue
+import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexAclTypeReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexUserRightsTSAttributeReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.firstLeaf
@@ -33,8 +36,11 @@ import java.io.Serial
 
 abstract class ImpexUserRightsSingleValueMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), ImpexUserRightsSingleValue {
 
-    override fun createReference() = if (headerParameter?.firstLeaf()?.elementType == ImpexTypes.TARGET) ImpexTSItemReference(this)
-    else null
+    override fun createReference(): PsiReferenceBase<out PsiElement>? = when (headerParameter?.firstLeaf()?.elementType) {
+        ImpexTypes.TYPE -> ImpexAclTypeReference(this)
+        ImpexTypes.TARGET -> ImpexTSItemReference(this)
+        else -> null
+    }
 
     override fun subtreeChanged() {
         removeUserData(ImpexTSItemReference.CACHE_KEY)
