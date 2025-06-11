@@ -21,24 +21,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface AclUserRightsHeaderLine extends PsiElement {
-
-  @Nullable
-  AclUserRightsHeaderParameterMemberOfGroups getUserRightsHeaderParameterMemberOfGroups();
-
-  @Nullable
-  AclUserRightsHeaderParameterPassword getUserRightsHeaderParameterPassword();
-
-  @NotNull
-  List<AclUserRightsHeaderParameterPermission> getUserRightsHeaderParameterPermissionList();
-
-  @Nullable
-  AclUserRightsHeaderParameterTarget getUserRightsHeaderParameterTarget();
-
-  @NotNull
-  AclUserRightsHeaderParameterType getUserRightsHeaderParameterType();
-
-  @Nullable
-  AclUserRightsHeaderParameterUid getUserRightsHeaderParameterUid();
+public interface AclUserRightsHeaderParameterTarget extends AclUserRightsHeaderParameter {
 
 }

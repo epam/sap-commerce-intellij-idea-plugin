@@ -30,6 +30,9 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 %%
 
 %{
+  private int permissionHeader = 0;
+  private int valueColumn = 0;
+  private boolean passwordColumnPresent = false;
   public _AclLexer() {
     this((java.io.Reader)null);
   }
@@ -57,6 +60,8 @@ line_comment = [#]{not_crlf}*
 semicolon     = [;]
 comma         = [,]
 dot           = [.]
+plus          = [+]
+minus         = [-]
 
 field_value        = ({not_crlf}|{identifier}+)
 
@@ -66,7 +71,6 @@ end_userrights                    = [$]END_USERRIGHTS
 %state USER_RIGHTS_START
 %state USER_RIGHTS_END
 %state USER_RIGHTS_HEADER_LINE
-%state USER_RIGHTS_WAIT_FOR_VALUE_LINE
 %state USER_RIGHTS_VALUE_LINE
 
 %%
@@ -81,49 +85,55 @@ end_userrights                    = [$]END_USERRIGHTS
 
 <USER_RIGHTS_START> {
     {semicolon}                                             { return AclTypes.PARAMETERS_SEPARATOR; }
-    {crlf}                                                  { yybegin(USER_RIGHTS_HEADER_LINE); return AclTypes.CRLF; }
+    {crlf}                                                  {
+        yybegin(USER_RIGHTS_HEADER_LINE);
+        permissionHeader=0;
+        passwordColumnPresent=false;
+        return AclTypes.CRLF;
+    }
 }
 
 <USER_RIGHTS_HEADER_LINE> {
-    "Type"                                                  { return AclTypes.TYPE; }
-    "UID"                                                   { return AclTypes.UID; }
-    "MemberOfGroups"                                        { return AclTypes.MEMBEROFGROUPS; }
-    "Password"                                              { return AclTypes.PASSWORD; }
-    "Target"                                                { return AclTypes.TARGET; }
-    {identifier}+                                           { return AclTypes.PERMISSION; }
-    {line_comment}                                          { return AclTypes.LINE_COMMENT; }
-    {semicolon}                                             { yybegin(USER_RIGHTS_WAIT_FOR_VALUE_LINE); return AclTypes.PARAMETERS_SEPARATOR; }
+    "Type"                                                  { return AclTypes.HEADER_TYPE; }
+    "UID"                                                   { return AclTypes.HEADER_UID; }
+    "MemberOfGroups"                                        { return AclTypes.HEADER_MEMBEROFGROUPS; }
+    "Password"                                              { passwordColumnPresent=true; return AclTypes.HEADER_PASSWORD; }
+    "Target"                                                { return AclTypes.HEADER_TARGET; }
+    {identifier}+                                           {
+        permissionHeader++;
 
-    {end_userrights}                                        { yybegin(YYINITIAL); return AclTypes.END_USERRIGHTS; }
-    {crlf}                                                  { return AclTypes.CRLF; }
-}
-
-<USER_RIGHTS_WAIT_FOR_VALUE_LINE> {
-    "Type"                                                  { return AclTypes.TYPE; }
-    "UID"                                                   { return AclTypes.UID; }
-    "MemberOfGroups"                                        { return AclTypes.MEMBEROFGROUPS; }
-    "Password"                                              { return AclTypes.PASSWORD; }
-    "Target"                                                { return AclTypes.TARGET; }
-    {identifier}+                                           { return AclTypes.PERMISSION; }
+        return switch (permissionHeader) {
+          case 1 -> AclTypes.HEADER_READ;
+          case 2 -> AclTypes.HEADER_CHANGE;
+          case 3 -> AclTypes.HEADER_CREATE;
+          case 4 -> AclTypes.HEADER_REMOVE;
+          case 5 -> AclTypes.HEADER_CHANGE_PERM;
+          // any other columns are not expected
+          default -> TokenType.BAD_CHARACTER;
+        };
+    }
     {semicolon}                                             { return AclTypes.PARAMETERS_SEPARATOR; }
 
     {end_userrights}                                        { yybegin(YYINITIAL); return AclTypes.END_USERRIGHTS; }
-    {crlf}                                                  { yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
+    {crlf}                                                  { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
 }
 
 <USER_RIGHTS_VALUE_LINE> {
 // even if we may have one more Header line in the body of the user rights, it will be ignored by ImportExportUserRightsHelper
 //    {user_rights_type}                                      { yybegin(USER_RIGHTS_HEADER_LINE); yypushback(yylength()); }
-    "-"                                                     { return AclTypes.PERMISSION_DENIED; }
-    "+"                                                     { return AclTypes.PERMISSION_ALLOWED; }
+    {minus}                                                 { return AclTypes.PERMISSION_DENIED; }
+    {plus}                                                  { return AclTypes.PERMISSION_ALLOWED; }
     {identifier}+                                           { return AclTypes.FIELD_VALUE; }
     {line_comment}                                          { return AclTypes.LINE_COMMENT; }
-    {semicolon}                                             { return AclTypes.FIELD_VALUE_SEPARATOR; }
-    {dot}                                                   { return AclTypes.DOT; }
+    {dot}                                                   {
+          if (passwordColumnPresent && valueColumn >= 6 || valueColumn >= 5) return AclTypes.PERMISSION_INHERITED;
+          return AclTypes.DOT;
+      }
     {comma}                                                 { return AclTypes.COMMA; }
 
+    {semicolon}                                             { valueColumn++; return AclTypes.FIELD_VALUE_SEPARATOR; }
     {end_userrights}                                        { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS; }
-    {crlf}                                                  { yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
+    {crlf}                                                  { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
 }
 
 <USER_RIGHTS_END> {

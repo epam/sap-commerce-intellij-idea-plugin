@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,44 +27,20 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsFirstValueGroupImpl extends ASTWrapperPsiElement implements AclUserRightsFirstValueGroup {
+public class AclUserRightsHeaderParameterUidImpl extends ASTWrapperPsiElement implements AclUserRightsHeaderParameterUid {
 
-  public AclUserRightsFirstValueGroupImpl(@NotNull ASTNode node) {
+  public AclUserRightsHeaderParameterUidImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsFirstValueGroup(this);
+    visitor.visitUserRightsHeaderParameterUid(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof AclVisitor) accept((AclVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public AclUserRightsAttributeValue getUserRightsAttributeValue() {
-    return findChildByClass(AclUserRightsAttributeValue.class);
-  }
-
-  @Override
-  @Nullable
-  public AclUserRightsMultiValue getUserRightsMultiValue() {
-    return findChildByClass(AclUserRightsMultiValue.class);
-  }
-
-  @Override
-  @Nullable
-  public AclUserRightsPermissionValue getUserRightsPermissionValue() {
-    return findChildByClass(AclUserRightsPermissionValue.class);
-  }
-
-  @Override
-  @Nullable
-  public AclUserRightsSingleValue getUserRightsSingleValue() {
-    return findChildByClass(AclUserRightsSingleValue.class);
   }
 
 }

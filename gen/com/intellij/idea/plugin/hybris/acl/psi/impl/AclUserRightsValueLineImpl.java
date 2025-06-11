@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -48,15 +44,39 @@ public class AclUserRightsValueLineImpl extends ASTWrapperPsiElement implements 
   }
 
   @Override
+  @NotNull
+  public AclUserRightsValueMemberOfGroups getUserRightsValueMemberOfGroups() {
+    return findNotNullChildByClass(AclUserRightsValueMemberOfGroups.class);
+  }
+
+  @Override
   @Nullable
-  public AclUserRightsFirstValueGroup getUserRightsFirstValueGroup() {
-    return findChildByClass(AclUserRightsFirstValueGroup.class);
+  public AclUserRightsValuePassword getUserRightsValuePassword() {
+    return findChildByClass(AclUserRightsValuePassword.class);
   }
 
   @Override
   @NotNull
-  public List<AclUserRightsValueGroup> getUserRightsValueGroupList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueGroup.class);
+  public List<AclUserRightsValuePermission> getUserRightsValuePermissionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValuePermission.class);
+  }
+
+  @Override
+  @NotNull
+  public AclUserRightsValueTarget getUserRightsValueTarget() {
+    return findNotNullChildByClass(AclUserRightsValueTarget.class);
+  }
+
+  @Override
+  @NotNull
+  public AclUserRightsValueType getUserRightsValueType() {
+    return findNotNullChildByClass(AclUserRightsValueType.class);
+  }
+
+  @Override
+  @NotNull
+  public AclUserRightsValueUid getUserRightsValueUid() {
+    return findNotNullChildByClass(AclUserRightsValueUid.class);
   }
 
 }

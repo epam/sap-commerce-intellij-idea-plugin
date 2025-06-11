@@ -15,30 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.acl.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
+package com.intellij.idea.plugin.hybris.acl.psi
 
-public interface AclUserRightsHeaderLine extends PsiElement {
+import com.intellij.psi.PsiElement
 
-  @Nullable
-  AclUserRightsHeaderParameterMemberOfGroups getUserRightsHeaderParameterMemberOfGroups();
-
-  @Nullable
-  AclUserRightsHeaderParameterPassword getUserRightsHeaderParameterPassword();
-
-  @NotNull
-  List<AclUserRightsHeaderParameterPermission> getUserRightsHeaderParameterPermissionList();
-
-  @Nullable
-  AclUserRightsHeaderParameterTarget getUserRightsHeaderParameterTarget();
-
-  @NotNull
-  AclUserRightsHeaderParameterType getUserRightsHeaderParameterType();
-
-  @Nullable
-  AclUserRightsHeaderParameterUid getUserRightsHeaderParameterUid();
-
-}
+interface AclUserRightsHeaderParameter : PsiElement

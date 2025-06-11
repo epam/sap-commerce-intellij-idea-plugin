@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.acl
 import com.intellij.idea.plugin.hybris.acl.psi.AclFile
 import com.intellij.idea.plugin.hybris.acl.psi.AclTypes
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.openapi.project.Project
@@ -37,7 +36,7 @@ class AclParserDefinition : ParserDefinition {
 
     override fun getFileNodeType() = HybrisConstants.ACL_FILE_NODE_TYPE
     override fun getWhitespaceTokens(): TokenSet = TokenSet.WHITE_SPACE
-    override fun getCommentTokens() = TokenSet.create(ImpexTypes.LINE_COMMENT)
+    override fun getCommentTokens() = TokenSet.create(AclTypes.LINE_COMMENT)
     override fun getStringLiteralElements() = TokenSet.create(
         AclTypes.STRING,
     )

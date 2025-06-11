@@ -27,56 +27,20 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsHeaderLineImpl extends ASTWrapperPsiElement implements AclUserRightsHeaderLine {
+public class AclUserRightsValuePermissionImpl extends ASTWrapperPsiElement implements AclUserRightsValuePermission {
 
-  public AclUserRightsHeaderLineImpl(@NotNull ASTNode node) {
+  public AclUserRightsValuePermissionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsHeaderLine(this);
+    visitor.visitUserRightsValuePermission(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof AclVisitor) accept((AclVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public AclUserRightsHeaderParameterMemberOfGroups getUserRightsHeaderParameterMemberOfGroups() {
-    return findChildByClass(AclUserRightsHeaderParameterMemberOfGroups.class);
-  }
-
-  @Override
-  @Nullable
-  public AclUserRightsHeaderParameterPassword getUserRightsHeaderParameterPassword() {
-    return findChildByClass(AclUserRightsHeaderParameterPassword.class);
-  }
-
-  @Override
-  @NotNull
-  public List<AclUserRightsHeaderParameterPermission> getUserRightsHeaderParameterPermissionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsHeaderParameterPermission.class);
-  }
-
-  @Override
-  @Nullable
-  public AclUserRightsHeaderParameterTarget getUserRightsHeaderParameterTarget() {
-    return findChildByClass(AclUserRightsHeaderParameterTarget.class);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsHeaderParameterType getUserRightsHeaderParameterType() {
-    return findNotNullChildByClass(AclUserRightsHeaderParameterType.class);
-  }
-
-  @Override
-  @Nullable
-  public AclUserRightsHeaderParameterUid getUserRightsHeaderParameterUid() {
-    return findChildByClass(AclUserRightsHeaderParameterUid.class);
   }
 
 }

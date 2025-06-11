@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,17 +26,22 @@ public interface AclTypes {
 
   IElementType COMMENT = new AclElementType("COMMENT");
   IElementType USER_RIGHTS = new AclElementType("USER_RIGHTS");
-  IElementType USER_RIGHTS_ATTRIBUTE_VALUE = new AclElementType("USER_RIGHTS_ATTRIBUTE_VALUE");
   IElementType USER_RIGHTS_END = new AclElementType("USER_RIGHTS_END");
-  IElementType USER_RIGHTS_FIRST_VALUE_GROUP = new AclElementType("USER_RIGHTS_FIRST_VALUE_GROUP");
   IElementType USER_RIGHTS_HEADER_LINE = new AclElementType("USER_RIGHTS_HEADER_LINE");
-  IElementType USER_RIGHTS_HEADER_PARAMETER = new AclElementType("USER_RIGHTS_HEADER_PARAMETER");
-  IElementType USER_RIGHTS_MULTI_VALUE = new AclElementType("USER_RIGHTS_MULTI_VALUE");
-  IElementType USER_RIGHTS_PERMISSION_VALUE = new AclElementType("USER_RIGHTS_PERMISSION_VALUE");
-  IElementType USER_RIGHTS_SINGLE_VALUE = new AclElementType("USER_RIGHTS_SINGLE_VALUE");
+  IElementType USER_RIGHTS_HEADER_PARAMETER_MEMBER_OF_GROUPS = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_MEMBER_OF_GROUPS");
+  IElementType USER_RIGHTS_HEADER_PARAMETER_PASSWORD = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_PASSWORD");
+  IElementType USER_RIGHTS_HEADER_PARAMETER_PERMISSION = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_PERMISSION");
+  IElementType USER_RIGHTS_HEADER_PARAMETER_TARGET = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_TARGET");
+  IElementType USER_RIGHTS_HEADER_PARAMETER_TYPE = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_TYPE");
+  IElementType USER_RIGHTS_HEADER_PARAMETER_UID = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_UID");
   IElementType USER_RIGHTS_START = new AclElementType("USER_RIGHTS_START");
-  IElementType USER_RIGHTS_VALUE_GROUP = new AclElementType("USER_RIGHTS_VALUE_GROUP");
   IElementType USER_RIGHTS_VALUE_LINE = new AclElementType("USER_RIGHTS_VALUE_LINE");
+  IElementType USER_RIGHTS_VALUE_MEMBER_OF_GROUPS = new AclElementType("USER_RIGHTS_VALUE_MEMBER_OF_GROUPS");
+  IElementType USER_RIGHTS_VALUE_PASSWORD = new AclElementType("USER_RIGHTS_VALUE_PASSWORD");
+  IElementType USER_RIGHTS_VALUE_PERMISSION = new AclElementType("USER_RIGHTS_VALUE_PERMISSION");
+  IElementType USER_RIGHTS_VALUE_TARGET = new AclElementType("USER_RIGHTS_VALUE_TARGET");
+  IElementType USER_RIGHTS_VALUE_TYPE = new AclElementType("USER_RIGHTS_VALUE_TYPE");
+  IElementType USER_RIGHTS_VALUE_UID = new AclElementType("USER_RIGHTS_VALUE_UID");
 
   IElementType COMMA = new AclTokenType("COMMA");
   IElementType CRLF = new AclTokenType("CRLF");
@@ -48,19 +49,23 @@ public interface AclTypes {
   IElementType END_USERRIGHTS = new AclTokenType("END_USERRIGHTS");
   IElementType FIELD_VALUE = new AclTokenType("FIELD_VALUE");
   IElementType FIELD_VALUE_SEPARATOR = new AclTokenType("FIELD_VALUE_SEPARATOR");
+  IElementType HEADER_CHANGE = new AclTokenType("HEADER_CHANGE");
+  IElementType HEADER_CHANGE_PERM = new AclTokenType("HEADER_CHANGE_PERM");
+  IElementType HEADER_CREATE = new AclTokenType("HEADER_CREATE");
+  IElementType HEADER_MEMBEROFGROUPS = new AclTokenType("HEADER_MEMBEROFGROUPS");
+  IElementType HEADER_PASSWORD = new AclTokenType("HEADER_PASSWORD");
+  IElementType HEADER_READ = new AclTokenType("HEADER_READ");
+  IElementType HEADER_REMOVE = new AclTokenType("HEADER_REMOVE");
+  IElementType HEADER_TARGET = new AclTokenType("HEADER_TARGET");
+  IElementType HEADER_TYPE = new AclTokenType("HEADER_TYPE");
+  IElementType HEADER_UID = new AclTokenType("HEADER_UID");
   IElementType LINE_COMMENT = new AclTokenType("LINE_COMMENT");
-  IElementType MEMBEROFGROUPS = new AclTokenType("MEMBEROFGROUPS");
-  IElementType MULTILINE_SEPARATOR = new AclTokenType("MULTILINE_SEPARATOR");
   IElementType PARAMETERS_SEPARATOR = new AclTokenType("PARAMETERS_SEPARATOR");
-  IElementType PASSWORD = new AclTokenType("PASSWORD");
-  IElementType PERMISSION = new AclTokenType("PERMISSION");
   IElementType PERMISSION_ALLOWED = new AclTokenType("PERMISSION_ALLOWED");
   IElementType PERMISSION_DENIED = new AclTokenType("PERMISSION_DENIED");
+  IElementType PERMISSION_INHERITED = new AclTokenType("PERMISSION_INHERITED");
   IElementType START_USERRIGHTS = new AclTokenType("START_USERRIGHTS");
   IElementType STRING = new AclTokenType("string");
-  IElementType TARGET = new AclTokenType("TARGET");
-  IElementType TYPE = new AclTokenType("TYPE");
-  IElementType UID = new AclTokenType("UID");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
@@ -71,38 +76,53 @@ public interface AclTypes {
       else if (type == USER_RIGHTS) {
         return new AclUserRightsImpl(node);
       }
-      else if (type == USER_RIGHTS_ATTRIBUTE_VALUE) {
-        return new AclUserRightsAttributeValueImpl(node);
-      }
       else if (type == USER_RIGHTS_END) {
         return new AclUserRightsEndImpl(node);
-      }
-      else if (type == USER_RIGHTS_FIRST_VALUE_GROUP) {
-        return new AclUserRightsFirstValueGroupImpl(node);
       }
       else if (type == USER_RIGHTS_HEADER_LINE) {
         return new AclUserRightsHeaderLineImpl(node);
       }
-      else if (type == USER_RIGHTS_HEADER_PARAMETER) {
-        return new AclUserRightsHeaderParameterImpl(node);
+      else if (type == USER_RIGHTS_HEADER_PARAMETER_MEMBER_OF_GROUPS) {
+        return new AclUserRightsHeaderParameterMemberOfGroupsImpl(node);
       }
-      else if (type == USER_RIGHTS_MULTI_VALUE) {
-        return new AclUserRightsMultiValueImpl(node);
+      else if (type == USER_RIGHTS_HEADER_PARAMETER_PASSWORD) {
+        return new AclUserRightsHeaderParameterPasswordImpl(node);
       }
-      else if (type == USER_RIGHTS_PERMISSION_VALUE) {
-        return new AclUserRightsPermissionValueImpl(node);
+      else if (type == USER_RIGHTS_HEADER_PARAMETER_PERMISSION) {
+        return new AclUserRightsHeaderParameterPermissionImpl(node);
       }
-      else if (type == USER_RIGHTS_SINGLE_VALUE) {
-        return new AclUserRightsSingleValueImpl(node);
+      else if (type == USER_RIGHTS_HEADER_PARAMETER_TARGET) {
+        return new AclUserRightsHeaderParameterTargetImpl(node);
+      }
+      else if (type == USER_RIGHTS_HEADER_PARAMETER_TYPE) {
+        return new AclUserRightsHeaderParameterTypeImpl(node);
+      }
+      else if (type == USER_RIGHTS_HEADER_PARAMETER_UID) {
+        return new AclUserRightsHeaderParameterUidImpl(node);
       }
       else if (type == USER_RIGHTS_START) {
         return new AclUserRightsStartImpl(node);
       }
-      else if (type == USER_RIGHTS_VALUE_GROUP) {
-        return new AclUserRightsValueGroupImpl(node);
-      }
       else if (type == USER_RIGHTS_VALUE_LINE) {
         return new AclUserRightsValueLineImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_MEMBER_OF_GROUPS) {
+        return new AclUserRightsValueMemberOfGroupsImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_PASSWORD) {
+        return new AclUserRightsValuePasswordImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_PERMISSION) {
+        return new AclUserRightsValuePermissionImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_TARGET) {
+        return new AclUserRightsValueTargetImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_TYPE) {
+        return new AclUserRightsValueTypeImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_UID) {
+        return new AclUserRightsValueUidImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

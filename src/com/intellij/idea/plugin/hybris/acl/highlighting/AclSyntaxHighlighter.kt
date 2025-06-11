@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.acl.highlighting
 
 import com.intellij.idea.plugin.hybris.acl.AclLexer
 import com.intellij.idea.plugin.hybris.acl.psi.AclTypes
-import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.HighlighterColors
@@ -45,23 +44,28 @@ class AclSyntaxHighlighter : SyntaxHighlighterBase() {
         private val cache: Map<IElementType, Array<TextAttributesKey>> = mapOf(
             TokenType.BAD_CHARACTER to pack(HighlighterColors.BAD_CHARACTER),
 
-            AclTypes.TYPE to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
-            AclTypes.PASSWORD to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
-            AclTypes.UID to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
-            AclTypes.MEMBEROFGROUPS to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
-            AclTypes.TARGET to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+            AclTypes.HEADER_TYPE to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+            AclTypes.HEADER_PASSWORD to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+            AclTypes.HEADER_UID to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+            AclTypes.HEADER_MEMBEROFGROUPS to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+            AclTypes.HEADER_TARGET to USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS,
+
+            AclTypes.HEADER_READ to pack(AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
+            AclTypes.HEADER_CHANGE to pack(AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
+            AclTypes.HEADER_CREATE to pack(AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
+            AclTypes.HEADER_REMOVE to pack(AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
+            AclTypes.HEADER_CHANGE_PERM to pack(AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
 
             AclTypes.LINE_COMMENT to pack(AclHighlighterColors.COMMENT),
 
             AclTypes.STRING to pack(AclHighlighterColors.SINGLE_STRING),
 
-            ImpexTypes.PERMISSION_ALLOWED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
-            ImpexTypes.PERMISSION_DENIED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),
+            AclTypes.PERMISSION_ALLOWED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
+            AclTypes.PERMISSION_DENIED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),
+            AclTypes.PERMISSION_INHERITED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED),
 
             AclTypes.START_USERRIGHTS to USER_RIGHTS_KEYS,
             AclTypes.END_USERRIGHTS to USER_RIGHTS_KEYS,
-
-            AclTypes.PERMISSION to pack(AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
         )
     }
 

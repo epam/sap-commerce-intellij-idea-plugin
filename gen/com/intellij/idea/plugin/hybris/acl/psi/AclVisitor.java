@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,15 +31,7 @@ public class AclVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitUserRightsAttributeValue(@NotNull AclUserRightsAttributeValue o) {
-    visitPsiElement(o);
-  }
-
   public void visitUserRightsEnd(@NotNull AclUserRightsEnd o) {
-    visitPsiElement(o);
-  }
-
-  public void visitUserRightsFirstValueGroup(@NotNull AclUserRightsFirstValueGroup o) {
     visitPsiElement(o);
   }
 
@@ -51,31 +39,63 @@ public class AclVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitUserRightsHeaderParameter(@NotNull AclUserRightsHeaderParameter o) {
-    visitPsiElement(o);
+  public void visitUserRightsHeaderParameterMemberOfGroups(@NotNull AclUserRightsHeaderParameterMemberOfGroups o) {
+    visitUserRightsHeaderParameter(o);
   }
 
-  public void visitUserRightsMultiValue(@NotNull AclUserRightsMultiValue o) {
-    visitPsiElement(o);
+  public void visitUserRightsHeaderParameterPassword(@NotNull AclUserRightsHeaderParameterPassword o) {
+    visitUserRightsHeaderParameter(o);
   }
 
-  public void visitUserRightsPermissionValue(@NotNull AclUserRightsPermissionValue o) {
-    visitPsiElement(o);
+  public void visitUserRightsHeaderParameterPermission(@NotNull AclUserRightsHeaderParameterPermission o) {
+    visitUserRightsHeaderParameter(o);
   }
 
-  public void visitUserRightsSingleValue(@NotNull AclUserRightsSingleValue o) {
-    visitPsiElement(o);
+  public void visitUserRightsHeaderParameterTarget(@NotNull AclUserRightsHeaderParameterTarget o) {
+    visitUserRightsHeaderParameter(o);
+  }
+
+  public void visitUserRightsHeaderParameterType(@NotNull AclUserRightsHeaderParameterType o) {
+    visitUserRightsHeaderParameter(o);
+  }
+
+  public void visitUserRightsHeaderParameterUid(@NotNull AclUserRightsHeaderParameterUid o) {
+    visitUserRightsHeaderParameter(o);
   }
 
   public void visitUserRightsStart(@NotNull AclUserRightsStart o) {
     visitPsiElement(o);
   }
 
-  public void visitUserRightsValueGroup(@NotNull AclUserRightsValueGroup o) {
+  public void visitUserRightsValueLine(@NotNull AclUserRightsValueLine o) {
     visitPsiElement(o);
   }
 
-  public void visitUserRightsValueLine(@NotNull AclUserRightsValueLine o) {
+  public void visitUserRightsValueMemberOfGroups(@NotNull AclUserRightsValueMemberOfGroups o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValuePassword(@NotNull AclUserRightsValuePassword o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValuePermission(@NotNull AclUserRightsValuePermission o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValueTarget(@NotNull AclUserRightsValueTarget o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValueType(@NotNull AclUserRightsValueType o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValueUid(@NotNull AclUserRightsValueUid o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsHeaderParameter(@NotNull AclUserRightsHeaderParameter o) {
     visitPsiElement(o);
   }
 

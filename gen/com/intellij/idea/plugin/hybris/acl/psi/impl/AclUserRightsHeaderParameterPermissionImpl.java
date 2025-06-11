@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,14 +27,14 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsAttributeValueImpl extends ASTWrapperPsiElement implements AclUserRightsAttributeValue {
+public class AclUserRightsHeaderParameterPermissionImpl extends ASTWrapperPsiElement implements AclUserRightsHeaderParameterPermission {
 
-  public AclUserRightsAttributeValueImpl(@NotNull ASTNode node) {
+  public AclUserRightsHeaderParameterPermissionImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsAttributeValue(this);
+    visitor.visitUserRightsHeaderParameterPermission(this);
   }
 
   @Override

@@ -16,6 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+
+    See {@link de.hybris.platform.jalo.security.ImportExportUserRightsHelper} for Language details.
+
+ */
 {
   parserClass="com.intellij.idea.plugin.hybris.acl.AclParser"
   parserUtilClass="com.intellij.idea.plugin.hybris.acl.utils.AclParserUtils"
@@ -33,6 +38,7 @@
   tokenTypeClass="com.intellij.idea.plugin.hybris.acl.psi.AclTokenType"
 
   classHeader="generatedFilesHeader.txt"
+  implements("user\_rights\_header\_parameter.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsHeaderParameter"
 
   generate=[java='21']
 }
@@ -55,13 +61,13 @@ private recover_root ::= !(
   |  LINE_COMMENT
 )
 
-private not_line_break ::= !(CRLF)
-private not_line_break_or_parameters_separator ::= !(CRLF | PARAMETERS_SEPARATOR | MULTILINE_SEPARATOR)
-
 user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ user_rights_body user_rights_end {
     pin=1
     recoverWhile=recover_root
 }
+
+user_rights_start ::= START_USERRIGHTS
+user_rights_end ::= END_USERRIGHTS (PARAMETERS_SEPARATOR)*
 
 private user_rights_body ::= (user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*
 // this mapping may enable multiple Header lines
@@ -71,53 +77,62 @@ private user_rights_body ::= (user_rights_header_line CRLF+) (user_rights_value_
 }
 private user_rights_body_recover ::= !(user_rights_end)
 
-user_rights_header_line ::= user_rights_header_parameter (PARAMETERS_SEPARATOR user_rights_header_parameter)*  {
+user_rights_header_line ::= user_rights_header_parameter_type
+    user_rights_header_parameter_uid
+    user_rights_header_parameter_member_of_groups
+    user_rights_header_parameter_password
+    user_rights_header_parameter_target
+    user_rights_header_parameter_permission*  {
     pin=1
     recoverWhile=not_line_break
 }
-user_rights_start ::= START_USERRIGHTS
-user_rights_end ::= END_USERRIGHTS (PARAMETERS_SEPARATOR)*
-user_rights_header_parameter ::= TYPE
- | UID
- | MEMBEROFGROUPS
- | PASSWORD
- | TARGET
- | PERMISSION
-{
-    recoverWhile=not_line_break_or_parameters_separator
-}
 
-user_rights_value_line ::= user_rights_first_value_group? user_rights_value_group+ {
+user_rights_header_parameter_type ::= HEADER_TYPE
+user_rights_header_parameter_uid ::= PARAMETERS_SEPARATOR HEADER_UID { pin=1 recoverWhile=recover_header_line }
+user_rights_header_parameter_member_of_groups ::= PARAMETERS_SEPARATOR HEADER_MEMBEROFGROUPS { pin=1 recoverWhile=recover_header_line }
+user_rights_header_parameter_password ::= PARAMETERS_SEPARATOR HEADER_PASSWORD { pin=1 recoverWhile=recover_header_line }
+user_rights_header_parameter_target ::= PARAMETERS_SEPARATOR HEADER_TARGET { pin=1 recoverWhile=recover_header_line }
+user_rights_header_parameter_permission ::= PARAMETERS_SEPARATOR (
+    HEADER_READ
+    | HEADER_CHANGE
+    | HEADER_CREATE
+    | HEADER_REMOVE
+    | HEADER_CHANGE_PERM
+) { pin=1 recoverWhile=recover_header_line }
+
+user_rights_value_line ::= user_rights_value_type
+    user_rights_value_uid
+    user_rights_value_member_of_groups
+    user_rights_value_password?
+    user_rights_value_target
+    user_rights_value_permission*  {
     recoverWhile=not_line_break
 }
 
-user_rights_first_value_group ::= user_rights_value {
-    recoverWhile=user_rights_value_group_recover
-}
-
-user_rights_value_group ::= FIELD_VALUE_SEPARATOR user_rights_value? {
+user_rights_value_type ::= FIELD_VALUE? { recoverWhile=recover_value_line }
+user_rights_value_uid ::= FIELD_VALUE_SEPARATOR FIELD_VALUE? {
     pin=1
-    recoverWhile=user_rights_value_group_recover
+    recoverWhile=recover_value_line
 }
-private user_rights_value ::= user_rights_type_attribute_value
-    | user_rights_permission_value
-    | user_rights_multi_value
-    | user_rights_single_value {
-    recoverWhile=user_rights_value_recover
+user_rights_value_member_of_groups ::= FIELD_VALUE_SEPARATOR FIELD_VALUE? (COMMA FIELD_VALUE)* {
+    pin=1
+    recoverWhile=recover_value_line
 }
-private user_rights_type_attribute_value ::= user_rights_single_value DOT user_rights_attribute_value {
-    pin=2
+user_rights_value_password ::= FIELD_VALUE_SEPARATOR FIELD_VALUE? {
+    pin=1
+    recoverWhile=recover_value_line
 }
-user_rights_permission_value ::= PERMISSION_DENIED | PERMISSION_ALLOWED | DOT {
+user_rights_value_target ::= FIELD_VALUE_SEPARATOR FIELD_VALUE? (DOT FIELD_VALUE)? {
+    pin=1
+    recoverWhile=recover_value_line
 }
-user_rights_multi_value ::= FIELD_VALUE (COMMA FIELD_VALUE)+ {
+user_rights_value_permission ::= FIELD_VALUE_SEPARATOR (PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED)? {
+    pin=1
+    recoverWhile=recover_value_line
 }
-user_rights_single_value ::= FIELD_VALUE {
-}
-user_rights_attribute_value ::= FIELD_VALUE {
-}
-private user_rights_value_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
-private user_rights_value_group_recover ::= !(CRLF | FIELD_VALUE_SEPARATOR)
 
 comment ::= LINE_COMMENT
-{pin = 1}
+
+private not_line_break ::= !(CRLF)
+private recover_header_line ::= !(CRLF | PARAMETERS_SEPARATOR)
+private recover_value_line ::= !(CRLF | FIELD_VALUE_SEPARATOR)

@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,10 +23,22 @@ import com.intellij.psi.PsiElement;
 
 public interface AclUserRightsValueLine extends PsiElement {
 
+  @NotNull
+  AclUserRightsValueMemberOfGroups getUserRightsValueMemberOfGroups();
+
   @Nullable
-  AclUserRightsFirstValueGroup getUserRightsFirstValueGroup();
+  AclUserRightsValuePassword getUserRightsValuePassword();
 
   @NotNull
-  List<AclUserRightsValueGroup> getUserRightsValueGroupList();
+  List<AclUserRightsValuePermission> getUserRightsValuePermissionList();
+
+  @NotNull
+  AclUserRightsValueTarget getUserRightsValueTarget();
+
+  @NotNull
+  AclUserRightsValueType getUserRightsValueType();
+
+  @NotNull
+  AclUserRightsValueUid getUserRightsValueUid();
 
 }

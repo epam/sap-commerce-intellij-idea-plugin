@@ -44,8 +44,7 @@ public class _AclLexer implements FlexLexer {
   public static final int USER_RIGHTS_START = 2;
   public static final int USER_RIGHTS_END = 4;
   public static final int USER_RIGHTS_HEADER_LINE = 6;
-  public static final int USER_RIGHTS_WAIT_FOR_VALUE_LINE = 8;
-  public static final int USER_RIGHTS_VALUE_LINE = 10;
+  public static final int USER_RIGHTS_VALUE_LINE = 8;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -54,7 +53,7 @@ public class _AclLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1,  1,  2,  2,  3,  3,  4,  4,  5, 5
+     0,  0,  1,  1,  2,  2,  3,  3,  4, 4
   };
 
   /**
@@ -128,17 +127,17 @@ public class _AclLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\6\0\1\1\1\2\2\3\1\4\1\1\2\5\1\6"+
-    "\2\7\1\1\1\10\1\11\4\10\2\12\1\1\1\13"+
-    "\1\14\1\15\1\16\1\17\1\20\2\0\5\10\4\0"+
-    "\2\10\1\0\2\10\2\21\3\0\2\10\1\0\1\10"+
-    "\1\22\3\0\2\10\1\0\1\10\3\0\2\10\1\0"+
-    "\1\23\3\0\2\10\4\0\1\10\2\24\3\0\1\10"+
-    "\3\0\1\10\3\0\1\10\3\0\1\10\3\0\1\10"+
-    "\3\0\2\25\2\0\1\26\1\27\1\0\1\30";
+    "\5\0\1\1\1\2\2\3\1\4\1\1\2\5\1\6"+
+    "\2\7\1\1\5\10\1\1\1\11\1\12\1\13\1\14"+
+    "\1\15\1\16\2\0\5\10\4\0\2\10\1\0\2\10"+
+    "\2\17\3\0\2\10\1\0\1\10\1\20\3\0\2\10"+
+    "\1\0\1\10\3\0\2\10\1\0\1\21\3\0\2\10"+
+    "\4\0\1\10\2\22\3\0\1\10\3\0\1\10\3\0"+
+    "\1\10\3\0\1\10\3\0\1\10\3\0\2\23\2\0"+
+    "\1\24\1\25\1\0\1\26";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[116];
+    int [] result = new int[112];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -163,24 +162,23 @@ public class _AclLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\42\0\104\0\146\0\210\0\252\0\314\0\356"+
-    "\0\314\0\u0110\0\u0132\0\u0154\0\314\0\u0176\0\314\0\314"+
-    "\0\u0198\0\u01ba\0\u01dc\0\314\0\u01fe\0\u0220\0\u0242\0\u0264"+
-    "\0\314\0\u0286\0\u02a8\0\314\0\314\0\u02ca\0\314\0\u02ca"+
-    "\0\314\0\u02ec\0\u030e\0\u0330\0\u0352\0\u0374\0\u0396\0\u03b8"+
-    "\0\u03da\0\u03fc\0\u041e\0\u0440\0\u0462\0\u0484\0\u04a6\0\u04c8"+
-    "\0\u04ea\0\u01dc\0\314\0\u050c\0\u052e\0\u0550\0\u0572\0\u0594"+
-    "\0\u05b6\0\u05d8\0\u01dc\0\u05fa\0\u061c\0\u063e\0\u0660\0\u0682"+
-    "\0\u06a4\0\u06c6\0\u06e8\0\u070a\0\u072c\0\u074e\0\u0770\0\u0792"+
-    "\0\u01dc\0\u07b4\0\u07d6\0\u07f8\0\u081a\0\u083c\0\u085e\0\u0880"+
-    "\0\u08a2\0\u08c4\0\u08e6\0\u01dc\0\314\0\u0908\0\u092a\0\u094c"+
-    "\0\u096e\0\u0990\0\u09b2\0\u09d4\0\u09f6\0\u0a18\0\u0a3a\0\u0a5c"+
-    "\0\u0a7e\0\u0aa0\0\u0ac2\0\u0ae4\0\u0b06\0\u0b28\0\u0b4a\0\u0b6c"+
-    "\0\u0b8e\0\u0bb0\0\u0bd2\0\u0bf4\0\u01dc\0\314\0\u0c16\0\u0c38"+
-    "\0\314\0\314\0\u0c5a\0\314";
+    "\0\0\0\42\0\104\0\146\0\210\0\252\0\314\0\252"+
+    "\0\356\0\u0110\0\u0132\0\252\0\u0154\0\252\0\252\0\u0176"+
+    "\0\u0198\0\u01ba\0\u01dc\0\u01fe\0\u0220\0\u0242\0\u0264\0\252"+
+    "\0\252\0\u0286\0\252\0\u0286\0\252\0\u02a8\0\u02ca\0\u02ec"+
+    "\0\u030e\0\u0330\0\u0352\0\u0374\0\u0396\0\u03b8\0\u03da\0\u03fc"+
+    "\0\u041e\0\u0440\0\u0462\0\u0484\0\u04a6\0\u01ba\0\252\0\u04c8"+
+    "\0\u04ea\0\u050c\0\u052e\0\u0550\0\u0572\0\u0594\0\u01ba\0\u05b6"+
+    "\0\u05d8\0\u05fa\0\u061c\0\u063e\0\u0660\0\u0682\0\u06a4\0\u06c6"+
+    "\0\u06e8\0\u070a\0\u072c\0\u074e\0\u01ba\0\u0770\0\u0792\0\u07b4"+
+    "\0\u07d6\0\u07f8\0\u081a\0\u083c\0\u085e\0\u0880\0\u08a2\0\u01ba"+
+    "\0\252\0\u08c4\0\u08e6\0\u0908\0\u092a\0\u094c\0\u096e\0\u0990"+
+    "\0\u09b2\0\u09d4\0\u09f6\0\u0a18\0\u0a3a\0\u0a5c\0\u0a7e\0\u0aa0"+
+    "\0\u0ac2\0\u0ae4\0\u0b06\0\u0b28\0\u0b4a\0\u0b6c\0\u0b8e\0\u0bb0"+
+    "\0\u01ba\0\252\0\u0bd2\0\u0bf4\0\252\0\252\0\u0c16\0\252";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[116];
+    int [] result = new int[112];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -203,68 +201,65 @@ public class _AclLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\7\1\10\1\11\1\0\1\12\1\13\1\14\34\7"+
-    "\1\10\1\15\1\0\1\16\7\7\1\17\26\7\1\10"+
-    "\1\11\1\0\1\12\7\7\1\17\26\7\1\10\1\20"+
-    "\1\0\1\21\1\13\1\22\2\7\1\23\1\7\1\23"+
-    "\1\24\10\23\1\25\2\23\1\26\2\23\1\27\1\30"+
-    "\3\23\3\7\1\10\1\31\1\0\1\32\1\7\1\22"+
-    "\2\7\1\23\1\7\1\23\1\17\10\23\1\25\2\23"+
-    "\1\26\2\23\1\27\1\30\3\23\3\7\1\10\1\31"+
-    "\1\0\1\32\1\13\1\33\1\34\1\35\1\36\1\37"+
-    "\1\40\1\41\23\40\2\7\43\0\1\10\42\0\1\11"+
-    "\37\0\2\13\1\0\1\13\1\0\35\13\32\0\1\42"+
-    "\6\0\1\42\2\0\1\15\41\0\1\20\57\0\1\43"+
-    "\32\0\1\23\1\0\1\23\1\0\23\23\13\0\1\23"+
-    "\1\0\1\23\1\0\3\23\1\44\17\23\13\0\1\23"+
-    "\1\0\1\23\1\0\1\45\22\23\13\0\1\23\1\0"+
-    "\1\23\1\0\1\46\20\23\1\47\1\23\13\0\1\23"+
-    "\1\0\1\23\1\0\7\23\1\50\13\23\1\51\3\0"+
-    "\1\31\57\0\1\52\32\0\1\40\1\0\1\40\1\0"+
-    "\23\40\35\0\1\53\34\0\1\54\24\0\1\23\1\0"+
-    "\1\23\1\0\10\23\1\55\12\23\13\0\1\23\1\0"+
-    "\1\23\1\0\15\23\1\56\5\23\1\0\1\57\11\0"+
-    "\1\23\1\0\1\23\1\0\14\23\1\60\6\23\13\0"+
-    "\1\23\1\0\1\23\1\0\13\23\1\61\7\23\13\0"+
-    "\1\23\1\0\1\23\1\0\2\23\1\62\20\23\21\0"+
-    "\1\63\50\0\1\64\30\0\1\65\43\0\1\66\33\0"+
-    "\1\23\1\0\1\23\1\0\1\23\1\67\21\23\13\0"+
-    "\1\23\1\0\1\23\1\0\15\23\1\70\5\23\1\0"+
-    "\1\71\32\0\1\71\6\0\1\71\11\0\1\23\1\0"+
-    "\1\23\1\0\5\23\1\72\15\23\13\0\1\23\1\0"+
-    "\1\23\1\0\3\23\1\73\17\23\21\0\1\74\53\0"+
-    "\1\75\47\0\1\76\13\0\1\23\1\0\1\23\1\0"+
-    "\3\23\1\77\17\23\13\0\1\23\1\0\1\23\1\0"+
-    "\20\23\1\100\2\23\37\0\1\101\15\0\1\23\1\0"+
-    "\1\23\1\0\3\23\1\102\17\23\41\0\1\103\35\0"+
-    "\1\104\42\0\1\105\16\0\1\23\1\0\1\23\1\0"+
-    "\14\23\1\106\6\23\13\0\1\23\1\0\1\23\1\0"+
-    "\12\23\1\107\10\23\31\0\1\110\23\0\1\23\1\0"+
-    "\1\23\1\0\16\23\1\111\4\23\36\0\1\112\44\0"+
-    "\1\113\34\0\1\114\6\0\1\114\11\0\1\23\1\0"+
-    "\1\23\1\0\12\23\1\115\10\23\13\0\1\23\1\0"+
-    "\1\23\1\0\14\23\1\116\6\23\33\0\1\117\42\0"+
-    "\1\120\6\0\1\120\34\0\1\121\25\0\1\122\32\0"+
-    "\1\23\1\0\1\23\1\0\4\23\1\123\16\23\13\0"+
-    "\1\23\1\0\1\23\1\0\2\23\1\124\20\23\21\0"+
-    "\1\125\42\0\1\126\53\0\1\127\6\0\1\127\31\0"+
-    "\1\130\21\0\1\23\1\0\1\23\1\0\5\23\1\131"+
-    "\15\23\33\0\1\132\30\0\1\133\52\0\1\134\21\0"+
-    "\1\23\1\0\1\23\1\0\14\23\1\135\6\23\33\0"+
-    "\1\136\41\0\1\137\34\0\1\140\13\0\1\140\12\0"+
-    "\1\23\1\0\1\23\1\0\12\23\1\141\10\23\26\0"+
-    "\1\142\13\0\1\142\32\0\1\143\32\0\1\144\30\0"+
-    "\1\23\1\0\1\23\1\0\17\23\1\145\3\23\24\0"+
-    "\1\146\43\0\1\147\13\0\1\147\24\0\1\150\27\0"+
-    "\1\23\1\0\1\23\1\0\13\23\1\151\7\23\25\0"+
-    "\1\152\40\0\1\153\52\0\1\154\17\0\1\23\1\0"+
-    "\1\23\1\0\15\23\1\155\5\23\1\0\1\156\33\0"+
-    "\1\157\31\0\1\160\50\0\1\161\6\0\1\161\32\0"+
-    "\1\162\6\0\1\162\33\0\1\163\40\0\1\164\6\0"+
-    "\1\164";
+    "\1\6\1\7\1\10\1\0\1\11\1\12\1\13\34\6"+
+    "\1\7\1\14\1\0\1\15\7\6\1\16\26\6\1\7"+
+    "\1\10\1\0\1\11\7\6\1\16\26\6\1\7\1\17"+
+    "\1\0\1\20\1\6\1\21\2\6\1\22\1\6\1\22"+
+    "\1\16\10\22\1\23\2\22\1\24\2\22\1\25\1\26"+
+    "\3\22\3\6\1\7\1\17\1\0\1\20\1\12\1\27"+
+    "\1\30\1\31\1\32\1\33\1\34\1\35\23\34\2\6"+
+    "\43\0\1\7\42\0\1\10\37\0\2\12\1\0\1\12"+
+    "\1\0\35\12\32\0\1\36\6\0\1\36\2\0\1\14"+
+    "\41\0\1\17\57\0\1\37\32\0\1\22\1\0\1\22"+
+    "\1\0\23\22\13\0\1\22\1\0\1\22\1\0\3\22"+
+    "\1\40\17\22\13\0\1\22\1\0\1\22\1\0\1\41"+
+    "\22\22\13\0\1\22\1\0\1\22\1\0\1\42\20\22"+
+    "\1\43\1\22\13\0\1\22\1\0\1\22\1\0\7\22"+
+    "\1\44\13\22\1\45\21\0\1\46\32\0\1\34\1\0"+
+    "\1\34\1\0\23\34\35\0\1\47\34\0\1\50\24\0"+
+    "\1\22\1\0\1\22\1\0\10\22\1\51\12\22\13\0"+
+    "\1\22\1\0\1\22\1\0\15\22\1\52\5\22\1\0"+
+    "\1\53\11\0\1\22\1\0\1\22\1\0\14\22\1\54"+
+    "\6\22\13\0\1\22\1\0\1\22\1\0\13\22\1\55"+
+    "\7\22\13\0\1\22\1\0\1\22\1\0\2\22\1\56"+
+    "\20\22\21\0\1\57\50\0\1\60\30\0\1\61\43\0"+
+    "\1\62\33\0\1\22\1\0\1\22\1\0\1\22\1\63"+
+    "\21\22\13\0\1\22\1\0\1\22\1\0\15\22\1\64"+
+    "\5\22\1\0\1\65\32\0\1\65\6\0\1\65\11\0"+
+    "\1\22\1\0\1\22\1\0\5\22\1\66\15\22\13\0"+
+    "\1\22\1\0\1\22\1\0\3\22\1\67\17\22\21\0"+
+    "\1\70\53\0\1\71\47\0\1\72\13\0\1\22\1\0"+
+    "\1\22\1\0\3\22\1\73\17\22\13\0\1\22\1\0"+
+    "\1\22\1\0\20\22\1\74\2\22\37\0\1\75\15\0"+
+    "\1\22\1\0\1\22\1\0\3\22\1\76\17\22\41\0"+
+    "\1\77\35\0\1\100\42\0\1\101\16\0\1\22\1\0"+
+    "\1\22\1\0\14\22\1\102\6\22\13\0\1\22\1\0"+
+    "\1\22\1\0\12\22\1\103\10\22\31\0\1\104\23\0"+
+    "\1\22\1\0\1\22\1\0\16\22\1\105\4\22\36\0"+
+    "\1\106\44\0\1\107\34\0\1\110\6\0\1\110\11\0"+
+    "\1\22\1\0\1\22\1\0\12\22\1\111\10\22\13\0"+
+    "\1\22\1\0\1\22\1\0\14\22\1\112\6\22\33\0"+
+    "\1\113\42\0\1\114\6\0\1\114\34\0\1\115\25\0"+
+    "\1\116\32\0\1\22\1\0\1\22\1\0\4\22\1\117"+
+    "\16\22\13\0\1\22\1\0\1\22\1\0\2\22\1\120"+
+    "\20\22\21\0\1\121\42\0\1\122\53\0\1\123\6\0"+
+    "\1\123\31\0\1\124\21\0\1\22\1\0\1\22\1\0"+
+    "\5\22\1\125\15\22\33\0\1\126\30\0\1\127\52\0"+
+    "\1\130\21\0\1\22\1\0\1\22\1\0\14\22\1\131"+
+    "\6\22\33\0\1\132\41\0\1\133\34\0\1\134\13\0"+
+    "\1\134\12\0\1\22\1\0\1\22\1\0\12\22\1\135"+
+    "\10\22\26\0\1\136\13\0\1\136\32\0\1\137\32\0"+
+    "\1\140\30\0\1\22\1\0\1\22\1\0\17\22\1\141"+
+    "\3\22\24\0\1\142\43\0\1\143\13\0\1\143\24\0"+
+    "\1\144\27\0\1\22\1\0\1\22\1\0\13\22\1\145"+
+    "\7\22\25\0\1\146\40\0\1\147\52\0\1\150\17\0"+
+    "\1\22\1\0\1\22\1\0\15\22\1\151\5\22\1\0"+
+    "\1\152\33\0\1\153\31\0\1\154\50\0\1\155\6\0"+
+    "\1\155\32\0\1\156\6\0\1\156\33\0\1\157\40\0"+
+    "\1\160\6\0\1\160";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[3196];
+    int [] result = new int[3128];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -302,17 +297,16 @@ public class _AclLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\6\0\1\11\1\1\1\11\3\1\1\11\1\1\2\11"+
-    "\3\1\1\11\4\1\1\11\2\1\2\11\1\1\1\11"+
-    "\1\1\1\11\2\0\5\1\4\0\2\1\1\0\3\1"+
-    "\1\11\3\0\2\1\1\0\2\1\3\0\2\1\1\0"+
-    "\1\1\3\0\2\1\1\0\1\1\3\0\2\1\4\0"+
-    "\2\1\1\11\3\0\1\1\3\0\1\1\3\0\1\1"+
-    "\3\0\1\1\3\0\1\1\3\0\1\1\1\11\2\0"+
-    "\2\11\1\0\1\11";
+    "\5\0\1\11\1\1\1\11\3\1\1\11\1\1\2\11"+
+    "\10\1\2\11\1\1\1\11\1\1\1\11\2\0\5\1"+
+    "\4\0\2\1\1\0\3\1\1\11\3\0\2\1\1\0"+
+    "\2\1\3\0\2\1\1\0\1\1\3\0\2\1\1\0"+
+    "\1\1\3\0\2\1\4\0\2\1\1\11\3\0\1\1"+
+    "\3\0\1\1\3\0\1\1\3\0\1\1\3\0\1\1"+
+    "\3\0\1\1\1\11\2\0\2\11\1\0\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[116];
+    int [] result = new int[112];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -379,6 +373,9 @@ public class _AclLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
+  private int permissionHeader = 0;
+  private int valueColumn = 0;
+  private boolean passwordColumnPresent = false;
   public _AclLexer() {
     this((java.io.Reader)null);
   }
@@ -643,122 +640,126 @@ public class _AclLexer implements FlexLexer {
             { return TokenType.BAD_CHARACTER;
             }
           // fall through
-          case 25: break;
+          case 23: break;
           case 2:
             { return TokenType.WHITE_SPACE;
             }
           // fall through
-          case 26: break;
+          case 24: break;
           case 3:
             { yybegin(YYINITIAL); return AclTypes.CRLF;
             }
           // fall through
-          case 27: break;
+          case 25: break;
           case 4:
             { return AclTypes.LINE_COMMENT;
             }
           // fall through
-          case 28: break;
+          case 26: break;
           case 5:
-            { yybegin(USER_RIGHTS_HEADER_LINE); return AclTypes.CRLF;
+            { yybegin(USER_RIGHTS_HEADER_LINE);
+        permissionHeader=0;
+        passwordColumnPresent=false;
+        return AclTypes.CRLF;
             }
           // fall through
-          case 29: break;
+          case 27: break;
           case 6:
             { return AclTypes.PARAMETERS_SEPARATOR;
             }
           // fall through
-          case 30: break;
+          case 28: break;
           case 7:
-            { return AclTypes.CRLF;
+            { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF;
             }
           // fall through
-          case 31: break;
+          case 29: break;
           case 8:
-            { return AclTypes.PERMISSION;
+            { permissionHeader++;
+
+        return switch (permissionHeader) {
+          case 1 -> AclTypes.HEADER_READ;
+          case 2 -> AclTypes.HEADER_CHANGE;
+          case 3 -> AclTypes.HEADER_CREATE;
+          case 4 -> AclTypes.HEADER_REMOVE;
+          case 5 -> AclTypes.HEADER_CHANGE_PERM;
+          // any other columns are not expected
+          default -> TokenType.BAD_CHARACTER;
+        };
             }
           // fall through
-          case 32: break;
+          case 30: break;
           case 9:
-            { yybegin(USER_RIGHTS_WAIT_FOR_VALUE_LINE); return AclTypes.PARAMETERS_SEPARATOR;
-            }
-          // fall through
-          case 33: break;
-          case 10:
-            { yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF;
-            }
-          // fall through
-          case 34: break;
-          case 11:
             { return AclTypes.PERMISSION_ALLOWED;
             }
           // fall through
-          case 35: break;
-          case 12:
+          case 31: break;
+          case 10:
             { return AclTypes.COMMA;
             }
           // fall through
-          case 36: break;
-          case 13:
+          case 32: break;
+          case 11:
             { return AclTypes.PERMISSION_DENIED;
             }
           // fall through
-          case 37: break;
-          case 14:
-            { return AclTypes.DOT;
+          case 33: break;
+          case 12:
+            { if (passwordColumnPresent && valueColumn >= 6 || valueColumn >= 5) return AclTypes.PERMISSION_INHERITED;
+          return AclTypes.DOT;
             }
           // fall through
-          case 38: break;
-          case 15:
+          case 34: break;
+          case 13:
             { return AclTypes.FIELD_VALUE;
             }
           // fall through
-          case 39: break;
+          case 35: break;
+          case 14:
+            { valueColumn++; return AclTypes.FIELD_VALUE_SEPARATOR;
+            }
+          // fall through
+          case 36: break;
+          case 15:
+            { return AclTypes.HEADER_UID;
+            }
+          // fall through
+          case 37: break;
           case 16:
-            { return AclTypes.FIELD_VALUE_SEPARATOR;
+            { return AclTypes.HEADER_TYPE;
+            }
+          // fall through
+          case 38: break;
+          case 17:
+            { return AclTypes.HEADER_TARGET;
+            }
+          // fall through
+          case 39: break;
+          case 18:
+            { passwordColumnPresent=true; return AclTypes.HEADER_PASSWORD;
             }
           // fall through
           case 40: break;
-          case 17:
-            { return AclTypes.UID;
+          case 19:
+            { return AclTypes.HEADER_MEMBEROFGROUPS;
             }
           // fall through
           case 41: break;
-          case 18:
-            { return AclTypes.TYPE;
-            }
-          // fall through
-          case 42: break;
-          case 19:
-            { return AclTypes.TARGET;
-            }
-          // fall through
-          case 43: break;
           case 20:
-            { return AclTypes.PASSWORD;
-            }
-          // fall through
-          case 44: break;
-          case 21:
-            { return AclTypes.MEMBEROFGROUPS;
-            }
-          // fall through
-          case 45: break;
-          case 22:
             { yybegin(YYINITIAL); return AclTypes.END_USERRIGHTS;
             }
           // fall through
-          case 46: break;
-          case 23:
+          case 42: break;
+          case 21:
             { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS;
             }
           // fall through
-          case 47: break;
-          case 24:
+          case 43: break;
+          case 22:
             { yybegin(USER_RIGHTS_START); return AclTypes.START_USERRIGHTS;
             }
           // fall through
-          case 48: break;
+          case 44: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }
