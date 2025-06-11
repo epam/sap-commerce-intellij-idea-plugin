@@ -29,6 +29,9 @@
 ### `Cockpit NG` enhancements
 - Re-calculate Cockpit NG Meta Model on some file operations [#1399](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1399)
 
+### `Spring` enhancements
+- Fallback to `platform` module in case of Library class [#1403](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1403)
+
 ### Fixes
 - Comply with _Companion object in extensions_ Plugin DevKit inspection [#1386](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1386)
 - Comply with _Cancellation exception handled incorrectly_ Plugin DevKit inspection [#1388](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1388)

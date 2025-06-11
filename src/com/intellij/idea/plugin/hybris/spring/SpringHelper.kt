@@ -18,9 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.spring
 
+import com.intellij.idea.plugin.hybris.facet.YFacet
+import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NotNullLazyValue
@@ -39,7 +42,7 @@ object SpringHelper {
 
     fun resolveBeanDeclaration(element: PsiElement, beanId: String): XmlTag? {
         return Plugin.SPRING.ifActive {
-            ModuleUtilCore.findModuleForPsiElement(element)
+            guessModule(element)
                 ?.let { springResolveBean(it, beanId) }
                 ?.springBean
                 ?.xmlTag
@@ -47,7 +50,7 @@ object SpringHelper {
     }
 
     fun resolveBeanClass(element: PsiElement, beanId: String) = Plugin.SPRING.ifActive {
-        ModuleUtilCore.findModuleForPsiElement(element)
+        guessModule(element)
             ?.let { springResolveBean(it, beanId) }
             ?.beanClass
     }
@@ -56,6 +59,12 @@ object SpringHelper {
             ?.let {
                 JavaPsiFacade.getInstance(element.project).findClass(it, GlobalSearchScope.allScope(element.project))
             }
+
+    private fun guessModule(element: PsiElement): Module? = ModuleUtilCore.findModuleForPsiElement(element)
+        ?: ModuleManager.getInstance(element.project)
+            .modules
+            // fallback to Platform module
+            .firstOrNull { YFacet.getState(it)?.type == ModuleDescriptorType.PLATFORM }
 
     fun resolveInterceptorBeansLazy(
         clazz: PsiClass,
