@@ -88,18 +88,18 @@ public class AclParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // !(CRLF | PARAMETERS_SEPARATOR)
-  static boolean recover_header_line(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "recover_header_line")) return false;
+  static boolean recover_header(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recover_header")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
-    r = !recover_header_line_0(b, l + 1);
+    r = !recover_header_0(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   // CRLF | PARAMETERS_SEPARATOR
-  private static boolean recover_header_line_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "recover_header_line_0")) return false;
+  private static boolean recover_header_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recover_header_0")) return false;
     boolean r;
     r = consumeToken(b, CRLF);
     if (!r) r = consumeToken(b, PARAMETERS_SEPARATOR);
@@ -135,18 +135,18 @@ public class AclParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // !(CRLF | FIELD_VALUE_SEPARATOR)
-  static boolean recover_value_line(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "recover_value_line")) return false;
+  static boolean recover_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recover_value")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
-    r = !recover_value_line_0(b, l + 1);
+    r = !recover_value_0(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   // CRLF | FIELD_VALUE_SEPARATOR
-  private static boolean recover_value_line_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "recover_value_line_0")) return false;
+  private static boolean recover_value_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "recover_value_0")) return false;
     boolean r;
     r = consumeToken(b, CRLF);
     if (!r) r = consumeToken(b, FIELD_VALUE_SEPARATOR);
@@ -444,7 +444,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_HEADER_PARAMETER_MEMBER_OF_GROUPS, "<user rights header parameter member of groups>");
     r = consumeTokens(b, 1, PARAMETERS_SEPARATOR, HEADER_MEMBEROFGROUPS);
     p = r; // pin = 1
-    exit_section_(b, l, m, r, p, AclParser::recover_header_line);
+    exit_section_(b, l, m, r, p, AclParser::recover_header);
     return r || p;
   }
 
@@ -456,7 +456,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_HEADER_PARAMETER_PASSWORD, "<user rights header parameter password>");
     r = consumeTokens(b, 1, PARAMETERS_SEPARATOR, HEADER_PASSWORD);
     p = r; // pin = 1
-    exit_section_(b, l, m, r, p, AclParser::recover_header_line);
+    exit_section_(b, l, m, r, p, AclParser::recover_header);
     return r || p;
   }
 
@@ -475,7 +475,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, PARAMETERS_SEPARATOR);
     p = r; // pin = 1
     r = r && user_rights_header_parameter_permission_1(b, l + 1);
-    exit_section_(b, l, m, r, p, AclParser::recover_header_line);
+    exit_section_(b, l, m, r, p, AclParser::recover_header);
     return r || p;
   }
 
@@ -503,7 +503,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_HEADER_PARAMETER_TARGET, "<user rights header parameter target>");
     r = consumeTokens(b, 1, PARAMETERS_SEPARATOR, HEADER_TARGET);
     p = r; // pin = 1
-    exit_section_(b, l, m, r, p, AclParser::recover_header_line);
+    exit_section_(b, l, m, r, p, AclParser::recover_header);
     return r || p;
   }
 
@@ -527,7 +527,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_HEADER_PARAMETER_UID, "<user rights header parameter uid>");
     r = consumeTokens(b, 1, PARAMETERS_SEPARATOR, HEADER_UID);
     p = r; // pin = 1
-    exit_section_(b, l, m, r, p, AclParser::recover_header_line);
+    exit_section_(b, l, m, r, p, AclParser::recover_header);
     return r || p;
   }
 
@@ -592,7 +592,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     p = r; // pin = 1
     r = r && report_error_(b, user_rights_value_member_of_groups_1(b, l + 1));
     r = p && user_rights_value_member_of_groups_2(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, AclParser::recover_value_line);
+    exit_section_(b, l, m, r, p, AclParser::recover_value);
     return r || p;
   }
 
@@ -633,7 +633,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     p = r; // pin = 1
     r = r && user_rights_value_password_1(b, l + 1);
-    exit_section_(b, l, m, r, p, AclParser::recover_value_line);
+    exit_section_(b, l, m, r, p, AclParser::recover_value);
     return r || p;
   }
 
@@ -653,7 +653,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     p = r; // pin = 1
     r = r && user_rights_value_permission_1(b, l + 1);
-    exit_section_(b, l, m, r, p, AclParser::recover_value_line);
+    exit_section_(b, l, m, r, p, AclParser::recover_value);
     return r || p;
   }
 
@@ -684,7 +684,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     p = r; // pin = 1
     r = r && report_error_(b, user_rights_value_target_1(b, l + 1));
     r = p && user_rights_value_target_2(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, AclParser::recover_value_line);
+    exit_section_(b, l, m, r, p, AclParser::recover_value);
     return r || p;
   }
 
@@ -718,7 +718,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "user_rights_value_type")) return false;
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_VALUE_TYPE, "<user rights value type>");
     consumeToken(b, FIELD_VALUE);
-    exit_section_(b, l, m, true, false, AclParser::recover_value_line);
+    exit_section_(b, l, m, true, false, AclParser::recover_value);
     return true;
   }
 
@@ -731,7 +731,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     p = r; // pin = 1
     r = r && user_rights_value_uid_1(b, l + 1);
-    exit_section_(b, l, m, r, p, AclParser::recover_value_line);
+    exit_section_(b, l, m, r, p, AclParser::recover_value);
     return r || p;
   }
 

@@ -375,7 +375,6 @@ public class _AclLexer implements FlexLexer {
   /* user code: */
   private int permissionHeader = 0;
   private int valueColumn = 0;
-  private boolean passwordColumnPresent = false;
   public _AclLexer() {
     this((java.io.Reader)null);
   }
@@ -659,7 +658,6 @@ public class _AclLexer implements FlexLexer {
           case 5:
             { yybegin(USER_RIGHTS_HEADER_LINE);
         permissionHeader=0;
-        passwordColumnPresent=false;
         return AclTypes.CRLF;
             }
           // fall through
@@ -705,7 +703,7 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 33: break;
           case 12:
-            { if (passwordColumnPresent && valueColumn >= 6 || valueColumn >= 5) return AclTypes.PERMISSION_INHERITED;
+            { if (valueColumn >= 6) return AclTypes.PERMISSION_INHERITED;
           return AclTypes.DOT;
             }
           // fall through
@@ -736,7 +734,7 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 39: break;
           case 18:
-            { passwordColumnPresent=true; return AclTypes.HEADER_PASSWORD;
+            { return AclTypes.HEADER_PASSWORD;
             }
           // fall through
           case 40: break;

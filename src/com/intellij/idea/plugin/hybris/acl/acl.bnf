@@ -88,17 +88,17 @@ user_rights_header_line ::= user_rights_header_parameter_type
 }
 
 user_rights_header_parameter_type ::= HEADER_TYPE
-user_rights_header_parameter_uid ::= PARAMETERS_SEPARATOR HEADER_UID { pin=1 recoverWhile=recover_header_line }
-user_rights_header_parameter_member_of_groups ::= PARAMETERS_SEPARATOR HEADER_MEMBEROFGROUPS { pin=1 recoverWhile=recover_header_line }
-user_rights_header_parameter_password ::= PARAMETERS_SEPARATOR HEADER_PASSWORD { pin=1 recoverWhile=recover_header_line }
-user_rights_header_parameter_target ::= PARAMETERS_SEPARATOR HEADER_TARGET { pin=1 recoverWhile=recover_header_line }
+user_rights_header_parameter_uid ::= PARAMETERS_SEPARATOR HEADER_UID { pin=1 recoverWhile=recover_header }
+user_rights_header_parameter_member_of_groups ::= PARAMETERS_SEPARATOR HEADER_MEMBEROFGROUPS { pin=1 recoverWhile=recover_header }
+user_rights_header_parameter_password ::= PARAMETERS_SEPARATOR HEADER_PASSWORD { pin=1 recoverWhile=recover_header }
+user_rights_header_parameter_target ::= PARAMETERS_SEPARATOR HEADER_TARGET { pin=1 recoverWhile=recover_header }
 user_rights_header_parameter_permission ::= PARAMETERS_SEPARATOR (
     HEADER_READ
     | HEADER_CHANGE
     | HEADER_CREATE
     | HEADER_REMOVE
     | HEADER_CHANGE_PERM
-) { pin=1 recoverWhile=recover_header_line }
+) { pin=1 recoverWhile=recover_header }
 
 user_rights_value_line ::= user_rights_value_type
     user_rights_value_uid
@@ -109,30 +109,30 @@ user_rights_value_line ::= user_rights_value_type
     recoverWhile=not_line_break
 }
 
-user_rights_value_type ::= FIELD_VALUE? { recoverWhile=recover_value_line }
+user_rights_value_type ::= FIELD_VALUE? { recoverWhile=recover_value }
 user_rights_value_uid ::= FIELD_VALUE_SEPARATOR FIELD_VALUE? {
     pin=1
-    recoverWhile=recover_value_line
+    recoverWhile=recover_value
 }
 user_rights_value_member_of_groups ::= FIELD_VALUE_SEPARATOR FIELD_VALUE? (COMMA FIELD_VALUE)* {
     pin=1
-    recoverWhile=recover_value_line
+    recoverWhile=recover_value
 }
 user_rights_value_password ::= FIELD_VALUE_SEPARATOR FIELD_VALUE? {
     pin=1
-    recoverWhile=recover_value_line
+    recoverWhile=recover_value
 }
 user_rights_value_target ::= FIELD_VALUE_SEPARATOR FIELD_VALUE? (DOT FIELD_VALUE)? {
     pin=1
-    recoverWhile=recover_value_line
+    recoverWhile=recover_value
 }
 user_rights_value_permission ::= FIELD_VALUE_SEPARATOR (PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED)? {
     pin=1
-    recoverWhile=recover_value_line
+    recoverWhile=recover_value
 }
 
 comment ::= LINE_COMMENT
 
 private not_line_break ::= !(CRLF)
-private recover_header_line ::= !(CRLF | PARAMETERS_SEPARATOR)
-private recover_value_line ::= !(CRLF | FIELD_VALUE_SEPARATOR)
+private recover_header ::= !(CRLF | PARAMETERS_SEPARATOR)
+private recover_value ::= !(CRLF | FIELD_VALUE_SEPARATOR)
