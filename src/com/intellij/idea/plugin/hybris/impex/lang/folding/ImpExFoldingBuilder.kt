@@ -25,7 +25,7 @@ import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SyntaxTraverser
 
-class ImpexFoldingBuilder : AbstractImpExFoldingBuilder() {
+class ImpExFoldingBuilder : AbstractImpExFoldingBuilder() {
 
     override fun buildFoldRegionsInternal(psi: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         val filter = ImpExPsiElementFilterFactory.getPsiElementFilter(psi.project)
