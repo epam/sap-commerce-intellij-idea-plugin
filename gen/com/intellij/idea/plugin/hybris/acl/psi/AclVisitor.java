@@ -37,6 +37,10 @@ public class AclVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitUserRightsBody(@NotNull AclUserRightsBody o) {
+    visitPsiElement(o);
+  }
+
   public void visitUserRightsEnd(@NotNull AclUserRightsEnd o) {
     visitPsiElement(o);
   }

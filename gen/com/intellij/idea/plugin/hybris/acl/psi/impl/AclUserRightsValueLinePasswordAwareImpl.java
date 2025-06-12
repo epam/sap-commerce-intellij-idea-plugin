@@ -50,15 +50,15 @@ public class AclUserRightsValueLinePasswordAwareImpl extends ASTWrapperPsiElemen
   }
 
   @Override
-  @NotNull
+  @Nullable
   public AclUserRightsValueGroupMemberOfGroups getUserRightsValueGroupMemberOfGroups() {
-    return findNotNullChildByClass(AclUserRightsValueGroupMemberOfGroups.class);
+    return findChildByClass(AclUserRightsValueGroupMemberOfGroups.class);
   }
 
   @Override
-  @NotNull
+  @Nullable
   public AclUserRightsValueGroupPassword getUserRightsValueGroupPassword() {
-    return findNotNullChildByClass(AclUserRightsValueGroupPassword.class);
+    return findChildByClass(AclUserRightsValueGroupPassword.class);
   }
 
   @Override
@@ -68,9 +68,9 @@ public class AclUserRightsValueLinePasswordAwareImpl extends ASTWrapperPsiElemen
   }
 
   @Override
-  @NotNull
+  @Nullable
   public AclUserRightsValueGroupTarget getUserRightsValueGroupTarget() {
-    return findNotNullChildByClass(AclUserRightsValueGroupTarget.class);
+    return findChildByClass(AclUserRightsValueGroupTarget.class);
   }
 
   @Override
@@ -80,9 +80,9 @@ public class AclUserRightsValueLinePasswordAwareImpl extends ASTWrapperPsiElemen
   }
 
   @Override
-  @NotNull
+  @Nullable
   public AclUserRightsValueGroupUid getUserRightsValueGroupUid() {
-    return findNotNullChildByClass(AclUserRightsValueGroupUid.class);
+    return findChildByClass(AclUserRightsValueGroupUid.class);
   }
 
 }

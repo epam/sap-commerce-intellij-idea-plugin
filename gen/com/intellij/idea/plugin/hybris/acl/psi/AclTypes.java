@@ -32,6 +32,7 @@ public interface AclTypes {
 
   IElementType COMMENT = new AclElementType("COMMENT");
   IElementType USER_RIGHTS = new AclElementType("USER_RIGHTS");
+  IElementType USER_RIGHTS_BODY = new AclElementType("USER_RIGHTS_BODY");
   IElementType USER_RIGHTS_END = new AclElementType("USER_RIGHTS_END");
   IElementType USER_RIGHTS_HEADER_LINE_PASSWORD_AWARE = new AclElementType("USER_RIGHTS_HEADER_LINE_PASSWORD_AWARE");
   IElementType USER_RIGHTS_HEADER_LINE_PASSWORD_UNAWARE = new AclElementType("USER_RIGHTS_HEADER_LINE_PASSWORD_UNAWARE");
@@ -85,6 +86,9 @@ public interface AclTypes {
       }
       else if (type == USER_RIGHTS) {
         return new AclUserRightsImpl(node);
+      }
+      else if (type == USER_RIGHTS_BODY) {
+        return new AclUserRightsBodyImpl(node);
       }
       else if (type == USER_RIGHTS_END) {
         return new AclUserRightsEndImpl(node);

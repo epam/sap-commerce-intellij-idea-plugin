@@ -30,21 +30,12 @@ import com.intellij.psi.PsiElement;
 public interface AclUserRights extends PsiElement {
 
   @Nullable
+  AclUserRightsBody getUserRightsBody();
+
+  @Nullable
   AclUserRightsEnd getUserRightsEnd();
-
-  @Nullable
-  AclUserRightsHeaderLinePasswordAware getUserRightsHeaderLinePasswordAware();
-
-  @Nullable
-  AclUserRightsHeaderLinePasswordUnaware getUserRightsHeaderLinePasswordUnaware();
 
   @NotNull
   AclUserRightsStart getUserRightsStart();
-
-  @NotNull
-  List<AclUserRightsValueLinePasswordAware> getUserRightsValueLinePasswordAwareList();
-
-  @NotNull
-  List<AclUserRightsValueLinePasswordUnaware> getUserRightsValueLinePasswordUnawareList();
 
 }

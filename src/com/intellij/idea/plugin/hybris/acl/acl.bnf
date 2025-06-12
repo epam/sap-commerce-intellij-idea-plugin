@@ -71,7 +71,7 @@ user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ user_rights_body
 user_rights_start ::= START_USERRIGHTS
 user_rights_end ::= END_USERRIGHTS (PARAMETERS_SEPARATOR)*
 
-private user_rights_body ::= user_rights_body_password_aware | user_rights_body_password_unaware {
+user_rights_body ::= user_rights_body_password_aware | user_rights_body_password_unaware {
     recoverWhile=user_rights_body_recover
 }
 private user_rights_body_password_aware ::= (user_rights_header_line_password_aware CRLF+) (user_rights_value_line_password_aware CRLF+)* {
@@ -112,24 +112,25 @@ user_rights_header_parameter_permission ::= PARAMETERS_SEPARATOR (
     | HEADER_CREATE
     | HEADER_REMOVE
     | HEADER_CHANGE_PERM
-) { pin=1 recoverWhile=recover_header hooks=user_rights }
+) { pin=1 recoverWhile=recover_header }
 
 user_rights_value_line_password_aware ::= user_rights_value_group_type
     user_rights_value_group_uid
     user_rights_value_group_member_of_groups
     user_rights_value_group_password
-    user_rights_value_group_target
-    user_rights_value_group_permission*  {
-    recoverWhile=not_line_break
-
+    user_rights_value_group_target?
+    user_rights_value_group_permission* {
+    pin=1
+    recoverWhile=recover_value_line
 }
 
 user_rights_value_line_password_unaware ::= user_rights_value_group_type
     user_rights_value_group_uid
     user_rights_value_group_member_of_groups
-    user_rights_value_group_target
-    user_rights_value_group_permission*  {
-    recoverWhile=not_line_break
+    user_rights_value_group_target?
+    user_rights_value_group_permission* {
+    pin=1
+    recoverWhile=recover_value_line
 }
 
 user_rights_value_group_type ::= FIELD_VALUE? { recoverWhile=recover_value }
@@ -160,4 +161,5 @@ comment ::= LINE_COMMENT
 
 private not_line_break ::= !(CRLF)
 private recover_header ::= !(CRLF | PARAMETERS_SEPARATOR)
-private recover_value ::= !(CRLF | FIELD_VALUE_SEPARATOR)
+private recover_value ::= !(CRLF | FIELD_VALUE_SEPARATOR | user_rights_end)
+private recover_value_line ::= !(CRLF | user_rights_end)
