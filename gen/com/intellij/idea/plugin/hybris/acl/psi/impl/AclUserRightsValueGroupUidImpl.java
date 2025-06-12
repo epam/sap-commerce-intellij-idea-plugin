@@ -33,56 +33,20 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsValueLinePasswordAwareImpl extends ASTWrapperPsiElement implements AclUserRightsValueLinePasswordAware {
+public class AclUserRightsValueGroupUidImpl extends ASTWrapperPsiElement implements AclUserRightsValueGroupUid {
 
-  public AclUserRightsValueLinePasswordAwareImpl(@NotNull ASTNode node) {
+  public AclUserRightsValueGroupUidImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsValueLinePasswordAware(this);
+    visitor.visitUserRightsValueGroupUid(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof AclVisitor) accept((AclVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsValueGroupMemberOfGroups getUserRightsValueGroupMemberOfGroups() {
-    return findNotNullChildByClass(AclUserRightsValueGroupMemberOfGroups.class);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsValueGroupPassword getUserRightsValueGroupPassword() {
-    return findNotNullChildByClass(AclUserRightsValueGroupPassword.class);
-  }
-
-  @Override
-  @NotNull
-  public List<AclUserRightsValueGroupPermission> getUserRightsValueGroupPermissionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueGroupPermission.class);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsValueGroupTarget getUserRightsValueGroupTarget() {
-    return findNotNullChildByClass(AclUserRightsValueGroupTarget.class);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsValueGroupType getUserRightsValueGroupType() {
-    return findNotNullChildByClass(AclUserRightsValueGroupType.class);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsValueGroupUid getUserRightsValueGroupUid() {
-    return findNotNullChildByClass(AclUserRightsValueGroupUid.class);
   }
 
 }

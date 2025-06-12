@@ -16,17 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- */
-package com.intellij.idea.plugin.hybris.acl.psi;
+package com.intellij.idea.plugin.hybris.acl.psi
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElement
 
-public interface AclUserRightsValuePassword extends PsiElement {
-
-}
+interface AclUserRightsValueLine : PsiElement

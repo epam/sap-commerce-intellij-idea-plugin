@@ -33,20 +33,26 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsValuePermissionImpl extends ASTWrapperPsiElement implements AclUserRightsValuePermission {
+public class AclUserRightsValueGroupMemberOfGroupsImpl extends ASTWrapperPsiElement implements AclUserRightsValueGroupMemberOfGroups {
 
-  public AclUserRightsValuePermissionImpl(@NotNull ASTNode node) {
+  public AclUserRightsValueGroupMemberOfGroupsImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsValuePermission(this);
+    visitor.visitUserRightsValueGroupMemberOfGroups(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof AclVisitor) accept((AclVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public AclUserRightsValueGroups getUserRightsValueGroups() {
+    return findChildByClass(AclUserRightsValueGroups.class);
   }
 
 }

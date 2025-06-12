@@ -24,6 +24,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 object AclHighlighterColors {
 
     val COMMENT = key("LINE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
+    val DOT = key("DOT", HighlighterColors.TEXT)
     val SINGLE_STRING = key("SINGLE_STRING", DefaultLanguageHighlighterColors.STRING)
     val USER_RIGHTS = key("ACL_USER_RIGHTS", DefaultLanguageHighlighterColors.STATIC_FIELD)
     val USER_RIGHTS_HEADER_PARAMETER = key("ACL_USER_RIGHTS_HEADER_PARAMETER", HighlighterColors.TEXT)

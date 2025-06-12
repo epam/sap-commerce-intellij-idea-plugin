@@ -65,7 +65,7 @@ public class FlexibleSearchSelectedTableNameImpl extends FlexibleSearchSelectedT
   }
 
   @Override
-  public @NotNull Collection<@NotNull FlexibleSearchTableAliasName> getTableAliases() {
+  public @NotNull Collection<FlexibleSearchTableAliasName> getTableAliases() {
     return FlexibleSearchPsiUtil.getTableAliases(this);
   }
 

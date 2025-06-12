@@ -21,32 +21,12 @@
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
  * ----------------------------------------------------------------
  */
-package com.intellij.idea.plugin.hybris.acl.psi.impl;
+package com.intellij.idea.plugin.hybris.acl.psi;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsValuePasswordImpl extends ASTWrapperPsiElement implements AclUserRightsValuePassword {
-
-  public AclUserRightsValuePasswordImpl(@NotNull ASTNode node) {
-    super(node);
-  }
-
-  public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsValuePassword(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof AclVisitor) accept((AclVisitor)visitor);
-    else super.accept(visitor);
-  }
+public interface AclUserRightsValueGroupPassword extends AclUserRightsValueGroup {
 
 }

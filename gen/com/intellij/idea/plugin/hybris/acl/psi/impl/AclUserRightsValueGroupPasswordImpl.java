@@ -33,14 +33,14 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsValueMemberOfGroupsImpl extends ASTWrapperPsiElement implements AclUserRightsValueMemberOfGroups {
+public class AclUserRightsValueGroupPasswordImpl extends ASTWrapperPsiElement implements AclUserRightsValueGroupPassword {
 
-  public AclUserRightsValueMemberOfGroupsImpl(@NotNull ASTNode node) {
+  public AclUserRightsValueGroupPasswordImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsValueMemberOfGroups(this);
+    visitor.visitUserRightsValueGroupPassword(this);
   }
 
   @Override

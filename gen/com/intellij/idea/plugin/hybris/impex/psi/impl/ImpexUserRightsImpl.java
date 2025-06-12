@@ -75,7 +75,7 @@ public class ImpexUserRightsImpl extends ASTWrapperPsiElement implements ImpexUs
   }
 
   @Override
-  public @NotNull Collection<@NotNull ImpexUserRightsValueGroup> getValueGroups(int index) {
+  public @NotNull Collection<ImpexUserRightsValueGroup> getValueGroups(int index) {
     return ImpexPsiUtil.getValueGroups(this, index);
   }
 

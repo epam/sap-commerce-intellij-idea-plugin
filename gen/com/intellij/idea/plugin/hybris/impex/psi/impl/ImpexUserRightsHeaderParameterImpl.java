@@ -61,7 +61,7 @@ public class ImpexUserRightsHeaderParameterImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
-  public @NotNull Collection<@NotNull ImpexUserRightsValueGroup> getValueGroups() {
+  public @NotNull Collection<ImpexUserRightsValueGroup> getValueGroups() {
     return ImpexPsiUtil.getValueGroups(this);
   }
 

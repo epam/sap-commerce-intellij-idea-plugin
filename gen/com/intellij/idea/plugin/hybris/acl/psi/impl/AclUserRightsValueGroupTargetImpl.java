@@ -33,14 +33,14 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsValueLinePasswordAwareImpl extends ASTWrapperPsiElement implements AclUserRightsValueLinePasswordAware {
+public class AclUserRightsValueGroupTargetImpl extends ASTWrapperPsiElement implements AclUserRightsValueGroupTarget {
 
-  public AclUserRightsValueLinePasswordAwareImpl(@NotNull ASTNode node) {
+  public AclUserRightsValueGroupTargetImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsValueLinePasswordAware(this);
+    visitor.visitUserRightsValueGroupTarget(this);
   }
 
   @Override
@@ -50,39 +50,9 @@ public class AclUserRightsValueLinePasswordAwareImpl extends ASTWrapperPsiElemen
   }
 
   @Override
-  @NotNull
-  public AclUserRightsValueGroupMemberOfGroups getUserRightsValueGroupMemberOfGroups() {
-    return findNotNullChildByClass(AclUserRightsValueGroupMemberOfGroups.class);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsValueGroupPassword getUserRightsValueGroupPassword() {
-    return findNotNullChildByClass(AclUserRightsValueGroupPassword.class);
-  }
-
-  @Override
-  @NotNull
-  public List<AclUserRightsValueGroupPermission> getUserRightsValueGroupPermissionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueGroupPermission.class);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsValueGroupTarget getUserRightsValueGroupTarget() {
-    return findNotNullChildByClass(AclUserRightsValueGroupTarget.class);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsValueGroupType getUserRightsValueGroupType() {
-    return findNotNullChildByClass(AclUserRightsValueGroupType.class);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsValueGroupUid getUserRightsValueGroupUid() {
-    return findNotNullChildByClass(AclUserRightsValueGroupUid.class);
+  @Nullable
+  public AclUserRightsValueTarget getUserRightsValueTarget() {
+    return findChildByClass(AclUserRightsValueTarget.class);
   }
 
 }

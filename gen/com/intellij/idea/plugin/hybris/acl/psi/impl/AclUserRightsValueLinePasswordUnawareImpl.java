@@ -51,32 +51,32 @@ public class AclUserRightsValueLinePasswordUnawareImpl extends ASTWrapperPsiElem
 
   @Override
   @NotNull
-  public AclUserRightsValueMemberOfGroups getUserRightsValueMemberOfGroups() {
-    return findNotNullChildByClass(AclUserRightsValueMemberOfGroups.class);
+  public AclUserRightsValueGroupMemberOfGroups getUserRightsValueGroupMemberOfGroups() {
+    return findNotNullChildByClass(AclUserRightsValueGroupMemberOfGroups.class);
   }
 
   @Override
   @NotNull
-  public List<AclUserRightsValuePermission> getUserRightsValuePermissionList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValuePermission.class);
+  public List<AclUserRightsValueGroupPermission> getUserRightsValueGroupPermissionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueGroupPermission.class);
   }
 
   @Override
   @NotNull
-  public AclUserRightsValueTarget getUserRightsValueTarget() {
-    return findNotNullChildByClass(AclUserRightsValueTarget.class);
+  public AclUserRightsValueGroupTarget getUserRightsValueGroupTarget() {
+    return findNotNullChildByClass(AclUserRightsValueGroupTarget.class);
   }
 
   @Override
   @NotNull
-  public AclUserRightsValueType getUserRightsValueType() {
-    return findNotNullChildByClass(AclUserRightsValueType.class);
+  public AclUserRightsValueGroupType getUserRightsValueGroupType() {
+    return findNotNullChildByClass(AclUserRightsValueGroupType.class);
   }
 
   @Override
   @NotNull
-  public AclUserRightsValueUid getUserRightsValueUid() {
-    return findNotNullChildByClass(AclUserRightsValueUid.class);
+  public AclUserRightsValueGroupUid getUserRightsValueGroupUid() {
+    return findNotNullChildByClass(AclUserRightsValueGroupUid.class);
   }
 
 }

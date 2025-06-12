@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.acl.formatting
 
-/*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- */
-package com.intellij.idea.plugin.hybris.acl.psi;
+import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
+class AclCodeStyleSettings(container: CodeStyleSettings) : CustomCodeStyleSettings("AclCodeStyleSettings", container) {
+    var SPACE_AFTER_FIELD_VALUE_SEPARATOR: Boolean = true
+    var SPACE_BEFORE_FIELD_VALUE_SEPARATOR: Boolean = true
 
-public interface AclUserRightsValueType extends PsiElement {
+    var SPACE_AFTER_PARAMETERS_SEPARATOR: Boolean = true
+    var SPACE_BEFORE_PARAMETERS_SEPARATOR: Boolean = false
 
+    var SPACE_AFTER_COMMA: Boolean = true
+    var SPACE_BEFORE_COMMA: Boolean = false
 }

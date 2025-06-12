@@ -128,16 +128,16 @@ public class _AclLexer implements FlexLexer {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\5\0\1\1\1\2\2\3\1\4\1\1\2\5\1\6"+
-    "\2\7\1\1\5\10\1\1\1\11\1\12\1\13\1\14"+
-    "\1\15\1\16\2\0\5\10\4\0\2\10\1\0\2\10"+
-    "\2\17\3\0\2\10\1\0\1\10\1\20\3\0\2\10"+
-    "\1\0\1\10\3\0\2\10\1\0\1\21\3\0\2\10"+
-    "\4\0\1\10\2\22\3\0\1\10\3\0\1\10\3\0"+
-    "\1\10\3\0\1\10\3\0\1\10\3\0\2\23\2\0"+
-    "\1\24\1\25\1\0\1\26";
+    "\2\7\1\1\5\10\2\11\1\1\1\12\1\13\1\14"+
+    "\1\15\1\16\1\17\2\0\5\10\4\0\2\10\1\0"+
+    "\2\10\2\20\3\0\2\10\1\0\1\10\1\21\3\0"+
+    "\2\10\1\0\1\10\3\0\2\10\1\0\1\22\3\0"+
+    "\2\10\4\0\1\10\2\23\3\0\1\10\3\0\1\10"+
+    "\3\0\1\10\3\0\1\10\3\0\1\10\3\0\2\24"+
+    "\2\0\1\25\1\26\1\0\1\27";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[112];
+    int [] result = new int[114];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -164,21 +164,22 @@ public class _AclLexer implements FlexLexer {
   private static final String ZZ_ROWMAP_PACKED_0 =
     "\0\0\0\42\0\104\0\146\0\210\0\252\0\314\0\252"+
     "\0\356\0\u0110\0\u0132\0\252\0\u0154\0\252\0\252\0\u0176"+
-    "\0\u0198\0\u01ba\0\u01dc\0\u01fe\0\u0220\0\u0242\0\u0264\0\252"+
-    "\0\252\0\u0286\0\252\0\u0286\0\252\0\u02a8\0\u02ca\0\u02ec"+
-    "\0\u030e\0\u0330\0\u0352\0\u0374\0\u0396\0\u03b8\0\u03da\0\u03fc"+
-    "\0\u041e\0\u0440\0\u0462\0\u0484\0\u04a6\0\u01ba\0\252\0\u04c8"+
-    "\0\u04ea\0\u050c\0\u052e\0\u0550\0\u0572\0\u0594\0\u01ba\0\u05b6"+
-    "\0\u05d8\0\u05fa\0\u061c\0\u063e\0\u0660\0\u0682\0\u06a4\0\u06c6"+
-    "\0\u06e8\0\u070a\0\u072c\0\u074e\0\u01ba\0\u0770\0\u0792\0\u07b4"+
-    "\0\u07d6\0\u07f8\0\u081a\0\u083c\0\u085e\0\u0880\0\u08a2\0\u01ba"+
-    "\0\252\0\u08c4\0\u08e6\0\u0908\0\u092a\0\u094c\0\u096e\0\u0990"+
-    "\0\u09b2\0\u09d4\0\u09f6\0\u0a18\0\u0a3a\0\u0a5c\0\u0a7e\0\u0aa0"+
-    "\0\u0ac2\0\u0ae4\0\u0b06\0\u0b28\0\u0b4a\0\u0b6c\0\u0b8e\0\u0bb0"+
-    "\0\u01ba\0\252\0\u0bd2\0\u0bf4\0\252\0\252\0\u0c16\0\252";
+    "\0\u0198\0\u01ba\0\u01dc\0\u01fe\0\u0220\0\u0242\0\252\0\u0264"+
+    "\0\u0286\0\252\0\252\0\u02a8\0\252\0\u02a8\0\252\0\u02ca"+
+    "\0\u02ec\0\u030e\0\u0330\0\u0352\0\u0374\0\u0396\0\u03b8\0\u03da"+
+    "\0\u03fc\0\u041e\0\u0440\0\u0462\0\u0484\0\u04a6\0\u04c8\0\u01ba"+
+    "\0\252\0\u04ea\0\u050c\0\u052e\0\u0550\0\u0572\0\u0594\0\u05b6"+
+    "\0\u01ba\0\u05d8\0\u05fa\0\u061c\0\u063e\0\u0660\0\u0682\0\u06a4"+
+    "\0\u06c6\0\u06e8\0\u070a\0\u072c\0\u074e\0\u0770\0\u01ba\0\u0792"+
+    "\0\u07b4\0\u07d6\0\u07f8\0\u081a\0\u083c\0\u085e\0\u0880\0\u08a2"+
+    "\0\u08c4\0\u01ba\0\252\0\u08e6\0\u0908\0\u092a\0\u094c\0\u096e"+
+    "\0\u0990\0\u09b2\0\u09d4\0\u09f6\0\u0a18\0\u0a3a\0\u0a5c\0\u0a7e"+
+    "\0\u0aa0\0\u0ac2\0\u0ae4\0\u0b06\0\u0b28\0\u0b4a\0\u0b6c\0\u0b8e"+
+    "\0\u0bb0\0\u0bd2\0\u01ba\0\252\0\u0bf4\0\u0c16\0\252\0\252"+
+    "\0\u0c38\0\252";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[112];
+    int [] result = new int[114];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -206,60 +207,60 @@ public class _AclLexer implements FlexLexer {
     "\1\10\1\0\1\11\7\6\1\16\26\6\1\7\1\17"+
     "\1\0\1\20\1\6\1\21\2\6\1\22\1\6\1\22"+
     "\1\16\10\22\1\23\2\22\1\24\2\22\1\25\1\26"+
-    "\3\22\3\6\1\7\1\17\1\0\1\20\1\12\1\27"+
-    "\1\30\1\31\1\32\1\33\1\34\1\35\23\34\2\6"+
+    "\3\22\3\6\1\7\1\27\1\0\1\30\1\12\1\31"+
+    "\1\32\1\33\1\34\1\35\1\36\1\37\23\36\2\6"+
     "\43\0\1\7\42\0\1\10\37\0\2\12\1\0\1\12"+
-    "\1\0\35\12\32\0\1\36\6\0\1\36\2\0\1\14"+
-    "\41\0\1\17\57\0\1\37\32\0\1\22\1\0\1\22"+
+    "\1\0\35\12\32\0\1\40\6\0\1\40\2\0\1\14"+
+    "\41\0\1\17\57\0\1\41\32\0\1\22\1\0\1\22"+
     "\1\0\23\22\13\0\1\22\1\0\1\22\1\0\3\22"+
-    "\1\40\17\22\13\0\1\22\1\0\1\22\1\0\1\41"+
-    "\22\22\13\0\1\22\1\0\1\22\1\0\1\42\20\22"+
-    "\1\43\1\22\13\0\1\22\1\0\1\22\1\0\7\22"+
-    "\1\44\13\22\1\45\21\0\1\46\32\0\1\34\1\0"+
-    "\1\34\1\0\23\34\35\0\1\47\34\0\1\50\24\0"+
-    "\1\22\1\0\1\22\1\0\10\22\1\51\12\22\13\0"+
-    "\1\22\1\0\1\22\1\0\15\22\1\52\5\22\1\0"+
-    "\1\53\11\0\1\22\1\0\1\22\1\0\14\22\1\54"+
-    "\6\22\13\0\1\22\1\0\1\22\1\0\13\22\1\55"+
-    "\7\22\13\0\1\22\1\0\1\22\1\0\2\22\1\56"+
-    "\20\22\21\0\1\57\50\0\1\60\30\0\1\61\43\0"+
-    "\1\62\33\0\1\22\1\0\1\22\1\0\1\22\1\63"+
-    "\21\22\13\0\1\22\1\0\1\22\1\0\15\22\1\64"+
-    "\5\22\1\0\1\65\32\0\1\65\6\0\1\65\11\0"+
-    "\1\22\1\0\1\22\1\0\5\22\1\66\15\22\13\0"+
-    "\1\22\1\0\1\22\1\0\3\22\1\67\17\22\21\0"+
-    "\1\70\53\0\1\71\47\0\1\72\13\0\1\22\1\0"+
-    "\1\22\1\0\3\22\1\73\17\22\13\0\1\22\1\0"+
-    "\1\22\1\0\20\22\1\74\2\22\37\0\1\75\15\0"+
-    "\1\22\1\0\1\22\1\0\3\22\1\76\17\22\41\0"+
-    "\1\77\35\0\1\100\42\0\1\101\16\0\1\22\1\0"+
-    "\1\22\1\0\14\22\1\102\6\22\13\0\1\22\1\0"+
-    "\1\22\1\0\12\22\1\103\10\22\31\0\1\104\23\0"+
-    "\1\22\1\0\1\22\1\0\16\22\1\105\4\22\36\0"+
-    "\1\106\44\0\1\107\34\0\1\110\6\0\1\110\11\0"+
-    "\1\22\1\0\1\22\1\0\12\22\1\111\10\22\13\0"+
-    "\1\22\1\0\1\22\1\0\14\22\1\112\6\22\33\0"+
-    "\1\113\42\0\1\114\6\0\1\114\34\0\1\115\25\0"+
-    "\1\116\32\0\1\22\1\0\1\22\1\0\4\22\1\117"+
-    "\16\22\13\0\1\22\1\0\1\22\1\0\2\22\1\120"+
-    "\20\22\21\0\1\121\42\0\1\122\53\0\1\123\6\0"+
-    "\1\123\31\0\1\124\21\0\1\22\1\0\1\22\1\0"+
-    "\5\22\1\125\15\22\33\0\1\126\30\0\1\127\52\0"+
-    "\1\130\21\0\1\22\1\0\1\22\1\0\14\22\1\131"+
-    "\6\22\33\0\1\132\41\0\1\133\34\0\1\134\13\0"+
-    "\1\134\12\0\1\22\1\0\1\22\1\0\12\22\1\135"+
-    "\10\22\26\0\1\136\13\0\1\136\32\0\1\137\32\0"+
-    "\1\140\30\0\1\22\1\0\1\22\1\0\17\22\1\141"+
-    "\3\22\24\0\1\142\43\0\1\143\13\0\1\143\24\0"+
-    "\1\144\27\0\1\22\1\0\1\22\1\0\13\22\1\145"+
-    "\7\22\25\0\1\146\40\0\1\147\52\0\1\150\17\0"+
-    "\1\22\1\0\1\22\1\0\15\22\1\151\5\22\1\0"+
-    "\1\152\33\0\1\153\31\0\1\154\50\0\1\155\6\0"+
-    "\1\155\32\0\1\156\6\0\1\156\33\0\1\157\40\0"+
-    "\1\160\6\0\1\160";
+    "\1\42\17\22\13\0\1\22\1\0\1\22\1\0\1\43"+
+    "\22\22\13\0\1\22\1\0\1\22\1\0\1\44\20\22"+
+    "\1\45\1\22\13\0\1\22\1\0\1\22\1\0\7\22"+
+    "\1\46\13\22\1\47\3\0\1\27\57\0\1\50\32\0"+
+    "\1\36\1\0\1\36\1\0\23\36\35\0\1\51\34\0"+
+    "\1\52\24\0\1\22\1\0\1\22\1\0\10\22\1\53"+
+    "\12\22\13\0\1\22\1\0\1\22\1\0\15\22\1\54"+
+    "\5\22\1\0\1\55\11\0\1\22\1\0\1\22\1\0"+
+    "\14\22\1\56\6\22\13\0\1\22\1\0\1\22\1\0"+
+    "\13\22\1\57\7\22\13\0\1\22\1\0\1\22\1\0"+
+    "\2\22\1\60\20\22\21\0\1\61\50\0\1\62\30\0"+
+    "\1\63\43\0\1\64\33\0\1\22\1\0\1\22\1\0"+
+    "\1\22\1\65\21\22\13\0\1\22\1\0\1\22\1\0"+
+    "\15\22\1\66\5\22\1\0\1\67\32\0\1\67\6\0"+
+    "\1\67\11\0\1\22\1\0\1\22\1\0\5\22\1\70"+
+    "\15\22\13\0\1\22\1\0\1\22\1\0\3\22\1\71"+
+    "\17\22\21\0\1\72\53\0\1\73\47\0\1\74\13\0"+
+    "\1\22\1\0\1\22\1\0\3\22\1\75\17\22\13\0"+
+    "\1\22\1\0\1\22\1\0\20\22\1\76\2\22\37\0"+
+    "\1\77\15\0\1\22\1\0\1\22\1\0\3\22\1\100"+
+    "\17\22\41\0\1\101\35\0\1\102\42\0\1\103\16\0"+
+    "\1\22\1\0\1\22\1\0\14\22\1\104\6\22\13\0"+
+    "\1\22\1\0\1\22\1\0\12\22\1\105\10\22\31\0"+
+    "\1\106\23\0\1\22\1\0\1\22\1\0\16\22\1\107"+
+    "\4\22\36\0\1\110\44\0\1\111\34\0\1\112\6\0"+
+    "\1\112\11\0\1\22\1\0\1\22\1\0\12\22\1\113"+
+    "\10\22\13\0\1\22\1\0\1\22\1\0\14\22\1\114"+
+    "\6\22\33\0\1\115\42\0\1\116\6\0\1\116\34\0"+
+    "\1\117\25\0\1\120\32\0\1\22\1\0\1\22\1\0"+
+    "\4\22\1\121\16\22\13\0\1\22\1\0\1\22\1\0"+
+    "\2\22\1\122\20\22\21\0\1\123\42\0\1\124\53\0"+
+    "\1\125\6\0\1\125\31\0\1\126\21\0\1\22\1\0"+
+    "\1\22\1\0\5\22\1\127\15\22\33\0\1\130\30\0"+
+    "\1\131\52\0\1\132\21\0\1\22\1\0\1\22\1\0"+
+    "\14\22\1\133\6\22\33\0\1\134\41\0\1\135\34\0"+
+    "\1\136\13\0\1\136\12\0\1\22\1\0\1\22\1\0"+
+    "\12\22\1\137\10\22\26\0\1\140\13\0\1\140\32\0"+
+    "\1\141\32\0\1\142\30\0\1\22\1\0\1\22\1\0"+
+    "\17\22\1\143\3\22\24\0\1\144\43\0\1\145\13\0"+
+    "\1\145\24\0\1\146\27\0\1\22\1\0\1\22\1\0"+
+    "\13\22\1\147\7\22\25\0\1\150\40\0\1\151\52\0"+
+    "\1\152\17\0\1\22\1\0\1\22\1\0\15\22\1\153"+
+    "\5\22\1\0\1\154\33\0\1\155\31\0\1\156\50\0"+
+    "\1\157\6\0\1\157\32\0\1\160\6\0\1\160\33\0"+
+    "\1\161\40\0\1\162\6\0\1\162";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[3128];
+    int [] result = new int[3162];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -298,15 +299,16 @@ public class _AclLexer implements FlexLexer {
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\5\0\1\11\1\1\1\11\3\1\1\11\1\1\2\11"+
-    "\10\1\2\11\1\1\1\11\1\1\1\11\2\0\5\1"+
-    "\4\0\2\1\1\0\3\1\1\11\3\0\2\1\1\0"+
-    "\2\1\3\0\2\1\1\0\1\1\3\0\2\1\1\0"+
-    "\1\1\3\0\2\1\4\0\2\1\1\11\3\0\1\1"+
+    "\7\1\1\11\2\1\2\11\1\1\1\11\1\1\1\11"+
+    "\2\0\5\1\4\0\2\1\1\0\3\1\1\11\3\0"+
+    "\2\1\1\0\2\1\3\0\2\1\1\0\1\1\3\0"+
+    "\2\1\1\0\1\1\3\0\2\1\4\0\2\1\1\11"+
     "\3\0\1\1\3\0\1\1\3\0\1\1\3\0\1\1"+
-    "\3\0\1\1\1\11\2\0\2\11\1\0\1\11";
+    "\3\0\1\1\3\0\1\1\1\11\2\0\2\11\1\0"+
+    "\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[112];
+    int [] result = new int[114];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -376,6 +378,7 @@ public class _AclLexer implements FlexLexer {
   private int permissionHeader = 0;
   private int valueColumn = 0;
   private boolean passwordColumnPresent = false;
+  private boolean headerFound = false;
   public _AclLexer() {
     this((java.io.Reader)null);
   }
@@ -640,126 +643,136 @@ public class _AclLexer implements FlexLexer {
             { return TokenType.BAD_CHARACTER;
             }
           // fall through
-          case 23: break;
+          case 24: break;
           case 2:
             { return TokenType.WHITE_SPACE;
             }
           // fall through
-          case 24: break;
+          case 25: break;
           case 3:
             { yybegin(YYINITIAL); return AclTypes.CRLF;
             }
           // fall through
-          case 25: break;
+          case 26: break;
           case 4:
             { return AclTypes.LINE_COMMENT;
             }
           // fall through
-          case 26: break;
+          case 27: break;
           case 5:
             { yybegin(USER_RIGHTS_HEADER_LINE);
         permissionHeader=0;
         passwordColumnPresent=false;
+        headerFound=false;
         return AclTypes.CRLF;
             }
           // fall through
-          case 27: break;
+          case 28: break;
           case 6:
             { return AclTypes.PARAMETERS_SEPARATOR;
             }
           // fall through
-          case 28: break;
+          case 29: break;
           case 7:
-            { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF;
+            { if (headerFound) {
+            valueColumn=0;
+            yybegin(USER_RIGHTS_VALUE_LINE);
+        }
+        return AclTypes.CRLF;
             }
           // fall through
-          case 29: break;
+          case 30: break;
           case 8:
             { permissionHeader++;
 
         return switch (permissionHeader) {
-          case 1 -> AclTypes.HEADER_READ;
-          case 2 -> AclTypes.HEADER_CHANGE;
-          case 3 -> AclTypes.HEADER_CREATE;
-          case 4 -> AclTypes.HEADER_REMOVE;
-          case 5 -> AclTypes.HEADER_CHANGE_PERM;
-          // any other columns are not expected
-          default -> TokenType.BAD_CHARACTER;
+            case 1 -> AclTypes.HEADER_READ;
+            case 2 -> AclTypes.HEADER_CHANGE;
+            case 3 -> AclTypes.HEADER_CREATE;
+            case 4 -> AclTypes.HEADER_REMOVE;
+            case 5 -> AclTypes.HEADER_CHANGE_PERM;
+            // any other columns are not expected
+            default -> TokenType.BAD_CHARACTER;
         };
             }
           // fall through
-          case 30: break;
-          case 9:
-            { return AclTypes.PERMISSION_ALLOWED;
-            }
-          // fall through
           case 31: break;
-          case 10:
-            { return AclTypes.COMMA;
+          case 9:
+            { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF;
             }
           // fall through
           case 32: break;
-          case 11:
-            { return AclTypes.PERMISSION_DENIED;
+          case 10:
+            { return AclTypes.PERMISSION_ALLOWED;
             }
           // fall through
           case 33: break;
+          case 11:
+            { return AclTypes.COMMA;
+            }
+          // fall through
+          case 34: break;
           case 12:
+            { return AclTypes.PERMISSION_DENIED;
+            }
+          // fall through
+          case 35: break;
+          case 13:
             { if (passwordColumnPresent && valueColumn >= 5 || !passwordColumnPresent && valueColumn >= 4) return AclTypes.PERMISSION_INHERITED;
           return AclTypes.DOT;
             }
           // fall through
-          case 34: break;
-          case 13:
+          case 36: break;
+          case 14:
             { return AclTypes.FIELD_VALUE;
             }
           // fall through
-          case 35: break;
-          case 14:
+          case 37: break;
+          case 15:
             { valueColumn++; return AclTypes.FIELD_VALUE_SEPARATOR;
             }
           // fall through
-          case 36: break;
-          case 15:
+          case 38: break;
+          case 16:
             { return AclTypes.HEADER_UID;
             }
           // fall through
-          case 37: break;
-          case 16:
-            { return AclTypes.HEADER_TYPE;
-            }
-          // fall through
-          case 38: break;
-          case 17:
-            { return AclTypes.HEADER_TARGET;
-            }
-          // fall through
           case 39: break;
-          case 18:
-            { passwordColumnPresent=true; return AclTypes.HEADER_PASSWORD;
+          case 17:
+            { headerFound=true; return AclTypes.HEADER_TYPE;
             }
           // fall through
           case 40: break;
-          case 19:
-            { return AclTypes.HEADER_MEMBEROFGROUPS;
+          case 18:
+            { return AclTypes.HEADER_TARGET;
             }
           // fall through
           case 41: break;
-          case 20:
-            { yybegin(YYINITIAL); return AclTypes.END_USERRIGHTS;
+          case 19:
+            { passwordColumnPresent=true; return AclTypes.HEADER_PASSWORD;
             }
           // fall through
           case 42: break;
-          case 21:
-            { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS;
+          case 20:
+            { return AclTypes.HEADER_MEMBEROFGROUPS;
             }
           // fall through
           case 43: break;
-          case 22:
-            { yybegin(USER_RIGHTS_START); return AclTypes.START_USERRIGHTS;
+          case 21:
+            { yybegin(YYINITIAL); return AclTypes.END_USERRIGHTS;
             }
           // fall through
           case 44: break;
+          case 22:
+            { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS;
+            }
+          // fall through
+          case 45: break;
+          case 23:
+            { yybegin(USER_RIGHTS_START); return AclTypes.START_USERRIGHTS;
+            }
+          // fall through
+          case 46: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

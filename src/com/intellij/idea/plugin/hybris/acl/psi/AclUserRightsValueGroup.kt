@@ -16,24 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- */
-package com.intellij.idea.plugin.hybris.impex.psi;
+package com.intellij.idea.plugin.hybris.acl.psi
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import java.util.Collection;
+import com.intellij.psi.PsiElement
 
-public interface ImpexUserRightsHeaderParameter extends PsiElement {
-
-  @Nullable ImpexUserRightsHeaderLine getHeaderLine();
-
-  @Nullable Integer getColumnNumber();
-
-  @NotNull Collection<ImpexUserRightsValueGroup> getValueGroups();
-
-}
+interface AclUserRightsValueGroup : PsiElement

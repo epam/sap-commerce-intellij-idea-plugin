@@ -42,14 +42,16 @@ public interface AclTypes {
   IElementType USER_RIGHTS_HEADER_PARAMETER_TYPE = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_TYPE");
   IElementType USER_RIGHTS_HEADER_PARAMETER_UID = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_UID");
   IElementType USER_RIGHTS_START = new AclElementType("USER_RIGHTS_START");
+  IElementType USER_RIGHTS_VALUE_GROUPS = new AclElementType("USER_RIGHTS_VALUE_GROUPS");
+  IElementType USER_RIGHTS_VALUE_GROUP_MEMBER_OF_GROUPS = new AclElementType("USER_RIGHTS_VALUE_GROUP_MEMBER_OF_GROUPS");
+  IElementType USER_RIGHTS_VALUE_GROUP_PASSWORD = new AclElementType("USER_RIGHTS_VALUE_GROUP_PASSWORD");
+  IElementType USER_RIGHTS_VALUE_GROUP_PERMISSION = new AclElementType("USER_RIGHTS_VALUE_GROUP_PERMISSION");
+  IElementType USER_RIGHTS_VALUE_GROUP_TARGET = new AclElementType("USER_RIGHTS_VALUE_GROUP_TARGET");
+  IElementType USER_RIGHTS_VALUE_GROUP_TYPE = new AclElementType("USER_RIGHTS_VALUE_GROUP_TYPE");
+  IElementType USER_RIGHTS_VALUE_GROUP_UID = new AclElementType("USER_RIGHTS_VALUE_GROUP_UID");
   IElementType USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE");
   IElementType USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE");
-  IElementType USER_RIGHTS_VALUE_MEMBER_OF_GROUPS = new AclElementType("USER_RIGHTS_VALUE_MEMBER_OF_GROUPS");
-  IElementType USER_RIGHTS_VALUE_PASSWORD = new AclElementType("USER_RIGHTS_VALUE_PASSWORD");
-  IElementType USER_RIGHTS_VALUE_PERMISSION = new AclElementType("USER_RIGHTS_VALUE_PERMISSION");
   IElementType USER_RIGHTS_VALUE_TARGET = new AclElementType("USER_RIGHTS_VALUE_TARGET");
-  IElementType USER_RIGHTS_VALUE_TYPE = new AclElementType("USER_RIGHTS_VALUE_TYPE");
-  IElementType USER_RIGHTS_VALUE_UID = new AclElementType("USER_RIGHTS_VALUE_UID");
 
   IElementType COMMA = new AclTokenType("COMMA");
   IElementType CRLF = new AclTokenType("CRLF");
@@ -114,29 +116,35 @@ public interface AclTypes {
       else if (type == USER_RIGHTS_START) {
         return new AclUserRightsStartImpl(node);
       }
+      else if (type == USER_RIGHTS_VALUE_GROUPS) {
+        return new AclUserRightsValueGroupsImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_GROUP_MEMBER_OF_GROUPS) {
+        return new AclUserRightsValueGroupMemberOfGroupsImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_GROUP_PASSWORD) {
+        return new AclUserRightsValueGroupPasswordImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_GROUP_PERMISSION) {
+        return new AclUserRightsValueGroupPermissionImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_GROUP_TARGET) {
+        return new AclUserRightsValueGroupTargetImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_GROUP_TYPE) {
+        return new AclUserRightsValueGroupTypeImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_GROUP_UID) {
+        return new AclUserRightsValueGroupUidImpl(node);
+      }
       else if (type == USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE) {
         return new AclUserRightsValueLinePasswordAwareImpl(node);
       }
       else if (type == USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE) {
         return new AclUserRightsValueLinePasswordUnawareImpl(node);
       }
-      else if (type == USER_RIGHTS_VALUE_MEMBER_OF_GROUPS) {
-        return new AclUserRightsValueMemberOfGroupsImpl(node);
-      }
-      else if (type == USER_RIGHTS_VALUE_PASSWORD) {
-        return new AclUserRightsValuePasswordImpl(node);
-      }
-      else if (type == USER_RIGHTS_VALUE_PERMISSION) {
-        return new AclUserRightsValuePermissionImpl(node);
-      }
       else if (type == USER_RIGHTS_VALUE_TARGET) {
         return new AclUserRightsValueTargetImpl(node);
-      }
-      else if (type == USER_RIGHTS_VALUE_TYPE) {
-        return new AclUserRightsValueTypeImpl(node);
-      }
-      else if (type == USER_RIGHTS_VALUE_UID) {
-        return new AclUserRightsValueUidImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

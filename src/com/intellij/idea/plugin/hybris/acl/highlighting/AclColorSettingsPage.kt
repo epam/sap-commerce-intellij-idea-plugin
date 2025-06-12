@@ -43,7 +43,7 @@ ${"$"}START_USERRIGHTS
 Type      ; UID        ; MemberOfGroups ; Password ; Target       ; read ; change ; create ; delete ; change_perm
 UserGroup ; impexgroup ; employeegroup  ;
           ;            ;                ;          ; Product.code ; +    ; +      ; +      ; +      ; -
-Customer  ; impex-demo ; impexgroup     ; 1234     ;              ; $inheritedPermission    ; -      ;        ; $inheritedPermission      ;
+Customer  ; impex-demo ; impexgroup     ; 1234     ;              ; .    ; -      ;        ; .      ;
 ${"$"}END_USERRIGHTS
 
 @@@@@
@@ -54,10 +54,9 @@ ${"$"}END_USERRIGHTS
         put("permission_inherited", AclHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED)
         this
     }
-    private val inheritedPermission = "<permission_inherited>.</permission_inherited>"
-
     private val descriptors = arrayOf(
         AttributesDescriptor("Comment line", AclHighlighterColors.COMMENT),
+        AttributesDescriptor("Dot", AclHighlighterColors.DOT),
 
         AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER),
 

@@ -36,6 +36,6 @@ public interface FlexibleSearchSelectedTableName extends FlexibleSearchPsiNamedE
 
   @NotNull PsiElement getNameIdentifier();
 
-  @NotNull Collection<@NotNull FlexibleSearchTableAliasName> getTableAliases();
+  @NotNull Collection<FlexibleSearchTableAliasName> getTableAliases();
 
 }

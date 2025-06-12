@@ -42,6 +42,6 @@ public interface ImpexUserRights extends PsiElement {
   @NotNull
   List<ImpexUserRightsValueLine> getUserRightsValueLineList();
 
-  @NotNull Collection<@NotNull ImpexUserRightsValueGroup> getValueGroups(int index);
+  @NotNull Collection<ImpexUserRightsValueGroup> getValueGroups(int index);
 
 }

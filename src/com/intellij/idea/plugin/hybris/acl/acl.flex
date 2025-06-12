@@ -33,6 +33,7 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
   private int permissionHeader = 0;
   private int valueColumn = 0;
   private boolean passwordColumnPresent = false;
+  private boolean headerFound = false;
   public _AclLexer() {
     this((java.io.Reader)null);
   }
@@ -89,12 +90,13 @@ end_userrights                    = [$]END_USERRIGHTS
         yybegin(USER_RIGHTS_HEADER_LINE);
         permissionHeader=0;
         passwordColumnPresent=false;
+        headerFound=false;
         return AclTypes.CRLF;
     }
 }
 
 <USER_RIGHTS_HEADER_LINE> {
-    "Type"                                                  { return AclTypes.HEADER_TYPE; }
+    "Type"                                                  { headerFound=true; return AclTypes.HEADER_TYPE; }
     "UID"                                                   { return AclTypes.HEADER_UID; }
     "MemberOfGroups"                                        { return AclTypes.HEADER_MEMBEROFGROUPS; }
     "Password"                                              { passwordColumnPresent=true; return AclTypes.HEADER_PASSWORD; }
@@ -103,19 +105,25 @@ end_userrights                    = [$]END_USERRIGHTS
         permissionHeader++;
 
         return switch (permissionHeader) {
-          case 1 -> AclTypes.HEADER_READ;
-          case 2 -> AclTypes.HEADER_CHANGE;
-          case 3 -> AclTypes.HEADER_CREATE;
-          case 4 -> AclTypes.HEADER_REMOVE;
-          case 5 -> AclTypes.HEADER_CHANGE_PERM;
-          // any other columns are not expected
-          default -> TokenType.BAD_CHARACTER;
+            case 1 -> AclTypes.HEADER_READ;
+            case 2 -> AclTypes.HEADER_CHANGE;
+            case 3 -> AclTypes.HEADER_CREATE;
+            case 4 -> AclTypes.HEADER_REMOVE;
+            case 5 -> AclTypes.HEADER_CHANGE_PERM;
+            // any other columns are not expected
+            default -> TokenType.BAD_CHARACTER;
         };
     }
     {semicolon}                                             { return AclTypes.PARAMETERS_SEPARATOR; }
 
     {end_userrights}                                        { yybegin(YYINITIAL); return AclTypes.END_USERRIGHTS; }
-    {crlf}                                                  { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
+    {crlf}                                                  {
+        if (headerFound) {
+            valueColumn=0;
+            yybegin(USER_RIGHTS_VALUE_LINE);
+        }
+        return AclTypes.CRLF;
+    }
 }
 
 <USER_RIGHTS_VALUE_LINE> {

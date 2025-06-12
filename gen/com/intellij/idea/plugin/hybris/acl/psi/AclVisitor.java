@@ -77,39 +77,55 @@ public class AclVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitUserRightsValueGroupMemberOfGroups(@NotNull AclUserRightsValueGroupMemberOfGroups o) {
+    visitUserRightsValueGroup(o);
+  }
+
+  public void visitUserRightsValueGroupPassword(@NotNull AclUserRightsValueGroupPassword o) {
+    visitUserRightsValueGroup(o);
+  }
+
+  public void visitUserRightsValueGroupPermission(@NotNull AclUserRightsValueGroupPermission o) {
+    visitUserRightsValueGroup(o);
+  }
+
+  public void visitUserRightsValueGroupTarget(@NotNull AclUserRightsValueGroupTarget o) {
+    visitUserRightsValueGroup(o);
+  }
+
+  public void visitUserRightsValueGroupType(@NotNull AclUserRightsValueGroupType o) {
+    visitUserRightsValueGroup(o);
+  }
+
+  public void visitUserRightsValueGroupUid(@NotNull AclUserRightsValueGroupUid o) {
+    visitUserRightsValueGroup(o);
+  }
+
+  public void visitUserRightsValueGroups(@NotNull AclUserRightsValueGroups o) {
+    visitUserRightsValueGroup(o);
+  }
+
   public void visitUserRightsValueLinePasswordAware(@NotNull AclUserRightsValueLinePasswordAware o) {
-    visitPsiElement(o);
+    visitUserRightsValueLine(o);
   }
 
   public void visitUserRightsValueLinePasswordUnaware(@NotNull AclUserRightsValueLinePasswordUnaware o) {
-    visitPsiElement(o);
-  }
-
-  public void visitUserRightsValueMemberOfGroups(@NotNull AclUserRightsValueMemberOfGroups o) {
-    visitPsiElement(o);
-  }
-
-  public void visitUserRightsValuePassword(@NotNull AclUserRightsValuePassword o) {
-    visitPsiElement(o);
-  }
-
-  public void visitUserRightsValuePermission(@NotNull AclUserRightsValuePermission o) {
-    visitPsiElement(o);
+    visitUserRightsValueLine(o);
   }
 
   public void visitUserRightsValueTarget(@NotNull AclUserRightsValueTarget o) {
     visitPsiElement(o);
   }
 
-  public void visitUserRightsValueType(@NotNull AclUserRightsValueType o) {
-    visitPsiElement(o);
-  }
-
-  public void visitUserRightsValueUid(@NotNull AclUserRightsValueUid o) {
-    visitPsiElement(o);
-  }
-
   public void visitUserRightsHeaderParameter(@NotNull AclUserRightsHeaderParameter o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValueGroup(@NotNull AclUserRightsValueGroup o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValueLine(@NotNull AclUserRightsValueLine o) {
     visitPsiElement(o);
   }
 

@@ -31,8 +31,8 @@ import kotlin.Pair;
 
 public interface FlexibleSearchYColumnName extends PsiElement {
 
-  @Nullable Pair<@NotNull FlexibleSearchDefinedTableName, @Nullable FlexibleSearchTableAliasName> getTableToAlias();
+  @Nullable Pair<FlexibleSearchDefinedTableName, FlexibleSearchTableAliasName> getTableToAlias();
 
-  @NotNull Collection<@NotNull FlexibleSearchTableAliasName> getTableAliases();
+  @NotNull Collection<FlexibleSearchTableAliasName> getTableAliases();
 
 }
