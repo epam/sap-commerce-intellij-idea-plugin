@@ -228,43 +228,13 @@ public class AclParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // user_rights
   //     | comment
-  //     | (string (';')?)
   static boolean root_group(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "root_group")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = user_rights(b, l + 1);
     if (!r) r = comment(b, l + 1);
-    if (!r) r = root_group_2(b, l + 1);
     exit_section_(b, l, m, r, false, AclParser::not_line_break);
-    return r;
-  }
-
-  // string (';')?
-  private static boolean root_group_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_group_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, STRING);
-    r = r && root_group_2_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // (';')?
-  private static boolean root_group_2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_group_2_1")) return false;
-    root_group_2_1_0(b, l + 1);
-    return true;
-  }
-
-  // (';')
-  private static boolean root_group_2_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "root_group_2_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, ";");
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -702,7 +672,7 @@ public class AclParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE_SEPARATOR FIELD_VALUE?
+  // FIELD_VALUE_SEPARATOR PASSWORD?
   public static boolean user_rights_value_group_password(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_group_password")) return false;
     boolean r, p;
@@ -714,10 +684,10 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // FIELD_VALUE?
+  // PASSWORD?
   private static boolean user_rights_value_group_password_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_group_password_1")) return false;
-    consumeToken(b, FIELD_VALUE);
+    consumeToken(b, PASSWORD);
     return true;
   }
 

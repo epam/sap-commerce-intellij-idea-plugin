@@ -38,7 +38,7 @@ class AclParserDefinition : ParserDefinition {
     override fun getWhitespaceTokens(): TokenSet = TokenSet.WHITE_SPACE
     override fun getCommentTokens() = TokenSet.create(AclTypes.LINE_COMMENT)
     override fun getStringLiteralElements() = TokenSet.create(
-        AclTypes.STRING,
+        AclTypes.PASSWORD,
     )
 
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode, right: ASTNode) = ParserDefinition.SpaceRequirements.MAY

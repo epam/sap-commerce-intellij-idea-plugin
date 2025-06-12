@@ -72,11 +72,11 @@ public interface AclTypes {
   IElementType HEADER_UID = new AclTokenType("HEADER_UID");
   IElementType LINE_COMMENT = new AclTokenType("LINE_COMMENT");
   IElementType PARAMETERS_SEPARATOR = new AclTokenType("PARAMETERS_SEPARATOR");
+  IElementType PASSWORD = new AclTokenType("PASSWORD");
   IElementType PERMISSION_ALLOWED = new AclTokenType("PERMISSION_ALLOWED");
   IElementType PERMISSION_DENIED = new AclTokenType("PERMISSION_DENIED");
   IElementType PERMISSION_INHERITED = new AclTokenType("PERMISSION_INHERITED");
   IElementType START_USERRIGHTS = new AclTokenType("START_USERRIGHTS");
-  IElementType STRING = new AclTokenType("string");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {

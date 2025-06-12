@@ -58,7 +58,7 @@ class AclSyntaxHighlighter : SyntaxHighlighterBase() {
 
             AclTypes.LINE_COMMENT to pack(AclHighlighterColors.COMMENT),
 
-            AclTypes.STRING to pack(AclHighlighterColors.SINGLE_STRING),
+            AclTypes.PASSWORD to pack(AclHighlighterColors.SINGLE_STRING),
 
             AclTypes.PERMISSION_ALLOWED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
             AclTypes.PERMISSION_DENIED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),

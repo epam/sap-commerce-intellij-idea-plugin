@@ -53,6 +53,7 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 identifier  = [a-zA-Z0-9_-]
 
 crlf        = (([\n])|([\r])|(\r\n))
+crlf_char   = [\r\n]
 not_crlf    = [^\r\n]
 white_space = [ \t\f]
 
@@ -64,7 +65,9 @@ dot           = [.]
 plus          = [+]
 minus         = [-]
 
-field_value        = ({not_crlf}|{identifier}+)
+triple_quoted_string = \"\"\"[^{crlf_char}][^{crlf_char}]*\"\"\"
+single_quoted_string = \"[^;\"{crlf_char}][^;\"{crlf_char}]*\"
+unquoted_string = [^;\"{white_space}{crlf_char}]([^;\"{crlf_char}]*[^;\"{white_space}{crlf_char}])?
 
 start_userrights                  = [$]START_USERRIGHTS
 end_userrights                    = [$]END_USERRIGHTS
@@ -73,6 +76,7 @@ end_userrights                    = [$]END_USERRIGHTS
 %state USER_RIGHTS_END
 %state USER_RIGHTS_HEADER_LINE
 %state USER_RIGHTS_VALUE_LINE
+%state USER_RIGHTS_VALUE_PASSWORD
 
 %%
 
@@ -127,8 +131,6 @@ end_userrights                    = [$]END_USERRIGHTS
 }
 
 <USER_RIGHTS_VALUE_LINE> {
-// even if we may have one more Header line in the body of the user rights, it will be ignored by ImportExportUserRightsHelper
-//    {user_rights_type}                                      { yybegin(USER_RIGHTS_HEADER_LINE); yypushback(yylength()); }
     {minus}                                                 { return AclTypes.PERMISSION_DENIED; }
     {plus}                                                  { return AclTypes.PERMISSION_ALLOWED; }
     {identifier}+                                           { return AclTypes.FIELD_VALUE; }
@@ -139,7 +141,26 @@ end_userrights                    = [$]END_USERRIGHTS
       }
     {comma}                                                 { return AclTypes.COMMA; }
 
-    {semicolon}                                             { valueColumn++; return AclTypes.FIELD_VALUE_SEPARATOR; }
+    {semicolon}                                             {
+        valueColumn++;
+        if (passwordColumnPresent && valueColumn == 3) yybegin(USER_RIGHTS_VALUE_PASSWORD);
+        return AclTypes.FIELD_VALUE_SEPARATOR;
+    }
+    {end_userrights}                                        { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS; }
+    {crlf}                                                  { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
+}
+
+<USER_RIGHTS_VALUE_PASSWORD> {
+    {triple_quoted_string}                                  { return AclTypes.PASSWORD; }
+    {single_quoted_string}                                  { return AclTypes.PASSWORD; }
+    {unquoted_string}                                       { return AclTypes.PASSWORD; }
+
+    {line_comment}                                          { return AclTypes.LINE_COMMENT; }
+    {semicolon}                                             {
+        valueColumn++;
+        yybegin(USER_RIGHTS_VALUE_LINE);
+        return AclTypes.FIELD_VALUE_SEPARATOR;
+    }
     {end_userrights}                                        { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS; }
     {crlf}                                                  { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
 }
