@@ -33,20 +33,50 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsHeaderParameterUidImpl extends ASTWrapperPsiElement implements AclUserRightsHeaderParameterUid {
+public class AclUserRightsHeaderLinePasswordUnawareImpl extends ASTWrapperPsiElement implements AclUserRightsHeaderLinePasswordUnaware {
 
-  public AclUserRightsHeaderParameterUidImpl(@NotNull ASTNode node) {
+  public AclUserRightsHeaderLinePasswordUnawareImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsHeaderParameterUid(this);
+    visitor.visitUserRightsHeaderLinePasswordUnaware(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof AclVisitor) accept((AclVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public AclUserRightsHeaderParameterMemberOfGroups getUserRightsHeaderParameterMemberOfGroups() {
+    return findChildByClass(AclUserRightsHeaderParameterMemberOfGroups.class);
+  }
+
+  @Override
+  @NotNull
+  public List<AclUserRightsHeaderParameterPermission> getUserRightsHeaderParameterPermissionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsHeaderParameterPermission.class);
+  }
+
+  @Override
+  @Nullable
+  public AclUserRightsHeaderParameterTarget getUserRightsHeaderParameterTarget() {
+    return findChildByClass(AclUserRightsHeaderParameterTarget.class);
+  }
+
+  @Override
+  @NotNull
+  public AclUserRightsHeaderParameterType getUserRightsHeaderParameterType() {
+    return findNotNullChildByClass(AclUserRightsHeaderParameterType.class);
+  }
+
+  @Override
+  @Nullable
+  public AclUserRightsHeaderParameterUid getUserRightsHeaderParameterUid() {
+    return findChildByClass(AclUserRightsHeaderParameterUid.class);
   }
 
 }

@@ -33,20 +33,56 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsHeaderParameterUidImpl extends ASTWrapperPsiElement implements AclUserRightsHeaderParameterUid {
+public class AclUserRightsValueLinePasswordAwareImpl extends ASTWrapperPsiElement implements AclUserRightsValueLinePasswordAware {
 
-  public AclUserRightsHeaderParameterUidImpl(@NotNull ASTNode node) {
+  public AclUserRightsValueLinePasswordAwareImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsHeaderParameterUid(this);
+    visitor.visitUserRightsValueLinePasswordAware(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof AclVisitor) accept((AclVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public AclUserRightsValueMemberOfGroups getUserRightsValueMemberOfGroups() {
+    return findNotNullChildByClass(AclUserRightsValueMemberOfGroups.class);
+  }
+
+  @Override
+  @NotNull
+  public AclUserRightsValuePassword getUserRightsValuePassword() {
+    return findNotNullChildByClass(AclUserRightsValuePassword.class);
+  }
+
+  @Override
+  @NotNull
+  public List<AclUserRightsValuePermission> getUserRightsValuePermissionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValuePermission.class);
+  }
+
+  @Override
+  @NotNull
+  public AclUserRightsValueTarget getUserRightsValueTarget() {
+    return findNotNullChildByClass(AclUserRightsValueTarget.class);
+  }
+
+  @Override
+  @NotNull
+  public AclUserRightsValueType getUserRightsValueType() {
+    return findNotNullChildByClass(AclUserRightsValueType.class);
+  }
+
+  @Override
+  @NotNull
+  public AclUserRightsValueUid getUserRightsValueUid() {
+    return findNotNullChildByClass(AclUserRightsValueUid.class);
   }
 
 }

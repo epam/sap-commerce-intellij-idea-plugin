@@ -15,6 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ */
 package com.intellij.idea.plugin.hybris.acl.psi.impl;
 
 import java.util.List;
@@ -27,14 +33,14 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsHeaderLineImpl extends ASTWrapperPsiElement implements AclUserRightsHeaderLine {
+public class AclUserRightsHeaderLinePasswordAwareImpl extends ASTWrapperPsiElement implements AclUserRightsHeaderLinePasswordAware {
 
-  public AclUserRightsHeaderLineImpl(@NotNull ASTNode node) {
+  public AclUserRightsHeaderLinePasswordAwareImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsHeaderLine(this);
+    visitor.visitUserRightsHeaderLinePasswordAware(this);
   }
 
   @Override
@@ -44,15 +50,15 @@ public class AclUserRightsHeaderLineImpl extends ASTWrapperPsiElement implements
   }
 
   @Override
-  @Nullable
+  @NotNull
   public AclUserRightsHeaderParameterMemberOfGroups getUserRightsHeaderParameterMemberOfGroups() {
-    return findChildByClass(AclUserRightsHeaderParameterMemberOfGroups.class);
+    return findNotNullChildByClass(AclUserRightsHeaderParameterMemberOfGroups.class);
   }
 
   @Override
-  @Nullable
+  @NotNull
   public AclUserRightsHeaderParameterPassword getUserRightsHeaderParameterPassword() {
-    return findChildByClass(AclUserRightsHeaderParameterPassword.class);
+    return findNotNullChildByClass(AclUserRightsHeaderParameterPassword.class);
   }
 
   @Override
@@ -74,9 +80,9 @@ public class AclUserRightsHeaderLineImpl extends ASTWrapperPsiElement implements
   }
 
   @Override
-  @Nullable
+  @NotNull
   public AclUserRightsHeaderParameterUid getUserRightsHeaderParameterUid() {
-    return findChildByClass(AclUserRightsHeaderParameterUid.class);
+    return findNotNullChildByClass(AclUserRightsHeaderParameterUid.class);
   }
 
 }

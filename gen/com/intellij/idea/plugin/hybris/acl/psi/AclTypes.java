@@ -15,6 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ */
 package com.intellij.idea.plugin.hybris.acl.psi;
 
 import com.intellij.psi.tree.IElementType;
@@ -27,7 +33,8 @@ public interface AclTypes {
   IElementType COMMENT = new AclElementType("COMMENT");
   IElementType USER_RIGHTS = new AclElementType("USER_RIGHTS");
   IElementType USER_RIGHTS_END = new AclElementType("USER_RIGHTS_END");
-  IElementType USER_RIGHTS_HEADER_LINE = new AclElementType("USER_RIGHTS_HEADER_LINE");
+  IElementType USER_RIGHTS_HEADER_LINE_PASSWORD_AWARE = new AclElementType("USER_RIGHTS_HEADER_LINE_PASSWORD_AWARE");
+  IElementType USER_RIGHTS_HEADER_LINE_PASSWORD_UNAWARE = new AclElementType("USER_RIGHTS_HEADER_LINE_PASSWORD_UNAWARE");
   IElementType USER_RIGHTS_HEADER_PARAMETER_MEMBER_OF_GROUPS = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_MEMBER_OF_GROUPS");
   IElementType USER_RIGHTS_HEADER_PARAMETER_PASSWORD = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_PASSWORD");
   IElementType USER_RIGHTS_HEADER_PARAMETER_PERMISSION = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_PERMISSION");
@@ -35,7 +42,8 @@ public interface AclTypes {
   IElementType USER_RIGHTS_HEADER_PARAMETER_TYPE = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_TYPE");
   IElementType USER_RIGHTS_HEADER_PARAMETER_UID = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_UID");
   IElementType USER_RIGHTS_START = new AclElementType("USER_RIGHTS_START");
-  IElementType USER_RIGHTS_VALUE_LINE = new AclElementType("USER_RIGHTS_VALUE_LINE");
+  IElementType USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE");
+  IElementType USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE");
   IElementType USER_RIGHTS_VALUE_MEMBER_OF_GROUPS = new AclElementType("USER_RIGHTS_VALUE_MEMBER_OF_GROUPS");
   IElementType USER_RIGHTS_VALUE_PASSWORD = new AclElementType("USER_RIGHTS_VALUE_PASSWORD");
   IElementType USER_RIGHTS_VALUE_PERMISSION = new AclElementType("USER_RIGHTS_VALUE_PERMISSION");
@@ -79,8 +87,11 @@ public interface AclTypes {
       else if (type == USER_RIGHTS_END) {
         return new AclUserRightsEndImpl(node);
       }
-      else if (type == USER_RIGHTS_HEADER_LINE) {
-        return new AclUserRightsHeaderLineImpl(node);
+      else if (type == USER_RIGHTS_HEADER_LINE_PASSWORD_AWARE) {
+        return new AclUserRightsHeaderLinePasswordAwareImpl(node);
+      }
+      else if (type == USER_RIGHTS_HEADER_LINE_PASSWORD_UNAWARE) {
+        return new AclUserRightsHeaderLinePasswordUnawareImpl(node);
       }
       else if (type == USER_RIGHTS_HEADER_PARAMETER_MEMBER_OF_GROUPS) {
         return new AclUserRightsHeaderParameterMemberOfGroupsImpl(node);
@@ -103,8 +114,11 @@ public interface AclTypes {
       else if (type == USER_RIGHTS_START) {
         return new AclUserRightsStartImpl(node);
       }
-      else if (type == USER_RIGHTS_VALUE_LINE) {
-        return new AclUserRightsValueLineImpl(node);
+      else if (type == USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE) {
+        return new AclUserRightsValueLinePasswordAwareImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE) {
+        return new AclUserRightsValueLinePasswordUnawareImpl(node);
       }
       else if (type == USER_RIGHTS_VALUE_MEMBER_OF_GROUPS) {
         return new AclUserRightsValueMemberOfGroupsImpl(node);

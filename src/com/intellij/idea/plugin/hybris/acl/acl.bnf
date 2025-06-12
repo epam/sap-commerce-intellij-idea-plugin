@@ -69,18 +69,26 @@ user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ user_rights_body
 user_rights_start ::= START_USERRIGHTS
 user_rights_end ::= END_USERRIGHTS (PARAMETERS_SEPARATOR)*
 
-private user_rights_body ::= (user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*
-// this mapping may enable multiple Header lines
-// ((user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*)*
-{
+private user_rights_body ::= user_rights_body_password_aware | user_rights_body_password_unaware {
     recoverWhile=user_rights_body_recover
 }
+private user_rights_body_password_aware ::= (user_rights_header_line_password_aware CRLF+) (user_rights_value_line_password_aware CRLF+)*
+private user_rights_body_password_unaware ::= (user_rights_header_line_password_unaware CRLF+) (user_rights_value_line_password_unaware CRLF+)*
 private user_rights_body_recover ::= !(user_rights_end)
 
-user_rights_header_line ::= user_rights_header_parameter_type
+user_rights_header_line_password_aware ::= user_rights_header_parameter_type
     user_rights_header_parameter_uid
     user_rights_header_parameter_member_of_groups
     user_rights_header_parameter_password
+    user_rights_header_parameter_target
+    user_rights_header_parameter_permission*  {
+    pin=4
+    recoverWhile=not_line_break
+}
+
+user_rights_header_line_password_unaware ::= user_rights_header_parameter_type
+    user_rights_header_parameter_uid
+    user_rights_header_parameter_member_of_groups
     user_rights_header_parameter_target
     user_rights_header_parameter_permission*  {
     pin=1
@@ -88,22 +96,30 @@ user_rights_header_line ::= user_rights_header_parameter_type
 }
 
 user_rights_header_parameter_type ::= HEADER_TYPE
-user_rights_header_parameter_uid ::= PARAMETERS_SEPARATOR HEADER_UID { pin=1 recoverWhile=recover_header }
-user_rights_header_parameter_member_of_groups ::= PARAMETERS_SEPARATOR HEADER_MEMBEROFGROUPS { pin=1 recoverWhile=recover_header }
-user_rights_header_parameter_password ::= PARAMETERS_SEPARATOR HEADER_PASSWORD { pin=1 recoverWhile=recover_header }
-user_rights_header_parameter_target ::= PARAMETERS_SEPARATOR HEADER_TARGET { pin=1 recoverWhile=recover_header }
+user_rights_header_parameter_uid ::= PARAMETERS_SEPARATOR HEADER_UID { pin=2 recoverWhile=recover_header }
+user_rights_header_parameter_member_of_groups ::= PARAMETERS_SEPARATOR HEADER_MEMBEROFGROUPS { pin=2 recoverWhile=recover_header }
+user_rights_header_parameter_password ::= PARAMETERS_SEPARATOR HEADER_PASSWORD { pin=2 recoverWhile=recover_header }
+user_rights_header_parameter_target ::= PARAMETERS_SEPARATOR HEADER_TARGET { pin=2 recoverWhile=recover_header }
 user_rights_header_parameter_permission ::= PARAMETERS_SEPARATOR (
     HEADER_READ
     | HEADER_CHANGE
     | HEADER_CREATE
     | HEADER_REMOVE
     | HEADER_CHANGE_PERM
-) { pin=1 recoverWhile=recover_header }
+) { pin=1 recoverWhile=recover_header hooks=user_rights }
 
-user_rights_value_line ::= user_rights_value_type
+user_rights_value_line_password_aware ::= user_rights_value_type
     user_rights_value_uid
     user_rights_value_member_of_groups
-    user_rights_value_password?
+    user_rights_value_password
+    user_rights_value_target
+    user_rights_value_permission*  {
+    recoverWhile=not_line_break
+}
+
+user_rights_value_line_password_unaware ::= user_rights_value_type
+    user_rights_value_uid
+    user_rights_value_member_of_groups
     user_rights_value_target
     user_rights_value_permission*  {
     recoverWhile=not_line_break

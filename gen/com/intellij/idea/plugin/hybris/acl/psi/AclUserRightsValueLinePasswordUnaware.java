@@ -15,30 +15,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ */
 package com.intellij.idea.plugin.hybris.acl.psi;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface AclUserRightsHeaderLine extends PsiElement {
-
-  @Nullable
-  AclUserRightsHeaderParameterMemberOfGroups getUserRightsHeaderParameterMemberOfGroups();
-
-  @Nullable
-  AclUserRightsHeaderParameterPassword getUserRightsHeaderParameterPassword();
+public interface AclUserRightsValueLinePasswordUnaware extends PsiElement {
 
   @NotNull
-  List<AclUserRightsHeaderParameterPermission> getUserRightsHeaderParameterPermissionList();
-
-  @Nullable
-  AclUserRightsHeaderParameterTarget getUserRightsHeaderParameterTarget();
+  AclUserRightsValueMemberOfGroups getUserRightsValueMemberOfGroups();
 
   @NotNull
-  AclUserRightsHeaderParameterType getUserRightsHeaderParameterType();
+  List<AclUserRightsValuePermission> getUserRightsValuePermissionList();
 
-  @Nullable
-  AclUserRightsHeaderParameterUid getUserRightsHeaderParameterUid();
+  @NotNull
+  AclUserRightsValueTarget getUserRightsValueTarget();
+
+  @NotNull
+  AclUserRightsValueType getUserRightsValueType();
+
+  @NotNull
+  AclUserRightsValueUid getUserRightsValueUid();
 
 }

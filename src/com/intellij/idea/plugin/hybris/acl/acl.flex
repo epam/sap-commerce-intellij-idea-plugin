@@ -32,6 +32,7 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 %{
   private int permissionHeader = 0;
   private int valueColumn = 0;
+  private boolean passwordColumnPresent = false;
   public _AclLexer() {
     this((java.io.Reader)null);
   }
@@ -87,6 +88,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {crlf}                                                  {
         yybegin(USER_RIGHTS_HEADER_LINE);
         permissionHeader=0;
+        passwordColumnPresent=false;
         return AclTypes.CRLF;
     }
 }
@@ -95,7 +97,7 @@ end_userrights                    = [$]END_USERRIGHTS
     "Type"                                                  { return AclTypes.HEADER_TYPE; }
     "UID"                                                   { return AclTypes.HEADER_UID; }
     "MemberOfGroups"                                        { return AclTypes.HEADER_MEMBEROFGROUPS; }
-    "Password"                                              { return AclTypes.HEADER_PASSWORD; }
+    "Password"                                              { passwordColumnPresent=true; return AclTypes.HEADER_PASSWORD; }
     "Target"                                                { return AclTypes.HEADER_TARGET; }
     {identifier}+                                           {
         permissionHeader++;
@@ -124,7 +126,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {identifier}+                                           { return AclTypes.FIELD_VALUE; }
     {line_comment}                                          { return AclTypes.LINE_COMMENT; }
     {dot}                                                   {
-          if (valueColumn >= 6) return AclTypes.PERMISSION_INHERITED;
+          if (passwordColumnPresent && valueColumn >= 5 || !passwordColumnPresent && valueColumn >= 4) return AclTypes.PERMISSION_INHERITED;
           return AclTypes.DOT;
       }
     {comma}                                                 { return AclTypes.COMMA; }

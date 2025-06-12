@@ -15,6 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ */
 package com.intellij.idea.plugin.hybris.acl.psi.impl;
 
 import java.util.List;
@@ -27,14 +33,14 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsValueLineImpl extends ASTWrapperPsiElement implements AclUserRightsValueLine {
+public class AclUserRightsValueLinePasswordUnawareImpl extends ASTWrapperPsiElement implements AclUserRightsValueLinePasswordUnaware {
 
-  public AclUserRightsValueLineImpl(@NotNull ASTNode node) {
+  public AclUserRightsValueLinePasswordUnawareImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsValueLine(this);
+    visitor.visitUserRightsValueLinePasswordUnaware(this);
   }
 
   @Override
@@ -47,12 +53,6 @@ public class AclUserRightsValueLineImpl extends ASTWrapperPsiElement implements 
   @NotNull
   public AclUserRightsValueMemberOfGroups getUserRightsValueMemberOfGroups() {
     return findNotNullChildByClass(AclUserRightsValueMemberOfGroups.class);
-  }
-
-  @Override
-  @Nullable
-  public AclUserRightsValuePassword getUserRightsValuePassword() {
-    return findChildByClass(AclUserRightsValuePassword.class);
   }
 
   @Override

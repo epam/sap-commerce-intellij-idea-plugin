@@ -15,6 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ */
 package com.intellij.idea.plugin.hybris.acl.psi;
 
 import org.jetbrains.annotations.*;
@@ -35,7 +41,11 @@ public class AclVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitUserRightsHeaderLine(@NotNull AclUserRightsHeaderLine o) {
+  public void visitUserRightsHeaderLinePasswordAware(@NotNull AclUserRightsHeaderLinePasswordAware o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsHeaderLinePasswordUnaware(@NotNull AclUserRightsHeaderLinePasswordUnaware o) {
     visitPsiElement(o);
   }
 
@@ -67,7 +77,11 @@ public class AclVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitUserRightsValueLine(@NotNull AclUserRightsValueLine o) {
+  public void visitUserRightsValueLinePasswordAware(@NotNull AclUserRightsValueLinePasswordAware o) {
+    visitPsiElement(o);
+  }
+
+  public void visitUserRightsValueLinePasswordUnaware(@NotNull AclUserRightsValueLinePasswordUnaware o) {
     visitPsiElement(o);
   }
 

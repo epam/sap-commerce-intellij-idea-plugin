@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +14,12 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
  */
 package com.intellij.idea.plugin.hybris.acl.psi.impl;
 
@@ -55,8 +57,14 @@ public class AclUserRightsImpl extends ASTWrapperPsiElement implements AclUserRi
 
   @Override
   @Nullable
-  public AclUserRightsHeaderLine getUserRightsHeaderLine() {
-    return findChildByClass(AclUserRightsHeaderLine.class);
+  public AclUserRightsHeaderLinePasswordAware getUserRightsHeaderLinePasswordAware() {
+    return findChildByClass(AclUserRightsHeaderLinePasswordAware.class);
+  }
+
+  @Override
+  @Nullable
+  public AclUserRightsHeaderLinePasswordUnaware getUserRightsHeaderLinePasswordUnaware() {
+    return findChildByClass(AclUserRightsHeaderLinePasswordUnaware.class);
   }
 
   @Override
@@ -67,8 +75,14 @@ public class AclUserRightsImpl extends ASTWrapperPsiElement implements AclUserRi
 
   @Override
   @NotNull
-  public List<AclUserRightsValueLine> getUserRightsValueLineList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueLine.class);
+  public List<AclUserRightsValueLinePasswordAware> getUserRightsValueLinePasswordAwareList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueLinePasswordAware.class);
+  }
+
+  @Override
+  @NotNull
+  public List<AclUserRightsValueLinePasswordUnaware> getUserRightsValueLinePasswordUnawareList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueLinePasswordUnaware.class);
   }
 
 }
