@@ -15,6 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ */
 package com.intellij.idea.plugin.hybris.impex.psi;
 
 import java.util.List;
@@ -33,18 +39,14 @@ public interface ImpexFullHeaderParameter extends PsiElement {
   @NotNull
   List<ImpexParameters> getParametersList();
 
-  @Nullable
-  ImpexHeaderLine getHeaderLine();
+  @Nullable ImpexHeaderLine getHeaderLine();
 
   int getColumnNumber();
 
-  @Nullable
-  ImpexAttribute getAttribute(@NotNull AttributeModifier attributeModifier);
+  @Nullable ImpexAttribute getAttribute(@NotNull AttributeModifier attributeModifier);
 
-  @NotNull
-  String getAttributeValue(@NotNull AttributeModifier attributeModifier, @NotNull String defaultValue);
+  @NotNull String getAttributeValue(@NotNull AttributeModifier attributeModifier, @NotNull String defaultValue);
 
-  @NotNull
-  List<ImpexValueGroup> getValueGroups();
+  @NotNull List<@NotNull ImpexValueGroup> getValueGroups();
 
 }

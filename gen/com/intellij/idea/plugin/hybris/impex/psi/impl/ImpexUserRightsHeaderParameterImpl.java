@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +14,12 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
  */
 package com.intellij.idea.plugin.hybris.impex.psi.impl;
 
@@ -49,20 +51,17 @@ public class ImpexUserRightsHeaderParameterImpl extends ASTWrapperPsiElement imp
   }
 
   @Override
-  @Nullable
-  public ImpexUserRightsHeaderLine getHeaderLine() {
+  public @Nullable ImpexUserRightsHeaderLine getHeaderLine() {
     return ImpexPsiUtil.getHeaderLine(this);
   }
 
   @Override
-  @Nullable
-  public Integer getColumnNumber() {
+  public @Nullable Integer getColumnNumber() {
     return ImpexPsiUtil.getColumnNumber(this);
   }
 
   @Override
-  @NotNull
-  public Collection<ImpexUserRightsValueGroup> getValueGroups() {
+  public @NotNull Collection<@NotNull ImpexUserRightsValueGroup> getValueGroups() {
     return ImpexPsiUtil.getValueGroups(this);
   }
 
