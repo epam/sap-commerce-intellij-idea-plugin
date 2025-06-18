@@ -40,5 +40,7 @@ object AclHighlighterColors {
     val USER_RIGHTS_PERMISSION_DENIED = key("ACL_USER_RIGHTS_PERMISSION_DENIED", HighlighterColors.TEXT)
     val USER_RIGHTS_PERMISSION_INHERITED = key("ACL_USER_RIGHTS_PERMISSION_INHERITED", HighlighterColors.TEXT)
 
+    val USER_RIGHTS_VALUE_LINE_TYPE = key("ACL_USER_RIGHTS_VALUE_LINE_TYPE", HighlighterColors.TEXT)
+
     private fun key(externalName: String, fallbackAttributeKey: TextAttributesKey) = TextAttributesKey.createTextAttributesKey(externalName, fallbackAttributeKey)
 }

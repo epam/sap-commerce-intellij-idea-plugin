@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.acl.highlighting
 
-import com.intellij.codeHighlighting.RainbowHighlighter
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.editor.HighlighterColors
@@ -31,7 +30,7 @@ class AclColorSettingsPage : ColorSettingsPage {
 
     override fun getIcon(): Icon = HybrisIcons.Acl.FILE
     override fun getHighlighter() = AclSyntaxHighlighter.getInstance()
-    override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = customTags
+    override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = emptyMap()
     override fun getAttributeDescriptors() = descriptors
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
     override fun getDisplayName() = HybrisConstants.ACL
@@ -50,10 +49,6 @@ ${"$"}END_USERRIGHTS;;;;;
 """
     }
 
-    private val customTags = with(RainbowHighlighter.createRainbowHLM()) {
-        put("permission_inherited", AclHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED)
-        this
-    }
     private val descriptors = arrayOf(
         AttributesDescriptor("Comment line", AclHighlighterColors.COMMENT),
         AttributesDescriptor("Dot", AclHighlighterColors.DOT),
@@ -63,13 +58,17 @@ ${"$"}END_USERRIGHTS;;;;;
         AttributesDescriptor("Separators//Field value separator", AclHighlighterColors.FIELD_VALUE_SEPARATOR),
         AttributesDescriptor("Separators//Parameters separator", AclHighlighterColors.PARAMETERS_SEPARATOR),
 
+        AttributesDescriptor("Header//Parameter name", AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
+        AttributesDescriptor("Header//Mandatory parameter name", AclHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER),
+
         AttributesDescriptor("User rights", AclHighlighterColors.USER_RIGHTS),
-        AttributesDescriptor("User rights//Parameter name", AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
-        AttributesDescriptor("User rights//Mandatory parameter name", AclHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER),
-        AttributesDescriptor("User rights//Type", AclHighlighterColors.FIELD_VALUE_TYPE),
-        AttributesDescriptor("User rights//Permission allowed", AclHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
-        AttributesDescriptor("User rights//Permission denied", AclHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),
-        AttributesDescriptor("User rights//Permission inherited", AclHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED)
+
+        AttributesDescriptor("Values//Type", AclHighlighterColors.FIELD_VALUE_TYPE),
+        AttributesDescriptor("Values//Permission allowed", AclHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
+        AttributesDescriptor("Values//Permission denied", AclHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),
+        AttributesDescriptor("Values//Permission inherited", AclHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED),
+
+        AttributesDescriptor("Lines//Typed value line", AclHighlighterColors.USER_RIGHTS_VALUE_LINE_TYPE)
     )
 
 }

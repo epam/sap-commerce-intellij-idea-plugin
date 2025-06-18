@@ -41,6 +41,7 @@
 
   implements("user\_rights\_header\_parameter.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsHeaderParameter"
   implements("user\_rights\_value\_line\_.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLine"
+  implements("user\_rights\_value\_line\_type\_.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLineType"
   implements("user\_rights\_value\_group.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueGroup"
   implements("user\_rights\_value\_lines\_.*")=[
         "com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"

@@ -56,6 +56,9 @@ class AclSyntaxHighlighter : SyntaxHighlighterBase() {
             AclTypes.HEADER_REMOVE to pack(AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
             AclTypes.HEADER_CHANGE_PERM to pack(AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
 
+            AclTypes.USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_AWARE to pack(AclHighlighterColors.USER_RIGHTS_VALUE_LINE_TYPE),
+            AclTypes.USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_UNAWARE to pack(AclHighlighterColors.USER_RIGHTS_VALUE_LINE_TYPE),
+
             AclTypes.LINE_COMMENT to pack(AclHighlighterColors.COMMENT),
 
             AclTypes.PASSWORD to pack(AclHighlighterColors.SINGLE_STRING),
