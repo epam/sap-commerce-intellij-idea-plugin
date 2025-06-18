@@ -34,6 +34,7 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 %{
   private AtomicInteger permissionHeader = new AtomicInteger(0);
   private AtomicInteger valueColumn = new AtomicInteger(0);
+  private AtomicInteger targetIdentifiers = new AtomicInteger(0);
   private AtomicBoolean passwordColumnPresent = new AtomicBoolean(false);
   private AtomicBoolean headerFound = new AtomicBoolean(false);
   public _AclLexer() {
@@ -88,12 +89,11 @@ end_userrights                    = [$]END_USERRIGHTS
 <YYINITIAL> {
     {line_comment}                                          { return AclTypes.LINE_COMMENT; }
     {start_userrights}                                      { yybegin(USER_RIGHTS_START); return AclTypes.START_USERRIGHTS; }
-//    {y_white_space}                                                 { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
 }
 
 <USER_RIGHTS_START> {
     {semicolon}                                             { return AclTypes.DUMMY_SEPARATOR; }
-    {y_white_space}                                                 {
+    {y_white_space}                                         {
         yybegin(USER_RIGHTS_HEADER_LINE);
         permissionHeader.set(0);
         passwordColumnPresent.set(false);
@@ -122,9 +122,10 @@ end_userrights                    = [$]END_USERRIGHTS
     {semicolon}                                             { return AclTypes.PARAMETERS_SEPARATOR; }
 
     {end_userrights}                                        { yybegin(YYINITIAL); return AclTypes.END_USERRIGHTS; }
-    {y_white_space}                                                 {
+    {y_white_space}                                         {
         if (headerFound.get()) {
             valueColumn.set(0);
+            targetIdentifiers.set(0);
             yybegin(USER_RIGHTS_VALUE_LINE);
         }
         return TokenType.WHITE_SPACE;
@@ -135,10 +136,17 @@ end_userrights                    = [$]END_USERRIGHTS
     {minus}                                                 { return AclTypes.PERMISSION_DENIED; }
     {plus}                                                  { return AclTypes.PERMISSION_ALLOWED; }
     {identifier}+                                           {
-        return valueColumn.get() == 0
-            ? AclTypes.FIELD_VALUE_TYPE
-            : AclTypes.FIELD_VALUE;
-    }
+            if (passwordColumnPresent.get() && valueColumn.get() == 4 || valueColumn.get() == 3) {
+                return switch (targetIdentifiers.getAndIncrement()) {
+                    case 0 -> AclTypes.FIELD_VALUE_TARGET_TYPE;
+                    case 1 -> AclTypes.FIELD_VALUE_TARGET_ATTRIBUTE;
+                    default -> AclTypes.FIELD_VALUE;
+                };
+            }
+            return valueColumn.get() == 0
+                ? AclTypes.FIELD_VALUE_TYPE
+                : AclTypes.FIELD_VALUE;
+        }
     {line_comment}                                          { return AclTypes.LINE_COMMENT; }
     {dot}                                                   {
           return passwordColumnPresent.get() && valueColumn.get() >= 5
@@ -156,7 +164,12 @@ end_userrights                    = [$]END_USERRIGHTS
             : AclTypes.FIELD_VALUE_SEPARATOR;
     }
     {end_userrights}                                        { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS; }
-    {y_white_space}                                                 { valueColumn.set(0); yybegin(USER_RIGHTS_VALUE_LINE); return TokenType.WHITE_SPACE; }
+    {y_white_space}                                         {
+        valueColumn.set(0);
+        targetIdentifiers.set(0);
+        yybegin(USER_RIGHTS_VALUE_LINE);
+        return TokenType.WHITE_SPACE;
+    }
 }
 
 <USER_RIGHTS_VALUE_PASSWORD> {
@@ -171,7 +184,7 @@ end_userrights                    = [$]END_USERRIGHTS
         return AclTypes.FIELD_VALUE_SEPARATOR;
     }
     {end_userrights}                                        { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS; }
-    {y_white_space}                                                 { valueColumn.set(0); yybegin(USER_RIGHTS_VALUE_LINE); return TokenType.WHITE_SPACE; }
+    {y_white_space}                                         { valueColumn.set(0); yybegin(USER_RIGHTS_VALUE_LINE); return TokenType.WHITE_SPACE; }
 }
 
 <USER_RIGHTS_END> {

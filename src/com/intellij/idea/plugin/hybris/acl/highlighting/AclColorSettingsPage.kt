@@ -67,6 +67,8 @@ ${"$"}END_USERRIGHTS;;;;;
         AttributesDescriptor("Values//Permission allowed", AclHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
         AttributesDescriptor("Values//Permission denied", AclHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),
         AttributesDescriptor("Values//Permission inherited", AclHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED),
+        AttributesDescriptor("Values//Target type", AclHighlighterColors.FIELD_VALUE_TARGET_TYPE),
+        AttributesDescriptor("Values//Target attribute", AclHighlighterColors.FIELD_VALUE_TARGET_ATTRIBUTE),
 
         AttributesDescriptor("Lines//Typed value line", AclHighlighterColors.USER_RIGHTS_VALUE_LINE_TYPE)
     )

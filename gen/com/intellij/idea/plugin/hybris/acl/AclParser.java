@@ -859,7 +859,7 @@ public class AclParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE? (DOT FIELD_VALUE)?
+  // FIELD_VALUE_TARGET_TYPE? (DOT FIELD_VALUE_TARGET_ATTRIBUTE)?
   public static boolean user_rights_value_target(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_target")) return false;
     boolean r, p;
@@ -871,26 +871,26 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // FIELD_VALUE?
+  // FIELD_VALUE_TARGET_TYPE?
   private static boolean user_rights_value_target_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_target_0")) return false;
-    consumeToken(b, FIELD_VALUE);
+    consumeToken(b, FIELD_VALUE_TARGET_TYPE);
     return true;
   }
 
-  // (DOT FIELD_VALUE)?
+  // (DOT FIELD_VALUE_TARGET_ATTRIBUTE)?
   private static boolean user_rights_value_target_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_target_1")) return false;
     user_rights_value_target_1_0(b, l + 1);
     return true;
   }
 
-  // DOT FIELD_VALUE
+  // DOT FIELD_VALUE_TARGET_ATTRIBUTE
   private static boolean user_rights_value_target_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_target_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, DOT, FIELD_VALUE);
+    r = consumeTokens(b, 0, DOT, FIELD_VALUE_TARGET_ATTRIBUTE);
     exit_section_(b, m, null, r);
     return r;
   }

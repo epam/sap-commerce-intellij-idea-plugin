@@ -66,6 +66,8 @@ public interface AclTypes {
   IElementType END_USERRIGHTS = new AclTokenType("END_USERRIGHTS");
   IElementType FIELD_VALUE = new AclTokenType("FIELD_VALUE");
   IElementType FIELD_VALUE_SEPARATOR = new AclTokenType("FIELD_VALUE_SEPARATOR");
+  IElementType FIELD_VALUE_TARGET_ATTRIBUTE = new AclTokenType("FIELD_VALUE_TARGET_ATTRIBUTE");
+  IElementType FIELD_VALUE_TARGET_TYPE = new AclTokenType("FIELD_VALUE_TARGET_TYPE");
   IElementType FIELD_VALUE_TYPE = new AclTokenType("FIELD_VALUE_TYPE");
   IElementType FIELD_VALUE_TYPE_SEPARATOR = new AclTokenType("FIELD_VALUE_TYPE_SEPARATOR");
   IElementType HEADER_CHANGE = new AclTokenType("HEADER_CHANGE");

@@ -69,6 +69,8 @@ class AclSyntaxHighlighter : SyntaxHighlighterBase() {
             AclTypes.DUMMY_SEPARATOR to pack(AclHighlighterColors.DUMMY_SEPARATOR),
 
             AclTypes.FIELD_VALUE_TYPE to pack(AclHighlighterColors.FIELD_VALUE_TYPE),
+            AclTypes.FIELD_VALUE_TARGET_TYPE to pack(AclHighlighterColors.FIELD_VALUE_TARGET_TYPE),
+            AclTypes.FIELD_VALUE_TARGET_ATTRIBUTE to pack(AclHighlighterColors.FIELD_VALUE_TARGET_ATTRIBUTE),
 
             AclTypes.PERMISSION_ALLOWED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
             AclTypes.PERMISSION_DENIED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),

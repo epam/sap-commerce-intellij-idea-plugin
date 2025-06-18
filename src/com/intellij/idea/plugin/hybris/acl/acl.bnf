@@ -169,7 +169,7 @@ user_rights_value_group_target ::= FIELD_VALUE_SEPARATOR user_rights_value_targe
     pin=1
     recoverWhile=recover_value
 }
-user_rights_value_target ::= FIELD_VALUE? (DOT FIELD_VALUE)? {
+user_rights_value_target ::= FIELD_VALUE_TARGET_TYPE? (DOT FIELD_VALUE_TARGET_ATTRIBUTE)? {
     pin=1
 }
 user_rights_value_group_permission ::= FIELD_VALUE_SEPARATOR (PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED)? {
