@@ -66,6 +66,8 @@ class AclAlignmentStrategy {
 
     fun isStartOfValueLine(currentNode: ASTNode) = AclTypes.USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE == currentNode.elementType
         || AclTypes.USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE == currentNode.elementType
+        || AclTypes.USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_AWARE == currentNode.elementType
+        || AclTypes.USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_UNAWARE == currentNode.elementType
 
     fun isHeaderLine(currentNode: ASTNode) = AclTypes.USER_RIGHTS_HEADER_LINE_PASSWORD_AWARE == currentNode.elementType
         || AclTypes.USER_RIGHTS_HEADER_LINE_PASSWORD_UNAWARE == currentNode.elementType

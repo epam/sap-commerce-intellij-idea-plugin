@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.common
 
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.facet.FacetTypeId
-import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.facet.YFacetType
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
@@ -738,7 +737,6 @@ object HybrisConstants {
 
     val IMPEX_FILE_NODE_TYPE = IFileElementType(ImpexLanguage)
     val FXS_FILE_NODE_TYPE = IFileElementType(FlexibleSearchLanguage)
-    val ACL_FILE_NODE_TYPE = IFileElementType(AclLanguage)
 
     val CHARS_UPPERCASE_REGEX = "[A-Z]".toRegex()
     val CHARS_LOWERCASE_REGEX = "[a-z]".toRegex()

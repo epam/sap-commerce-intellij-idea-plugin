@@ -50,6 +50,12 @@ public class AclUserRightsValueLineTypePasswordAwareImpl extends ASTWrapperPsiEl
   }
 
   @Override
+  @NotNull
+  public List<AclUserRightsValueGroupBlank> getUserRightsValueGroupBlankList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueGroupBlank.class);
+  }
+
+  @Override
   @Nullable
   public AclUserRightsValueGroupMemberOfGroups getUserRightsValueGroupMemberOfGroups() {
     return findChildByClass(AclUserRightsValueGroupMemberOfGroups.class);

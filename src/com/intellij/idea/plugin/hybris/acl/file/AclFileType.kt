@@ -28,7 +28,6 @@ object AclFileType : LanguageFileType(AclLanguage) {
     override fun getName() = HybrisConstants.ACL
     override fun getDescription() = "Access Control Lists language file"
     override fun getDefaultExtension() = HybrisConstants.ACL_FILE_EXTENSION
-
     override fun getIcon(): Icon = HybrisIcons.Acl.FILE
 
 }

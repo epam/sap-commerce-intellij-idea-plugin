@@ -121,7 +121,7 @@ user_rights_value_line_type_password_aware ::= user_rights_value_group_type
     user_rights_value_group_uid
     user_rights_value_group_member_of_groups
     user_rights_value_group_password
-    FIELD_VALUE_SEPARATOR* {
+    user_rights_value_group_blank* {
     pin=1
     recoverWhile=recover_not_line_break
 }
@@ -129,22 +129,22 @@ user_rights_value_line_type_password_aware ::= user_rights_value_group_type
 user_rights_value_line_type_password_unaware ::= user_rights_value_group_type
     user_rights_value_group_uid
     user_rights_value_group_member_of_groups
-    FIELD_VALUE_SEPARATOR* {
+    user_rights_value_group_blank* {
     pin=1
     recoverWhile=recover_not_line_break
 }
 
-user_rights_value_line_password_aware ::= FIELD_VALUE_SEPARATOR
-    FIELD_VALUE_SEPARATOR
-    FIELD_VALUE_SEPARATOR
+user_rights_value_line_password_aware ::= user_rights_value_group_blank
+    user_rights_value_group_blank
+    user_rights_value_group_blank
     user_rights_value_group_target
     user_rights_value_group_permission* {
     pin=1
     recoverWhile=recover_not_line_break
 }
 
-user_rights_value_line_password_unaware ::= FIELD_VALUE_SEPARATOR
-    FIELD_VALUE_SEPARATOR
+user_rights_value_line_password_unaware ::= user_rights_value_group_blank
+    user_rights_value_group_blank
     user_rights_value_group_target
     user_rights_value_group_permission* {
     pin=1
@@ -156,7 +156,7 @@ user_rights_value_group_uid ::= FIELD_VALUE_SEPARATOR FIELD_VALUE {
     pin=1
     recoverWhile=recover_value
 }
-user_rights_value_group_member_of_groups ::= FIELD_VALUE_SEPARATOR user_rights_value_groups {
+user_rights_value_group_member_of_groups ::= FIELD_VALUE_SEPARATOR user_rights_value_groups? {
     pin=1
     recoverWhile=recover_value
 }
@@ -175,6 +175,9 @@ user_rights_value_target ::= FIELD_VALUE? (DOT FIELD_VALUE)? {
 user_rights_value_group_permission ::= FIELD_VALUE_SEPARATOR (PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED)? {
     pin=1
     recoverWhile=recover_value
+}
+user_rights_value_group_blank ::= FIELD_VALUE_SEPARATOR {
+    pin=1
 }
 
 private recover_root ::= !(CRLF | LINE_COMMENT | user_rights_start)

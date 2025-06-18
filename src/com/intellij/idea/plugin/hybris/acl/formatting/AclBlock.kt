@@ -56,6 +56,7 @@ class AclBlock(
         AclTypes.USER_RIGHTS_VALUE_GROUP_PASSWORD -> "Group - Password"
         AclTypes.USER_RIGHTS_VALUE_GROUP_TARGET -> "Group - Target"
         AclTypes.USER_RIGHTS_VALUE_GROUP_PERMISSION -> "Group - Permission"
+        AclTypes.FIELD_VALUE_TYPE -> "Type"
         AclTypes.FIELD_VALUE -> "Value"
         AclTypes.COMMA -> "Comma"
         AclTypes.DOT -> "Dot"

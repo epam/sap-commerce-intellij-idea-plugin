@@ -19,22 +19,25 @@ package com.intellij.idea.plugin.hybris.acl
 
 import com.intellij.idea.plugin.hybris.acl.psi.AclFile
 import com.intellij.idea.plugin.hybris.acl.psi.AclTypes
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
+import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 
 class AclParserDefinition : ParserDefinition {
+
+
+    private val iFileElementType by lazy { IFileElementType(AclLanguage) }
 
     override fun createLexer(project: Project) = AclLexer
     override fun createParser(project: Project) = AclParser()
     override fun createElement(node: ASTNode): PsiElement = AclTypes.Factory.createElement(node)
     override fun createFile(viewProvider: FileViewProvider) = AclFile(viewProvider)
 
-    override fun getFileNodeType() = HybrisConstants.ACL_FILE_NODE_TYPE
+    override fun getFileNodeType() = iFileElementType
     override fun getWhitespaceTokens(): TokenSet = TokenSet.WHITE_SPACE
     override fun getCommentTokens() = TokenSet.create(AclTypes.LINE_COMMENT)
     override fun getStringLiteralElements() = TokenSet.create(

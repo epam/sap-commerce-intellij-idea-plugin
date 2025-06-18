@@ -599,16 +599,35 @@ public class AclParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE_SEPARATOR user_rights_value_groups
+  // FIELD_VALUE_SEPARATOR
+  public static boolean user_rights_value_group_blank(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_group_blank")) return false;
+    if (!nextTokenIs(b, FIELD_VALUE_SEPARATOR)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FIELD_VALUE_SEPARATOR);
+    exit_section_(b, m, USER_RIGHTS_VALUE_GROUP_BLANK, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // FIELD_VALUE_SEPARATOR user_rights_value_groups?
   public static boolean user_rights_value_group_member_of_groups(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_group_member_of_groups")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_VALUE_GROUP_MEMBER_OF_GROUPS, "<user rights value group member of groups>");
     r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     p = r; // pin = 1
-    r = r && user_rights_value_groups(b, l + 1);
+    r = r && user_rights_value_group_member_of_groups_1(b, l + 1);
     exit_section_(b, l, m, r, p, AclParser::recover_value);
     return r || p;
+  }
+
+  // user_rights_value_groups?
+  private static boolean user_rights_value_group_member_of_groups_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_group_member_of_groups_1")) return false;
+    user_rights_value_groups(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -732,18 +751,20 @@ public class AclParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE_SEPARATOR
-  //     FIELD_VALUE_SEPARATOR
-  //     FIELD_VALUE_SEPARATOR
+  // user_rights_value_group_blank
+  //     user_rights_value_group_blank
+  //     user_rights_value_group_blank
   //     user_rights_value_group_target
   //     user_rights_value_group_permission*
   public static boolean user_rights_value_line_password_aware(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_line_password_aware")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE, "<user rights value line password aware>");
-    r = consumeTokens(b, 1, FIELD_VALUE_SEPARATOR, FIELD_VALUE_SEPARATOR, FIELD_VALUE_SEPARATOR);
+    r = user_rights_value_group_blank(b, l + 1);
     p = r; // pin = 1
-    r = r && report_error_(b, user_rights_value_group_target(b, l + 1));
+    r = r && report_error_(b, user_rights_value_group_blank(b, l + 1));
+    r = p && report_error_(b, user_rights_value_group_blank(b, l + 1)) && r;
+    r = p && report_error_(b, user_rights_value_group_target(b, l + 1)) && r;
     r = p && user_rights_value_line_password_aware_4(b, l + 1) && r;
     exit_section_(b, l, m, r, p, AclParser::recover_not_line_break);
     return r || p;
@@ -761,17 +782,18 @@ public class AclParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE_SEPARATOR
-  //     FIELD_VALUE_SEPARATOR
+  // user_rights_value_group_blank
+  //     user_rights_value_group_blank
   //     user_rights_value_group_target
   //     user_rights_value_group_permission*
   public static boolean user_rights_value_line_password_unaware(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_line_password_unaware")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE, "<user rights value line password unaware>");
-    r = consumeTokens(b, 1, FIELD_VALUE_SEPARATOR, FIELD_VALUE_SEPARATOR);
+    r = user_rights_value_group_blank(b, l + 1);
     p = r; // pin = 1
-    r = r && report_error_(b, user_rights_value_group_target(b, l + 1));
+    r = r && report_error_(b, user_rights_value_group_blank(b, l + 1));
+    r = p && report_error_(b, user_rights_value_group_target(b, l + 1)) && r;
     r = p && user_rights_value_line_password_unaware_3(b, l + 1) && r;
     exit_section_(b, l, m, r, p, AclParser::recover_not_line_break);
     return r || p;
@@ -793,7 +815,7 @@ public class AclParser implements PsiParser, LightPsiParser {
   //     user_rights_value_group_uid
   //     user_rights_value_group_member_of_groups
   //     user_rights_value_group_password
-  //     FIELD_VALUE_SEPARATOR*
+  //     user_rights_value_group_blank*
   public static boolean user_rights_value_line_type_password_aware(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_line_type_password_aware")) return false;
     boolean r, p;
@@ -808,12 +830,12 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // FIELD_VALUE_SEPARATOR*
+  // user_rights_value_group_blank*
   private static boolean user_rights_value_line_type_password_aware_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_line_type_password_aware_4")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!consumeToken(b, FIELD_VALUE_SEPARATOR)) break;
+      if (!user_rights_value_group_blank(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "user_rights_value_line_type_password_aware_4", c)) break;
     }
     return true;
@@ -823,7 +845,7 @@ public class AclParser implements PsiParser, LightPsiParser {
   // user_rights_value_group_type
   //     user_rights_value_group_uid
   //     user_rights_value_group_member_of_groups
-  //     FIELD_VALUE_SEPARATOR*
+  //     user_rights_value_group_blank*
   public static boolean user_rights_value_line_type_password_unaware(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_line_type_password_unaware")) return false;
     boolean r, p;
@@ -837,12 +859,12 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // FIELD_VALUE_SEPARATOR*
+  // user_rights_value_group_blank*
   private static boolean user_rights_value_line_type_password_unaware_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_line_type_password_unaware_3")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!consumeToken(b, FIELD_VALUE_SEPARATOR)) break;
+      if (!user_rights_value_group_blank(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "user_rights_value_line_type_password_unaware_3", c)) break;
     }
     return true;

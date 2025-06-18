@@ -29,6 +29,9 @@ import com.intellij.psi.PsiElement;
 
 public interface AclUserRightsValueLineTypePasswordAware extends AclUserRightsValueLine {
 
+  @NotNull
+  List<AclUserRightsValueGroupBlank> getUserRightsValueGroupBlankList();
+
   @Nullable
   AclUserRightsValueGroupMemberOfGroups getUserRightsValueGroupMemberOfGroups();
 

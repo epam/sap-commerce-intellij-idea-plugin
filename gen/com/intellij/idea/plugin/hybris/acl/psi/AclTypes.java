@@ -44,6 +44,7 @@ public interface AclTypes {
   IElementType USER_RIGHTS_HEADER_PARAMETER_UID = new AclElementType("USER_RIGHTS_HEADER_PARAMETER_UID");
   IElementType USER_RIGHTS_START = new AclElementType("USER_RIGHTS_START");
   IElementType USER_RIGHTS_VALUE_GROUPS = new AclElementType("USER_RIGHTS_VALUE_GROUPS");
+  IElementType USER_RIGHTS_VALUE_GROUP_BLANK = new AclElementType("USER_RIGHTS_VALUE_GROUP_BLANK");
   IElementType USER_RIGHTS_VALUE_GROUP_MEMBER_OF_GROUPS = new AclElementType("USER_RIGHTS_VALUE_GROUP_MEMBER_OF_GROUPS");
   IElementType USER_RIGHTS_VALUE_GROUP_PASSWORD = new AclElementType("USER_RIGHTS_VALUE_GROUP_PASSWORD");
   IElementType USER_RIGHTS_VALUE_GROUP_PERMISSION = new AclElementType("USER_RIGHTS_VALUE_GROUP_PERMISSION");
@@ -127,6 +128,9 @@ public interface AclTypes {
       }
       else if (type == USER_RIGHTS_VALUE_GROUPS) {
         return new AclUserRightsValueGroupsImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_GROUP_BLANK) {
+        return new AclUserRightsValueGroupBlankImpl(node);
       }
       else if (type == USER_RIGHTS_VALUE_GROUP_MEMBER_OF_GROUPS) {
         return new AclUserRightsValueGroupMemberOfGroupsImpl(node);
