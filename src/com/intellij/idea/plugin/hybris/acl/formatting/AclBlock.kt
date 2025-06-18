@@ -99,6 +99,5 @@ class AclBlock(
     }
 
     private fun isNewBlockToBeMade(currentNode: ASTNode) = currentNode.elementType != TokenType.WHITE_SPACE
-        && currentNode.elementType != AclTypes.CRLF
 
 }

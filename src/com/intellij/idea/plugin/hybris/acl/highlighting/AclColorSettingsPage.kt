@@ -39,12 +39,12 @@ class AclColorSettingsPage : ColorSettingsPage {
     override fun getDemoText(): String {
         return """# Comment
    
-${"$"}START_USERRIGHTS
+${"$"}START_USERRIGHTS;;;;;
 Type      ; UID        ; MemberOfGroups ; Password ; Target       ; read ; change ; create ; delete ; change_perm
 UserGroup ; impexgroup ; employeegroup  ;
           ;            ;                ;          ; Product.code ; +    ; +      ; +      ; +      ; -
 Customer  ; impex-demo ; impexgroup     ; 1234     ;              ; .    ; -      ;        ; .      ;
-${"$"}END_USERRIGHTS
+${"$"}END_USERRIGHTS;;;;;
 
 @@@@@
 """

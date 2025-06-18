@@ -29,7 +29,6 @@ import com.intellij.psi.tree.TokenSet
 
 class AclParserDefinition : ParserDefinition {
 
-
     private val iFileElementType by lazy { IFileElementType(AclLanguage) }
 
     override fun createLexer(project: Project) = AclLexer

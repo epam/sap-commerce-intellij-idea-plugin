@@ -38,4 +38,7 @@ public interface AclUserRightsValueLinePasswordAware extends AclUserRightsValueL
   @Nullable
   AclUserRightsValueGroupTarget getUserRightsValueGroupTarget();
 
+  @NotNull
+  AclUserRightsValueGroupUidBlank getUserRightsValueGroupUidBlank();
+
 }

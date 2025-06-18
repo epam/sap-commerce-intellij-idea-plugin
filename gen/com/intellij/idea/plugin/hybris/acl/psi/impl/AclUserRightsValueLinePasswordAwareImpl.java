@@ -67,4 +67,10 @@ public class AclUserRightsValueLinePasswordAwareImpl extends ASTWrapperPsiElemen
     return findChildByClass(AclUserRightsValueGroupTarget.class);
   }
 
+  @Override
+  @NotNull
+  public AclUserRightsValueGroupUidBlank getUserRightsValueGroupUidBlank() {
+    return findNotNullChildByClass(AclUserRightsValueGroupUidBlank.class);
+  }
+
 }

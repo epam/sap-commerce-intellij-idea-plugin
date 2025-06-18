@@ -58,6 +58,7 @@ crlf        = (([\n])|([\r])|(\r\n))
 crlf_char   = [\r\n]
 not_crlf    = [^\r\n]
 white_space = [ \t\f]
+y_white_space = {crlf}({crlf}|{white_space})*
 
 line_comment = [#]{not_crlf}*
 
@@ -87,17 +88,17 @@ end_userrights                    = [$]END_USERRIGHTS
 <YYINITIAL> {
     {line_comment}                                          { return AclTypes.LINE_COMMENT; }
     {start_userrights}                                      { yybegin(USER_RIGHTS_START); return AclTypes.START_USERRIGHTS; }
-    {crlf}                                                  { yybegin(YYINITIAL); return AclTypes.CRLF; }
+//    {y_white_space}                                                 { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
 }
 
 <USER_RIGHTS_START> {
-    {semicolon}                                             { return AclTypes.PARAMETERS_SEPARATOR; }
-    {crlf}                                                  {
+    {semicolon}                                             { return AclTypes.DUMMY_SEPARATOR; }
+    {y_white_space}                                                 {
         yybegin(USER_RIGHTS_HEADER_LINE);
         permissionHeader.set(0);
         passwordColumnPresent.set(false);
         headerFound.set(false);
-        return AclTypes.CRLF;
+        return TokenType.WHITE_SPACE;
     }
 }
 
@@ -121,12 +122,12 @@ end_userrights                    = [$]END_USERRIGHTS
     {semicolon}                                             { return AclTypes.PARAMETERS_SEPARATOR; }
 
     {end_userrights}                                        { yybegin(YYINITIAL); return AclTypes.END_USERRIGHTS; }
-    {crlf}                                                  {
+    {y_white_space}                                                 {
         if (headerFound.get()) {
             valueColumn.set(0);
             yybegin(USER_RIGHTS_VALUE_LINE);
         }
-        return AclTypes.CRLF;
+        return TokenType.WHITE_SPACE;
     }
 }
 
@@ -150,10 +151,12 @@ end_userrights                    = [$]END_USERRIGHTS
     {semicolon}                                             {
         valueColumn.incrementAndGet();
         if (passwordColumnPresent.get() && valueColumn.get() == 3) yybegin(USER_RIGHTS_VALUE_PASSWORD);
-        return AclTypes.FIELD_VALUE_SEPARATOR;
+        return valueColumn.get() == 1
+            ? AclTypes.FIELD_VALUE_TYPE_SEPARATOR
+            : AclTypes.FIELD_VALUE_SEPARATOR;
     }
     {end_userrights}                                        { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS; }
-    {crlf}                                                  { valueColumn.set(0); yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
+    {y_white_space}                                                 { valueColumn.set(0); yybegin(USER_RIGHTS_VALUE_LINE); return TokenType.WHITE_SPACE; }
 }
 
 <USER_RIGHTS_VALUE_PASSWORD> {
@@ -168,13 +171,14 @@ end_userrights                    = [$]END_USERRIGHTS
         return AclTypes.FIELD_VALUE_SEPARATOR;
     }
     {end_userrights}                                        { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS; }
-    {crlf}                                                  { valueColumn.set(0); yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
+    {y_white_space}                                                 { valueColumn.set(0); yybegin(USER_RIGHTS_VALUE_LINE); return TokenType.WHITE_SPACE; }
 }
 
 <USER_RIGHTS_END> {
-    {semicolon}                                             { return AclTypes.PARAMETERS_SEPARATOR; }
-    {crlf}                                                  { yybegin(YYINITIAL); return AclTypes.CRLF; }
+    {semicolon}                                             { return AclTypes.DUMMY_SEPARATOR; }
 }
+
+{y_white_space} { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
 
 // Fallback
 .                                                           { return TokenType.BAD_CHARACTER; }

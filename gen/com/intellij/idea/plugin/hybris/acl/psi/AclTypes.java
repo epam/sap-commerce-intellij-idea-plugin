@@ -51,6 +51,7 @@ public interface AclTypes {
   IElementType USER_RIGHTS_VALUE_GROUP_TARGET = new AclElementType("USER_RIGHTS_VALUE_GROUP_TARGET");
   IElementType USER_RIGHTS_VALUE_GROUP_TYPE = new AclElementType("USER_RIGHTS_VALUE_GROUP_TYPE");
   IElementType USER_RIGHTS_VALUE_GROUP_UID = new AclElementType("USER_RIGHTS_VALUE_GROUP_UID");
+  IElementType USER_RIGHTS_VALUE_GROUP_UID_BLANK = new AclElementType("USER_RIGHTS_VALUE_GROUP_UID_BLANK");
   IElementType USER_RIGHTS_VALUE_LINES_PASSWORD_AWARE = new AclElementType("USER_RIGHTS_VALUE_LINES_PASSWORD_AWARE");
   IElementType USER_RIGHTS_VALUE_LINES_PASSWORD_UNAWARE = new AclElementType("USER_RIGHTS_VALUE_LINES_PASSWORD_UNAWARE");
   IElementType USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE");
@@ -60,12 +61,13 @@ public interface AclTypes {
   IElementType USER_RIGHTS_VALUE_TARGET = new AclElementType("USER_RIGHTS_VALUE_TARGET");
 
   IElementType COMMA = new AclTokenType("COMMA");
-  IElementType CRLF = new AclTokenType("CRLF");
   IElementType DOT = new AclTokenType("DOT");
+  IElementType DUMMY_SEPARATOR = new AclTokenType("DUMMY_SEPARATOR");
   IElementType END_USERRIGHTS = new AclTokenType("END_USERRIGHTS");
   IElementType FIELD_VALUE = new AclTokenType("FIELD_VALUE");
   IElementType FIELD_VALUE_SEPARATOR = new AclTokenType("FIELD_VALUE_SEPARATOR");
   IElementType FIELD_VALUE_TYPE = new AclTokenType("FIELD_VALUE_TYPE");
+  IElementType FIELD_VALUE_TYPE_SEPARATOR = new AclTokenType("FIELD_VALUE_TYPE_SEPARATOR");
   IElementType HEADER_CHANGE = new AclTokenType("HEADER_CHANGE");
   IElementType HEADER_CHANGE_PERM = new AclTokenType("HEADER_CHANGE_PERM");
   IElementType HEADER_CREATE = new AclTokenType("HEADER_CREATE");
@@ -149,6 +151,9 @@ public interface AclTypes {
       }
       else if (type == USER_RIGHTS_VALUE_GROUP_UID) {
         return new AclUserRightsValueGroupUidImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_GROUP_UID_BLANK) {
+        return new AclUserRightsValueGroupUidBlankImpl(node);
       }
       else if (type == USER_RIGHTS_VALUE_LINES_PASSWORD_AWARE) {
         return new AclUserRightsValueLinesPasswordAwareImpl(node);

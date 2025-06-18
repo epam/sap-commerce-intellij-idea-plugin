@@ -110,6 +110,10 @@ public class AclVisitor extends PsiElementVisitor {
     visitUserRightsValueGroup(o);
   }
 
+  public void visitUserRightsValueGroupUidBlank(@NotNull AclUserRightsValueGroupUidBlank o) {
+    visitUserRightsValueGroup(o);
+  }
+
   public void visitUserRightsValueGroups(@NotNull AclUserRightsValueGroups o) {
     visitUserRightsValueGroup(o);
   }

@@ -34,11 +34,16 @@ import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiElementFilter
+import com.intellij.psi.util.elementType
 
 class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     private val filter: PsiElementFilter by lazy {
-        PsiElementFilter { element -> element is AclComment || (element is FoldablePsiElement && !element.textRange.isEmpty) }
+        PsiElementFilter { element ->
+            element is AclComment
+                || (element.elementType in setOf(AclTypes.PERMISSION_ALLOWED, AclTypes.PERMISSION_DENIED, AclTypes.PERMISSION_INHERITED))
+                || (element is FoldablePsiElement && !element.textRange.isEmpty)
+        }
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
@@ -50,9 +55,11 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 .filter { filter.isAccepted(it) }
                 .mapNotNull {
                     val groupName = when (it) {
+                        is AclComment -> "ACL - Comment"
                         is AclUserRights -> "ACL - Root"
                         is AclUserRightsBody -> "ACL - Body"
                         is AclUserRightsValueLines -> "ACL - Lines"
+                        is PsiElement -> "ACL - Other"
                         else -> "Access Control Lists"
                     }
                     FoldingDescriptor(it.node, it.textRange, FoldingGroup.newGroup(groupName))
@@ -105,16 +112,32 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
             AclTypes.USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE
         )
 
+        AclTypes.PERMISSION_ALLOWED -> "✅"
+        AclTypes.PERMISSION_DENIED -> "❌"
+        AclTypes.PERMISSION_INHERITED -> "🔁"
+
         else -> null
     }
 
     private fun getPlaceholderText(node: ASTNode, typeElementType: IElementType, valueLineElementType: IElementType): String? = node.findChildByType(typeElementType)
-        ?.findChildByType(AclTypes.USER_RIGHTS_VALUE_GROUP_TYPE)
-        ?.text
-        ?.let {
+        ?.let { line ->
+            val type = line.findChildByType(AclTypes.USER_RIGHTS_VALUE_GROUP_TYPE)?.text ?: return null
+            val uid = line.findChildByType(AclTypes.USER_RIGHTS_VALUE_GROUP_UID)
+                ?.findChildByType(AclTypes.FIELD_VALUE)
+                ?.text ?: return null
             val valueLines = node.getChildren(TokenSet.create(valueLineElementType)).size
-            "$it - $valueLines permissions.."
+
+            "$type - $uid - $valueLines permissions.."
         }
 
-    override fun isCollapsedByDefault(node: ASTNode): Boolean = false
+    override fun isCollapsedByDefault(node: ASTNode): Boolean = when (node.elementType) {
+        AclTypes.USER_RIGHTS_VALUE_LINES_PASSWORD_AWARE,
+        AclTypes.USER_RIGHTS_VALUE_LINES_PASSWORD_UNAWARE -> false
+
+        AclTypes.PERMISSION_ALLOWED,
+        AclTypes.PERMISSION_DENIED,
+        AclTypes.PERMISSION_INHERITED -> true
+
+        else -> false
+    }
 }

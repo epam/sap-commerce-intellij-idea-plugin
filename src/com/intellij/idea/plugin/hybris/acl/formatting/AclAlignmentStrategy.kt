@@ -63,6 +63,7 @@ class AclAlignmentStrategy {
 
     fun isNewColumn(currentNode: ASTNode) = AclTypes.PARAMETERS_SEPARATOR == currentNode.elementType
         || AclTypes.FIELD_VALUE_SEPARATOR == currentNode.elementType
+        || AclTypes.FIELD_VALUE_TYPE_SEPARATOR == currentNode.elementType
 
     fun isStartOfValueLine(currentNode: ASTNode) = AclTypes.USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE == currentNode.elementType
         || AclTypes.USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE == currentNode.elementType

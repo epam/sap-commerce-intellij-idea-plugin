@@ -50,35 +50,27 @@
   generate=[java='21']
 }
 
-aclFile ::= root*
+aclFile ::= (user_rights | comment)*
 comment ::= LINE_COMMENT
 
-private root ::= (CRLF | ( !<<eof>> root_group (CRLF | <<eof>> ))) {
-    recoverWhile=recover_root
-}
-
-private root_group ::= (user_rights | comment) {
-    recoverWhile=recover_not_line_break
-}
-
-user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ user_rights_body user_rights_end {
+user_rights ::= user_rights_start DUMMY_SEPARATOR* user_rights_body? user_rights_end {
     pin=1
-    recoverWhile=recover_root
+    recoverWhile=recover_user_rights
     implements="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
 }
 
 user_rights_start ::= START_USERRIGHTS
-user_rights_end ::= END_USERRIGHTS (PARAMETERS_SEPARATOR)*
+user_rights_end ::= END_USERRIGHTS (DUMMY_SEPARATOR)*
 
 user_rights_body ::= user_rights_body_password_aware | user_rights_body_password_unaware {
     recoverWhile=recover_user_rights_body
     implements="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
 }
 
-private user_rights_body_password_aware ::= user_rights_header_line_password_aware CRLF+ (user_rights_value_lines_password_aware)* {
+private user_rights_body_password_aware ::= user_rights_header_line_password_aware user_rights_value_lines_password_aware* {
     pin=1
 }
-private user_rights_body_password_unaware ::= user_rights_header_line_password_unaware CRLF+ (user_rights_value_lines_password_unaware)* {
+private user_rights_body_password_unaware ::= user_rights_header_line_password_unaware user_rights_value_lines_password_unaware* {
     pin=1
 }
 
@@ -89,7 +81,7 @@ user_rights_header_line_password_aware ::= user_rights_header_parameter_type
     user_rights_header_parameter_target
     user_rights_header_parameter_permission* {
     pin=4
-    recoverWhile=recover_not_line_break
+    recoverWhile=recover_header_line
 }
 
 user_rights_header_line_password_unaware ::= user_rights_header_parameter_type
@@ -98,7 +90,7 @@ user_rights_header_line_password_unaware ::= user_rights_header_parameter_type
     user_rights_header_parameter_target
     user_rights_header_parameter_permission* {
     pin=1
-    recoverWhile=recover_not_line_break
+    recoverWhile=recover_header_line
 }
 
 user_rights_header_parameter_type ::= HEADER_TYPE
@@ -114,12 +106,12 @@ user_rights_header_parameter_permission ::= PARAMETERS_SEPARATOR (
     | HEADER_CHANGE_PERM
 ) { pin=1 recoverWhile=recover_header_parameter }
 
-user_rights_value_lines_password_aware ::= user_rights_value_line_type_password_aware CRLF+ (user_rights_value_line_password_aware CRLF+)* {
+user_rights_value_lines_password_aware ::= user_rights_value_line_type_password_aware user_rights_value_line_password_aware* {
     pin=1
     recoverWhile=recover_value_lines
 }
 
-user_rights_value_lines_password_unaware ::= user_rights_value_line_type_password_unaware CRLF+ (user_rights_value_line_password_unaware CRLF+)* {
+user_rights_value_lines_password_unaware ::= user_rights_value_line_type_password_unaware user_rights_value_line_password_unaware* {
     pin=1
     recoverWhile=recover_value_lines
 }
@@ -130,7 +122,7 @@ user_rights_value_line_type_password_aware ::= user_rights_value_group_type
     user_rights_value_group_password
     user_rights_value_group_blank* {
     pin=1
-    recoverWhile=recover_not_line_break
+    recoverWhile=recover_value_line
 }
 
 user_rights_value_line_type_password_unaware ::= user_rights_value_group_type
@@ -138,28 +130,28 @@ user_rights_value_line_type_password_unaware ::= user_rights_value_group_type
     user_rights_value_group_member_of_groups
     user_rights_value_group_blank* {
     pin=1
-    recoverWhile=recover_not_line_break
+    recoverWhile=recover_value_line
 }
 
-user_rights_value_line_password_aware ::= user_rights_value_group_blank
+user_rights_value_line_password_aware ::= user_rights_value_group_uid_blank
     user_rights_value_group_blank
     user_rights_value_group_blank
     user_rights_value_group_target
     user_rights_value_group_permission* {
     pin=1
-    recoverWhile=recover_not_line_break
+    recoverWhile=recover_value_line
 }
 
-user_rights_value_line_password_unaware ::= user_rights_value_group_blank
+user_rights_value_line_password_unaware ::= user_rights_value_group_uid_blank
     user_rights_value_group_blank
     user_rights_value_group_target
     user_rights_value_group_permission* {
     pin=1
-    recoverWhile=recover_not_line_break
+    recoverWhile=recover_value_line
 }
 
 user_rights_value_group_type ::= FIELD_VALUE_TYPE { recoverWhile=recover_value }
-user_rights_value_group_uid ::= FIELD_VALUE_SEPARATOR FIELD_VALUE {
+user_rights_value_group_uid ::= FIELD_VALUE_TYPE_SEPARATOR FIELD_VALUE {
     pin=1
     recoverWhile=recover_value
 }
@@ -183,13 +175,13 @@ user_rights_value_group_permission ::= FIELD_VALUE_SEPARATOR (PERMISSION_DENIED 
     pin=1
     recoverWhile=recover_value
 }
-user_rights_value_group_blank ::= FIELD_VALUE_SEPARATOR {
-    pin=1
-}
+user_rights_value_group_blank ::= FIELD_VALUE_SEPARATOR
+user_rights_value_group_uid_blank ::= FIELD_VALUE_TYPE_SEPARATOR
 
-private recover_root ::= !(CRLF | LINE_COMMENT | user_rights_start)
-private recover_not_line_break ::= !(CRLF)
+private recover_user_rights ::= !(LINE_COMMENT | user_rights_start)
 private recover_user_rights_body ::= !(user_rights_end)
-private recover_header_parameter ::= !(PARAMETERS_SEPARATOR | CRLF)
-private recover_value ::= !(FIELD_VALUE_SEPARATOR | CRLF)
-private recover_value_lines ::= !(FIELD_VALUE_TYPE | user_rights_end)
+private recover_header_line ::= !(FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | user_rights_end)
+private recover_header_parameter ::= !(PARAMETERS_SEPARATOR | FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | user_rights_end)
+private recover_value ::= !(FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | FIELD_VALUE_TYPE_SEPARATOR | user_rights_end)
+private recover_value_line ::= !(FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | user_rights_end)
+private recover_value_lines ::= !(FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | user_rights_end)

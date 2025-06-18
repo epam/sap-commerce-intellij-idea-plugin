@@ -29,6 +29,7 @@ object AclHighlighterColors {
 
     val FIELD_VALUE_SEPARATOR = key("FIELD_VALUE_SEPARATOR", DefaultLanguageHighlighterColors.KEYWORD)
     val PARAMETERS_SEPARATOR = key("PARAMETERS_SEPARATOR", DefaultLanguageHighlighterColors.KEYWORD)
+    val DUMMY_SEPARATOR = key("DUMMY_SEPARATOR", DefaultLanguageHighlighterColors.LINE_COMMENT)
 
     val FIELD_VALUE_TYPE = key("FIELD_VALUE_TYPE", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION)
 
