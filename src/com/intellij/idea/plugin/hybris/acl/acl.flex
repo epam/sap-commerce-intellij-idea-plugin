@@ -133,7 +133,11 @@ end_userrights                    = [$]END_USERRIGHTS
 <USER_RIGHTS_VALUE_LINE> {
     {minus}                                                 { return AclTypes.PERMISSION_DENIED; }
     {plus}                                                  { return AclTypes.PERMISSION_ALLOWED; }
-    {identifier}+                                           { return AclTypes.FIELD_VALUE; }
+    {identifier}+                                           {
+        return valueColumn == 0
+            ? AclTypes.FIELD_VALUE_TYPE
+            : AclTypes.FIELD_VALUE;
+    }
     {line_comment}                                          { return AclTypes.LINE_COMMENT; }
     {dot}                                                   {
           if (passwordColumnPresent && valueColumn >= 5 || !passwordColumnPresent && valueColumn >= 4) return AclTypes.PERMISSION_INHERITED;

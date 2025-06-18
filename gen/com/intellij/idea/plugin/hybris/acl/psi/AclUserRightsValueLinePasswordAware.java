@@ -29,22 +29,10 @@ import com.intellij.psi.PsiElement;
 
 public interface AclUserRightsValueLinePasswordAware extends AclUserRightsValueLine {
 
-  @Nullable
-  AclUserRightsValueGroupMemberOfGroups getUserRightsValueGroupMemberOfGroups();
-
-  @Nullable
-  AclUserRightsValueGroupPassword getUserRightsValueGroupPassword();
-
   @NotNull
   List<AclUserRightsValueGroupPermission> getUserRightsValueGroupPermissionList();
 
   @Nullable
   AclUserRightsValueGroupTarget getUserRightsValueGroupTarget();
-
-  @NotNull
-  AclUserRightsValueGroupType getUserRightsValueGroupType();
-
-  @Nullable
-  AclUserRightsValueGroupUid getUserRightsValueGroupUid();
 
 }

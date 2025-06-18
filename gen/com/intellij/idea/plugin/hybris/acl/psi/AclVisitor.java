@@ -117,6 +117,22 @@ public class AclVisitor extends PsiElementVisitor {
     visitUserRightsValueLine(o);
   }
 
+  public void visitUserRightsValueLineTypePasswordAware(@NotNull AclUserRightsValueLineTypePasswordAware o) {
+    visitUserRightsValueLine(o);
+  }
+
+  public void visitUserRightsValueLineTypePasswordUnaware(@NotNull AclUserRightsValueLineTypePasswordUnaware o) {
+    visitUserRightsValueLine(o);
+  }
+
+  public void visitUserRightsValueLinesPasswordAware(@NotNull AclUserRightsValueLinesPasswordAware o) {
+    visitUserRightsValueLine(o);
+  }
+
+  public void visitUserRightsValueLinesPasswordUnaware(@NotNull AclUserRightsValueLinesPasswordUnaware o) {
+    visitUserRightsValueLine(o);
+  }
+
   public void visitUserRightsValueTarget(@NotNull AclUserRightsValueTarget o) {
     visitPsiElement(o);
   }

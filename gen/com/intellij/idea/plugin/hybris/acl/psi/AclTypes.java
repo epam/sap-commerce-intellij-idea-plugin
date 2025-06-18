@@ -50,8 +50,12 @@ public interface AclTypes {
   IElementType USER_RIGHTS_VALUE_GROUP_TARGET = new AclElementType("USER_RIGHTS_VALUE_GROUP_TARGET");
   IElementType USER_RIGHTS_VALUE_GROUP_TYPE = new AclElementType("USER_RIGHTS_VALUE_GROUP_TYPE");
   IElementType USER_RIGHTS_VALUE_GROUP_UID = new AclElementType("USER_RIGHTS_VALUE_GROUP_UID");
+  IElementType USER_RIGHTS_VALUE_LINES_PASSWORD_AWARE = new AclElementType("USER_RIGHTS_VALUE_LINES_PASSWORD_AWARE");
+  IElementType USER_RIGHTS_VALUE_LINES_PASSWORD_UNAWARE = new AclElementType("USER_RIGHTS_VALUE_LINES_PASSWORD_UNAWARE");
   IElementType USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE");
   IElementType USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE");
+  IElementType USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_AWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_AWARE");
+  IElementType USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_UNAWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_UNAWARE");
   IElementType USER_RIGHTS_VALUE_TARGET = new AclElementType("USER_RIGHTS_VALUE_TARGET");
 
   IElementType COMMA = new AclTokenType("COMMA");
@@ -60,6 +64,7 @@ public interface AclTypes {
   IElementType END_USERRIGHTS = new AclTokenType("END_USERRIGHTS");
   IElementType FIELD_VALUE = new AclTokenType("FIELD_VALUE");
   IElementType FIELD_VALUE_SEPARATOR = new AclTokenType("FIELD_VALUE_SEPARATOR");
+  IElementType FIELD_VALUE_TYPE = new AclTokenType("FIELD_VALUE_TYPE");
   IElementType HEADER_CHANGE = new AclTokenType("HEADER_CHANGE");
   IElementType HEADER_CHANGE_PERM = new AclTokenType("HEADER_CHANGE_PERM");
   IElementType HEADER_CREATE = new AclTokenType("HEADER_CREATE");
@@ -141,11 +146,23 @@ public interface AclTypes {
       else if (type == USER_RIGHTS_VALUE_GROUP_UID) {
         return new AclUserRightsValueGroupUidImpl(node);
       }
+      else if (type == USER_RIGHTS_VALUE_LINES_PASSWORD_AWARE) {
+        return new AclUserRightsValueLinesPasswordAwareImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_LINES_PASSWORD_UNAWARE) {
+        return new AclUserRightsValueLinesPasswordUnawareImpl(node);
+      }
       else if (type == USER_RIGHTS_VALUE_LINE_PASSWORD_AWARE) {
         return new AclUserRightsValueLinePasswordAwareImpl(node);
       }
       else if (type == USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE) {
         return new AclUserRightsValueLinePasswordUnawareImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_AWARE) {
+        return new AclUserRightsValueLineTypePasswordAwareImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_UNAWARE) {
+        return new AclUserRightsValueLineTypePasswordUnawareImpl(node);
       }
       else if (type == USER_RIGHTS_VALUE_TARGET) {
         return new AclUserRightsValueTargetImpl(node);

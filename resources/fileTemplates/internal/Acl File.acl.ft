@@ -1,0 +1,5 @@
+\$START_USERRIGHTS
+Type     ; UID; MemberOfGroups; Target; read; change; create; delete; change_perm
+UserGroup;    ;               ;       ;
+;    ;               ;       ;     ;       ;       ;       ;
+\$END_USERRIGHTS

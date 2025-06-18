@@ -50,12 +50,6 @@ public class AclUserRightsValueLinePasswordUnawareImpl extends ASTWrapperPsiElem
   }
 
   @Override
-  @Nullable
-  public AclUserRightsValueGroupMemberOfGroups getUserRightsValueGroupMemberOfGroups() {
-    return findChildByClass(AclUserRightsValueGroupMemberOfGroups.class);
-  }
-
-  @Override
   @NotNull
   public List<AclUserRightsValueGroupPermission> getUserRightsValueGroupPermissionList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueGroupPermission.class);
@@ -65,18 +59,6 @@ public class AclUserRightsValueLinePasswordUnawareImpl extends ASTWrapperPsiElem
   @Nullable
   public AclUserRightsValueGroupTarget getUserRightsValueGroupTarget() {
     return findChildByClass(AclUserRightsValueGroupTarget.class);
-  }
-
-  @Override
-  @NotNull
-  public AclUserRightsValueGroupType getUserRightsValueGroupType() {
-    return findNotNullChildByClass(AclUserRightsValueGroupType.class);
-  }
-
-  @Override
-  @Nullable
-  public AclUserRightsValueGroupUid getUserRightsValueGroupUid() {
-    return findChildByClass(AclUserRightsValueGroupUid.class);
   }
 
 }

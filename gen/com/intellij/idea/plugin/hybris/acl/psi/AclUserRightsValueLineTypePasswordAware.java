@@ -27,12 +27,18 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface AclUserRightsValueLinePasswordUnaware extends AclUserRightsValueLine {
-
-  @NotNull
-  List<AclUserRightsValueGroupPermission> getUserRightsValueGroupPermissionList();
+public interface AclUserRightsValueLineTypePasswordAware extends AclUserRightsValueLine {
 
   @Nullable
-  AclUserRightsValueGroupTarget getUserRightsValueGroupTarget();
+  AclUserRightsValueGroupMemberOfGroups getUserRightsValueGroupMemberOfGroups();
+
+  @Nullable
+  AclUserRightsValueGroupPassword getUserRightsValueGroupPassword();
+
+  @NotNull
+  AclUserRightsValueGroupType getUserRightsValueGroupType();
+
+  @Nullable
+  AclUserRightsValueGroupUid getUserRightsValueGroupUid();
 
 }

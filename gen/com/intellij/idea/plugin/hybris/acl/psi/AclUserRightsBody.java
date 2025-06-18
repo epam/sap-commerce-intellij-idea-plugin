@@ -36,9 +36,9 @@ public interface AclUserRightsBody extends PsiElement {
   AclUserRightsHeaderLinePasswordUnaware getUserRightsHeaderLinePasswordUnaware();
 
   @NotNull
-  List<AclUserRightsValueLinePasswordAware> getUserRightsValueLinePasswordAwareList();
+  List<AclUserRightsValueLinesPasswordAware> getUserRightsValueLinesPasswordAwareList();
 
   @NotNull
-  List<AclUserRightsValueLinePasswordUnaware> getUserRightsValueLinePasswordUnawareList();
+  List<AclUserRightsValueLinesPasswordUnaware> getUserRightsValueLinesPasswordUnawareList();
 
 }

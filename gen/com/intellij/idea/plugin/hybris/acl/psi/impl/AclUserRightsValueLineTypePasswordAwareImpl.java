@@ -33,14 +33,14 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsBodyImpl extends ASTWrapperPsiElement implements AclUserRightsBody {
+public class AclUserRightsValueLineTypePasswordAwareImpl extends ASTWrapperPsiElement implements AclUserRightsValueLineTypePasswordAware {
 
-  public AclUserRightsBodyImpl(@NotNull ASTNode node) {
+  public AclUserRightsValueLineTypePasswordAwareImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull AclVisitor visitor) {
-    visitor.visitUserRightsBody(this);
+    visitor.visitUserRightsValueLineTypePasswordAware(this);
   }
 
   @Override
@@ -51,26 +51,26 @@ public class AclUserRightsBodyImpl extends ASTWrapperPsiElement implements AclUs
 
   @Override
   @Nullable
-  public AclUserRightsHeaderLinePasswordAware getUserRightsHeaderLinePasswordAware() {
-    return findChildByClass(AclUserRightsHeaderLinePasswordAware.class);
+  public AclUserRightsValueGroupMemberOfGroups getUserRightsValueGroupMemberOfGroups() {
+    return findChildByClass(AclUserRightsValueGroupMemberOfGroups.class);
   }
 
   @Override
   @Nullable
-  public AclUserRightsHeaderLinePasswordUnaware getUserRightsHeaderLinePasswordUnaware() {
-    return findChildByClass(AclUserRightsHeaderLinePasswordUnaware.class);
+  public AclUserRightsValueGroupPassword getUserRightsValueGroupPassword() {
+    return findChildByClass(AclUserRightsValueGroupPassword.class);
   }
 
   @Override
   @NotNull
-  public List<AclUserRightsValueLinesPasswordAware> getUserRightsValueLinesPasswordAwareList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueLinesPasswordAware.class);
+  public AclUserRightsValueGroupType getUserRightsValueGroupType() {
+    return findNotNullChildByClass(AclUserRightsValueGroupType.class);
   }
 
   @Override
-  @NotNull
-  public List<AclUserRightsValueLinesPasswordUnaware> getUserRightsValueLinesPasswordUnawareList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, AclUserRightsValueLinesPasswordUnaware.class);
+  @Nullable
+  public AclUserRightsValueGroupUid getUserRightsValueGroupUid() {
+    return findChildByClass(AclUserRightsValueGroupUid.class);
   }
 
 }

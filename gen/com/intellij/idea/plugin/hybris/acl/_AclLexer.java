@@ -738,7 +738,9 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 38: break;
           case 14:
-            { return AclTypes.FIELD_VALUE;
+            { return valueColumn == 0
+            ? AclTypes.FIELD_VALUE_TYPE
+            : AclTypes.FIELD_VALUE;
             }
           // fall through
           case 39: break;
