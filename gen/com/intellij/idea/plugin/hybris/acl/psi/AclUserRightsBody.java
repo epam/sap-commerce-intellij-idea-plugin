@@ -26,8 +26,9 @@ package com.intellij.idea.plugin.hybris.acl.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 
-public interface AclUserRightsBody extends PsiElement {
+public interface AclUserRightsBody extends FoldablePsiElement {
 
   @Nullable
   AclUserRightsHeaderLinePasswordAware getUserRightsHeaderLinePasswordAware();

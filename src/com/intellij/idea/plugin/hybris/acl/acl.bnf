@@ -38,9 +38,14 @@
   tokenTypeClass="com.intellij.idea.plugin.hybris.acl.psi.AclTokenType"
 
   classHeader="generatedFilesHeader.txt"
+
   implements("user\_rights\_header\_parameter.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsHeaderParameter"
-  implements("user\_rights\_value\_line.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLine"
+  implements("user\_rights\_value\_line\_.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLine"
   implements("user\_rights\_value\_group.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueGroup"
+  implements("user\_rights\_value\_lines\_.*")=[
+        "com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+        "com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLines"
+    ]
 
   generate=[java='21']
 }
@@ -59,6 +64,7 @@ private root_group ::= (user_rights | comment) {
 user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ user_rights_body user_rights_end {
     pin=1
     recoverWhile=recover_root
+    implements="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
 }
 
 user_rights_start ::= START_USERRIGHTS
@@ -66,6 +72,7 @@ user_rights_end ::= END_USERRIGHTS (PARAMETERS_SEPARATOR)*
 
 user_rights_body ::= user_rights_body_password_aware | user_rights_body_password_unaware {
     recoverWhile=recover_user_rights_body
+    implements="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
 }
 
 private user_rights_body_password_aware ::= user_rights_header_line_password_aware CRLF+ (user_rights_value_lines_password_aware)* {

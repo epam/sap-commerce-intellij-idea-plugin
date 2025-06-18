@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -36,6 +36,7 @@ class DeveloperSettings : BaseState() {
     var cngSettings by property(CngSettings()) { false }
     var bpSettings by property(BpSettings()) { false }
     var flexibleSearchSettings by property(FlexibleSearchSettings()) { false }
+    var aclSettings by property(AclSettings()) { false }
     var polyglotQuerySettings by property(PolyglotQuerySettings()) { false }
     var impexSettings by property(ImpexSettings()) { false }
     var groovySettings by property(GroovySettings()) { false }

@@ -16,27 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- */
-package com.intellij.idea.plugin.hybris.acl.psi;
+package com.intellij.idea.plugin.hybris.settings
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
+import com.intellij.openapi.components.BaseState
 
-public interface AclUserRights extends FoldablePsiElement {
+data class AclSettings(
+    var folding: AclFoldingSettings = AclFoldingSettings(),
+)
 
-  @Nullable
-  AclUserRightsBody getUserRightsBody();
-
-  @Nullable
-  AclUserRightsEnd getUserRightsEnd();
-
-  @NotNull
-  AclUserRightsStart getUserRightsStart();
-
+class AclFoldingSettings : BaseState() {
+    var enabled by property(true)
 }
+
