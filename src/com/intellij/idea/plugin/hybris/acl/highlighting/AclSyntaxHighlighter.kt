@@ -60,6 +60,11 @@ class AclSyntaxHighlighter : SyntaxHighlighterBase() {
 
             AclTypes.PASSWORD to pack(AclHighlighterColors.SINGLE_STRING),
 
+            AclTypes.FIELD_VALUE_SEPARATOR to pack(AclHighlighterColors.FIELD_VALUE_SEPARATOR),
+            AclTypes.PARAMETERS_SEPARATOR to pack(AclHighlighterColors.PARAMETERS_SEPARATOR),
+
+            AclTypes.FIELD_VALUE_TYPE to pack(AclHighlighterColors.FIELD_VALUE_TYPE),
+
             AclTypes.PERMISSION_ALLOWED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
             AclTypes.PERMISSION_DENIED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),
             AclTypes.PERMISSION_INHERITED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED),

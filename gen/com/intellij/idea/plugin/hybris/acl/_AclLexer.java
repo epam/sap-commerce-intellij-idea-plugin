@@ -26,6 +26,8 @@ import com.intellij.idea.plugin.hybris.acl.psi.AclTypes;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
@@ -389,13 +391,13 @@ public class _AclLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-  private int permissionHeader = 0;
-  private int valueColumn = 0;
-  private boolean passwordColumnPresent = false;
-  private boolean headerFound = false;
+  private AtomicInteger permissionHeader = new AtomicInteger(0);
+  private AtomicInteger valueColumn = new AtomicInteger(0);
+  private AtomicBoolean passwordColumnPresent = new AtomicBoolean(false);
+  private AtomicBoolean headerFound = new AtomicBoolean(false);
   public _AclLexer() {
     this((java.io.Reader)null);
-  }
+    }
 
 
   /**
@@ -675,9 +677,9 @@ public class _AclLexer implements FlexLexer {
           case 29: break;
           case 5:
             { yybegin(USER_RIGHTS_HEADER_LINE);
-        permissionHeader=0;
-        passwordColumnPresent=false;
-        headerFound=false;
+        permissionHeader.set(0);
+        passwordColumnPresent.set(false);
+        headerFound.set(false);
         return AclTypes.CRLF;
             }
           // fall through
@@ -688,8 +690,8 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 31: break;
           case 7:
-            { if (headerFound) {
-            valueColumn=0;
+            { if (headerFound.get()) {
+            valueColumn.set(0);
             yybegin(USER_RIGHTS_VALUE_LINE);
         }
         return AclTypes.CRLF;
@@ -697,9 +699,7 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 32: break;
           case 8:
-            { permissionHeader++;
-
-        return switch (permissionHeader) {
+            { return switch (permissionHeader.incrementAndGet()) {
             case 1 -> AclTypes.HEADER_READ;
             case 2 -> AclTypes.HEADER_CHANGE;
             case 3 -> AclTypes.HEADER_CREATE;
@@ -712,7 +712,7 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 33: break;
           case 9:
-            { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF;
+            { valueColumn.set(0); yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF;
             }
           // fall through
           case 34: break;
@@ -732,21 +732,23 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 37: break;
           case 13:
-            { if (passwordColumnPresent && valueColumn >= 5 || !passwordColumnPresent && valueColumn >= 4) return AclTypes.PERMISSION_INHERITED;
-          return AclTypes.DOT;
+            { return passwordColumnPresent.get() && valueColumn.get() >= 5
+            || !passwordColumnPresent.get() && valueColumn.get() >= 4
+            ? AclTypes.PERMISSION_INHERITED
+            : AclTypes.DOT;
             }
           // fall through
           case 38: break;
           case 14:
-            { return valueColumn == 0
+            { return valueColumn.get() == 0
             ? AclTypes.FIELD_VALUE_TYPE
             : AclTypes.FIELD_VALUE;
             }
           // fall through
           case 39: break;
           case 15:
-            { valueColumn++;
-        if (passwordColumnPresent && valueColumn == 3) yybegin(USER_RIGHTS_VALUE_PASSWORD);
+            { valueColumn.incrementAndGet();
+        if (passwordColumnPresent.get() && valueColumn.get() == 3) yybegin(USER_RIGHTS_VALUE_PASSWORD);
         return AclTypes.FIELD_VALUE_SEPARATOR;
             }
           // fall through
@@ -757,7 +759,7 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 41: break;
           case 17:
-            { valueColumn++;
+            { valueColumn.incrementAndGet();
         yybegin(USER_RIGHTS_VALUE_LINE);
         return AclTypes.FIELD_VALUE_SEPARATOR;
             }
@@ -769,7 +771,7 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 43: break;
           case 19:
-            { headerFound=true; return AclTypes.HEADER_TYPE;
+            { headerFound.set(true); return AclTypes.HEADER_TYPE;
             }
           // fall through
           case 44: break;
@@ -779,7 +781,7 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 45: break;
           case 21:
-            { passwordColumnPresent=true; return AclTypes.HEADER_PASSWORD;
+            { passwordColumnPresent.set(true); return AclTypes.HEADER_PASSWORD;
             }
           // fall through
           case 46: break;

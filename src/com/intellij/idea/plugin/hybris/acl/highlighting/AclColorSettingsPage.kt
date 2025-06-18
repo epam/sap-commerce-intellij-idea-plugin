@@ -50,7 +50,7 @@ ${"$"}END_USERRIGHTS
 """
     }
 
-    private val customTags = with (RainbowHighlighter.createRainbowHLM()) {
+    private val customTags = with(RainbowHighlighter.createRainbowHLM()) {
         put("permission_inherited", AclHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED)
         this
     }
@@ -60,9 +60,13 @@ ${"$"}END_USERRIGHTS
 
         AttributesDescriptor("Bad character", HighlighterColors.BAD_CHARACTER),
 
+        AttributesDescriptor("Separators//Field value separator", AclHighlighterColors.FIELD_VALUE_SEPARATOR),
+        AttributesDescriptor("Separators//Parameters separator", AclHighlighterColors.PARAMETERS_SEPARATOR),
+
         AttributesDescriptor("User rights", AclHighlighterColors.USER_RIGHTS),
         AttributesDescriptor("User rights//Parameter name", AclHighlighterColors.USER_RIGHTS_HEADER_PARAMETER),
         AttributesDescriptor("User rights//Mandatory parameter name", AclHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER),
+        AttributesDescriptor("User rights//Type", AclHighlighterColors.FIELD_VALUE_TYPE),
         AttributesDescriptor("User rights//Permission allowed", AclHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
         AttributesDescriptor("User rights//Permission denied", AclHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),
         AttributesDescriptor("User rights//Permission inherited", AclHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED)

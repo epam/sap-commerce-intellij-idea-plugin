@@ -26,6 +26,12 @@ object AclHighlighterColors {
     val COMMENT = key("LINE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
     val DOT = key("DOT", HighlighterColors.TEXT)
     val SINGLE_STRING = key("SINGLE_STRING", DefaultLanguageHighlighterColors.STRING)
+
+    val FIELD_VALUE_SEPARATOR = key("FIELD_VALUE_SEPARATOR", DefaultLanguageHighlighterColors.KEYWORD)
+    val PARAMETERS_SEPARATOR = key("PARAMETERS_SEPARATOR", DefaultLanguageHighlighterColors.KEYWORD)
+
+    val FIELD_VALUE_TYPE = key("FIELD_VALUE_TYPE", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION)
+
     val USER_RIGHTS = key("ACL_USER_RIGHTS", DefaultLanguageHighlighterColors.STATIC_FIELD)
     val USER_RIGHTS_HEADER_PARAMETER = key("ACL_USER_RIGHTS_HEADER_PARAMETER", HighlighterColors.TEXT)
     val USER_RIGHTS_HEADER_MANDATORY_PARAMETER = key("ACL_USER_RIGHTS_HEADER_MANDATORY_PARAMETER", USER_RIGHTS_HEADER_PARAMETER)

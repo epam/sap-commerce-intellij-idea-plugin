@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.acl.psi.AclTypes;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
 import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
@@ -30,13 +32,13 @@ import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
 %%
 
 %{
-  private int permissionHeader = 0;
-  private int valueColumn = 0;
-  private boolean passwordColumnPresent = false;
-  private boolean headerFound = false;
+  private AtomicInteger permissionHeader = new AtomicInteger(0);
+  private AtomicInteger valueColumn = new AtomicInteger(0);
+  private AtomicBoolean passwordColumnPresent = new AtomicBoolean(false);
+  private AtomicBoolean headerFound = new AtomicBoolean(false);
   public _AclLexer() {
     this((java.io.Reader)null);
-  }
+    }
 %}
 
 %public
@@ -92,23 +94,21 @@ end_userrights                    = [$]END_USERRIGHTS
     {semicolon}                                             { return AclTypes.PARAMETERS_SEPARATOR; }
     {crlf}                                                  {
         yybegin(USER_RIGHTS_HEADER_LINE);
-        permissionHeader=0;
-        passwordColumnPresent=false;
-        headerFound=false;
+        permissionHeader.set(0);
+        passwordColumnPresent.set(false);
+        headerFound.set(false);
         return AclTypes.CRLF;
     }
 }
 
 <USER_RIGHTS_HEADER_LINE> {
-    "Type"                                                  { headerFound=true; return AclTypes.HEADER_TYPE; }
+    "Type"                                                  { headerFound.set(true); return AclTypes.HEADER_TYPE; }
     "UID"                                                   { return AclTypes.HEADER_UID; }
     "MemberOfGroups"                                        { return AclTypes.HEADER_MEMBEROFGROUPS; }
-    "Password"                                              { passwordColumnPresent=true; return AclTypes.HEADER_PASSWORD; }
+    "Password"                                              { passwordColumnPresent.set(true); return AclTypes.HEADER_PASSWORD; }
     "Target"                                                { return AclTypes.HEADER_TARGET; }
     {identifier}+                                           {
-        permissionHeader++;
-
-        return switch (permissionHeader) {
+        return switch (permissionHeader.incrementAndGet()) {
             case 1 -> AclTypes.HEADER_READ;
             case 2 -> AclTypes.HEADER_CHANGE;
             case 3 -> AclTypes.HEADER_CREATE;
@@ -122,8 +122,8 @@ end_userrights                    = [$]END_USERRIGHTS
 
     {end_userrights}                                        { yybegin(YYINITIAL); return AclTypes.END_USERRIGHTS; }
     {crlf}                                                  {
-        if (headerFound) {
-            valueColumn=0;
+        if (headerFound.get()) {
+            valueColumn.set(0);
             yybegin(USER_RIGHTS_VALUE_LINE);
         }
         return AclTypes.CRLF;
@@ -134,24 +134,26 @@ end_userrights                    = [$]END_USERRIGHTS
     {minus}                                                 { return AclTypes.PERMISSION_DENIED; }
     {plus}                                                  { return AclTypes.PERMISSION_ALLOWED; }
     {identifier}+                                           {
-        return valueColumn == 0
+        return valueColumn.get() == 0
             ? AclTypes.FIELD_VALUE_TYPE
             : AclTypes.FIELD_VALUE;
     }
     {line_comment}                                          { return AclTypes.LINE_COMMENT; }
     {dot}                                                   {
-          if (passwordColumnPresent && valueColumn >= 5 || !passwordColumnPresent && valueColumn >= 4) return AclTypes.PERMISSION_INHERITED;
-          return AclTypes.DOT;
+          return passwordColumnPresent.get() && valueColumn.get() >= 5
+            || !passwordColumnPresent.get() && valueColumn.get() >= 4
+            ? AclTypes.PERMISSION_INHERITED
+            : AclTypes.DOT;
       }
     {comma}                                                 { return AclTypes.COMMA; }
 
     {semicolon}                                             {
-        valueColumn++;
-        if (passwordColumnPresent && valueColumn == 3) yybegin(USER_RIGHTS_VALUE_PASSWORD);
+        valueColumn.incrementAndGet();
+        if (passwordColumnPresent.get() && valueColumn.get() == 3) yybegin(USER_RIGHTS_VALUE_PASSWORD);
         return AclTypes.FIELD_VALUE_SEPARATOR;
     }
     {end_userrights}                                        { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS; }
-    {crlf}                                                  { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
+    {crlf}                                                  { valueColumn.set(0); yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
 }
 
 <USER_RIGHTS_VALUE_PASSWORD> {
@@ -161,12 +163,12 @@ end_userrights                    = [$]END_USERRIGHTS
 
     {line_comment}                                          { return AclTypes.LINE_COMMENT; }
     {semicolon}                                             {
-        valueColumn++;
+        valueColumn.incrementAndGet();
         yybegin(USER_RIGHTS_VALUE_LINE);
         return AclTypes.FIELD_VALUE_SEPARATOR;
     }
     {end_userrights}                                        { yybegin(USER_RIGHTS_END); return AclTypes.END_USERRIGHTS; }
-    {crlf}                                                  { valueColumn=0; yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
+    {crlf}                                                  { valueColumn.set(0); yybegin(USER_RIGHTS_VALUE_LINE); return AclTypes.CRLF; }
 }
 
 <USER_RIGHTS_END> {
