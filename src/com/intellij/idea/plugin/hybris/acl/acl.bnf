@@ -119,8 +119,8 @@ user_rights_value_lines_password_unaware ::= user_rights_value_line_type_passwor
 
 user_rights_value_line_type_password_aware ::= user_rights_value_group_type
     user_rights_value_group_uid
-    user_rights_value_group_member_of_groups
-    user_rights_value_group_password
+    user_rights_value_group_member_of_groups?
+    user_rights_value_group_password?
     user_rights_value_group_blank* {
     pin=1
     recoverWhile=recover_value_line
@@ -128,7 +128,7 @@ user_rights_value_line_type_password_aware ::= user_rights_value_group_type
 
 user_rights_value_line_type_password_unaware ::= user_rights_value_group_type
     user_rights_value_group_uid
-    user_rights_value_group_member_of_groups
+    user_rights_value_group_member_of_groups?
     user_rights_value_group_blank* {
     pin=1
     recoverWhile=recover_value_line
