@@ -151,7 +151,10 @@ user_rights_value_line_password_unaware ::= user_rights_value_group_uid_blank
     recoverWhile=recover_value_line
 }
 
-user_rights_value_group_type ::= FIELD_VALUE_TYPE { recoverWhile=recover_value }
+user_rights_value_group_type ::= FIELD_VALUE_TYPE {
+    recoverWhile=recover_value
+    mixin="AclUserRightsValueGroupTypeMixin"
+}
 user_rights_value_group_uid ::= FIELD_VALUE_TYPE_SEPARATOR FIELD_VALUE {
     pin=1
     recoverWhile=recover_value

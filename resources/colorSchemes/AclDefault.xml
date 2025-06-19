@@ -58,6 +58,12 @@
             <option name="FONT_TYPE" value="1"/>
         </value>
     </option>
+    <option name="FIELD_VALUE_TARGET_TYPE">
+        <value>
+            <option name="FOREGROUND" value="01A308"/>
+            <option name="FONT_TYPE" value="1"/>
+        </value>
+    </option>
     <option name="FIELD_VALUE_SEPARATOR">
         <value>
             <option name="FOREGROUND" value="EC7C1D"/>

@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.psi.references
+
+package com.intellij.idea.plugin.hybris.acl.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
@@ -36,7 +37,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 
-class ImpexAclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), HighlightedReference {
+class AclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), HighlightedReference {
 
     override fun getVariants() = getAllowedVariants(element)
         .mapNotNull { TSLookupElementFactory.build(it) }
@@ -52,13 +53,13 @@ class ImpexAclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(own
     }
 
     companion object {
-        private val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpexAclTypeReference>>("HYBRIS_TS_CACHED_REFERENCE")
+        private val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AclTypeReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexAclTypeReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AclTypeReference> { ref ->
             val lookingForName = ref.value
             val project = ref.project
 
-            val results: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaItemByName(lookingForName)
+            val results: Array<ResolveResult> = TSMetaModelAccess.Companion.getInstance(project).findMetaItemByName(lookingForName)
                 ?.takeIf { getAllowedVariants(ref.element).contains(it) }
                 ?.declarations
                 ?.map { meta -> ItemResolveResult(meta) }
@@ -72,7 +73,7 @@ class ImpexAclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(own
             )
         }
 
-        private fun getAllowedVariants(element: PsiElement): Collection<TSGlobalMetaItem> = with(TSMetaModelAccess.getInstance(element.project)) {
+        private fun getAllowedVariants(element: PsiElement): Collection<TSGlobalMetaItem> = with(TSMetaModelAccess.Companion.getInstance(element.project)) {
             listOfNotNull(
                 findMetaItemByName(HybrisConstants.TS_TYPE_USER_GROUP),
                 findMetaItemByName(HybrisConstants.TS_TYPE_USER)

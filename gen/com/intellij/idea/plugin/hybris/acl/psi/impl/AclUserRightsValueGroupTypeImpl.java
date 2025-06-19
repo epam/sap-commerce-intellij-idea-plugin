@@ -30,12 +30,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsValueGroupTypeImpl extends ASTWrapperPsiElement implements AclUserRightsValueGroupType {
+public class AclUserRightsValueGroupTypeImpl extends AclUserRightsValueGroupTypeMixin implements AclUserRightsValueGroupType {
 
-  public AclUserRightsValueGroupTypeImpl(@NotNull ASTNode node) {
+  public AclUserRightsValueGroupTypeImpl(ASTNode node) {
     super(node);
   }
 
