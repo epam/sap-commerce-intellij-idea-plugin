@@ -128,11 +128,13 @@ object HybrisIcons {
 
     object Acl {
         val FILE = getIcon("/icons/fileTypes/aclFile.svg")
+        val USER_RIGHTS_PASSWORD_AWARE = getIcon("/icons/acl/userRightsPasswordAware.svg")
+        val USER_RIGHTS_PASSWORD_UNAWARE = getIcon("/icons/acl/userRightsPasswordUnaware.svg")
     }
 
     object ImpEx {
         val FILE = getIcon("/icons/fileTypes/impexFile.svg")
-        val MACROS = getIcon("/icons/macros.svg")
+        val MACROS = getIcon("/icons/impex/macros.svg")
         val MODE = AllIcons.Nodes.Function
 
         object Actions {

@@ -36,6 +36,8 @@
 
         <annotator language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.annotation.AclAnnotator"/>
 
+        <completion.contributor language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.completion.AclSearchCompletionContributor"/>
+
         <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.acl.editor.event.AclLineEditorFactoryListener"/>
         <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.acl.vfs.event.AclVfsAsyncListener"/>
 
