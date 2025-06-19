@@ -64,19 +64,19 @@
         <action id="hybris.pgq.openSettings" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenSettingsAction"/>
 
         <group id="hybris.pgq.content.actions">
-            <reference id="hybris.pgq.openFileInConsole"/>
+            <reference ref="hybris.pgq.openFileInConsole"/>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>
 
         <group id="hybris.pgq.toolbar.left">
-            <reference id="hybris.pgq.execute"/>
-            <reference id="hybris.pgq.openQuery"/>
+            <reference ref="hybris.pgq.execute"/>
+            <reference ref="hybris.pgq.openQuery"/>
             <separator/>
-            <reference id="hybris.pgq.openSettings"/>
+            <reference ref="hybris.pgq.openSettings"/>
         </group>
         <group id="hybris.pgq.toolbar.right">
-            <reference id="hybris.hac.chooseConnection"/>
+            <reference ref="hybris.hac.chooseConnection"/>
         </group>
     </actions>
 

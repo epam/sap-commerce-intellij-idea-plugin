@@ -85,7 +85,7 @@
         </action>
 
         <group id="hybris.fxs.context.actions">
-            <reference id="hybris.fxs.openFileInConsole"/>
+            <reference ref="hybris.fxs.openFileInConsole"/>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>
@@ -102,13 +102,13 @@
         <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenSettingsAction"/>
 
         <group id="hybris.fxs.toolbar.left">
-            <reference id="hybris.fxs.execute"/>
-            <reference id="hybris.fxs.openQuery"/>
+            <reference ref="hybris.fxs.execute"/>
+            <reference ref="hybris.fxs.openQuery"/>
             <separator/>
-            <reference id="hybris.fxs.openSettings"/>
+            <reference ref="hybris.fxs.openSettings"/>
         </group>
         <group id="hybris.fxs.toolbar.right">
-            <reference id="hybris.hac.chooseConnection"/>
+            <reference ref="hybris.hac.chooseConnection"/>
         </group>
     </actions>
 

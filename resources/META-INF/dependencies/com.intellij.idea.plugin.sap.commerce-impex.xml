@@ -113,12 +113,12 @@
         </action>
 
         <group id="hybris.impex.context.actions">
-            <reference id="hybris.impex.openFileInConsole"/>
+            <reference ref="hybris.impex.openFileInConsole"/>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>
         <group id="hybris.impex.table.actions">
-            <reference id="hybris.impex.table.select"/>
+            <reference ref="hybris.impex.table.select"/>
             <separator/>
             <action id="hybris.impex.table.column.move.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveLeftAction">
                 <keyboard-shortcut first-keystroke="control shift alt COMMA" keymap="$default"/>
@@ -142,16 +142,16 @@
         </group>
 
         <group id="hybris.impex.toolbar.left">
-            <reference id="hybris.impex.import"/>
-            <reference id="hybris.impex.openQuery"/>
-            <reference id="hybris.impex.validate"/>
+            <reference ref="hybris.impex.import"/>
+            <reference ref="hybris.impex.openQuery"/>
+            <reference ref="hybris.impex.validate"/>
             <separator/>
-            <reference id="hybris.impex.table.actions"/>
+            <reference ref="hybris.impex.table.actions"/>
             <separator/>
-            <reference id="hybris.impex.openSettings"/>
+            <reference ref="hybris.impex.openSettings"/>
         </group>
         <group id="hybris.impex.toolbar.right">
-            <reference id="hybris.hac.chooseConnection"/>
+            <reference ref="hybris.hac.chooseConnection"/>
         </group>
     </actions>
 
