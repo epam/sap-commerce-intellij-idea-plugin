@@ -43,6 +43,7 @@ abstract class ImpexUserRightsSingleValueMixin(astNode: ASTNode) : ASTWrapperRef
     }
 
     override fun subtreeChanged() {
+        removeUserData(AclTypeReference.CACHE_KEY)
         removeUserData(ImpexTSItemReference.CACHE_KEY)
         PsiTreeUtil.getNextSiblingOfType(this, ImpexUserRightsAttributeValue::class.java)
             ?.removeUserData(ImpexUserRightsTSAttributeReference.CACHE_KEY)

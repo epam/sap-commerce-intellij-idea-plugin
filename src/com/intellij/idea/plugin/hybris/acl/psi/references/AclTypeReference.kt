@@ -53,7 +53,7 @@ class AclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), 
     }
 
     companion object {
-        private val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AclTypeReference>>("HYBRIS_TS_CACHED_REFERENCE")
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AclTypeReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AclTypeReference> { ref ->
             val lookingForName = ref.value

@@ -22,11 +22,16 @@ import com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueGroupType
 import com.intellij.idea.plugin.hybris.acl.psi.references.AclTypeReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.removeUserData
 import java.io.Serial
 
 abstract class AclUserRightsValueGroupTypeMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), AclUserRightsValueGroupType {
 
     override fun createReference() = AclTypeReference(this)
+
+    override fun subtreeChanged() {
+        removeUserData(AclTypeReference.CACHE_KEY)
+    }
 
     companion object {
         @Serial
