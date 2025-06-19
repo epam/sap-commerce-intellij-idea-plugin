@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
+import com.intellij.idea.plugin.hybris.acl.psi.references.AclTSTargetAttributeReference
 import com.intellij.idea.plugin.hybris.acl.psi.references.AclTypeReference
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsSingleValue
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
-import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexUserRightsTSAttributeReference
 import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
@@ -46,7 +46,7 @@ abstract class ImpexUserRightsSingleValueMixin(astNode: ASTNode) : ASTWrapperRef
         removeUserData(AclTypeReference.CACHE_KEY)
         removeUserData(ImpexTSItemReference.CACHE_KEY)
         PsiTreeUtil.getNextSiblingOfType(this, ImpexUserRightsAttributeValue::class.java)
-            ?.removeUserData(ImpexUserRightsTSAttributeReference.CACHE_KEY)
+            ?.removeUserData(AclTSTargetAttributeReference.CACHE_KEY)
     }
 
     companion object {

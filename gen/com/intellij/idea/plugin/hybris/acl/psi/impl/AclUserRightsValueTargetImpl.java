@@ -30,12 +30,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.acl.psi.AclTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.acl.psi.*;
 
-public class AclUserRightsValueTargetImpl extends ASTWrapperPsiElement implements AclUserRightsValueTarget {
+public class AclUserRightsValueTargetImpl extends AclUserRightsValueTargetMixin implements AclUserRightsValueTarget {
 
-  public AclUserRightsValueTargetImpl(@NotNull ASTNode node) {
+  public AclUserRightsValueTargetImpl(ASTNode node) {
     super(node);
   }
 

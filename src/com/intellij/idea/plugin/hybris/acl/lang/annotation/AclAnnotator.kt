@@ -19,6 +19,8 @@ package com.intellij.idea.plugin.hybris.acl.lang.annotation
 
 import com.intellij.idea.plugin.hybris.acl.highlighting.AclSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.acl.psi.AclTypes
+import com.intellij.idea.plugin.hybris.acl.psi.references.AclTSTargetAttributeReference
+import com.intellij.idea.plugin.hybris.acl.psi.references.AclTSTargetTypeReference
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.psi.PsiElement
@@ -34,6 +36,18 @@ class AclAnnotator : AbstractAnnotator(AclSyntaxHighlighter.getInstance()) {
                     "hybris.inspections.acl.unresolved.type.key",
                     referenceHolder = element
                 )
+            }
+
+            AclTypes.USER_RIGHTS_VALUE_TARGET -> {
+                element.references.forEach {
+                    val messageKey = when (it) {
+                        is AclTSTargetTypeReference -> "hybris.inspections.acl.unresolved.type.key"
+                        is AclTSTargetAttributeReference -> "hybris.inspections.acl.unresolved.attribute.key"
+                        else -> "hybris.inspections.acl.unresolved.reference.key"
+                    }
+
+                    highlightReference(holder, element, messageKey, it)
+                }
             }
         }
     }

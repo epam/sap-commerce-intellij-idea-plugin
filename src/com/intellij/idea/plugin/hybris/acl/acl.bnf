@@ -174,6 +174,7 @@ user_rights_value_group_target ::= FIELD_VALUE_SEPARATOR user_rights_value_targe
 }
 user_rights_value_target ::= FIELD_VALUE_TARGET_TYPE? (DOT FIELD_VALUE_TARGET_ATTRIBUTE)? {
     pin=1
+    mixin="AclUserRightsValueTargetMixin"
 }
 user_rights_value_group_permission ::= FIELD_VALUE_SEPARATOR (PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED)? {
     pin=1
