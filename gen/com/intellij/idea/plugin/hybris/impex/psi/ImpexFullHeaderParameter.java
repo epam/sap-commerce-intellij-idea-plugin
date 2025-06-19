@@ -39,14 +39,18 @@ public interface ImpexFullHeaderParameter extends PsiElement {
   @NotNull
   List<ImpexParameters> getParametersList();
 
-  @Nullable ImpexHeaderLine getHeaderLine();
+  @Nullable
+  ImpexHeaderLine getHeaderLine();
 
   int getColumnNumber();
 
-  @Nullable ImpexAttribute getAttribute(@NotNull AttributeModifier attributeModifier);
+  @Nullable
+  ImpexAttribute getAttribute(@NotNull AttributeModifier attributeModifier);
 
-  @NotNull String getAttributeValue(@NotNull AttributeModifier attributeModifier, @NotNull String defaultValue);
+  @NotNull
+  String getAttributeValue(@NotNull AttributeModifier attributeModifier, @NotNull String defaultValue);
 
-  @NotNull List<ImpexValueGroup> getValueGroups();
+  @NotNull
+  List<ImpexValueGroup> getValueGroups();
 
 }

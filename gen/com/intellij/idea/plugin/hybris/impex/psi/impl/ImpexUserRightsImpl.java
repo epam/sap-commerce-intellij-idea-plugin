@@ -30,11 +30,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 import java.util.Collection;
 
-public class ImpexUserRightsImpl extends ASTWrapperPsiElement implements ImpexUserRights {
+public class ImpexUserRightsImpl extends ImpExUserRightsMixin implements ImpexUserRights {
 
   public ImpexUserRightsImpl(@NotNull ASTNode node) {
     super(node);
@@ -72,11 +71,6 @@ public class ImpexUserRightsImpl extends ASTWrapperPsiElement implements ImpexUs
   @NotNull
   public List<ImpexUserRightsValueLine> getUserRightsValueLineList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, ImpexUserRightsValueLine.class);
-  }
-
-  @Override
-  public @NotNull Collection<ImpexUserRightsValueGroup> getValueGroups(int index) {
-    return ImpexPsiUtil.getValueGroups(this, index);
   }
 
 }

@@ -34,8 +34,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexHeaderTypeNameImpl extends ImpexHeaderTypeNameMixin implements ImpexHeaderTypeName {
 
-  public ImpexHeaderTypeNameImpl(@NotNull ASTNode astNode) {
-    super(astNode);
+  public ImpexHeaderTypeNameImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {

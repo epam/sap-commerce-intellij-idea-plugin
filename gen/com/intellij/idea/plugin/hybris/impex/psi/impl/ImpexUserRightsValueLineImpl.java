@@ -62,12 +62,14 @@ public class ImpexUserRightsValueLineImpl extends ASTWrapperPsiElement implement
   }
 
   @Override
-  public @Nullable ImpexUserRightsValueGroup getValueGroup(int index) {
+  @Nullable
+  public ImpexUserRightsValueGroup getValueGroup(int index) {
     return ImpexPsiUtil.getValueGroup(this, index);
   }
 
   @Override
-  public @Nullable ImpexUserRightsHeaderLine getHeaderLine() {
+  @Nullable
+  public ImpexUserRightsHeaderLine getHeaderLine() {
     return ImpexPsiUtil.getHeaderLine(this);
   }
 

@@ -31,8 +31,10 @@ import java.util.Set;
 
 public interface ImpexMacroNameDec extends ImpexPsiNamedElement {
 
-  @NotNull ImpexMacroNameDecMixin getNameIdentifier();
+  @NotNull
+  ImpexMacroNameDecMixin getNameIdentifier();
 
-  @NotNull String resolveValue(@NotNull Set<ImpexMacroUsageDec> evaluatedMacroUsages);
+  @NotNull
+  String resolveValue(@NotNull Set<ImpexMacroUsageDec> evaluatedMacroUsages);
 
 }

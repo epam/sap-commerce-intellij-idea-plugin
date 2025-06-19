@@ -34,8 +34,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexAnyAttributeValueImpl extends ImpexAttributeValueMixin implements ImpexAnyAttributeValue {
 
-  public ImpexAnyAttributeValueImpl(@NotNull ASTNode astNode) {
-    super(astNode);
+  public ImpexAnyAttributeValueImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
@@ -61,7 +61,8 @@ public class ImpexAnyAttributeValueImpl extends ImpexAttributeValueMixin impleme
   }
 
   @Override
-  public @Nullable ImpexAnyAttributeName getAnyAttributeName() {
+  @Nullable
+  public ImpexAnyAttributeName getAnyAttributeName() {
     return ImpexPsiUtil.getAnyAttributeName(this);
   }
 

@@ -43,7 +43,7 @@
         <annotator language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
         <editorNotificationProvider id="pgqEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider"/>
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.polyglotQuery.injection.PolyglotQueryInjector"/>
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.polyglotQuery.injection.PolyglotQueryLanguageInjector"/>
 
         <projectConfigurable id="hybris.project.pgq.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.pgq.title"

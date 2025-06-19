@@ -69,12 +69,14 @@ public class ImpexHeaderLineImpl extends ImpexHeaderLineMixin implements ImpexHe
   }
 
   @Override
-  public @NotNull TextRange getTableRange() {
+  @NotNull
+  public TextRange getTableRange() {
     return ImpexPsiUtil.getTableRange(this);
   }
 
   @Override
-  public @NotNull List<ImpexFullHeaderParameter> getUniqueFullHeaderParameters() {
+  @NotNull
+  public List<ImpexFullHeaderParameter> getUniqueFullHeaderParameters() {
     return ImpexPsiUtil.getUniqueFullHeaderParameters(this);
   }
 

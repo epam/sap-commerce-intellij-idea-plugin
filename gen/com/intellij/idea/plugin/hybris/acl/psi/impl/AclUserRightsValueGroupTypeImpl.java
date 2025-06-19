@@ -34,7 +34,7 @@ import com.intellij.idea.plugin.hybris.acl.psi.*;
 
 public class AclUserRightsValueGroupTypeImpl extends AclUserRightsValueGroupTypeMixin implements AclUserRightsValueGroupType {
 
-  public AclUserRightsValueGroupTypeImpl(ASTNode node) {
+  public AclUserRightsValueGroupTypeImpl(@NotNull ASTNode node) {
     super(node);
   }
 

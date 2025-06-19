@@ -24,7 +24,7 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.TokenType
 import com.intellij.util.ProcessingContext
 
-class AclSearchCompletionContributor : CompletionContributor() {
+class AclCompletionContributor : CompletionContributor() {
 
     init {
         extend(

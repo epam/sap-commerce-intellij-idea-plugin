@@ -31,10 +31,13 @@ import java.util.Set;
 
 public interface ImpexMacroUsageDec extends ImpexPsiNamedElement {
 
-  @NotNull ImpexMacroUsageDecMixin getNameIdentifier();
+  @NotNull
+  ImpexMacroUsageDecMixin getNameIdentifier();
 
-  @Nullable String getConfigPropertyKey();
+  @Nullable
+  String getConfigPropertyKey();
 
-  @NotNull String resolveValue(@NotNull Set<ImpexMacroUsageDec> evaluatedMacroUsages);
+  @NotNull
+  String resolveValue(@NotNull Set<ImpexMacroUsageDec> evaluatedMacroUsages);
 
 }

@@ -41,14 +41,19 @@ public interface ImpexParameter extends PsiElement {
   @Nullable
   ImpexSubParameters getSubParameters();
 
-  @Nullable String getReferenceItemTypeName();
+  @Nullable
+  String getReferenceItemTypeName();
 
-  @Nullable String getReferenceName();
+  @Nullable
+  String getReferenceName();
 
-  @Nullable String getItemTypeName();
+  @Nullable
+  String getItemTypeName();
 
-  @Nullable String getInlineTypeName();
+  @Nullable
+  String getInlineTypeName();
 
-  @NotNull String getAttributeName();
+  @NotNull
+  String getAttributeName();
 
 }

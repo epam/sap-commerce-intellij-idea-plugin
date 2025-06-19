@@ -56,7 +56,8 @@ public class ImpexUserRightsHeaderLineImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  public @Nullable ImpexUserRightsHeaderParameter getHeaderParameter(int index) {
+  @Nullable
+  public ImpexUserRightsHeaderParameter getHeaderParameter(int index) {
     return ImpexPsiUtil.getHeaderParameter(this, index);
   }
 

@@ -74,17 +74,20 @@ public class ImpexUserRightsValueGroupImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  public @Nullable ImpexUserRightsValueLine getValueLine() {
+  @Nullable
+  public ImpexUserRightsValueLine getValueLine() {
     return ImpexPsiUtil.getValueLine(this);
   }
 
   @Override
-  public @Nullable Integer getColumnNumber() {
+  @Nullable
+  public Integer getColumnNumber() {
     return ImpexPsiUtil.getColumnNumber(this);
   }
 
   @Override
-  public @Nullable ImpexUserRightsHeaderParameter getHeaderParameter() {
+  @Nullable
+  public ImpexUserRightsHeaderParameter getHeaderParameter() {
     return ImpexPsiUtil.getHeaderParameter(this);
   }
 

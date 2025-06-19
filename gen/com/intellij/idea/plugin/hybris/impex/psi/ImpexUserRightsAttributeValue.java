@@ -29,6 +29,7 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpexUserRightsAttributeValue extends ImpexUserRightsValue {
 
-  @Nullable ImpexUserRightsHeaderParameter getHeaderParameter();
+  @Nullable
+  ImpexUserRightsHeaderParameter getHeaderParameter();
 
 }

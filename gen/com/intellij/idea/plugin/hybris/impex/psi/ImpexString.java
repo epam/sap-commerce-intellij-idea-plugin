@@ -29,6 +29,7 @@ import com.intellij.psi.PsiElement;
 
 public interface ImpexString extends PsiElement {
 
-  @Nullable ImpexValueGroup getValueGroup();
+  @Nullable
+  ImpexValueGroup getValueGroup();
 
 }

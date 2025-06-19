@@ -50,7 +50,8 @@ public class ImpexUserRightsMultiValueImpl extends ASTWrapperPsiElement implemen
   }
 
   @Override
-  public @Nullable ImpexUserRightsHeaderParameter getHeaderParameter() {
+  @Nullable
+  public ImpexUserRightsHeaderParameter getHeaderParameter() {
     return ImpexPsiUtil.getHeaderParameter(this);
   }
 

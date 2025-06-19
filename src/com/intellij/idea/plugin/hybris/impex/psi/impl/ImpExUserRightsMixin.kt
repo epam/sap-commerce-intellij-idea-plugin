@@ -16,26 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- */
-package com.intellij.idea.plugin.hybris.impex.psi;
+package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsValueGroup
+import com.intellij.lang.ASTNode
+import java.io.Serial
 
-public interface ImpexAnyHeaderParameterName extends PsiElement {
+abstract class ImpExUserRightsMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpexUserRights {
 
-  @Nullable
-  ImpexDocumentIdDec getDocumentIdDec();
+    override fun getValueGroups(index: Int): Collection<ImpexUserRightsValueGroup> {
+        return this
+            .userRightsValueLineList
+            .mapNotNull { it.getValueGroup(index) }
+    }
 
-  @Nullable
-  ImpexMacroUsageDec getMacroUsageDec();
-
-  @Nullable
-  ImpexHeaderTypeName getHeaderItemTypeName();
-
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 5995465168878601126L
+    }
 }

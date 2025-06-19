@@ -34,8 +34,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexParameterImpl extends ImpexParameterMixin implements ImpexParameter {
 
-  public ImpexParameterImpl(@NotNull ASTNode astNode) {
-    super(astNode);
+  public ImpexParameterImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
@@ -73,27 +73,32 @@ public class ImpexParameterImpl extends ImpexParameterMixin implements ImpexPara
   }
 
   @Override
-  public @Nullable String getReferenceItemTypeName() {
+  @Nullable
+  public String getReferenceItemTypeName() {
     return ImpexPsiUtil.getReferenceItemTypeName(this);
   }
 
   @Override
-  public @Nullable String getReferenceName() {
+  @Nullable
+  public String getReferenceName() {
     return ImpexPsiUtil.getReferenceName(this);
   }
 
   @Override
-  public @Nullable String getItemTypeName() {
+  @Nullable
+  public String getItemTypeName() {
     return ImpexPsiUtil.getItemTypeName(this);
   }
 
   @Override
-  public @Nullable String getInlineTypeName() {
+  @Nullable
+  public String getInlineTypeName() {
     return ImpexPsiUtil.getInlineTypeName(this);
   }
 
   @Override
-  public @NotNull String getAttributeName() {
+  @NotNull
+  public String getAttributeName() {
     return ImpexPsiUtil.getAttributeName(this);
   }
 

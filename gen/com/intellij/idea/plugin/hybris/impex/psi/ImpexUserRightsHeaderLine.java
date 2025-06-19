@@ -32,6 +32,7 @@ public interface ImpexUserRightsHeaderLine extends PsiElement {
   @NotNull
   List<ImpexUserRightsHeaderParameter> getUserRightsHeaderParameterList();
 
-  @Nullable ImpexUserRightsHeaderParameter getHeaderParameter(int index);
+  @Nullable
+  ImpexUserRightsHeaderParameter getHeaderParameter(int index);
 
 }

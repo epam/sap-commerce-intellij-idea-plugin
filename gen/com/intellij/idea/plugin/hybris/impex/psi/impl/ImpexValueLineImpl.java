@@ -61,7 +61,8 @@ public class ImpexValueLineImpl extends ImpexValueLineMixin implements ImpexValu
   }
 
   @Override
-  public @Nullable ImpexValueGroup getValueGroup(int columnNumber) {
+  @Nullable
+  public ImpexValueGroup getValueGroup(int columnNumber) {
     return ImpexPsiUtil.getValueGroup(this, columnNumber);
   }
 

@@ -56,7 +56,7 @@
         <editorNotificationProvider id="fxsReservedWordsCaseEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider"/>
         <editorNotificationProvider id="fxsTableAliasSeparatorEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSTableAliasSeparatorEditorNotificationProvider"/>
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjector"/>
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchLanguageInjector"/>
 
         <completion.contributor language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
 

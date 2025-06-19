@@ -34,8 +34,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexAnyHeaderParameterNameImpl extends ImpexAnyHeaderParameterNameMixin implements ImpexAnyHeaderParameterName {
 
-  public ImpexAnyHeaderParameterNameImpl(@NotNull ASTNode astNode) {
-    super(astNode);
+  public ImpexAnyHeaderParameterNameImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
@@ -61,7 +61,8 @@ public class ImpexAnyHeaderParameterNameImpl extends ImpexAnyHeaderParameterName
   }
 
   @Override
-  public @Nullable ImpexHeaderTypeName getHeaderItemTypeName() {
+  @Nullable
+  public ImpexHeaderTypeName getHeaderItemTypeName() {
     return ImpexPsiUtil.getHeaderItemTypeName(this);
   }
 

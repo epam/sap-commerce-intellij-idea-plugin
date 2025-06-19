@@ -153,7 +153,7 @@ user_rights_value_line_password_unaware ::= user_rights_value_group_uid_blank
 
 user_rights_value_group_type ::= FIELD_VALUE_TYPE {
     recoverWhile=recover_value
-    mixin="AclUserRightsValueGroupTypeMixin"
+    mixin="com.intellij.idea.plugin.hybris.acl.psi.impl.AclUserRightsValueGroupTypeMixin"
 }
 user_rights_value_group_uid ::= FIELD_VALUE_TYPE_SEPARATOR FIELD_VALUE {
     pin=1
@@ -174,7 +174,7 @@ user_rights_value_group_target ::= FIELD_VALUE_SEPARATOR user_rights_value_targe
 }
 user_rights_value_target ::= FIELD_VALUE_TARGET_TYPE? (DOT FIELD_VALUE_TARGET_ATTRIBUTE)? {
     pin=1
-    mixin="AclUserRightsValueTargetMixin"
+    mixin="com.intellij.idea.plugin.hybris.acl.psi.impl.AclUserRightsValueTargetMixin"
 }
 user_rights_value_group_permission ::= FIELD_VALUE_SEPARATOR (PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED)? {
     pin=1

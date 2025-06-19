@@ -34,8 +34,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.*;
 
 public class ImpexUserRightsAttributeValueImpl extends ImpexUserRightsAttributeValueMixin implements ImpexUserRightsAttributeValue {
 
-  public ImpexUserRightsAttributeValueImpl(@NotNull ASTNode astNode) {
-    super(astNode);
+  public ImpexUserRightsAttributeValueImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull ImpexVisitor visitor) {
@@ -49,7 +49,8 @@ public class ImpexUserRightsAttributeValueImpl extends ImpexUserRightsAttributeV
   }
 
   @Override
-  public @Nullable ImpexUserRightsHeaderParameter getHeaderParameter() {
+  @Nullable
+  public ImpexUserRightsHeaderParameter getHeaderParameter() {
     return ImpexPsiUtil.getHeaderParameter(this);
   }
 

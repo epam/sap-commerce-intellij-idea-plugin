@@ -68,12 +68,14 @@ public class ImpexFullHeaderParameterImpl extends ImpexFullHeaderParameterMixin 
   }
 
   @Override
-  public @Nullable ImpexHeaderLine getHeaderLine() {
+  @Nullable
+  public ImpexHeaderLine getHeaderLine() {
     return ImpexPsiUtil.getHeaderLine(this);
   }
 
   @Override
-  public @Nullable ImpexAttribute getAttribute(@NotNull AttributeModifier attributeModifier) {
+  @Nullable
+  public ImpexAttribute getAttribute(@NotNull AttributeModifier attributeModifier) {
     return ImpexPsiUtil.getAttribute(this, attributeModifier);
   }
 

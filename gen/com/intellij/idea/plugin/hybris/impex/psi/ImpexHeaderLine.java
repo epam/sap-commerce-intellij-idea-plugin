@@ -40,14 +40,19 @@ public interface ImpexHeaderLine extends PsiElement {
   @Nullable
   ImpexFullHeaderType getFullHeaderType();
 
-  @Nullable ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName);
+  @Nullable
+  ImpexFullHeaderParameter getFullHeaderParameter(@NotNull String parameterName);
 
-  @Nullable ImpexFullHeaderParameter getFullHeaderParameter(int index);
+  @Nullable
+  ImpexFullHeaderParameter getFullHeaderParameter(int index);
 
-  @NotNull Collection<ImpexValueLine> getValueLines();
+  @NotNull
+  Collection<ImpexValueLine> getValueLines();
 
-  @NotNull TextRange getTableRange();
+  @NotNull
+  TextRange getTableRange();
 
-  @NotNull List<ImpexFullHeaderParameter> getUniqueFullHeaderParameters();
+  @NotNull
+  List<ImpexFullHeaderParameter> getUniqueFullHeaderParameters();
 
 }

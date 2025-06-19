@@ -49,7 +49,8 @@ public class ImpexSubTypeNameImpl extends ImpexSubTypeNameMixin implements Impex
   }
 
   @Override
-  public @Nullable ImpexHeaderTypeName getHeaderTypeName() {
+  @Nullable
+  public ImpexHeaderTypeName getHeaderTypeName() {
     return ImpexPsiUtil.getHeaderTypeName(this);
   }
 
