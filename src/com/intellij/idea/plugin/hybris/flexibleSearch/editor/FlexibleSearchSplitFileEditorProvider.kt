@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileTyp
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
 import com.intellij.openapi.fileEditor.FileEditorProvider
+import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -37,7 +38,7 @@ class FlexibleSearchSplitFileEditorProvider : FileEditorProvider, DumbAware {
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
         val editor = TextEditorProvider.getInstance().createEditor(project, file)
-        return FlexibleSearchSplitEditor(editor)
+        return FlexibleSearchSplitEditor(editor as TextEditor, project)
     }
 
     override fun getEditorTypeId(): String {

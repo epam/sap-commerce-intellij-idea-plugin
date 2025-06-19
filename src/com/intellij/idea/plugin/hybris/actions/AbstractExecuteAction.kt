@@ -27,7 +27,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
 
 abstract class AbstractExecuteAction(
     internal val extension: String,
@@ -50,6 +52,8 @@ abstract class AbstractExecuteAction(
             content = editor.document.text
         }
 
+        content = processContent(content, editor, project)
+
         with(HybrisToolWindowService.getInstance(project)) {
             activateToolWindow()
             activateToolWindowTab(HybrisToolWindowFactory.CONSOLES_ID)
@@ -68,6 +72,8 @@ abstract class AbstractExecuteAction(
             doExecute(e, consoleService)
         }
     }
+
+    open fun processContent(content: String, editor: Editor, project: Project) = content
 
     override fun update(e: AnActionEvent) {
         val file = e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)
