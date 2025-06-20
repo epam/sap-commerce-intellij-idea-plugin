@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.acl.highlighting
 
+import com.intellij.codeHighlighting.RainbowHighlighter
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.editor.HighlighterColors
@@ -30,7 +31,7 @@ class AclColorSettingsPage : ColorSettingsPage {
 
     override fun getIcon(): Icon = HybrisIcons.Acl.FILE
     override fun getHighlighter() = AclSyntaxHighlighter.getInstance()
-    override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = emptyMap()
+    override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = customTags
     override fun getAttributeDescriptors() = descriptors
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
     override fun getDisplayName() = HybrisConstants.ACL
@@ -40,13 +41,21 @@ class AclColorSettingsPage : ColorSettingsPage {
    
 ${"$"}START_USERRIGHTS;;;;;
 Type      ; UID        ; MemberOfGroups ; Password ; Target       ; read ; change ; create ; delete ; change_perm
-UserGroup ; impexgroup ; employeegroup  ;
+<vl>UserGroup ; impexgroup ; employeegroup  ;</vl>
           ;            ;                ;          ; Product.code ; +    ; +      ; +      ; +      ; -
-Customer  ; impex-demo ; impexgroup     ; 1234     ;              ; .    ; -      ;        ; .      ;
+<vl>Customer  ; impex-demo ; impexgroup     ; 1234     ;              ; .    ; -      ;        ; .      ;</vl>
+          ;            ;                ;          ; Customer.pk  ; +    ; +      ; +      ; +      ; -
+          ;            ;                ;          ; Product      ; +    ; +      ; +      ; +      ; -
+          ;            ;                ;          ; Test.catalog ; +    ; +      ; +      ; +      ; -
 ${"$"}END_USERRIGHTS;;;;;
 
 @@@@@
 """
+    }
+
+    private val customTags = with (RainbowHighlighter.createRainbowHLM()) {
+        put("vl", AclHighlighterColors.USER_RIGHTS_VALUE_LINE_TYPE)
+        this
     }
 
     private val descriptors = arrayOf(
