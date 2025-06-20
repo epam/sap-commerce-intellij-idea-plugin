@@ -134,7 +134,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
 <USER_RIGHTS_VALUE_LINE> {
     {minus}                                                 { return AclTypes.PERMISSION_DENIED; }
-    {plus}                                                  { return AclTypes.PERMISSION_ALLOWED; }
+    {plus}                                                  { return AclTypes.PERMISSION_GRANTED; }
     {identifier}+                                           {
             if (passwordColumnPresent.get() && valueColumn.get() == 4 || valueColumn.get() == 3) {
                 return switch (targetIdentifiers.getAndIncrement()) {

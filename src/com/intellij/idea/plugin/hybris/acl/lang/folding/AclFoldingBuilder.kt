@@ -40,7 +40,7 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     private val filter: PsiElementFilter by lazy {
         PsiElementFilter { element ->
-            (element.elementType in setOf(AclTypes.PERMISSION_ALLOWED, AclTypes.PERMISSION_DENIED, AclTypes.PERMISSION_INHERITED))
+            (element.elementType in setOf(AclTypes.PERMISSION_GRANTED, AclTypes.PERMISSION_DENIED, AclTypes.PERMISSION_INHERITED))
                 || (element is FoldablePsiElement && !element.textRange.isEmpty)
         }
     }
@@ -108,7 +108,7 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
             AclTypes.USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE
         )
 
-        AclTypes.PERMISSION_ALLOWED -> "✅"
+        AclTypes.PERMISSION_GRANTED -> "✅"
         AclTypes.PERMISSION_DENIED -> "❌"
         AclTypes.PERMISSION_INHERITED -> "🔁"
 
@@ -130,7 +130,7 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
         AclTypes.USER_RIGHTS_VALUE_LINES_PASSWORD_AWARE,
         AclTypes.USER_RIGHTS_VALUE_LINES_PASSWORD_UNAWARE -> false
 
-        AclTypes.PERMISSION_ALLOWED,
+        AclTypes.PERMISSION_GRANTED,
         AclTypes.PERMISSION_DENIED,
         AclTypes.PERMISSION_INHERITED -> true
 

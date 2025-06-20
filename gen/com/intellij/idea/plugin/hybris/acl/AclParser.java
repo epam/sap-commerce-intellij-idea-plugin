@@ -850,13 +850,13 @@ public class AclParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED
+  // PERMISSION_DENIED | PERMISSION_GRANTED | PERMISSION_INHERITED
   public static boolean user_rights_value_permission(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_permission")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_VALUE_PERMISSION, "<user rights value permission>");
     r = consumeToken(b, PERMISSION_DENIED);
-    if (!r) r = consumeToken(b, PERMISSION_ALLOWED);
+    if (!r) r = consumeToken(b, PERMISSION_GRANTED);
     if (!r) r = consumeToken(b, PERMISSION_INHERITED);
     exit_section_(b, l, m, r, false, null);
     return r;

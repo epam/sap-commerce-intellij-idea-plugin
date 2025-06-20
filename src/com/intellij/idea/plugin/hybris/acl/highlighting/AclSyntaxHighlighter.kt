@@ -72,7 +72,7 @@ class AclSyntaxHighlighter : SyntaxHighlighterBase() {
             AclTypes.FIELD_VALUE_TARGET_TYPE to pack(AclHighlighterColors.FIELD_VALUE_TARGET_TYPE),
             AclTypes.FIELD_VALUE_TARGET_ATTRIBUTE to pack(AclHighlighterColors.FIELD_VALUE_TARGET_ATTRIBUTE),
 
-            AclTypes.PERMISSION_ALLOWED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_ALLOWED),
+            AclTypes.PERMISSION_GRANTED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_GRANTED),
             AclTypes.PERMISSION_DENIED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_DENIED),
             AclTypes.PERMISSION_INHERITED to pack(AclHighlighterColors.USER_RIGHTS_PERMISSION_INHERITED),
 

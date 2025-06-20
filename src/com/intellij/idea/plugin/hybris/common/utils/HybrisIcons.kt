@@ -152,6 +152,10 @@ object HybrisIcons {
         val USER_RIGHTS_PASSWORD_AWARE = getIcon("/icons/acl/userRightsPasswordAware.svg")
         val USER_RIGHTS_PASSWORD_UNAWARE = getIcon("/icons/acl/userRightsPasswordUnaware.svg")
 
+        val PERMISSION_GRANTED = getIcon("/icons/acl/permissionGranted.svg")
+        val PERMISSION_DENIED = getIcon("/icons/acl/permissionDenied.svg")
+        val PERMISSION_INHERITED = getIcon("/icons/acl/permissionInherited.svg")
+
         object Actions {
             val VALIDATE = ImpEx.Actions.VALIDATE
         }

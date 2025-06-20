@@ -84,8 +84,8 @@ public interface AclTypes {
   IElementType LINE_COMMENT = new AclTokenType("LINE_COMMENT");
   IElementType PARAMETERS_SEPARATOR = new AclTokenType("PARAMETERS_SEPARATOR");
   IElementType PASSWORD = new AclTokenType("PASSWORD");
-  IElementType PERMISSION_ALLOWED = new AclTokenType("PERMISSION_ALLOWED");
   IElementType PERMISSION_DENIED = new AclTokenType("PERMISSION_DENIED");
+  IElementType PERMISSION_GRANTED = new AclTokenType("PERMISSION_GRANTED");
   IElementType PERMISSION_INHERITED = new AclTokenType("PERMISSION_INHERITED");
   IElementType START_USERRIGHTS = new AclTokenType("START_USERRIGHTS");
 

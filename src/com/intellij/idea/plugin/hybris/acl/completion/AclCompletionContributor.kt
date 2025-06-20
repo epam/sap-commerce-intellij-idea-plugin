@@ -20,7 +20,9 @@ package com.intellij.idea.plugin.hybris.acl.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.idea.plugin.hybris.acl.codeInsight.lookup.AclLookupElementFactory
 import com.intellij.idea.plugin.hybris.acl.psi.AclFile
-import com.intellij.patterns.PlatformPatterns
+import com.intellij.idea.plugin.hybris.acl.psi.AclTypes
+import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.TokenType
 import com.intellij.util.ProcessingContext
 
@@ -29,8 +31,8 @@ class AclCompletionContributor : CompletionContributor() {
     init {
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement(TokenType.BAD_CHARACTER)
-                .withParent(AclFile::class.java),
+            psiElement(TokenType.BAD_CHARACTER)
+                .withParent(psiElement(PsiErrorElement::class.java).withParent(AclFile::class.java)),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(
                     parameters: CompletionParameters,
@@ -44,8 +46,12 @@ class AclCompletionContributor : CompletionContributor() {
         )
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement()
-                .withParent(AclFile::class.java),
+            psiElement(AclTypes.FIELD_VALUE)
+                .withParent(
+                    psiElement(PsiErrorElement::class.java)
+                        .withParent(psiElement(AclTypes.USER_RIGHTS_VALUE_GROUP_PERMISSION))
+                )
+                .inside(AclFile::class.java),
             object : CompletionProvider<CompletionParameters>() {
                 override fun addCompletions(
                     parameters: CompletionParameters,

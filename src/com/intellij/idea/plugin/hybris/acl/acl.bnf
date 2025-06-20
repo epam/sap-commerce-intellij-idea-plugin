@@ -179,7 +179,7 @@ user_rights_value_group_permission ::= FIELD_VALUE_SEPARATOR user_rights_value_p
     pin=1
     recoverWhile=recover_value
 }
-user_rights_value_permission ::= PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED
+user_rights_value_permission ::= PERMISSION_DENIED | PERMISSION_GRANTED | PERMISSION_INHERITED
 user_rights_value_group_blank ::= FIELD_VALUE_SEPARATOR
 user_rights_value_group_uid_blank ::= FIELD_VALUE_TYPE_SEPARATOR
 

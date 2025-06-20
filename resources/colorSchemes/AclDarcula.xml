@@ -23,7 +23,7 @@
             <option name="FOREGROUND" value="39FF02"/>
         </value>
     </option>
-    <option name="ACL_USER_RIGHTS_PERMISSION_ALLOWED">
+    <option name="ACL_USER_RIGHTS_PERMISSION_GRANTED">
         <value>
             <option name="FOREGROUND" value="56F559"/>
             <option name="FONT_TYPE" value="1"/>

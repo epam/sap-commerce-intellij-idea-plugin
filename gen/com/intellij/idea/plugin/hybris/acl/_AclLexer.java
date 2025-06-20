@@ -723,7 +723,7 @@ public class _AclLexer implements FlexLexer {
           // fall through
           case 37: break;
           case 11:
-            { return AclTypes.PERMISSION_ALLOWED;
+            { return AclTypes.PERMISSION_GRANTED;
             }
           // fall through
           case 38: break;

@@ -61,7 +61,7 @@ class AclBlock(
         AclTypes.COMMA -> "Comma"
         AclTypes.DOT -> "Dot"
         AclTypes.PERMISSION_DENIED -> "Permission - Denied"
-        AclTypes.PERMISSION_ALLOWED -> "Permission - Allowed"
+        AclTypes.PERMISSION_GRANTED -> "Permission - Granted"
         AclTypes.PERMISSION_INHERITED -> "Permission - Inherited"
 
         else -> "Block"
@@ -99,5 +99,6 @@ class AclBlock(
     }
 
     private fun isNewBlockToBeMade(currentNode: ASTNode) = currentNode.elementType != TokenType.WHITE_SPACE
+        && currentNode.elementType != AclTypes.CRLF
 
 }
