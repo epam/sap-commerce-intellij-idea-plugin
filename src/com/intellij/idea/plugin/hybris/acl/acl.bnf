@@ -1,0 +1,192 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+
+    See {@link de.hybris.platform.jalo.security.ImportExportUserRightsHelper} for Language details.
+
+ */
+{
+  parserClass="com.intellij.idea.plugin.hybris.acl.AclParser"
+  parserUtilClass="com.intellij.idea.plugin.hybris.acl.utils.AclParserUtils"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Acl"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.intellij.idea.plugin.hybris.acl.psi"
+  psiImplPackage="com.intellij.idea.plugin.hybris.acl.psi.impl"
+  psiImplUtilClass="com.intellij.idea.plugin.hybris.acl.psi.AclPsiUtil"
+
+  elementTypeHolderClass="com.intellij.idea.plugin.hybris.acl.psi.AclTypes"
+  elementTypeClass="com.intellij.idea.plugin.hybris.acl.psi.AclElementType"
+  tokenTypeClass="com.intellij.idea.plugin.hybris.acl.psi.AclTokenType"
+
+  classHeader="generatedFilesHeader.txt"
+
+  implements("user\_rights\_header\_parameter.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsHeaderParameter"
+  implements("user\_rights\_value\_line\_.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLine"
+  implements("user\_rights\_value\_line\_type\_.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLineType"
+  implements("user\_rights\_value\_group.*")="com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueGroup"
+  implements("user\_rights\_value\_lines\_.*")=[
+        "com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+        "com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLines"
+    ]
+
+  generate=[java='21']
+}
+
+aclFile ::= (user_rights | LINE_COMMENT | CRLF)*
+
+user_rights ::= user_rights_start user_rights_body? user_rights_end {
+    pin=1
+    recoverWhile=recover_user_rights
+    implements="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+}
+
+user_rights_start ::= START_USERRIGHTS DUMMY_SEPARATOR*
+user_rights_end ::= END_USERRIGHTS DUMMY_SEPARATOR*
+
+user_rights_body ::= user_rights_body_password_aware | user_rights_body_password_unaware {
+    recoverWhile=recover_user_rights_body
+    implements="com.intellij.idea.plugin.hybris.psi.FoldablePsiElement"
+}
+
+private user_rights_body_password_aware ::= user_rights_header_line_password_aware user_rights_value_lines_password_aware* {
+    pin=1
+}
+private user_rights_body_password_unaware ::= user_rights_header_line_password_unaware user_rights_value_lines_password_unaware* {
+    pin=1
+}
+
+user_rights_header_line_password_aware ::= user_rights_header_parameter_type
+    user_rights_header_parameter_uid
+    user_rights_header_parameter_member_of_groups
+    user_rights_header_parameter_password
+    user_rights_header_parameter_target
+    user_rights_header_parameter_permission* {
+    pin=4
+    recoverWhile=recover_header_line
+}
+
+user_rights_header_line_password_unaware ::= user_rights_header_parameter_type
+    user_rights_header_parameter_uid
+    user_rights_header_parameter_member_of_groups
+    user_rights_header_parameter_target
+    user_rights_header_parameter_permission* {
+    pin=1
+    recoverWhile=recover_header_line
+}
+
+user_rights_header_parameter_type ::= HEADER_TYPE
+user_rights_header_parameter_uid ::= PARAMETERS_SEPARATOR HEADER_UID { pin=2 recoverWhile=recover_header_parameter }
+user_rights_header_parameter_member_of_groups ::= PARAMETERS_SEPARATOR HEADER_MEMBEROFGROUPS { pin=2 recoverWhile=recover_header_parameter }
+user_rights_header_parameter_password ::= PARAMETERS_SEPARATOR HEADER_PASSWORD { pin=2 recoverWhile=recover_header_parameter }
+user_rights_header_parameter_target ::= PARAMETERS_SEPARATOR HEADER_TARGET { pin=2 recoverWhile=recover_header_parameter }
+user_rights_header_parameter_permission ::= PARAMETERS_SEPARATOR (
+    HEADER_READ
+    | HEADER_CHANGE
+    | HEADER_CREATE
+    | HEADER_REMOVE
+    | HEADER_CHANGE_PERM
+) { pin=1 recoverWhile=recover_header_parameter }
+
+user_rights_value_lines_password_aware ::= user_rights_value_line_type_password_aware user_rights_value_line_password_aware* {
+    pin=1
+    recoverWhile=recover_value_lines
+}
+
+user_rights_value_lines_password_unaware ::= user_rights_value_line_type_password_unaware user_rights_value_line_password_unaware* {
+    pin=1
+    recoverWhile=recover_value_lines
+}
+
+user_rights_value_line_type_password_aware ::= user_rights_value_group_type
+    user_rights_value_group_uid
+    user_rights_value_group_member_of_groups?
+    user_rights_value_group_password?
+    user_rights_value_group_blank* {
+    pin=1
+    recoverWhile=recover_value_line
+}
+
+user_rights_value_line_type_password_unaware ::= user_rights_value_group_type
+    user_rights_value_group_uid
+    user_rights_value_group_member_of_groups?
+    user_rights_value_group_blank* {
+    pin=1
+    recoverWhile=recover_value_line
+}
+
+user_rights_value_line_password_aware ::= user_rights_value_group_uid_blank
+    user_rights_value_group_blank
+    user_rights_value_group_blank
+    user_rights_value_group_target
+    user_rights_value_group_permission* {
+    pin=1
+    recoverWhile=recover_value_line
+}
+
+user_rights_value_line_password_unaware ::= user_rights_value_group_uid_blank
+    user_rights_value_group_blank
+    user_rights_value_group_target
+    user_rights_value_group_permission* {
+    pin=1
+    recoverWhile=recover_value_line
+}
+
+user_rights_value_group_type ::= FIELD_VALUE_TYPE {
+    recoverWhile=recover_value
+    mixin="com.intellij.idea.plugin.hybris.acl.psi.impl.AclUserRightsValueGroupTypeMixin"
+}
+user_rights_value_group_uid ::= FIELD_VALUE_TYPE_SEPARATOR FIELD_VALUE {
+    pin=1
+    recoverWhile=recover_value
+}
+user_rights_value_group_member_of_groups ::= FIELD_VALUE_SEPARATOR user_rights_value_groups? {
+    pin=1
+    recoverWhile=recover_value
+}
+user_rights_value_groups ::= FIELD_VALUE (COMMA FIELD_VALUE)*
+user_rights_value_group_password ::= FIELD_VALUE_SEPARATOR PASSWORD? {
+    pin=1
+    recoverWhile=recover_value
+}
+user_rights_value_group_target ::= FIELD_VALUE_SEPARATOR user_rights_value_target {
+    pin=1
+    recoverWhile=recover_value
+}
+user_rights_value_target ::= FIELD_VALUE_TARGET_TYPE? (DOT FIELD_VALUE_TARGET_ATTRIBUTE)? {
+    pin=1
+    mixin="com.intellij.idea.plugin.hybris.acl.psi.impl.AclUserRightsValueTargetMixin"
+}
+user_rights_value_group_permission ::= FIELD_VALUE_SEPARATOR user_rights_value_permission? {
+    pin=1
+    recoverWhile=recover_value
+}
+user_rights_value_permission ::= PERMISSION_DENIED | PERMISSION_GRANTED | PERMISSION_INHERITED
+user_rights_value_group_blank ::= FIELD_VALUE_SEPARATOR
+user_rights_value_group_uid_blank ::= FIELD_VALUE_TYPE_SEPARATOR
+
+private recover_user_rights ::= !(START_USERRIGHTS | LINE_COMMENT | CRLF)
+private recover_user_rights_body ::= !(END_USERRIGHTS)
+private recover_header_line ::= !(FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | END_USERRIGHTS)
+private recover_header_parameter ::= !(PARAMETERS_SEPARATOR | FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | END_USERRIGHTS)
+private recover_value ::= !(FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | FIELD_VALUE_TYPE_SEPARATOR | END_USERRIGHTS)
+private recover_value_line ::= !(FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | END_USERRIGHTS)
+private recover_value_lines ::= !(FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | END_USERRIGHTS)

@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
+import com.intellij.idea.plugin.hybris.acl.psi.references.AclTSTargetAttributeReference
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRightsAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexUserRightsTSAttributeReference
@@ -34,7 +35,7 @@ abstract class ImpexUserRightsAttributeValueMixin(astNode: ASTNode) : ASTWrapper
     else null
 
     override fun subtreeChanged() {
-        removeUserData(ImpexUserRightsTSAttributeReference.CACHE_KEY)
+        removeUserData(AclTSTargetAttributeReference.CACHE_KEY)
     }
 
     companion object {

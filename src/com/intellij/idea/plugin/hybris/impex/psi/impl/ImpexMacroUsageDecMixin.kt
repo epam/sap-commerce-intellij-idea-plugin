@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.psi.impl.ASTWrapperReferencePsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.lang.properties.psi.Property
 import com.intellij.openapi.util.Key
-import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
@@ -52,7 +51,7 @@ abstract class ImpexMacroUsageDecMixin(node: ASTNode) : ASTWrapperReferencePsiEl
 
     override fun resolveValue(evaluatedMacroUsages: MutableSet<ImpexMacroUsageDec?>): String = CachedValuesManager.getManager(project).getCachedValue(
         this,
-        Key.create<CachedValue<String>>("SAP_CX_IMPEX_RESOLVED_VALUE_" + evaluatedMacroUsages.size),
+        Key.create("SAP_CX_IMPEX_RESOLVED_VALUE_" + evaluatedMacroUsages.size),
         {
             val resolvedValue = when (val targetPsi = reference?.resolve()) {
                 is ImpexMacroNameDec -> targetPsi.resolveValue(evaluatedMacroUsages)

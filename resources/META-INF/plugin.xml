@@ -75,6 +75,7 @@
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-extensioninfo.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-flexibleSearch.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-impex.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-acl.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-localextensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-polyglot-query.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-typeSystem.xml" xpointer="xpointer(/idea-plugin/*)"/>

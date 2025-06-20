@@ -1,10 +1,6 @@
 /*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- *
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ */
 package com.intellij.idea.plugin.hybris.impex.psi.impl;
 
 import java.util.List;
@@ -28,11 +30,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.impex.psi.*;
 import java.util.Collection;
 
-public class ImpexUserRightsHeaderParameterImpl extends ASTWrapperPsiElement implements ImpexUserRightsHeaderParameter {
+public class ImpexUserRightsHeaderParameterImpl extends ImpExUserRightsHeaderParameterMixin implements ImpexUserRightsHeaderParameter {
 
   public ImpexUserRightsHeaderParameterImpl(@NotNull ASTNode node) {
     super(node);
@@ -46,24 +47,6 @@ public class ImpexUserRightsHeaderParameterImpl extends ASTWrapperPsiElement imp
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof ImpexVisitor) accept((ImpexVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public ImpexUserRightsHeaderLine getHeaderLine() {
-    return ImpexPsiUtil.getHeaderLine(this);
-  }
-
-  @Override
-  @Nullable
-  public Integer getColumnNumber() {
-    return ImpexPsiUtil.getColumnNumber(this);
-  }
-
-  @Override
-  @NotNull
-  public Collection<ImpexUserRightsValueGroup> getValueGroups() {
-    return ImpexPsiUtil.getValueGroups(this);
   }
 
 }

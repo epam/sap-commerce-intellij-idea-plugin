@@ -128,7 +128,7 @@ object HybrisIcons {
 
     object ImpEx {
         val FILE = getIcon("/icons/fileTypes/impexFile.svg")
-        val MACROS = getIcon("/icons/macros.svg")
+        val MACROS = getIcon("/icons/impex/macros.svg")
         val MODE = AllIcons.Nodes.Function
 
         object Actions {
@@ -144,6 +144,20 @@ object HybrisIcons {
             val SPLIT_TABLE_VERTICALLY = getIcon("/icons/impex/actions/tableSplitVertically.svg")
 
             val TABLE_FRAGMENT_MODE = getIcon("/icons/impex/actions/tableFragment.svg")
+        }
+    }
+
+    object Acl {
+        val FILE = getIcon("/icons/fileTypes/aclFile.svg")
+        val USER_RIGHTS_PASSWORD_AWARE = getIcon("/icons/acl/userRightsPasswordAware.svg")
+        val USER_RIGHTS_PASSWORD_UNAWARE = getIcon("/icons/acl/userRightsPasswordUnaware.svg")
+
+        val PERMISSION_GRANTED = getIcon("/icons/acl/permissionGranted.svg")
+        val PERMISSION_DENIED = getIcon("/icons/acl/permissionDenied.svg")
+        val PERMISSION_INHERITED = getIcon("/icons/acl/permissionInherited.svg")
+
+        object Actions {
+            val VALIDATE = ImpEx.Actions.VALIDATE
         }
     }
 

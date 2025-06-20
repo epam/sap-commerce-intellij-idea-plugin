@@ -25,9 +25,10 @@ import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiLanguageInjectionHost
 
-abstract class AbstractLanguageInjectorProvider(private val injectLanguage: Language) {
-
-    protected abstract val language: Language
+abstract class AbstractLanguageInjectorProvider(
+    private val injectLanguage: Language,
+    private val targetLanguage: Language,
+) {
 
     protected abstract fun tryInject(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces)
 
@@ -35,7 +36,7 @@ abstract class AbstractLanguageInjectorProvider(private val injectLanguage: Lang
      * in case of null return we have to try another injectorProvider
      */
     fun inject(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces): Unit? {
-        if (host.language != language) return null
+        if (host.language != targetLanguage) return null
 
         tryInject(host, injectionPlacesRegistrar)
 

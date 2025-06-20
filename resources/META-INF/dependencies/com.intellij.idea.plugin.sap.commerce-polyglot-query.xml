@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,8 @@
 
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
+
+        <internalFileTemplate name="Polyglot Query File"/>
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/PolyglotQueryDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/PolyglotQueryDarcula.xml"/>
@@ -41,7 +43,7 @@
         <annotator language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
         <editorNotificationProvider id="pgqEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider"/>
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.polyglotQuery.injection.PolyglotQueryInjector"/>
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.polyglotQuery.injection.PolyglotQueryLanguageInjector"/>
 
         <projectConfigurable id="hybris.project.pgq.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.pgq.title"
@@ -62,19 +64,19 @@
         <action id="hybris.pgq.openSettings" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenSettingsAction"/>
 
         <group id="hybris.pgq.content.actions">
-            <reference id="hybris.pgq.openFileInConsole"/>
+            <reference ref="hybris.pgq.openFileInConsole"/>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>
 
         <group id="hybris.pgq.toolbar.left">
-            <reference id="hybris.pgq.execute"/>
-            <reference id="hybris.pgq.openQuery"/>
+            <reference ref="hybris.pgq.execute"/>
+            <reference ref="hybris.pgq.openQuery"/>
             <separator/>
-            <reference id="hybris.pgq.openSettings"/>
+            <reference ref="hybris.pgq.openSettings"/>
         </group>
         <group id="hybris.pgq.toolbar.right">
-            <reference id="hybris.hac.chooseConnection"/>
+            <reference ref="hybris.hac.chooseConnection"/>
         </group>
     </actions>
 

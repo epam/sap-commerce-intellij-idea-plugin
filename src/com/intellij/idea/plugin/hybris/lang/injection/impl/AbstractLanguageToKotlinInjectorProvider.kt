@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,9 +27,7 @@ import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtReferenceExpression
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 
-abstract class AbstractLanguageToKotlinInjectorProvider(injectLanguage: Language) : AbstractLanguageInjectorProvider(injectLanguage) {
-
-    override val language: Language = KotlinLanguage.INSTANCE
+abstract class AbstractLanguageToKotlinInjectorProvider(injectLanguage: Language) : AbstractLanguageInjectorProvider(injectLanguage, KotlinLanguage.INSTANCE) {
 
     abstract fun canProcess(expression: String): Boolean
 

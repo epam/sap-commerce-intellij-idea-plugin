@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,6 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.startup.event
 
+import com.intellij.idea.plugin.hybris.acl.file.AclFileToolbarInstaller
+import com.intellij.idea.plugin.hybris.acl.file.AclFileType
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller
@@ -44,6 +46,7 @@ class HybrisFileEditorManagerListener(private val project: Project) : FileEditor
             is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.getInstance()
             is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.getInstance()
             is ImpexFileType -> ImpExFileToolbarInstaller.getInstance()
+            is AclFileType -> AclFileToolbarInstaller.getInstance()
             is GroovyFileType -> GroovyFileToolbarInstaller.getInstance()
             else -> null
         } ?: return

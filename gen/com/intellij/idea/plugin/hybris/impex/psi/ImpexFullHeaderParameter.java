@@ -15,6 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+ * ----------------------------------------------------------------
+ * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
+ * ----------------------------------------------------------------
+ */
 package com.intellij.idea.plugin.hybris.impex.psi;
 
 import java.util.List;
