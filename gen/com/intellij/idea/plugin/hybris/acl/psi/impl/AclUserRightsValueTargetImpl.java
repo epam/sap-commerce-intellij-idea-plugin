@@ -34,8 +34,8 @@ import com.intellij.idea.plugin.hybris.acl.psi.*;
 
 public class AclUserRightsValueTargetImpl extends AclUserRightsValueTargetMixin implements AclUserRightsValueTarget {
 
-  public AclUserRightsValueTargetImpl(@NotNull ASTNode node) {
-    super(node);
+  public AclUserRightsValueTargetImpl(@NotNull ASTNode astNode) {
+    super(astNode);
   }
 
   public void accept(@NotNull AclVisitor visitor) {

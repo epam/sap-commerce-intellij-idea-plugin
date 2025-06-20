@@ -31,10 +31,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiElementFilter
-import com.intellij.psi.util.elementType
+import com.intellij.psi.util.*
 
 class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
@@ -71,6 +68,7 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 results,
                 root.containingFile,
                 ProjectRootModificationTracker.getInstance(root.project),
+                PsiModificationTracker.MODIFICATION_COUNT,
                 foldingSettings
             )
         }

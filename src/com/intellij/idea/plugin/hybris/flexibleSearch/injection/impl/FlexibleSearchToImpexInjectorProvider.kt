@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjectorProvider
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.lang.Language
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.text.StringUtil
@@ -36,9 +35,7 @@ import com.intellij.psi.util.parentOfType
 import java.util.*
 
 @Service
-class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(FlexibleSearchLanguage) {
-
-    override val language: Language = ImpexLanguage
+class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(FlexibleSearchLanguage, ImpexLanguage) {
 
     override fun tryInject(
         host: PsiLanguageInjectionHost,

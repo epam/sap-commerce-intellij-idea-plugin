@@ -21,11 +21,17 @@ import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.idea.plugin.hybris.acl.file.AclFileType
 import com.intellij.psi.FileViewProvider
+import java.io.Serial
 
 class AclFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, AclLanguage) {
 
     override fun getFileType() = AclFileType
     override fun toString() = "Access Control Lists File"
     override fun getIcon(flags: Int) = super.getIcon(flags)
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 7387072988176205146L
+    }
 
 }
