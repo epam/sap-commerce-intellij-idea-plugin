@@ -29,4 +29,7 @@ import com.intellij.psi.PsiElement;
 
 public interface AclUserRightsValueGroupPermission extends AclUserRightsValueGroup {
 
+  @Nullable
+  AclUserRightsValuePermission getUserRightsValuePermission();
+
 }

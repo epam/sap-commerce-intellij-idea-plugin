@@ -49,4 +49,10 @@ public class AclUserRightsValueGroupPermissionImpl extends ASTWrapperPsiElement 
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public AclUserRightsValuePermission getUserRightsValuePermission() {
+    return findChildByClass(AclUserRightsValuePermission.class);
+  }
+
 }

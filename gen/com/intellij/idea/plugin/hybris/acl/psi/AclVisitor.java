@@ -30,10 +30,6 @@ import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement;
 
 public class AclVisitor extends PsiElementVisitor {
 
-  public void visitComment(@NotNull AclComment o) {
-    visitPsiElement(o);
-  }
-
   public void visitUserRights(@NotNull AclUserRights o) {
     visitFoldablePsiElement(o);
   }
@@ -144,6 +140,10 @@ public class AclVisitor extends PsiElementVisitor {
   public void visitUserRightsValueLinesPasswordUnaware(@NotNull AclUserRightsValueLinesPasswordUnaware o) {
     visitFoldablePsiElement(o);
     // visitUserRightsValueLines(o);
+  }
+
+  public void visitUserRightsValuePermission(@NotNull AclUserRightsValuePermission o) {
+    visitPsiElement(o);
   }
 
   public void visitUserRightsValueTarget(@NotNull AclUserRightsValueTarget o) {

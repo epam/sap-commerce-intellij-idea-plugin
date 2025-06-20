@@ -17,7 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.acl.lang.folding
 
-import com.intellij.idea.plugin.hybris.acl.psi.*
+import com.intellij.idea.plugin.hybris.acl.psi.AclTypes
+import com.intellij.idea.plugin.hybris.acl.psi.AclUserRights
+import com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsBody
+import com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLines
 import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.lang.ASTNode
@@ -37,8 +40,7 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     private val filter: PsiElementFilter by lazy {
         PsiElementFilter { element ->
-            element is AclComment
-                || (element.elementType in setOf(AclTypes.PERMISSION_ALLOWED, AclTypes.PERMISSION_DENIED, AclTypes.PERMISSION_INHERITED))
+            (element.elementType in setOf(AclTypes.PERMISSION_ALLOWED, AclTypes.PERMISSION_DENIED, AclTypes.PERMISSION_INHERITED))
                 || (element is FoldablePsiElement && !element.textRange.isEmpty)
         }
     }
@@ -52,7 +54,6 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 .filter { filter.isAccepted(it) }
                 .mapNotNull {
                     val groupName = when (it) {
-                        is AclComment -> "ACL - Comment"
                         is AclUserRights -> "ACL - Root"
                         is AclUserRightsBody -> "ACL - Body"
                         is AclUserRightsValueLines -> "ACL - Lines"
@@ -66,17 +67,14 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
             CachedValueProvider.Result.create(
                 results,
-                root.containingFile,
-                ProjectRootModificationTracker.getInstance(root.project),
                 PsiModificationTracker.MODIFICATION_COUNT,
+                ProjectRootModificationTracker.getInstance(root.project),
                 foldingSettings
             )
         }
     }
 
     override fun getPlaceholderText(node: ASTNode) = when (node.elementType) {
-        AclTypes.COMMENT -> "/*...*/"
-
         AclTypes.USER_RIGHTS -> node
             .findChildByType(TokenSet.create(AclTypes.USER_RIGHTS_BODY))
             ?.getChildren(

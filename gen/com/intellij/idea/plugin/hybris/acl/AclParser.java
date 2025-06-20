@@ -58,7 +58,7 @@ public class AclParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (user_rights | comment)*
+  // (user_rights | LINE_COMMENT | CRLF)*
   static boolean aclFile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "aclFile")) return false;
     while (true) {
@@ -69,31 +69,20 @@ public class AclParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // user_rights | comment
+  // user_rights | LINE_COMMENT | CRLF
   private static boolean aclFile_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "aclFile_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = user_rights(b, l + 1);
-    if (!r) r = comment(b, l + 1);
+    if (!r) r = consumeToken(b, LINE_COMMENT);
+    if (!r) r = consumeToken(b, CRLF);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // LINE_COMMENT
-  public static boolean comment(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "comment")) return false;
-    if (!nextTokenIs(b, LINE_COMMENT)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, LINE_COMMENT);
-    exit_section_(b, m, COMMENT, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // !(FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | user_rights_end)
+  // !(FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | END_USERRIGHTS)
   static boolean recover_header_line(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_header_line")) return false;
     boolean r;
@@ -103,18 +92,18 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | user_rights_end
+  // FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | END_USERRIGHTS
   private static boolean recover_header_line_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_header_line_0")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE_TYPE);
     if (!r) r = consumeToken(b, FIELD_VALUE_SEPARATOR);
-    if (!r) r = user_rights_end(b, l + 1);
+    if (!r) r = consumeToken(b, END_USERRIGHTS);
     return r;
   }
 
   /* ********************************************************** */
-  // !(PARAMETERS_SEPARATOR | FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | user_rights_end)
+  // !(PARAMETERS_SEPARATOR | FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | END_USERRIGHTS)
   static boolean recover_header_parameter(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_header_parameter")) return false;
     boolean r;
@@ -124,19 +113,19 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // PARAMETERS_SEPARATOR | FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | user_rights_end
+  // PARAMETERS_SEPARATOR | FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | END_USERRIGHTS
   private static boolean recover_header_parameter_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_header_parameter_0")) return false;
     boolean r;
     r = consumeToken(b, PARAMETERS_SEPARATOR);
     if (!r) r = consumeToken(b, FIELD_VALUE_TYPE);
     if (!r) r = consumeToken(b, FIELD_VALUE_SEPARATOR);
-    if (!r) r = user_rights_end(b, l + 1);
+    if (!r) r = consumeToken(b, END_USERRIGHTS);
     return r;
   }
 
   /* ********************************************************** */
-  // !(LINE_COMMENT | user_rights_start)
+  // !(START_USERRIGHTS | LINE_COMMENT | CRLF)
   static boolean recover_user_rights(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_user_rights")) return false;
     boolean r;
@@ -146,38 +135,29 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // LINE_COMMENT | user_rights_start
+  // START_USERRIGHTS | LINE_COMMENT | CRLF
   private static boolean recover_user_rights_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_user_rights_0")) return false;
     boolean r;
-    r = consumeToken(b, LINE_COMMENT);
-    if (!r) r = user_rights_start(b, l + 1);
+    r = consumeToken(b, START_USERRIGHTS);
+    if (!r) r = consumeToken(b, LINE_COMMENT);
+    if (!r) r = consumeToken(b, CRLF);
     return r;
   }
 
   /* ********************************************************** */
-  // !(user_rights_end)
+  // !(END_USERRIGHTS)
   static boolean recover_user_rights_body(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_user_rights_body")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
-    r = !recover_user_rights_body_0(b, l + 1);
+    r = !consumeToken(b, END_USERRIGHTS);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // (user_rights_end)
-  private static boolean recover_user_rights_body_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "recover_user_rights_body_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = user_rights_end(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
   /* ********************************************************** */
-  // !(FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | FIELD_VALUE_TYPE_SEPARATOR | user_rights_end)
+  // !(FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | FIELD_VALUE_TYPE_SEPARATOR | END_USERRIGHTS)
   static boolean recover_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_value")) return false;
     boolean r;
@@ -187,19 +167,19 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | FIELD_VALUE_TYPE_SEPARATOR | user_rights_end
+  // FIELD_VALUE_TYPE | FIELD_VALUE_SEPARATOR | FIELD_VALUE_TYPE_SEPARATOR | END_USERRIGHTS
   private static boolean recover_value_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_value_0")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE_TYPE);
     if (!r) r = consumeToken(b, FIELD_VALUE_SEPARATOR);
     if (!r) r = consumeToken(b, FIELD_VALUE_TYPE_SEPARATOR);
-    if (!r) r = user_rights_end(b, l + 1);
+    if (!r) r = consumeToken(b, END_USERRIGHTS);
     return r;
   }
 
   /* ********************************************************** */
-  // !(FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | user_rights_end)
+  // !(FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | END_USERRIGHTS)
   static boolean recover_value_line(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_value_line")) return false;
     boolean r;
@@ -209,18 +189,18 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | user_rights_end
+  // FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | END_USERRIGHTS
   private static boolean recover_value_line_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_value_line_0")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE_TYPE);
     if (!r) r = consumeToken(b, FIELD_VALUE_TYPE_SEPARATOR);
-    if (!r) r = user_rights_end(b, l + 1);
+    if (!r) r = consumeToken(b, END_USERRIGHTS);
     return r;
   }
 
   /* ********************************************************** */
-  // !(FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | user_rights_end)
+  // !(FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | END_USERRIGHTS)
   static boolean recover_value_lines(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_value_lines")) return false;
     boolean r;
@@ -230,18 +210,18 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | user_rights_end
+  // FIELD_VALUE_TYPE | FIELD_VALUE_TYPE_SEPARATOR | END_USERRIGHTS
   private static boolean recover_value_lines_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "recover_value_lines_0")) return false;
     boolean r;
     r = consumeToken(b, FIELD_VALUE_TYPE);
     if (!r) r = consumeToken(b, FIELD_VALUE_TYPE_SEPARATOR);
-    if (!r) r = user_rights_end(b, l + 1);
+    if (!r) r = consumeToken(b, END_USERRIGHTS);
     return r;
   }
 
   /* ********************************************************** */
-  // user_rights_start DUMMY_SEPARATOR* user_rights_body? user_rights_end
+  // user_rights_start user_rights_body? user_rights_end
   public static boolean user_rights(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights")) return false;
     boolean r, p;
@@ -249,26 +229,14 @@ public class AclParser implements PsiParser, LightPsiParser {
     r = user_rights_start(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, user_rights_1(b, l + 1));
-    r = p && report_error_(b, user_rights_2(b, l + 1)) && r;
     r = p && user_rights_end(b, l + 1) && r;
     exit_section_(b, l, m, r, p, AclParser::recover_user_rights);
     return r || p;
   }
 
-  // DUMMY_SEPARATOR*
+  // user_rights_body?
   private static boolean user_rights_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!consumeToken(b, DUMMY_SEPARATOR)) break;
-      if (!empty_element_parsed_guard_(b, "user_rights_1", c)) break;
-    }
-    return true;
-  }
-
-  // user_rights_body?
-  private static boolean user_rights_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_2")) return false;
     user_rights_body(b, l + 1);
     return true;
   }
@@ -336,7 +304,7 @@ public class AclParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // END_USERRIGHTS (DUMMY_SEPARATOR)*
+  // END_USERRIGHTS DUMMY_SEPARATOR*
   public static boolean user_rights_end(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_end")) return false;
     if (!nextTokenIs(b, END_USERRIGHTS)) return false;
@@ -348,7 +316,7 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (DUMMY_SEPARATOR)*
+  // DUMMY_SEPARATOR*
   private static boolean user_rights_end_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_end_1")) return false;
     while (true) {
@@ -515,15 +483,27 @@ public class AclParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // START_USERRIGHTS
+  // START_USERRIGHTS DUMMY_SEPARATOR*
   public static boolean user_rights_start(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_start")) return false;
     if (!nextTokenIs(b, START_USERRIGHTS)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, START_USERRIGHTS);
+    r = r && user_rights_start_1(b, l + 1);
     exit_section_(b, m, USER_RIGHTS_START, r);
     return r;
+  }
+
+  // DUMMY_SEPARATOR*
+  private static boolean user_rights_start_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_start_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!consumeToken(b, DUMMY_SEPARATOR)) break;
+      if (!empty_element_parsed_guard_(b, "user_rights_start_1", c)) break;
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -579,7 +559,7 @@ public class AclParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // FIELD_VALUE_SEPARATOR (PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED)?
+  // FIELD_VALUE_SEPARATOR user_rights_value_permission?
   public static boolean user_rights_value_group_permission(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_group_permission")) return false;
     boolean r, p;
@@ -591,21 +571,11 @@ public class AclParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // (PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED)?
+  // user_rights_value_permission?
   private static boolean user_rights_value_group_permission_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "user_rights_value_group_permission_1")) return false;
-    user_rights_value_group_permission_1_0(b, l + 1);
+    user_rights_value_permission(b, l + 1);
     return true;
-  }
-
-  // PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED
-  private static boolean user_rights_value_group_permission_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "user_rights_value_group_permission_1_0")) return false;
-    boolean r;
-    r = consumeToken(b, PERMISSION_DENIED);
-    if (!r) r = consumeToken(b, PERMISSION_ALLOWED);
-    if (!r) r = consumeToken(b, PERMISSION_INHERITED);
-    return r;
   }
 
   /* ********************************************************** */
@@ -877,6 +847,19 @@ public class AclParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "user_rights_value_lines_password_unaware_1", c)) break;
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // PERMISSION_DENIED | PERMISSION_ALLOWED | PERMISSION_INHERITED
+  public static boolean user_rights_value_permission(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "user_rights_value_permission")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, USER_RIGHTS_VALUE_PERMISSION, "<user rights value permission>");
+    r = consumeToken(b, PERMISSION_DENIED);
+    if (!r) r = consumeToken(b, PERMISSION_ALLOWED);
+    if (!r) r = consumeToken(b, PERMISSION_INHERITED);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */

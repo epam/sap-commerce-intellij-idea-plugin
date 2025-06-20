@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.acl.psi.impl.*;
 
 public interface AclTypes {
 
-  IElementType COMMENT = new AclElementType("COMMENT");
   IElementType USER_RIGHTS = new AclElementType("USER_RIGHTS");
   IElementType USER_RIGHTS_BODY = new AclElementType("USER_RIGHTS_BODY");
   IElementType USER_RIGHTS_END = new AclElementType("USER_RIGHTS_END");
@@ -58,9 +57,11 @@ public interface AclTypes {
   IElementType USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_PASSWORD_UNAWARE");
   IElementType USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_AWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_AWARE");
   IElementType USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_UNAWARE = new AclElementType("USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_UNAWARE");
+  IElementType USER_RIGHTS_VALUE_PERMISSION = new AclElementType("USER_RIGHTS_VALUE_PERMISSION");
   IElementType USER_RIGHTS_VALUE_TARGET = new AclElementType("USER_RIGHTS_VALUE_TARGET");
 
   IElementType COMMA = new AclTokenType("COMMA");
+  IElementType CRLF = new AclTokenType("CRLF");
   IElementType DOT = new AclTokenType("DOT");
   IElementType DUMMY_SEPARATOR = new AclTokenType("DUMMY_SEPARATOR");
   IElementType END_USERRIGHTS = new AclTokenType("END_USERRIGHTS");
@@ -91,10 +92,7 @@ public interface AclTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-      if (type == COMMENT) {
-        return new AclCommentImpl(node);
-      }
-      else if (type == USER_RIGHTS) {
+      if (type == USER_RIGHTS) {
         return new AclUserRightsImpl(node);
       }
       else if (type == USER_RIGHTS_BODY) {
@@ -174,6 +172,9 @@ public interface AclTypes {
       }
       else if (type == USER_RIGHTS_VALUE_LINE_TYPE_PASSWORD_UNAWARE) {
         return new AclUserRightsValueLineTypePasswordUnawareImpl(node);
+      }
+      else if (type == USER_RIGHTS_VALUE_PERMISSION) {
+        return new AclUserRightsValuePermissionImpl(node);
       }
       else if (type == USER_RIGHTS_VALUE_TARGET) {
         return new AclUserRightsValueTargetImpl(node);

@@ -23,6 +23,9 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.ui.JBColor
+import com.intellij.ui.TextIcon
+import javax.swing.Icon
 
 object AclLookupElementFactory {
 
@@ -61,4 +64,17 @@ object AclLookupElementFactory {
                 context.editor.caretModel.moveToOffset(cursorOffset - OFFSET)
             }
         })
+
+    fun buildPermissions() = listOf(
+        buildPermission("+", "Allowed", TextIcon("new", fg, bg, 0)),
+        buildPermission("-", "Denied", TextIcon("--", fg, bg, 0)),
+        buildPermission(".", "Inherited", TextIcon("..", fg, bg, 0)),
+    )
+
+    val fg: JBColor = JBColor(0x00b53d, 0x6ba65d)
+    val bg: JBColor = JBColor(0xebfcf1, 0x313b32)
+
+    private fun buildPermission(permission: String, presentableText: String, icon: Icon) = LookupElementBuilder.create(permission)
+        .withPresentableText(presentableText)
+        .withIcon(icon)
 }

@@ -42,5 +42,19 @@ class AclCompletionContributor : CompletionContributor() {
                 }
             }
         )
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement()
+                .withParent(AclFile::class.java),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(
+                    parameters: CompletionParameters,
+                    context: ProcessingContext,
+                    result: CompletionResultSet
+                ) {
+                    result.addAllElements(AclLookupElementFactory.buildPermissions())
+                }
+            }
+        )
     }
 }

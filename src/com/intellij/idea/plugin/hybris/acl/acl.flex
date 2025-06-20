@@ -85,9 +85,9 @@ end_userrights                    = [$]END_USERRIGHTS
 %%
 
 {white_space}+                                              { return TokenType.WHITE_SPACE; }
+{line_comment}                                              { return AclTypes.LINE_COMMENT; }
 
 <YYINITIAL> {
-    {line_comment}                                          { return AclTypes.LINE_COMMENT; }
     {start_userrights}                                      { yybegin(USER_RIGHTS_START); return AclTypes.START_USERRIGHTS; }
 }
 
@@ -147,7 +147,6 @@ end_userrights                    = [$]END_USERRIGHTS
                 ? AclTypes.FIELD_VALUE_TYPE
                 : AclTypes.FIELD_VALUE;
         }
-    {line_comment}                                          { return AclTypes.LINE_COMMENT; }
     {dot}                                                   {
           return passwordColumnPresent.get() && valueColumn.get() >= 5
             || !passwordColumnPresent.get() && valueColumn.get() >= 4
@@ -177,7 +176,6 @@ end_userrights                    = [$]END_USERRIGHTS
     {single_quoted_string}                                  { return AclTypes.PASSWORD; }
     {unquoted_string}                                       { return AclTypes.PASSWORD; }
 
-    {line_comment}                                          { return AclTypes.LINE_COMMENT; }
     {semicolon}                                             {
         valueColumn.incrementAndGet();
         yybegin(USER_RIGHTS_VALUE_LINE);
@@ -191,7 +189,7 @@ end_userrights                    = [$]END_USERRIGHTS
     {semicolon}                                             { return AclTypes.DUMMY_SEPARATOR; }
 }
 
-{y_white_space} { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
+{y_white_space}                                             { yybegin(YYINITIAL); return AclTypes.CRLF; }
 
 // Fallback
 .                                                           { return TokenType.BAD_CHARACTER; }
