@@ -57,6 +57,8 @@
         <renameInputValidator implementation="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExRenameInputValidator"/>
         <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExRenamePsiElementProcessor"/>
 
+        <editorNotificationProvider id="impexToAclEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.impex.ui.ImpExToAclEditorNotificationProvider"/>
+
         <projectConfigurable id="hybris.project.impex.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.impex.title"
