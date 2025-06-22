@@ -95,6 +95,7 @@ user_rights ::= user_rights_start (PARAMETERS_SEPARATOR)* CRLF+ user_rights_body
     pin=1
     recoverWhile=recover_root
     methods=[getValueGroups]
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpExUserRightsMixin"
 }
 
 private user_rights_body ::= (user_rights_header_line CRLF+) (user_rights_value_line CRLF+)*
@@ -120,6 +121,7 @@ user_rights_header_parameter ::= TYPE
  | PERMISSION
 {
     recoverWhile=not_line_break_or_parameters_separator
+    mixin="com.intellij.idea.plugin.hybris.impex.psi.impl.ImpExUserRightsHeaderParameterMixin"
     methods=[getHeaderLine getColumnNumber getValueGroups]
 }
 

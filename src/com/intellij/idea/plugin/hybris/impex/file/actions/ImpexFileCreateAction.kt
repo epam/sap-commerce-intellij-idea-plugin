@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,15 +28,15 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 
-class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_IMPEX_FILE, "", HybrisIcons.ImpEx.FILE), DumbAware {
+class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_FILE, "", HybrisIcons.ImpEx.FILE), DumbAware {
 
     override fun buildDialog(
         project: Project,
         directory: PsiDirectory,
         builder: CreateFileFromTemplateDialog.Builder
     ) {
-        builder.setTitle(NEW_IMPEX_FILE)
-            .addKind("Empty file", HybrisIcons.ImpEx.FILE, FILE_TEMPLATE)
+        builder.setTitle(NEW_FILE)
+            .addKind("Empty file", HybrisIcons.ImpEx.FILE, "ImpEx File")
     }
 
     override fun postProcess(createdElement: PsiFile, templateName: String, customProperties: Map<String, String>?) {
@@ -44,13 +44,12 @@ class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_IMPEX_FILE, "", H
     }
 
     override fun isAvailable(dataContext: DataContext) = super.isAvailable(dataContext) && ActionUtils.isHybrisContext(dataContext)
-    override fun getActionName(directory: PsiDirectory, newName: String, templateName: String) = NEW_IMPEX_FILE
+    override fun getActionName(directory: PsiDirectory, newName: String, templateName: String) = NEW_FILE
     override fun getDefaultTemplateProperty() = null
     override fun hashCode() = javaClass.hashCode()
     override fun equals(other: Any?) = other is ImpexFileCreateAction
 
     companion object {
-        const val FILE_TEMPLATE = "ImpEx File"
-        private const val NEW_IMPEX_FILE = "ImpEx File"
+        private const val NEW_FILE = "ImpEx File"
     }
 }

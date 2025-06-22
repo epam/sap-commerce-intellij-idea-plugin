@@ -28,8 +28,6 @@
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpExDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpExDarcula.xml"/>
-        <additionalTextAttributes scheme="Default" file="colorSchemes/FlexibleSearchDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/FlexibleSearchDarcula.xml"/>
 
         <platform.backend.documentation.psiTargetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexPsiDocumentationTargetProvider" />
         <platform.backend.documentation.targetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexDocumentationTargetProvider"/>
@@ -58,6 +56,8 @@
         <vetoRenameCondition implementation="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExVetoRenameCondition"/>
         <renameInputValidator implementation="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExRenameInputValidator"/>
         <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExRenamePsiElementProcessor"/>
+
+        <editorNotificationProvider id="impexToAclEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.impex.ui.ImpExToAclEditorNotificationProvider"/>
 
         <projectConfigurable id="hybris.project.impex.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
@@ -99,6 +99,8 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
+        <action id="hybris.impex.extractAcl" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexExtractAclAction"/>
+        <action id="hybris.impex.learnMoreAcl" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexLearnMoreAboutAclAction"/>
         <action id="hybris.impex.openFileInConsole" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexCopyFileAction"/>
         <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction">
             <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
@@ -115,12 +117,12 @@
         </action>
 
         <group id="hybris.impex.context.actions">
-            <reference id="hybris.impex.openFileInConsole"/>
+            <reference ref="hybris.impex.openFileInConsole"/>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>
         <group id="hybris.impex.table.actions">
-            <reference id="hybris.impex.table.select"/>
+            <reference ref="hybris.impex.table.select"/>
             <separator/>
             <action id="hybris.impex.table.column.move.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveLeftAction">
                 <keyboard-shortcut first-keystroke="control shift alt COMMA" keymap="$default"/>
@@ -144,16 +146,16 @@
         </group>
 
         <group id="hybris.impex.toolbar.left">
-            <reference id="hybris.impex.import"/>
-            <reference id="hybris.impex.openQuery"/>
-            <reference id="hybris.impex.validate"/>
+            <reference ref="hybris.impex.import"/>
+            <reference ref="hybris.impex.openQuery"/>
+            <reference ref="hybris.impex.validate"/>
             <separator/>
-            <reference id="hybris.impex.table.actions"/>
+            <reference ref="hybris.impex.table.actions"/>
             <separator/>
-            <reference id="hybris.impex.openSettings"/>
+            <reference ref="hybris.impex.openSettings"/>
         </group>
         <group id="hybris.impex.toolbar.right">
-            <reference id="hybris.hac.chooseConnection"/>
+            <reference ref="hybris.hac.chooseConnection"/>
         </group>
     </actions>
 

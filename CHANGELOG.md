@@ -15,6 +15,9 @@
 - Added colorization for Type row [#1416](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1416)
 - Added references verification used in the `Type` and `Target` columns [#1417](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1417)
 
+### `ImpEx` enhancements
+- Display notification panel about possible usage of the `Access Control Lists` language [#1418](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1418)
+
 ## [2025.1.4]
 
 ### `ImpEx` enhancements

@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,9 @@
 
         <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="INSTANCE"
                   implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType"/>
+
+        <additionalTextAttributes scheme="Default" file="colorSchemes/FlexibleSearchDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/FlexibleSearchDarcula.xml"/>
 
         <!-- Core elements -->
         <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSCodeStyleSettingsProvider"/>
@@ -53,7 +56,7 @@
         <editorNotificationProvider id="fxsReservedWordsCaseEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider"/>
         <editorNotificationProvider id="fxsTableAliasSeparatorEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSTableAliasSeparatorEditorNotificationProvider"/>
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchInjector"/>
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchLanguageInjector"/>
 
         <completion.contributor language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
 
@@ -82,7 +85,7 @@
         </action>
 
         <group id="hybris.fxs.context.actions">
-            <reference id="hybris.fxs.openFileInConsole"/>
+            <reference ref="hybris.fxs.openFileInConsole"/>
             <separator/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
         </group>
@@ -99,13 +102,13 @@
         <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenSettingsAction"/>
 
         <group id="hybris.fxs.toolbar.left">
-            <reference id="hybris.fxs.execute"/>
-            <reference id="hybris.fxs.openQuery"/>
+            <reference ref="hybris.fxs.execute"/>
+            <reference ref="hybris.fxs.openQuery"/>
             <separator/>
-            <reference id="hybris.fxs.openSettings"/>
+            <reference ref="hybris.fxs.openSettings"/>
         </group>
         <group id="hybris.fxs.toolbar.right">
-            <reference id="hybris.hac.chooseConnection"/>
+            <reference ref="hybris.hac.chooseConnection"/>
         </group>
     </actions>
 

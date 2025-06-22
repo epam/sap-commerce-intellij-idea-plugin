@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
@@ -40,6 +39,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiUtilBase
+import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
 
@@ -156,7 +156,7 @@ class ImpexHighlightingCaretListener : CaretListener {
     companion object {
         private val CACHE_KEY = Key.create<List<TextRange>>("IMPEX_COLUMN_HIGHLIGHT_CACHE")
 
-        fun getInstance(): ImpexHighlightingCaretListener = ApplicationManager.getApplication().getService(ImpexHighlightingCaretListener::class.java)
+        fun getInstance(): ImpexHighlightingCaretListener = application.getService(ImpexHighlightingCaretListener::class.java)
     }
 
 }

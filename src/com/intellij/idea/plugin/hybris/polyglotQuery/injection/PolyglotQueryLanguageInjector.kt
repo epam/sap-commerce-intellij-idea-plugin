@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,7 @@ import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 
-class PolyglotQueryInjector : LanguageInjector {
+class PolyglotQueryLanguageInjector : LanguageInjector {
 
     override fun getLanguagesToInject(
         host: PsiLanguageInjectionHost,

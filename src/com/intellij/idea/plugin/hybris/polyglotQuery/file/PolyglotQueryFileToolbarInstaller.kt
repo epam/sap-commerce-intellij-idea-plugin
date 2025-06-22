@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.file
 
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.project.Project
+import com.intellij.util.application
 
 @Service
 class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
@@ -33,7 +33,7 @@ class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
 ) {
 
     companion object {
-        fun getInstance(): PolyglotQueryFileToolbarInstaller = ApplicationManager.getApplication().getService(PolyglotQueryFileToolbarInstaller::class.java)
+        fun getInstance(): PolyglotQueryFileToolbarInstaller = application.getService(PolyglotQueryFileToolbarInstaller::class.java)
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true

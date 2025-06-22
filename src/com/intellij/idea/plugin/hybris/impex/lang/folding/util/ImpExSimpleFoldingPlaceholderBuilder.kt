@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.impex.lang.folding.util
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingPlaceholderBuilder
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
+import com.intellij.util.application
 
 @Service
 class ImpExSimpleFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
@@ -33,7 +33,7 @@ class ImpExSimpleFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
     }
 
     companion object {
-        fun getInstance(): ImpExSimpleFoldingPlaceholderBuilder = ApplicationManager.getApplication().getService(ImpExSimpleFoldingPlaceholderBuilder::class.java)
+        fun getInstance(): ImpExSimpleFoldingPlaceholderBuilder = application.getService(ImpExSimpleFoldingPlaceholderBuilder::class.java)
     }
 
 }

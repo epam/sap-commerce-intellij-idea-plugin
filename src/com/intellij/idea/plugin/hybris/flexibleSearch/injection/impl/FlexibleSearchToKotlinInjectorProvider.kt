@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,14 +21,14 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.util.application
 
 class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(FlexibleSearchLanguage) {
 
     override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
 
     companion object {
-        fun getInstance(): FlexibleSearchToKotlinInjectorProvider? = ApplicationManager.getApplication().getService(FlexibleSearchToKotlinInjectorProvider::class.java)
+        fun getInstance(): FlexibleSearchToKotlinInjectorProvider? = application.getService(FlexibleSearchToKotlinInjectorProvider::class.java)
     }
 
 }

@@ -60,7 +60,8 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
         messageKey: String,
         referenceHolder: PsiElement = element.parent
     ) {
-        val resolved = (referenceHolder.reference as? PsiReferenceBase.Poly<*>)
+        val resolved = referenceHolder.reference
+            .asSafely<PsiReferenceBase.Poly<*>>()
             ?.multiResolve(true)
             ?.isNotEmpty()
             ?: true
@@ -69,6 +70,34 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
             highlight(tokenType, holder, element)
         } else {
             highlightError(holder, element, message(messageKey, element.text))
+        }
+    }
+
+    fun highlightReference(
+        holder: AnnotationHolder,
+        element: PsiElement,
+        messageKey: String,
+        referenceHolder: PsiElement = element.parent
+    ) = referenceHolder.reference
+        .asSafely<PsiReferenceBase.Poly<*>>()
+        ?.multiResolve(true)
+        ?.takeIf { it.isEmpty() }
+        ?.let { highlightError(holder, element, message(messageKey, element.text)) }
+
+    fun highlightReference(
+        holder: AnnotationHolder,
+        element: PsiElement,
+        messageKey: String,
+        reference: PsiReference
+    ) {
+        val range = reference.absoluteRange
+        val isValid = reference.asSafely<PsiReferenceBase.Poly<PsiElement>>()
+            ?.multiResolve(false)
+            ?.isNotEmpty()
+            ?: (reference.resolve() != null)
+
+        if (!isValid) {
+            highlightError(holder, element, message(messageKey, reference.canonicalText), range = range)
         }
     }
 

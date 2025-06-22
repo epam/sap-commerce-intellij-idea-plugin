@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.flexibleSearch;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
+import java.util.Deque;
+import java.util.ArrayDeque;
 
 import static com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
@@ -32,7 +34,7 @@ import static com.intellij.psi.TokenType.WHITE_SPACE;
    * `true`  - represents beginning of the single brace `{` statement
    * `false` - represents beginning of the double brace `{{` statement
    */
-  private java.util.Deque<Boolean> braces = new java.util.ArrayDeque<Boolean>();
+  private Deque<Boolean> braces = new ArrayDeque<Boolean>();
   public _FlexibleSearchLexer() {
       this((java.io.Reader)null);
   }

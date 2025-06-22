@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,9 +21,9 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.project.Project
+import com.intellij.util.application
 import org.jetbrains.plugins.groovy.GroovyFileType
 
 class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
@@ -34,7 +34,7 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
 ) {
 
     companion object {
-        fun getInstance(): GroovyFileToolbarInstaller? = ApplicationManager.getApplication().getService(GroovyFileToolbarInstaller::class.java)
+        fun getInstance(): GroovyFileToolbarInstaller? = application.getService(GroovyFileToolbarInstaller::class.java)
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean {

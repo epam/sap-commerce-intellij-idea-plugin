@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -178,10 +178,6 @@ fun getHeaderItemTypeName(element: ImpexAnyHeaderParameterName): ImpexHeaderType
 // ------------------------------------------
 //              User Rights
 // ------------------------------------------
-fun getValueGroups(element: ImpexUserRights, index: Int): Collection<ImpexUserRightsValueGroup> = element
-    .userRightsValueLineList
-    .mapNotNull { it.getValueGroup(index) }
-
 fun getValueGroup(element: ImpexUserRightsValueLine, index: Int): ImpexUserRightsValueGroup? = element
     .userRightsValueGroupList
     .getOrNull(index)
@@ -237,21 +233,3 @@ fun getHeaderParameter(element: ImpexUserRightsValue): ImpexUserRightsHeaderPara
 
     else -> null
 }
-
-fun getHeaderLine(element: ImpexUserRightsHeaderParameter): ImpexUserRightsHeaderLine? = element
-    .parentOfType<ImpexUserRightsHeaderLine>()
-
-fun getColumnNumber(element: ImpexUserRightsHeaderParameter): Int? = element
-    .headerLine
-    ?.userRightsHeaderParameterList
-    ?.indexOf(element)
-    ?.takeIf { it != -1 }
-
-fun getValueGroups(element: ImpexUserRightsHeaderParameter): Collection<ImpexUserRightsValueGroup> {
-    val columnNumber = element.columnNumber ?: return emptyList()
-    val userRights = getUserRights(element) ?: return emptyList()
-    return userRights.getValueGroups(columnNumber)
-}
-
-fun getUserRights(element: PsiElement): ImpexUserRights? = element
-    .parentOfType<ImpexUserRights>()

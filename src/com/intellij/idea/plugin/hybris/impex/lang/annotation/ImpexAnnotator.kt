@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.annotation
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
-import com.intellij.idea.plugin.hybris.impex.highlighting.DefaultImpexSyntaxHighlighter
+import com.intellij.idea.plugin.hybris.impex.highlighting.ImpExSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.impex.psi.references.*
@@ -32,7 +32,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 
-class ImpexAnnotator : AbstractAnnotator(DefaultImpexSyntaxHighlighter.getInstance()) {
+class ImpexAnnotator : AbstractAnnotator(ImpExSyntaxHighlighter.getInstance()) {
 
     private val tsElementTypes = setOf(ImpexTypes.TYPE, ImpexTypes.TARGET)
     private val userRightsParameters = mapOf(
