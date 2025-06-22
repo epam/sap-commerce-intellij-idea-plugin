@@ -57,7 +57,7 @@ fun getTableRange(element: ImpexHeaderLine): TextRange {
     var next = element.nextSibling
 
     while (next != null) {
-        if (next is ImpexHeaderLine || next is ImpexUserRightsStart) {
+        if (next is ImpexHeaderLine || next is ImpexUserRights) {
 
             // once all lines processed, we have to go back till last value line
             var lastElement = tableElements.lastOrNull()
@@ -68,10 +68,7 @@ fun getTableRange(element: ImpexHeaderLine): TextRange {
 
             next = null
         } else {
-            // skip User Rights inside ImpEx statement
-            if (next !is ImpexUserRights) {
-                tableElements.add(next)
-            }
+            tableElements.add(next)
             next = next.nextSibling
         }
     }

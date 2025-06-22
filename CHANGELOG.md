@@ -17,6 +17,7 @@
 
 ### `ImpEx` enhancements
 - Display notification panel about possible usage of the `Access Control Lists` language [#1418](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1418)
+- Improved table range detection [#1419](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1419)
 
 ## [2025.1.4]
 
