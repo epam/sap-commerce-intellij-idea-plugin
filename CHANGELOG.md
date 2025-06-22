@@ -4,6 +4,8 @@
 - Introduced Grammar & Lexer for new ACL Language (`.acl`) [#1405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1405)
 - Support Copyright for `.acl` files [#1406](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1406)
 - Introduced actions toolbar for `.acl` files [#1407](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1407)
+- Added language commenter [#1408](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1408)
+- Added language color light & dark schemes [#1409](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1409)
 
 ## [2025.1.4]
 

@@ -24,13 +24,13 @@
         <fileType name="Access Control Lists" language="ACL" extensions="acl" fieldName="INSTANCE"
                   implementationClass="com.intellij.idea.plugin.hybris.acl.file.AclFileType"/>
 
-<!--        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.acl.highlighting.AclColorSettingsPage"/>-->
-<!--        <additionalTextAttributes scheme="Default" file="colorSchemes/AclDefault.xml"/>-->
-<!--        <additionalTextAttributes scheme="Darcula" file="colorSchemes/AclDarcula.xml"/>-->
+        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.acl.highlighting.AclColorSettingsPage"/>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/AclDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/AclDarcula.xml"/>
 
         <lang.parserDefinition language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.AclParserDefinition"/>
-<!--        <lang.syntaxHighlighterFactory language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.highlighting.AclSyntaxHighlighterFactory"/>-->
-<!--        <lang.commenter language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.AclCommenter"/>-->
+        <lang.syntaxHighlighterFactory language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.highlighting.AclSyntaxHighlighterFactory"/>
+        <lang.commenter language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.AclCommenter"/>
 <!--        <lang.formatter language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.formatting.AclFormattingModelBuilder"/>-->
 <!--        <lang.foldingBuilder language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.folding.AclFoldingBuilder"/>-->
 
@@ -41,7 +41,7 @@
 <!--        <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.acl.editor.event.AclLineEditorFactoryListener"/>-->
 <!--        <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.acl.vfs.event.AclVfsAsyncListener"/>-->
 
-<!--        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.acl.formatting.AclCodeStyleSettingsProvider"/>-->
+        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.acl.formatting.AclCodeStyleSettingsProvider"/>
 <!--        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.acl.formatting.AclLanguageCodeStyleSettingsProvider"/>-->
     </extensions>
 
