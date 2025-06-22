@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,13 +29,13 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexCons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
+import com.intellij.util.application
 
 class HybrisConsoleExecuteValidateActionHandler(
     private val project: Project,
@@ -44,11 +44,11 @@ class HybrisConsoleExecuteValidateActionHandler(
 
     private fun setEditorEnabled(console: HybrisConsole, enabled: Boolean) {
         console.consoleEditor.isRendererMode = !enabled
-        ApplicationManager.getApplication().invokeLater { console.consoleEditor.component.updateUI() }
+        application.invokeLater { console.consoleEditor.component.updateUI() }
     }
 
     private fun processLine(console: HybrisConsole, text: String) {
-        ApplicationManager.getApplication().runReadAction {
+        application.runReadAction {
             ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to SAP Commerce...") {
                 override fun run(indicator: ProgressIndicator) {
                     isProcessRunning = true
