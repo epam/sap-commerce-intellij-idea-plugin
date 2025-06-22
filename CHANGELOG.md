@@ -13,6 +13,7 @@
 - Added reference resolution for `Target` column [#1414](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1414)
 - Added code completion for common UserRights and Permission elements [#1415](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1415)
 - Added colorization for Type row [#1416](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1416)
+- Added references verification used in the `Type` and `Target` columns [#1417](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1417)
 
 ## [2025.1.4]
 

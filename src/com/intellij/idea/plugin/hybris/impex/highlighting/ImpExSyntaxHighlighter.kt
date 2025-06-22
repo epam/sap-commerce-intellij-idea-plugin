@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,16 +19,16 @@ package com.intellij.idea.plugin.hybris.impex.highlighting
 
 import com.intellij.idea.plugin.hybris.impex.ImpexLexerAdapter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
+import com.intellij.util.application
 
 @Service
-class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
+class ImpExSyntaxHighlighter : SyntaxHighlighterBase() {
 
     override fun getHighlightingLexer() = ImpexLexerAdapter()
 
@@ -36,7 +36,7 @@ class DefaultImpexSyntaxHighlighter : SyntaxHighlighterBase() {
         ?: emptyArray()
 
     companion object {
-        fun getInstance(): DefaultImpexSyntaxHighlighter = ApplicationManager.getApplication().getService(DefaultImpexSyntaxHighlighter::class.java)
+        fun getInstance(): ImpExSyntaxHighlighter = application.getService(ImpExSyntaxHighlighter::class.java)
 
         private val USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS = pack(ImpexHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER)
         private val SCRIPT_MARKER_KEYS = pack(ImpexHighlighterColors.SCRIPT_MARKER)
