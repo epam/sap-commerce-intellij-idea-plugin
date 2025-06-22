@@ -32,7 +32,7 @@
         <lang.syntaxHighlighterFactory language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.highlighting.AclSyntaxHighlighterFactory"/>
         <lang.commenter language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.AclCommenter"/>
         <lang.formatter language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.formatting.AclFormattingModelBuilder"/>
-<!--        <lang.foldingBuilder language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.folding.AclFoldingBuilder"/>-->
+        <lang.foldingBuilder language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.folding.AclFoldingBuilder"/>
 
 <!--        <annotator language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.annotation.AclAnnotator"/>-->
 
