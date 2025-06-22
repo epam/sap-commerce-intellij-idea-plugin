@@ -1,3 +1,8 @@
+## [2025.1.5]
+
+### `Access Control Lists` enhancements
+- Introduced Grammar & Lexer for new ACL Language (`.acl`) [#1405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1405)
+
 ## [2025.1.4]
 
 ### `ImpEx` enhancements
