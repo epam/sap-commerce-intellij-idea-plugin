@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,11 +25,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_INT
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.CCv2SubscriptionDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
+import com.intellij.util.application
 import com.intellij.util.xmlb.XmlSerializerUtil
 import org.apache.commons.lang3.StringUtils
 
@@ -90,7 +90,7 @@ class ApplicationSettingsComponent : PersistentStateComponent<ApplicationSetting
         val subscriptions = subscriptionDtos.map { it.toModel() }
 
         state.ccv2Subscriptions = subscriptions
-        ApplicationManager.getApplication().messageBus
+        application.messageBus
             .syncPublisher(CCv2Service.TOPIC_CCV2_SETTINGS)
             .onSubscriptionsChanged(subscriptions)
     }
@@ -100,7 +100,7 @@ class ApplicationSettingsComponent : PersistentStateComponent<ApplicationSetting
 
     companion object {
         @JvmStatic
-        fun getInstance(): ApplicationSettingsComponent = ApplicationManager.getApplication().getService(ApplicationSettingsComponent::class.java)
+        fun getInstance(): ApplicationSettingsComponent = application.getService(ApplicationSettingsComponent::class.java)
 
         @JvmStatic
         fun toIdeaGroup(group: String?): Array<String>? {

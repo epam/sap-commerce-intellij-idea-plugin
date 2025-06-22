@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,12 +23,12 @@ import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.util.application
 import org.jetbrains.kotlin.idea.compiler.configuration.Kotlin2JvmCompilerArgumentsHolder
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinJpsPluginSettings
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinPluginLayout
@@ -104,7 +104,7 @@ class KotlinCompilerConfigurator {
     // Kotlin compiler version will be updated after project import / refresh in BGT
     // we have to have indexes ready to be able to get the correct value of the project property responsible for a custom Kotlin compiler version
     private fun setKotlinCompilerVersion(project: Project, compilerVersion: String) {
-        ApplicationManager.getApplication().runReadAction {
+        application.runReadAction {
             KotlinJpsPluginSettings.getInstance(project).update {
                 version = compilerVersion
             }
@@ -112,7 +112,7 @@ class KotlinCompilerConfigurator {
     }
 
     private fun setKotlinJvmTarget(project: Project) {
-        ApplicationManager.getApplication().runReadAction {
+        application.runReadAction {
             val projectRootManager = ProjectRootManager.getInstance(project)
 
             projectRootManager.projectSdk

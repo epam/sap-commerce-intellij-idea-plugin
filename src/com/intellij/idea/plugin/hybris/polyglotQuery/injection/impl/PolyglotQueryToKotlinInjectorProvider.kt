@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,14 +21,14 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryUtils
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.util.application
 
 class PolyglotQueryToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(PolyglotQueryLanguage) {
 
     override fun canProcess(expression: String) = PolyglotQueryUtils.isPolyglotQuery(expression)
 
     companion object {
-        fun getInstance(): PolyglotQueryToKotlinInjectorProvider? = ApplicationManager.getApplication().getService(PolyglotQueryToKotlinInjectorProvider::class.java)
+        fun getInstance(): PolyglotQueryToKotlinInjectorProvider? = application.getService(PolyglotQueryToKotlinInjectorProvider::class.java)
     }
 
 }

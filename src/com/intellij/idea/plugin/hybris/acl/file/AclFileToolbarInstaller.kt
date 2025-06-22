@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.acl.file
 
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.project.Project
+import com.intellij.util.application
 
 @Service
 class AclFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
@@ -33,7 +33,7 @@ class AclFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
 ) {
 
     companion object {
-        fun getInstance(): AclFileToolbarInstaller = ApplicationManager.getApplication().getService(AclFileToolbarInstaller::class.java)
+        fun getInstance(): AclFileToolbarInstaller = application.getService(AclFileToolbarInstaller::class.java)
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true

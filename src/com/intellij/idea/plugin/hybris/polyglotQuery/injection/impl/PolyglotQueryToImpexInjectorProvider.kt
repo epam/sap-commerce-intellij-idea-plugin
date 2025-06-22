@@ -23,11 +23,11 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjectorProvider
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryUtils
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.util.application
 import java.util.*
 
 @Service
@@ -50,6 +50,6 @@ class PolyglotQueryToImpexInjectorProvider : AbstractLanguageInjectorProvider(Po
     }
 
     companion object {
-        fun getInstance(): PolyglotQueryToImpexInjectorProvider? = ApplicationManager.getApplication().getService(PolyglotQueryToImpexInjectorProvider::class.java)
+        fun getInstance(): PolyglotQueryToImpexInjectorProvider? = application.getService(PolyglotQueryToImpexInjectorProvider::class.java)
     }
 }

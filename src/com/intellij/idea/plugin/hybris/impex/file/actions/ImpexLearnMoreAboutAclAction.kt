@@ -15,26 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.impex.file.actions
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.file
+import com.intellij.ide.BrowserUtil
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
 
-import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.editor.ex.EditorEx
-import com.intellij.openapi.project.Project
-import com.intellij.util.application
+class ImpexLearnMoreAboutAclAction : AnAction() {
 
-@Service
-class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
-    "hybris.fxs.console",
-    "hybris.fxs.toolbar.left",
-    "hybris.fxs.toolbar.right",
-    FlexibleSearchFileType
-) {
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    companion object {
-        fun getInstance(): FlexibleSearchFileToolbarInstaller = application.getService(FlexibleSearchFileToolbarInstaller::class.java)
+    override fun actionPerformed(e: AnActionEvent) {
+        BrowserUtil.browse(HybrisConstants.Documentation.WIKI_ACL)
     }
 
-    override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
 }

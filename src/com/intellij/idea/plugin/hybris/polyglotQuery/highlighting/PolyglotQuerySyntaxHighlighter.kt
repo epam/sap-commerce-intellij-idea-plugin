@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,13 +21,13 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.highlighting
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLexer
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.lexer.Lexer
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
+import com.intellij.util.application
 
 @Service
 class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
@@ -37,7 +37,7 @@ class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
         ?: emptyArray()
 
     companion object {
-        fun getInstance(): PolyglotQuerySyntaxHighlighter = ApplicationManager.getApplication().getService(PolyglotQuerySyntaxHighlighter::class.java)
+        fun getInstance(): PolyglotQuerySyntaxHighlighter = application.getService(PolyglotQuerySyntaxHighlighter::class.java)
 
         private val BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER)
 

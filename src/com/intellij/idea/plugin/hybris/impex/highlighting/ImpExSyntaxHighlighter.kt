@@ -19,13 +19,13 @@ package com.intellij.idea.plugin.hybris.impex.highlighting
 
 import com.intellij.idea.plugin.hybris.impex.ImpexLexerAdapter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
+import com.intellij.util.application
 
 @Service
 class ImpExSyntaxHighlighter : SyntaxHighlighterBase() {
@@ -36,7 +36,7 @@ class ImpExSyntaxHighlighter : SyntaxHighlighterBase() {
         ?: emptyArray()
 
     companion object {
-        fun getInstance(): ImpExSyntaxHighlighter = ApplicationManager.getApplication().getService(ImpExSyntaxHighlighter::class.java)
+        fun getInstance(): ImpExSyntaxHighlighter = application.getService(ImpExSyntaxHighlighter::class.java)
 
         private val USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS = pack(ImpexHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER)
         private val SCRIPT_MARKER_KEYS = pack(ImpexHighlighterColors.SCRIPT_MARKER)

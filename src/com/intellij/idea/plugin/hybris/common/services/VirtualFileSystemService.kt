@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,13 +19,13 @@
 package com.intellij.idea.plugin.hybris.common.services
 
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.ThrowableComputable
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.application
 import java.io.File
 import java.io.IOException
 
@@ -55,7 +55,7 @@ class VirtualFileSystemService {
         virtualFiles
             .takeIf { it.isNotEmpty() }
             ?.let {
-                ApplicationManager.getApplication().runWriteAction {
+                application.runWriteAction {
                     object : ThrowableComputable<Unit, IOException> {
                         override fun compute() = it.forEach { vf -> vf.delete(this) }
                     }
@@ -102,6 +102,6 @@ class VirtualFileSystemService {
 
     companion object {
         @JvmStatic
-        fun getInstance(): VirtualFileSystemService = ApplicationManager.getApplication().getService(VirtualFileSystemService::class.java)
+        fun getInstance(): VirtualFileSystemService = application.getService(VirtualFileSystemService::class.java)
     }
 }

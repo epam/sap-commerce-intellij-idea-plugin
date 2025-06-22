@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,8 +29,8 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2MediaStorageDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
+import com.intellij.util.application
 import java.util.concurrent.TimeUnit
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO as V2EnvironmentDetailDTO
 
@@ -125,7 +125,7 @@ class CCv1Api {
     private fun createRequestParams(ccv2Token: String) = mapOf("Authorization" to "Bearer $ccv2Token")
 
     companion object {
-        fun getInstance(): CCv1Api = ApplicationManager.getApplication().getService(CCv1Api::class.java)
+        fun getInstance(): CCv1Api = application.getService(CCv1Api::class.java)
     }
 
 }

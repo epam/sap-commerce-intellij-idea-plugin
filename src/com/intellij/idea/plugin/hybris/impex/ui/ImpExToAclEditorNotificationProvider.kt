@@ -17,19 +17,51 @@
  */
 package com.intellij.idea.plugin.hybris.impex.ui
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
+import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.ReadonlyStatusHandler
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiManager
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
+import com.intellij.util.application
 import java.util.function.Function
-import javax.swing.JComponent
 
 class ImpExToAclEditorNotificationProvider : EditorNotificationProvider {
+
     override fun collectNotificationData(
         project: Project,
         file: VirtualFile
-    ): Function<in FileEditor, out JComponent?>? {
-        return null
-//        TODO("Not yet implemented")
+    ): Function<FileEditor, EditorNotificationPanel>? {
+        val projectSettings = ProjectSettingsComponent.getInstance(project)
+        if (!projectSettings.isHybrisProject()) return null
+        if (!FileTypeRegistry.getInstance().isFileOfType(file, ImpexFileType)) return null
+        val psiFile = PsiManager.getInstance(project).findFile(file) ?: return null
+
+        PsiTreeUtil.collectElementsOfType(psiFile, ImpexUserRights::class.java)
+            .takeIf { it.isNotEmpty() } ?: return null
+
+        return Function<FileEditor, EditorNotificationPanel> { fileEditor ->
+            with(EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Promo)) {
+                icon(HybrisIcons.Y.LOGO_GREEN)
+                text = "User rights may be extracted to an own Access Control Lists File"
+
+                application.runWriteAction {
+                    if (ReadonlyStatusHandler.ensureFilesWritable(project, file)) {
+                        createActionLabel("Extract user rights", "hybris.impex.extractAcl")
+                    }
+                }
+
+                createActionLabel("Learn more..", "hybris.impex.learnMoreAcl")
+
+                this
+            }
+        }
     }
 }

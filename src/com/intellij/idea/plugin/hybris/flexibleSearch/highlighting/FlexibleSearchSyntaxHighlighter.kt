@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,13 +21,13 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.highlighting
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLexer
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.lexer.Lexer
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
+import com.intellij.util.application
 
 @Service
 class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
@@ -38,7 +38,7 @@ class FlexibleSearchSyntaxHighlighter : SyntaxHighlighterBase() {
 
     companion object {
 
-        fun getInstance(): FlexibleSearchSyntaxHighlighter = ApplicationManager.getApplication().getService(FlexibleSearchSyntaxHighlighter::class.java)
+        fun getInstance(): FlexibleSearchSyntaxHighlighter = application.getService(FlexibleSearchSyntaxHighlighter::class.java)
 
         private val CASE_KEYS = pack(FlexibleSearchHighlighterColors.FXS_KEYWORD)
         private val PARAMETER_KEYS = pack(FlexibleSearchHighlighterColors.FXS_PARAMETER)

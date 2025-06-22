@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,11 +23,11 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingPlaceholderBuilder
 import com.intellij.idea.plugin.hybris.impex.psi.*
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.firstLeaf
+import com.intellij.util.application
 import org.apache.commons.lang3.StringUtils
 import java.util.regex.Pattern
 
@@ -149,6 +149,6 @@ class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
         const val IMPEX_PARAMETERS_PLACEHOLDER = "()"
         private val QUOTES_PATTERN = Pattern.compile("[\"\']")
 
-        fun getInstance(): ImpExSmartFoldingPlaceholderBuilder = ApplicationManager.getApplication().getService(ImpExSmartFoldingPlaceholderBuilder::class.java)
+        fun getInstance(): ImpExSmartFoldingPlaceholderBuilder = application.getService(ImpExSmartFoldingPlaceholderBuilder::class.java)
     }
 }

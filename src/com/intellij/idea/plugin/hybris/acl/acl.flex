@@ -89,6 +89,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
 <YYINITIAL> {
     {start_userrights}                                      { yybegin(USER_RIGHTS_START); return AclTypes.START_USERRIGHTS; }
+    <<EOF>>                                                 { return null; }
 }
 
 <USER_RIGHTS_START> {

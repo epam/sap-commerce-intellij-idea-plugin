@@ -754,7 +754,6 @@ object HybrisConstants {
         PolyglotQueryTypes.WHERE
     )
 
-
     val FXS_RESERVED_KEYWORDS = setOf(
         FlexibleSearchTypes.ALL,
         FlexibleSearchTypes.AND,
@@ -796,4 +795,8 @@ object HybrisConstants {
         FlexibleSearchTypes.WHEN,
         FlexibleSearchTypes.WHERE,
     )
+
+    object Documentation {
+        const val WIKI_ACL = "https://github.com/epam/sap-commerce-intellij-idea-plugin/wiki/Languages:-Access-Control-Lists"
+    }
 }

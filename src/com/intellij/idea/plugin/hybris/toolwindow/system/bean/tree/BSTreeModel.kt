@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,9 +21,9 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSNode
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.ui.tree.BaseTreeModel
+import com.intellij.util.application
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
 import javax.swing.tree.TreePath
@@ -32,7 +32,7 @@ class BSTreeModel(private val rootTreeNode: TreeNode, val project: Project) : Ba
 
     private var globalMetaModel: BSGlobalMetaModel? = null
     private val nodes = mutableMapOf<BSNode, TreeNode>()
-    private val myInvoker = if (ApplicationManager.getApplication().isUnitTestMode) {
+    private val myInvoker = if (application.isUnitTestMode) {
         Invoker.forEventDispatchThread(this)
     } else {
         Invoker.forBackgroundThreadWithReadAction(this)

@@ -33,31 +33,31 @@ import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider
 import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright
 
 class UpdateAclCopyrightsProvider : UpdateCopyrightsProvider() {
+
     override fun createInstance(
         project: Project?,
         module: Module?,
         vf: VirtualFile?,
         ft: FileType?,
         options: CopyrightProfile?
-    ): UpdateCopyright? {
-        return object : UpdatePsiFileCopyright(project, module, vf, options) {
-            override fun accept() = file is AclFile
+    ): UpdateCopyright? = object : UpdatePsiFileCopyright(project, module, vf, options) {
+        override fun accept() = file is AclFile
 
-            override fun scanFile() {
-                val comments = SyntaxTraverser.psiTraverser(file)
-                    .withTraversal(TreeTraversal.LEAVES_DFS)
-                    .traverse()
-                    .takeWhile { it is PsiComment || it is LeafPsiElement }
-                    .filterIsInstance<PsiComment>()
-                checkComments(ContainerUtil.getLastItem(comments), true, comments)
-            }
+        override fun scanFile() {
+            val comments = SyntaxTraverser.psiTraverser(file)
+                .withTraversal(TreeTraversal.LEAVES_DFS)
+                .traverse()
+                .takeWhile { it is PsiComment || it is LeafPsiElement }
+                .filterIsInstance<PsiComment>()
 
-            override fun addAction(action: CommentAction) {
-                if (action.type == CommentAction.ACTION_INSERT) {
-                    super.addAction(CommentAction(0, action.prefix, action.suffix))
-                } else {
-                    super.addAction(action)
-                }
+            checkComments(ContainerUtil.getLastItem(comments), true, comments)
+        }
+
+        override fun addAction(action: CommentAction) {
+            if (action.type == CommentAction.ACTION_INSERT) {
+                super.addAction(CommentAction(0, action.prefix, action.suffix))
+            } else {
+                super.addAction(action)
             }
         }
     }

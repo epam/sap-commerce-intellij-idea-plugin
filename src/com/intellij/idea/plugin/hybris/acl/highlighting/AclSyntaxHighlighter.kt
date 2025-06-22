@@ -19,13 +19,13 @@ package com.intellij.idea.plugin.hybris.acl.highlighting
 
 import com.intellij.idea.plugin.hybris.acl.AclLexer
 import com.intellij.idea.plugin.hybris.acl.psi.AclTypes
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
+import com.intellij.util.application
 
 @Service
 class AclSyntaxHighlighter : SyntaxHighlighterBase() {
@@ -36,7 +36,7 @@ class AclSyntaxHighlighter : SyntaxHighlighterBase() {
         ?: emptyArray()
 
     companion object {
-        fun getInstance(): AclSyntaxHighlighter = ApplicationManager.getApplication().getService(AclSyntaxHighlighter::class.java)
+        fun getInstance(): AclSyntaxHighlighter = application.getService(AclSyntaxHighlighter::class.java)
 
         private val USER_RIGHTS_HEADER_MANDATORY_PARAMETER_KEYS = pack(AclHighlighterColors.USER_RIGHTS_HEADER_MANDATORY_PARAMETER)
         private val USER_RIGHTS_KEYS = pack(AclHighlighterColors.USER_RIGHTS)
