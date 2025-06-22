@@ -58,7 +58,7 @@ class ImpExToAclEditorNotificationProvider : EditorNotificationProvider {
                     }
                 }
 
-                createActionLabel("Learn more..", "hybris.impex.learnMoreAcl")
+                createActionLabel("Learn more..", "hybris.impex.learnMoreAcl", false)
 
                 this
             }
