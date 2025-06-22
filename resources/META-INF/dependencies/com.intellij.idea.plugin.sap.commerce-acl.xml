@@ -19,7 +19,7 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
-<!--        <internalFileTemplate name="Acl File"/>-->
+        <internalFileTemplate name="Acl File"/>
 
         <fileType name="Access Control Lists" language="ACL" extensions="acl" fieldName="INSTANCE"
                   implementationClass="com.intellij.idea.plugin.hybris.acl.file.AclFileType"/>
