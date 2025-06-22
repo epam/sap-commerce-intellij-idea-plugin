@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_PROPERTIES_KEY
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -31,6 +33,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.JBSplitter
 import com.intellij.ui.ScrollPaneFactory
@@ -68,17 +71,44 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         return result
     }
 
+    fun findColumnName(psiElement: PsiElement): FlexibleSearchYColumnName? {
+        return PsiTreeUtil.findChildOfType(psiElement, FlexibleSearchYColumnName::class.java)
+            ?: findColumnNameInternal(psiElement, 0)
+    }
+
+    fun findColumnNameInternal(psiElement: PsiElement, depth: Int): FlexibleSearchYColumnName? {
+        return if (depth > 100) return null
+        else PsiTreeUtil.findChildOfType(psiElement, FlexibleSearchYColumnName::class.java)
+            ?: findColumnNameInternal(psiElement.parent, depth + 1)
+    }
+
+    fun findTypeName(psiElement: PsiElement): FlexibleSearchDefinedTableName? {
+        return PsiTreeUtil.findChildOfType(psiElement, FlexibleSearchDefinedTableName::class.java)
+            ?: findTypeNameInternal(psiElement, 0)
+    }
+
+    fun findTypeNameInternal(psiElement: PsiElement, depth: Int): FlexibleSearchDefinedTableName? {
+        return if (depth > 100) return null
+        else PsiTreeUtil.findChildOfType(psiElement, FlexibleSearchDefinedTableName::class.java)
+            ?: findTypeNameInternal(psiElement.parent, depth + 1)
+    }
+
+
     fun buildPropertyForm(project: Project): JScrollPane {
         val properties = (PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
             ?.let {
                 PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java)
             }
-            ?.map { it -> FlexibleSearchProperty(it.text.removePrefix("?"), "", "", "") }
-            ?.toMutableList()
-            ?: mutableListOf())
+            ?.map { it ->
+                val columnName = findColumnName(it.parent)
+                val typeName = findTypeName(it.parent)
+                println("Found column name: ${typeName?.text}.${columnName?.text}")
+                FlexibleSearchProperty(it.text.removePrefix("?"), "", "", "")
+            }
+            ?.toMutableSet()
+            ?: mutableSetOf())
 
         putUserData(FLEXIBLE_SEARCH_PROPERTIES_KEY, properties)
-
 
 
         val panel = panel {
@@ -210,5 +240,10 @@ data class FlexibleSearchProperty(
     var name: String,
     var operand: String,
     var value: String,
-    var description: String? = null
+    var description: String? = null,
+    var type: FieldType = FieldType.TEXT
 )
+
+enum class FieldType {
+    TEXT, DATE, NUMBER, BOOLEAN
+}
