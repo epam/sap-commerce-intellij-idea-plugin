@@ -36,10 +36,10 @@
 
 <!--        <annotator language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.annotation.AclAnnotator"/>-->
 
-<!--        <completion.contributor language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.completion.AclCompletionContributor"/>-->
+        <completion.contributor language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.completion.AclCompletionContributor"/>
 
-<!--        <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.acl.editor.event.AclLineEditorFactoryListener"/>-->
-<!--        <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.acl.vfs.event.AclVfsAsyncListener"/>-->
+        <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.acl.editor.event.AclLineEditorFactoryListener"/>
+        <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.acl.vfs.event.AclVfsAsyncListener"/>
 
         <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.acl.formatting.AclCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.acl.formatting.AclLanguageCodeStyleSettingsProvider"/>
