@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.uml.core.actions.DiagramToolbarActionsProviderImpl
+import com.intellij.util.application
 
 class TSDiagramToolbarActionsProvider : DiagramToolbarActionsProviderImpl() {
 
@@ -36,6 +36,6 @@ class TSDiagramToolbarActionsProvider : DiagramToolbarActionsProviderImpl() {
     }
 
     companion object {
-        fun getInstance(): TSDiagramToolbarActionsProvider = ApplicationManager.getApplication().getService(TSDiagramToolbarActionsProvider::class.java)
+        fun getInstance(): TSDiagramToolbarActionsProvider = application.getService(TSDiagramToolbarActionsProvider::class.java)
     }
 }

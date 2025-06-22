@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
-  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -31,7 +31,7 @@
         <action id="ccv2.open.settings.action" class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2OpenSettingsAction"/>
 
         <group id="ccv2.toolbar.actions">
-            <reference id="ccv2.open.settings.action"/>
+            <reference ref="ccv2.open.settings.action"/>
             <separator/>
 
             <group id="ccv2.toolbar.actions.show" text="View Options"
@@ -60,12 +60,12 @@
         </group>
 
         <group id="ccv2.environment.toolbar.actions">
-            <reference id="ccv2.open.settings.action"/>
+            <reference ref="ccv2.open.settings.action"/>
             <separator/>
         </group>
 
         <group id="ccv2.service.toolbar.actions">
-            <reference id="ccv2.open.settings.action"/>
+            <reference ref="ccv2.open.settings.action"/>
             <separator/>
         </group>
     </actions>

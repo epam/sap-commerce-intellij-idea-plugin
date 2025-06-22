@@ -76,6 +76,9 @@ object HybrisConstants {
     const val IMPEX = "ImpEx"
     const val IMPEX_FILE_EXTENSION = "impex"
 
+    const val ACL = "Access Control Lists"
+    const val ACL_FILE_EXTENSION = "acl"
+
     const val CONSOLE_TITLE_IMPEX = "[y] ImpEx Console"
     const val CONSOLE_TITLE_IMPEX_MONITOR = "[y] Monitor Console"
     const val CONSOLE_TITLE_GROOVY = "[y] Groovy Console"
@@ -751,7 +754,6 @@ object HybrisConstants {
         PolyglotQueryTypes.WHERE
     )
 
-
     val FXS_RESERVED_KEYWORDS = setOf(
         FlexibleSearchTypes.ALL,
         FlexibleSearchTypes.AND,
@@ -793,4 +795,8 @@ object HybrisConstants {
         FlexibleSearchTypes.WHEN,
         FlexibleSearchTypes.WHERE,
     )
+
+    object Documentation {
+        const val WIKI_ACL = "https://github.com/epam/sap-commerce-intellij-idea-plugin/wiki/Languages:-Access-Control-Lists"
+    }
 }

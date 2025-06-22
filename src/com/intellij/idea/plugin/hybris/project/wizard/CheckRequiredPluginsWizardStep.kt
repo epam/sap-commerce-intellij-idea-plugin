@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,7 +24,6 @@ import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.Plugin.*
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ApplicationNamesInfo
 import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.extensions.PluginId
@@ -33,6 +32,7 @@ import com.intellij.ui.*
 import com.intellij.ui.components.JBList
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import java.awt.event.MouseAdapter
@@ -194,8 +194,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         val pluginManager = PluginManager.getInstance()
         pluginIds.forEach { pluginManager.enablePlugin(it) }
 
-        ApplicationManager.getApplication()
-            .asSafely<ApplicationEx>()
+        application.asSafely<ApplicationEx>()
             ?.restart(true)
     }
 

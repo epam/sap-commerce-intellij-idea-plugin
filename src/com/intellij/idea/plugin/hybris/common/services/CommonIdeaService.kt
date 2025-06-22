@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,11 +24,11 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDe
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.util.application
 
 @Service
 class CommonIdeaService {
@@ -100,6 +100,6 @@ class CommonIdeaService {
         private val regex = "https?://".toRegex()
 
         @JvmStatic
-        fun getInstance(): CommonIdeaService = ApplicationManager.getApplication().getService(CommonIdeaService::class.java)
+        fun getInstance(): CommonIdeaService = application.getService(CommonIdeaService::class.java)
     }
 }

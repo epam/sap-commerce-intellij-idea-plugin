@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,9 +27,9 @@ import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
@@ -43,14 +43,14 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
+import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import java.util.*
 import java.util.regex.Pattern
-import com.intellij.openapi.diagnostic.logger
-import java.io.BufferedReader
 
 /**
  * Currently there is an issue with Order and Properties that are included in lookup and suggestion.
@@ -130,34 +130,31 @@ class PropertyService(val project: Project) {
 
     fun findProperty(query: String): String? = findAllProperties()[query]
 
-    fun findAutoCompleteProperties(query: String): List<IProperty> = ApplicationManager.getApplication()
-        .runReadAction<List<IProperty>> {
-            findAllIProperties()
-                .filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
-        }
+    fun findAutoCompleteProperties(query: String): List<IProperty> = application.runReadAction<List<IProperty>> {
+        findAllIProperties()
+            .filter { it.key != null && it.key!!.contains(query) || query.isBlank() }
+    }
 
-    fun findMacroProperty(query: String): IProperty? = ApplicationManager.getApplication()
-        .runReadAction<IProperty?> {
-            findAllIProperties()
-                .takeIf { it.isNotEmpty() }
-                ?.filter { it.key != null && query.contains(it.key!!) || query.isBlank() }
-                ?.takeIf { it.isNotEmpty() }
-                ?.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
-        }
+    fun findMacroProperty(query: String): IProperty? = application.runReadAction<IProperty?> {
+        findAllIProperties()
+            .takeIf { it.isNotEmpty() }
+            ?.filter { it.key != null && query.contains(it.key!!) || query.isBlank() }
+            ?.takeIf { it.isNotEmpty() }
+            ?.reduce { one, two -> if (one.key!!.length > two.key!!.length) one else two }
+    }
 
-    fun findAllProperties(): Map<String, String> = ApplicationManager.getApplication()
-        .runReadAction<Map<String, String>> {
-            findAllIProperties()
-                .filter { it.value != null && it.key != null }
-                .associateTo(LinkedHashMap()) { it.key!! to it.value!! }
-                .let { properties ->
-                    addEnvironmentProperties(properties)
-                    properties
-                        .filter { it.value.contains(nestedPropertyPrefix) }
-                        .forEach { replacePlaceholder(properties, it.key, HashSet<String>()) }
-                    return@let properties
-                }
-        }
+    fun findAllProperties(): Map<String, String> = application.runReadAction<Map<String, String>> {
+        findAllIProperties()
+            .filter { it.value != null && it.key != null }
+            .associateTo(LinkedHashMap()) { it.key!! to it.value!! }
+            .let { properties ->
+                addEnvironmentProperties(properties)
+                properties
+                    .filter { it.value.contains(nestedPropertyPrefix) }
+                    .forEach { replacePlaceholder(properties, it.key, HashSet<String>()) }
+                return@let properties
+            }
+    }
 
     fun initCache() = ReadAction
         .nonBlocking<Collection<IProperty>> {

@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.indexing
 
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootModel
@@ -30,6 +29,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer
 import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager
+import com.intellij.util.application
 
 class HybrisDirectoryIndexExcludePolicy(project: Project) : DirectoryIndexExcludePolicy {
 
@@ -117,7 +117,7 @@ class HybrisDirectoryIndexExcludePolicy(project: Project) : DirectoryIndexExclud
         override fun dispose() = Unit
 
         companion object {
-            fun getInstance(): HybrisVirtualFilePointerProvider = ApplicationManager.getApplication().getService(HybrisVirtualFilePointerProvider::class.java)
+            fun getInstance(): HybrisVirtualFilePointerProvider = application.getService(HybrisVirtualFilePointerProvider::class.java)
         }
     }
 }

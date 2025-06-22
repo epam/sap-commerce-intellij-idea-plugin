@@ -15,26 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.acl.file
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.file
+import com.intellij.idea.plugin.hybris.acl.AclLanguage
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.openapi.fileTypes.LanguageFileType
+import javax.swing.Icon
 
-import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.editor.ex.EditorEx
-import com.intellij.openapi.project.Project
-import com.intellij.util.application
+object AclFileType : LanguageFileType(AclLanguage) {
 
-@Service
-class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
-    "hybris.fxs.console",
-    "hybris.fxs.toolbar.left",
-    "hybris.fxs.toolbar.right",
-    FlexibleSearchFileType
-) {
+    override fun getName() = HybrisConstants.ACL
+    override fun getDescription() = "Access Control Lists language file"
+    override fun getDefaultExtension() = HybrisConstants.ACL_FILE_EXTENSION
+    override fun getIcon(): Icon = HybrisIcons.Acl.FILE
 
-    companion object {
-        fun getInstance(): FlexibleSearchFileToolbarInstaller = application.getService(FlexibleSearchFileToolbarInstaller::class.java)
-    }
-
-    override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
 }

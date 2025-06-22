@@ -16,25 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.file
+package com.intellij.idea.plugin.hybris.acl.file.actions
 
-import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.editor.ex.EditorEx
-import com.intellij.openapi.project.Project
-import com.intellij.util.application
+import com.intellij.idea.plugin.hybris.acl.file.AclFileType
+import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 
-@Service
-class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
-    "hybris.fxs.console",
-    "hybris.fxs.toolbar.left",
-    "hybris.fxs.toolbar.right",
-    FlexibleSearchFileType
+class AclValidateAction : AbstractExecuteAction(
+    AclFileType.defaultExtension,
+    HybrisConstants.CONSOLE_TITLE_IMPEX
 ) {
 
-    companion object {
-        fun getInstance(): FlexibleSearchFileToolbarInstaller = application.getService(FlexibleSearchFileToolbarInstaller::class.java)
+    init {
+        with(templatePresentation) {
+            text = "Validate Access Control Lists"
+            description = "Validate Access Control Lists (user rights) via remote SAP Commerce instance"
+            icon = HybrisIcons.Acl.Actions.VALIDATE
+        }
     }
 
-    override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }

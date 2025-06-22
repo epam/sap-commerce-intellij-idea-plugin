@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.file
+package com.intellij.idea.plugin.hybris.acl.file
 
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.components.Service
@@ -25,15 +25,15 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.application
 
 @Service
-class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
-    "hybris.fxs.console",
-    "hybris.fxs.toolbar.left",
-    "hybris.fxs.toolbar.right",
-    FlexibleSearchFileType
+class AclFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
+    "hybris.acl.console",
+    "hybris.acl.toolbar.left",
+    "hybris.acl.toolbar.right",
+    AclFileType
 ) {
 
     companion object {
-        fun getInstance(): FlexibleSearchFileToolbarInstaller = application.getService(FlexibleSearchFileToolbarInstaller::class.java)
+        fun getInstance(): AclFileToolbarInstaller = application.getService(AclFileToolbarInstaller::class.java)
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true

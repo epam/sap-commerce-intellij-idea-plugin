@@ -2,6 +2,8 @@
 
 ### `Access Control Lists` enhancements
 - Introduced Grammar & Lexer for new ACL Language (`.acl`) [#1405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1405)
+- Support Copyright for `.acl` files [#1406](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1406)
+- Introduced actions toolbar for `.acl` files [#1407](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1407)
 
 ## [2025.1.4]
 
