@@ -6,6 +6,7 @@
 - Introduced actions toolbar for `.acl` files [#1407](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1407)
 - Added language commenter [#1408](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1408)
 - Added language color light & dark schemes [#1409](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1409)
+- Added language formatter [#1410](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1410)
 
 ## [2025.1.4]
 
