@@ -19,6 +19,9 @@
 - Display notification panel about possible usage of the `Access Control Lists` language [#1418](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1418)
 - Improved table range detection [#1419](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1419)
 
+### `FlexibleSearch` enhancements
+- Added API to retrieve item type and expression of the bind parameter [#1420](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1420)
+
 ## [2025.1.4]
 
 ### `ImpEx` enhancements

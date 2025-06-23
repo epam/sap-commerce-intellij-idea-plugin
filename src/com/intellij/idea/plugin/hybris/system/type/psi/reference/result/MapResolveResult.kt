@@ -22,9 +22,9 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaMap
 import com.intellij.idea.plugin.hybris.system.type.model.MapType
 
 class MapResolveResult(
-    val meta: TSMetaMap,
+    override val meta: TSMetaMap,
     private val navigateTo: String = MapType.CODE
-) : TSResolveResult {
+) : TSResolveResult<MapType> {
     override fun getElement() = meta.retrieveDom()
         ?.let {
             when (navigateTo) {

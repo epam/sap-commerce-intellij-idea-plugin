@@ -19,10 +19,11 @@
 package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaAtomic
+import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
 
 class AtomicResolveResult(
-    val meta: TSMetaAtomic,
-) : TSResolveResult {
+    override val meta: TSMetaAtomic,
+) : TSResolveResult<AtomicType> {
     override fun getElement() = meta.retrieveDom()?.clazz?.xmlAttributeValue
     override fun isValidResult() = element != null && (meta.retrieveDom()?.isValid ?: false)
 }

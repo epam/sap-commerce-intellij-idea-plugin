@@ -19,10 +19,11 @@
 package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 
 class OrderingAttributeResolveResult(
-    val meta: TSMetaRelation.TSMetaOrderingAttribute
-) : TSResolveResult {
+    override val meta: TSMetaRelation.TSMetaOrderingAttribute
+) : TSResolveResult<RelationElement> {
     override fun getElement() = meta.retrieveDom()?.qualifier?.xmlAttributeValue
     override fun isValidResult() = element != null && (meta.retrieveDom()?.isValid ?: false)
 }

@@ -22,9 +22,9 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaCollection
 import com.intellij.idea.plugin.hybris.system.type.model.CollectionType
 
 class CollectionResolveResult(
-    val meta: TSMetaCollection,
+    override val meta: TSMetaCollection,
     private val navigateTo: String = CollectionType.CODE
-) : TSResolveResult {
+) : TSResolveResult<CollectionType> {
     override fun getElement() = meta.retrieveDom()
         ?.let {
             when (navigateTo) {

@@ -152,7 +152,6 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSYColumnReference> { ref ->
             val featureName = FxSUtils.getColumnName(ref.element.text)
 
-
             val type = ref.getTableToAlias()
                 ?.let {
                     val isAliasedTable = it.second != null

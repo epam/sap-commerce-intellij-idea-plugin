@@ -50,22 +50,26 @@ public class FlexibleSearchTableAliasNameImpl extends ASTWrapperPsiElement imple
   }
 
   @Override
-  public @Nullable String getName() {
+  @Nullable
+  public String getName() {
     return FlexibleSearchPsiUtil.getName(this);
   }
 
   @Override
-  public @NotNull PsiElement setName(@NotNull String newName) {
+  @NotNull
+  public PsiElement setName(@NotNull String newName) {
     return FlexibleSearchPsiUtil.setName(this, newName);
   }
 
   @Override
-  public @NotNull PsiElement getNameIdentifier() {
+  @NotNull
+  public PsiElement getNameIdentifier() {
     return FlexibleSearchPsiUtil.getNameIdentifier(this);
   }
 
   @Override
-  public @Nullable FlexibleSearchDefinedTableName getTable() {
+  @Nullable
+  public FlexibleSearchDefinedTableName getTable() {
     return FlexibleSearchPsiUtil.getTable(this);
   }
 

@@ -19,10 +19,11 @@
 package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
+import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 
 class AttributeResolveResult(
-    val meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute
-) : TSResolveResult {
+    override val meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute
+) : TSResolveResult<Attribute> {
     override fun getElement() = meta.retrieveDom()?.qualifier?.xmlAttributeValue
     override fun isValidResult() = element != null && (meta.retrieveDom()?.isValid ?: false)
 }

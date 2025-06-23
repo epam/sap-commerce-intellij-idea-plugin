@@ -19,11 +19,12 @@
 package com.intellij.idea.plugin.hybris.system.type.psi.reference.result
 
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
+import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.psi.PsiElement
 
 class RelationEndResolveResult(
-    val meta: TSMetaRelation.TSMetaRelationElement
-) : TSResolveResult {
+    override val meta: TSMetaRelation.TSMetaRelationElement
+) : TSResolveResult<RelationElement> {
     override fun getElement(): PsiElement? = meta.retrieveDom()
         ?.let { if (meta.isNavigable) it.qualifier else it.type }
         ?.xmlAttributeValue

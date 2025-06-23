@@ -29,6 +29,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.*
+import com.intellij.util.asSafely
 
 fun getHeaderLine(element: ImpexFullHeaderParameter): ImpexHeaderLine? = PsiTreeUtil
     .getParentOfType(element, ImpexHeaderLine::class.java)
@@ -153,7 +154,7 @@ fun getReferenceItemTypeName(element: ImpexParameter): String? = (
             ?.anyHeaderParameterName
     )
     ?.reference
-    ?.let { it as PsiPolyVariantReference }
+    ?.asSafely<PsiPolyVariantReference>()
     ?.multiResolve(false)
     ?.firstOrNull()
     ?.let {
