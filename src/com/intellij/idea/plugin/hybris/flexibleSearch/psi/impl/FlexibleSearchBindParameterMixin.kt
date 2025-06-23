@@ -44,7 +44,12 @@ abstract class FlexibleSearchBindParameterMixin(node: ASTNode) : ASTWrapperPsiEl
         Function<PsiElement, FlexibleSearchExpression?> {
             it.parent?.asSafely<FlexibleSearchExpression>()
         },
-        Predicate<PsiElement> { it is FlexibleSearchLiteralExpression }
+        Predicate<PsiElement> {
+            it is FlexibleSearchLiteralExpression
+            || it is FlexibleSearchParenExpression
+            || it is FlexibleSearchOrExpression
+            || it is FlexibleSearchAndExpression
+        }
     )
         ?.asSafely<FlexibleSearchExpression>()
 

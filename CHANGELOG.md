@@ -21,6 +21,7 @@
 
 ### `FlexibleSearch` enhancements
 - Added API to retrieve item type and expression of the bind parameter [#1420](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1420)
+- Improved code formatting for expressions within `WHERE` clause [#1421](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1421)
 
 ## [2025.1.4]
 

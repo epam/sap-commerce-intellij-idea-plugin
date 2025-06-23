@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,15 +20,20 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.formatting
 
 import com.intellij.formatting.*
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchJoinOperator
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchWhereClause
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.Key
 import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfType
 
 class FxSBlock internal constructor(
     private val node: ASTNode,
@@ -44,6 +49,10 @@ class FxSBlock internal constructor(
     override fun getSpacing(child1: Block?, child2: Block) = spacingBuilder.getSpacing(this, child1, child2)
     override fun getIndent() = indent
 
+    companion object {
+        private val KEY_WHERE_CLAUSE = Key.create<Alignment>("WHERE_CLAUSE_ALIGNMENTS")
+    }
+
     override fun buildChildren(): MutableList<Block> {
         var child = node.firstChildNode
         val blocks = mutableListOf<Block>()
@@ -54,6 +63,8 @@ class FxSBlock internal constructor(
                     calculateAlignment(child),
                     calculateIndent(child),
                     calculateWrap(child),
+//                    null,
+//                    null,
                     codeStyleSettings,
                     spacingBuilder
                 )
@@ -68,16 +79,39 @@ class FxSBlock internal constructor(
         return blocks
     }
 
-    private fun calculateAlignment(child: ASTNode) = when (child.elementType) {
-        RBRACE -> {
-            if (child.treeParent.elementType == Y_FROM_CLAUSE) {
-                null
-            } else {
-                Alignment.createAlignment()
+    private fun calculateAlignment(child: ASTNode): Alignment? {
+        return when {
+            child.elementType == RBRACE -> {
+                if (child.treeParent.elementType == Y_FROM_CLAUSE) {
+                    null
+                } else {
+                    Alignment.createAlignment()
+                }
             }
-        }
 
-        else -> Alignment.createAlignment()
+            child.psi is FlexibleSearchExpression -> {
+                val whereClause = child.psi.parentOfType<FlexibleSearchWhereClause>() ?: return null
+                whereClause
+                    .childrenOfType<FlexibleSearchExpression>()
+                    .firstOrNull()
+                    ?.takeIf { it == child.psi }
+                    ?: return null
+
+                val alignment = Alignment.createAlignment()
+
+                whereClause.putUserData(KEY_WHERE_CLAUSE, alignment)
+
+                alignment
+            }
+
+            child.elementType == AND || child.elementType == OR -> {
+                val whereClause = child.psi.parentOfType<FlexibleSearchWhereClause>() ?: return null
+
+                whereClause.getUserData(KEY_WHERE_CLAUSE)
+            }
+
+            else -> Alignment.createAlignment()
+        }
     }
 
     private fun calculateIndent(child: ASTNode) = when (child.elementType) {
