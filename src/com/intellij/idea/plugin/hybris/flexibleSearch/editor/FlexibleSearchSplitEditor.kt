@@ -22,6 +22,8 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_PR
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -93,18 +95,27 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
             ?: findTypeNameInternal(psiElement.parent, depth + 1)
     }
 
+    fun createFlexibleSearchProperty(psiElement: FlexibleSearchBindParameter, project: Project): FlexibleSearchProperty {
+        val typeName = findTypeName(psiElement.parent) ?: return createDefaultFlexibleSearchProperty(psiElement)
+        val columnName = findColumnName(psiElement.parent) ?: return createDefaultFlexibleSearchProperty(psiElement)
+        TSMetaModelAccess.getInstance(project).findMetaItemByName(typeName.text)
+            ?.attributes
+            ?.get(columnName.text)
+            ?.let { attr -> attr.type?.let { type -> return FlexibleSearchProperty(attr, psiElement.text.removePrefix("?"), "", "", attr.description)} }
+
+
+        println("Found column name: ${typeName.text}.${columnName.text}")
+        return createDefaultFlexibleSearchProperty(psiElement)
+    }
+
+    private fun createDefaultFlexibleSearchProperty(psiElement: FlexibleSearchBindParameter): FlexibleSearchProperty = FlexibleSearchProperty(null, psiElement.text.removePrefix("?"), "", "", "")
 
     fun buildPropertyForm(project: Project): JScrollPane {
         val properties = (PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
             ?.let {
                 PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java)
             }
-            ?.map { it ->
-                val columnName = findColumnName(it.parent)
-                val typeName = findTypeName(it.parent)
-                println("Found column name: ${typeName?.text}.${columnName?.text}")
-                FlexibleSearchProperty(it.text.removePrefix("?"), "", "", "")
-            }
+            ?.map { it -> createFlexibleSearchProperty(it, project) }
             ?.toMutableSet()
             ?: mutableSetOf())
 
@@ -237,6 +248,7 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 }
 
 data class FlexibleSearchProperty(
+    var attribute: TSGlobalMetaItem.TSGlobalMetaItemAttribute?,
     var name: String,
     var operand: String,
     var value: String,
