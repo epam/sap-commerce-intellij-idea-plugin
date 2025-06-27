@@ -34,8 +34,6 @@ class FlexibleSearchSplitFileEditorProvider : FileEditorProvider, DumbAware {
         return file.fileType is FlexibleSearchFileType
     }
 
-    //override fun acceptRequiresReadAction() = false
-
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
         val editor = TextEditorProvider.getInstance().createEditor(project, file)
         return FlexibleSearchSplitEditor(editor as TextEditor, project)

@@ -52,7 +52,7 @@ abstract class AbstractExecuteAction(
             content = editor.document.text
         }
 
-        content = processContent(content, editor, project)
+        content = processContent(e, content, editor, project)
 
         with(HybrisToolWindowService.getInstance(project)) {
             activateToolWindow()
@@ -73,7 +73,7 @@ abstract class AbstractExecuteAction(
         }
     }
 
-    open fun processContent(content: String, editor: Editor, project: Project) = content
+    open fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project) = content
 
     override fun update(e: AnActionEvent) {
         val file = e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)

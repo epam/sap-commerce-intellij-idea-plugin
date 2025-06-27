@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_PR
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
@@ -33,21 +32,19 @@ import com.intellij.openapi.ui.getPreferredFocusedComponent
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.JBSplitter
 import com.intellij.ui.ScrollPaneFactory
-import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.builder.bindText
+import com.intellij.ui.dsl.builder.panel
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.JTextField
+import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
@@ -59,6 +56,26 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     constructor(e: TextEditor, project: Project) : super() {
         flexibleSearchEditor = e
         flexibleSearchComponent = createComponent(project)
+    }
+
+    fun triggerLayoutChange() {
+        val splitter = flexibleSearchComponent.components[0] as JBSplitter
+        val parametersPanel = splitter.secondComponent
+        parametersPanel.isVisible = !parametersPanel.isVisible
+
+//        splitter.firstComponent.invalidate()
+//        splitter.secondComponent.invalidate()
+//        flexibleSearchComponent.invalidate()
+
+//        splitter.firstComponent.repaint()
+//        splitter.secondComponent.repaint()
+
+        //flexibleSearchComponent.repaint()
+
+        flexibleSearchComponent.requestFocus()
+
+        splitter.firstComponent.requestFocus()
+
     }
 
     private fun createComponent(project: Project): JComponent {
@@ -73,54 +90,14 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         return result
     }
 
-    fun findColumnName(psiElement: PsiElement): FlexibleSearchYColumnName? {
-        return PsiTreeUtil.findChildOfType(psiElement, FlexibleSearchYColumnName::class.java)
-            ?: findColumnNameInternal(psiElement, 0)
-    }
-
-    fun findColumnNameInternal(psiElement: PsiElement, depth: Int): FlexibleSearchYColumnName? {
-        return if (depth > 100) return null
-        else PsiTreeUtil.findChildOfType(psiElement, FlexibleSearchYColumnName::class.java)
-            ?: findColumnNameInternal(psiElement.parent, depth + 1)
-    }
-
-    fun findTypeName(psiElement: PsiElement): FlexibleSearchDefinedTableName? {
-        return PsiTreeUtil.findChildOfType(psiElement, FlexibleSearchDefinedTableName::class.java)
-            ?: findTypeNameInternal(psiElement, 0)
-    }
-
-    fun findTypeNameInternal(psiElement: PsiElement, depth: Int): FlexibleSearchDefinedTableName? {
-        return if (depth > 100) return null
-        else PsiTreeUtil.findChildOfType(psiElement, FlexibleSearchDefinedTableName::class.java)
-            ?: findTypeNameInternal(psiElement.parent, depth + 1)
-    }
-
-    fun createFlexibleSearchProperty(psiElement: FlexibleSearchBindParameter, project: Project): FlexibleSearchProperty {
-        val typeName = findTypeName(psiElement.parent) ?: return createDefaultFlexibleSearchProperty(psiElement)
-        val columnName = findColumnName(psiElement.parent) ?: return createDefaultFlexibleSearchProperty(psiElement)
-        TSMetaModelAccess.getInstance(project).findMetaItemByName(typeName.text)
-            ?.attributes
-            ?.get(columnName.text)
-            ?.let { attr -> attr.type?.let { type -> return FlexibleSearchProperty(attr, psiElement.text.removePrefix("?"), "", "", attr.description)} }
-
-
-        println("Found column name: ${typeName.text}.${columnName.text}")
-        return createDefaultFlexibleSearchProperty(psiElement)
-    }
-
-    private fun createDefaultFlexibleSearchProperty(psiElement: FlexibleSearchBindParameter): FlexibleSearchProperty = FlexibleSearchProperty(null, psiElement.text.removePrefix("?"), "", "", "")
-
     fun buildPropertyForm(project: Project): JScrollPane {
         val properties = (PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
-            ?.let {
-                PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java)
-            }
-            ?.map { it -> createFlexibleSearchProperty(it, project) }
+            ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
+            ?.map { createDefaultFlexibleSearchProperty(it) }
             ?.toMutableSet()
             ?: mutableSetOf())
 
         putUserData(FLEXIBLE_SEARCH_PROPERTIES_KEY, properties)
-
 
         val panel = panel {
             if (properties.isEmpty()) {
@@ -187,6 +164,9 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
             preferredSize = Dimension(600, 400)
         }
     }
+
+    private fun createDefaultFlexibleSearchProperty(psiElement: FlexibleSearchBindParameter): FlexibleSearchProperty =
+        FlexibleSearchProperty(null, psiElement.text.removePrefix("?"), "", "", "")
 
     override fun getComponent(): JComponent {
         return flexibleSearchComponent
