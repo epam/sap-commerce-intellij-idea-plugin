@@ -49,7 +49,7 @@ class HybrisToolWindowService(val project: Project) {
             }
     }
 
-    fun finConsolesView() = hybrisToolWindow()
+    fun findConsolesView() = hybrisToolWindow()
         ?.contentManager
         ?.findContent(HybrisToolWindowFactory.CONSOLES_ID)
         ?.component

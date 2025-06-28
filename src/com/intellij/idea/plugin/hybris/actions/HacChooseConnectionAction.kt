@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,14 +17,18 @@
  */
 package com.intellij.idea.plugin.hybris.actions
 
+import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.options.ProjectIntegrationsSettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
+import com.intellij.idea.plugin.hybris.toolwindow.ReplicaSelectionDialog
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.options.ShowSettingsUtil
+import com.intellij.util.asSafely
 import kotlinx.html.div
 import kotlinx.html.p
 import kotlinx.html.stream.createHTML
@@ -54,8 +58,34 @@ class HacChooseConnectionAction : DefaultActionGroup() {
                     override fun actionPerformed(e: AnActionEvent) = RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, it)
                 }
             }
+        val replicas = listOf(
+            object : AnAction() {
+                override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-        return actions + Separator.create("Available Connections") + connectionActions
+                override fun actionPerformed(e: AnActionEvent) {
+                    val project = e.project ?: return
+                    val component = e.inputEvent?.source?.asSafely<Component>()
+                        ?: return
+                    ReplicaSelectionDialog(project, component).showAndGet()
+                }
+
+                override fun update(e: AnActionEvent) {
+                    val project = e.project ?: return
+                    val replica = project.getUserData(HybrisHacHttpClient.REPLICA_KEY)
+                    e.presentation.text = replica
+                        ?.toString()
+                        ?: "Auto-discover replica"
+                    e.presentation.icon = replica?.let { AllIcons.Actions.Checked }
+                        ?: AllIcons.Actions.Lightning
+                }
+            },
+        )
+
+        return actions +
+            Separator.create("Available Connections") +
+            connectionActions +
+            Separator.create("Replicas") +
+            replicas
     }
 
     override fun update(e: AnActionEvent) {
