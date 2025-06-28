@@ -21,7 +21,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.psi.injector.GroovyLanguageInjector" />
+        <languageInjector implementation="com.intellij.idea.plugin.hybris.psi.injector.GroovyLanguageInjector"/>
 
         <projectConfigurable id="hybris.project.groovy.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
@@ -32,21 +32,21 @@
     </extensions>
 
     <actions>
-        <action id="hybris.groovy.execute.commit.mode.on" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecuteInCommitModeOnAction">
-            <keyboard-shortcut first-keystroke="control shift alt ENTER" keymap="$default"/>
-        </action>
-        <action id="hybris.groovy.execute.commit.mode.off" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecuteInCommitModeOffAction">
-            <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
-        </action>
-        <action id="hybris.groovy.openQuery" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenQueryAction"/>
-        <action id="hybris.groovy.openSettings" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenSettingsAction"/>
-
         <group id="hybris.groovy.toolbar.left">
-            <reference ref="hybris.groovy.execute.commit.mode.on"/>
-            <reference ref="hybris.groovy.execute.commit.mode.off"/>
-            <reference ref="hybris.groovy.openQuery"/>
+            <action id="hybris.groovy.execute" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecuteAction">
+                <keyboard-shortcut first-keystroke="control shift alt ENTER" keymap="$default"/>
+            </action>
+            <action id="hybris.groovy.openQuery" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenQueryAction"/>
             <separator/>
-            <reference ref="hybris.groovy.openSettings"/>
+            <action id="hybris.groovy.openSettings" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenSettingsAction"/>
+            <separator/>
+
+            <group id="hybris.groovy.toolbar.tx" popup="true"
+                   class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyTransactionModeActionGroup">
+                <separator key="hybris.groovy.actions.transaction.mode.separator"/>
+                <action id="hybris.groovy.tx.commit" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyCommitTransactionAction"/>
+                <action id="hybris.groovy.tx.execute" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyRollbackTransactionAction"/>
+            </group>
         </group>
         <group id="hybris.groovy.toolbar.right">
             <reference ref="hybris.hac.chooseConnection"/>

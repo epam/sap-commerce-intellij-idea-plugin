@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,17 +18,54 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
+import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.TransactionMode
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.util.asSafely
+import org.jetbrains.plugins.groovy.GroovyFileType
 
-class GroovyExecuteInCommitModeOnAction : AbstractGroovyExecuteAction(
-    "Execute Groovy Script<br/>Commit Mode <strong><font color='#57965C'>ON</font></strong>",
-    "Execute Groovy Script on a remote SAP Commerce instance",
-    HybrisIcons.Console.Actions.EXECUTE,
-    true
-)
-class GroovyExecuteInCommitModeOffAction : AbstractGroovyExecuteAction(
-    "Execute Groovy Script<br/>Commit Mode <strong><font color='#C75450'>OFF</font></strong>",
-    "Execute Groovy Script on a remote SAP Commerce instance",
-    HybrisIcons.Console.Actions.EXECUTE_COMMIT_MODE_OFF,
-    false
-)
+class GroovyExecuteAction : AbstractExecuteAction(
+    GroovyFileType.GROOVY_FILE_TYPE.defaultExtension,
+    HybrisConstants.CONSOLE_TITLE_GROOVY
+) {
+    init {
+        with(templatePresentation) {
+            text = "Execute Groovy Script"
+            description = "Execute Groovy Script on a remote SAP Commerce instance"
+            icon = HybrisIcons.Console.Actions.EXECUTE
+        }
+    }
+
+    override fun doExecute(e: AnActionEvent, consoleService: HybrisConsoleService) {
+        val project = e.project ?: return
+
+        consoleService.getActiveConsole()
+            ?.asSafely<HybrisGroovyConsole>()
+            ?.also {
+                val commitMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode == TransactionMode.COMMIT
+                it.updateCommitMode(commitMode)
+                super.doExecute(e, consoleService)
+            }
+    }
+
+    override fun update(e: AnActionEvent) {
+        val project = e.project ?: return
+
+        when (DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode) {
+            TransactionMode.ROLLBACK -> {
+                e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE_ROLLBACK
+                e.presentation.text = "Execute Groovy Script<br/>Commit Mode <strong><font color='#C75450'>OFF</font></strong>"
+            }
+
+            TransactionMode.COMMIT -> {
+                e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE
+                e.presentation.text = "Execute Groovy Script<br/>Commit Mode <strong><font color='#57965C'>ON</font></strong>"
+            }
+        }
+    }
+}

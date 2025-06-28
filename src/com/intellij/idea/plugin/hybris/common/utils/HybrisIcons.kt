@@ -318,7 +318,7 @@ object HybrisIcons {
         object Actions {
             val OPEN = getIcon("/icons/console/open.svg")
             val EXECUTE = AllIcons.Actions.Execute
-            val EXECUTE_COMMIT_MODE_OFF = getIcon("/icons/console/executeWithCommitModeOff.svg")
+            val EXECUTE_ROLLBACK = getIcon("/icons/console/executeRollback.svg")
             val SUSPEND = AllIcons.Actions.Suspend
         }
     }
