@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,24 +24,24 @@ import com.intellij.openapi.project.Project
 @Service(Service.Level.PROJECT)
 class HybrisConsoleService(private val project: Project) {
 
-    fun findConsole(consoleTitle: String) = HybrisToolWindowService.getInstance(project).finConsolesView()
+    fun findConsole(consoleTitle: String) = HybrisToolWindowService.getInstance(project).findConsolesView()
         ?.findConsole(consoleTitle)
 
     fun setActiveConsole(console: HybrisConsole) {
-        HybrisToolWindowService.getInstance(project).finConsolesView()
+        HybrisToolWindowService.getInstance(project).findConsolesView()
             ?.setActiveConsole(console)
     }
 
-    fun getActiveConsole() = HybrisToolWindowService.getInstance(project).finConsolesView()
+    fun getActiveConsole() = HybrisToolWindowService.getInstance(project).findConsolesView()
         ?.getActiveConsole()
 
     fun validateImpex() {
-        HybrisToolWindowService.getInstance(project).finConsolesView()
+        HybrisToolWindowService.getInstance(project).findConsolesView()
             ?.validateImpex()
     }
 
     fun executeStatement() {
-        HybrisToolWindowService.getInstance(project).finConsolesView()
+        HybrisToolWindowService.getInstance(project).findConsolesView()
             ?.execute()
     }
 
