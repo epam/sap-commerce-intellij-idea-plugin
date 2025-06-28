@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "SAP-Commerce-Developers-Toolset"
+rootProject.name = "SAP Commerce Developers Toolset"
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
