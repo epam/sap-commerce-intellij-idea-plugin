@@ -33,11 +33,13 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
     HybrisIcons.FlexibleSearch.SHOW_PARAMETERS_PANEL
 ), DumbAware {
 
-    var visible: Boolean = false
-
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
+        val editor = e.getData(PlatformDataKeys.FILE_EDITOR) ?: return
+        val flexibleSearchEditor = editor as? FlexibleSearchSplitEditor ?: return
+        val visible = flexibleSearchEditor.isParameterPanelVisible()
+
         if (visible) {
             e.presentation.text = message("hybris.fxs.actions.hide_parameters")
             e.presentation.description = message("hybris.fxs.actions.hide_parameters.description")
@@ -52,8 +54,7 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
     override fun actionPerformed(e: AnActionEvent) {
         val editor = e.getData(PlatformDataKeys.FILE_EDITOR) ?: return
         val flexibleSearchEditor = editor as? FlexibleSearchSplitEditor ?: return
-
-        visible = !visible
+        val visible = !flexibleSearchEditor.isParameterPanelVisible()
 
         flexibleSearchEditor.triggerLayoutChange(visible)
     }

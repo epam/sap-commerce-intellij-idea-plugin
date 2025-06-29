@@ -20,8 +20,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_PROPERTIES_KEY
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
@@ -32,13 +30,12 @@ import com.intellij.openapi.ui.getPreferredFocusedComponent
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.JBSplitter
 import com.intellij.ui.ScrollPaneFactory
+import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 import java.awt.BorderLayout
@@ -68,6 +65,11 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
     }
 
+    fun isParameterPanelVisible(): Boolean {
+        val splitter = flexibleSearchComponent.components[0] as JBSplitter
+        return splitter.secondComponent.isVisible
+    }
+
     private fun createComponent(project: Project): JComponent {
         val splitter = JBSplitter(false, 0.07f, 0.05f, 0.85f)
         splitter.splitterProportionKey = "SplitFileEditor.Proportion"
@@ -93,6 +95,8 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
             if (properties.isEmpty()) {
                 row {
                     label("FlexibleSearch query doesn't have parameters")
+                        .align(Align.CENTER)
+                        .resizableColumn()
                 }
             } else {
                 // Calculate maximum label width, capped at width of 50 characters
