@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_PROPERTIES_KEY
+import com.intellij.idea.plugin.hybris.flexibleSearch.listeners.FlexibleSearchSplitEditorListener
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
@@ -39,6 +40,7 @@ import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.messages.Topic
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
@@ -54,6 +56,29 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     constructor(e: TextEditor, project: Project) : super() {
         flexibleSearchEditor = e
         flexibleSearchComponent = createComponent(project)
+
+        flexibleSearchEditor.editor.document.addDocumentListener(object : com.intellij.openapi.editor.event.DocumentListener {
+            override fun documentChanged(event: com.intellij.openapi.editor.event.DocumentEvent) {
+                project.messageBus.syncPublisher(TOPIC_EDITOR_CHANGED).editorChanged(event.document)
+            }
+        })
+
+        with(project.messageBus.connect(this)) {
+            subscribe(TOPIC_EDITOR_CHANGED, object : FlexibleSearchSplitEditorListener {
+                override fun editorChanged(document: com.intellij.openapi.editor.Document) {
+                    if (flexibleSearchEditor.editor.document == document) {
+                        refreshComponent(project)
+                    }
+                }
+            })
+        }
+    }
+
+    private fun refreshComponent(project: Project) {
+        val splitter = flexibleSearchComponent.components[0] as JBSplitter
+        val isVisible = splitter.secondComponent.isVisible
+        splitter.secondComponent = buildPropertyForm(project)
+        splitter.secondComponent.isVisible = isVisible
     }
 
     fun triggerLayoutChange(showPanel: Boolean) {
@@ -83,6 +108,8 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     }
 
     fun buildPropertyForm(project: Project): JScrollPane {
+        PsiDocumentManager.getInstance(project).commitDocument(editor.document)
+
         val properties = (PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
             ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
             ?.map { createDefaultFlexibleSearchProperty(it) }
@@ -236,6 +263,8 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
     companion object {
         private const val serialVersionUID: Long = -3770395176190649196L
+
+        val TOPIC_EDITOR_CHANGED = Topic("FXS_EDITOR_CHANGED", FlexibleSearchSplitEditorListener::class.java)
     }
 
 }
@@ -246,4 +275,3 @@ data class FlexibleSearchProperty(
     var value: String,
     var description: String? = null,
 )
-
