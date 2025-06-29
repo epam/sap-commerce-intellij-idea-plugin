@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_PROPERTIES_KEY
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -37,19 +36,15 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.JBSplitter
 import com.intellij.ui.ScrollPaneFactory
-import com.intellij.ui.components.JBLabel
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.util.ui.UI
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
-import javax.swing.text.html.HTMLDocument
-import javax.swing.text.html.HTMLEditorKit
 
 class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
@@ -68,7 +63,6 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
         flexibleSearchComponent.requestFocus()
         splitter.firstComponent.requestFocus()
-
     }
 
     fun isParameterPanelVisible(): Boolean {
@@ -162,9 +156,7 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
                                 private fun fire() {
                                     property.value = valueField.text
                                 }
-
                             })
-
                         }
                         if (property.description?.isNotBlank() ?: false) {
                             row {
@@ -186,7 +178,7 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     }
 
     private fun createDefaultFlexibleSearchProperty(psiElement: FlexibleSearchBindParameter): FlexibleSearchProperty =
-        FlexibleSearchProperty(null, psiElement.text.removePrefix("?"), "", "", "")
+        FlexibleSearchProperty(psiElement.text.removePrefix("?"), "", "", "")
 
     override fun getComponent(): JComponent {
         return flexibleSearchComponent
@@ -197,7 +189,7 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     }
 
     override fun getName(): String {
-        return "FlexibleSearch split editor"
+        return "FlexibleSearch Split Editor"
     }
 
     override fun setState(state: FileEditorState) {
@@ -243,19 +235,15 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     }
 
     companion object {
-        private const val serialVersionUID: Long = -3185914436741110761L
+        private const val serialVersionUID: Long = -3770395176190649196L
     }
+
 }
 
 data class FlexibleSearchProperty(
-    var attribute: TSGlobalMetaItem.TSGlobalMetaItemAttribute?,
     var name: String,
     var operand: String,
     var value: String,
     var description: String? = null,
-    var type: FieldType = FieldType.TEXT
 )
 
-enum class FieldType {
-    TEXT, DATE, NUMBER, BOOLEAN
-}
