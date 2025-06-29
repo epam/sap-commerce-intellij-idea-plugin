@@ -21,7 +21,10 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.project.DumbAware
 
 class FlexibleSearchToggleParametersPanelAction : AnAction(
@@ -34,14 +37,7 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun actionPerformed(e: AnActionEvent) {
-        val editor = e.getData(PlatformDataKeys.FILE_EDITOR) ?: return
-        val flexibleSearchEditor = editor as? FlexibleSearchSplitEditor ?: return
-
-        visible = !visible
-
-        flexibleSearchEditor.triggerLayoutChange(visible)
-
+    override fun update(e: AnActionEvent) {
         if (visible) {
             e.presentation.text = message("hybris.fxs.actions.hide_parameters")
             e.presentation.description = message("hybris.fxs.actions.hide_parameters.description")
@@ -50,7 +46,15 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
             e.presentation.text = message("hybris.fxs.actions.show_parameters")
             e.presentation.description = message("hybris.fxs.actions.show_parameters.description")
             e.presentation.icon = HybrisIcons.FlexibleSearch.SHOW_PARAMETERS_PANEL
-
         }
+    }
+
+    override fun actionPerformed(e: AnActionEvent) {
+        val editor = e.getData(PlatformDataKeys.FILE_EDITOR) ?: return
+        val flexibleSearchEditor = editor as? FlexibleSearchSplitEditor ?: return
+
+        visible = !visible
+
+        flexibleSearchEditor.triggerLayoutChange(visible)
     }
 }
