@@ -27,8 +27,10 @@ import com.intellij.openapi.project.DumbAware
 class FlexibleSearchToggleParametersPanelAction : AnAction(
     message("hybris.fxs.actions.show_parameters"),
     message("hybris.fxs.actions.show_parameters.description"),
-    HybrisIcons.FlexibleSearch.PARAMETERS_PANEL
+    HybrisIcons.FlexibleSearch.SHOW_PARAMETERS_PANEL
 ), DumbAware {
+
+    var visible: Boolean = false
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -36,8 +38,19 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
         val editor = e.getData(PlatformDataKeys.FILE_EDITOR) ?: return
         val flexibleSearchEditor = editor as? FlexibleSearchSplitEditor ?: return
 
-        flexibleSearchEditor.triggerLayoutChange()
+        visible = !visible
 
-        Toggleable.setSelected(e.presentation, true)
+        flexibleSearchEditor.triggerLayoutChange(visible)
+
+        if (visible) {
+            e.presentation.text = message("hybris.fxs.actions.hide_parameters")
+            e.presentation.description = message("hybris.fxs.actions.hide_parameters.description")
+            e.presentation.icon = HybrisIcons.FlexibleSearch.HIDE_PARAMETERS_PANEL
+        } else {
+            e.presentation.text = message("hybris.fxs.actions.show_parameters")
+            e.presentation.description = message("hybris.fxs.actions.show_parameters.description")
+            e.presentation.icon = HybrisIcons.FlexibleSearch.SHOW_PARAMETERS_PANEL
+
+        }
     }
 }

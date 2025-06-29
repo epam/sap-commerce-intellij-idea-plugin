@@ -58,22 +58,12 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         flexibleSearchComponent = createComponent(project)
     }
 
-    fun triggerLayoutChange() {
+    fun triggerLayoutChange(showPanel: Boolean) {
         val splitter = flexibleSearchComponent.components[0] as JBSplitter
         val parametersPanel = splitter.secondComponent
-        parametersPanel.isVisible = !parametersPanel.isVisible
-
-//        splitter.firstComponent.invalidate()
-//        splitter.secondComponent.invalidate()
-//        flexibleSearchComponent.invalidate()
-
-//        splitter.firstComponent.repaint()
-//        splitter.secondComponent.repaint()
-
-        //flexibleSearchComponent.repaint()
+        parametersPanel.isVisible = showPanel
 
         flexibleSearchComponent.requestFocus()
-
         splitter.firstComponent.requestFocus()
 
     }
@@ -162,6 +152,7 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
         return ScrollPaneFactory.createScrollPane(panel, true).apply {
             preferredSize = Dimension(600, 400)
+            isVisible = false
         }
     }
 
