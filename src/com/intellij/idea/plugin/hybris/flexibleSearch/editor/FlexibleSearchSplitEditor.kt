@@ -33,17 +33,23 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.InlineBanner
 import com.intellij.ui.JBSplitter
 import com.intellij.ui.ScrollPaneFactory
+import com.intellij.ui.components.JBLabel
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.ui.UI
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
+import javax.swing.text.html.HTMLDocument
+import javax.swing.text.html.HTMLEditorKit
 
 class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
@@ -92,6 +98,27 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         putUserData(FLEXIBLE_SEARCH_PROPERTIES_KEY, properties)
 
         val panel = panel {
+            row {
+                val infoBanner = InlineBanner(
+                    """
+                        <html><body style='width: 100%'>
+                        <p>This feature may be unstable. Use with caution.</p>
+                        </body></html>
+                    """.trimIndent(),
+                    EditorNotificationPanel.Status.Warning
+                )
+
+                cell(infoBanner)
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }
+
+           group("Notes:") {
+               row {
+                   comment("String parameters must be wrapped in single quotes: ''value''.")
+               }
+           }
+
             if (properties.isEmpty()) {
                 row {
                     label("FlexibleSearch query doesn't have parameters")
@@ -133,17 +160,15 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
                                 override fun changedUpdate(e: DocumentEvent?) = fire()
 
                                 private fun fire() {
-                                    // Call the callback with the updated list
                                     property.value = valueField.text
-                                    println("Property ${property.name} changed to ${valueField.text}")
                                 }
 
                             })
 
                         }
-                        if (!property.description.isNullOrBlank()) {
+                        if (property.description?.isNotBlank() ?: false) {
                             row {
-                                label(property.description ?: "")
+                                label(property.description!!)
                                     .applyToComponent {
                                         font = font.deriveFont(font.size2D - 1f)
                                     }
