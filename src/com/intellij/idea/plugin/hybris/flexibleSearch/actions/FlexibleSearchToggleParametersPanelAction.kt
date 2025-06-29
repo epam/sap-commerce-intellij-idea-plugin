@@ -21,17 +21,27 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
+import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.actionSystem.Presentation
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
 
 class FlexibleSearchToggleParametersPanelAction : AnAction(
     message("hybris.fxs.actions.show_parameters"),
     message("hybris.fxs.actions.show_parameters.description"),
     HybrisIcons.FlexibleSearch.SHOW_PARAMETERS_PANEL
-), DumbAware {
+), DumbAware, Disposable {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -39,6 +49,7 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
         val editor = e.getData(PlatformDataKeys.FILE_EDITOR) ?: return
         val flexibleSearchEditor = editor as? FlexibleSearchSplitEditor ?: return
         val visible = flexibleSearchEditor.isParameterPanelVisible()
+        val project = e.project ?: return
 
         if (visible) {
             e.presentation.text = message("hybris.fxs.actions.hide_parameters")
@@ -49,6 +60,42 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
             e.presentation.description = message("hybris.fxs.actions.show_parameters.description")
             e.presentation.icon = HybrisIcons.FlexibleSearch.SHOW_PARAMETERS_PANEL
         }
+
+        val metaModelStateService = project.service<TSMetaModelStateService>()
+
+        when {
+            DumbService.isDumb(project) -> e.presentation.isEnabled = false
+            !metaModelStateService.initialized() -> e.presentation.isEnabled = false
+
+            else -> e.presentation.isEnabled = true
+        }
+
+        installSettingsListener(e.presentation, project)
+    }
+
+    private fun installSettingsListener(presentation: Presentation, project: Project) {
+        with(project.messageBus.connect(this)) {
+            subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
+                override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
+                    try {
+                        project.service<TSMetaModelStateService>().get()
+                        presentation.isEnabled = true
+                    } catch (_: Throwable) {
+                        presentation.isEnabled = false
+                    }
+                }
+            })
+            subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
+                override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
+                    try {
+                        project.service<TSMetaModelStateService>().get()
+                        presentation.isEnabled = true
+                    } catch (_: Throwable) {
+                        presentation.isEnabled = false
+                    }
+                }
+            })
+        }
     }
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -57,5 +104,9 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
         val visible = !flexibleSearchEditor.isParameterPanelVisible()
 
         flexibleSearchEditor.triggerLayoutChange(visible)
+    }
+
+    override fun dispose() {
+        //NOP
     }
 }
