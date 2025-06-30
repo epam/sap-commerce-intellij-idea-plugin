@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
+import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
@@ -47,14 +48,23 @@ import com.intellij.ui.InlineBanner
 import com.intellij.ui.JBSplitter
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.BottomGap
+import com.intellij.ui.dsl.builder.RowLayout
+import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
+import com.intellij.ui.util.minimumWidth
 import com.intellij.util.application
 import com.intellij.util.messages.Topic
+import com.intellij.util.ui.JBEmptyBorder
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
-import javax.swing.*
+import javax.swing.JComponent
+import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.JTextField
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 
@@ -129,7 +139,7 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         val splitter = flexibleSearchComponent.components[0] as JBSplitter
         val isVisible = splitter.secondComponent.isVisible
 
-        splitter.secondComponent = application.runReadAction<JScrollPane> {
+        splitter.secondComponent = application.runReadAction<JComponent> {
             return@runReadAction buildPropertyForm(project)
         }
         splitter.secondComponent.isVisible = isVisible
@@ -160,7 +170,7 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
                 preferredSize = Dimension(600, 400)
             }
         } else {
-            splitter.secondComponent = application.runReadAction<JScrollPane> {
+            splitter.secondComponent = application.runReadAction<JComponent> {
                 return@runReadAction buildPropertyForm(project)
             }
         }
@@ -171,7 +181,7 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         return result
     }
 
-    fun buildPropertyForm(project: Project): JScrollPane {
+    fun buildPropertyForm(project: Project): JComponent {
         if (project.isDisposed) {
             return ScrollPaneFactory.createScrollPane(JPanel(), true).apply {
                 preferredSize = Dimension(600, 400)
@@ -202,26 +212,41 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
             putUserData(FLEXIBLE_SEARCH_PROPERTIES_KEY, properties)
 
             parametersPanel = panel {
-                row {
-                    val infoBanner = InlineBanner(
-                        """
+                panel {
+                    row {
+                        val infoBanner = InlineBanner(
+                            """
                         <html><body style='width: 100%'>
                         <p>This feature may be unstable. Use with caution.</p>
                         </body></html>
                     """.trimIndent(),
-                        EditorNotificationPanel.Status.Warning
-                    )
+                            EditorNotificationPanel.Status.Warning
+                        )
 
-                    cell(infoBanner)
-                        .align(Align.FILL)
-                        .resizableColumn()
+                        cell(infoBanner)
+                            .align(Align.FILL)
+                            .resizableColumn()
+                    }.topGap(TopGap.SMALL)
+
                 }
+                    .customize(UnscaledGaps(16, 16, 16, 16))
 
-                group("Notes:") {
+                panel {
                     row {
-                        comment("String parameters must be wrapped in single quotes: ''value''.")
-                    }
-                }
+                        val infoBanner = InlineBanner(
+                            """
+                        <html><body style='width: 100%'>
+                        <p>String parameters must be wrapped in single quotes: ''value''.</p>
+                        </body></html>
+                    """.trimIndent(),
+                            EditorNotificationPanel.Status.Info
+                        ).showCloseButton(false)
+
+                        cell(infoBanner)
+                            .align(Align.FILL)
+                            .resizableColumn()
+                    }.topGap(TopGap.SMALL)
+                }.customize(UnscaledGaps(16, 16, 16, 16))
 
                 if (properties.isEmpty()) {
                     row {
@@ -230,60 +255,23 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
                             .resizableColumn()
                     }
                 } else {
-                    // Calculate maximum label width, capped at width of 50 characters
-                    val dummyLabel = JLabel()
-                    val fontMetrics = dummyLabel.getFontMetrics(dummyLabel.font)
-                    val maxNameWidth = properties.maxOf { fontMetrics.stringWidth(it.name) }
-                    val widthFor50Chars = fontMetrics.stringWidth("W".repeat(50))
-                    val labelWidth = minOf(maxNameWidth, widthFor50Chars)
-
-                    group("Parameters:") {
+                    group("Parameters") {
                         properties.forEach { property ->
                             row {
-                                val labelText = if (property.name.length > 50) {
-                                    property.name.take(47) + "..."
-                                } else {
-                                    property.name
-                                }
-
-                                label(labelText)
-                                    .applyToComponent {
-                                        preferredSize = Dimension(labelWidth, preferredSize.height)
-                                        if (property.name.length > 50) {
-                                            toolTipText = property.name
-                                        }
-                                    }
-
-                                val valueField: JTextField = textField()
+                                label(property.name)
+                                textField()
                                     .bindText(property::value)
-                                    .component
+                                    .onChanged { property.value = it.text }
 
-                                valueField.document.addDocumentListener(object : DocumentListener {
-                                    override fun insertUpdate(e: DocumentEvent?) = fire()
-                                    override fun removeUpdate(e: DocumentEvent?) = fire()
-                                    override fun changedUpdate(e: DocumentEvent?) = fire()
-
-                                    private fun fire() {
-                                        property.value = valueField.text
-                                    }
-                                })
-                            }
-                            if (property.description?.isNotBlank() ?: false) {
-                                row {
-                                    label(property.description!!)
-                                        .applyToComponent {
-                                            font = font.deriveFont(font.size2D - 1f)
-                                        }
-                                }
-                            }
+                            }.layout(RowLayout.PARENT_GRID)
                         }
                     }
                 }
             }
         }
-        return ScrollPaneFactory.createScrollPane(parametersPanel, true).apply {
-            preferredSize = Dimension(600, 400)
-            //isVisible = false
+
+        return Dsl.scrollPanel(parametersPanel).apply {
+            isVisible = false
         }
     }
 
