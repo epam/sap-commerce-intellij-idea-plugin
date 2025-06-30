@@ -77,8 +77,9 @@ import static org.apache.http.HttpVersion.HTTP_1_1;
 public abstract class AbstractHybrisHacHttpClient {
 
     private static final Logger LOG = Logger.getInstance(AbstractHybrisHacHttpClient.class);
+    private static final Key<Replica> REPLICA_KEY = Key.create("hybris.http.replica");
+    private final Project project;
 
-    public static final Key<Replica> REPLICA_KEY = Key.create("hybris.http.replica");
     public static final int DEFAULT_HAC_TIMEOUT = 6000;
 
     private static final X509TrustManager X_509_TRUST_MANAGER = new X509TrustManager() {
@@ -90,15 +91,29 @@ public abstract class AbstractHybrisHacHttpClient {
         }
 
         @Override
-        public void checkClientTrusted(@NotNull final X509Certificate[] chain, final String authType) {
+        public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s) {
         }
 
         @Override
-        public void checkServerTrusted(@NotNull final X509Certificate[] chain, final String authType) {
+        public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s) {
         }
     };
 
     private final Map<RemoteConnectionSettings, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
+
+    public AbstractHybrisHacHttpClient(final Project project) {
+        this.project = project;
+    }
+
+    @Nullable
+    public Replica getReplica() {
+        return project.getUserData(REPLICA_KEY);
+    }
+
+    public void setReplica(final Replica replica) {
+        project.putUserData(REPLICA_KEY, replica);
+        cookiesPerSettings.clear();
+    }
 
     public String login(@NotNull final Project project, @NotNull final RemoteConnectionSettings settings) {
         final var hostHacURL = settings.getGeneratedURL();
@@ -256,13 +271,13 @@ public abstract class AbstractHybrisHacHttpClient {
         final var cookies = cookiesPerSettings.computeIfAbsent(settings, _settings -> new HashMap<>());
         cookies.clear();
 
-        final var res = getResponseForUrl(hacURL, settings);
+        final var res = getResponseForUrl(project, hacURL, settings);
 
         if (res == null) return;
 
         cookies.putAll(res.cookies());
 
-        final var replica = project.getUserData(REPLICA_KEY);
+        final var replica = getReplica();
         if (replica != null) {
             cookies.put(replica.getCookieName(), replica.getId());
         }
@@ -275,15 +290,25 @@ public abstract class AbstractHybrisHacHttpClient {
 
     @Nullable
     protected Response getResponseForUrl(
+        final Project project,
         final String hacURL,
         final @NotNull RemoteConnectionSettings settings
     ) {
         try {
             final var sslProtocol = settings.getSslProtocol();
-            return connect(hacURL, sslProtocol).method(Method.GET).execute();
-        } catch (ConnectException ce) {
+            final var connection = connect(hacURL, sslProtocol);
+            final var replica = getReplica();
+
+            if (replica != null) {
+                connection.cookie(replica.getCookieName(), replica.getId());
+            }
+
+            return connection
+                .method(Method.GET)
+                .execute();
+        } catch (final ConnectException ce) {
             return null;
-        } catch (NoSuchAlgorithmException | IOException | KeyManagementException | ValidationException e) {
+        } catch (final NoSuchAlgorithmException | IOException | KeyManagementException | ValidationException e) {
             LOG.warn(e.getMessage(), e);
             return null;
         }

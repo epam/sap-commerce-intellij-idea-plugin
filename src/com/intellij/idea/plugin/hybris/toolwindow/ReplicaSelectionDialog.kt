@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
-import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.Replica
 import com.intellij.openapi.Disposable
@@ -58,7 +57,7 @@ class ReplicaSelectionDialog(
     parentComponent: Component
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
-    private val currentReplica: Replica? = project.getUserData(AbstractHybrisHacHttpClient.REPLICA_KEY)
+    private val currentReplica: Replica? = HybrisHacHttpClient.getInstance(project).replica
 
     private val editable = AtomicBooleanProperty(true)
     private val autoReplicaSettings = AtomicBooleanProperty(currentReplica == null || currentReplica.type == ReplicaType.AUTO)
@@ -191,7 +190,7 @@ class ReplicaSelectionDialog(
                 }
         }
 
-        project.putUserData(HybrisHacHttpClient.REPLICA_KEY, replica)
+        HybrisHacHttpClient.getInstance(project).setReplica(replica)
     }
 
     private fun Panel.autoSettings() = panel {

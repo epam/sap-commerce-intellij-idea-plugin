@@ -71,7 +71,7 @@ class HacChooseConnectionAction : DefaultActionGroup() {
 
                 override fun update(e: AnActionEvent) {
                     val project = e.project ?: return
-                    val replica = project.getUserData(HybrisHacHttpClient.REPLICA_KEY)
+                    val replica = HybrisHacHttpClient.getInstance(project).replica
                     e.presentation.text = replica
                         ?.toString()
                         ?: "Auto-discover replica"

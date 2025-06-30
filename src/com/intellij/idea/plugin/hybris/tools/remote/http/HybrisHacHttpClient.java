@@ -65,6 +65,10 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         return project.getService(HybrisHacHttpClient.class);
     }
 
+    public HybrisHacHttpClient(final Project project) {
+        super(project);
+    }
+
     @NotNull
     public HybrisHttpResult validateImpex(final Project project, final Map<String, String> requestParams) {
         final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
