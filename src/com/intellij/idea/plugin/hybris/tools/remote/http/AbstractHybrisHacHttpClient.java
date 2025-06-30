@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Key;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -76,7 +77,10 @@ import static org.apache.http.HttpVersion.HTTP_1_1;
 public abstract class AbstractHybrisHacHttpClient {
 
     private static final Logger LOG = Logger.getInstance(AbstractHybrisHacHttpClient.class);
+
+    public static final Key<Replica> REPLICA_KEY = Key.create("hybris.http.replica");
     public static final int DEFAULT_HAC_TIMEOUT = 6000;
+
     private static final X509TrustManager X_509_TRUST_MANAGER = new X509TrustManager() {
 
         @Override
@@ -257,6 +261,11 @@ public abstract class AbstractHybrisHacHttpClient {
         if (res == null) return;
 
         cookies.putAll(res.cookies());
+
+        final var replica = project.getUserData(REPLICA_KEY);
+        if (replica != null) {
+            cookies.put(replica.getCookieName(), replica.getId());
+        }
     }
 
     protected String getCookieName(@NotNull final RemoteConnectionSettings settings) {

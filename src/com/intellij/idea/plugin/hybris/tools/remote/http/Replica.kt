@@ -22,8 +22,10 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
+import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
 
 data class Replica(
+    val type: ReplicaType,
     val id: String,
     val subscription: CCv2Subscription? = null,
     val environment: CCv2EnvironmentDto? = null,

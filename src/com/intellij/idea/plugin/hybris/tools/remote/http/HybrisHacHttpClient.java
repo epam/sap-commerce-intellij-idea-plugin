@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClien
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -61,7 +60,6 @@ import static org.jsoup.Jsoup.parse;
 public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 
     private static final Logger LOG = Logger.getInstance(HybrisHacHttpClient.class);
-    public static final Key<Replica> REPLICA_KEY = Key.create("hybris.http.replica");
 
     public static HybrisHacHttpClient getInstance(@NotNull final Project project) {
         return project.getService(HybrisHacHttpClient.class);

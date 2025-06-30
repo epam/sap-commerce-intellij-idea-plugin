@@ -26,39 +26,47 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
+import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.Replica
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
-import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.RightGap
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
+import java.awt.BorderLayout
 import java.awt.Component
+import java.awt.Dimension
 import javax.swing.DefaultComboBoxModel
+import javax.swing.JComponent
 
 class ReplicaSelectionDialog(
     private val project: Project,
     parentComponent: Component
-) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE) {
+) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
-    private val customReplicaSettings = AtomicBooleanProperty(true)
-    private val ccv2ReplicaSettings = AtomicBooleanProperty(false)
-    private val ccv2EnvironmentEnabled = AtomicBooleanProperty(false)
-    private val ccv2ServiceEnabled = AtomicBooleanProperty(false)
-    private val ccv2ReplicaEnabled = AtomicBooleanProperty(false)
+    private val currentReplica: Replica? = project.getUserData(AbstractHybrisHacHttpClient.REPLICA_KEY)
 
-    private val replicaType = AtomicProperty<ReplicaType?>(ReplicaType.CUSTOM).also {
+    private val autoReplicaSettings = AtomicBooleanProperty(currentReplica == null || currentReplica.type == ReplicaType.AUTO)
+    private val manualReplicaSettings = AtomicBooleanProperty(currentReplica?.type == ReplicaType.MANUAL)
+    private val ccv2ReplicaSettings = AtomicBooleanProperty(currentReplica?.type == ReplicaType.CCV2)
+
+    private val ccv2EnvironmentEnabled = AtomicBooleanProperty(currentReplica?.type == ReplicaType.CCV2)
+    private val ccv2ServiceEnabled = AtomicBooleanProperty(currentReplica?.type == ReplicaType.CCV2)
+    private val ccv2ReplicaEnabled = AtomicBooleanProperty(currentReplica?.type == ReplicaType.CCV2)
+
+    private val replicaType = AtomicProperty<ReplicaType?>(ReplicaType.AUTO).also {
         it.afterChange { selectedReplica ->
-            customReplicaSettings.set(selectedReplica == ReplicaType.CUSTOM)
+            autoReplicaSettings.set(selectedReplica == ReplicaType.AUTO)
+            manualReplicaSettings.set(selectedReplica == ReplicaType.MANUAL)
             ccv2ReplicaSettings.set(selectedReplica == ReplicaType.CCV2)
         }
     }
@@ -68,46 +76,126 @@ class ReplicaSelectionDialog(
 
     init {
         title = "Replica Selection"
+        isResizable = false
         super.init()
     }
 
-    private lateinit var customCookieName: JBTextField
-    private lateinit var customReplicaId: JBTextField
+    override fun dispose() {
+        super.dispose()
+    }
+
+    private lateinit var manualCookieName: JBTextField
+    private lateinit var manualReplicaId: JBTextField
     private lateinit var ccv2SubscriptionComboBox: ComboBox<CCv2Subscription>
     private lateinit var ccv2EnvironmentComboBox: ComboBox<CCv2EnvironmentDto>
     private lateinit var ccv2ServiceComboBox: ComboBox<CCv2ServiceDto>
     private lateinit var ccv2ReplicaComboBox: ComboBox<CCv2ServiceReplicaDto>
+    private lateinit var jbLoadingPanel: JBLoadingPanel
+    private lateinit var centerPanel: DialogPanel
 
-    override fun createCenterPanel() = panel {
-        row {
-            comboBox(
-                EnumComboBoxModel(ReplicaType::class.java),
-                renderer = SimpleListCellRenderer.create("") { it.title }
-            )
-                .label("Replica type:")
-                .align(AlignX.FILL)
-                .gap(RightGap.SMALL)
-                .onChanged { replicaType.set(it.selectedItem as ReplicaType) }
-        }.layout(RowLayout.PARENT_GRID)
+    private var isLoading: Boolean
+        get() = jbLoadingPanel.isLoading
+        set(value) =
+            if (value) {
+                centerPanel.isVisible = false
+                jbLoadingPanel.startLoading()
+            } else {
+                jbLoadingPanel.stopLoading()
+                centerPanel.isVisible = true
+            }
 
+    override fun createCenterPanel(): JComponent {
+        centerPanel = panel {
+            row {
+                segmentedButton(ReplicaType.entries, {
+                    this.text = it.shortTitle
+                    this.icon = it.icon
+                    this.toolTipText = it.title
+                })
+                    .align(AlignX.FILL)
+                    .gap(RightGap.SMALL)
+                    .whenItemSelected { replicaType.set(it) }
+                    .also { it.selectedItem = ReplicaType.AUTO }
+            }.layout(RowLayout.PARENT_GRID)
+
+            autoSettings().visibleIf(autoReplicaSettings)
+            manualSettings().visibleIf(manualReplicaSettings)
+            ccv2Settings().visibleIf(ccv2ReplicaSettings)
+        }
+            .also {
+                it.border = JBUI.Borders.empty(16)
+                it.preferredSize = Dimension(400, 300)
+            }
+
+
+        jbLoadingPanel = JBLoadingPanel(BorderLayout(), this).also {
+            it.add(centerPanel, BorderLayout.CENTER)
+        }
+
+        return jbLoadingPanel
+    }
+
+    override fun applyFields() {
+        super.applyFields()
+
+        val replica = when (replicaType.get()) {
+            ReplicaType.AUTO -> null
+
+            ReplicaType.MANUAL -> manualReplicaId.text
+                .takeIf { it.isNotBlank() }
+                ?.let {
+                    Replica(
+                        type = ReplicaType.MANUAL,
+                        id = it,
+                        cookieName = manualCookieName.text
+                    )
+                }
+
+            ReplicaType.CCV2 -> ccv2ReplicaComboBox.selectedItem?.asSafely<CCv2ServiceReplicaDto>()
+                ?.let {
+                    Replica(
+                        type = ReplicaType.CCV2,
+                        id = if (it.name.startsWith(".")) it.name else ".${it.name}",
+                        subscription = ccv2SubscriptionComboBox.selectedItem as? CCv2Subscription,
+                        environment = ccv2EnvironmentComboBox.selectedItem as? CCv2EnvironmentDto,
+                        service = ccv2ServiceComboBox.selectedItem as? CCv2ServiceDto,
+                        replica = it
+                    )
+                }
+
+            else -> null
+        }
+
+        project.putUserData(HybrisHacHttpClient.REPLICA_KEY, replica)
+    }
+
+    private fun Panel.autoSettings() = panel {
         row {
-            customReplicaId = textField()
+            text("In the auto-discovery mode, the Plugin will automatically pick-up all related cookies during login and rely on load balancer replica selection.")
+        }.topGap(TopGap.MEDIUM)
+    }
+
+    private fun Panel.manualSettings() = group("Manual Settings") {
+        row {
+            manualReplicaId = textField()
                 .label("Replica id:")
+                .text(currentReplica?.id ?: "")
                 .align(AlignX.FILL)
                 .component
         }
             .layout(RowLayout.PARENT_GRID)
-            .visibleIf(customReplicaSettings)
 
         row {
-            customCookieName = textField()
+            manualCookieName = textField()
                 .label("Cookie name:")
+                .text(currentReplica?.cookieName ?: "")
                 .align(AlignX.FILL)
                 .component
         }
             .layout(RowLayout.PARENT_GRID)
-            .visibleIf(customReplicaSettings)
+    }
 
+    private fun Panel.ccv2Settings() = group("CCv2 Settings") {
         row {
             ccv2SubscriptionComboBox = comboBox(
                 CCv2SubscriptionsComboBoxModelFactory.create(project),
@@ -133,20 +221,24 @@ class ReplicaSelectionDialog(
                             ccv2EnvironmentEnabled.set(false)
                             ccv2ServiceEnabled.set(false)
                             ccv2ReplicaEnabled.set(false)
+
+                            isLoading = true
                         },
                         onCompleteCallback = { response ->
                             response[subscription]?.let { environments ->
                                 ccv2EnvironmentComboBoxModel.addAll(environments)
 
                                 ccv2EnvironmentEnabled.set(true)
+
+                                isLoading = false
                             }
                         }
                     )
                 }
                 .component
+                .also { it.selectedItem = currentReplica?.subscription }
         }
             .layout(RowLayout.PARENT_GRID)
-            .visibleIf(ccv2ReplicaSettings)
 
         row {
             ccv2EnvironmentComboBox = comboBox(
@@ -168,6 +260,8 @@ class ReplicaSelectionDialog(
 
                             ccv2ServiceEnabled.set(false)
                             ccv2ReplicaEnabled.set(false)
+
+                            isLoading = true
                         },
                         onCompleteCallback = { response ->
                             ccv2ServiceComboBoxModel.removeAllElements()
@@ -176,16 +270,18 @@ class ReplicaSelectionDialog(
 
                                 ccv2ServiceEnabled.set(true)
                                 ccv2ReplicaEnabled.set(true)
+
+                                isLoading = false
                             }
 
                         }
                     )
                 }
                 .component
+                .also { it.selectedItem = currentReplica?.environment }
         }
             .layout(RowLayout.PARENT_GRID)
             .enabledIf(ccv2EnvironmentEnabled)
-            .visibleIf(ccv2ReplicaSettings)
 
         row {
             ccv2ServiceComboBox = comboBox(
@@ -201,10 +297,10 @@ class ReplicaSelectionDialog(
                     ccv2ReplicaComboBoxModel.addAll(service.replicas)
                 }
                 .component
+                .also { it.selectedItem = currentReplica?.service }
         }
             .layout(RowLayout.PARENT_GRID)
             .enabledIf(ccv2ServiceEnabled)
-            .visibleIf(ccv2ReplicaSettings)
 
         row {
             ccv2ReplicaComboBox = comboBox(
@@ -215,42 +311,9 @@ class ReplicaSelectionDialog(
                 .align(AlignX.FILL)
                 .gap(RightGap.SMALL)
                 .component
+                .also { it.selectedItem = currentReplica?.replica }
         }
             .layout(RowLayout.PARENT_GRID)
             .enabledIf(ccv2ReplicaEnabled)
-            .visibleIf(ccv2ReplicaSettings)
-    }
-        .also {
-            it.border = JBUI.Borders.empty(16)
-        }
-
-    override fun applyFields() {
-        super.applyFields()
-
-        val replica = when (replicaType.get()) {
-            ReplicaType.CUSTOM -> customReplicaId.text
-                .takeIf { it.isNotBlank() }
-                ?.let {
-                    Replica(
-                        id = it,
-                        cookieName = customCookieName.text
-                    )
-                }
-
-            ReplicaType.CCV2 -> ccv2ReplicaComboBox.selectedItem?.asSafely<CCv2ServiceReplicaDto>()
-                ?.let {
-                    Replica(
-                        id = it.name,
-                        subscription = ccv2SubscriptionComboBox.selectedItem as? CCv2Subscription,
-                        environment = ccv2EnvironmentComboBox.selectedItem as? CCv2EnvironmentDto,
-                        service = ccv2ServiceComboBox.selectedItem as? CCv2ServiceDto,
-                        replica = it
-                    )
-                }
-
-            else -> null
-        }
-
-        project.putUserData(HybrisHacHttpClient.REPLICA_KEY, replica)
     }
 }
