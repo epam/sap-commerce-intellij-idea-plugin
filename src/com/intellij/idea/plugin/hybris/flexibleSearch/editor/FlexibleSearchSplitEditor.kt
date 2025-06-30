@@ -69,7 +69,9 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
         flexibleSearchEditor.editor.document.addDocumentListener(object : com.intellij.openapi.editor.event.DocumentListener {
             override fun documentChanged(event: com.intellij.openapi.editor.event.DocumentEvent) {
-                project.messageBus.syncPublisher(TOPIC_EDITOR_CHANGED).editorChanged(event.document)
+                if (!project.isDisposed) {
+                    project.messageBus.syncPublisher(TOPIC_EDITOR_CHANGED).editorChanged(event.document)
+                }
             }
         })
 
@@ -99,6 +101,10 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     }
 
     private fun isTsSystemInitialized(project: Project): Boolean {
+        if (project.isDisposed) {
+            return false
+        }
+
         val metaModelStateService = project.service<TSMetaModelStateService>()
 
         try {
@@ -116,6 +122,10 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     }
 
     private fun refreshComponent(project: Project) {
+        if (project.isDisposed) {
+            return
+        }
+
         val splitter = flexibleSearchComponent.components[0] as JBSplitter
         val isVisible = splitter.secondComponent.isVisible
 
@@ -144,8 +154,15 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         val splitter = JBSplitter(false, 0.07f, 0.05f, 0.85f)
         splitter.splitterProportionKey = "SplitFileEditor.Proportion"
         splitter.firstComponent = flexibleSearchEditor.component
-        splitter.secondComponent = application.runReadAction<JScrollPane> {
-            return@runReadAction buildPropertyForm(project)
+
+        if (project.isDisposed) {
+            splitter.secondComponent = ScrollPaneFactory.createScrollPane(JPanel(), true).apply {
+                preferredSize = Dimension(600, 400)
+            }
+        } else {
+            splitter.secondComponent = application.runReadAction<JScrollPane> {
+                return@runReadAction buildPropertyForm(project)
+            }
         }
 
         val result = JPanel(BorderLayout())
@@ -155,6 +172,12 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     }
 
     fun buildPropertyForm(project: Project): JScrollPane {
+        if (project.isDisposed) {
+            return ScrollPaneFactory.createScrollPane(JPanel(), true).apply {
+                preferredSize = Dimension(600, 400)
+            }
+        }
+
         val isTsSystemInitialized = isTsSystemInitialized(project)
         var parametersPanel: DialogPanel?
 
