@@ -73,22 +73,14 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         flexibleSearchEditor.editor.document.addDocumentListener(object : com.intellij.openapi.editor.event.DocumentListener {
             override fun documentChanged(event: com.intellij.openapi.editor.event.DocumentEvent) {
                 if (!project.isDisposed) {
-                    project.messageBus.syncPublisher(TOPIC_EDITOR_CHANGED).editorChanged(event.document)
+                    PsiDocumentManager.getInstance(project).commitDocument(editor.document)
+
+                    refreshComponent(project)
                 }
             }
         })
 
         with(project.messageBus.connect(this)) {
-            subscribe(TOPIC_EDITOR_CHANGED, object : FlexibleSearchSplitEditorListener {
-                override fun editorChanged(document: Document) {
-                    if (flexibleSearchEditor.editor.document == document) {
-                        PsiDocumentManager.getInstance(project).commitDocument(editor.document)
-
-                        refreshComponent(project)
-                    }
-                }
-            })
-
             subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
                 override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
                     refreshComponent(project)
@@ -327,8 +319,6 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
     companion object {
         private const val serialVersionUID: Long = -3770395176190649196L
-
-        val TOPIC_EDITOR_CHANGED = Topic("FXS_EDITOR_CHANGED", FlexibleSearchSplitEditorListener::class.java)
     }
 
 }
