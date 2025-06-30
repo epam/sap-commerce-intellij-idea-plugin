@@ -30,6 +30,9 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpCl
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.Replica
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
@@ -65,6 +68,7 @@ class ReplicaSelectionDialog(
     private val ccv2EnvironmentEnabled = AtomicBooleanProperty(currentReplica?.environment != null)
     private val ccv2ServiceEnabled = AtomicBooleanProperty(currentReplica?.service != null)
     private val ccv2ReplicaEnabled = AtomicBooleanProperty(currentReplica?.replica != null)
+    private val ccv2SettingsRefresh = AtomicBooleanProperty(true)
 
     private val replicaType = AtomicProperty(currentReplica?.type ?: ReplicaType.AUTO).apply {
         afterChange { selectedReplica ->
@@ -115,12 +119,14 @@ class ReplicaSelectionDialog(
 
     private fun startLoading(text: String = "Loading...") {
         editable.set(false)
+        ccv2SettingsRefresh.set(false)
         jbLoadingPanel.setLoadingText(text)
         jbLoadingPanel.startLoading()
     }
 
     private fun stopLoading() {
         editable.set(true)
+        ccv2SettingsRefresh.set(true)
         jbLoadingPanel.stopLoading()
     }
 
@@ -263,6 +269,22 @@ class ReplicaSelectionDialog(
                     )
                 }
                 .component
+
+            actionButton(object : AnAction("Refresh", "", HybrisIcons.Actions.REFRESH) {
+                override fun getActionUpdateThread() = ActionUpdateThread.BGT
+                override fun actionPerformed(e: AnActionEvent) {
+                    ccv2EnvironmentEnabled.set(false)
+                    ccv2ServiceEnabled.set(false)
+                    ccv2ReplicaEnabled.set(false)
+
+                    ccv2SubscriptionsComboBoxModel.refresh()
+                    ccv2EnvironmentComboBoxModel.removeAllElements()
+                    ccv2ServiceComboBoxModel.removeAllElements()
+                    ccv2ReplicaComboBoxModel.removeAllElements()
+                }
+            })
+                .align(AlignX.RIGHT)
+                .enabledIf(ccv2SettingsRefresh)
         }
             .layout(RowLayout.PARENT_GRID)
 
