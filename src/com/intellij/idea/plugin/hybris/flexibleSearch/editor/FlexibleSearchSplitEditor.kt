@@ -48,25 +48,18 @@ import com.intellij.ui.InlineBanner
 import com.intellij.ui.JBSplitter
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.BottomGap
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
-import com.intellij.ui.util.minimumWidth
 import com.intellij.util.application
 import com.intellij.util.messages.Topic
-import com.intellij.util.ui.JBEmptyBorder
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 import javax.swing.JPanel
-import javax.swing.JScrollPane
-import javax.swing.JTextField
-import javax.swing.event.DocumentEvent
-import javax.swing.event.DocumentListener
 
 class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
@@ -146,10 +139,10 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
     }
 
-    fun triggerLayoutChange(showPanel: Boolean) {
+    fun toggleLayoutChange() {
         val splitter = flexibleSearchComponent.components[0] as JBSplitter
         val parametersPanel = splitter.secondComponent
-        parametersPanel.isVisible = showPanel
+        parametersPanel.isVisible = !parametersPanel.isVisible
 
         flexibleSearchComponent.requestFocus()
         splitter.firstComponent.requestFocus()

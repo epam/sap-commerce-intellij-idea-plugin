@@ -26,6 +26,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.project.DumbAware
+import com.intellij.util.asSafely
 
 class FlexibleSearchToggleParametersPanelAction : AnAction(
     message("hybris.fxs.actions.show_parameters"),
@@ -36,9 +37,9 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val editor = e.getData(PlatformDataKeys.FILE_EDITOR) ?: return
-        val flexibleSearchEditor = editor as? FlexibleSearchSplitEditor ?: return
-        val visible = flexibleSearchEditor.isParameterPanelVisible()
+        val visible = e.getData(PlatformDataKeys.FILE_EDITOR)
+            ?.asSafely<FlexibleSearchSplitEditor>()
+            ?.isParameterPanelVisible() ?: return
 
         if (visible) {
             e.presentation.text = message("hybris.fxs.actions.hide_parameters")
@@ -52,10 +53,8 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val editor = e.getData(PlatformDataKeys.FILE_EDITOR) ?: return
-        val flexibleSearchEditor = editor as? FlexibleSearchSplitEditor ?: return
-        val visible = !flexibleSearchEditor.isParameterPanelVisible()
-
-        flexibleSearchEditor.triggerLayoutChange(visible)
+        e.getData(PlatformDataKeys.FILE_EDITOR)
+            ?.asSafely<FlexibleSearchSplitEditor>()
+            ?.toggleLayoutChange()
     }
 }
