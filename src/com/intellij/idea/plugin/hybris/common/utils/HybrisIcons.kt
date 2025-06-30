@@ -420,6 +420,7 @@ object HybrisIcons {
         }
 
         object Service {
+            val ICON = AllIcons.Nodes.Services
             val MODIFIED_BY = AllIcons.General.User
 
             object Actions {
@@ -450,6 +451,7 @@ object HybrisIcons {
         val EXPAND_ALL = AllIcons.Actions.Expandall
         val CLEAR_ALL = AllIcons.Actions.GC
         val REMOVE = AllIcons.General.Remove
+        val REFRESH = AllIcons.Actions.Refresh
         val FORCE_REFRESH = AllIcons.Actions.ForceRefresh
         val FORWARD = AllIcons.Actions.Forward
         val GO_TO_DECLARATION = getIcon("/icons/actions/declaration.svg")
