@@ -17,19 +17,15 @@
  */
 package com.intellij.idea.plugin.hybris.actions
 
-import com.intellij.icons.AllIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.options.ProjectIntegrationsSettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
-import com.intellij.idea.plugin.hybris.toolwindow.ReplicaSelectionDialog
 import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.options.ShowSettingsUtil
-import com.intellij.util.asSafely
 import kotlinx.html.div
 import kotlinx.html.p
 import kotlinx.html.stream.createHTML
@@ -60,29 +56,7 @@ class HacChooseConnectionAction : DefaultActionGroup() {
                     override fun actionPerformed(e: AnActionEvent) = RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, it)
                 }
             }
-        val replicas = listOf(
-            object : AnAction() {
-                override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-                override fun actionPerformed(e: AnActionEvent) {
-                    val project = e.project ?: return
-                    val component = e.inputEvent?.source?.asSafely<Component>()
-                        ?: return
-                    ReplicaSelectionDialog(project, component).showAndGet()
-                }
-
-                override fun update(e: AnActionEvent) {
-                    val project = e.project ?: return
-                    val replica = HybrisHacHttpClient.getInstance(project).replica
-                    e.presentation.text = replica?.toString()
-                        ?: "Auto-discover replica"
-                    e.presentation.icon = replica?.let { AllIcons.Actions.Checked }
-                        ?: AllIcons.Actions.Lightning
-                    e.presentation.description = replica?.description
-                        ?: "If applicable, replica will be automatically applied during authentication."
-                }
-            },
-        )
+        val replicas = listOf(ActionManager.getInstance().getAction("hybris.hac.configureReplica"))
 
         return actions +
             Separator.create("Available Connections") +
@@ -96,8 +70,14 @@ class HacChooseConnectionAction : DefaultActionGroup() {
         val presentation = e.presentation
 
         val hacSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
-        presentation.text = if (e.place == ActionPlaces.EDITOR_TOOLBAR) hacSettings.toString()
-        else hacSettings.shortenConnectionName()
+        presentation.text = when (e.place) {
+            ActionPlaces.EDITOR_TOOLBAR -> hacSettings.toString()
+            HybrisActionPlaces.CONSOLE_TOOLBAR -> null
+            else -> hacSettings.shortenConnectionName()
+        }
+        if (e.place == HybrisActionPlaces.CONSOLE_TOOLBAR) {
+            presentation.putClientProperty(ActionUtil.HIDE_DROPDOWN_ICON, true)
+        }
         presentation.isEnabledAndVisible = true
 
         presentation.description = createHTML().div {

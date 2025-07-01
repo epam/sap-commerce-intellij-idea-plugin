@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
+import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.*
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisClearAllAction
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisExecuteImmediatelyAction
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisImpexValidateAction
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisSuspendAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
@@ -55,7 +59,7 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
 
         val toolbarActions = DefaultActionGroup()
         val actionManager = ActionManager.getInstance()
-        actionToolbar = actionManager.createActionToolbar("Hybris.Consoles.ContextMenu", toolbarActions, false)
+        actionToolbar = actionManager.createActionToolbar(HybrisActionPlaces.CONSOLE_TOOLBAR, toolbarActions, false)
 
         val panel = JPanel(BorderLayout())
 
@@ -72,10 +76,8 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         val executeAction = HybrisExecuteImmediatelyAction(actionHandler)
         executeAction.registerCustomShortcutSet(CommonShortcuts.ALT_ENTER, this.component)
 
-        val choseInstanceAction = HybrisChooseInstanceAction()
-
         with(toolbarActions) {
-            add(choseInstanceAction)
+            add(ActionManager.getInstance().getAction("hybris.hac.chooseConnection"))
             add(executeAction)
             add(HybrisSuspendAction(actionHandler))
             add(HybrisImpexValidateAction(validateHandler))

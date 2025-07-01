@@ -58,11 +58,14 @@
             <add-to-group group-id="GoToTargetEx"/>
         </action>
 
+        <action id="hybris.hac.configureReplica" class="com.intellij.idea.plugin.hybris.project.actions.HacConfigureReplica"/>
+        <action id="hybris.hac.configureConnection" class="com.intellij.idea.plugin.hybris.actions.ConfigureHacConnectionAction"/>
+
         <group id="hybris.hac.chooseConnection" popup="true" searchable="false"
                class="com.intellij.idea.plugin.hybris.actions.HacChooseConnectionAction">
             <action class="com.intellij.idea.plugin.hybris.actions.AddHacConnectionAction"/>
             <action class="com.intellij.idea.plugin.hybris.actions.EditActiveHacConnectionAction"/>
-            <action class="com.intellij.idea.plugin.hybris.actions.ConfigureHacConnectionAction"/>
+            <reference ref="hybris.hac.configureConnection"/>
         </group>
     </actions>
 
