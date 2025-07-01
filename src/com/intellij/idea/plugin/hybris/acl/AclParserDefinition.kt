@@ -31,7 +31,7 @@ class AclParserDefinition : ParserDefinition {
 
     private val iFileElementType by lazy { IFileElementType(AclLanguage) }
 
-    override fun createLexer(project: Project) = AclLexer
+    override fun createLexer(project: Project) = AclLexer()
     override fun createParser(project: Project) = AclParser()
     override fun createElement(node: ASTNode): PsiElement = AclTypes.Factory.createElement(node)
     override fun createFile(viewProvider: FileViewProvider) = AclFile(viewProvider)

@@ -86,6 +86,7 @@ end_userrights                    = [$]END_USERRIGHTS
 
 {white_space}+                                              { return TokenType.WHITE_SPACE; }
 {line_comment}                                              { return AclTypes.LINE_COMMENT; }
+{y_white_space}                                             { return AclTypes.CRLF; }
 
 <YYINITIAL> {
     {start_userrights}                                      { yybegin(USER_RIGHTS_START); return AclTypes.START_USERRIGHTS; }
@@ -189,8 +190,6 @@ end_userrights                    = [$]END_USERRIGHTS
 <USER_RIGHTS_END> {
     {semicolon}                                             { return AclTypes.DUMMY_SEPARATOR; }
 }
-
-{y_white_space}                                             { yybegin(YYINITIAL); return AclTypes.CRLF; }
 
 // Fallback
 .                                                           { return TokenType.BAD_CHARACTER; }

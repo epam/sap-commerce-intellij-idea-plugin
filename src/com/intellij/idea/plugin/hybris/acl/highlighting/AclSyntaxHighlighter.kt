@@ -30,7 +30,7 @@ import com.intellij.util.application
 @Service
 class AclSyntaxHighlighter : SyntaxHighlighterBase() {
 
-    override fun getHighlightingLexer() = AclLexer
+    override fun getHighlightingLexer() = AclLexer()
 
     override fun getTokenHighlights(tokenType: IElementType) = cache[tokenType]
         ?: emptyArray()

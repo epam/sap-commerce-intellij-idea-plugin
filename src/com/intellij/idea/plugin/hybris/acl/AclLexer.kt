@@ -19,4 +19,4 @@ package com.intellij.idea.plugin.hybris.acl
 
 import com.intellij.lexer.FlexAdapter
 
-object AclLexer : FlexAdapter(_AclLexer())
+class AclLexer : FlexAdapter(_AclLexer())

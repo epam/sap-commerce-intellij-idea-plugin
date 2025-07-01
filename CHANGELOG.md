@@ -14,6 +14,7 @@
 - Added code completion for common UserRights and Permission elements [#1415](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1415)
 - Added colorization for Type row [#1416](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1416)
 - Added references verification used in the `Type` and `Target` columns [#1417](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1417)
+- Adjusted language Lexer [#1424](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1424)
 
 ### `ImpEx` enhancements
 - Display notification panel about possible usage of the `Access Control Lists` language [#1418](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1418)

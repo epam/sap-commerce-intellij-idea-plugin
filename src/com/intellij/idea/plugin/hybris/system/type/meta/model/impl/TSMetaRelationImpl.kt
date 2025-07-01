@@ -93,8 +93,8 @@ internal class TSMetaRelationImpl(
         override val domAnchor: DomAnchor<RelationElement> = DomService.getInstance().createAnchor(dom)
 
         override val name = qualifier
-        override var type: String = "int"
-        override var flattenType: String? = "int"
+        override var type: String = "java.lang.Integer"
+        override var flattenType: String? = "java.lang.Integer"
 
         override fun toString() = "RelationOrderingAttribute(module=$extensionName, name=$name, isCustom=$isCustom)"
     }
