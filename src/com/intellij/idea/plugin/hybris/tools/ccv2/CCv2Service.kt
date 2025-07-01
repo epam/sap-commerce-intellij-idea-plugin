@@ -76,6 +76,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                         ?.let { ccv2Token ->
                                             try {
                                                 return@let CCv2Api.getInstance().fetchEnvironments(ccv2Token, subscription, statuses, progressReporter)
+                                                    .sortedBy { it.order }
                                             } catch (e: SocketTimeoutException) {
                                                 notifyOnTimeout(subscription)
                                             } catch (e: RuntimeException) {

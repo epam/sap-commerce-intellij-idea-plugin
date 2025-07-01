@@ -41,6 +41,16 @@ data class CCv2EnvironmentDto(
     var dataBackups: Collection<CCv2DataBackupDto>? = null,
 ) : CCv2DTO, Comparable<CCv2EnvironmentDto> {
 
+    val accessible
+        get() = dynatraceLink != null
+    val order
+        get() = when (type) {
+            CCv2EnvironmentType.DEV -> 0
+            CCv2EnvironmentType.STG -> 1
+            CCv2EnvironmentType.PROD -> 2
+            CCv2EnvironmentType.UNKNOWN -> 3
+        }
+
     fun canDeploy() = (status in listOf(CCv2EnvironmentStatus.READY_FOR_DEPLOYMENT, CCv2EnvironmentStatus.AVAILABLE))
         && deploymentStatus in listOf(CCv2DeploymentStatusEnum.DEPLOYED, CCv2DeploymentStatusEnum.FAIL)
 

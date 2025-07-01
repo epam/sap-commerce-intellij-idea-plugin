@@ -257,13 +257,15 @@ class ReplicaSelectionDialog(
                             startLoading("Fetching environments...")
                         },
                         onCompleteCallback = { response ->
-                            response[subscription]?.let { environments ->
-                                ccv2EnvironmentComboBoxModel.addAll(environments)
+                            response[subscription]
+                                ?.filter { environment -> environment.accessible  }
+                                ?.let { environments ->
+                                    ccv2EnvironmentComboBoxModel.addAll(environments)
 
-                                ccv2EnvironmentEnabled.set(true)
+                                    ccv2EnvironmentEnabled.set(true)
 
-                                stopLoading()
-                            }
+                                    stopLoading()
+                                }
                         },
                         sendEvents = false
                     )
