@@ -33,5 +33,28 @@ data class Replica(
     val replica: CCv2ServiceReplicaDto? = null,
     val cookieName: String = "ROUTE"
 ) {
-    override fun toString() = "Replica: $id"
+    override fun toString() = when (type) {
+        ReplicaType.AUTO -> "Auto-discover replica"
+        ReplicaType.MANUAL -> id
+        ReplicaType.CCV2 -> id
+    }
+
+    val description
+        get() = when (type) {
+            ReplicaType.CCV2 -> listOfNotNull(
+                "- CCv2 specific replica -",
+                "",
+                subscription?.name?.let { "Subscription: $it" },
+                environment?.name?.let { "Environment: $it" },
+                service?.name?.let { "Service: $it" },
+            ).joinToString("\n")
+
+            ReplicaType.MANUAL -> listOfNotNull(
+                "- Manually configured replica -",
+                "",
+                "Cookie: $cookieName"
+            ).joinToString("\n")
+
+            else -> null
+        }
 }

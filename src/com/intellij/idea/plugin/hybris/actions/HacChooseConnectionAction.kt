@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ReplicaSelectionDialog
+import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.options.ShowSettingsUtil
@@ -41,6 +42,7 @@ class HacChooseConnectionAction : DefaultActionGroup() {
     init {
         templatePresentation.icon = HybrisIcons.Y.REMOTE
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
+        templatePresentation.putClientProperty(ActionUtil.COMPONENT_PROVIDER, ActionButtonWithTextAndDescription(this))
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -77,6 +79,8 @@ class HacChooseConnectionAction : DefaultActionGroup() {
                         ?: "Auto-discover replica"
                     e.presentation.icon = replica?.let { AllIcons.Actions.Checked }
                         ?: AllIcons.Actions.Lightning
+                    e.presentation.description = replica?.description
+                        ?: "If applicable, replica will be automatically applied during authentication."
                 }
             },
         )
