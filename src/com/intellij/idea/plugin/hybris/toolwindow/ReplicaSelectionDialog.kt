@@ -264,7 +264,8 @@ class ReplicaSelectionDialog(
 
                                 stopLoading()
                             }
-                        }
+                        },
+                        sendEvents = false
                     )
                 }
                 .component
