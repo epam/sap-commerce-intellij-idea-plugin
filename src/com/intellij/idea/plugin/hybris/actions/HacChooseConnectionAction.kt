@@ -74,8 +74,7 @@ class HacChooseConnectionAction : DefaultActionGroup() {
                 override fun update(e: AnActionEvent) {
                     val project = e.project ?: return
                     val replica = HybrisHacHttpClient.getInstance(project).replica
-                    e.presentation.text = replica
-                        ?.toString()
+                    e.presentation.text = replica?.toString()
                         ?: "Auto-discover replica"
                     e.presentation.icon = replica?.let { AllIcons.Actions.Checked }
                         ?: AllIcons.Actions.Lightning
