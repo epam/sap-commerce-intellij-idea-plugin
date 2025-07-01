@@ -27,6 +27,9 @@
 ### `Groovy` enhancements
 - Adjusted execution mode selection `commit`/`rollback` [#1422](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1422)
 
+### `Other` enhancements
+- Added possibility to select Replica for HAC connection [#1423](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1423)
+
 ## [2025.1.4]
 
 ### `ImpEx` enhancements
