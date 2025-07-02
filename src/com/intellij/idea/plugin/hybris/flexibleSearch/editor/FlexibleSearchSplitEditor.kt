@@ -108,7 +108,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             }.resizableRow()
         }
 
-        val parameters = application.runReadAction<Collection<FlexibleSearchProperty>> {
+        val parameters = application.runReadAction<Collection<FlexibleSearchParameter>> {
             val currentParameters = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) ?: emptySet()
 
             PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
@@ -116,7 +116,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                 ?.map { bindParameter ->
                     val placeholder = bindParameter.text.removePrefix("?")
                     val value = currentParameters.find { it.name == placeholder }?.value ?: ""
-                    FlexibleSearchProperty(placeholder, value)
+                    FlexibleSearchParameter(placeholder, value)
                 }
                 ?.distinct()
                 ?: emptySet()
@@ -237,7 +237,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 }
 
 //create a factory method
-data class FlexibleSearchProperty(
+data class FlexibleSearchParameter(
     var name: String,
     var value: String = "",
     var operand: String = ""
