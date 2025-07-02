@@ -54,7 +54,5 @@ class FlexibleSearchPsiTreeChangeListener(project: Project) : PsiTreeChangeListe
             ?.let { FileEditorManager.getInstance(it.project).getSelectedEditor(it.virtualFile) }
             ?.asSafely<FlexibleSearchSplitEditor>()
             ?.refreshComponent()
-
-
     }
 }
