@@ -162,11 +162,14 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                         parameters.forEach { parameter ->
                             row {
                                 //todo limit the long name depends on width of the panel
-                                textField()
-                                    .label("${parameter.name}:")
-                                    .align(AlignX.FILL)
-                                    .bindText(parameter::value)
-                                    .onChanged { parameter.value = it.text }
+                                when (parameter.type) {
+
+                                    else -> textField()
+                                            .label("${parameter.name}:")
+                                            .align(AlignX.FILL)
+                                            .bindText(parameter::value)
+                                            .onChanged { parameter.value = it.text }
+                                }
 
                             }.layout(RowLayout.PARENT_GRID)
                         }
