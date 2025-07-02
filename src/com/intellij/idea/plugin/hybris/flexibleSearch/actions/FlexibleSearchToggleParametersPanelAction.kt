@@ -39,7 +39,7 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
     override fun update(e: AnActionEvent) {
         val visible = e.getData(PlatformDataKeys.FILE_EDITOR)
             ?.asSafely<FlexibleSearchSplitEditor>()
-            ?.isParameterPanelVisible() ?: return
+            ?.isParametersPanelVisible() ?: return
 
         if (visible) {
             e.presentation.text = message("hybris.fxs.actions.hide_parameters")
