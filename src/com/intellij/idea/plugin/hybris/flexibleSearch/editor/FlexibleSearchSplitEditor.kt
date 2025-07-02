@@ -56,6 +56,7 @@ import javax.swing.JPanel
 
 class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
+    private val splitter = JBSplitter(false, 0.07f, 0.05f, 0.85f)
     private val flexibleSearchComponent: JComponent = createComponent()
 
     init {
@@ -85,7 +86,6 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
     fun refreshParameterPanel() {
         if (project.isDisposed) return
 
-        val splitter = flexibleSearchComponent.components.firstOrNull().asSafely<JBSplitter>() ?: return
         val isVisible = splitter.secondComponent.isVisible
 
         splitter.secondComponent = application.runReadAction<JComponent> {
@@ -95,7 +95,6 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
     }
 
     fun toggleLayout() {
-        val splitter = flexibleSearchComponent.components.firstOrNull().asSafely<JBSplitter>() ?: return
         val parametersPanel = splitter.secondComponent
         parametersPanel.isVisible = !parametersPanel.isVisible
 
@@ -103,14 +102,9 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         splitter.firstComponent.requestFocus()
     }
 
-    fun isParameterPanelVisible(): Boolean = flexibleSearchComponent.components.firstOrNull()
-        .asSafely<JBSplitter>()
-        ?.secondComponent
-        ?.isVisible
-        ?: false
+    fun isParameterPanelVisible(): Boolean = splitter.secondComponent?.isVisible ?: false
 
     private fun createComponent(): JComponent {
-        val splitter = JBSplitter(false, 0.07f, 0.05f, 0.85f)
         splitter.splitterProportionKey = "SplitFileEditor.Proportion"
         splitter.firstComponent = flexibleSearchEditor.component
 
@@ -125,10 +119,9 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
             }
         }
 
-        val result = JPanel(BorderLayout())
-        result.add(splitter, BorderLayout.CENTER)
-
-        return result
+        return JPanel(BorderLayout()).apply {
+            add(splitter, BorderLayout.NORTH)
+        }
     }
 
     fun buildParametersPanel(): JComponent {
