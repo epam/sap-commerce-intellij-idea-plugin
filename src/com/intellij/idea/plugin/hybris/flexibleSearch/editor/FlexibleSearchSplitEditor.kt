@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
+import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.KEY_FLEXIBLE_SEARCH_PARAMETERS
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
@@ -57,6 +58,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.swing.JComponent
 import javax.swing.JPanel
+import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.fileEditor.FileEditorManager
 
 class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
@@ -76,18 +79,19 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         with(project.messageBus.connect(this)) {
             subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
-                    refreshParameterPanel()
+                    refreshEditor()
                 }
             })
         }
     }
 
-    fun refreshParameterPanel() {
+    fun refreshEditor() {
         if (project.isDisposed) return
 
         if (!isParametersPanelVisible()) return
 
         splitter.secondComponent = buildParametersPanel()
+        refreshTextEditor()
     }
 
     fun toggleLayout() {
@@ -155,14 +159,20 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                                         .label("${parameter.name}:")
                                         .align(AlignX.FILL)
                                         .text(parameter.value)
-                                        .onChanged { parameter.value = it.text }
+                                        .onChanged {
+                                            parameter.value = it.text
+                                            refreshTextEditor()
+                                        }
 
                                     "boolean",
                                     "java.lang.Boolean" -> checkBox(parameter.name)
                                         .align(AlignX.FILL)
                                         .selected(parameter.value == "1")
                                         .onChanged { parameter.value = if (it.isSelected) "1" else "0" }
-                                        .also { parameter.value = (if (parameter.value == "1") "1" else "0") }
+                                        .also {
+                                            parameter.value = (if (parameter.value == "1") "1" else "0")
+                                            refreshTextEditor()
+                                        }
 
                                     "java.util.Date" -> cell(
                                         DatePicker(
@@ -192,7 +202,10 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                                         .label("${parameter.name}:")
                                         .align(AlignX.FILL)
                                         .text(StringUtil.unquoteString(parameter.value, '\''))
-                                        .onChanged { parameter.value = "'${it.text}'" }
+                                        .onChanged {
+                                            parameter.value = "'${it.text}'"
+                                            refreshTextEditor()
+                                        }
                                 }
 
                             }.layout(RowLayout.PARENT_GRID)
@@ -231,6 +244,13 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     override fun canNavigateTo(navigatable: Navigatable) = textEditor.canNavigateTo(navigatable)
     override fun navigateTo(navigatable: Navigatable) = textEditor.navigateTo(navigatable)
     override fun getFile(): VirtualFile? = editor.virtualFile
+
+    private fun refreshTextEditor() {
+        invokeLater {
+            PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), true)
+            DaemonCodeAnalyzer.getInstance(project).restart()
+        }
+    }
 
     private fun isTypeSystemInitialized(): Boolean {
         if (project.isDisposed) return false
