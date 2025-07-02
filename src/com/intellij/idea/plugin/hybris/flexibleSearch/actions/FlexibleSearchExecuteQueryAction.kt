@@ -56,12 +56,12 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
         .getSelectedEditor(editor.virtualFile)
         .asSafely<FlexibleSearchSplitEditor>()
         ?.getUserData(FLEXIBLE_SEARCH_PROPERTIES_KEY)
+        ?.sortedByDescending { it.name.length }
         ?.let { properties ->
             var updatedContent = content
-            properties.sortedByDescending { it.name.length }
-                .forEach {
-                    updatedContent = updatedContent.replace("?${it.name}", it.value)
-                }
+            properties.forEach {
+                updatedContent = updatedContent.replace("?${it.name}", it.value)
+            }
 //todo replace by regex
 //                updatedContent.replace("\\?(\\w+)".toRegex()) { matchResult ->
 //                    val key = matchResult.groupValues[1]
