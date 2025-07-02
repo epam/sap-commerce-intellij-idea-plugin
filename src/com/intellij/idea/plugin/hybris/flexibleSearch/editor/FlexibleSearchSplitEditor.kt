@@ -247,30 +247,6 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     private fun createDefaultFlexibleSearchProperty(psiElement: FlexibleSearchBindParameter): FlexibleSearchProperty =
         FlexibleSearchProperty(psiElement.text.removePrefix("?"), "", "", "")
 
-    override fun getComponent(): JComponent {
-        return flexibleSearchComponent
-    }
-
-    override fun getPreferredFocusedComponent(): JComponent? {
-        return if (flexibleSearchEditor.component.isVisible) flexibleSearchEditor.preferredFocusedComponent else flexibleSearchComponent.getPreferredFocusedComponent()
-    }
-
-    override fun getName(): String {
-        return "FlexibleSearch Split Editor"
-    }
-
-    override fun setState(state: FileEditorState) {
-        flexibleSearchEditor.setState(state)
-    }
-
-    override fun isModified(): Boolean {
-        return flexibleSearchEditor.isModified
-    }
-
-    override fun isValid(): Boolean {
-        return flexibleSearchEditor.isValid && flexibleSearchComponent.isValid
-    }
-
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {
         flexibleSearchEditor.addPropertyChangeListener(listener)
         flexibleSearchComponent.addPropertyChangeListener(listener)
@@ -281,31 +257,24 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         flexibleSearchComponent.removePropertyChangeListener(listener)
     }
 
-    override fun dispose() {
-        Disposer.dispose(flexibleSearchEditor)
-    }
+    override fun getPreferredFocusedComponent(): JComponent? = if (flexibleSearchEditor.component.isVisible) flexibleSearchEditor.preferredFocusedComponent
+    else flexibleSearchComponent.getPreferredFocusedComponent()
 
-    override fun getEditor(): Editor {
-        return flexibleSearchEditor.editor
-    }
-
-    override fun canNavigateTo(navigatable: Navigatable): Boolean {
-        return flexibleSearchEditor.canNavigateTo(navigatable)
-    }
-
-    override fun navigateTo(navigatable: Navigatable) {
-        flexibleSearchEditor.navigateTo(navigatable)
-    }
-
-    override fun getFile(): VirtualFile? {
-        return editor.virtualFile
-    }
+    override fun getComponent(): JComponent = flexibleSearchComponent
+    override fun getName(): String = "FlexibleSearch Split Editor"
+    override fun setState(state: FileEditorState) = flexibleSearchEditor.setState(state)
+    override fun isModified(): Boolean = flexibleSearchEditor.isModified
+    override fun isValid(): Boolean = flexibleSearchEditor.isValid && flexibleSearchComponent.isValid
+    override fun dispose() = Disposer.dispose(flexibleSearchEditor)
+    override fun getEditor(): Editor = flexibleSearchEditor.editor
+    override fun canNavigateTo(navigatable: Navigatable): Boolean = flexibleSearchEditor.canNavigateTo(navigatable)
+    override fun navigateTo(navigatable: Navigatable) = flexibleSearchEditor.navigateTo(navigatable)
+    override fun getFile(): VirtualFile? = editor.virtualFile
 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
     }
-
 }
 
 data class FlexibleSearchProperty(
