@@ -144,6 +144,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                         parameters.forEach { parameter ->
                             row {
                                 //todo limit the long name depends on width of the panel
+                                // TODO: migrate to proper property binding
                                 when (parameter.type) {
                                     "java.lang.Integer" -> intTextField()
                                         .label("${parameter.name}:")
