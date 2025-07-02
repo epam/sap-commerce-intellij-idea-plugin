@@ -27,7 +27,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiTreeChangeEvent
 import com.intellij.psi.PsiTreeChangeListener
 import com.intellij.util.asSafely
-import org.jetbrains.kotlin.idea.codeinsight.utils.findExistingEditor
 
 class FlexibleSearchPsiTreeChangeListener(project: Project) : PsiTreeChangeListener {
 

@@ -31,12 +31,10 @@ import com.intellij.util.asSafely
 
 class FlexibleSearchSplitFileEditorProvider : FileEditorProvider, DumbAware {
 
-    override fun createEditor(project: Project, file: VirtualFile): FileEditor {
-        val editor = TextEditorProvider.getInstance().createEditor(project, file)
-        return editor
-            .asSafely<TextEditor>()
+    override fun createEditor(project: Project, file: VirtualFile): FileEditor = with(TextEditorProvider.getInstance().createEditor(project, file)) {
+        asSafely<TextEditor>()
             ?.let { FlexibleSearchSplitEditor(it, project) }
-            ?: editor
+            ?: this
     }
 
     override fun getEditorTypeId(): String = "flexible-search-split-file-editor"
