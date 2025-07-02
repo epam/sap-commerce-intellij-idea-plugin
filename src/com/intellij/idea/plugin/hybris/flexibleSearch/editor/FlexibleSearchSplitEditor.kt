@@ -191,6 +191,7 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
                     }.topGap(TopGap.SMALL)
                 }.customize(UnscaledGaps(16, 16, 16, 16))
 
+                //todo extract from panel to show message vertical center aligned
                 if (parameters.isEmpty()) {
                     row {
                         label("FlexibleSearch query doesn't have parameters")
