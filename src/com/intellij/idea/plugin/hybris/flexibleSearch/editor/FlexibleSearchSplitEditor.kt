@@ -144,7 +144,7 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         if (!isTsSystemInitialized) {
             parametersPanel = panel {
                 row {
-                    label("Initializing Type System, Please wait...")
+                    label("Initializing Type System, please wait...")
                         .align(Align.CENTER)
                         .resizableColumn()
                 }.resizableRow()
