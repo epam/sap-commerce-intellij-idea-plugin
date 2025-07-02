@@ -54,7 +54,7 @@ import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
+class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
     private val flexibleSearchComponent: JComponent = createComponent()
 
@@ -69,11 +69,11 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
     }
 
     private fun isTypeSystemInitialized(): Boolean {
-        if (isDisposed()) return false
-        if (DumbService.isDumb(project())) return false
+        if (project.isDisposed) return false
+        if (DumbService.isDumb(project)) return false
 
         try {
-            val metaModelStateService = project().service<TSMetaModelStateService>()
+            val metaModelStateService = project.service<TSMetaModelStateService>()
             metaModelStateService.get()
 
             return metaModelStateService.initialized()
@@ -83,7 +83,7 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
     }
 
     fun refreshParameterPanel() {
-        if (isDisposed()) return
+        if (project.isDisposed) return
 
         val splitter = flexibleSearchComponent.components.firstOrNull().asSafely<JBSplitter>() ?: return
         val isVisible = splitter.secondComponent.isVisible
@@ -114,7 +114,7 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         splitter.splitterProportionKey = "SplitFileEditor.Proportion"
         splitter.firstComponent = flexibleSearchEditor.component
 
-        if (isDisposed()) {
+        if (project.isDisposed) {
             splitter.secondComponent = ScrollPaneFactory.createScrollPane(JPanel(), true).apply {
                 //todo change to DSL initialization
                 preferredSize = Dimension(600, 400)
@@ -132,7 +132,7 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
     }
 
     fun buildParametersPanel(): JComponent {
-        if (isDisposed()) {
+        if (project.isDisposed) {
             return ScrollPaneFactory.createScrollPane(JPanel(), true).apply {
                 preferredSize = Dimension(600, 400)
             }
@@ -151,7 +151,7 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
             }
         } else {
             val currentParameters = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) ?: emptySet()
-            val parameters = PsiDocumentManager.getInstance(project()).getPsiFile(editor.document)
+            val parameters = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
                 ?.map { bindParameter ->
                     val placeholder = bindParameter.text.removePrefix("?")
@@ -252,9 +252,6 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
     override fun canNavigateTo(navigatable: Navigatable): Boolean = flexibleSearchEditor.canNavigateTo(navigatable)
     override fun navigateTo(navigatable: Navigatable) = flexibleSearchEditor.navigateTo(navigatable)
     override fun getFile(): VirtualFile? = editor.virtualFile
-
-    private fun project(): Project = flexibleSearchEditor.editor.project!!
-    private fun isDisposed(): Boolean = project().isDisposed
 
     companion object {
         @Serial
