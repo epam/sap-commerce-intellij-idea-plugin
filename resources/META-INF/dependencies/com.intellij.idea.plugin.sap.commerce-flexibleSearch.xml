@@ -21,6 +21,15 @@
 
         <internalFileTemplate name="FlexibleSearch File"/>
 
+        <codeInsight.declarativeInlayProvider language="FlexibleSearch"
+                                              implementationClass="com.intellij.idea.plugin.hybris.system.java.codeInsight.hints.FlexibleSearchParameterInlayHintProvider"
+                                              isEnabledByDefault="true"
+                                              group="VALUES_GROUP"
+                                              providerId="hybris.FlexibleSearch.parameter"
+                                              bundle="i18n/HybrisBundle"
+                                              nameKey="hybris.editor.flexiblesearch.parameter.name"
+                                              descriptionKey="hybris.editor.flexiblesearch.parameter.description"/>
+
         <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.flexibleSearch.psi.listeners.FlexibleSearchPsiTreeChangeListener"/>
 
         <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="INSTANCE"
