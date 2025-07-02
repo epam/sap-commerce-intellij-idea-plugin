@@ -34,6 +34,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.getPreferredFocusedComponent
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
@@ -131,23 +132,6 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             }
                 .customize(UnscaledGaps(16, 16, 16, 16))
 
-            panel {
-                row {
-                    val infoBanner = InlineBanner(
-                        """
-                        <html><body style='width: 100%'>
-                        <p>String parameters must be wrapped in single quotes: ''value''.</p>
-                        </body></html>
-                    """.trimIndent(),
-                        EditorNotificationPanel.Status.Info
-                    ).showCloseButton(false)
-
-                    cell(infoBanner)
-                        .align(Align.FILL)
-                }.topGap(TopGap.SMALL)
-            }
-                .customize(UnscaledGaps(16, 16, 16, 16))
-
             //todo extract from panel to show message vertical center aligned
             panel {
                 if (parameters.isEmpty()) {
@@ -164,22 +148,21 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                                     "java.lang.Integer" -> intTextField()
                                         .label("${parameter.name}:")
                                         .align(AlignX.FILL)
-                                        .bindText(parameter::value)
+                                        .text(parameter.value)
                                         .onChanged { parameter.value = it.text }
 
-                                    "boolean" -> checkBox(parameter.name)
+                                    "boolean",
+                                    "java.lang.Boolean" -> checkBox(parameter.name)
                                         .align(AlignX.FILL)
-                                        .onChanged { parameter.value = it.text }
-
-                                    "java.lang.Boolean" -> threeStateCheckBox(parameter.name)
-                                        .align(AlignX.FILL)
-                                        .onChanged { parameter.value = it.text }
+                                        .selected(parameter.value == "1")
+                                        .onChanged { parameter.value = if (it.isSelected) "1" else "0" }
+                                        .also { parameter.value = (if (parameter.value == "1") "1" else "0") }
 
                                     else -> textField()
                                         .label("${parameter.name}:")
                                         .align(AlignX.FILL)
-                                        .bindText(parameter::value)
-                                        .onChanged { parameter.value = it.text }
+                                        .text(StringUtil.unquoteString(parameter.value, '\''))
+                                        .onChanged { parameter.value = "'${it.text}'" }
                                 }
 
                             }.layout(RowLayout.PARENT_GRID)
