@@ -34,11 +34,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.getPreferredFocusedComponent
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.UserDataHolderBase
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
@@ -48,7 +46,6 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
-import java.awt.Dimension
 import java.beans.PropertyChangeListener
 import java.io.Serial
 import javax.swing.JComponent
@@ -62,6 +59,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         setHonorComponentsMinimumSize(true)
 
         firstComponent = textEditor.component
+        secondComponent = buildParametersPanel()
     }
 
     private val splitPanel = JPanel(BorderLayout()).apply {
@@ -78,20 +76,31 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         }
     }
 
+    private fun isTypeSystemInitialized(): Boolean {
+        if (project.isDisposed) return false
+        if (DumbService.isDumb(project)) return false
+
+        try {
+            val metaModelStateService = project.service<TSMetaModelStateService>()
+            metaModelStateService.get()
+
+            return metaModelStateService.initialized()
+        } catch (_: Throwable) {
+            return false
+        }
+    }
+
     fun refreshParameterPanel() {
         if (project.isDisposed) return
 
-        if (!isParametersPanelVisible()) return
+        val isVisible = splitter.secondComponent.isVisible
 
         splitter.secondComponent = buildParametersPanel()
+        splitter.secondComponent.isVisible = isVisible
     }
 
     fun toggleLayout() {
-        if (splitter.secondComponent == null) {
-            splitter.secondComponent = buildParametersPanel()
-        } else {
-            splitter.secondComponent.apply { isVisible = !isVisible }
-        }
+        splitter.secondComponent.apply { isVisible = !isVisible }
 
         component.requestFocus()
         splitter.firstComponent.requestFocus()
@@ -99,8 +108,8 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 
     fun isParametersPanelVisible(): Boolean = splitter.secondComponent?.isVisible ?: false
 
-    fun buildParametersPanel(): JComponent? {
-        if (project.isDisposed) return null
+    fun buildParametersPanel(): JComponent {
+        if (project.isDisposed) return panel {}
 
         if (!isTypeSystemInitialized()) return panel {
             row {
@@ -110,7 +119,21 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             }.resizableRow()
         }
 
-        val parameters = collectParameters()
+        val parameters = application.runReadAction<Collection<FlexibleSearchProperty>> {
+            val currentParameters = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) ?: emptySet()
+
+            PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
+                ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
+                ?.map { bindParameter ->
+                    val placeholder = bindParameter.text.removePrefix("?")
+                    val value = currentParameters.find { it.name == placeholder }?.value ?: ""
+                    FlexibleSearchProperty(placeholder, value)
+                }
+                ?.distinct()
+                ?: emptySet()
+        }
+
+        putUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS, parameters)
 
         //extract to small methods: render headers, render no data panel, render data panel
         return panel {
@@ -132,6 +155,23 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             }
                 .customize(UnscaledGaps(16, 16, 16, 16))
 
+            panel {
+                row {
+                    val infoBanner = InlineBanner(
+                        """
+                        <html><body style='width: 100%'>
+                        <p>String parameters must be wrapped in single quotes: ''value''.</p>
+                        </body></html>
+                    """.trimIndent(),
+                        EditorNotificationPanel.Status.Info
+                    ).showCloseButton(false)
+
+                    cell(infoBanner)
+                        .align(Align.FILL)
+                }.topGap(TopGap.SMALL)
+            }
+                .customize(UnscaledGaps(16, 16, 16, 16))
+
             //todo extract from panel to show message vertical center aligned
             panel {
                 if (parameters.isEmpty()) {
@@ -144,39 +184,26 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                         parameters.forEach { parameter ->
                             row {
                                 //todo limit the long name depends on width of the panel
-                                // TODO: migrate to proper property binding
-                                when (parameter.type) {
-                                    "java.lang.Integer" -> intTextField()
-                                        .label("${parameter.name}:")
-                                        .align(AlignX.FILL)
-                                        .text(parameter.value)
-                                        .onChanged { parameter.value = it.text }
-
-                                    "boolean",
-                                    "java.lang.Boolean" -> checkBox(parameter.name)
-                                        .align(AlignX.FILL)
-                                        .selected(parameter.value == "1")
-                                        .onChanged { parameter.value = if (it.isSelected) "1" else "0" }
-                                        .also { parameter.value = (if (parameter.value == "1") "1" else "0") }
-
-                                    else -> textField()
-                                        .label("${parameter.name}:")
-                                        .align(AlignX.FILL)
-                                        .text(StringUtil.unquoteString(parameter.value, '\''))
-                                        .onChanged { parameter.value = "'${it.text}'" }
-                                }
+                                textField()
+                                    .label("${parameter.name}:")
+                                    .align(AlignX.FILL)
+                                    .bindText(parameter::value)
+                                    .onChanged { parameter.value = it.text }
 
                             }.layout(RowLayout.PARENT_GRID)
                         }
                     }
                 }
             }
-        }
-            .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-            .let { Dsl.scrollPanel(it) }
-            .apply {
-                minimumSize = Dimension(minimumSize.width, 165)
-            }
+        }.apply {
+            border = JBUI.Borders.empty(5, 16, 10, 16)
+        }.let { Dsl.scrollPanel(it) }
+            .apply { isVisible = false }
+
+//        return ScrollPaneFactory.createScrollPane(parametersPanel, true).apply {
+//            preferredSize = Dimension(600, 400)
+//            isVisible = false
+//        }
     }
 
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {
@@ -203,35 +230,6 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     override fun navigateTo(navigatable: Navigatable) = textEditor.navigateTo(navigatable)
     override fun getFile(): VirtualFile? = editor.virtualFile
 
-    private fun isTypeSystemInitialized(): Boolean {
-        if (project.isDisposed) return false
-        if (DumbService.isDumb(project)) return false
-
-        try {
-            val metaModelStateService = project.service<TSMetaModelStateService>()
-            metaModelStateService.get()
-
-            return metaModelStateService.initialized()
-        } catch (_: Throwable) {
-            return false
-        }
-    }
-
-    private fun collectParameters(): Collection<FlexibleSearchParameter> {
-        val currentParameters = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) ?: emptySet()
-
-        val parameters = application.runReadAction<Collection<FlexibleSearchParameter>> {
-            PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
-                ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
-                ?.map { FlexibleSearchParameter.of(it, currentParameters) }
-                ?.distinct()
-                ?: emptySet()
-        }
-
-        putUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS, parameters)
-        return parameters
-    }
-
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
@@ -239,18 +237,8 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 }
 
 //create a factory method
-data class FlexibleSearchParameter(
-    val name: String,
+data class FlexibleSearchProperty(
+    var name: String,
     var value: String = "",
-    val type: String? = null,
-    val operand: IElementType? = null
-) {
-    companion object {
-        fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Collection<FlexibleSearchParameter>): FlexibleSearchParameter {
-            val parameter = bindParameter.text.removePrefix("?")
-            val value = currentParameters.find { it.name == parameter }?.value ?: ""
-
-            return FlexibleSearchParameter(parameter, value, bindParameter.itemType)
-        }
-    }
-}
+    var operand: String = ""
+)
