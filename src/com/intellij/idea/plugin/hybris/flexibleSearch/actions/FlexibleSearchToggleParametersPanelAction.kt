@@ -55,6 +55,6 @@ class FlexibleSearchToggleParametersPanelAction : AnAction(
     override fun actionPerformed(e: AnActionEvent) {
         e.getData(PlatformDataKeys.FILE_EDITOR)
             ?.asSafely<FlexibleSearchSplitEditor>()
-            ?.toggleLayoutChange()
+            ?.toggleLayout()
     }
 }

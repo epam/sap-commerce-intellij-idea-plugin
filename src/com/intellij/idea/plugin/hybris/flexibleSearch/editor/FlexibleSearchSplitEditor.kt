@@ -62,7 +62,7 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         with(project.messageBus.connect(this)) {
             subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
-                    refreshComponent()
+                    refreshParameterPanel()
                 }
             })
         }
@@ -82,21 +82,19 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         }
     }
 
-    fun refreshComponent() {
-        val project = editor.project
-            ?.takeUnless { it.isDisposed }
-            ?: return
+    fun refreshParameterPanel() {
+        if (isDisposed()) return
 
         val splitter = flexibleSearchComponent.components.firstOrNull().asSafely<JBSplitter>() ?: return
         val isVisible = splitter.secondComponent.isVisible
 
         splitter.secondComponent = application.runReadAction<JComponent> {
-            return@runReadAction buildPropertyForm()
+            return@runReadAction buildParametersPanel()
         }
         splitter.secondComponent.isVisible = isVisible
     }
 
-    fun toggleLayoutChange() {
+    fun toggleLayout() {
         val splitter = flexibleSearchComponent.components.firstOrNull().asSafely<JBSplitter>() ?: return
         val parametersPanel = splitter.secondComponent
         parametersPanel.isVisible = !parametersPanel.isVisible
@@ -123,7 +121,7 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
             }
         } else {
             splitter.secondComponent = application.runReadAction<JComponent> {
-                return@runReadAction buildPropertyForm()
+                return@runReadAction buildParametersPanel()
             }
         }
 
@@ -133,7 +131,7 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         return result
     }
 
-    fun buildPropertyForm(): JComponent {
+    fun buildParametersPanel(): JComponent {
         if (isDisposed()) {
             return ScrollPaneFactory.createScrollPane(JPanel(), true).apply {
                 preferredSize = Dimension(600, 400)
