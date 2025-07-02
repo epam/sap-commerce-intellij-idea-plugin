@@ -33,7 +33,6 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -42,10 +41,6 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.awt.RelativePoint
-import com.intellij.openapi.ui.popup.util.BaseListPopupStep
-import com.intellij.openapi.ui.popup.ListPopupStep
-import com.intellij.openapi.ui.popup.ListSeparator
-import com.intellij.openapi.ui.popup.PopupStep
 import java.awt.Point
 import java.awt.event.MouseEvent
 
@@ -125,7 +120,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         val dataContext = SimpleDataContext.builder()
             .add(CommonDataKeys.PROJECT, project)
             .add(CommonDataKeys.EDITOR, editor)
-            .add(HybrisConstants.LOGGER_IDENTIFIER_DATA_CONTEXT_KEY, loggerIdentifier)
+            .add(HybrisConstants.KEY_LOGGER_IDENTIFIER_DATA_CONTEXT, loggerIdentifier)
             .build()
 
         val popup = JBPopupFactory.getInstance()

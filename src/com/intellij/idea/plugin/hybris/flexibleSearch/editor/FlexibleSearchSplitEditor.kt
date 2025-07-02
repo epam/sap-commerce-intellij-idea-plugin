@@ -18,14 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_PROPERTIES_KEY
+import com.intellij.idea.plugin.hybris.common.HybrisConstants.KEY_FLEXIBLE_SEARCH_PARAMETERS
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
-import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
-import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
@@ -56,20 +54,12 @@ import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-class FlexibleSearchSplitEditor(e: TextEditor, project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
+class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
-    private val flexibleSearchEditor: TextEditor = e
-    private val flexibleSearchComponent: JComponent
+    private val flexibleSearchComponent: JComponent = createComponent(project)
 
     init {
-        flexibleSearchComponent = createComponent(project)
         with(project.messageBus.connect(this)) {
-            subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
-                override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
-                    refreshComponent()
-                }
-            })
-
             subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
                     refreshComponent()
@@ -81,7 +71,6 @@ class FlexibleSearchSplitEditor(e: TextEditor, project: Project) : UserDataHolde
     private fun isTsSystemInitialized(project: Project): Boolean {
         if (project.isDisposed) return false
         if (DumbService.isDumb(project)) return false
-
 
         try {
             val metaModelStateService = project.service<TSMetaModelStateService>()
@@ -156,23 +145,24 @@ class FlexibleSearchSplitEditor(e: TextEditor, project: Project) : UserDataHolde
 
         if (!isTsSystemInitialized) {
             parametersPanel = panel {
-                collapsibleGroup("Properties") {
-                    row {
-                        label("Initializing Type System, Please wait...")
-                            .align(Align.CENTER)
-                            .resizableColumn()
-                    }.resizableRow()
-                }
-                    .expanded = true
+                row {
+                    label("Initializing Type System, Please wait...")
+                        .align(Align.CENTER)
+                        .resizableColumn()
+                }.resizableRow()
             }
         } else {
-            val properties = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
+            val currentParameters = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) ?: emptySet()
+            val parameters = (PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
-                ?.map { createDefaultFlexibleSearchProperty(it) }
-                ?.toSet()
-                ?: setOf()
+                ?.map { bindParameter ->
+                    val placeholder = bindParameter.text.removePrefix("?")
+                    FlexibleSearchProperty(placeholder, currentParameters.find { it.name == placeholder }?.value ?: "")
+                }
+                ?.distinct()
+                ?: emptySet())
 
-            putUserData(FLEXIBLE_SEARCH_PROPERTIES_KEY, properties)
+            putUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS, parameters)
 
             //extract to small methods: render headers, render no data panel, render data panel
             parametersPanel = panel {
@@ -210,14 +200,14 @@ class FlexibleSearchSplitEditor(e: TextEditor, project: Project) : UserDataHolde
                     }.topGap(TopGap.SMALL)
                 }.customize(UnscaledGaps(16, 16, 16, 16))
 
-                if (properties.isEmpty()) {
+                if (parameters.isEmpty()) {
                     row {
                         label("FlexibleSearch query doesn't have parameters")
                             .align(Align.CENTER)
                     }
                 } else {
                     group("Parameters") {
-                        properties.forEach { property ->
+                        parameters.forEach { property ->
                             row {
                                 //todo limit the long name depends on width of the panel
                                 label(property.name)
@@ -241,8 +231,6 @@ class FlexibleSearchSplitEditor(e: TextEditor, project: Project) : UserDataHolde
         }
     }
 
-    private fun createDefaultFlexibleSearchProperty(psiElement: FlexibleSearchBindParameter): FlexibleSearchProperty =
-        FlexibleSearchProperty(psiElement.text.removePrefix("?"))
 
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {
         flexibleSearchEditor.addPropertyChangeListener(listener)
@@ -279,4 +267,8 @@ data class FlexibleSearchProperty(
     var name: String,
     var value: String = "",
     var operand: String = ""
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        return name == (other as? FlexibleSearchProperty)?.name
+    }
+}

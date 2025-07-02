@@ -728,9 +728,9 @@ object HybrisConstants {
     val KEY_FINALIZE_PROJECT_IMPORT: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create("hybrisProjectImportFinalize")
     val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
 
-    val LOGGER_IDENTIFIER_DATA_CONTEXT_KEY = DataKey.create<String>("sap.cx.logger.identifier")
+    val KEY_LOGGER_IDENTIFIER_DATA_CONTEXT = DataKey.create<String>("sap.cx.logger.identifier")
 
-    val FLEXIBLE_SEARCH_PROPERTIES_KEY: Key<Collection<FlexibleSearchProperty>?> = Key.create("FLEXIBLE_SEARCH_PROPERTIES_KEY")
+    val KEY_FLEXIBLE_SEARCH_PARAMETERS: Key<Collection<FlexibleSearchProperty>> = Key.create("flexibleSearch.parameters.key")
 
     const val FXS_DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
     val FXS_SUPPORTED_ELEMENT_TYPES = setOf(
