@@ -27,12 +27,16 @@ import com.intellij.openapi.fileEditor.impl.text.TextEditorProvider
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.asSafely
 
 class FlexibleSearchSplitFileEditorProvider : FileEditorProvider, DumbAware {
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
         val editor = TextEditorProvider.getInstance().createEditor(project, file)
-        return FlexibleSearchSplitEditor(editor as TextEditor, project)
+        return editor
+            .asSafely<TextEditor>()
+            ?.let { FlexibleSearchSplitEditor(it, project) }
+            ?: editor
     }
 
     override fun getEditorTypeId(): String = "flexible-search-split-file-editor"
