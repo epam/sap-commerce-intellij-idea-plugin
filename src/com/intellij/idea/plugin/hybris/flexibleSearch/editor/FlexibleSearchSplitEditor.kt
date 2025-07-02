@@ -56,7 +56,7 @@ import javax.swing.JPanel
 
 class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
-    private val flexibleSearchComponent: JComponent = createComponent(project)
+    private val flexibleSearchComponent: JComponent = createComponent()
 
     init {
         with(project.messageBus.connect(this)) {
@@ -68,12 +68,12 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         }
     }
 
-    private fun isTsSystemInitialized(project: Project): Boolean {
-        if (project.isDisposed) return false
-        if (DumbService.isDumb(project)) return false
+    private fun isTypeSystemInitialized(): Boolean {
+        if (isDisposed()) return false
+        if (DumbService.isDumb(project())) return false
 
         try {
-            val metaModelStateService = project.service<TSMetaModelStateService>()
+            val metaModelStateService = project().service<TSMetaModelStateService>()
             metaModelStateService.get()
 
             return metaModelStateService.initialized()
@@ -91,7 +91,7 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         val isVisible = splitter.secondComponent.isVisible
 
         splitter.secondComponent = application.runReadAction<JComponent> {
-            return@runReadAction buildPropertyForm(project)
+            return@runReadAction buildPropertyForm()
         }
         splitter.secondComponent.isVisible = isVisible
     }
@@ -111,19 +111,19 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         ?.isVisible
         ?: false
 
-    private fun createComponent(project: Project): JComponent {
+    private fun createComponent(): JComponent {
         val splitter = JBSplitter(false, 0.07f, 0.05f, 0.85f)
         splitter.splitterProportionKey = "SplitFileEditor.Proportion"
         splitter.firstComponent = flexibleSearchEditor.component
 
-        if (project.isDisposed) {
+        if (isDisposed()) {
             splitter.secondComponent = ScrollPaneFactory.createScrollPane(JPanel(), true).apply {
                 //todo change to DSL initialization
                 preferredSize = Dimension(600, 400)
             }
         } else {
             splitter.secondComponent = application.runReadAction<JComponent> {
-                return@runReadAction buildPropertyForm(project)
+                return@runReadAction buildPropertyForm()
             }
         }
 
@@ -133,14 +133,14 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         return result
     }
 
-    fun buildPropertyForm(project: Project): JComponent {
-        if (project.isDisposed) {
+    fun buildPropertyForm(): JComponent {
+        if (isDisposed()) {
             return ScrollPaneFactory.createScrollPane(JPanel(), true).apply {
                 preferredSize = Dimension(600, 400)
             }
         }
 
-        val isTsSystemInitialized = isTsSystemInitialized(project)
+        val isTsSystemInitialized = isTypeSystemInitialized()
         var parametersPanel: DialogPanel?
 
         if (!isTsSystemInitialized) {
@@ -153,14 +153,14 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
             }
         } else {
             val currentParameters = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) ?: emptySet()
-            val parameters = (PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
+            val parameters = PsiDocumentManager.getInstance(project()).getPsiFile(editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
                 ?.map { bindParameter ->
                     val placeholder = bindParameter.text.removePrefix("?")
                     FlexibleSearchProperty(placeholder, currentParameters.find { it.name == placeholder }?.value ?: "")
                 }
                 ?.distinct()
-                ?: emptySet())
+                ?: emptySet()
 
             putUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS, parameters)
 
@@ -231,7 +231,6 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
         }
     }
 
-
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {
         flexibleSearchEditor.addPropertyChangeListener(listener)
         flexibleSearchComponent.addPropertyChangeListener(listener)
@@ -255,6 +254,9 @@ class FlexibleSearchSplitEditor(private val flexibleSearchEditor: TextEditor, pr
     override fun canNavigateTo(navigatable: Navigatable): Boolean = flexibleSearchEditor.canNavigateTo(navigatable)
     override fun navigateTo(navigatable: Navigatable) = flexibleSearchEditor.navigateTo(navigatable)
     override fun getFile(): VirtualFile? = editor.virtualFile
+
+    private fun project(): Project = flexibleSearchEditor.editor.project!!
+    private fun isDisposed(): Boolean = project().isDisposed
 
     companion object {
         @Serial
