@@ -48,6 +48,7 @@ import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
+import com.intellij.util.asSafely
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
@@ -80,21 +81,15 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     }
 
     private fun isTsSystemInitialized(project: Project): Boolean {
-        if (project.isDisposed) {
-            return false
-        }
+        if (project.isDisposed) return false
+        if (DumbService.isDumb(project)) return false
 
-        val metaModelStateService = project.service<TSMetaModelStateService>()
 
         try {
+            val metaModelStateService = project.service<TSMetaModelStateService>()
             metaModelStateService.get()
 
-            return when {
-                DumbService.isDumb(project) -> false
-                !metaModelStateService.initialized() -> false
-
-                else -> true
-            }
+            return metaModelStateService.initialized()
         } catch (_: Throwable) {
             return false
         }
@@ -105,18 +100,17 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
             ?.takeUnless { it.isDisposed }
             ?: return
 
-        val splitter = flexibleSearchComponent.components[0] as JBSplitter
+        val splitter = flexibleSearchComponent.components.firstOrNull().asSafely<JBSplitter>() ?: return
         val isVisible = splitter.secondComponent.isVisible
 
         splitter.secondComponent = application.runReadAction<JComponent> {
             return@runReadAction buildPropertyForm(project)
         }
         splitter.secondComponent.isVisible = isVisible
-
     }
 
     fun toggleLayoutChange() {
-        val splitter = flexibleSearchComponent.components[0] as JBSplitter
+        val splitter = flexibleSearchComponent.components.firstOrNull().asSafely<JBSplitter>() ?: return
         val parametersPanel = splitter.secondComponent
         parametersPanel.isVisible = !parametersPanel.isVisible
 
@@ -124,10 +118,11 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         splitter.firstComponent.requestFocus()
     }
 
-    fun isParameterPanelVisible(): Boolean {
-        val splitter = flexibleSearchComponent.components[0] as JBSplitter
-        return splitter.secondComponent.isVisible
-    }
+    fun isParameterPanelVisible(): Boolean = flexibleSearchComponent.components.firstOrNull()
+        .asSafely<JBSplitter>()
+        ?.secondComponent
+        ?.isVisible
+        ?: false
 
     private fun createComponent(project: Project): JComponent {
         val splitter = JBSplitter(false, 0.07f, 0.05f, 0.85f)
@@ -136,6 +131,7 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
         if (project.isDisposed) {
             splitter.secondComponent = ScrollPaneFactory.createScrollPane(JPanel(), true).apply {
+                //todo change to DSL initialization
                 preferredSize = Dimension(600, 400)
             }
         } else {
@@ -172,14 +168,15 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
                     .expanded = true
             }
         } else {
-            val properties = (PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
+            val properties = PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
                 ?.map { createDefaultFlexibleSearchProperty(it) }
-                ?.toMutableSet()
-                ?: mutableSetOf())
+                ?.toSet()
+                ?: setOf()
 
             putUserData(FLEXIBLE_SEARCH_PROPERTIES_KEY, properties)
 
+            //extract to small methods: render headers, render no data panel, render data panel
             parametersPanel = panel {
                 panel {
                     row {
@@ -196,7 +193,6 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
                             .align(Align.FILL)
                             .resizableColumn()
                     }.topGap(TopGap.SMALL)
-
                 }
                     .customize(UnscaledGaps(16, 16, 16, 16))
 
@@ -213,7 +209,6 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
 
                         cell(infoBanner)
                             .align(Align.FILL)
-                            .resizableColumn()
                     }.topGap(TopGap.SMALL)
                 }.customize(UnscaledGaps(16, 16, 16, 16))
 
@@ -221,12 +216,12 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
                     row {
                         label("FlexibleSearch query doesn't have parameters")
                             .align(Align.CENTER)
-                            .resizableColumn()
                     }
                 } else {
                     group("Parameters") {
                         properties.forEach { property ->
                             row {
+                                //todo limit the long name depends on width of the panel
                                 label(property.name)
                                 textField()
                                     .bindText(property::value)
@@ -239,13 +234,17 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
             }
         }
 
-        return Dsl.scrollPanel(parametersPanel).apply {
+//        return Dsl.scrollPanel(parametersPanel).apply {
+//            isVisible = false
+//        }
+        return ScrollPaneFactory.createScrollPane(parametersPanel, true).apply {
+            preferredSize = Dimension(600, 400)
             isVisible = false
         }
     }
 
     private fun createDefaultFlexibleSearchProperty(psiElement: FlexibleSearchBindParameter): FlexibleSearchProperty =
-        FlexibleSearchProperty(psiElement.text.removePrefix("?"), "", "", "")
+        FlexibleSearchProperty(psiElement.text.removePrefix("?"))
 
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {
         flexibleSearchEditor.addPropertyChangeListener(listener)
@@ -277,9 +276,9 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     }
 }
 
+//create a factory method
 data class FlexibleSearchProperty(
     var name: String,
-    var operand: String,
-    var value: String,
-    var description: String? = null,
+    var value: String = "",
+    var operand: String = ""
 )

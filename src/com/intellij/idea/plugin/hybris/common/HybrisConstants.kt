@@ -730,7 +730,7 @@ object HybrisConstants {
 
     val LOGGER_IDENTIFIER_DATA_CONTEXT_KEY = DataKey.create<String>("sap.cx.logger.identifier")
 
-    val FLEXIBLE_SEARCH_PROPERTIES_KEY: Key<MutableCollection<FlexibleSearchProperty>?> = Key.create("FLEXIBLE_SEARCH_PROPERTIES_KEY")
+    val FLEXIBLE_SEARCH_PROPERTIES_KEY: Key<Collection<FlexibleSearchProperty>?> = Key.create("FLEXIBLE_SEARCH_PROPERTIES_KEY")
 
     const val FXS_DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
     val FXS_SUPPORTED_ELEMENT_TYPES = setOf(
