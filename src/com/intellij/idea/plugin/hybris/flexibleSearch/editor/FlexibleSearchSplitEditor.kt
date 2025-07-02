@@ -51,6 +51,7 @@ import com.intellij.util.application
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
+import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -301,6 +302,7 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
     }
 
     companion object {
+        @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
     }
 
