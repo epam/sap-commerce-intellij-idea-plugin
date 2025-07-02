@@ -56,15 +56,13 @@ import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
+class FlexibleSearchSplitEditor(e: TextEditor, project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
-    private val flexibleSearchEditor: TextEditor
+    private val flexibleSearchEditor: TextEditor = e
     private val flexibleSearchComponent: JComponent
 
-    constructor(e: TextEditor, project: Project) : super() {
-        flexibleSearchEditor = e
+    init {
         flexibleSearchComponent = createComponent(project)
-
         with(project.messageBus.connect(this)) {
             subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
                 override fun settingsChanged(changeType: TSViewSettings.ChangeType) {

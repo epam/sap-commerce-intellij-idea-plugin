@@ -30,6 +30,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
+import com.intellij.util.asSafely
 
 class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
     FlexibleSearchFileType.defaultExtension,
@@ -51,19 +52,23 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
         e.presentation.isEnabledAndVisible = enabled
     }
 
-    override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String {
-        val flexibleSearchSplitEditor = FileEditorManager.getInstance(project).getEditors(editor.virtualFile).find { it is FlexibleSearchSplitEditor } ?: return content
-        val flexibleSearchProperties = flexibleSearchSplitEditor.getUserData(FLEXIBLE_SEARCH_PROPERTIES_KEY)
-        var updatedContent = content.trim()
-
-        flexibleSearchProperties
-            ?.sortedByDescending { it.name.length }
-            ?.forEach {
-                if (it.value.isNotBlank()) {
+    override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = FileEditorManager.getInstance(project)
+        .getSelectedEditor(editor.virtualFile)
+        .asSafely<FlexibleSearchSplitEditor>()
+        ?.getUserData(FLEXIBLE_SEARCH_PROPERTIES_KEY)
+        ?.let { properties ->
+            var updatedContent = content
+            properties.sortedByDescending { it.name.length }
+                .forEach {
                     updatedContent = updatedContent.replace("?${it.name}", it.value)
                 }
-            }
-
-        return updatedContent
-    }
+//todo replace by regex
+//                updatedContent.replace("\\?(\\w+)".toRegex()) { matchResult ->
+//                    val key = matchResult.groupValues[1]
+//                    replacements[key] ?: matchResult.value
+//                }
+//
+            return@let updatedContent
+        }
+        ?: content
 }
