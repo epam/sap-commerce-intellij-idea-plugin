@@ -46,7 +46,6 @@ import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
-import com.intellij.util.asSafely
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
