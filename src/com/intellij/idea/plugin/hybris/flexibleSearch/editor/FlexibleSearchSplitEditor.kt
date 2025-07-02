@@ -46,6 +46,7 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
+import java.awt.Dimension
 import java.beans.PropertyChangeListener
 import java.io.Serial
 import javax.swing.JComponent
@@ -59,7 +60,6 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         setHonorComponentsMinimumSize(true)
 
         firstComponent = textEditor.component
-        secondComponent = buildParametersPanel()
     }
 
     private val splitPanel = JPanel(BorderLayout()).apply {
@@ -76,31 +76,20 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         }
     }
 
-    private fun isTypeSystemInitialized(): Boolean {
-        if (project.isDisposed) return false
-        if (DumbService.isDumb(project)) return false
-
-        try {
-            val metaModelStateService = project.service<TSMetaModelStateService>()
-            metaModelStateService.get()
-
-            return metaModelStateService.initialized()
-        } catch (_: Throwable) {
-            return false
-        }
-    }
-
     fun refreshParameterPanel() {
         if (project.isDisposed) return
 
-        val isVisible = splitter.secondComponent.isVisible
+        if (!isParametersPanelVisible()) return
 
         splitter.secondComponent = buildParametersPanel()
-        splitter.secondComponent.isVisible = isVisible
     }
 
     fun toggleLayout() {
-        splitter.secondComponent.apply { isVisible = !isVisible }
+        if (splitter.secondComponent == null) {
+            splitter.secondComponent = buildParametersPanel()
+        } else {
+            splitter.secondComponent.apply { isVisible = !isVisible }
+        }
 
         component.requestFocus()
         splitter.firstComponent.requestFocus()
@@ -108,8 +97,8 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 
     fun isParametersPanelVisible(): Boolean = splitter.secondComponent?.isVisible ?: false
 
-    fun buildParametersPanel(): JComponent {
-        if (project.isDisposed) return panel {}
+    fun buildParametersPanel(): JComponent? {
+        if (project.isDisposed) return null
 
         if (!isTypeSystemInitialized()) return panel {
             row {
@@ -195,15 +184,12 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                     }
                 }
             }
-        }.apply {
-            border = JBUI.Borders.empty(5, 16, 10, 16)
-        }.let { Dsl.scrollPanel(it) }
-            .apply { isVisible = false }
-
-//        return ScrollPaneFactory.createScrollPane(parametersPanel, true).apply {
-//            preferredSize = Dimension(600, 400)
-//            isVisible = false
-//        }
+        }
+            .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
+            .let { Dsl.scrollPanel(it) }
+            .apply {
+                minimumSize = Dimension(minimumSize.width, 165)
+            }
     }
 
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {
@@ -229,6 +215,20 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     override fun canNavigateTo(navigatable: Navigatable) = textEditor.canNavigateTo(navigatable)
     override fun navigateTo(navigatable: Navigatable) = textEditor.navigateTo(navigatable)
     override fun getFile(): VirtualFile? = editor.virtualFile
+
+    private fun isTypeSystemInitialized(): Boolean {
+        if (project.isDisposed) return false
+        if (DumbService.isDumb(project)) return false
+
+        try {
+            val metaModelStateService = project.service<TSMetaModelStateService>()
+            metaModelStateService.get()
+
+            return metaModelStateService.initialized()
+        } catch (_: Throwable) {
+            return false
+        }
+    }
 
     companion object {
         @Serial
