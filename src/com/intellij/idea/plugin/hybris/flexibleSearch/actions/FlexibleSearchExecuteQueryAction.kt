@@ -56,11 +56,13 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
         val flexibleSearchProperties = flexibleSearchSplitEditor.getUserData(FLEXIBLE_SEARCH_PROPERTIES_KEY)
         var updatedContent = content.trim()
 
-        flexibleSearchProperties?.forEach {
-            if (it.value.isNotBlank()) {
-                updatedContent = updatedContent.replaceFirst("?${it.name}", it.value)
+        flexibleSearchProperties
+            ?.sortedByDescending { it.name.length }
+            ?.forEach {
+                if (it.value.isNotBlank()) {
+                    updatedContent = updatedContent.replace("?${it.name}", it.value)
+                }
             }
-        }
 
         return updatedContent
     }
