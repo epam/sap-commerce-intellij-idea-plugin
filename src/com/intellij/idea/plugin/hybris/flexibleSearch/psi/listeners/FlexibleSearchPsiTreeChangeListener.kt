@@ -48,11 +48,10 @@ class FlexibleSearchPsiTreeChangeListener(project: Project) : PsiTreeChangeListe
     override fun childMoved(event: PsiTreeChangeEvent) = doChange(event)
     override fun propertyChanged(event: PsiTreeChangeEvent) = doChange(event)
 
-    private fun doChange(event: PsiTreeChangeEvent) {
-        event.file
-            ?.asSafely<FlexibleSearchFile>()
-            ?.let { FileEditorManager.getInstance(it.project).getSelectedEditor(it.virtualFile) }
-            ?.asSafely<FlexibleSearchSplitEditor>()
-            ?.refreshComponent()
-    }
+    private fun doChange(event: PsiTreeChangeEvent) = event.file
+        ?.asSafely<FlexibleSearchFile>()
+        ?.let { FileEditorManager.getInstance(it.project).getSelectedEditor(it.virtualFile) }
+        ?.asSafely<FlexibleSearchSplitEditor>()
+        ?.refreshComponent()
+        ?: Unit
 }
