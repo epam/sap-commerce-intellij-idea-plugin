@@ -38,12 +38,6 @@ import javax.swing.*;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * UI view class representing a metadata editor for a global bean in SAP Commerce.
- *
- * This panel displays and allows editing of bean metadata, including properties,
- * hints, imports, annotations, and various flags.
- */
 public class BSMetaBeanView {
 
     private final Project myProject;
@@ -68,21 +62,10 @@ public class BSMetaBeanView {
     private AbstractTable<BSGlobalMetaBean, BSMetaImport> myImports;
     private AbstractTable<BSGlobalMetaBean, BSMetaAnnotations> myAnnotations;
 
-    /**
-     * Constructs a new instance of the metadata bean view.
-     *
-     * @param project the current IntelliJ IDEA project context
-     */
     public BSMetaBeanView(final Project project) {
         this.myProject = project;
     }
 
-    /**
-     * Initializes or updates UI components with the given metadata bean.
-     * Skips re-initialization if the same object is provided.
-     *
-     * @param myMeta the metadata bean to load into the form
-     */
     private void initData(final BSGlobalMetaBean myMeta) {
         if (Objects.equals(this.myMeta, myMeta)) {
             // same object, no need in re-init
@@ -105,25 +88,12 @@ public class BSMetaBeanView {
         myAnnotations.updateModel(myMeta);
     }
 
-    /**
-     * Gets the content panel and initializes it with the given metadata bean.
-     *
-     * @param meta the metadata bean to display
-     * @return the initialized content panel
-     */
     public JPanel getContent(final BSGlobalMetaBean meta) {
         initData(meta);
 
         return myContentPane;
     }
 
-    /**
-     * Gets the content panel initialized with a specific metadata bean and selects a property.
-     *
-     * @param meta the metadata bean to display
-     * @param metaValue the property to select in the table
-     * @return the initialized content panel
-     */
     public JPanel getContent(final BSGlobalMetaBean meta, final BSMetaProperty metaValue) {
         initData(meta);
 
@@ -132,11 +102,6 @@ public class BSMetaBeanView {
         return myContentPane;
     }
 
-    /**
-     * Creates and configures custom Swing components for displaying metadata details,
-     * such as tables for properties, hints, imports, and annotations.
-     * Also sets up popup handlers and component borders.
-     */
     private void createUIComponents() {
         myProperties = BSMetaPropertiesTable.getInstance(myProject);
         myHints = BSMetaHintsTable.getInstance(myProject);
