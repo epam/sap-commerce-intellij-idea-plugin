@@ -23,6 +23,7 @@
 ### `FlexibleSearch` enhancements
 - Added API to retrieve item type and expression of the bind parameter [#1420](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1420)
 - Improved code formatting for expressions within `WHERE` clause [#1421](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1421)
+- Added the parameters panel for `FlexibleSearch` editor [#1425](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1425)
 
 ### `Groovy` enhancements
 - Adjusted execution mode selection `commit`/`rollback` [#1422](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1422)
