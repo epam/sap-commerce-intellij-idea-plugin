@@ -19,21 +19,14 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.documentation
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
-import com.intellij.idea.plugin.hybris.lang.documentation.renderer.hybrisDoc
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
-import com.intellij.model.Pointer
-import com.intellij.platform.backend.documentation.DocumentationResult
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.DocumentationTargetProvider
-import com.intellij.platform.backend.presentation.TargetPresentation
-import com.intellij.pom.Navigatable
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.createSmartPointer
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 
 class FlexibleSearchDocumentationTargetProvider : DocumentationTargetProvider {
@@ -51,63 +44,19 @@ class FlexibleSearchDocumentationTargetProvider : DocumentationTargetProvider {
         val documentationSettings = developerSettings.flexibleSearchSettings.documentation
         if (!documentationSettings.enabled) return emptyList()
 
-        val allowedElementTypes = buildList {
+        val allowedElementTypes = with(mutableListOf<IElementType>()) {
             if (documentationSettings.showTypeDocumentation && element.parent is FlexibleSearchDefinedTableName) {
                 add(FlexibleSearchTypes.IDENTIFIER)
             }
-            add(FlexibleSearchTypes.NAMED_PARAMETER)
+            this
         }
 
         if (!allowedElementTypes.contains(element.elementType)) return emptyList()
 
         return when (element.elementType) {
             FlexibleSearchTypes.IDENTIFIER -> arrayListOf(FlexibleSearchDocumentationTarget(element, element))
-            FlexibleSearchTypes.NAMED_PARAMETER -> arrayListOf(
-                MDT(element, element)
-            )
 
             else -> emptyList()
-        }
-    }
-
-    private class MDT(val element: PsiElement, private val originalElement: PsiElement?): DocumentationTarget {
-        override fun computePresentation(): TargetPresentation {
-            val virtualFile = element.containingFile.virtualFile
-            return TargetPresentation.builder(element.text)
-                .locationText(virtualFile.name, virtualFile.fileType.icon)
-                .presentation()
-        }
-
-        override fun createPointer(): Pointer<out DocumentationTarget> {
-            val elementPtr = element.createSmartPointer()
-            val originalElementPtr = originalElement?.createSmartPointer()
-            return Pointer {
-                val element = elementPtr.dereference() ?: return@Pointer null
-                MDT(element, originalElementPtr?.dereference())
-            }
-        }
-
-        override fun computeDocumentationHint() = computeLocalDocumentation(element)
-        override fun computeDocumentation() = computeLocalDocumentation(element)
-            ?.let { DocumentationResult.documentation(it) }
-
-        override val navigatable: Navigatable?
-            get() = element as? Navigatable
-
-        private fun computeLocalDocumentation(element: PsiElement): String? {
-            val parent = element.parent
-            if (parent is FlexibleSearchBindParameter) {
-                return hybrisDoc {
-                    title("Attribute", element.text)
-                    subHeader(
-                        parent.expression?.elementType?.toString() ?: "?",
-                        parent.itemType?.name ?: "?"
-                    )
-                }.build()
-
-            }
-
-            return null
         }
     }
 }
