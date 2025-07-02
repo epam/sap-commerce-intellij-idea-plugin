@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
+import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileEditor
@@ -37,6 +38,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
@@ -45,6 +47,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
+import com.intellij.util.xml.DomElement
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
@@ -108,21 +111,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             }.resizableRow()
         }
 
-        val parameters = application.runReadAction<Collection<FlexibleSearchParameter>> {
-            val currentParameters = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) ?: emptySet()
-
-            PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
-                ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
-                ?.map { bindParameter ->
-                    val placeholder = bindParameter.text.removePrefix("?")
-                    val value = currentParameters.find { it.name == placeholder }?.value ?: ""
-                    FlexibleSearchParameter(placeholder, value)
-                }
-                ?.distinct()
-                ?: emptySet()
-        }
-
-        putUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS, parameters)
+        val parameters = collectParameters()
 
         //extract to small methods: render headers, render no data panel, render data panel
         return panel {
@@ -230,6 +219,21 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         }
     }
 
+    private fun collectParameters(): Collection<FlexibleSearchParameter> {
+        val currentParameters = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) ?: emptySet()
+
+        val parameters = application.runReadAction<Collection<FlexibleSearchParameter>> {
+            PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
+                ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
+                ?.map { FlexibleSearchParameter.of(it, currentParameters) }
+                ?.distinct()
+                ?: emptySet()
+        }
+
+        putUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS, parameters)
+        return parameters
+    }
+
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
@@ -238,7 +242,17 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 
 //create a factory method
 data class FlexibleSearchParameter(
-    var name: String,
+    val name: String,
     var value: String = "",
-    var operand: String = ""
-)
+    val type: TSGlobalMetaClassifier<out DomElement>? = null,
+    val operand: IElementType? = null
+) {
+    companion object {
+        fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Collection<FlexibleSearchParameter>): FlexibleSearchParameter {
+            val parameter = bindParameter.text.removePrefix("?")
+            val value = currentParameters.find { it.name == parameter }?.value ?: ""
+
+            return FlexibleSearchParameter(parameter, value, bindParameter.itemType)
+        }
+    }
+}
