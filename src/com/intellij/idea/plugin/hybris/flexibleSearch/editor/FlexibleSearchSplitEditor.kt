@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_PROPERTIES_KEY
-import com.intellij.idea.plugin.hybris.flexibleSearch.listeners.FlexibleSearchSplitEditorListener
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
@@ -28,7 +27,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -47,14 +45,9 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.JBSplitter
 import com.intellij.ui.ScrollPaneFactory
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.TopGap
-import com.intellij.ui.dsl.builder.bindText
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
-import com.intellij.util.messages.Topic
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
@@ -70,26 +63,16 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         flexibleSearchEditor = e
         flexibleSearchComponent = createComponent(project)
 
-        flexibleSearchEditor.editor.document.addDocumentListener(object : com.intellij.openapi.editor.event.DocumentListener {
-            override fun documentChanged(event: com.intellij.openapi.editor.event.DocumentEvent) {
-                if (!project.isDisposed) {
-                    PsiDocumentManager.getInstance(project).commitDocument(editor.document)
-
-                    refreshComponent(project)
-                }
-            }
-        })
-
         with(project.messageBus.connect(this)) {
             subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
                 override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
-                    refreshComponent(project)
+                    refreshComponent()
                 }
             })
 
             subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
-                    refreshComponent(project)
+                    refreshComponent()
                 }
             })
         }
@@ -116,10 +99,10 @@ class FlexibleSearchSplitEditor : UserDataHolderBase, FileEditor, TextEditor {
         }
     }
 
-    private fun refreshComponent(project: Project) {
-        if (project.isDisposed) {
-            return
-        }
+    fun refreshComponent() {
+        val project = editor.project
+            ?.takeUnless { it.isDisposed }
+            ?: return
 
         val splitter = flexibleSearchComponent.components[0] as JBSplitter
         val isVisible = splitter.secondComponent.isVisible

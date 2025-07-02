@@ -21,6 +21,8 @@
 
         <internalFileTemplate name="FlexibleSearch File"/>
 
+        <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.flexibleSearch.psi.listeners.FlexibleSearchPsiTreeChangeListener"/>
+
         <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="INSTANCE"
                   implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType"/>
 
