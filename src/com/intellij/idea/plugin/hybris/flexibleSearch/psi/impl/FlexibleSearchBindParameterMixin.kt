@@ -21,8 +21,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference.FxSYColumnReference
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResult
@@ -46,14 +44,14 @@ abstract class FlexibleSearchBindParameterMixin(node: ASTNode) : ASTWrapperPsiEl
         },
         Predicate<PsiElement> {
             it is FlexibleSearchLiteralExpression
-            || it is FlexibleSearchParenExpression
-            || it is FlexibleSearchOrExpression
-            || it is FlexibleSearchAndExpression
+                || it is FlexibleSearchParenExpression
+                || it is FlexibleSearchOrExpression
+                || it is FlexibleSearchAndExpression
         }
     )
         ?.asSafely<FlexibleSearchExpression>()
 
-    override fun getItemType(): TSGlobalMetaClassifier<out DomElement>? = expression
+    override fun getItemType(): String? = expression
         ?.getChildOfType<FlexibleSearchColumnRefYExpression>()
         ?.getChildOfType<FlexibleSearchYColumnName>()
         ?.reference
@@ -70,7 +68,6 @@ abstract class FlexibleSearchBindParameterMixin(node: ASTNode) : ASTWrapperPsiEl
                 else -> null
             }
         }
-        ?.let { TSMetaModelAccess.getInstance(project).findMetaClassifierByName(it) }
 
     companion object {
         @Serial

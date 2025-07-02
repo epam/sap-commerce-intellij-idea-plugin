@@ -41,6 +41,6 @@ public interface FlexibleSearchBindParameter extends PsiElement {
   FlexibleSearchExpression getExpression();
 
   @Nullable
-  TSGlobalMetaClassifier<? extends DomElement> getItemType();
+  String getItemType();
 
 }

@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileEditor
@@ -47,7 +46,6 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
-import com.intellij.util.xml.DomElement
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
@@ -163,12 +161,25 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                             row {
                                 //todo limit the long name depends on width of the panel
                                 when (parameter.type) {
+                                    "java.lang.Integer" -> intTextField()
+                                        .label("${parameter.name}:")
+                                        .align(AlignX.FILL)
+                                        .bindText(parameter::value)
+                                        .onChanged { parameter.value = it.text }
+
+                                    "boolean" -> checkBox(parameter.name)
+                                        .align(AlignX.FILL)
+                                        .onChanged { parameter.value = it.text }
+
+                                    "java.lang.Boolean" -> threeStateCheckBox(parameter.name)
+                                        .align(AlignX.FILL)
+                                        .onChanged { parameter.value = it.text }
 
                                     else -> textField()
-                                            .label("${parameter.name}:")
-                                            .align(AlignX.FILL)
-                                            .bindText(parameter::value)
-                                            .onChanged { parameter.value = it.text }
+                                        .label("${parameter.name}:")
+                                        .align(AlignX.FILL)
+                                        .bindText(parameter::value)
+                                        .onChanged { parameter.value = it.text }
                                 }
 
                             }.layout(RowLayout.PARENT_GRID)
@@ -247,7 +258,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 data class FlexibleSearchParameter(
     val name: String,
     var value: String = "",
-    val type: TSGlobalMetaClassifier<out DomElement>? = null,
+    val type: String? = null,
     val operand: IElementType? = null
 ) {
     companion object {
