@@ -269,8 +269,4 @@ data class FlexibleSearchProperty(
     var name: String,
     var value: String = "",
     var operand: String = ""
-) {
-    override fun equals(other: Any?): Boolean {
-        return name == (other as? FlexibleSearchProperty)?.name
-    }
-}
+)
