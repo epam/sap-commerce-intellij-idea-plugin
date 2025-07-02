@@ -30,20 +30,12 @@ import com.intellij.openapi.vfs.VirtualFile
 
 class FlexibleSearchSplitFileEditorProvider : FileEditorProvider, DumbAware {
 
-    override fun accept(project: Project, file: VirtualFile): Boolean {
-        return file.fileType is FlexibleSearchFileType
-    }
-
     override fun createEditor(project: Project, file: VirtualFile): FileEditor {
         val editor = TextEditorProvider.getInstance().createEditor(project, file)
         return FlexibleSearchSplitEditor(editor as TextEditor, project)
     }
 
-    override fun getEditorTypeId(): String {
-        return "flexible-search-split-file-editor"
-    }
-
-    override fun getPolicy(): FileEditorPolicy {
-        return FileEditorPolicy.HIDE_DEFAULT_EDITOR
-    }
+    override fun getEditorTypeId(): String = "flexible-search-split-file-editor"
+    override fun accept(project: Project, file: VirtualFile): Boolean = file.fileType is FlexibleSearchFileType
+    override fun getPolicy(): FileEditorPolicy = FileEditorPolicy.HIDE_DEFAULT_EDITOR
 }
