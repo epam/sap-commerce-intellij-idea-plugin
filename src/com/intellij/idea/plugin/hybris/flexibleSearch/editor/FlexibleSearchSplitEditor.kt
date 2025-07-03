@@ -46,11 +46,15 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.application
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
+import com.michaelbaranov.microba.calendar.DatePicker
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
 import java.io.Serial
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -119,7 +123,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                     val infoBanner = InlineBanner(
                         """
                         <html><body style='width: 100%'>
-                        <p>This feature may be unstable. Use with caution.</p>
+                        <p>This feature may be unstable. Use with caution. Submit issues or suggestions to project's GitHub repository.</p>
                         </body></html>
                     """.trimIndent(),
                         EditorNotificationPanel.Status.Warning
@@ -146,7 +150,8 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                                 //todo limit the long name depends on width of the panel
                                 // TODO: migrate to proper property binding
                                 when (parameter.type) {
-                                    "java.lang.Integer" -> intTextField()
+                                    "java.lang.Float", "java.lang.Double", "java.lang.Byte", "java.lang.Short", "java.lang.Long", "java.lang.Integer",
+                                    "float", "double", "byte", "short", "long", "int" -> intTextField()
                                         .label("${parameter.name}:")
                                         .align(AlignX.FILL)
                                         .text(parameter.value)
@@ -158,6 +163,30 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                                         .selected(parameter.value == "1")
                                         .onChanged { parameter.value = if (it.isSelected) "1" else "0" }
                                         .also { parameter.value = (if (parameter.value == "1") "1" else "0") }
+
+                                    "java.util.Date" -> cell(
+                                        DatePicker(
+                                            parameter.value.toLongOrNull()?.let { Date(it) },
+                                            SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+                                        )
+                                    )
+                                        .label("${parameter.name}:")
+                                        .align(Align.FILL).apply {
+                                            component.also { datePicker ->
+                                                val listener = PropertyChangeListener { event ->
+                                                    if (event.propertyName == "date") {
+                                                        parameter.value = event.newValue
+                                                            ?.asSafely<Date>()
+                                                            ?.time
+                                                            ?.toString() ?: ""
+                                                    }
+                                                }
+                                                datePicker.addPropertyChangeListener(listener)
+                                                Disposer.register(textEditor) {
+                                                    datePicker.removePropertyChangeListener(listener)
+                                                }
+                                            }
+                                        }
 
                                     else -> textField()
                                         .label("${parameter.name}:")
@@ -224,7 +253,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
                 ?.map { FlexibleSearchParameter.of(it, currentParameters) }
-                ?.distinct()
+                ?.distinctBy { it.name }
                 ?: emptySet()
         }
 
