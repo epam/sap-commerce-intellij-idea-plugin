@@ -59,7 +59,6 @@ import java.util.*
 import javax.swing.JComponent
 import javax.swing.JPanel
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.fileEditor.FileEditorManager
 
 class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
@@ -79,19 +78,26 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         with(project.messageBus.connect(this)) {
             subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
-                    refreshEditor()
+                    refreshParametersPanel()
+                    refreshTextEditor()
                 }
             })
         }
     }
 
-    fun refreshEditor() {
+    fun refreshParametersPanel() {
         if (project.isDisposed) return
 
         if (!isParametersPanelVisible()) return
 
         splitter.secondComponent = buildParametersPanel()
-        refreshTextEditor()
+    }
+
+    fun refreshTextEditor() {
+        invokeLater {
+            PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), true)
+            DaemonCodeAnalyzer.getInstance(project).restart()
+        }
     }
 
     fun toggleLayout() {
@@ -168,10 +174,12 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                                     "java.lang.Boolean" -> checkBox(parameter.name)
                                         .align(AlignX.FILL)
                                         .selected(parameter.value == "1")
-                                        .onChanged { parameter.value = if (it.isSelected) "1" else "0" }
+                                        .onChanged {
+                                            parameter.value = if (it.isSelected) "1" else "0"
+                                            refreshTextEditor()
+                                        }
                                         .also {
                                             parameter.value = (if (parameter.value == "1") "1" else "0")
-                                            refreshTextEditor()
                                         }
 
                                     "java.util.Date" -> cell(
@@ -244,13 +252,6 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     override fun canNavigateTo(navigatable: Navigatable) = textEditor.canNavigateTo(navigatable)
     override fun navigateTo(navigatable: Navigatable) = textEditor.navigateTo(navigatable)
     override fun getFile(): VirtualFile? = editor.virtualFile
-
-    private fun refreshTextEditor() {
-        invokeLater {
-            PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), true)
-            DaemonCodeAnalyzer.getInstance(project).restart()
-        }
-    }
 
     private fun isTypeSystemInitialized(): Boolean {
         if (project.isDisposed) return false
