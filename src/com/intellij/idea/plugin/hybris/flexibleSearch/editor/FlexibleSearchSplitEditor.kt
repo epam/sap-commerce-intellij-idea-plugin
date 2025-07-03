@@ -109,6 +109,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 
         component.requestFocus()
         splitter.firstComponent.requestFocus()
+        refreshTextEditor()
     }
 
     fun isParametersPanelVisible(): Boolean = splitter.secondComponent?.isVisible ?: false
