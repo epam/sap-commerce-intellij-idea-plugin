@@ -1,5 +1,8 @@
 ## [2025.1.5]
 
+### `CCv2` enhancements
+- Added enforced caching for CCv2 details [#1432](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1432)
+
 ### `Access Control Lists` enhancements
 - Introduced Grammar & Lexer for new ACL Language (`.acl`) [#1405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1405)
 - Support Copyright for `.acl` files [#1406](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1406)

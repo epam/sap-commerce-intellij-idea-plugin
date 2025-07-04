@@ -31,7 +31,13 @@
         <action id="ccv2.open.settings.action" class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2OpenSettingsAction"/>
 
         <group id="ccv2.toolbar.actions">
-            <reference ref="ccv2.open.settings.action"/>
+            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ResetCacheAction"/>
+
+            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentsAction"/>
+            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchDeploymentsAction"/>
+            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchBuildsAction"/>
+            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2CreateBuildAction"/>
+
             <separator/>
 
             <group id="ccv2.toolbar.actions.show" text="View Options"
@@ -52,11 +58,7 @@
             </group>
             <separator/>
 
-            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentsAction"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchDeploymentsAction"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchBuildsAction"/>
-
-            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2CreateBuildAction"/>
+            <reference ref="ccv2.open.settings.action"/>
         </group>
 
         <group id="ccv2.environment.toolbar.actions">

@@ -29,13 +29,18 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.api.CCv1Api
 import com.intellij.idea.plugin.hybris.tools.ccv2.api.CCv2Api
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.getOrCreateUserDataUnsafe
+import com.intellij.openapi.util.removeUserData
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.platform.util.progress.reportProgress
 import com.intellij.util.io.ZipUtil
 import com.intellij.util.messages.Topic
@@ -49,7 +54,22 @@ import kotlin.io.path.pathString
 import kotlin.time.Duration.Companion.seconds
 
 @Service(Service.Level.PROJECT)
-class CCv2Service(val project: Project, private val coroutineScope: CoroutineScope) {
+class CCv2Service(val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
+
+    init {
+        with(project.messageBus.connect(this)) {
+            subscribe(TOPIC_CCV2_SETTINGS, object : CCv2SettingsListener {
+                override fun onSubscriptionsChanged(subscriptions: List<CCv2Subscription>) = resetCache()
+            })
+        }
+    }
+
+    override fun dispose() = Unit
+
+    fun resetCache() {
+        project.removeUserData(KEY_ENVIRONMENTS)
+        project.removeUserData(KEY_SERVICES)
+    }
 
     fun fetchEnvironments(
         subscriptions: Collection<CCv2Subscription>,
@@ -75,11 +95,10 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                         subscriptions
                             .map { subscription ->
                                 async {
-                                    subscription to (getCCv2Token(subscription)
+                                    val environments = (getCCv2Token(subscription)
                                         ?.let { ccv2Token ->
                                             try {
-                                                return@let CCv2Api.getInstance().fetchEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
-                                                    .sortedBy { it.order }
+                                                return@let fetchCacheableEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
                                             } catch (e: SocketTimeoutException) {
                                                 notifyOnTimeout(subscription)
                                             } catch (e: RuntimeException) {
@@ -89,6 +108,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                             return@let emptyList()
                                         }
                                         ?: emptyList())
+
+                                    subscription to environments
                                 }
                             }
                             .awaitAll()
@@ -100,6 +121,30 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 if (sendEvents) project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingCompleted(environments)
             }
         }
+    }
+
+    private suspend fun fetchCacheableEnvironments(
+        progressReporter: ProgressReporter,
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        statuses: List<String>,
+        requestV1Details: Boolean,
+        requestV1Health: Boolean
+    ): Collection<CCv2EnvironmentDto> {
+        val cacheKey = getCacheKeyForEnvironments(ccv2Token, subscription, statuses)
+        val allCachedEnvironments = project
+            .getOrCreateUserDataUnsafe(KEY_ENVIRONMENTS) { mutableMapOf() }
+        val cachedEnvironments = allCachedEnvironments[cacheKey]
+
+        if (cachedEnvironments != null) return cachedEnvironments
+
+        val environments = CCv2Api.getInstance()
+            .fetchEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
+            .sortedBy { it.order }
+
+        allCachedEnvironments[cacheKey] = environments
+
+        return environments
     }
 
     fun fetchEnvironmentsBuilds(subscriptions: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) {
@@ -169,7 +214,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 var services: Collection<CCv2ServiceDto>? = null
 
                 try {
-                    services = CCv1Api.getInstance().fetchEnvironmentServices(ccv2Token, subscription, environment)
+                    services = getCacheableEnvironmentServices(ccv2Token, subscription, environment)
                 } catch (e: SocketTimeoutException) {
                     notifyOnTimeout(subscription)
                 } catch (e: RuntimeException) {
@@ -179,6 +224,26 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 onCompleteCallback.invoke(services)
             }
         }
+    }
+
+    private suspend fun getCacheableEnvironmentServices(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto
+    ): Collection<CCv2ServiceDto> {
+        val cacheKey = getCacheKeyForServices(ccv2Token, subscription, environment)
+        val allCachedServices = project
+            .getOrCreateUserDataUnsafe(KEY_SERVICES) { mutableMapOf() }
+        val cachedServices = allCachedServices[cacheKey]
+
+        if (cachedServices != null) return cachedServices
+
+        val services = CCv1Api.getInstance()
+            .fetchEnvironmentServices(ccv2Token, subscription, environment)
+
+        allCachedServices[cacheKey] = services
+
+        return services
     }
 
     fun fetchEnvironmentDataBackups(
@@ -787,7 +852,21 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
             .notify(project)
     }
 
+    private fun getCacheKeyForEnvironments(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        statuses: List<String>
+    ): String = ccv2Token + "_" + subscription.uuid + "_" + statuses.joinToString("|")
+
+    private fun getCacheKeyForServices(
+        ccv2Token: String,
+        subscription: CCv2Subscription,
+        environment: CCv2EnvironmentDto
+    ): String = ccv2Token + "_" + subscription.uuid + "_" + environment.code
+
     companion object {
+        private val KEY_ENVIRONMENTS = Key<MutableMap<String, Collection<CCv2EnvironmentDto>>>("CCV2_ENVIRONMENTS")
+        private val KEY_SERVICES = Key<MutableMap<String, Collection<CCv2ServiceDto>>>("CCV2_SERVICES")
 
         val TOPIC_CCV2_SETTINGS = Topic("HYBRIS_CCV2_SETTINGS", CCv2SettingsListener::class.java)
         val TOPIC_ENVIRONMENT = Topic("HYBRIS_CCV2_ENVIRONMENTS_LISTENER", CCv2EnvironmentsListener::class.java)
