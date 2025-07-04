@@ -44,7 +44,7 @@ class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
                         sink.addPresentation(
                             position = InlineInlayPosition(element.textRange.endOffset, true),
                             payloads = null,
-                            tooltip = null,
+                            tooltip = "SQL value: ${it.value}",
                             hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
                         ) {
                             text("= ${it.presentationValue}")
