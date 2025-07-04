@@ -71,7 +71,9 @@ class CCv2Api {
 
         val subscriptionCode = subscription.id!!
 
-        val subscriptionPermissions = subscriptions2Permissions[subscriptionCode]
+        val subscriptionPermissions = subscriptions2Permissions["SYSTEM"]
+            ?.takeIf { it.permissions.contains("access_environments") }
+            ?: subscriptions2Permissions[subscriptionCode]
             ?: return emptyList()
 
         return progressReporter.sizedStep(1, "Fetching Environments for subscription: $subscription") {

@@ -323,15 +323,17 @@ class ReplicaSelectionDialog(
                         },
                         onCompleteCallback = { response ->
                             ccv2ServiceComboBoxModel.removeAllElements()
-                            response?.let { services ->
-                                ccv2ServiceComboBoxModel.addAll(services)
+                            response
+                                ?.filter { service -> service.code.startsWith("hcs_platform_") }
+                                ?.let { services ->
+                                    ccv2ServiceComboBoxModel.addAll(services)
 
-                                ccv2EnvironmentEnabled.set(true)
-                                ccv2ServiceEnabled.set(true)
-                                ccv2ReplicaEnabled.set(true)
+                                    ccv2EnvironmentEnabled.set(true)
+                                    ccv2ServiceEnabled.set(true)
+                                    ccv2ReplicaEnabled.set(true)
 
-                                stopLoading()
-                            }
+                                    stopLoading()
+                                }
                         }
                     )
                 }

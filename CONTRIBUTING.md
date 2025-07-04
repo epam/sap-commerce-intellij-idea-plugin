@@ -49,3 +49,4 @@
 - Johannes Ballmann
 - Burak Gürler
 - Mihai Botofei
+- Alessandro Antonini

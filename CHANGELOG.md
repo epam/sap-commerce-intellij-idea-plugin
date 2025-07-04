@@ -2,6 +2,7 @@
 
 ### `CCv2` enhancements
 - Added enforced caching for CCv2 details [#1432](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1432)
+- Check SYSTEM permission [#1433](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1433)
 
 ### `Access Control Lists` enhancements
 - Introduced Grammar & Lexer for new ACL Language (`.acl`) [#1405](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1405)
@@ -38,6 +39,7 @@
 ### `Other` enhancements
 - Added possibility to select Replica for HAC connection [#1423](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1423)
 - Improved performance to get environments during Replica selection [#1431](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1431)
+- Filter for hcs_platform when retrieving services for replica selection [#1433](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1433)
 
 ## [2025.1.4]
 
