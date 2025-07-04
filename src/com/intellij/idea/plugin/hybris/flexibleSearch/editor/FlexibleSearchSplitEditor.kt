@@ -84,6 +84,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
                     refreshParameters()
+                    refreshTextEditor()
                 }
             })
         }
@@ -332,10 +333,28 @@ data class FlexibleSearchParameter(
         fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Collection<FlexibleSearchParameter>): FlexibleSearchParameter {
             val parameter = bindParameter.text.removePrefix("?")
             val currentParameter = currentParameters.find { it.name == parameter }
-            val value = currentParameter?.value ?: ""
-            val presentationValue = currentParameter?.presentationValue ?: value
+            val itemType = bindParameter.itemType
+            val value = currentParameter?.value ?: resolveInitialValue(itemType)
+            val presentationValue = currentParameter?.presentationValue ?: resolveInitialPresentationValue(itemType)
 
-            return FlexibleSearchParameter(parameter, value, presentationValue, type = bindParameter.itemType)
+            return FlexibleSearchParameter(parameter, value, presentationValue, type = itemType)
+        }
+
+        private fun resolveInitialValue(itemType: String?): String = when (itemType) {
+            "boolean",
+            "java.lang.Boolean" -> "0"
+
+            else -> ""
+        }
+
+        private fun resolveInitialPresentationValue(itemType: String?): String = when (itemType) {
+            "boolean",
+            "java.lang.Boolean" -> "false"
+
+            "String",
+            "java.lang.String" -> "''"
+
+            else -> ""
         }
     }
 }
