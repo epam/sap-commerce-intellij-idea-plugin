@@ -33,6 +33,7 @@
 
 ### `Other` enhancements
 - Added possibility to select Replica for HAC connection [#1423](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1423)
+- Improved performance to get environments during Replica selection [#1431](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1431)
 
 ## [2025.1.4]
 

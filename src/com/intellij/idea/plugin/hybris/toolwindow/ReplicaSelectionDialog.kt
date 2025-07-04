@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
@@ -49,6 +50,7 @@ import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.Dimension
+import java.util.*
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComponent
 
@@ -258,7 +260,7 @@ class ReplicaSelectionDialog(
                         },
                         onCompleteCallback = { response ->
                             response[subscription]
-                                ?.filter { environment -> environment.accessible  }
+                                ?.filter { environment -> environment.accessible }
                                 ?.let { environments ->
                                     ccv2EnvironmentComboBoxModel.addAll(environments)
 
@@ -267,7 +269,10 @@ class ReplicaSelectionDialog(
                                     stopLoading()
                                 }
                         },
-                        sendEvents = false
+                        sendEvents = false,
+                        statuses = EnumSet.of(CCv2EnvironmentStatus.AVAILABLE),
+                        requestV1Details = true,
+                        requestV1Health = false
                     )
                 }
                 .component

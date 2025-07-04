@@ -55,10 +55,12 @@ class CCv2Api {
     private val databackupApi by lazy { DatabackupApi(client = apiClient) }
 
     suspend fun fetchEnvironments(
+        progressReporter: ProgressReporter,
         ccv2Token: String,
         subscription: CCv2Subscription,
         statuses: List<String>,
-        progressReporter: ProgressReporter
+        requestV1Details: Boolean,
+        requestV1Health: Boolean,
     ): Collection<CCv2EnvironmentDto> {
 
         val ccv1Api = CCv1Api.getInstance()
@@ -88,8 +90,8 @@ class CCv2Api {
                 ?.map { env ->
                     val canAccess = subscriptionPermissions.environments?.contains(env.code) ?: true
                     async {
-                        val v1Env = getV1Environment(canAccess, ccv1Api, ccv2Token, env)
-                        val v1EnvHealth = getV1EnvironmentHealth(canAccess, ccv1Api, ccv2Token, env)
+                        val v1Env = if (requestV1Details) getV1Environment(canAccess, ccv1Api, ccv2Token, env) else null
+                        val v1EnvHealth = if (requestV1Health) getV1EnvironmentHealth(canAccess, ccv1Api, ccv2Token, env) else null
 
                         env to Triple(canAccess, v1Env, v1EnvHealth)
                     }

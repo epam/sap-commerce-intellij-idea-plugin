@@ -56,12 +56,15 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         onStartCallback: () -> Unit,
         onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2EnvironmentDto>>) -> Unit,
         sendEvents: Boolean = true,
+        statuses: EnumSet<CCv2EnvironmentStatus>? = null,
+        requestV1Details: Boolean = true,
+        requestV1Health: Boolean = true,
     ) {
         onStartCallback.invoke()
         if (sendEvents) project.messageBus.syncPublisher(TOPIC_ENVIRONMENT).onFetchingStarted(subscriptions)
 
         val ccv2Settings = DeveloperSettingsComponent.getInstance(project).state.ccv2Settings
-        val statuses = ccv2Settings.showEnvironmentStatuses
+        val statuses = (statuses ?: ccv2Settings.showEnvironmentStatuses)
             .map { it.name }
 
         coroutineScope.launch {
@@ -75,7 +78,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                                     subscription to (getCCv2Token(subscription)
                                         ?.let { ccv2Token ->
                                             try {
-                                                return@let CCv2Api.getInstance().fetchEnvironments(ccv2Token, subscription, statuses, progressReporter)
+                                                return@let CCv2Api.getInstance().fetchEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
                                                     .sortedBy { it.order }
                                             } catch (e: SocketTimeoutException) {
                                                 notifyOnTimeout(subscription)
