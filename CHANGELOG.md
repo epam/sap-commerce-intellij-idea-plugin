@@ -30,6 +30,7 @@
 - Improved scroll for parameters panel and parameters representation [#1426](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1426)
 - Added Date Picker for Date type parameters [#1429](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1429)
 - Display an Inlay Hint for a bind parameter in `FlexibleSearch` editor [#1427](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1427)
+- Show initial values for `FlexibleSearch` inlay hints [#1430](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1430)
 
 ### `Groovy` enhancements
 - Adjusted execution mode selection `commit`/`rollback` [#1422](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1422)
