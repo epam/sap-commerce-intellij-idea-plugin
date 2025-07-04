@@ -92,6 +92,23 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 
     fun getParameters() = if (isParametersPanelVisible()) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) else null
 
+    fun getQuery(): String = getParameters()
+        ?.sortedByDescending { it.name.length }
+        ?.let { properties ->
+            var updatedContent = getText()
+            properties.forEach {
+                updatedContent = updatedContent.replace("?${it.name}", it.value)
+            }
+            return@let updatedContent
+        }
+        ?: getText()
+//todo replace by regex
+//                updatedContent.replace("\\?(\\w+)".toRegex()) { matchResult ->
+//                    val key = matchResult.groupValues[1]
+//                    replacements[key] ?: matchResult.value
+//                }
+//
+
     fun refreshParameters(delayMs: Duration = 250.milliseconds) {
         renderParametersJob?.cancel()
         renderParametersJob = CoroutineScope(Dispatchers.Default).launch {
@@ -225,7 +242,8 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                                         }
 
                                     "String",
-                                    "java.lang.String" -> textField()
+                                    "java.lang.String",
+                                    "localized:java.lang.String" -> textField()
                                         .label("${parameter.name}:")
                                         .align(AlignX.FILL)
                                         .text(StringUtil.unquoteString(parameter.value, '\''))
@@ -314,6 +332,10 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         return parameters
     }
 
+    private fun getText(): String = editor.selectionModel.selectedText
+        .takeIf { selectedText -> selectedText != null && selectedText.trim { it <= ' ' }.isNotEmpty() }
+        ?: editor.document.text
+
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
@@ -342,13 +364,13 @@ data class FlexibleSearchParameter(
 
         private fun resolveInitialValue(itemType: String?): String = when (itemType) {
             "boolean", "java.lang.Boolean" -> "0"
-            "String", "java.lang.String" -> "''"
+            "String", "java.lang.String", "localized:java.lang.String" -> "''"
             else -> ""
         }
 
         private fun resolveInitialPresentationValue(itemType: String?): String = when (itemType) {
             "boolean", "java.lang.Boolean" -> "false"
-            "String", "java.lang.String" -> "''"
+            "String", "java.lang.String", "localized:java.lang.String" -> "''"
             else -> ""
         }
     }

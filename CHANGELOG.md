@@ -31,6 +31,7 @@
 - Added Date Picker for Date type parameters [#1429](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1429)
 - Display an Inlay Hint for a bind parameter in `FlexibleSearch` editor [#1427](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1427)
 - Show initial values for `FlexibleSearch` inlay hints [#1430](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1430)
+- Create an action button to copy a FlexibleSearch query with values to clipboard [#1434](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1434)
 
 ### `Groovy` enhancements
 - Adjusted execution mode selection `commit`/`rollback` [#1422](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1422)

@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -54,20 +54,6 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
     override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = FileEditorManager.getInstance(project)
         .getSelectedEditor(editor.virtualFile)
         .asSafely<FlexibleSearchSplitEditor>()
-        ?.getParameters()
-        ?.sortedByDescending { it.name.length }
-        ?.let { properties ->
-            var updatedContent = content
-            properties.forEach {
-                updatedContent = updatedContent.replace("?${it.name}", it.value)
-            }
-//todo replace by regex
-//                updatedContent.replace("\\?(\\w+)".toRegex()) { matchResult ->
-//                    val key = matchResult.groupValues[1]
-//                    replacements[key] ?: matchResult.value
-//                }
-//
-            return@let updatedContent
-        }
+        ?.getQuery()
         ?: content
 }

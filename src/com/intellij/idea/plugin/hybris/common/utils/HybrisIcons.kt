@@ -176,6 +176,7 @@ object HybrisIcons {
         val TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg")
         val HIDE_PARAMETERS_PANEL = getIcon("/icons/flexibleSearch/actions/fxsEditorOnly.svg")
         val SHOW_PARAMETERS_PANEL = getIcon("/icons/flexibleSearch/actions/fxsEditorWithParametersPanel.svg")
+        val COPY_TO_CLIPBOARD = AllIcons.Actions.Copy
 
         object Actions {
             val GROUP = getIcon("/icons/flexibleSearch/actions/group.svg")

@@ -115,12 +115,14 @@
         <action id="hybris.fxs.openQuery" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenQueryAction"/>
         <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenSettingsAction"/>
         <action id="hybris.fxs.toggleParametersPanel" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchToggleParametersPanelAction"/>
+        <action id="hybris.fxs.copyToClipboard" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchCopyQueryToClipboardAction"/>
 
         <group id="hybris.fxs.toolbar.left">
             <reference ref="hybris.fxs.execute"/>
             <reference ref="hybris.fxs.openQuery"/>
             <separator/>
             <reference ref="hybris.fxs.toggleParametersPanel"/>
+            <reference ref="hybris.fxs.copyToClipboard"/>
             <separator/>
             <reference ref="hybris.fxs.openSettings"/>
         </group>
