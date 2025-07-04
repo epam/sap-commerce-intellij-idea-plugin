@@ -27,8 +27,8 @@
                                               group="VALUES_GROUP"
                                               providerId="hybris.FlexibleSearch.parameter"
                                               bundle="i18n/HybrisBundle"
-                                              nameKey="hybris.editor.flexiblesearch.parameter.name"
-                                              descriptionKey="hybris.editor.flexiblesearch.parameter.description"/>
+                                              nameKey="hybris.editor.fxs.parameter.name"
+                                              descriptionKey="hybris.editor.fxs.parameter.description"/>
 
         <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.flexibleSearch.psi.listeners.FlexibleSearchPsiTreeChangeListener"/>
 
