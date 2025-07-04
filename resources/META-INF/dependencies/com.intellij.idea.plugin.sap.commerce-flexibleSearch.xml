@@ -22,7 +22,7 @@
         <internalFileTemplate name="FlexibleSearch File"/>
 
         <codeInsight.declarativeInlayProvider language="FlexibleSearch"
-                                              implementationClass="com.intellij.idea.plugin.hybris.system.java.codeInsight.hints.FlexibleSearchParameterInlayHintProvider"
+                                              implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.hints.FlexibleSearchParameterInlayHintProvider"
                                               isEnabledByDefault="true"
                                               group="VALUES_GROUP"
                                               providerId="hybris.FlexibleSearch.parameter"

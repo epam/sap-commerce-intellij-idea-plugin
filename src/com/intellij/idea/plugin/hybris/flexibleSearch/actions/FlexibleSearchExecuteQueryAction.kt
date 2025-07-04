@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.KEY_FLEXIBLE_SEARCH_PARAMETERS
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
@@ -55,7 +54,7 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
     override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = FileEditorManager.getInstance(project)
         .getSelectedEditor(editor.virtualFile)
         .asSafely<FlexibleSearchSplitEditor>()
-        ?.getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
+        ?.getParameters()
         ?.sortedByDescending { it.name.length }
         ?.let { properties ->
             var updatedContent = content

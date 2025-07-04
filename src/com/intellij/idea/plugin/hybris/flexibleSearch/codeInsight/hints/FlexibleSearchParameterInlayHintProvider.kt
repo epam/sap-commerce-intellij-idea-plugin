@@ -16,23 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.java.codeInsight.hints
+package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.hints
 
 import com.intellij.codeInsight.hints.declarative.*
-import com.intellij.ide.DataManager
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.KEY_FLEXIBLE_SEARCH_PARAMETERS
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.util.asSafely
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
 
@@ -44,8 +38,8 @@ class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
                 FileEditorManager.getInstance(element.project)
                     .getSelectedEditor(element.containingFile.virtualFile)
                     .asSafely<FlexibleSearchSplitEditor>()
-                    ?.getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
-                    ?.find { it.name == element.text.removePrefix("?") && it.value.isNotBlank() }
+                    ?.getParameters()
+                    ?.find { it.name == element.text.removePrefix("?") && it.presentationValue.isNotBlank() }
                     ?.let {
                         sink.addPresentation(
                             position = InlineInlayPosition(element.textRange.endOffset, true),
@@ -53,14 +47,13 @@ class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
                             tooltip = null,
                             hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
                         ) {
-                            text("=${it.value}")
+                            text("= ${it.presentationValue}")
                         }
                     }
             }
         }
     }
 
-    override fun createCollector(file: PsiFile, editor: Editor) =
-        if (ProjectSettingsComponent.getInstance(file.project).isHybrisProject()) collector
-        else null
+    override fun createCollector(file: PsiFile, editor: Editor) = if (ProjectSettingsComponent.Companion.getInstance(file.project).isHybrisProject()) collector
+    else null
 }

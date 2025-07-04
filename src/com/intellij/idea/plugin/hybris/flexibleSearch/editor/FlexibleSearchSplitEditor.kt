@@ -18,14 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
-import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.KEY_FLEXIBLE_SEARCH_PARAMETERS
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
@@ -34,6 +33,7 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.getPreferredFocusedComponent
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -50,6 +50,7 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import com.michaelbaranov.microba.calendar.DatePicker
+import kotlinx.coroutines.*
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
@@ -58,9 +59,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.swing.JComponent
 import javax.swing.JPanel
-import com.intellij.openapi.application.invokeLater
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
+
+    private var renderParametersJob: Job? = null
+    private var refreshTextEditorJob: Job? = null
 
     private val splitter = OnePixelSplitter(false).apply {
         isShowDividerControls = true
@@ -78,25 +83,35 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         with(project.messageBus.connect(this)) {
             subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
-                    refreshParametersPanel()
-                    refreshTextEditor()
+                    refreshParameters()
                 }
             })
         }
     }
 
-    fun refreshParametersPanel() {
-        if (project.isDisposed) return
+    fun getParameters() = if (isParametersPanelVisible()) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) else null
 
-        if (!isParametersPanelVisible()) return
+    fun refreshParameters(delayMs: Duration = 250.milliseconds) {
+        renderParametersJob?.cancel()
+        renderParametersJob = CoroutineScope(Dispatchers.Default).launch {
+            delay(delayMs)
 
-        splitter.secondComponent = buildParametersPanel()
+            if (project.isDisposed || !isParametersPanelVisible()) return@launch
+
+            splitter.secondComponent = buildParametersPanel()
+        }
     }
 
-    fun refreshTextEditor() {
-        invokeLater {
-            PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), true)
-            DaemonCodeAnalyzer.getInstance(project).restart()
+    fun refreshTextEditor(delayMs: Duration = 1000.milliseconds) {
+        refreshTextEditorJob?.cancel()
+        refreshTextEditorJob = CoroutineScope(Dispatchers.Default).launch {
+            delay(delayMs)
+
+            if (project.isDisposed) return@launch
+
+            edtWriteAction {
+                PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), false)
+            }
         }
     }
 
@@ -109,6 +124,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 
         component.requestFocus()
         splitter.firstComponent.requestFocus()
+
         refreshTextEditor()
     }
 
@@ -134,7 +150,8 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                     val infoBanner = InlineBanner(
                         """
                         <html><body style='width: 100%'>
-                        <p>This feature may be unstable. Use with caution. Submit issues or suggestions to project's GitHub repository.</p>
+                        <p>This feature may be unstable. Use with caution.</p>
+                        <p>Submit issues or suggestions to project's GitHub repository.</p>
                         </body></html>
                     """.trimIndent(),
                         EditorNotificationPanel.Status.Warning
@@ -166,18 +183,15 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                                         .label("${parameter.name}:")
                                         .align(AlignX.FILL)
                                         .text(parameter.value)
-                                        .onChanged {
-                                            parameter.value = it.text
-                                            refreshTextEditor()
-                                        }
+                                        .onChanged { applyValue(parameter, it.text) { it.text } }
 
                                     "boolean",
                                     "java.lang.Boolean" -> checkBox(parameter.name)
                                         .align(AlignX.FILL)
                                         .selected(parameter.value == "1")
                                         .onChanged {
-                                            parameter.value = if (it.isSelected) "1" else "0"
-                                            refreshTextEditor()
+                                            val presentationValue = if (it.isSelected) "true" else "false"
+                                            applyValue(parameter, presentationValue) { if (it.isSelected) "1" else "0" }
                                         }
                                         .also {
                                             parameter.value = (if (parameter.value == "1") "1" else "0")
@@ -194,10 +208,12 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                                             component.also { datePicker ->
                                                 val listener = PropertyChangeListener { event ->
                                                     if (event.propertyName == "date") {
-                                                        parameter.value = event.newValue
-                                                            ?.asSafely<Date>()
-                                                            ?.time
-                                                            ?.toString() ?: ""
+                                                        val newValue = event.newValue?.asSafely<Date>()
+                                                        val presentationValue = newValue?.let { date -> SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(date) } ?: ""
+
+                                                        applyValue(parameter, presentationValue) {
+                                                            newValue?.time?.toString() ?: ""
+                                                        }
                                                     }
                                                 }
                                                 datePicker.addPropertyChangeListener(listener)
@@ -207,14 +223,18 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
                                             }
                                         }
 
-                                    else -> textField()
+                                    "String",
+                                    "java.lang.String" -> textField()
                                         .label("${parameter.name}:")
                                         .align(AlignX.FILL)
                                         .text(StringUtil.unquoteString(parameter.value, '\''))
-                                        .onChanged {
-                                            parameter.value = "'${it.text}'"
-                                            refreshTextEditor()
-                                        }
+                                        .onChanged { applyValue(parameter, "'${it.text}'") { "'${it.text}'" } }
+
+                                    else -> textField()
+                                        .label("${parameter.name}:")
+                                        .align(AlignX.FILL)
+                                        .text(parameter.value)
+                                        .onChanged { applyValue(parameter, it.text) { "${it.text}" } }
                                 }
 
                             }.layout(RowLayout.PARENT_GRID)
@@ -228,6 +248,16 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             .apply {
                 minimumSize = Dimension(minimumSize.width, 165)
             }
+    }
+
+    private fun applyValue(parameter: FlexibleSearchParameter, presentationValue: String, newValueProvider: () -> String) {
+        val originalValue = parameter.value
+        parameter.presentationValue = presentationValue
+        parameter.value = newValueProvider.invoke()
+
+        if (originalValue != parameter.value) {
+            refreshTextEditor()
+        }
     }
 
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {
@@ -286,6 +316,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
+        private val KEY_FLEXIBLE_SEARCH_PARAMETERS: Key<Collection<FlexibleSearchParameter>> = Key.create("flexibleSearch.parameters.key")
     }
 }
 
@@ -293,15 +324,18 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 data class FlexibleSearchParameter(
     val name: String,
     var value: String = "",
+    var presentationValue: String = value,
     val type: String? = null,
     val operand: IElementType? = null
 ) {
     companion object {
         fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Collection<FlexibleSearchParameter>): FlexibleSearchParameter {
             val parameter = bindParameter.text.removePrefix("?")
-            val value = currentParameters.find { it.name == parameter }?.value ?: ""
+            val currentParameter = currentParameters.find { it.name == parameter }
+            val value = currentParameter?.value ?: ""
+            val presentationValue = currentParameter?.presentationValue ?: value
 
-            return FlexibleSearchParameter(parameter, value, bindParameter.itemType)
+            return FlexibleSearchParameter(parameter, value, presentationValue, type = bindParameter.itemType)
         }
     }
 }
