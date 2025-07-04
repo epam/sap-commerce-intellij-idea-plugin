@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.value
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
@@ -332,7 +331,7 @@ data class FlexibleSearchParameter(
 ) {
     companion object {
         fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Collection<FlexibleSearchParameter>): FlexibleSearchParameter {
-            val parameter = bindParameter.value()
+            val parameter = bindParameter.value
             val currentParameter = currentParameters.find { it.name == parameter }
             val itemType = bindParameter.itemType
             val value = currentParameter?.value ?: resolveInitialValue(itemType)
@@ -342,19 +341,14 @@ data class FlexibleSearchParameter(
         }
 
         private fun resolveInitialValue(itemType: String?): String = when (itemType) {
-            "boolean",
-            "java.lang.Boolean" -> "0"
-
+            "boolean", "java.lang.Boolean" -> "0"
+            "String", "java.lang.String" -> "''"
             else -> ""
         }
 
         private fun resolveInitialPresentationValue(itemType: String?): String = when (itemType) {
-            "boolean",
-            "java.lang.Boolean" -> "false"
-
-            "String",
-            "java.lang.String" -> "''"
-
+            "boolean", "java.lang.Boolean" -> "false"
+            "String", "java.lang.String" -> "''"
             else -> ""
         }
     }

@@ -24,23 +24,25 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi;
 
 import java.util.List;
+
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaClassifier;
-import com.intellij.util.xml.DomElement;
 
 public interface FlexibleSearchBindParameter extends PsiElement {
 
-  @NotNull
-  List<FlexibleSearchExtParameterName> getExtParameterNameList();
+    @NotNull
+    List<FlexibleSearchExtParameterName> getExtParameterNameList();
 
-  @Nullable
-  PsiElement getNamedParameter();
+    @Nullable
+    PsiElement getNamedParameter();
 
-  @Nullable
-  FlexibleSearchExpression getExpression();
+    @Nullable
+    FlexibleSearchExpression getExpression();
 
-  @Nullable
-  String getItemType();
+    @Nullable
+    String getItemType();
+
+    @NotNull
+    String getValue();
 
 }

@@ -184,7 +184,7 @@ private expression_in_subquery ::= bind_parameter (',' bind_parameter)* | expres
 
 bind_parameter ::= NUMBERED_PARAMETER | (NAMED_PARAMETER ( '.' ext_parameter_name)*) {
     mixin="com.intellij.idea.plugin.hybris.flexibleSearch.psi.impl.FlexibleSearchBindParameterMixin"
-    methods=[getExpression getItemType]
+    methods=[getExpression getItemType getValue]
 }
 
 private literal_value ::=

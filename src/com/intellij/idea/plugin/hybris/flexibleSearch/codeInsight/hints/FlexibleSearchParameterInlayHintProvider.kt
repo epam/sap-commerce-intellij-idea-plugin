@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.hints
 import com.intellij.codeInsight.hints.declarative.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.value
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -40,7 +39,7 @@ class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
                     .getSelectedEditor(element.containingFile.virtualFile)
                     .asSafely<FlexibleSearchSplitEditor>()
                     ?.getParameters()
-                    ?.find { it.name == element.value() && it.presentationValue.isNotBlank() }
+                    ?.find { it.name == element.value && it.presentationValue.isNotBlank() }
                     ?.let {
                         sink.addPresentation(
                             position = InlineInlayPosition(element.textRange.endOffset, true),

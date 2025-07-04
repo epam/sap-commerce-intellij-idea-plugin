@@ -69,6 +69,8 @@ abstract class FlexibleSearchBindParameterMixin(node: ASTNode) : ASTWrapperPsiEl
             }
         }
 
+    override fun getValue() = text.removePrefix("?")
+
     companion object {
         @Serial
         private const val serialVersionUID: Long = -4595969060146424421L
