@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.value
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
@@ -331,7 +332,7 @@ data class FlexibleSearchParameter(
 ) {
     companion object {
         fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Collection<FlexibleSearchParameter>): FlexibleSearchParameter {
-            val parameter = bindParameter.text.removePrefix("?")
+            val parameter = bindParameter.value()
             val currentParameter = currentParameters.find { it.name == parameter }
             val itemType = bindParameter.itemType
             val value = currentParameter?.value ?: resolveInitialValue(itemType)
