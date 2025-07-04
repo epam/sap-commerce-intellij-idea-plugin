@@ -66,9 +66,19 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
     override fun dispose() = Unit
 
+    fun cached() = project.getUserData(KEY_ENVIRONMENTS) != null
+        || project.getUserData(KEY_SERVICES) != null
+
     fun resetCache() {
         project.removeUserData(KEY_ENVIRONMENTS)
         project.removeUserData(KEY_SERVICES)
+
+        Notifications
+            .create(
+                NotificationType.INFORMATION,
+                "CCv2 cache has been reset",
+            )
+            .notify(project)
     }
 
     fun fetchEnvironments(
@@ -137,6 +147,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         val cachedEnvironments = allCachedEnvironments[cacheKey]
 
         if (cachedEnvironments != null) return cachedEnvironments
+            .also { it.forEach { it.deployedBuild = null } }
 
         val environments = CCv2Api.getInstance()
             .fetchEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)

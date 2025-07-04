@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,8 +24,11 @@ import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.Panel
+import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
 
 abstract class AbstractCCv2DataView<T : CCv2DTO> {
@@ -53,9 +56,18 @@ abstract class AbstractCCv2DataView<T : CCv2DTO> {
 
     protected fun Panel.noData() {
         row {
-            label("No ${tab.title} data available. Try re-fetching remote data...")
+            cell(
+                InlineBanner(
+                    "No ${tab.title} data available. Try re-fetching remote data...",
+                    EditorNotificationPanel.Status.Warning
+                ).apply {
+                    showCloseButton(false)
+                }
+            )
                 .align(Align.CENTER)
                 .resizableColumn()
-        }.resizableRow()
+        }
+            .resizableRow()
+            .topGap(TopGap.MEDIUM)
     }
 }
