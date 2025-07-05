@@ -46,9 +46,9 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
 
     override fun update(e: AnActionEvent) {
         super.update(e)
-        val file = e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)
-        val enabled = file != null && file.name.endsWith(".$extension")
-        e.presentation.isEnabledAndVisible = enabled
+        e.presentation.isEnabledAndVisible = e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)
+            ?.name?.endsWith(".$extension")
+            ?: false
     }
 
     override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.getData(PlatformDataKeys.FILE_EDITOR)
