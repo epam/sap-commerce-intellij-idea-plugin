@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -42,13 +41,6 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
             description = message("hybris.fxs.actions.execute_query.description")
             icon = HybrisIcons.Console.Actions.EXECUTE
         }
-    }
-
-    override fun update(e: AnActionEvent) {
-        super.update(e)
-        e.presentation.isEnabledAndVisible = e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)
-            ?.name?.endsWith(".$extension")
-            ?: false
     }
 
     override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.getData(PlatformDataKeys.FILE_EDITOR)

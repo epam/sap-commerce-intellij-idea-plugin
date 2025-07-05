@@ -58,6 +58,8 @@ class GroovyExecuteAction : AbstractExecuteAction(
     }
 
     override fun update(e: AnActionEvent) {
+        super.update(e)
+
         val project = e.project ?: return
 
         when (DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode) {

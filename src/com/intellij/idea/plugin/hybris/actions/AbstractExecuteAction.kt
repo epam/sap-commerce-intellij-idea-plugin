@@ -45,14 +45,7 @@ abstract class AbstractExecuteAction(
     override fun actionPerformed(e: AnActionEvent) {
         val editor = CommonDataKeys.EDITOR.getData(e.dataContext) ?: return
         val project = e.project ?: return
-
-        val selectionModel = editor.selectionModel
-        var content = selectionModel.selectedText
-        if (content == null || content.trim { it <= ' ' }.isEmpty()) {
-            content = editor.document.text
-        }
-
-        content = processContent(e, content, editor, project)
+        val content = getExecutableContent(editor, e, project)
 
         with(HybrisToolWindowService.getInstance(project)) {
             activateToolWindow()
@@ -76,9 +69,21 @@ abstract class AbstractExecuteAction(
     open fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project) = content
 
     override fun update(e: AnActionEvent) {
-        val file = e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)
-        val enabled = file != null && file.name.endsWith(this.extension)
-        e.presentation.isEnabledAndVisible = enabled
+        e.presentation.isEnabledAndVisible = this.extension == e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)?.extension
+    }
+
+    private fun getExecutableContent(
+        editor: Editor,
+        e: AnActionEvent,
+        project: Project
+    ): String {
+        val selectionModel = editor.selectionModel
+        var content = selectionModel.selectedText
+        if (content == null || content.trim { it <= ' ' }.isEmpty()) {
+            content = editor.document.text
+        }
+
+        return processContent(e, content, editor, project)
     }
 
     companion object {
