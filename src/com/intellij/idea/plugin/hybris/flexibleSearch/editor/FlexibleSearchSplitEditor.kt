@@ -136,7 +136,8 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     }
 
     fun hideParametersPanel() {
-        parametersPanelDisposable?.dispose()
+        parametersPanelDisposable?.apply { Disposer.dispose(this) }
+        parametersPanelDisposable = null
         splitter.secondComponent = null
 
         component.requestFocus()
@@ -161,7 +162,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     fun buildParametersPanel(): JComponent? {
         if (project.isDisposed) return null
 
-        parametersPanelDisposable?.dispose()
+        parametersPanelDisposable?.let { Disposer.dispose(it) }
 
         val parentDisposable = Disposer.newDisposable().apply {
             parametersPanelDisposable = this
