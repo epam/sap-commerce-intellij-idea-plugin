@@ -188,17 +188,15 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
                 statusLine.getReasonPhrase()).build();
         }
-        final Document document;
+
+        final Map json;
         try {
-            document = parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "");
-        } catch (final IOException e) {
+            final var inputStream = response.getEntity().getContent();
+            final var responseContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            json = new Gson().fromJson(responseContent, HashMap.class);
+        } catch (final Exception e) {
             return resultBuilder.errorMessage(e.getMessage() + ' ' + actionUrl).httpCode(SC_BAD_REQUEST).build();
         }
-        final Elements fsResultStatus = document.getElementsByTag("body");
-        if (fsResultStatus == null) {
-            return resultBuilder.errorMessage("No data in response").build();
-        }
-        final Map json = parseResponse(fsResultStatus);
 
         if (json == null) {
             return createResult()
