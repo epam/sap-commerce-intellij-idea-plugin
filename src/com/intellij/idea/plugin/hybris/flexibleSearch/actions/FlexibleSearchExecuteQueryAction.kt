@@ -26,8 +26,8 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplit
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 
@@ -51,9 +51,8 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
         e.presentation.isEnabledAndVisible = enabled
     }
 
-    override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = FileEditorManager.getInstance(project)
-        .getSelectedEditor(editor.virtualFile)
-        .asSafely<FlexibleSearchSplitEditor>()
+    override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.getData(PlatformDataKeys.FILE_EDITOR)
+        ?.asSafely<FlexibleSearchSplitEditor>()
         ?.getQuery()
         ?: content
 }

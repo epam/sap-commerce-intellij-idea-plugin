@@ -36,6 +36,7 @@ import com.intellij.openapi.ui.getPreferredFocusedComponent
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolderBase
+import com.intellij.openapi.util.getOrCreateUserData
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
@@ -69,16 +70,24 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     private var refreshTextEditorJob: Job? = null
     private var parametersPanelDisposable: Disposable? = null
 
-    private val splitter = OnePixelSplitter(false).apply {
+    private val horizontalSplitter = OnePixelSplitter(false).apply {
         isShowDividerControls = true
-        splitterProportionKey = "$javaClass.splitter"
+        splitterProportionKey = "$javaClass.horizontalSplitter"
         setHonorComponentsMinimumSize(true)
 
         firstComponent = textEditor.component
     }
 
+    private val verticalSplitter = OnePixelSplitter(true).apply {
+        isShowDividerControls = true
+        splitterProportionKey = "$javaClass.verticalSplitter"
+        setHonorComponentsMinimumSize(true)
+
+        firstComponent = horizontalSplitter
+    }
+
     private val splitPanel = JPanel(BorderLayout()).apply {
-        add(splitter, BorderLayout.CENTER)
+        add(verticalSplitter, BorderLayout.CENTER)
     }
 
     init {
@@ -104,12 +113,6 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             return@let updatedContent
         }
         ?: getText()
-//todo replace by regex
-//                updatedContent.replace("\\?(\\w+)".toRegex()) { matchResult ->
-//                    val key = matchResult.groupValues[1]
-//                    replacements[key] ?: matchResult.value
-//                }
-//
 
     fun refreshParameters(delayMs: Duration = 250.milliseconds) {
         renderParametersJob?.cancel()
@@ -118,7 +121,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
 
             if (project.isDisposed || !isParametersPanelVisible()) return@launch
 
-            splitter.secondComponent = buildParametersPanel()
+            horizontalSplitter.secondComponent = buildParametersPanel()
         }
     }
 
@@ -138,26 +141,29 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     fun hideParametersPanel() {
         parametersPanelDisposable?.apply { Disposer.dispose(this) }
         parametersPanelDisposable = null
-        splitter.secondComponent = null
+        horizontalSplitter.secondComponent = null
 
         component.requestFocus()
-        splitter.firstComponent.requestFocus()
+        horizontalSplitter.firstComponent.requestFocus()
 
         refreshTextEditor()
     }
 
     fun showParametersPanel() {
         with(buildParametersPanel()) {
-            splitter.secondComponent = this
+            horizontalSplitter.secondComponent = this
         }
 
         component.requestFocus()
-        splitter.firstComponent.requestFocus()
+        horizontalSplitter.firstComponent.requestFocus()
 
         refreshTextEditor()
     }
 
-    fun isParametersPanelVisible(): Boolean = splitter.secondComponent != null
+    fun isParametersPanelVisible(): Boolean = horizontalSplitter.secondComponent != null
+    fun isInEditorResults(): Boolean = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { false }
+
+    fun inEditorResults(show: Boolean) = putUserData(KEY_IN_EDITOR_RESULTS, show)
 
     fun buildParametersPanel(): JComponent? {
         if (project.isDisposed) return null
@@ -358,10 +364,10 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
         private val KEY_FLEXIBLE_SEARCH_PARAMETERS: Key<Collection<FlexibleSearchParameter>> = Key.create("flexibleSearch.parameters.key")
+        private val KEY_IN_EDITOR_RESULTS: Key<Boolean> = Key.create("flexibleSearch.in_editor_results.key")
     }
 }
 
-//create a factory method
 data class FlexibleSearchParameter(
     val name: String,
     var value: String = "",

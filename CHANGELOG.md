@@ -2,6 +2,7 @@
 
 ### `FlexibleSearch` enhancements
 - Use toggle action for Parameters view toggler [#1437](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1437)
+- Introduced `In-Editor Results` for FlexibleSearch queries [#1438](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1438)
 
 ## [2025.1.5]
 

@@ -175,6 +175,7 @@ object HybrisIcons {
         val TABLE_SUFFIX = AllIcons.General.Filter
         val TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg")
         val TOGGLE_PARAMETERS_EDITOR = AllIcons.General.LayoutEditorPreview
+        val TOGGLE_IN_EDITOR_RESULTS = AllIcons.General.EditorPreviewVertical
         val COPY_TO_CLIPBOARD = AllIcons.Actions.Copy
 
         object Actions {

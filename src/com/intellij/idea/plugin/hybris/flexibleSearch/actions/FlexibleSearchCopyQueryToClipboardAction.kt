@@ -26,8 +26,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.util.asSafely
@@ -42,22 +41,16 @@ class FlexibleSearchCopyQueryToClipboardAction : AnAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val editor = CommonDataKeys.EDITOR.getData(e.dataContext) ?: return
-        val project = e.project ?: return
-
-        e.presentation.isEnabled = FileEditorManager.getInstance(project)
-            .getSelectedEditor(editor.virtualFile)
-            .asSafely<FlexibleSearchSplitEditor>()
+        e.presentation.isEnabled = e.getData(PlatformDataKeys.FILE_EDITOR)
+            ?.asSafely<FlexibleSearchSplitEditor>()
             ?.isParametersPanelVisible() ?: false
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val editor = CommonDataKeys.EDITOR.getData(e.dataContext) ?: return
         val project = e.project ?: return
 
-        val textToCopy = FileEditorManager.getInstance(project)
-            .getSelectedEditor(editor.virtualFile)
-            .asSafely<FlexibleSearchSplitEditor>()
+        val textToCopy = e.getData(PlatformDataKeys.FILE_EDITOR)
+            ?.asSafely<FlexibleSearchSplitEditor>()
             ?.getQuery()
             ?: ""
 
