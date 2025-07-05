@@ -28,10 +28,10 @@ import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.util.asSafely
 
-class FlexibleSearchToggleParametersPanelAction : ToggleAction(
+class FlexibleSearchToggleParametersEditorAction : ToggleAction(
     message("hybris.fxs.actions.show_parameters"),
     message("hybris.fxs.actions.show_parameters.description"),
-    HybrisIcons.FlexibleSearch.TOGGLE_PARAMETERS_PANEL
+    HybrisIcons.FlexibleSearch.TOGGLE_PARAMETERS_EDITOR
 ), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
