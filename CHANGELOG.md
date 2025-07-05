@@ -1,3 +1,8 @@
+## [2025.1.6]
+
+### `FlexibleSearch` enhancements
+- Use toggle action for Parameters view toggler [#1437](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1437)
+
 ## [2025.1.5]
 
 ### `CCv2` enhancements

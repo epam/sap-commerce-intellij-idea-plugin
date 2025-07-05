@@ -22,39 +22,44 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.util.asSafely
 
-class FlexibleSearchToggleParametersPanelAction : AnAction(
+class FlexibleSearchToggleParametersPanelAction : ToggleAction(
     message("hybris.fxs.actions.show_parameters"),
     message("hybris.fxs.actions.show_parameters.description"),
-    HybrisIcons.FlexibleSearch.SHOW_PARAMETERS_PANEL
+    HybrisIcons.FlexibleSearch.TOGGLE_PARAMETERS_PANEL
 ), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(e: AnActionEvent) {
-        val visible = e.getData(PlatformDataKeys.FILE_EDITOR)
+    override fun isSelected(e: AnActionEvent): Boolean {
+        val state = e.getData(PlatformDataKeys.FILE_EDITOR)
             ?.asSafely<FlexibleSearchSplitEditor>()
-            ?.isParametersPanelVisible() ?: return
+            ?.isParametersPanelVisible() ?: false
 
-        if (visible) {
-            e.presentation.text = message("hybris.fxs.actions.hide_parameters")
-            e.presentation.description = message("hybris.fxs.actions.hide_parameters.description")
-            e.presentation.icon = HybrisIcons.FlexibleSearch.HIDE_PARAMETERS_PANEL
-        } else {
-            e.presentation.text = message("hybris.fxs.actions.show_parameters")
-            e.presentation.description = message("hybris.fxs.actions.show_parameters.description")
-            e.presentation.icon = HybrisIcons.FlexibleSearch.SHOW_PARAMETERS_PANEL
+        with(e.presentation) {
+            if (state) {
+                text = message("hybris.fxs.actions.hide_parameters")
+                description = message("hybris.fxs.actions.hide_parameters.description")
+            } else {
+                text = message("hybris.fxs.actions.show_parameters")
+                description = message("hybris.fxs.actions.show_parameters.description")
+            }
         }
+
+        return state
     }
 
-    override fun actionPerformed(e: AnActionEvent) {
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
         e.getData(PlatformDataKeys.FILE_EDITOR)
             ?.asSafely<FlexibleSearchSplitEditor>()
-            ?.toggleLayout()
+            ?.apply {
+                if (state) showParametersPanel()
+                else hideParametersPanel()
+            }
     }
 }
