@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,16 +26,11 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 
 class ImpExExecuteAction : AbstractExecuteAction(
     ImpexFileType.defaultExtension,
-    HybrisConstants.CONSOLE_TITLE_IMPEX
+    HybrisConstants.CONSOLE_TITLE_IMPEX,
+    message("hybris.impex.actions.execute_query"),
+    message("hybris.impex.actions.execute_query.description"),
+    HybrisIcons.Console.Actions.EXECUTE
 ) {
-
-    init {
-        with(templatePresentation) {
-            text = message("hybris.impex.actions.execute_query")
-            description = message("hybris.impex.actions.execute_query.description")
-            icon = HybrisIcons.Console.Actions.EXECUTE
-        }
-    }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }

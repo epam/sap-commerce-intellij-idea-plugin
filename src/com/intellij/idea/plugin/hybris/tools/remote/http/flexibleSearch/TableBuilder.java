@@ -27,16 +27,13 @@ import java.util.List;
 
 public class TableBuilder {
 
-    public final Table table = new Table();
     private final List<String[]> rows = new LinkedList<>();
 
     public void addHeaders(final Collection<String> headers) {
-        table.getHeaders().addAll(headers);
         addRow(headers);
     }
 
     public void addRow(final Collection<String> cols) {
-        table.getRows().add(new TableRow(cols));
         rows.add(cols.toArray(new String[]{}));
     }
 

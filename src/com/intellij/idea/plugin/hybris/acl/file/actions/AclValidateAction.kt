@@ -26,16 +26,11 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 
 class AclValidateAction : AbstractExecuteAction(
     AclFileType.defaultExtension,
-    HybrisConstants.CONSOLE_TITLE_IMPEX
+    HybrisConstants.CONSOLE_TITLE_IMPEX,
+    "Validate Access Control Lists",
+    "Validate Access Control Lists (user rights) via remote SAP Commerce instance",
+    HybrisIcons.Acl.Actions.VALIDATE
 ) {
-
-    init {
-        with(templatePresentation) {
-            text = "Validate Access Control Lists"
-            description = "Validate Access Control Lists (user rights) via remote SAP Commerce instance"
-            icon = HybrisIcons.Acl.Actions.VALIDATE
-        }
-    }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }

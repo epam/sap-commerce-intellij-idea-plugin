@@ -30,11 +30,15 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import javax.swing.Icon
 
 abstract class AbstractExecuteAction(
     internal val extension: String,
-    internal val consoleName: String
-) : AnAction(), DumbAware {
+    internal val consoleName: String,
+    internal val name: String,
+    internal val description: String,
+    internal val icon: Icon
+) : AnAction(name, description, icon), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 

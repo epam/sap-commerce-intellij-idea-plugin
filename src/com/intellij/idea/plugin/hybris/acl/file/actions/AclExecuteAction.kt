@@ -21,22 +21,17 @@ package com.intellij.idea.plugin.hybris.acl.file.actions
 import com.intellij.idea.plugin.hybris.acl.file.AclFileType
 import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 
 class AclExecuteAction : AbstractExecuteAction(
     AclFileType.defaultExtension,
-    HybrisConstants.CONSOLE_TITLE_IMPEX
+    HybrisConstants.CONSOLE_TITLE_IMPEX,
+    message("hybris.acl.actions.execute_query"),
+    message("hybris.acl.actions.execute_query.description"),
+    HybrisIcons.Console.Actions.EXECUTE
 ) {
-
-    init {
-        with(templatePresentation) {
-            text = HybrisI18NBundleUtils.message("hybris.acl.actions.execute_query")
-            description = HybrisI18NBundleUtils.message("hybris.acl.actions.execute_query.description")
-            icon = HybrisIcons.Console.Actions.EXECUTE
-        }
-    }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }

@@ -221,7 +221,6 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         resultList.forEach(tableBuilder::addRow);
 
         return resultBuilder
-            .rawOutput(tableBuilder.table)
             .output(tableBuilder.toString())
             .build();
     }

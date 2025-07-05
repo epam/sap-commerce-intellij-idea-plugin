@@ -27,16 +27,11 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 
 class ImpExValidateAction : AbstractExecuteAction(
     ImpexFileType.defaultExtension,
-    HybrisConstants.CONSOLE_TITLE_IMPEX
+    HybrisConstants.CONSOLE_TITLE_IMPEX,
+    "Validate ImpEx",
+    "Validate ImpEx file via remote SAP Commerce instance",
+    HybrisIcons.ImpEx.Actions.VALIDATE
 ) {
-
-    init {
-        with(templatePresentation) {
-            text = "Validate ImpEx"
-            description = "Validate ImpEx file via remote SAP Commerce instance"
-            icon = HybrisIcons.ImpEx.Actions.VALIDATE
-        }
-    }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
     override fun doExecute(e: AnActionEvent, consoleService: HybrisConsoleService) {

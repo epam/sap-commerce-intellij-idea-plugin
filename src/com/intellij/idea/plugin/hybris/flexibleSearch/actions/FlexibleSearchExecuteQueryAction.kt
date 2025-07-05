@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.tools.remote.HybrisRemoteExecutionService
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -34,15 +35,15 @@ import com.intellij.ui.AnimatedIcon
 
 class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
     FlexibleSearchFileType.defaultExtension,
-    HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH
+    HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
+    message("hybris.fxs.actions.execute_query"),
+    message("hybris.fxs.actions.execute_query.description"),
+    HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    init {
-        with(templatePresentation) {
-            text = message("hybris.fxs.actions.execute_query")
-            description = message("hybris.fxs.actions.execute_query.description")
-            icon = HybrisIcons.Console.Actions.EXECUTE
-        }
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        e.presentation.isEnabledAndVisible = e.presentation.isEnabledAndVisible && Plugin.GRID.isActive()
     }
 
     override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.flexibleSearchSplitEditor()

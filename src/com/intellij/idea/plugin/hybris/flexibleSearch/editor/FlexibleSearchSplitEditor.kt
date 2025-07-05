@@ -18,12 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
+import com.intellij.database.csv.CsvFormats
+import com.intellij.database.editor.CsvTableFileEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.Table
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
@@ -34,6 +35,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.getPreferredFocusedComponent
@@ -47,6 +49,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.LightVirtualFile
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.OnePixelSplitter
@@ -113,25 +116,44 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     }
 
     fun showExecutionResult(result: HybrisHttpResult) {
-        verticalSplitter.secondComponent = if (result.errorMessage.isNotBlank()) panel {
-            panel {
-                row {
-                    val infoBanner = InlineBanner(
-                        result.errorMessage,
-                        EditorNotificationPanel.Status.Error
-                    )
+        if (result.errorMessage.isNotBlank()) {
+            verticalSplitter.secondComponent = executionResultsErrorPane(result)
+        }
 
-                    cell(infoBanner)
-                        .align(Align.FILL)
-                        .resizableColumn()
-                }.topGap(TopGap.SMALL)
-            }
-                .customize(UnscaledGaps(16, 16, 16, 16))
-        } else panel {
-            row {
-                label(result.getRawOutput<Table>()?.toString() ?: result.errorMessage)
+        executionResultsPane(result)
+    }
+
+    private fun executionResultsPane(result: HybrisHttpResult) {
+        CoroutineScope(Dispatchers.Default).launch {
+            if (project.isDisposed) return@launch
+
+            val lvf = LightVirtualFile(
+                this@FlexibleSearchSplitEditor.file?.name + ".fxs.result.csv",
+                PlainTextFileType.INSTANCE,
+                result.output
+            )
+
+            edtWriteAction {
+                val editor = CsvTableFileEditor(project, lvf, CsvFormats.PIPE_SEPARATED_FORMAT.get());
+                this@FlexibleSearchSplitEditor.verticalSplitter.secondComponent = editor.component
             }
         }
+    }
+
+    private fun executionResultsErrorPane(result: HybrisHttpResult) = panel {
+        panel {
+            row {
+                val infoBanner = InlineBanner(
+                    result.errorMessage,
+                    EditorNotificationPanel.Status.Error
+                )
+
+                cell(infoBanner)
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }.topGap(TopGap.SMALL)
+        }
+            .customize(UnscaledGaps(16, 16, 16, 16))
     }
 
     fun getParameters() = if (isParametersPanelVisible()) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)

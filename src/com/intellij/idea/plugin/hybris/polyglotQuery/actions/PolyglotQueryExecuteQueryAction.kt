@@ -19,21 +19,14 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.actions
 
 import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 
 class PolyglotQueryExecuteQueryAction : AbstractExecuteAction(
     PolyglotQueryFileType.defaultExtension,
-    HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY
-) {
-
-    init {
-        with(templatePresentation) {
-            text = HybrisI18NBundleUtils.message("hybris.pgq.actions.execute_query")
-            description = HybrisI18NBundleUtils.message("hybris.pgq.actions.execute_query.description")
-            icon = HybrisIcons.Console.Actions.EXECUTE
-        }
-    }
-
-}
+    HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY,
+    message("hybris.pgq.actions.execute_query"),
+    message("hybris.pgq.actions.execute_query.description"),
+    HybrisIcons.Console.Actions.EXECUTE
+)
