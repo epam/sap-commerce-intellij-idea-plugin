@@ -1,10 +1,11 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -28,10 +29,10 @@ public class HybrisHttpResult {
     private String errorMessage;
     private String detailMessage;
 
+    private Object rawOutput;
     private String output;
     private String result;
     private int statusCode;
-
 
     private HybrisHttpResult() {
     }
@@ -52,6 +53,11 @@ public class HybrisHttpResult {
         return errorMessage;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T getRawOutput() {
+        return (T) rawOutput;
+    }
+
     public String getOutput() {
         return output;
     }
@@ -66,6 +72,7 @@ public class HybrisHttpResult {
         private String errorMessage= EMPTY;
         private String detailMessage= EMPTY;
 
+        private Object rawOutput;
         private String output= EMPTY;
         private String result= EMPTY;
         private int statusCode = SC_OK;
@@ -93,6 +100,11 @@ public class HybrisHttpResult {
             return this;
         }
 
+        public HybrisHttpResultBuilder rawOutput(final Object rawOutput) {
+            this.rawOutput = rawOutput;
+            return this;
+        }
+
         public HybrisHttpResultBuilder output(final String output) {
             this.output = output;
             return this;
@@ -114,6 +126,7 @@ public class HybrisHttpResult {
             httpResult.hasError = this.hasError;
             httpResult.errorMessage = this.errorMessage;
             httpResult.detailMessage = this.detailMessage;
+            httpResult.rawOutput = this.rawOutput;
             httpResult.output = this.output;
             httpResult.result = this.result;
             httpResult.statusCode = this.statusCode;

@@ -212,16 +212,18 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
                 .build();
         }
 
-
         final TableBuilder tableBuilder = new TableBuilder();
 
         final List<String> headers = (List<String>) json.get("headers");
         final List<List<String>> resultList = (List<List<String>>) json.get("resultList");
 
-        tableBuilder.addRow(headers.toArray(new String[]{}));
-        resultList.forEach(row -> tableBuilder.addRow(row.toArray(new String[]{})));
+        tableBuilder.addHeaders(headers);
+        resultList.forEach(tableBuilder::addRow);
 
-        return resultBuilder.output(tableBuilder.toString()).build();
+        return resultBuilder
+            .rawOutput(tableBuilder.table)
+            .output(tableBuilder.toString())
+            .build();
     }
 
     public @NotNull

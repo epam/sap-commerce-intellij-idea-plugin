@@ -24,9 +24,13 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
+import com.intellij.idea.plugin.hybris.tools.remote.HybrisRemoteExecutionService
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.ui.AnimatedIcon
 
 class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
     FlexibleSearchFileType.defaultExtension,
@@ -46,6 +50,26 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
         ?: content
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
-        e.flexibleSearchSplitEditor()?.inEditorResults
+        val fileEditor = e.flexibleSearchSplitEditor()
+        if (fileEditor?.inEditorResults ?: false) {
+            HybrisConsoleService.getInstance(project)
+                .findConsole(consoleName)
+                ?.let { console ->
+                    e.presentation.isEnabled = false
+                    e.presentation.icon = AnimatedIcon.Default.INSTANCE
+
+                    project.service<HybrisRemoteExecutionService>()
+                        .execute(console, content)
+                        {
+                            fileEditor.showExecutionResult(it)
+
+                            e.presentation.isEnabled = true
+                            e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE
+                        }
+                }
+                ?: super.actionPerformed(e, project, content)
+        } else {
+            super.actionPerformed(e, project, content)
+        }
     }
 }

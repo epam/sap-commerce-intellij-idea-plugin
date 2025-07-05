@@ -33,7 +33,7 @@ import com.intellij.openapi.project.Project
 
 abstract class AbstractExecuteAction(
     internal val extension: String,
-    private val consoleName: String
+    internal val consoleName: String
 ) : AnAction(), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

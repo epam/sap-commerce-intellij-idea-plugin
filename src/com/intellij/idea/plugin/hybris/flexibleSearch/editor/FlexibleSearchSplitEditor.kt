@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.Table
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -95,6 +97,10 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         add(verticalSplitter, BorderLayout.CENTER)
     }
 
+    var inEditorResults: Boolean
+        set(state) = putUserData(KEY_IN_EDITOR_RESULTS, state)
+        get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { false }
+
     init {
         with(project.messageBus.connect(this)) {
             subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
@@ -106,7 +112,30 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         }
     }
 
-    fun getParameters() = if (isParametersPanelVisible()) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) else null
+    fun showExecutionResult(result: HybrisHttpResult) {
+        verticalSplitter.secondComponent = if (result.errorMessage.isNotBlank()) panel {
+            panel {
+                row {
+                    val infoBanner = InlineBanner(
+                        result.errorMessage,
+                        EditorNotificationPanel.Status.Error
+                    )
+
+                    cell(infoBanner)
+                        .align(Align.FILL)
+                        .resizableColumn()
+                }.topGap(TopGap.SMALL)
+            }
+                .customize(UnscaledGaps(16, 16, 16, 16))
+        } else panel {
+            row {
+                label(result.getRawOutput<Table>()?.toString() ?: result.errorMessage)
+            }
+        }
+    }
+
+    fun getParameters() = if (isParametersPanelVisible()) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
+    else null
 
     fun getQuery(): String = getParameters()
         ?.sortedByDescending { it.name.length }
@@ -166,10 +195,6 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     }
 
     fun isParametersPanelVisible(): Boolean = horizontalSplitter.secondComponent != null
-
-    var inEditorResults: Boolean
-        set(state) = putUserData(KEY_IN_EDITOR_RESULTS, state)
-        get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { false }
 
     fun buildParametersPanel(): JComponent? {
         if (project.isDisposed) return null
