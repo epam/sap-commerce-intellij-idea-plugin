@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -43,7 +43,7 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, Hybr
         .also { it.border = borders10 }
     private val plainSqlCheckbox = JBCheckBox("Plain SQL")
         .also { it.border = borders10 }
-    private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 100, 1))
+    private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
         .also { it.border = borders5 }
 
     init {
@@ -52,7 +52,7 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, Hybr
         val panel = JPanel(WrappedFlowLayout(0, 0))
         panel.add(commitCheckbox)
         panel.add(plainSqlCheckbox)
-        panel.add(JBLabel("Rows (max 100):").also { it.border = bordersLabel })
+        panel.add(JBLabel("Rows:").also { it.border = bordersLabel })
         panel.add(maxRowsSpinner)
 
         add(panel, BorderLayout.NORTH)

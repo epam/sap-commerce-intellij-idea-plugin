@@ -59,6 +59,8 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
                     e.presentation.isEnabled = false
                     e.presentation.icon = AnimatedIcon.Default.INSTANCE
 
+                    fileEditor.pendingExecutionResult()
+
                     project.service<HybrisRemoteExecutionService>()
                         .execute(console, content)
                         {

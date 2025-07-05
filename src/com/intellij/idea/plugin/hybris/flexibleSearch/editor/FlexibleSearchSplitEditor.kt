@@ -51,6 +51,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.LightVirtualFile
+import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.OnePixelSplitter
@@ -119,9 +120,31 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     fun showExecutionResult(result: HybrisHttpResult) {
         if (result.errorMessage.isNotBlank()) {
             verticalSplitter.secondComponent = executionResultsErrorPane(result)
+        } else {
+            executionResultsPane(result)
         }
+    }
 
-        executionResultsPane(result)
+    fun pendingExecutionResult() {
+        if (verticalSplitter.secondComponent == null) return
+
+        verticalSplitter.secondComponent = panel {
+            panel {
+                row {
+                    cell(
+                        InlineBanner(
+                            "Executing HTTP Call to SAP Commerce...",
+                            EditorNotificationPanel.Status.Info
+                        )
+                            .showCloseButton(false)
+                            .setIcon(AnimatedIcon.Default.INSTANCE)
+                    )
+                        .align(Align.FILL)
+                        .resizableColumn()
+                }.topGap(TopGap.SMALL)
+            }
+                .customize(UnscaledGaps(16, 16, 16, 16))
+        }
     }
 
     fun getParameters() = if (isParametersPanelVisible()) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
