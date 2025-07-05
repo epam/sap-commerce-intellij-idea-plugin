@@ -103,7 +103,10 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     }
 
     var inEditorResults: Boolean
-        set(state) = putUserData(KEY_IN_EDITOR_RESULTS, state)
+        set(state) {
+            putUserData(KEY_IN_EDITOR_RESULTS, state)
+            verticalSplitter.secondComponent?.isVisible = state
+        }
         get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { false }
 
     init {
