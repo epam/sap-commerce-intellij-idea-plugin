@@ -25,6 +25,8 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileEditor
@@ -63,6 +65,9 @@ import javax.swing.JComponent
 import javax.swing.JPanel
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+
+fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
+    ?.asSafely<FlexibleSearchSplitEditor>()
 
 class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
@@ -161,9 +166,10 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     }
 
     fun isParametersPanelVisible(): Boolean = horizontalSplitter.secondComponent != null
-    fun isInEditorResults(): Boolean = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { false }
 
-    fun inEditorResults(show: Boolean) = putUserData(KEY_IN_EDITOR_RESULTS, show)
+    var inEditorResults: Boolean
+        set(state) = putUserData(KEY_IN_EDITOR_RESULTS, state)
+        get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { false }
 
     fun buildParametersPanel(): JComponent? {
         if (project.isDisposed) return null

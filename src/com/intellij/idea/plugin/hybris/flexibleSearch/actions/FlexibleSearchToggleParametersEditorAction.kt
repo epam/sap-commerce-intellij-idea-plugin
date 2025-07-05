@@ -20,13 +20,11 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.DumbAware
-import com.intellij.util.asSafely
 
 class FlexibleSearchToggleParametersEditorAction : ToggleAction(
     message("hybris.fxs.actions.query_parameters"),
@@ -36,13 +34,11 @@ class FlexibleSearchToggleParametersEditorAction : ToggleAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun isSelected(e: AnActionEvent): Boolean = e.getData(PlatformDataKeys.FILE_EDITOR)
-        ?.asSafely<FlexibleSearchSplitEditor>()
-        ?.isParametersPanelVisible() ?: false
+    override fun isSelected(e: AnActionEvent): Boolean = e.flexibleSearchSplitEditor()?.isParametersPanelVisible()
+        ?: false
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        e.getData(PlatformDataKeys.FILE_EDITOR)
-            ?.asSafely<FlexibleSearchSplitEditor>()
+        e.flexibleSearchSplitEditor()
             ?.apply {
                 if (state) showParametersPanel()
                 else hideParametersPanel()

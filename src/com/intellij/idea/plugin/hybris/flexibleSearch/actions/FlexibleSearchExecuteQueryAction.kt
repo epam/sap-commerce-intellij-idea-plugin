@@ -22,13 +22,11 @@ import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.util.asSafely
 
 class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
     FlexibleSearchFileType.defaultExtension,
@@ -43,8 +41,11 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
         }
     }
 
-    override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.getData(PlatformDataKeys.FILE_EDITOR)
-        ?.asSafely<FlexibleSearchSplitEditor>()
+    override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.flexibleSearchSplitEditor()
         ?.getQuery()
         ?: content
+
+    override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
+        e.flexibleSearchSplitEditor()?.inEditorResults
+    }
 }

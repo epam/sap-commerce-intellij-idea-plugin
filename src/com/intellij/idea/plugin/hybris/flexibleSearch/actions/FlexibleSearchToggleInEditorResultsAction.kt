@@ -19,12 +19,10 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.actionSystem.ToggleAction
-import com.intellij.util.asSafely
 
 class FlexibleSearchToggleInEditorResultsAction : ToggleAction(
     message("hybris.fxs.actions.in_editor_results"),
@@ -34,14 +32,11 @@ class FlexibleSearchToggleInEditorResultsAction : ToggleAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun isSelected(e: AnActionEvent): Boolean = e.getData(PlatformDataKeys.FILE_EDITOR)
-        ?.asSafely<FlexibleSearchSplitEditor>()
-        ?.isInEditorResults() ?: false
+    override fun isSelected(e: AnActionEvent): Boolean = e.flexibleSearchSplitEditor()?.inEditorResults
+        ?: false
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        e.getData(PlatformDataKeys.FILE_EDITOR)
-            ?.asSafely<FlexibleSearchSplitEditor>()
-            ?.inEditorResults(state)
+        e.flexibleSearchSplitEditor()?.inEditorResults = state
     }
 
 }

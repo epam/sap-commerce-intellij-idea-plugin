@@ -47,6 +47,10 @@ abstract class AbstractExecuteAction(
         val project = e.project ?: return
         val content = getExecutableContent(editor, e, project)
 
+        actionPerformed(e, project, content)
+    }
+
+    open fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         with(HybrisToolWindowService.getInstance(project)) {
             activateToolWindow()
             activateToolWindowTab(HybrisToolWindowFactory.CONSOLES_ID)
