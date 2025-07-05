@@ -19,6 +19,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch;
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
@@ -67,10 +68,12 @@ public class TableBuilder {
         for (String[] row : rows) {
             for (int colNum = 0; colNum < row.length; colNum++) {
                 buf.append(
-                    StringUtils.rightPad(
-                        StringUtils.defaultString(
-                            row[colNum]), colWidths[colNum]));
-                buf.append("| ");
+                        StringUtils.rightPad(
+                            StringUtils.defaultString(row[colNum]), colWidths[colNum]
+                        )
+                    )
+                    .append(HybrisConstants.FXS_TABLE_RESULT_SEPARATOR)
+                    .append(' ');
             }
 
             buf.append('\n');

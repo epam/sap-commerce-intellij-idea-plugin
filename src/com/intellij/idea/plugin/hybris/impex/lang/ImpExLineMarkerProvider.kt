@@ -22,6 +22,8 @@ import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo
 import com.intellij.database.vfs.fragment.CsvTableDataFragmentFile
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.markup.GutterIconRenderer
@@ -50,7 +52,7 @@ class ImpExLineMarkerProvider : LineMarkerProvider {
         val element = leaf?.parentOfType<ImpexHeaderLine>()
         val project = element?.project ?: return
         val tableRange = element.tableRange
-        val format = project.service<ImpExXSVFormatService>().getFormat()
+        val format = project.service<GridXSVFormatService>().getFormat(ImpexLanguage)
         val fragmentFile = CsvTableDataFragmentFile(leaf.containingFile.virtualFile, tableRange, format)
 
         FileEditorManager.getInstance(project).openFile(fragmentFile)

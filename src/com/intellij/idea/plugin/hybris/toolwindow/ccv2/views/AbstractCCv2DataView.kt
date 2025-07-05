@@ -60,9 +60,7 @@ abstract class AbstractCCv2DataView<T : CCv2DTO> {
                 InlineBanner(
                     "No ${tab.title} data available. Try re-fetching remote data...",
                     EditorNotificationPanel.Status.Warning
-                ).apply {
-                    showCloseButton(false)
-                }
+                ).showCloseButton(false)
             )
                 .align(Align.CENTER)
                 .resizableColumn()

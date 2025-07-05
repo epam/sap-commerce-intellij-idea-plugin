@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console
 
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 
@@ -35,14 +36,14 @@ class HybrisConsoleService(private val project: Project) {
     fun getActiveConsole() = HybrisToolWindowService.getInstance(project).findConsolesView()
         ?.getActiveConsole()
 
-    fun validateImpex() {
+    fun validateImpex(e: AnActionEvent) {
         HybrisToolWindowService.getInstance(project).findConsolesView()
-            ?.validateImpex()
+            ?.validateImpex(e)
     }
 
-    fun executeStatement() {
+    fun executeStatement(e: AnActionEvent) {
         HybrisToolWindowService.getInstance(project).findConsolesView()
-            ?.execute()
+            ?.execute(e)
     }
 
     companion object {

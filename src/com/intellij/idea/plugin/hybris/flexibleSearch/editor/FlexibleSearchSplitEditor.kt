@@ -18,9 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
-import com.intellij.database.csv.CsvFormats
 import com.intellij.database.editor.CsvTableFileEditor
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
+import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
@@ -121,39 +122,6 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         }
 
         executionResultsPane(result)
-    }
-
-    private fun executionResultsPane(result: HybrisHttpResult) {
-        CoroutineScope(Dispatchers.Default).launch {
-            if (project.isDisposed) return@launch
-
-            val lvf = LightVirtualFile(
-                this@FlexibleSearchSplitEditor.file?.name + ".fxs.result.csv",
-                PlainTextFileType.INSTANCE,
-                result.output
-            )
-
-            edtWriteAction {
-                val editor = CsvTableFileEditor(project, lvf, CsvFormats.PIPE_SEPARATED_FORMAT.get());
-                this@FlexibleSearchSplitEditor.verticalSplitter.secondComponent = editor.component
-            }
-        }
-    }
-
-    private fun executionResultsErrorPane(result: HybrisHttpResult) = panel {
-        panel {
-            row {
-                val infoBanner = InlineBanner(
-                    result.errorMessage,
-                    EditorNotificationPanel.Status.Error
-                )
-
-                cell(infoBanner)
-                    .align(Align.FILL)
-                    .resizableColumn()
-            }.topGap(TopGap.SMALL)
-        }
-            .customize(UnscaledGaps(16, 16, 16, 16))
     }
 
     fun getParameters() = if (isParametersPanelVisible()) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
@@ -412,6 +380,41 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     private fun getText(): String = editor.selectionModel.selectedText
         .takeIf { selectedText -> selectedText != null && selectedText.trim { it <= ' ' }.isNotEmpty() }
         ?: editor.document.text
+
+    private fun executionResultsPane(result: HybrisHttpResult) {
+        CoroutineScope(Dispatchers.Default).launch {
+            if (project.isDisposed) return@launch
+
+            val lvf = LightVirtualFile(
+                this@FlexibleSearchSplitEditor.file?.name + ".fxs.result.csv",
+                PlainTextFileType.INSTANCE,
+                result.output
+            )
+
+            val format = project.service<GridXSVFormatService>().getFormat(FlexibleSearchLanguage)
+
+            edtWriteAction {
+                val editor = CsvTableFileEditor(project, lvf, format);
+                this@FlexibleSearchSplitEditor.verticalSplitter.secondComponent = editor.component
+            }
+        }
+    }
+
+    private fun executionResultsErrorPane(result: HybrisHttpResult) = panel {
+        panel {
+            row {
+                cell(
+                    InlineBanner(
+                        result.errorMessage,
+                        EditorNotificationPanel.Status.Error
+                    ).showCloseButton(false)
+                )
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }.topGap(TopGap.SMALL)
+        }
+            .customize(UnscaledGaps(16, 16, 16, 16))
+    }
 
     companion object {
         @Serial

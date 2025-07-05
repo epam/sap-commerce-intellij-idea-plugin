@@ -16,23 +16,35 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex.lang
+package com.intellij.idea.plugin.hybris.grid
 
 import com.intellij.database.csv.CsvFormat
 import com.intellij.database.csv.CsvRecordFormat
-import com.intellij.database.csv.CsvRecordFormat.QuotationPolicy
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
 import java.util.*
 
-class ImpExXSVFormatService(project: Project) {
+class GridXSVFormatService(project: Project) {
 
-    private val developerSettings = DeveloperSettingsComponent.getInstance(project)
+    private val developerSettings = DeveloperSettingsComponent.Companion.getInstance(project)
     private val valueSeparator = ";"
-    private val quotationPolicy = QuotationPolicy.NEVER
-    private val formats = mutableMapOf<BitSet, CsvFormat>()
+    private val quotationPolicy = CsvRecordFormat.QuotationPolicy.NEVER
+    private val impExFormats = mutableMapOf<BitSet, CsvFormat>()
+    private val fxsFormat by lazy { xsvFlexibleSearchFormat() }
 
-    fun getFormat(): CsvFormat {
+    fun getFormat(language: Language): CsvFormat = when (language) {
+        is ImpexLanguage -> getImpExFormat()
+        is FlexibleSearchLanguage -> getFlexibleSearchFormat()
+        else -> throw IllegalArgumentException("Unsupported language $language")
+    }
+
+    private fun getFlexibleSearchFormat() = fxsFormat
+
+    private fun getImpExFormat(): CsvFormat {
         val editModeSettings = developerSettings.state.impexSettings.editMode
 
         val key = BitSet(2).also {
@@ -40,7 +52,7 @@ class ImpExXSVFormatService(project: Project) {
             it.set(1, editModeSettings.trimWhitespace)
         }
 
-        return formats.computeIfAbsent(key) {
+        return impExFormats.computeIfAbsent(key) {
             xsvImpExFormat(
                 firstRowIsHeader = key.get(0),
                 trimWhitespace = key.get(1)
@@ -54,5 +66,11 @@ class ImpExXSVFormatService(project: Project) {
         val dataFormat = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", trimWhitespace)
 
         return CsvFormat("ImpEx", dataFormat, headerFormat, "ImpEx", false)
+    }
+
+    private fun xsvFlexibleSearchFormat(): CsvFormat {
+        val format = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, HybrisConstants.FXS_TABLE_RESULT_SEPARATOR, "\n", true)
+
+        return CsvFormat("ImpEx", format, format, "ImpEx", false)
     }
 }

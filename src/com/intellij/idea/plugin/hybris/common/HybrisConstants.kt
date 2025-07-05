@@ -22,7 +22,6 @@ import com.intellij.facet.FacetTypeId
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.facet.YFacetType
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchParameter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
@@ -364,6 +363,7 @@ object HybrisConstants {
     const val FXS_TABLE_ALIAS_SEPARATOR_COLON = ":"
     const val FXS_TABLE_POSTFIX_EXCLAMATION_MARK = "!"
     const val FXS_TABLE_POSTFIX_STAR = "*"
+    const val FXS_TABLE_RESULT_SEPARATOR = "|"
 
     const val LIB_DIRECTORY = "lib"
     const val BIN_DIRECTORY = "bin"

@@ -35,6 +35,6 @@ class ImpExValidateAction : AbstractExecuteAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
     override fun doExecute(e: AnActionEvent, consoleService: HybrisConsoleService) {
-        consoleService.validateImpex()
+        consoleService.validateImpex(e)
     }
 }

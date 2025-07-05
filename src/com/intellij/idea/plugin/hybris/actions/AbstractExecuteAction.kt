@@ -43,7 +43,7 @@ abstract class AbstractExecuteAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     protected open fun doExecute(e: AnActionEvent, consoleService: HybrisConsoleService) {
-        consoleService.executeStatement()
+        consoleService.executeStatement(e)
     }
 
     override fun actionPerformed(e: AnActionEvent) {

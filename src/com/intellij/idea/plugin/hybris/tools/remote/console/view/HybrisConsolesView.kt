@@ -107,13 +107,12 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         return null
     }
 
-    fun validateImpex() = performAction(HybrisImpexValidateAction::class.java)
-    fun execute() = performAction(HybrisExecuteImmediatelyAction::class.java)
+    fun validateImpex(e: AnActionEvent) = performAction(e, HybrisImpexValidateAction::class.java)
+    fun execute(e: AnActionEvent) = performAction(e, HybrisExecuteImmediatelyAction::class.java)
 
-    private fun performAction(clazz: Class<out AnAction>) {
+    private fun performAction(e: AnActionEvent, clazz: Class<out AnAction>) {
         val action = actionToolbar.actions.firstOrNull { clazz.isInstance(it) } ?: return
-        val event = AnActionEvent.createEvent(actionToolbar.toolbarDataContext, action.templatePresentation, ActionPlaces.UNKNOWN, ActionUiKind.NONE, null)
-        ActionUtil.performActionDumbAwareWithCallbacks(action, event)
+        ActionUtil.performActionDumbAwareWithCallbacks(action, e)
     }
 
     companion object {
