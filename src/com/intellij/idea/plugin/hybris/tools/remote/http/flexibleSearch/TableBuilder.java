@@ -65,15 +65,18 @@ public class TableBuilder {
 
         final int[] colWidths = colWidths();
 
-        for (String[] row : rows) {
+        for (final String[] row : rows) {
             for (int colNum = 0; colNum < row.length; colNum++) {
                 buf.append(
-                        StringUtils.rightPad(
-                            StringUtils.defaultString(row[colNum]), colWidths[colNum]
-                        )
+                    StringUtils.rightPad(
+                        StringUtils.defaultString(row[colNum]), colWidths[colNum]
                     )
-                    .append(HybrisConstants.FXS_TABLE_RESULT_SEPARATOR)
-                    .append(' ');
+                );
+
+                if (colNum < row.length - 1) {
+                    buf.append(HybrisConstants.FXS_TABLE_RESULT_SEPARATOR)
+                        .append(' ');
+                }
             }
 
             buf.append('\n');
