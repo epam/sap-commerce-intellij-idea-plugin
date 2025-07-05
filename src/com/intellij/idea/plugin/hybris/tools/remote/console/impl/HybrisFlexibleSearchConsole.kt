@@ -46,7 +46,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
         .also { it.border = borders10 }
     private val plainSqlCheckbox = JBCheckBox("Plain SQL")
         .also { it.border = borders10 }
-    private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 100, 1))
+    private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
         .also { it.border = borders5 }
 
     init {
@@ -54,7 +54,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
 
         panel.add(commitCheckbox)
         panel.add(plainSqlCheckbox)
-        panel.add(JBLabel("Rows (max 200):").also { it.border = bordersLabel })
+        panel.add(JBLabel("Rows:").also { it.border = bordersLabel })
         panel.add(maxRowsSpinner)
 
         add(panel, BorderLayout.NORTH)
