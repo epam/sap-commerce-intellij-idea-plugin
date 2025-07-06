@@ -3,6 +3,7 @@
 ### `FlexibleSearch` enhancements
 - Use toggle action for Parameters view toggler [#1437](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1437)
 - Introduced `In-Editor Results` for FlexibleSearch queries [#1438](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1438)
+- Use scrollable panel for In-Editor error response [#1440](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1440)
 - Fixed [#1205](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1205) JSoap's inability to parse response with the `&quot;` sequence [#1439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1439)
 
 ## [2025.1.5]
