@@ -40,6 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.Dimension
+import javax.swing.JEditorPane
 import javax.swing.ScrollPaneConstants
 
 object FlexibleSearchInEditorResultsView {
@@ -63,7 +64,7 @@ object FlexibleSearchInEditorResultsView {
                 }.topGap(TopGap.SMALL)
             }
                 .customize(UnscaledGaps(16, 16, 16, 16))
-        }
+        }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
     }
 
     fun renderExecutionResult(project: Project, fileEditor: FlexibleSearchSplitEditor, result: HybrisHttpResult) {
@@ -98,8 +99,8 @@ object FlexibleSearchInEditorResultsView {
             row {
                 cell(
                     InlineBanner(
-                        result.errorMessage,
-                        EditorNotificationPanel.Status.Error
+                        "An error was encountered while processing the FlexibleSearch query.",
+                        EditorNotificationPanel.Status.Error,
                     ).showCloseButton(false)
                 )
                     .align(Align.FILL)
@@ -107,6 +108,24 @@ object FlexibleSearchInEditorResultsView {
             }.topGap(TopGap.SMALL)
         }
             .customize(UnscaledGaps(16, 16, 16, 16))
+
+        panel {
+            group("Response Details") {
+                row {
+                    cell(
+                        JEditorPane().apply {
+                            text = result.errorMessage
+                            isEditable = false
+                            isOpaque = false
+                            background = null
+                            putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, java.lang.Boolean.TRUE)
+                        }
+                    )
+                        .align(Align.FILL)
+                        .resizableColumn()
+                }
+            }.topGap(TopGap.SMALL)
+        }
     }
         .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
         .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }

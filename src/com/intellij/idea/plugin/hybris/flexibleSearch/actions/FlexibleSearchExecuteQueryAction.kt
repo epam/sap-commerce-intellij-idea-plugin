@@ -75,6 +75,8 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
                         {
                             fileEditor.renderExecutionResult(it)
                             fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
+
+                            this.update(e)
                         }
                 }
                 ?: super.actionPerformed(e, project, content)
