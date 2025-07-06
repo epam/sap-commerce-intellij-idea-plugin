@@ -18,49 +18,33 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchInEditorParametersView.buildParametersPanel
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.getPreferredFocusedComponent
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.openapi.util.getOrCreateUserData
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.InlineBanner
 import com.intellij.ui.OnePixelSplitter
-import com.intellij.ui.dsl.builder.*
-import com.intellij.ui.dsl.gridLayout.UnscaledGaps
-import com.intellij.util.application
 import com.intellij.util.asSafely
-import com.intellij.util.ui.JBUI
-import com.michaelbaranov.microba.calendar.DatePicker
 import kotlinx.coroutines.*
 import java.awt.BorderLayout
-import java.awt.Dimension
 import java.beans.PropertyChangeListener
 import java.io.Serial
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.swing.JComponent
 import javax.swing.JPanel
 import kotlin.time.Duration
@@ -69,12 +53,12 @@ import kotlin.time.Duration.Companion.milliseconds
 fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<FlexibleSearchSplitEditor>()
 
-class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
+class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
-        private val KEY_FLEXIBLE_SEARCH_PARAMETERS: Key<Collection<FlexibleSearchQueryParameter>> = Key.create("flexibleSearch.parameters.key")
+        internal val KEY_FLEXIBLE_SEARCH_PARAMETERS: Key<Collection<FlexibleSearchQueryParameter>> = Key.create("flexibleSearch.parameters.key")
         private val KEY_IN_EDITOR_RESULTS: Key<Boolean> = Key.create("flexibleSearch.in_editor_results.key")
     }
 
@@ -82,12 +66,12 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         get() = inEditorParametersView != null
         set(state) {
             if (state) {
-                with(buildParametersPanel()) {
+                with(buildParametersPanel(project, this)) {
                     inEditorParametersView = this
                 }
             } else {
-                parametersPanelDisposable?.apply { Disposer.dispose(this) }
-                parametersPanelDisposable = null
+                queryParametersDisposable?.apply { Disposer.dispose(this) }
+                queryParametersDisposable = null
                 inEditorParametersView = null
             }
 
@@ -132,9 +116,10 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             horizontalSplitter.secondComponent = view
         }
 
+    internal var queryParametersDisposable: Disposable? = null
+
     private var renderParametersJob: Job? = null
     private var reparseTextEditorJob: Job? = null
-    private var parametersPanelDisposable: Disposable? = null
 
     private val horizontalSplitter = OnePixelSplitter(false).apply {
         isShowDividerControls = true
@@ -173,152 +158,30 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     fun beforeExecution() = FlexibleSearchInEditorResultsView
         .renderRunningExecution(this)
 
-    fun refreshParameters(delayMs: Duration = 250.milliseconds) {
+    fun refreshParameters(delayMs: Duration = 500.milliseconds) {
         renderParametersJob?.cancel()
         renderParametersJob = CoroutineScope(Dispatchers.Default).launch {
             delay(delayMs)
 
             if (project.isDisposed || !inEditorParameters) return@launch
 
-            inEditorParametersView = buildParametersPanel()
+            inEditorParametersView = buildParametersPanel(project, this@FlexibleSearchSplitEditor)
         }
     }
 
-    fun buildParametersPanel(): JComponent? {
-        if (project.isDisposed) return null
+    /**
+     * Reparse PsiFile in the related TextEditor to retrigger inline hints computation
+     */
+    internal fun reparseTextEditor(delayMs: Duration = 1000.milliseconds) {
+        reparseTextEditorJob?.cancel()
+        reparseTextEditorJob = CoroutineScope(Dispatchers.Default).launch {
+            delay(delayMs)
 
-        parametersPanelDisposable?.let { Disposer.dispose(it) }
+            if (project.isDisposed) return@launch
 
-        val parentDisposable = Disposer.newDisposable().apply {
-            parametersPanelDisposable = this
-            Disposer.register(textEditor, this)
-        }
-
-        if (!isTypeSystemInitialized()) return panel {
-            row {
-                label("Initializing Type System, please wait...")
-                    .align(Align.CENTER)
-                    .resizableColumn()
-            }.resizableRow()
-        }
-
-        val parameters = collectParameters()
-
-        //extract to small methods: render headers, render no data panel, render data panel
-        return panel {
-            panel {
-                row {
-                    val infoBanner = InlineBanner(
-                        """
-                        <html><body style='width: 100%'>
-                        <p>This feature may be unstable. Use with caution.</p>
-                        <p>Submit issues or suggestions to project's GitHub repository.</p>
-                        </body></html>
-                    """.trimIndent(),
-                        EditorNotificationPanel.Status.Warning
-                    )
-
-                    cell(infoBanner)
-                        .align(Align.FILL)
-                        .resizableColumn()
-                }.topGap(TopGap.SMALL)
+            edtWriteAction {
+                PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), false)
             }
-                .customize(UnscaledGaps(16, 16, 16, 16))
-
-            //todo extract from panel to show message vertical center aligned
-            panel {
-                if (parameters.isEmpty()) {
-                    row {
-                        label("FlexibleSearch query doesn't have parameters")
-                            .align(Align.CENTER)
-                    }
-                } else {
-                    group("Parameters") {
-                        parameters.forEach { parameter ->
-                            row {
-                                //todo limit the long name depends on width of the panel
-                                // TODO: migrate to proper property binding
-                                when (parameter.type) {
-                                    "java.lang.Float", "java.lang.Double", "java.lang.Byte", "java.lang.Short", "java.lang.Long", "java.lang.Integer",
-                                    "float", "double", "byte", "short", "long", "int" -> intTextField()
-                                        .label("${parameter.name}:")
-                                        .align(AlignX.FILL)
-                                        .text(parameter.value)
-                                        .onChanged { applyValue(parameter, it.text) { it.text } }
-
-                                    "boolean",
-                                    "java.lang.Boolean" -> checkBox(parameter.name)
-                                        .align(AlignX.FILL)
-                                        .selected(parameter.value == "1")
-                                        .onChanged {
-                                            val presentationValue = if (it.isSelected) "true" else "false"
-                                            applyValue(parameter, presentationValue) { if (it.isSelected) "1" else "0" }
-                                        }
-                                        .also {
-                                            parameter.value = (if (parameter.value == "1") "1" else "0")
-                                        }
-
-                                    "java.util.Date" -> cell(
-                                        DatePicker(
-                                            parameter.value.toLongOrNull()?.let { Date(it) },
-                                            SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-                                        )
-                                    )
-                                        .label("${parameter.name}:")
-                                        .align(Align.FILL).apply {
-                                            component.also { datePicker ->
-                                                val listener = PropertyChangeListener { event ->
-                                                    if (event.propertyName == "date") {
-                                                        val newValue = event.newValue?.asSafely<Date>()
-                                                        val presentationValue = newValue?.let { date -> SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(date) } ?: ""
-
-                                                        applyValue(parameter, presentationValue) {
-                                                            newValue?.time?.toString() ?: ""
-                                                        }
-                                                    }
-                                                }
-                                                datePicker.addPropertyChangeListener(listener)
-                                                Disposer.register(parentDisposable) {
-                                                    datePicker.removePropertyChangeListener(listener)
-                                                }
-                                            }
-                                        }
-
-                                    "String",
-                                    "java.lang.String",
-                                    "localized:java.lang.String" -> textField()
-                                        .label("${parameter.name}:")
-                                        .align(AlignX.FILL)
-                                        .text(StringUtil.unquoteString(parameter.value, '\''))
-                                        .onChanged { applyValue(parameter, "'${it.text}'") { "'${it.text}'" } }
-
-                                    else -> textField()
-                                        .label("${parameter.name}:")
-                                        .align(AlignX.FILL)
-                                        .text(parameter.value)
-                                        .onChanged { applyValue(parameter, it.text) { "${it.text}" } }
-                                }
-
-                            }.layout(RowLayout.PARENT_GRID)
-                        }
-                    }
-                }
-            }
-        }
-            .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-            .let { Dsl.scrollPanel(it) }
-            .apply {
-                minimumSize = Dimension(minimumSize.width, 165)
-            }
-    }
-
-    private fun applyValue(parameter: FlexibleSearchQueryParameter, presentationValue: String, newValueProvider: () -> String) {
-        val originalValue = parameter.value
-        parameter.presentationValue = presentationValue
-        parameter.value = newValueProvider.invoke()
-
-        if (originalValue != parameter.value) {
-            reparseTextEditor()
         }
     }
 
@@ -346,52 +209,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     override fun navigateTo(navigatable: Navigatable) = textEditor.navigateTo(navigatable)
     override fun getFile(): VirtualFile? = editor.virtualFile
 
-    private fun isTypeSystemInitialized(): Boolean {
-        if (project.isDisposed) return false
-        if (DumbService.isDumb(project)) return false
-
-        try {
-            val metaModelStateService = project.service<TSMetaModelStateService>()
-            metaModelStateService.get()
-
-            return metaModelStateService.initialized()
-        } catch (_: Throwable) {
-            return false
-        }
-    }
-
-    private fun collectParameters(): Collection<FlexibleSearchQueryParameter> {
-        val currentParameters = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) ?: emptySet()
-
-        val parameters = application.runReadAction<Collection<FlexibleSearchQueryParameter>> {
-            PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
-                ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
-                ?.map { FlexibleSearchQueryParameter.of(it, currentParameters) }
-                ?.distinctBy { it.name }
-                ?: emptySet()
-        }
-
-        putUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS, parameters)
-        return parameters
-    }
-
     private fun getText(): String = editor.selectionModel.selectedText
         .takeIf { selectedText -> selectedText != null && selectedText.trim { it <= ' ' }.isNotEmpty() }
         ?: editor.document.text
-
-    /**
-     * Reparse PsiFile in the related TextEditor to retrigger inline hints computation
-     */
-    private fun reparseTextEditor(delayMs: Duration = 1000.milliseconds) {
-        reparseTextEditorJob?.cancel()
-        reparseTextEditorJob = CoroutineScope(Dispatchers.Default).launch {
-            delay(delayMs)
-
-            if (project.isDisposed) return@launch
-
-            edtWriteAction {
-                PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), false)
-            }
-        }
-    }
 }
