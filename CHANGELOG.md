@@ -14,6 +14,9 @@
 - Respect an editor for `FlexibleSearch` inlay hints [#1446](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1446)
 - Refresh a parameters panel for all `FlexibleSearch` editors on PSI-elements tree change [#1447](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1447)
 
+### `Groovy` enhancements
+- Introduced `batch` execution mode for Groovy files [#1450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1450)
+
 ### `Remote Connection` enhancements
 - Shorten CCv2 url without custom name [#1449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1449)
 

@@ -47,6 +47,13 @@
                 <action id="hybris.groovy.tx.commit" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyCommitTransactionAction"/>
                 <action id="hybris.groovy.tx.execute" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyRollbackTransactionAction"/>
             </group>
+
+            <group id="hybris.groovy.toolbar.mode" popup="true"
+                   class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecutionModeActionGroup">
+                <separator key="hybris.groovy.actions.executionMode"/>
+                <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovySingleExecutionModeAction"/>
+                <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyBatchExecutionModeAction"/>
+            </group>
         </group>
         <group id="hybris.groovy.toolbar.right">
             <reference ref="hybris.hac.chooseConnection"/>

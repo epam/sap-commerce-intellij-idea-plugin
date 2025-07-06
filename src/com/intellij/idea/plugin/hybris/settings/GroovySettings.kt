@@ -28,3 +28,7 @@ data class GroovySettings(
 enum class TransactionMode {
     COMMIT, ROLLBACK
 }
+
+enum class ExecutionMode {
+    SINGLE, BATCH
+}
