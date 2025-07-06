@@ -43,7 +43,8 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
 
     override fun update(e: AnActionEvent) {
         super.update(e)
-        e.presentation.isEnabledAndVisible = e.presentation.isEnabledAndVisible && Plugin.GRID.isActive()
+        e.presentation.isEnabledAndVisible = e.presentation.isEnabledAndVisible
+            && Plugin.GRID.isActive()
     }
 
     override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.flexibleSearchSplitEditor()

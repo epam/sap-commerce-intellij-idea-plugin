@@ -85,29 +85,34 @@ object FlexibleSearchInEditorParametersView {
 
     private fun Panel.notificationPanel() = panel {
         row {
-            val infoBanner = InlineBanner(
-                """
+            cell(
+                InlineBanner(
+                    """
                             <html><body style='width: 100%'>
                             <p>This feature may be unstable. Use with caution.</p>
                             <p>Submit issues or suggestions to project's GitHub repository.</p>
                             </body></html>
                         """.trimIndent(),
-                EditorNotificationPanel.Status.Warning
+                    EditorNotificationPanel.Status.Promo
+                )
             )
-
-            cell(infoBanner)
                 .align(Align.FILL)
                 .resizableColumn()
         }.topGap(TopGap.SMALL)
-    }
-        .customize(UnscaledGaps(16, 16, 16, 16))
+    }.customize(UnscaledGaps(16, 16, 16, 16))
 
     private fun Panel.notResultsPanel() = panel {
         row {
-            label("FlexibleSearch query doesn't have parameters")
-                .align(Align.CENTER)
-        }
-    }
+            cell(
+                InlineBanner(
+                    "<p style='width: 100%'>FlexibleSearch query doesn't have parameters</p>",
+                    EditorNotificationPanel.Status.Warning
+                ).showCloseButton(false)
+            )
+                .align(Align.FILL)
+                .resizableColumn()
+        }.topGap(TopGap.SMALL)
+    }.customize(UnscaledGaps(16, 16, 16, 16))
 
     private fun Panel.parametersPanel(
         queryParameters: Collection<FlexibleSearchQueryParameter>,
