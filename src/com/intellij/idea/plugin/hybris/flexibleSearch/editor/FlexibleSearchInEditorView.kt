@@ -45,9 +45,9 @@ import javax.swing.ScrollPaneConstants
 object FlexibleSearchInEditorView {
 
     fun renderRunningExecution(fileEditor: FlexibleSearchSplitEditor) {
-        if (fileEditor.inEditorView == null) return
+        if (fileEditor.inEditorResultsView == null) return
 
-        fileEditor.inEditorView = panel {
+        fileEditor.inEditorResultsView = panel {
             panel {
                 row {
                     cell(
@@ -68,7 +68,7 @@ object FlexibleSearchInEditorView {
 
     fun renderExecutionResult(project: Project, fileEditor: FlexibleSearchSplitEditor, result: HybrisHttpResult) {
         if (result.errorMessage.isNotBlank()) {
-            fileEditor.inEditorView = renderInEditorError(result)
+            fileEditor.inEditorResultsView = renderInEditorError(result)
         } else {
             renderInEditorResults(project, fileEditor, result)
         }
@@ -88,7 +88,7 @@ object FlexibleSearchInEditorView {
 
             edtWriteAction {
                 val editor = CsvTableFileEditor(project, lvf, format);
-                fileEditor.inEditorView = editor.component
+                fileEditor.inEditorResultsView = editor.component
             }
         }
     }

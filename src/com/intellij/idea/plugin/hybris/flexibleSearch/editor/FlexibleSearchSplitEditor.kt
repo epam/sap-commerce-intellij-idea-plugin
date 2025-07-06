@@ -78,17 +78,17 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         private val KEY_IN_EDITOR_RESULTS: Key<Boolean> = Key.create("flexibleSearch.in_editor_results.key")
     }
 
-    var parametersView: Boolean
-        get() = horizontalSplitter.secondComponent != null
+    var inEditorParameters: Boolean
+        get() = inEditorParametersView != null
         set(state) {
             if (state) {
                 with(buildParametersPanel()) {
-                    horizontalSplitter.secondComponent = this
+                    inEditorParametersView = this
                 }
             } else {
                 parametersPanelDisposable?.apply { Disposer.dispose(this) }
                 parametersPanelDisposable = null
-                horizontalSplitter.secondComponent = null
+                inEditorParametersView = null
             }
 
             component.requestFocus()
@@ -98,7 +98,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         }
 
     val queryParameters: Collection<FlexibleSearchQueryParameter>?
-        get() = if (parametersView) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
+        get() = if (inEditorParameters) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
         else null
 
     val query: String
@@ -120,10 +120,16 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             verticalSplitter.secondComponent?.isVisible = state
         }
 
-    internal var inEditorView: JComponent?
+    internal var inEditorResultsView: JComponent?
         get() = verticalSplitter.secondComponent
         set(view) {
             verticalSplitter.secondComponent = view
+        }
+
+    internal var inEditorParametersView: JComponent?
+        get() = horizontalSplitter.secondComponent
+        set(view) {
+            horizontalSplitter.secondComponent = view
         }
 
     private var renderParametersJob: Job? = null
@@ -172,9 +178,9 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         renderParametersJob = CoroutineScope(Dispatchers.Default).launch {
             delay(delayMs)
 
-            if (project.isDisposed || !parametersView) return@launch
+            if (project.isDisposed || !inEditorParameters) return@launch
 
-            horizontalSplitter.secondComponent = buildParametersPanel()
+            inEditorParametersView = buildParametersPanel()
         }
     }
 
