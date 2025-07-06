@@ -29,7 +29,6 @@ public class HybrisHttpResult {
     private String errorMessage;
     private String detailMessage;
 
-    private Object rawOutput;
     private String output;
     private String result;
     private int statusCode;
