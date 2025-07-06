@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 import java.awt.Dimension
 import javax.swing.ScrollPaneConstants
 
-object FlexibleSearchInEditorView {
+object FlexibleSearchInEditorResultsView {
 
     fun renderRunningExecution(fileEditor: FlexibleSearchSplitEditor) {
         if (fileEditor.inEditorResultsView == null) return

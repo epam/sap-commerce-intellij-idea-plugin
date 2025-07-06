@@ -167,10 +167,10 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         }
     }
 
-    fun renderExecutionResult(result: HybrisHttpResult) = FlexibleSearchInEditorView
+    fun renderExecutionResult(result: HybrisHttpResult) = FlexibleSearchInEditorResultsView
         .renderExecutionResult(project, this, result)
 
-    fun beforeExecution() = FlexibleSearchInEditorView
+    fun beforeExecution() = FlexibleSearchInEditorResultsView
         .renderRunningExecution(this)
 
     fun refreshParameters(delayMs: Duration = 250.milliseconds) {
