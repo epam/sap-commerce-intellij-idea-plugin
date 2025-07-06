@@ -71,6 +71,6 @@ class GridXSVFormatService(project: Project) {
     private fun xsvFlexibleSearchFormat(): CsvFormat {
         val format = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, HybrisConstants.FXS_TABLE_RESULT_SEPARATOR, "\n", true)
 
-        return CsvFormat("ImpEx", format, format, "ImpEx", false)
+        return CsvFormat("FlexibleSearch - Results", format, format, "FlexibleSearch_results", false)
     }
 }

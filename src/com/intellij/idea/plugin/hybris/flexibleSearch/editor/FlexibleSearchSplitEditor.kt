@@ -79,7 +79,7 @@ fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FI
 class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
     private var renderParametersJob: Job? = null
-    private var refreshTextEditorJob: Job? = null
+    private var reparseTextEditorJob: Job? = null
     private var parametersPanelDisposable: Disposable? = null
 
     private val horizontalSplitter = OnePixelSplitter(false).apply {
@@ -103,18 +103,37 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     }
 
     var inEditorResults: Boolean
+        get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { false }
         set(state) {
             putUserData(KEY_IN_EDITOR_RESULTS, state)
             verticalSplitter.secondComponent?.isVisible = state
         }
-        get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { false }
+
+    var parametersView: Boolean
+        get() = horizontalSplitter.secondComponent != null
+        set(state) {
+            if (state) {
+                with(buildParametersPanel()) {
+                    horizontalSplitter.secondComponent = this
+                }
+            } else {
+                parametersPanelDisposable?.apply { Disposer.dispose(this) }
+                parametersPanelDisposable = null
+                horizontalSplitter.secondComponent = null
+            }
+
+            component.requestFocus()
+            horizontalSplitter.firstComponent.requestFocus()
+
+            reparseTextEditor()
+        }
 
     init {
         with(project.messageBus.connect(this)) {
             subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
                     refreshParameters()
-                    refreshTextEditor()
+                    reparseTextEditor()
                 }
             })
         }
@@ -150,7 +169,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         }
     }
 
-    fun getParameters() = if (isParametersPanelVisible()) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
+    fun getParameters() = if (parametersView) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
     else null
 
     fun getQuery(): String = getParameters()
@@ -169,48 +188,11 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         renderParametersJob = CoroutineScope(Dispatchers.Default).launch {
             delay(delayMs)
 
-            if (project.isDisposed || !isParametersPanelVisible()) return@launch
+            if (project.isDisposed || !parametersView) return@launch
 
             horizontalSplitter.secondComponent = buildParametersPanel()
         }
     }
-
-    fun refreshTextEditor(delayMs: Duration = 1000.milliseconds) {
-        refreshTextEditorJob?.cancel()
-        refreshTextEditorJob = CoroutineScope(Dispatchers.Default).launch {
-            delay(delayMs)
-
-            if (project.isDisposed) return@launch
-
-            edtWriteAction {
-                PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), false)
-            }
-        }
-    }
-
-    fun hideParametersPanel() {
-        parametersPanelDisposable?.apply { Disposer.dispose(this) }
-        parametersPanelDisposable = null
-        horizontalSplitter.secondComponent = null
-
-        component.requestFocus()
-        horizontalSplitter.firstComponent.requestFocus()
-
-        refreshTextEditor()
-    }
-
-    fun showParametersPanel() {
-        with(buildParametersPanel()) {
-            horizontalSplitter.secondComponent = this
-        }
-
-        component.requestFocus()
-        horizontalSplitter.firstComponent.requestFocus()
-
-        refreshTextEditor()
-    }
-
-    fun isParametersPanelVisible(): Boolean = horizontalSplitter.secondComponent != null
 
     fun buildParametersPanel(): JComponent? {
         if (project.isDisposed) return null
@@ -346,7 +328,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         parameter.value = newValueProvider.invoke()
 
         if (originalValue != parameter.value) {
-            refreshTextEditor()
+            reparseTextEditor()
         }
     }
 
@@ -440,6 +422,22 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             }.topGap(TopGap.SMALL)
         }
             .customize(UnscaledGaps(16, 16, 16, 16))
+    }
+
+    /**
+     * Reparse PsiFile in the related TextEditor to retrigger inline hints computation
+     */
+    private fun reparseTextEditor(delayMs: Duration = 1000.milliseconds) {
+        reparseTextEditorJob?.cancel()
+        reparseTextEditorJob = CoroutineScope(Dispatchers.Default).launch {
+            delay(delayMs)
+
+            if (project.isDisposed) return@launch
+
+            edtWriteAction {
+                PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), false)
+            }
+        }
     }
 
     companion object {

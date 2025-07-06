@@ -34,14 +34,10 @@ class FlexibleSearchToggleParametersEditorAction : ToggleAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun isSelected(e: AnActionEvent): Boolean = e.flexibleSearchSplitEditor()?.isParametersPanelVisible()
+    override fun isSelected(e: AnActionEvent): Boolean = e.flexibleSearchSplitEditor()?.parametersView
         ?: false
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        e.flexibleSearchSplitEditor()
-            ?.apply {
-                if (state) showParametersPanel()
-                else hideParametersPanel()
-            }
+        e.flexibleSearchSplitEditor()?.parametersView = state
     }
 }

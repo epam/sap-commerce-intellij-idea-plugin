@@ -39,7 +39,7 @@ class FlexibleSearchCopyQueryToClipboardAction : AnAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabled = e.flexibleSearchSplitEditor()?.isParametersPanelVisible()
+        e.presentation.isEnabled = e.flexibleSearchSplitEditor()?.parametersView
             ?: false
     }
 
