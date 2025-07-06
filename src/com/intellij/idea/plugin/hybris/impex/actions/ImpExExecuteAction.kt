@@ -21,11 +21,11 @@ import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 
 class ImpExExecuteAction : AbstractExecuteAction(
-    ImpexFileType.defaultExtension,
+    ImpexLanguage,
     HybrisConstants.CONSOLE_TITLE_IMPEX,
     message("hybris.impex.actions.execute_query"),
     message("hybris.impex.actions.execute_query.description"),

@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.actions
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
+import com.intellij.lang.Language
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -33,7 +34,7 @@ import com.intellij.openapi.project.Project
 import javax.swing.Icon
 
 abstract class AbstractExecuteAction(
-    internal val extension: String,
+    internal val language: Language,
     internal val consoleName: String,
     internal val name: String,
     internal val description: String,
@@ -77,7 +78,7 @@ abstract class AbstractExecuteAction(
     open fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project) = content
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = this.extension == e.dataContext.getData(CommonDataKeys.VIRTUAL_FILE)?.extension
+        e.presentation.isEnabledAndVisible = this.language == e.dataContext.getData(CommonDataKeys.LANGUAGE)
     }
 
     private fun getExecutableContent(

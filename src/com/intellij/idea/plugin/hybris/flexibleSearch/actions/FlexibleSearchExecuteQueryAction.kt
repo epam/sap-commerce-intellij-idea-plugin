@@ -22,20 +22,24 @@ import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
-import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.tools.remote.HybrisRemoteExecutionService
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.ui.AnimatedIcon
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
-    FlexibleSearchFileType.defaultExtension,
+    FlexibleSearchLanguage,
     HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
     message("hybris.fxs.actions.execute_query"),
     message("hybris.fxs.actions.execute_query.description"),
@@ -76,7 +80,9 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
                             fileEditor.renderExecutionResult(it)
                             fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
-                            this.update(e)
+                            CoroutineScope(Dispatchers.Default).launch {
+                                readAction { this@FlexibleSearchExecuteQueryAction.update(e) }
+                            }
                         }
                 }
                 ?: super.actionPerformed(e, project, content)

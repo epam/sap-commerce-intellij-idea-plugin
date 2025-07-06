@@ -30,11 +30,11 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
-import org.jetbrains.plugins.groovy.GroovyFileType
+import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 
 class GroovyExecuteAction : AbstractExecuteAction(
-    GroovyFileType.GROOVY_FILE_TYPE.defaultExtension,
+    GroovyLanguage,
     HybrisConstants.CONSOLE_TITLE_GROOVY,
     "Execute Groovy Script",
     "Execute Groovy Script on a remote SAP Commerce instance",

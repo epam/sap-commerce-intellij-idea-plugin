@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.acl.file.actions
 
-import com.intellij.idea.plugin.hybris.acl.file.AclFileType
+import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 
 class AclExecuteAction : AbstractExecuteAction(
-    AclFileType.defaultExtension,
+    AclLanguage,
     HybrisConstants.CONSOLE_TITLE_IMPEX,
     message("hybris.acl.actions.execute_query"),
     message("hybris.acl.actions.execute_query.description"),

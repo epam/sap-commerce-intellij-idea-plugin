@@ -20,13 +20,13 @@ package com.intellij.idea.plugin.hybris.impex.actions
 import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 
 class ImpExValidateAction : AbstractExecuteAction(
-    ImpexFileType.defaultExtension,
+    ImpexLanguage,
     HybrisConstants.CONSOLE_TITLE_IMPEX,
     "Validate ImpEx",
     "Validate ImpEx file via remote SAP Commerce instance",

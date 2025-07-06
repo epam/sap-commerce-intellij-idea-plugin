@@ -5,6 +5,7 @@
 - Introduced `In-Editor Results` for FlexibleSearch queries [#1438](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1438)
 - Use scrollable panel for In-Editor error response [#1440](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1440)
 - Improved representation of the error response [#1441](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1441)
+- Improved update operation for console related actions [#1442](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1442)
 
 ### Fixes
 - Fixed [#1205](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1205) JSoap's inability to parse response with the `&quot;` sequence [#1439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1439)
