@@ -46,7 +46,7 @@ class FlexibleSearchCopyQueryToClipboardAction : AnAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
 
-        val textToCopy = e.flexibleSearchSplitEditor()?.getQuery()
+        val textToCopy = e.flexibleSearchSplitEditor()?.query
             ?: ""
 
         CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))

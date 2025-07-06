@@ -18,10 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
-import com.intellij.database.editor.CsvTableFileEditor
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
-import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
@@ -36,7 +33,6 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
-import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.getPreferredFocusedComponent
@@ -48,10 +44,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.LightVirtualFile
-import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.OnePixelSplitter
@@ -78,28 +71,11 @@ fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FI
 
 class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
-    private var renderParametersJob: Job? = null
-    private var reparseTextEditorJob: Job? = null
-    private var parametersPanelDisposable: Disposable? = null
-
-    private val horizontalSplitter = OnePixelSplitter(false).apply {
-        isShowDividerControls = true
-        splitterProportionKey = "$javaClass.horizontalSplitter"
-        setHonorComponentsMinimumSize(true)
-
-        firstComponent = textEditor.component
-    }
-
-    private val verticalSplitter = OnePixelSplitter(true).apply {
-        isShowDividerControls = true
-        splitterProportionKey = "$javaClass.verticalSplitter"
-        setHonorComponentsMinimumSize(true)
-
-        firstComponent = horizontalSplitter
-    }
-
-    private val splitPanel = JPanel(BorderLayout()).apply {
-        add(verticalSplitter, BorderLayout.CENTER)
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -3770395176190649196L
+        private val KEY_FLEXIBLE_SEARCH_PARAMETERS: Key<Collection<FlexibleSearchQueryParameter>> = Key.create("flexibleSearch.parameters.key")
+        private val KEY_IN_EDITOR_RESULTS: Key<Boolean> = Key.create("flexibleSearch.in_editor_results.key")
     }
 
     var inEditorResults: Boolean
@@ -128,6 +104,52 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             reparseTextEditor()
         }
 
+    val queryParameters: Collection<FlexibleSearchQueryParameter>?
+        get() = if (parametersView) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
+        else null
+
+    val query: String
+        get() = queryParameters
+            ?.sortedByDescending { it.name.length }
+            ?.let { properties ->
+                var updatedContent = getText()
+                properties.forEach {
+                    updatedContent = updatedContent.replace("?${it.name}", it.value)
+                }
+                return@let updatedContent
+            }
+            ?: getText()
+
+    internal var inEditorView: JComponent?
+        get() = verticalSplitter.secondComponent
+        set(view) {
+            verticalSplitter.secondComponent = view
+        }
+
+    private var renderParametersJob: Job? = null
+    private var reparseTextEditorJob: Job? = null
+    private var parametersPanelDisposable: Disposable? = null
+
+    private val horizontalSplitter = OnePixelSplitter(false).apply {
+        isShowDividerControls = true
+        splitterProportionKey = "$javaClass.horizontalSplitter"
+        setHonorComponentsMinimumSize(true)
+
+        firstComponent = textEditor.component
+    }
+
+    private val verticalSplitter = OnePixelSplitter(true).apply {
+        isShowDividerControls = true
+        splitterProportionKey = "$javaClass.verticalSplitter"
+        setHonorComponentsMinimumSize(true)
+
+        firstComponent = horizontalSplitter
+    }
+
+    private val rootPanel = JPanel(BorderLayout()).apply {
+        add(verticalSplitter, BorderLayout.CENTER)
+    }
+
     init {
         with(project.messageBus.connect(this)) {
             subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
@@ -139,49 +161,11 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         }
     }
 
-    fun showExecutionResult(result: HybrisHttpResult) {
-        if (result.errorMessage.isNotBlank()) {
-            verticalSplitter.secondComponent = executionResultsErrorPane(result)
-        } else {
-            executionResultsPane(result)
-        }
-    }
+    fun renderExecutionResult(result: HybrisHttpResult) = FlexibleSearchInEditorView
+        .renderExecutionResult(project, this, result)
 
-    fun pendingExecutionResult() {
-        if (verticalSplitter.secondComponent == null) return
-
-        verticalSplitter.secondComponent = panel {
-            panel {
-                row {
-                    cell(
-                        InlineBanner(
-                            "Executing HTTP Call to SAP Commerce...",
-                            EditorNotificationPanel.Status.Info
-                        )
-                            .showCloseButton(false)
-                            .setIcon(AnimatedIcon.Default.INSTANCE)
-                    )
-                        .align(Align.FILL)
-                        .resizableColumn()
-                }.topGap(TopGap.SMALL)
-            }
-                .customize(UnscaledGaps(16, 16, 16, 16))
-        }
-    }
-
-    fun getParameters() = if (parametersView) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
-    else null
-
-    fun getQuery(): String = getParameters()
-        ?.sortedByDescending { it.name.length }
-        ?.let { properties ->
-            var updatedContent = getText()
-            properties.forEach {
-                updatedContent = updatedContent.replace("?${it.name}", it.value)
-            }
-            return@let updatedContent
-        }
-        ?: getText()
+    fun beforeExecution() = FlexibleSearchInEditorView
+        .renderRunningExecution(this)
 
     fun refreshParameters(delayMs: Duration = 250.milliseconds) {
         renderParametersJob?.cancel()
@@ -322,7 +306,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             }
     }
 
-    private fun applyValue(parameter: FlexibleSearchParameter, presentationValue: String, newValueProvider: () -> String) {
+    private fun applyValue(parameter: FlexibleSearchQueryParameter, presentationValue: String, newValueProvider: () -> String) {
         val originalValue = parameter.value
         parameter.presentationValue = presentationValue
         parameter.value = newValueProvider.invoke()
@@ -345,7 +329,7 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     override fun getPreferredFocusedComponent(): JComponent? = if (textEditor.component.isVisible) textEditor.preferredFocusedComponent
     else component.getPreferredFocusedComponent()
 
-    override fun getComponent() = splitPanel
+    override fun getComponent() = rootPanel
     override fun getName() = "FlexibleSearch Split Editor"
     override fun setState(state: FileEditorState) = textEditor.setState(state)
     override fun isModified() = textEditor.isModified
@@ -370,13 +354,13 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
         }
     }
 
-    private fun collectParameters(): Collection<FlexibleSearchParameter> {
+    private fun collectParameters(): Collection<FlexibleSearchQueryParameter> {
         val currentParameters = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS) ?: emptySet()
 
-        val parameters = application.runReadAction<Collection<FlexibleSearchParameter>> {
+        val parameters = application.runReadAction<Collection<FlexibleSearchQueryParameter>> {
             PsiDocumentManager.getInstance(project).getPsiFile(editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
-                ?.map { FlexibleSearchParameter.of(it, currentParameters) }
+                ?.map { FlexibleSearchQueryParameter.of(it, currentParameters) }
                 ?.distinctBy { it.name }
                 ?: emptySet()
         }
@@ -388,41 +372,6 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
     private fun getText(): String = editor.selectionModel.selectedText
         .takeIf { selectedText -> selectedText != null && selectedText.trim { it <= ' ' }.isNotEmpty() }
         ?: editor.document.text
-
-    private fun executionResultsPane(result: HybrisHttpResult) {
-        CoroutineScope(Dispatchers.Default).launch {
-            if (project.isDisposed) return@launch
-
-            val lvf = LightVirtualFile(
-                this@FlexibleSearchSplitEditor.file?.name + ".fxs.result.csv",
-                PlainTextFileType.INSTANCE,
-                result.output
-            )
-
-            val format = project.service<GridXSVFormatService>().getFormat(FlexibleSearchLanguage)
-
-            edtWriteAction {
-                val editor = CsvTableFileEditor(project, lvf, format);
-                this@FlexibleSearchSplitEditor.verticalSplitter.secondComponent = editor.component
-            }
-        }
-    }
-
-    private fun executionResultsErrorPane(result: HybrisHttpResult) = panel {
-        panel {
-            row {
-                cell(
-                    InlineBanner(
-                        result.errorMessage,
-                        EditorNotificationPanel.Status.Error
-                    ).showCloseButton(false)
-                )
-                    .align(Align.FILL)
-                    .resizableColumn()
-            }.topGap(TopGap.SMALL)
-        }
-            .customize(UnscaledGaps(16, 16, 16, 16))
-    }
 
     /**
      * Reparse PsiFile in the related TextEditor to retrigger inline hints computation
@@ -437,45 +386,6 @@ class FlexibleSearchSplitEditor(private val textEditor: TextEditor, private val 
             edtWriteAction {
                 PsiDocumentManager.getInstance(project).reparseFiles(listOf(file), false)
             }
-        }
-    }
-
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = -3770395176190649196L
-        private val KEY_FLEXIBLE_SEARCH_PARAMETERS: Key<Collection<FlexibleSearchParameter>> = Key.create("flexibleSearch.parameters.key")
-        private val KEY_IN_EDITOR_RESULTS: Key<Boolean> = Key.create("flexibleSearch.in_editor_results.key")
-    }
-}
-
-data class FlexibleSearchParameter(
-    val name: String,
-    var value: String = "",
-    var presentationValue: String = value,
-    val type: String? = null,
-    val operand: IElementType? = null
-) {
-    companion object {
-        fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Collection<FlexibleSearchParameter>): FlexibleSearchParameter {
-            val parameter = bindParameter.value
-            val currentParameter = currentParameters.find { it.name == parameter }
-            val itemType = bindParameter.itemType
-            val value = currentParameter?.value ?: resolveInitialValue(itemType)
-            val presentationValue = currentParameter?.presentationValue ?: resolveInitialPresentationValue(itemType)
-
-            return FlexibleSearchParameter(parameter, value, presentationValue, type = itemType)
-        }
-
-        private fun resolveInitialValue(itemType: String?): String = when (itemType) {
-            "boolean", "java.lang.Boolean" -> "0"
-            "String", "java.lang.String", "localized:java.lang.String" -> "''"
-            else -> ""
-        }
-
-        private fun resolveInitialPresentationValue(itemType: String?): String = when (itemType) {
-            "boolean", "java.lang.Boolean" -> "false"
-            "String", "java.lang.String", "localized:java.lang.String" -> "''"
-            else -> ""
         }
     }
 }

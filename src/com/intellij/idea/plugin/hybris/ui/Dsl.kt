@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,17 +23,20 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBEmptyBorder
+import javax.swing.ScrollPaneConstants
 
 object Dsl {
 
-    fun scrollPanel(content: DialogPanel) = panel {
+    fun scrollPanel(content: DialogPanel, horizontalScrollBarPolicy: Int = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED) = panel {
         row {
             scrollCell(content)
                 .align(Align.FILL)
                 .resizableColumn()
                 .applyToComponent {
-                    (this.parent.parent as? JBScrollPane)
-                        ?.border = JBEmptyBorder(0)
+                    (this.parent.parent as? JBScrollPane)?.apply {
+                        this.horizontalScrollBarPolicy = horizontalScrollBarPolicy
+                        border = JBEmptyBorder(0)
+                    }
                 }
 
         }.resizableRow()

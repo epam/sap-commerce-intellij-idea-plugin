@@ -47,24 +47,23 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
     }
 
     override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.flexibleSearchSplitEditor()
-        ?.getQuery()
+        ?.query
         ?: content
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = e.flexibleSearchSplitEditor()
         if (fileEditor?.inEditorResults ?: false) {
-            HybrisConsoleService.getInstance(project)
-                .findConsole(consoleName)
+            HybrisConsoleService.getInstance(project).findConsole(consoleName)
                 ?.let { console ->
                     e.presentation.isEnabled = false
                     e.presentation.icon = AnimatedIcon.Default.INSTANCE
 
-                    fileEditor.pendingExecutionResult()
+                    fileEditor.beforeExecution()
 
                     project.service<HybrisRemoteExecutionService>()
                         .execute(console, content)
                         {
-                            fileEditor.showExecutionResult(it)
+                            fileEditor.renderExecutionResult(it)
 
                             e.presentation.isEnabled = true
                             e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE
