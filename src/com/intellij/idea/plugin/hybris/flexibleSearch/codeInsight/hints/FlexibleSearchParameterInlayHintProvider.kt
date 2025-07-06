@@ -38,6 +38,7 @@ class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
                 FileEditorManager.getInstance(element.project)
                     .getSelectedEditor(element.containingFile.virtualFile)
                     .asSafely<FlexibleSearchSplitEditor>()
+                    ?.takeIf { it.inEditorParameters }
                     ?.queryParameters
                     ?.find { it.name == element.value && it.presentationValue.isNotBlank() }
                     ?.let {

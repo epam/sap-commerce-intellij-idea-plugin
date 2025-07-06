@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchInEditorParametersView.buildParametersPanel
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
@@ -66,9 +65,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         get() = inEditorParametersView != null
         set(state) {
             if (state) {
-                with(buildParametersPanel(project, this)) {
-                    inEditorParametersView = this
-                }
+                FlexibleSearchInEditorParametersView.renderParameters(project, this)
             } else {
                 queryParametersDisposable?.apply { Disposer.dispose(this) }
                 queryParametersDisposable = null
@@ -82,8 +79,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         }
 
     val queryParameters: Collection<FlexibleSearchQueryParameter>?
-        get() = if (inEditorParameters) getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
-        else null
+        get() = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
 
     val query: String
         get() = queryParameters
@@ -165,7 +161,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
 
             if (project.isDisposed || !inEditorParameters) return@launch
 
-            inEditorParametersView = buildParametersPanel(project, this@FlexibleSearchSplitEditor)
+            FlexibleSearchInEditorParametersView.renderParameters(project, this@FlexibleSearchSplitEditor)
         }
     }
 

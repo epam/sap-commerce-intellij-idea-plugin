@@ -23,9 +23,12 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindPara
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDocumentManager
@@ -38,35 +41,51 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import com.michaelbaranov.microba.calendar.DatePicker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.swing.JComponent
 
 object FlexibleSearchInEditorParametersView {
 
-    fun buildParametersPanel(project: Project, fileEditor: FlexibleSearchSplitEditor): JComponent? {
-        if (project.isDisposed) return null
+    fun renderParameters(project: Project, fileEditor: FlexibleSearchSplitEditor) {
+        CoroutineScope(Dispatchers.Default).launch {
+            if (project.isDisposed) return@launch
 
-        fileEditor.queryParametersDisposable?.let { Disposer.dispose(it) }
+            fileEditor.queryParametersDisposable?.let { Disposer.dispose(it) }
 
+            val panel = if (!isTypeSystemInitialized(project)) renderTypeSystemInitializationPanel()
+            else {
+                val queryParameters = readAction { collectParameters(project, fileEditor) }
+                renderParametersPanel(queryParameters, fileEditor)
+            }
+
+            edtWriteAction {
+                fileEditor.inEditorParametersView = panel
+            }
+        }
+    }
+
+    private fun renderTypeSystemInitializationPanel() = panel {
+        row {
+            label("Initializing Type System, please wait...")
+                .align(Align.CENTER)
+                .resizableColumn()
+        }.resizableRow()
+    }
+
+    private fun renderParametersPanel(
+        queryParameters: Collection<FlexibleSearchQueryParameter>,
+        fileEditor: FlexibleSearchSplitEditor,
+    ): DialogPanel {
         val parentDisposable = Disposer.newDisposable().apply {
             fileEditor.queryParametersDisposable = this
             Disposer.register(fileEditor.textEditor, this)
         }
 
-        if (!isTypeSystemInitialized(project)) return panel {
-            row {
-                label("Initializing Type System, please wait...")
-                    .align(Align.CENTER)
-                    .resizableColumn()
-            }.resizableRow()
-        }
-
-        val queryParameters = collectParameters(project, fileEditor)
-
-        //extract to small methods: render headers, render no data panel, render data panel
         return panel {
             notificationPanel()
 
@@ -90,7 +109,7 @@ object FlexibleSearchInEditorParametersView {
                     """
                             <html><body style='width: 100%'>
                             <p>This feature may be unstable. Use with caution.</p>
-                            <p>Submit issues or suggestions to project's GitHub repository.</p>
+                            <p>Submit issues or suggestions to project's GitHub <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/new">repository</a>.</p>
                             </body></html>
                         """.trimIndent(),
                     EditorNotificationPanel.Status.Promo
@@ -215,17 +234,7 @@ object FlexibleSearchInEditorParametersView {
         }
     }
 
-    private fun isTypeSystemInitialized(project: Project): Boolean {
-        if (project.isDisposed) return false
-        if (DumbService.isDumb(project)) return false
-
-        try {
-            val metaModelStateService = project.service<TSMetaModelStateService>()
-            metaModelStateService.get()
-
-            return metaModelStateService.initialized()
-        } catch (_: Throwable) {
-            return false
-        }
-    }
+    private fun isTypeSystemInitialized(project: Project): Boolean = !project.isDisposed
+        && !DumbService.isDumb(project)
+        && project.service<TSMetaModelStateService>().initialized()
 }
