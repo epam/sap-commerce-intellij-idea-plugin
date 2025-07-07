@@ -77,7 +77,7 @@ import static org.apache.http.HttpVersion.HTTP_1_1;
 public abstract class AbstractHybrisHacHttpClient {
 
     private static final Logger LOG = Logger.getInstance(AbstractHybrisHacHttpClient.class);
-    private static final Key<Replica> REPLICA_KEY = Key.create("hybris.http.replica");
+    private static final Key<Replica> KEY_REPLICA = Key.create("hybris.http.replica");
     private final Project project;
 
     public static final int DEFAULT_HAC_TIMEOUT = 6000;
@@ -107,11 +107,11 @@ public abstract class AbstractHybrisHacHttpClient {
 
     @Nullable
     public Replica getReplica() {
-        return project.getUserData(REPLICA_KEY);
+        return project.getUserData(KEY_REPLICA);
     }
 
     public void setReplica(final Replica replica) {
-        project.putUserData(REPLICA_KEY, replica);
+        project.putUserData(KEY_REPLICA, replica);
         cookiesPerSettings.clear();
     }
 

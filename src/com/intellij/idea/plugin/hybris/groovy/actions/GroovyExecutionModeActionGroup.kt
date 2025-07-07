@@ -42,6 +42,6 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
         val executionMode = editor.getOrCreateUserDataUnsafe(HybrisConstants.KEY_GROOVY_EXECUTION_MODE) { ExecutionMode.SINGLE }
         val mode = message("hybris.groovy.actions.executionMode.${executionMode.name.lowercase()}")
 
-        e.presentation.text = message("hybris.groovy.actions.executionMode.mode", mode)
+        e.presentation.text = message("hybris.groovy.actions.executionMode", mode)
     }
 }

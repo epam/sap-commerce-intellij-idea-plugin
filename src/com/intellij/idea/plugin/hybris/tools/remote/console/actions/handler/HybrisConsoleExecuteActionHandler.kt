@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisSolrSearchConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
 import com.intellij.json.JsonFileType
@@ -100,7 +101,10 @@ class HybrisConsoleExecuteActionHandler(
         val activeConnectionSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, remoteConnectionType)
         console.print("[HOST] ", SYSTEM_OUTPUT)
         activeConnectionSettings.displayName
-            ?.let { console.print("($it) ", LOG_INFO_OUTPUT) }
+            ?.let { name -> console.print("($name) ", LOG_INFO_OUTPUT) }
+        HybrisHacHttpClient.getInstance(project).replica
+            ?.let { replica -> console.print("($replica) ", LOG_INFO_OUTPUT) }
+
         console.print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
 

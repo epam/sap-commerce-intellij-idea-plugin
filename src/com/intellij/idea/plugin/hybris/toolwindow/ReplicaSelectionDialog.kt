@@ -49,7 +49,6 @@ import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
 import java.awt.Component
-import java.awt.Dimension
 import java.util.*
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JComponent
@@ -135,9 +134,9 @@ class ReplicaSelectionDialog(
         centerPanel = panel {
             row {
                 segmentedButton(ReplicaType.entries, {
-                    this.text = it.shortTitle
+                    this.text = it.title
                     this.icon = it.icon
-                    this.toolTipText = it.title
+                    this.toolTipText = it.tooltip
                 })
                     .align(AlignX.FILL)
                     .gap(RightGap.SMALL)
@@ -154,7 +153,7 @@ class ReplicaSelectionDialog(
         }
             .apply {
                 border = JBUI.Borders.empty(16)
-                preferredSize = Dimension(400, 300)
+                preferredSize = JBUI.DialogSizes.medium()
             }
 
         return JBLoadingPanel(BorderLayout(), this).apply {

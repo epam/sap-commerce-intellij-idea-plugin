@@ -20,11 +20,15 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.ExecutionMode
+import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
+import com.intellij.idea.plugin.hybris.toolwindow.ReplicasSelectionDialog
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
 import com.intellij.openapi.util.getOrCreateUserDataUnsafe
+import com.intellij.util.asSafely
+import java.awt.Component
 
 open class GroovyExecutionModeAction(private val executionMode: ExecutionMode) : CheckboxAction(
     message("hybris.groovy.actions.executionMode.${executionMode.name.lowercase()}"),
@@ -47,4 +51,16 @@ open class GroovyExecutionModeAction(private val executionMode: ExecutionMode) :
 
 class GroovySingleExecutionModeAction : GroovyExecutionModeAction(ExecutionMode.SINGLE)
 
-class GroovyBatchExecutionModeAction : GroovyExecutionModeAction(ExecutionMode.BATCH)
+class GroovyBatchExecutionModeAction : GroovyExecutionModeAction(ExecutionMode.BATCH) {
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        val project = e.project ?: return
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val replicaType = editor.getOrCreateUserDataUnsafe(HybrisConstants.KEY_GROOVY_BATCH_REPLICA_TYPE) { ReplicaType.CCV2 }
+        val component = e.inputEvent?.source?.asSafely<Component>()
+            ?: return
+
+        ReplicasSelectionDialog(project, replicaType, component).showAndGet()
+
+        super.setSelected(e, state)
+    }
+}
