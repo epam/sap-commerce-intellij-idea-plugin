@@ -7,6 +7,7 @@
 - Improved representation of the error response [#1441](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1441)
 - Improved update operation for console related actions [#1442](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1442)
 - Improved In-Editor parameters rendering [#1443](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1443)
+- Support tabulation for In-Editor parameters [#1444](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1444)
 
 ### Fixes
 - Fixed [#1205](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1205) JSoap's inability to parse response with the `&quot;` sequence [#1439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1439)
