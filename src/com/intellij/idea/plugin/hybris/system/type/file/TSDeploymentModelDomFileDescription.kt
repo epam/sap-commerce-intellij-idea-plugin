@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.system.type.file
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.model.deployment.Model
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.Iconable.IconFlags
 import com.intellij.psi.xml.XmlFile
@@ -35,7 +36,7 @@ class TSDeploymentModelDomFileDescription : DomFileDescription<Model>(Model::cla
     ) = super.isMyFile(file, module)
         && HybrisConstants.CORE_ADVANCED_DEPLOYMENT_FILE == file.name
         && hasName(file)
-        && file.project.isHybrisProject
+        && file.isHybrisProject
 
     private fun hasName(file: XmlFile) = file.rootTag
         ?.attributes

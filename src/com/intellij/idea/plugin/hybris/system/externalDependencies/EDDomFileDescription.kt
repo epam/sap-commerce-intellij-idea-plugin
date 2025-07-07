@@ -32,6 +32,6 @@ class EDDomFileDescription : MavenDomProjectModelDescription() {
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML
-        && file.project.isHybrisProject
+        && file.isHybrisProject
 
 }

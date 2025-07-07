@@ -30,7 +30,7 @@ import com.intellij.psi.PsiFile
 class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
 
     override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector? {
-        if (file.project.isNotHybrisProject) return null
+        if (file.isNotHybrisProject) return null
 
         return FileEditorManager.getInstance(file.project).allEditors
             .filterIsInstance<FlexibleSearchSplitEditor>()

@@ -23,6 +23,13 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
+
+val PsiElement.isHybrisProject: Boolean
+    get() = project.isHybrisProject
+
+val PsiElement.isNotHybrisProject: Boolean
+    get() = project.isNotHybrisProject
 
 val Project.isHybrisProject: Boolean
     get() = ProjectSettingsComponent.getInstance(this).isHybrisProject()
@@ -37,3 +44,5 @@ val DataContext.isHybrisProject: Boolean
     get() = this.getData(CommonDataKeys.PROJECT)?.isHybrisProject ?: false
 
 fun <T> DataContext.ifHybrisProject(operation: () -> T): T? = if (isHybrisProject) operation() else null
+
+fun <T> Project.ifHybrisProject(operation: () -> T): T? = if (isHybrisProject) operation() else null

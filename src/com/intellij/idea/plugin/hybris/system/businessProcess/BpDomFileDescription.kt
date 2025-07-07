@@ -31,5 +31,5 @@ class BpDomFileDescription : DomFileDescription<Process>(Process::class.java, Hy
     override fun getFileIcon(flags: Int): Icon = HybrisIcons.BusinessProcess.FILE
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-        && file.project.isHybrisProject
+        && file.isHybrisProject
 }

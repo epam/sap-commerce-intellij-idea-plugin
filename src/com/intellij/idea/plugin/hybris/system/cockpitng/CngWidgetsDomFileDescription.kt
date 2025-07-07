@@ -34,7 +34,7 @@ class CngWidgetsDomFileDescription : DomFileDescription<Widgets>(Widgets::class.
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && (hasNamespace(file) || "backoffice-widgets.xml" == file.name)
-        && file.project.isHybrisProject
+        && file.isHybrisProject
 
     private fun hasNamespace(file: XmlFile) = file.rootTag
         ?.attributes

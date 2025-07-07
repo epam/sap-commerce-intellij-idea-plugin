@@ -57,7 +57,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         get() = emptyList()
 
     override fun computeLenses(editor: Editor, psiFile: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
-        if (psiFile.project.isNotHybrisProject) return emptyList()
+        if (psiFile.isNotHybrisProject) return emptyList()
 
         val entries = mutableListOf<Pair<TextRange, CodeVisionEntry>>()
 

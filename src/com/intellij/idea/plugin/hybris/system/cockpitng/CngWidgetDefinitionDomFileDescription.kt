@@ -33,6 +33,6 @@ class CngWidgetDefinitionDomFileDescription : DomFileDescription<WidgetDefinitio
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && file.name == HybrisConstants.COCKPIT_NG_DEFINITION_XML
-        && file.project.isHybrisProject
+        && file.isHybrisProject
 
 }

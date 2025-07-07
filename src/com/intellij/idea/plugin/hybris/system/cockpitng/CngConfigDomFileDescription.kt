@@ -34,7 +34,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && hasNamespace(file)
-        && file.project.isHybrisProject
+        && file.isHybrisProject
 
     private fun hasNamespace(file: XmlFile) = file.rootTag
         ?.attributes

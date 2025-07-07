@@ -33,6 +33,6 @@ class LeSDomFileDescription : DomFileDescription<Hybrisconfig>(Hybrisconfig::cla
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && file.name == HybrisConstants.LOCAL_EXTENSIONS_XML
-        && file.project.isHybrisProject
+        && file.isHybrisProject
 
 }

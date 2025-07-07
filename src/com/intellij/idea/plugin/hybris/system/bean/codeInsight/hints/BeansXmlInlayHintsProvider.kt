@@ -41,6 +41,7 @@ class BeansXmlInlayHintsProvider : InlayHintsProvider<NoSettings> {
 
     override fun getCollectorFor(
         file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink
-    ) = if (file.name.endsWith(name) && file.project.isHybrisProject) BeansXmlInlayHintsCollector(editor)
+        //TODO verify a document descriptor for Beans XML
+    ) = if (file.name.endsWith(name) && file.isHybrisProject) BeansXmlInlayHintsCollector(editor)
     else null
 }

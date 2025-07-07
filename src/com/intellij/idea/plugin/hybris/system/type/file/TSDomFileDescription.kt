@@ -36,7 +36,7 @@ class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, Hybris
     ) = super.isMyFile(file, module)
         && file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING)
         && hasNamespace(file)
-        && file.project.isHybrisProject
+        && file.isHybrisProject
 
     private fun hasNamespace(file: XmlFile) = file.rootTag
             ?.attributes

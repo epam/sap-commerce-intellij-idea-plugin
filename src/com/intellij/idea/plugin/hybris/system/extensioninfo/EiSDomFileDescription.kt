@@ -33,6 +33,6 @@ class EiSDomFileDescription : DomFileDescription<ExtensionInfo>(ExtensionInfo::c
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && file.name == HybrisConstants.EXTENSION_INFO_XML
-        && file.project.isHybrisProject
+        && file.isHybrisProject
 
 }

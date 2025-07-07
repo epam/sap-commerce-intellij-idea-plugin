@@ -41,6 +41,6 @@ class ItemsXmlInlayHintsProvider : InlayHintsProvider<NoSettings> {
 
     override fun getCollectorFor(
         file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink
-    ) = if (file.name.endsWith(name) && file.project.isHybrisProject) ItemsXmlInlayHintsCollector(editor)
+    ) = if (file.name.endsWith(name) && file.isHybrisProject) ItemsXmlInlayHintsCollector(editor)
     else null
 }

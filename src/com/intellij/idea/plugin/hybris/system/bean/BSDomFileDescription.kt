@@ -33,7 +33,7 @@ class BSDomFileDescription : DomFileDescription<Beans>(Beans::class.java, "beans
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && file.name.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING)
         && hasNamespace(file)
-        && file.project.isHybrisProject
+        && file.isHybrisProject
 
     private fun hasNamespace(file: XmlFile) = file.rootTag
             ?.attributes
