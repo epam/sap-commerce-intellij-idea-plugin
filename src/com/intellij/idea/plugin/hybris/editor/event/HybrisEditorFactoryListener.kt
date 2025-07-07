@@ -42,15 +42,15 @@ class HybrisEditorFactoryListener : EditorFactoryListener {
         val file = event.editor.virtualFile ?: return
 
         if (SingleRootFileViewProvider.isTooLargeForIntelligence(file)) return
-        val projectSettings = ProjectSettingsComponent.Companion.getInstance(project)
+        val projectSettings = ProjectSettingsComponent.getInstance(project)
         if (!projectSettings.isHybrisProject()) return
 
         val toolbarInstaller = when (file.fileType) {
-            is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.Companion.getInstance()
-            is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.Companion.getInstance()
-            is ImpexFileType -> ImpExFileToolbarInstaller.Companion.getInstance()
-            is AclFileType -> AclFileToolbarInstaller.Companion.getInstance()
-            is GroovyFileType -> GroovyFileToolbarInstaller.Companion.getInstance()
+            is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.getInstance()
+            is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.getInstance()
+            is ImpexFileType -> ImpExFileToolbarInstaller.getInstance()
+            is AclFileType -> AclFileToolbarInstaller.getInstance()
+            is GroovyFileType -> GroovyFileToolbarInstaller.getInstance()
             else -> null
         } ?: return
 
