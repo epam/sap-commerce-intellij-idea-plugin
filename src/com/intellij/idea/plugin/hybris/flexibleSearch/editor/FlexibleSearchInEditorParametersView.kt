@@ -48,6 +48,7 @@ import java.awt.Dimension
 import java.beans.PropertyChangeListener
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.swing.LayoutFocusTraversalPolicy
 
 object FlexibleSearchInEditorParametersView {
 
@@ -99,6 +100,8 @@ object FlexibleSearchInEditorParametersView {
             .let { Dsl.scrollPanel(it) }
             .apply {
                 minimumSize = Dimension(minimumSize.width, 165)
+                focusTraversalPolicy = LayoutFocusTraversalPolicy()
+                isFocusCycleRoot = true
             }
     }
 

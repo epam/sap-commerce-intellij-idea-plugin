@@ -30,7 +30,6 @@ import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.getPreferredFocusedComponent
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolderBase
@@ -191,8 +190,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         component.removePropertyChangeListener(listener)
     }
 
-    override fun getPreferredFocusedComponent(): JComponent? = if (textEditor.component.isVisible) textEditor.preferredFocusedComponent
-    else component.getPreferredFocusedComponent()
+    override fun getPreferredFocusedComponent(): JComponent? = verticalSplitter.firstComponent
 
     override fun getComponent() = rootPanel
     override fun getName() = "FlexibleSearch Split Editor"
