@@ -80,13 +80,7 @@
                              provider="com.intellij.idea.plugin.hybris.settings.options.ProjectFlexibleSearchSettingsConfigurableProvider"/>
 
         <fileEditorProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitFileEditorProvider"/>
-
     </extensions>
-
-    <projectListeners>
-        <listener class="com.intellij.idea.plugin.hybris.startup.event.HybrisFileEditorManagerListener"
-                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
-    </projectListeners>
 
     <actions>
 

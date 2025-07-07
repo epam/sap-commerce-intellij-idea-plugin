@@ -11,6 +11,7 @@
 
 ### Fixes
 - Fixed [#1205](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1205) JSoap's inability to parse response with the `&quot;` sequence [#1439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1439)
+- Ensure that action toolbar is always installed for new Editors [#1446](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1446)
 
 ## [2025.1.5]
 

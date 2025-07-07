@@ -43,6 +43,8 @@
         <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.CCv2EventsSubscriberStartupActivity"/>
 
         <searchEverywhereContributor implementation="com.intellij.idea.plugin.hybris.system.type.searcheverywhere.TypeSearchEverywhereContributor$Factory"/>
+
+        <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.editor.event.HybrisEditorFactoryListener"/>
     </extensions>
 
     <actions>
