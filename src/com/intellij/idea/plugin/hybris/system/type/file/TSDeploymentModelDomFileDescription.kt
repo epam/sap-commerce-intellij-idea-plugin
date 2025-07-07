@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.system.type.file
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.type.model.deployment.Model
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.Iconable.IconFlags
@@ -36,7 +35,7 @@ class TSDeploymentModelDomFileDescription : DomFileDescription<Model>(Model::cla
     ) = super.isMyFile(file, module)
         && HybrisConstants.CORE_ADVANCED_DEPLOYMENT_FILE == file.name
         && hasName(file)
-        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
+        && file.project.isHybrisProject
 
     private fun hasName(file: XmlFile) = file.rootTag
         ?.attributes

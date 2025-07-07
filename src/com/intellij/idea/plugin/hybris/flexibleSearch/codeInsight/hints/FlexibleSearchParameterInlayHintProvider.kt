@@ -21,40 +21,41 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.hints
 import com.intellij.codeInsight.hints.declarative.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.util.asSafely
 
 class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
 
-    private val collector by lazy {
-        object : SharedBypassCollector {
-            override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
-                if (!element.isValid || element.project.isDefault) return
-                if (element !is FlexibleSearchBindParameter) return
-                FileEditorManager.getInstance(element.project)
-                    .getSelectedEditor(element.containingFile.virtualFile)
-                    .asSafely<FlexibleSearchSplitEditor>()
-                    ?.takeIf { it.inEditorParameters }
-                    ?.queryParameters
-                    ?.find { it.name == element.value && it.presentationValue.isNotBlank() }
-                    ?.let {
-                        sink.addPresentation(
-                            position = InlineInlayPosition(element.textRange.endOffset, true),
-                            payloads = null,
-                            tooltip = "SQL value: ${it.value}",
-                            hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
-                        ) {
-                            text("= ${it.presentationValue}")
-                        }
-                    }
-            }
-        }
+    override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector? {
+        if (file.project.isNotHybrisProject) return null
+
+        return FileEditorManager.getInstance(file.project).allEditors
+            .filterIsInstance<FlexibleSearchSplitEditor>()
+            .find { it.editor == editor }
+            ?.let { FlexibleSearchInlayHintsCollector(it) }
     }
 
-    override fun createCollector(file: PsiFile, editor: Editor) = if (ProjectSettingsComponent.Companion.getInstance(file.project).isHybrisProject()) collector
-    else null
+    private class FlexibleSearchInlayHintsCollector(private val textEditor: FlexibleSearchSplitEditor) : SharedBypassCollector {
+        override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
+            if (!element.isValid || element.project.isDefault) return
+            if (element !is FlexibleSearchBindParameter) return
+
+            textEditor.takeIf { it.inEditorParameters }
+                ?.queryParameters
+                ?.find { it.name == element.value && it.presentationValue.isNotBlank() }
+                ?.let {
+                    sink.addPresentation(
+                        position = InlineInlayPosition(element.textRange.endOffset, true),
+                        payloads = null,
+                        tooltip = "SQL value: ${it.value}",
+                        hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
+                    ) {
+                        text("= ${it.presentationValue}")
+                    }
+                }
+        }
+    }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,7 +27,7 @@ import com.intellij.codeInsight.hints.InlayHintsUtils
 import com.intellij.codeInsight.hints.settings.language.isInlaySettingsEditor
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -57,7 +57,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         get() = emptyList()
 
     override fun computeLenses(editor: Editor, psiFile: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
-        if (!ProjectSettingsComponent.getInstance(psiFile.project).isHybrisProject()) return emptyList()
+        if (psiFile.project.isNotHybrisProject) return emptyList()
 
         val entries = mutableListOf<Pair<TextRange, CodeVisionEntry>>()
 

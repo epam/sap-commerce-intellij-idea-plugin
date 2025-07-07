@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,9 +20,9 @@ package com.intellij.idea.plugin.hybris.system.cockpitng
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.core.Widgets
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
@@ -34,7 +34,7 @@ class CngWidgetsDomFileDescription : DomFileDescription<Widgets>(Widgets::class.
 
     override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
         && (hasNamespace(file) || "backoffice-widgets.xml" == file.name)
-        && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()
+        && file.project.isHybrisProject
 
     private fun hasNamespace(file: XmlFile) = file.rootTag
         ?.attributes

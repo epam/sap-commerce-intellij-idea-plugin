@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.impex.file.actions
 
 import com.intellij.ide.actions.CreateFileFromTemplateAction
 import com.intellij.ide.actions.CreateFileFromTemplateDialog
-import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -43,7 +43,7 @@ class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_FILE, "", HybrisI
         super.postProcess(createdElement, templateName, customProperties)
     }
 
-    override fun isAvailable(dataContext: DataContext) = super.isAvailable(dataContext) && ActionUtils.isHybrisContext(dataContext)
+    override fun isAvailable(dataContext: DataContext) = super.isAvailable(dataContext) && dataContext.isHybrisProject
     override fun getActionName(directory: PsiDirectory, newName: String, templateName: String) = NEW_FILE
     override fun getDefaultTemplateProperty() = null
     override fun hashCode() = javaClass.hashCode()

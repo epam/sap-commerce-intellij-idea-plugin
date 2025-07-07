@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.file.actions
 
 import com.intellij.ide.actions.CreateFileFromTemplateAction
 import com.intellij.ide.actions.CreateFileFromTemplateDialog
-import com.intellij.idea.plugin.hybris.actions.ActionUtils.isHybrisContext
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -45,7 +45,7 @@ class FlexibleSearchFileCreateAction : CreateFileFromTemplateAction(NEW_FS_FILE,
     override fun equals(other: Any?) = other is FlexibleSearchFileCreateAction
 
     override fun isAvailable(dataContext: DataContext) = super.isAvailable(dataContext)
-        && isHybrisContext(dataContext)
+        && dataContext.isHybrisProject
 
     companion object {
         const val FILE_TEMPLATE = "FlexibleSearch File"

@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@
 
 package com.intellij.idea.plugin.hybris.actions
 
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -29,6 +30,6 @@ class HybrisToolsActionGroup : DefaultActionGroup(), DumbAware {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(event: AnActionEvent) {
-        event.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(event)
+        event.presentation.isEnabledAndVisible = event.isHybrisProject
     }
 }

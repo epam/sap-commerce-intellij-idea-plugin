@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2023 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.gotoClass
 
 import com.intellij.ide.util.gotoByName.DefaultClassNavigationContributor
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.navigation.GotoClassContributor
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
@@ -71,5 +71,5 @@ class CustomGotoClassContributor : GotoClassContributor {
     }
 
     private fun shouldNotBeProcessed(includeNonProjectItems: Boolean, project: Project) = includeNonProjectItems
-        || !ProjectSettingsComponent.getInstance(project).isHybrisProject()
+        || project.isNotHybrisProject
 }

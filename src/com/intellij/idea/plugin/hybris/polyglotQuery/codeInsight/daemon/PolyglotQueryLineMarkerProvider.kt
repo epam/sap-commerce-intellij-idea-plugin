@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryUtils
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotElementFactory
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
@@ -47,7 +47,7 @@ class PolyglotQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
     override fun getIcon(): Icon = HybrisIcons.PolyglotQuery.FILE
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
-        if (!ProjectSettingsComponent.getInstance(element.project).isHybrisProject()) return null
+        if (element.project.isNotHybrisProject) return null
 
         return when (element) {
             is PsiPolyadicExpression -> process(element) { PolyglotQueryUtils.computeExpression(element) }
@@ -62,7 +62,7 @@ class PolyglotQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
     ): PolyglotQueryLineMarkerInfo? {
         val parent = element.parent
         if (parent !is PsiVariable || parent.nameIdentifier == null) return null
-        if (!ProjectSettingsComponent.getInstance(element.project).isHybrisProject()) return null
+        if (element.project.isNotHybrisProject) return null
 
         val expression = expressionProvider.invoke()
         if (!PolyglotQueryUtils.isPolyglotQuery(expression)) return null

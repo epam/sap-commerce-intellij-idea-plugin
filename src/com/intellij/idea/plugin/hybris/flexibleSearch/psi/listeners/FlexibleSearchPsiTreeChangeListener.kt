@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.listeners
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
@@ -31,7 +31,7 @@ import com.intellij.util.asSafely
 class FlexibleSearchPsiTreeChangeListener(project: Project) : PsiTreeChangeListener {
 
     init {
-        if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) throw ExtensionNotApplicableException.create()
+        if (project.isNotHybrisProject) throw ExtensionNotApplicableException.create()
     }
 
     override fun beforeChildAddition(event: PsiTreeChangeEvent) = doChange(event)

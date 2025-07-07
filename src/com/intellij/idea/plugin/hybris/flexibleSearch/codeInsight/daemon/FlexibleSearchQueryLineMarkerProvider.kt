@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementFactory
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
@@ -47,7 +47,7 @@ class FlexibleSearchQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
     override fun getIcon(): Icon = HybrisIcons.FlexibleSearch.FILE
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
-        if (!ProjectSettingsComponent.getInstance(element.project).isHybrisProject()) return null
+        if (element.project.isNotHybrisProject) return null
 
         return when (element) {
             is PsiPolyadicExpression -> process(element) { FxSUtils.computeExpression(element) }

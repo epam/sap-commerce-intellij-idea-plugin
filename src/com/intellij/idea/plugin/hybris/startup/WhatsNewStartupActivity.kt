@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.startup
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.util.RunOnceUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.fileEditor.TextEditorWithPreview
@@ -37,7 +37,7 @@ import java.nio.charset.StandardCharsets
 class WhatsNewStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) return
+        if (project.isNotHybrisProject) return
 
         val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))
             ?: return

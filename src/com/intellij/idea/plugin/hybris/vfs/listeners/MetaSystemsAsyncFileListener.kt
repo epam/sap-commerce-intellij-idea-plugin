@@ -18,11 +18,11 @@
 package com.intellij.idea.plugin.hybris.vfs.listeners
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSModificationTracker
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -52,7 +52,7 @@ class MetaSystemsAsyncFileListener : AsyncFileListener {
 
     override fun prepareChange(events: List<VFileEvent>) = ProjectManager.getInstance().openProjects
         .filterNot { DumbService.isDumb(it) }
-        .filter { ProjectSettingsComponent.getInstance(it).isHybrisProject() }
+        .filter { it.isHybrisProject }
         .mapNotNull { project ->
             val trackedCngModels by lazy { project.service<CngMetaModelStateService>().getTrackedModels() }
 

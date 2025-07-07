@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.startup
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.project.Project
@@ -41,7 +41,7 @@ import org.intellij.plugins.intelliLang.inject.java.JavaLanguageInjectionSupport
 class HybrisIntelliLangStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) return
+        if (project.isNotHybrisProject) return
 
         registerJavaInjections(project)
     }

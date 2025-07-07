@@ -1,7 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.actions
+package com.intellij.idea.plugin.hybris.util
 
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -25,13 +24,16 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.project.Project
 
-object ActionUtils {
+val Project.isHybrisProject: Boolean
+    get() = ProjectSettingsComponent.getInstance(this).isHybrisProject()
 
-    fun isHybrisContext(event: AnActionEvent) = isHybrisContext(event.dataContext)
+val Project.isNotHybrisProject: Boolean
+    get() = !isHybrisProject
 
-    fun isHybrisContext(dataContext: DataContext) = CommonDataKeys.PROJECT.getData(dataContext)
-        ?.let { isHybrisContext(it) }
-        ?: false
+val AnActionEvent.isHybrisProject: Boolean
+    get() = this.dataContext.isHybrisProject
 
-    fun isHybrisContext(project: Project) = ProjectSettingsComponent.getInstance(project).isHybrisProject()
-}
+val DataContext.isHybrisProject: Boolean
+    get() = this.getData(CommonDataKeys.PROJECT)?.isHybrisProject ?: false
+
+fun <T> DataContext.ifHybrisProject(operation: () -> T): T? = if (isHybrisProject) operation() else null

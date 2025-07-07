@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,12 +19,12 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
 import com.intellij.diagram.AbstractDiagramElementManager
 import com.intellij.diagram.DiagramBuilder
-import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.*
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Action
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.ParameterUse
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.ui.SimpleColoredText
@@ -36,7 +36,7 @@ class BpDiagramElementManager : AbstractDiagramElementManager<BpGraphNode>() {
         val project = dataContext.getData(CommonDataKeys.PROJECT) ?: return null
         val virtualFile = dataContext.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
 
-        if (!ActionUtils.isHybrisContext(project)) return null
+        if (project.isNotHybrisProject) return null
 
         return BpGraphFactory.buildNode(project, virtualFile)
     }

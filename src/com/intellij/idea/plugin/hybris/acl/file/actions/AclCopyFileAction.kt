@@ -17,12 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.acl.file.actions
 
-import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.CONSOLE_TITLE_IMPEX
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_FILE_EXTENSION
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -38,7 +38,7 @@ class AclCopyFileAction : AnAction(
 
     override fun update(event: AnActionEvent) {
         val project = event.project ?: return
-        event.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(project) && CopyFileToHybrisConsoleUtils.isRequiredMultipleFileExtension(project, IMPEX_FILE_EXTENSION)
+        event.presentation.isEnabledAndVisible = project.isHybrisProject && CopyFileToHybrisConsoleUtils.isRequiredMultipleFileExtension(project, IMPEX_FILE_EXTENSION)
     }
 
     override fun actionPerformed(event: AnActionEvent) {

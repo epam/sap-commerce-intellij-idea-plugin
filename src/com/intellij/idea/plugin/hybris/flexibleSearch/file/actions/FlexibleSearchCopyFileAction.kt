@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.file.actions
 
-import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
 import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils.isRequiredSingleFileExtension
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_FILE_EXTENSION
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -39,7 +39,7 @@ class FlexibleSearchCopyFileAction : AnAction(
 
     override fun update(event: AnActionEvent) {
         val project = event.project ?: return
-        event.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(project) && isRequiredSingleFileExtension(project, FLEXIBLE_SEARCH_FILE_EXTENSION)
+        event.presentation.isEnabledAndVisible = project.isHybrisProject && isRequiredSingleFileExtension(project, FLEXIBLE_SEARCH_FILE_EXTENSION)
     }
 
     override fun actionPerformed(event: AnActionEvent) {

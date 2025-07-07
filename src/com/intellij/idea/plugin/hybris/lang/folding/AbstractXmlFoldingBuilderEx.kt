@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.lang.folding
 
 import com.intellij.idea.plugin.hybris.settings.FoldingSettings
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
@@ -45,7 +45,7 @@ abstract class AbstractXmlFoldingBuilderEx<S : FoldingSettings, T : DomElement>(
     private val cachedFoldingSettings: Key<S> = Key.create("hybris_folding_settings_" + clazz.simpleName)
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        if (!ProjectSettingsComponent.getInstance(root.project).isHybrisProject()) return emptyArray()
+        if (root.project.isNotHybrisProject) return emptyArray()
         if (root !is XmlFile) return emptyArray()
         DomManager.getDomManager(root.project).getFileElement(root, clazz)
             ?: return emptyArray()

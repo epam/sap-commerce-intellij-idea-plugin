@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.terminal
 
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.terminal.LocalTerminalCustomizer
@@ -25,7 +25,7 @@ import org.jetbrains.plugins.terminal.LocalTerminalCustomizer
 class HybrisProjectTerminalCustomizer : LocalTerminalCustomizer() {
 
     override fun getDefaultFolder(project: Project): String? {
-        if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) return null
+        if (project.isNotHybrisProject) return null
 
         return PathMacroManager.getInstance(project).expandPath("\$PROJECT_DIR$")
     }

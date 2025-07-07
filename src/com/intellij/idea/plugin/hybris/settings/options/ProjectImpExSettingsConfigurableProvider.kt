@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -31,7 +31,7 @@ import javax.swing.JCheckBox
 
 class ProjectImpExSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
-    override fun canCreateConfigurable() = ProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(

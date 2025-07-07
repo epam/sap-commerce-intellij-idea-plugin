@@ -17,13 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.psi.listeners
 
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSModificationTracker
 import com.intellij.idea.plugin.hybris.system.cockpitng.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
 import com.intellij.openapi.project.Project
@@ -40,7 +40,7 @@ import com.intellij.util.xml.DomManager
 class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListener {
 
     init {
-        if (!ProjectSettingsComponent.getInstance(project).isHybrisProject()) throw ExtensionNotApplicableException.create()
+        if (project.isNotHybrisProject) throw ExtensionNotApplicableException.create()
     }
 
     private val domManager by lazy { DomManager.getDomManager(project) }

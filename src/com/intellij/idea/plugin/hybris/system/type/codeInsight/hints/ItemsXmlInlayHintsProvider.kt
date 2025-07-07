@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.system.type.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 import javax.swing.JPanel
@@ -41,6 +41,6 @@ class ItemsXmlInlayHintsProvider : InlayHintsProvider<NoSettings> {
 
     override fun getCollectorFor(
         file: PsiFile, editor: Editor, settings: NoSettings, sink: InlayHintsSink
-    ) = if (file.name.endsWith(name) && ProjectSettingsComponent.getInstance(file.project).isHybrisProject()) ItemsXmlInlayHintsCollector(editor)
+    ) = if (file.name.endsWith(name) && file.project.isHybrisProject) ItemsXmlInlayHintsCollector(editor)
     else null
 }

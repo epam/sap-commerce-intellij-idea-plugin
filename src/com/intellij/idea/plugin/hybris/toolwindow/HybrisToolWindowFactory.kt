@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,11 +18,11 @@
 package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSView
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -43,8 +43,8 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
-    override suspend fun isApplicableAsync(project: Project) = ProjectSettingsComponent.getInstance(project).isHybrisProject()
-    override fun shouldBeAvailable(project: Project) = ProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override suspend fun isApplicableAsync(project: Project) = project.isHybrisProject
+    override fun shouldBeAvailable(project: Project) = project.isHybrisProject
 
     private fun createTSContent(toolWindow: ToolWindow, panel: TSView) = with(toolWindow.contentManager.factory.createContent(panel, TS_ID, true)) {
         Disposer.register(toolWindow.disposable, panel)

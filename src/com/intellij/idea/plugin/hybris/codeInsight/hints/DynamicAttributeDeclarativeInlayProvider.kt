@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.codeInsight.hints
 
 import com.intellij.codeInsight.hints.declarative.InlayHintsProvider
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 
@@ -28,6 +28,6 @@ class DynamicAttributeDeclarativeInlayProvider : InlayHintsProvider {
         DynamicAttributeDeclarativeInlayHintsCollector()
     }
 
-    override fun createCollector(file: PsiFile, editor: Editor) = if (ProjectSettingsComponent.getInstance(file.project).isHybrisProject()) collector
+    override fun createCollector(file: PsiFile, editor: Editor) = if (file.project.isHybrisProject) collector
     else null
 }

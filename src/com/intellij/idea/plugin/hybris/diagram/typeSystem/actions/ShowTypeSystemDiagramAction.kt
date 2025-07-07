@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,8 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.actions
 
-import com.intellij.idea.plugin.hybris.actions.ActionUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.uml.core.actions.ShowDiagram
 
@@ -31,7 +31,7 @@ class ShowTypeSystemDiagramAction : ShowDiagram() {
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = ActionUtils.isHybrisContext(e)
+        e.presentation.isEnabledAndVisible = e.isHybrisProject
     }
 
 }

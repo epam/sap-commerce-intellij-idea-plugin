@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
@@ -31,6 +30,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.ui.RemoteHacInstancesListPanel
 import com.intellij.idea.plugin.hybris.ui.RemoteInstancesListPanel
 import com.intellij.idea.plugin.hybris.ui.RemoteSolrInstancesListPanel
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -44,7 +44,7 @@ import javax.swing.DefaultComboBoxModel
 
 class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : ConfigurableProvider(), Disposable {
 
-    override fun canCreateConfigurable() = ProjectSettingsComponent.getInstance(project).isHybrisProject()
+    override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(

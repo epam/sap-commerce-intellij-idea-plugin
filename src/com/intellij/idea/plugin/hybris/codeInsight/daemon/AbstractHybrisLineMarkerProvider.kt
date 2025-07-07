@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 
@@ -44,7 +44,7 @@ abstract class AbstractHybrisLineMarkerProvider<T : PsiElement> : LineMarkerProv
     protected open fun canProcess(elements: MutableList<out PsiElement>): Boolean {
         val psiFile = elements.firstOrNull()?.containingFile
             ?: return false
-        if (!ProjectSettingsComponent.getInstance(psiFile.project).isHybrisProject()) return false
+        if (psiFile.project.isNotHybrisProject) return false
         return canProcess(psiFile)
     }
 }
