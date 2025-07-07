@@ -49,8 +49,12 @@ class FlexibleSearchPsiTreeChangeListener(project: Project) : PsiTreeChangeListe
 
     private fun doChange(event: PsiTreeChangeEvent) = event.file
         ?.asSafely<FlexibleSearchFile>()
-        ?.let { FileEditorManager.getInstance(it.project).getSelectedEditor(it.virtualFile) }
-        ?.asSafely<FlexibleSearchSplitEditor>()
-        ?.refreshParameters()
+        ?.let { FileEditorManager.getInstance(it.project).getAllEditors(it.virtualFile) }
+        ?.filterIsInstance<FlexibleSearchSplitEditor>()
+        ?.let { editors ->
+            editors.forEach {
+                it.refreshParameters()
+            }
+        }
         ?: Unit
 }

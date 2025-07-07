@@ -37,7 +37,6 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
-import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import com.michaelbaranov.microba.calendar.DatePicker
@@ -60,7 +59,7 @@ object FlexibleSearchInEditorParametersView {
 
             val panel = if (!isTypeSystemInitialized(project)) renderTypeSystemInitializationPanel()
             else {
-                val queryParameters = readAction { collectParameters(project, fileEditor) }
+                val queryParameters = collectParameters(project, fileEditor)
                 renderParametersPanel(queryParameters, fileEditor)
             }
 
@@ -212,10 +211,10 @@ object FlexibleSearchInEditorParametersView {
         }
     }
 
-    private fun collectParameters(project: Project, fileEditor: FlexibleSearchSplitEditor): Collection<FlexibleSearchQueryParameter> {
+    private suspend fun collectParameters(project: Project, fileEditor: FlexibleSearchSplitEditor): Collection<FlexibleSearchQueryParameter> {
         val currentParameters = fileEditor.queryParameters ?: emptySet()
 
-        val parameters = application.runReadAction<Collection<FlexibleSearchQueryParameter>> {
+        val parameters = readAction {
             PsiDocumentManager.getInstance(project).getPsiFile(fileEditor.editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
                 ?.map { FlexibleSearchQueryParameter.of(it, currentParameters) }
