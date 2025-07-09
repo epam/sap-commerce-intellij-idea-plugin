@@ -1,5 +1,8 @@
 ## [2025.1.6]
 
+### `items.xml` enhancements
+- Show attribute non-property persistence for contribution results [#1448](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1448)
+
 ### `FlexibleSearch` enhancements
 - Use toggle action for Parameters view toggler [#1437](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1437)
 - Introduced `In-Editor Results` for FlexibleSearch queries [#1438](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1438)

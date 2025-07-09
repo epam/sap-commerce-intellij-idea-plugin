@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaEnum.TSMetaE
 import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+import com.intellij.idea.plugin.hybris.system.type.model.PersistenceType
 import com.intellij.idea.plugin.hybris.system.type.model.deployment.TypeMapping
 
 object TSLookupElementFactory {
@@ -52,7 +53,7 @@ object TSLookupElementFactory {
                 .withPresentableText(it)
                 .withTailText(if (meta.isAbstract) " (" + message("hybris.ts.type.abstract") + ")" else "", true)
                 .withIcon(meta.icon)
-                .withTypeText(":: ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}", HybrisIcons.TypeSystem.Types.ITEM, true)
+                .withTypeText(": ${meta.extendedMetaItemName ?: HybrisConstants.TS_TYPE_GENERIC_ITEM}", HybrisIcons.TypeSystem.Types.ITEM, true)
                 .withTypeIconRightAligned(true)
                 .withCaseSensitivity(false)
         }
@@ -89,8 +90,12 @@ object TSLookupElementFactory {
                 .withCaseSensitivity(false)
         }
 
-    fun build(meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute) = LookupElementBuilder.create(meta.name)
+    fun build(meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute) = build(meta, meta.name)
+
+    fun build(meta: TSGlobalMetaItem.TSGlobalMetaItemAttribute, name: String) = LookupElementBuilder.create(name.trim { it <= ' ' })
         .withStrikeoutness(meta.isDeprecated)
+        .withIcon(HybrisIcons.TypeSystem.ATTRIBUTE)
+        .withTailText(meta.persistence.type?.takeUnless { it == PersistenceType.PROPERTY }?.value?.let { " ($it)"}, true)
         .withTypeText(
             meta.flattenType,
             if (meta.isLocalized) HybrisIcons.TypeSystem.LOCALIZED
@@ -98,7 +103,6 @@ object TSLookupElementFactory {
             true
         )
         .withTypeIconRightAligned(true)
-        .withIcon(HybrisIcons.TypeSystem.ATTRIBUTE)
         .withCaseSensitivity(false)
 
     fun build(meta: TSMetaRelation.TSMetaOrderingAttribute) = LookupElementBuilder.create(meta.name)
@@ -137,23 +141,10 @@ object TSLookupElementFactory {
             LookupElementBuilder.create(it)
                 .withTailText(if (meta.isDynamic) " (" + message("hybris.ts.type.dynamic") + ")" else "", true)
                 .withIcon(HybrisIcons.TypeSystem.Types.ENUM)
-                .withTypeText(":: ${HybrisConstants.TS_TYPE_ENUMERATION_VALUE}", HybrisIcons.TypeSystem.Types.ITEM, true)
+                .withTypeText(": ${HybrisConstants.TS_TYPE_ENUMERATION_VALUE}", HybrisIcons.TypeSystem.Types.ITEM, true)
                 .withTypeIconRightAligned(true)
                 .withCaseSensitivity(false)
         }
-
-    fun build(attribute: TSGlobalMetaItem.TSGlobalMetaItemAttribute, name: String) = LookupElementBuilder.create(name.trim { it <= ' ' })
-        .withIcon(HybrisIcons.TypeSystem.ATTRIBUTE)
-        .withTailText(if (attribute.isDynamic) " (" + message("hybris.ts.type.dynamic") + ')' else "", true)
-        .withStrikeoutness(attribute.isDeprecated)
-        .withTypeText(
-            attribute.flattenType,
-            if (attribute.isLocalized) HybrisIcons.TypeSystem.LOCALIZED
-            else null,
-            true
-        )
-        .withTypeIconRightAligned(true)
-        .withCaseSensitivity(false)
 
     fun build(type: String?, lookupString: String) = LookupElementBuilder.create(lookupString)
         .withTypeText(type, true)

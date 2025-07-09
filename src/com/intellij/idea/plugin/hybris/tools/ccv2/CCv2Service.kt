@@ -147,7 +147,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         val cachedEnvironments = allCachedEnvironments[cacheKey]
 
         if (cachedEnvironments != null) return cachedEnvironments
-            .also { it.forEach { it.deployedBuild = null } }
+            .apply { forEach { it.deployedBuild = null } }
 
         val environments = CCv2Api.getInstance()
             .fetchEnvironments(progressReporter, ccv2Token, subscription, statuses, requestV1Details, requestV1Health)
