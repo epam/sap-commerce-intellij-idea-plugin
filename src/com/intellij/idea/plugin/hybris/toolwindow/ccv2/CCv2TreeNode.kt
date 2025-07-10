@@ -18,35 +18,41 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.openapi.util.ClearableLazyValue
 import javax.swing.tree.DefaultMutableTreeNode
 
-abstract class CCv2ReplicaTreeNode : DefaultMutableTreeNode() {
+abstract class CCv2TreeNode : DefaultMutableTreeNode() {
 
     private val myProperSetting = ClearableLazyValue.create<Boolean> { this.calculateIsProperSettings() }
 
-    abstract fun text(): String
+    abstract fun label(): String
     protected abstract fun calculateIsProperSettings(): Boolean
 
     fun isProperSetting() = myProperSetting.getValue()
     fun dropCache() = myProperSetting.drop()
 
-    class Group(private val label: String) : CCv2ReplicaTreeNode() {
-        override fun calculateIsProperSettings(): Boolean = (0..childCount)
-            .map { getChildAt(it) }
-            .filterIsInstance<CCv2ReplicaTreeNode>()
-            .any { it.isProperSetting() }
+    class RootNode : Group("root")
+    class EnvironmentNode(val environment: CCv2EnvironmentDto): Group(environment.name)
+    class ServiceNode(val service: CCv2ServiceDto): Group(service.name)
 
-        override fun text(): String = label
-    }
-
-    class Replica(private val label: String) : CCv2ReplicaTreeNode() {
-        override fun text(): String = label
+    class Replica(private val replica: CCv2ServiceReplicaDto) : CCv2TreeNode() {
+        override fun label(): String = replica.name
 
         override fun calculateIsProperSettings(): Boolean {
             // TODO: implement me
             return true
         }
+    }
 
+    open class Group(private val label: String) : CCv2TreeNode() {
+
+        override fun calculateIsProperSettings(): Boolean = (0..childCount)
+            .map { getChildAt(it) }
+            .filterIsInstance<CCv2TreeNode>()
+            .any { it.isProperSetting() }
+        override fun label(): String = label
     }
 }

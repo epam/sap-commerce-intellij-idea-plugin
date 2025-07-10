@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2ReplicasTreeTable
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2TreeTable
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -53,7 +53,7 @@ class ReplicasSelectionDialog(
     private val manualReplicaSettings = AtomicBooleanProperty(currentReplicaType == ReplicaType.MANUAL)
     private val ccv2ReplicaSettings = AtomicBooleanProperty(currentReplicaType == ReplicaType.CCV2)
     private val ccv2SettingsRefresh = AtomicBooleanProperty(true)
-    private val ccv2ReplicasTreeTable by lazy { CCv2ReplicasTreeTable() }
+    private val ccv2TreeTable by lazy { CCv2TreeTable() }
 
     private val replicaType = AtomicProperty(currentReplicaType).apply {
         afterChange { selectedReplica ->
@@ -139,7 +139,7 @@ class ReplicasSelectionDialog(
                 .onChanged {
                     val subscription = it.selectedItem as CCv2Subscription
 
-                    ccv2ReplicasTreeTable.refresh(project, subscription)
+                    ccv2TreeTable.refresh(project, subscription)
                 }
                 .component
 
@@ -155,7 +155,7 @@ class ReplicasSelectionDialog(
             .layout(RowLayout.PARENT_GRID)
 
         row {
-            cell(ccv2ReplicasTreeTable)
+            cell(ccv2TreeTable)
                 .align(Align.FILL)
         }
             .layout(RowLayout.PARENT_GRID)
