@@ -47,7 +47,7 @@ class CCv2TreeTableModel(root: TreeNode) : DefaultTreeModel(root), TreeTableMode
 
     private fun isEnabled(node: Any?): Any? {
         // TODO: implement me
-        return true
+        return false
     }
 
     override fun isCellEditable(node: Any?, column: Int): Boolean = column == IS_ENABLED_COLUMN
