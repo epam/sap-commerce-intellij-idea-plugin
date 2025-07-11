@@ -80,6 +80,7 @@ class CCv2TreeTable(
                             ?.map { CCv2TreeNode.ServiceNode(it) }
                             ?.map { serviceNode ->
                                 serviceNode.service.replicas
+                                    .filter { replica -> replica.ready }
                                     .map { replica -> CCv2TreeNode.Replica(replica) }
                                     .forEach { replicaNode -> serviceNode.add(replicaNode) }
 

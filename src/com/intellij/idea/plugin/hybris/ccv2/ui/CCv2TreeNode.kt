@@ -63,7 +63,6 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
 
     class Replica(private val replica: CCv2ServiceReplicaDto) : CCv2TreeNode() {
         override fun label(): String = replica.name
-        override fun hint(): String? = replica.status
 
         override fun calculateIsProperSettings(): Boolean {
             // TODO: implement me
