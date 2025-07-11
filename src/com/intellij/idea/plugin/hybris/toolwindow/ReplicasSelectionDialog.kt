@@ -18,11 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow
 
-import com.intellij.idea.plugin.hybris.ccv2.ui.CCv2TreeTable
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
+import com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree.CCv2TreeTable
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -50,15 +51,15 @@ import javax.swing.JComponent
 
 class ReplicasSelectionDialog(
     private val project: Project,
-    private val currentReplicaType: ReplicaType = ReplicaType.MANUAL,
-    parentComponent: Component
+    private val currentExecutionContext: RemoteExecutionContext,
+    parentComponent: Component,
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
     private val editable = AtomicBooleanProperty(true)
 
-    private val ccv2ReplicaSettings = AtomicBooleanProperty(currentReplicaType == ReplicaType.CCV2)
+    private val ccv2ReplicaSettings = AtomicBooleanProperty(currentExecutionContext.replicaType == ReplicaType.CCV2)
     private val ccv2TreeTable by lazy {
-        CCv2TreeTable()
+        CCv2TreeTable(currentExecutionContext.replicas.toMutableSet())
             .apply {
                 Disposer.register(this@ReplicasSelectionDialog, this)
 
@@ -69,7 +70,7 @@ class ReplicasSelectionDialog(
             }
     }
 
-    private val replicaType = AtomicProperty(currentReplicaType).apply {
+    private val replicaType = AtomicProperty(currentExecutionContext.replicaType).apply {
         afterChange { selectedReplica ->
             ccv2ReplicaSettings.set(selectedReplica == ReplicaType.CCV2)
         }
@@ -87,17 +88,6 @@ class ReplicasSelectionDialog(
     private lateinit var centerPanel: DialogPanel
     private lateinit var ccv2SubscriptionComboBox: ComboBox<CCv2Subscription>
 
-    private fun startLoading(text: String = "Loading...") {
-        editable.set(false)
-        jbLoadingPanel.setLoadingText(text)
-        jbLoadingPanel.startLoading()
-    }
-
-    private fun stopLoading() {
-        editable.set(true)
-        jbLoadingPanel.stopLoading()
-    }
-
     override fun createCenterPanel(): JComponent? {
         centerPanel = panel {
             row {
@@ -109,7 +99,7 @@ class ReplicasSelectionDialog(
                     .gap(RightGap.SMALL)
                     .whenItemSelected { replicaType.set(it) }
                     .apply {
-                        selectedItem = currentReplicaType
+                        selectedItem = currentExecutionContext.replicaType
                         enabledIf(editable)
                     }
             }.layout(RowLayout.PARENT_GRID)
@@ -187,5 +177,16 @@ class ReplicasSelectionDialog(
 
     override fun dispose() {
         super.dispose()
+    }
+
+    private fun startLoading(text: String = "Loading...") {
+        editable.set(false)
+        jbLoadingPanel.setLoadingText(text)
+        jbLoadingPanel.startLoading()
+    }
+
+    private fun stopLoading() {
+        editable.set(true)
+        jbLoadingPanel.stopLoading()
     }
 }

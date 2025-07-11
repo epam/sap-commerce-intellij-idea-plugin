@@ -16,24 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.ccv2.ui
+package com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree
 
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.openapi.util.ClearableLazyValue
+import com.intellij.util.ui.ThreeStateCheckBox.State
 import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 
 abstract class CCv2TreeNode : DefaultMutableTreeNode() {
 
-    private val myProperSetting = ClearableLazyValue.create<Boolean> { this.calculateIsProperSettings() }
+    private val myProperSetting = ClearableLazyValue.create<State> { this.calculateState() }
 
     abstract fun label(): String
     open fun hint(): String? = null
-    protected abstract fun calculateIsProperSettings(): Boolean
+    protected abstract fun calculateState(): State
 
-    fun isProperSetting() = myProperSetting.getValue()
+    fun selectionState() = myProperSetting.getValue()
     fun dropCache() = myProperSetting.drop()
 
     class RootNode : Group("root") {
@@ -61,32 +62,37 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
         }
     }
 
-    class Replica(private val replica: CCv2ServiceReplicaDto) : CCv2TreeNode() {
-        override fun label(): String = replica.name
+    abstract class Group(private val label: String) : CCv2TreeNode() {
 
-        override fun calculateIsProperSettings(): Boolean {
-            // TODO: implement me
-            return true
+        override fun calculateState(): State {
+            val childrenStates = children
+                .filterIsInstance<CCv2TreeNode>()
+                .groupBy { it.calculateState() }
+
+            return when {
+                childrenStates.size == 2 -> State.DONT_CARE
+                childrenStates.containsKey(State.SELECTED) -> State.SELECTED
+                else -> State.NOT_SELECTED
+            }
         }
-
-        companion object {
-            @Serial
-            private const val serialVersionUID: Long = -2448235934797692419L
-        }
-    }
-
-    open class Group(private val label: String) : CCv2TreeNode() {
-
-        override fun calculateIsProperSettings(): Boolean = (0..childCount - 1)
-            .map { getChildAt(it) }
-            .filterIsInstance<CCv2TreeNode>()
-            .any { it.isProperSetting() }
 
         override fun label(): String = label
 
         companion object {
             @Serial
             private const val serialVersionUID: Long = -3751728934087860385L
+        }
+    }
+
+    class Replica(val replica: CCv2ServiceReplicaDto, private val selectedReplicas: Collection<String>) : CCv2TreeNode() {
+
+        override fun label(): String = replica.name
+        override fun calculateState(): State = if (selectedReplicas.contains(replica.name)) State.SELECTED
+        else State.NOT_SELECTED
+
+        companion object {
+            @Serial
+            private const val serialVersionUID: Long = -2448235934797692419L
         }
     }
 

@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.ExecutionMode
-import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteExecutionContext
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
@@ -731,8 +731,7 @@ object HybrisConstants {
     val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
     val KEY_LOGGER_IDENTIFIER_DATA_CONTEXT = DataKey.create<String>("sap.cx.logger.identifier")
     val KEY_GROOVY_EXECUTION_MODE = Key.create<ExecutionMode>("sap.cx.groovy.executionMode")
-    val KEY_GROOVY_BATCH_REPLICA_TYPE = Key.create<ReplicaType>("sap.cx.groovy.executionMode.batch.replicaType")
-    val KEY_GROOVY_BATCH_TARGET_REPLICAS = Key.create<Collection<String>>("sap.cx.groovy.executionMode.batch.replicas")
+    val KEY_REMOTE_EXECUTION_CONTEXT = Key.create<RemoteExecutionContext>("sap.cx.remote.executionContext")
 
     const val FXS_DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
     val FXS_SUPPORTED_ELEMENT_TYPES = setOf(

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.ccv2.ui
+package com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree
 
 import com.intellij.ide.ui.search.SearchUtil
 import com.intellij.ui.SimpleColoredComponent
@@ -31,9 +31,9 @@ import javax.swing.tree.DefaultTreeCellRenderer
 class CCv2TreeCellRenderer : DefaultTreeCellRenderer() {
 
     override fun getTreeCellRendererComponent(
-        tree: JTree, value: Any?, selected: Boolean, expanded: Boolean, leaf: Boolean, row: Int, hasFocus: Boolean
+        tree: JTree, node: Any?, selected: Boolean, expanded: Boolean, leaf: Boolean, row: Int, hasFocus: Boolean
     ) = SimpleColoredComponent().apply {
-        if (value !is CCv2TreeNode) return@apply
+        if (node !is CCv2TreeNode) return@apply
 
         val reallyHasFocus = tree.asSafely<TreeTableTree>()?.treeTable?.hasFocus() ?: false
         val background = UIUtil.getTreeBackground(selected, reallyHasFocus)
@@ -41,15 +41,16 @@ class CCv2TreeCellRenderer : DefaultTreeCellRenderer() {
 
         val foreground = when {
             selected -> UIUtil.getTreeSelectionForeground(reallyHasFocus)
+//            node.selectionState() -> PlatformColors.BLUE
             else -> UIUtil.getTreeForeground()
         }
 
-        val style = if (value is CCv2TreeNode.Group) SimpleTextAttributes.STYLE_BOLD
+        val style = if (node is CCv2TreeNode.Group) SimpleTextAttributes.STYLE_BOLD
         else SimpleTextAttributes.STYLE_PLAIN
 
-        SearchUtil.appendFragments(null, value.label(), style, foreground, background, this)
+        SearchUtil.appendFragments(null, node.label(), style, foreground, background, this)
 
-        value.hint()
+        node.hint()
             ?.let {
                 val attributes = if (selected) SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, foreground)
                 else SimpleTextAttributes.GRAYED_ATTRIBUTES

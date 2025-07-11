@@ -16,18 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.ccv2.ui
+package com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree
 
 import com.intellij.ui.treeStructure.treetable.TreeTable
 import com.intellij.ui.treeStructure.treetable.TreeTableModel
 import com.intellij.ui.treeStructure.treetable.TreeTableTree
 import com.intellij.util.asSafely
+import com.intellij.util.ui.tree.TreeUtil
 import java.io.Serial
 import javax.swing.JTree
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeNode
 
-class CCv2TreeTableModel(root: TreeNode) : DefaultTreeModel(root), TreeTableModel {
+class CCv2TreeTableModel(
+    root: TreeNode,
+    private val selectedReplicas: MutableCollection<String>,
+) : DefaultTreeModel(root), TreeTableModel {
     private var myTreeTable: TreeTable? = null
 
     override fun getColumnCount(): Int = 2
@@ -41,13 +45,13 @@ class CCv2TreeTableModel(root: TreeNode) : DefaultTreeModel(root), TreeTableMode
 
     override fun getValueAt(node: Any?, column: Int): Any? = when (column) {
         TREE_COLUMN -> node?.asSafely<CCv2TreeNode>()?.label()
-        IS_ENABLED_COLUMN -> isEnabled(node)
+        IS_ENABLED_COLUMN -> isSelected(node)
         else -> throw IllegalArgumentException()
     }
 
-    private fun isEnabled(node: Any?): Any? {
-        // TODO: implement me
-        return false
+    private fun isSelected(node: Any?): Any? {
+        return node.asSafely<CCv2TreeNode>()
+            ?.selectionState()
     }
 
     override fun isCellEditable(node: Any?, column: Int): Boolean = column == IS_ENABLED_COLUMN
@@ -55,7 +59,20 @@ class CCv2TreeTableModel(root: TreeNode) : DefaultTreeModel(root), TreeTableMode
     override fun setValueAt(aValue: Any?, node: Any?, column: Int) {
         val doEnable = aValue?.asSafely<Boolean>() ?: return
 
-        // TODO: implement me
+        when (node) {
+            is CCv2TreeNode.Group -> {
+                TreeUtil.listChildren(node).forEach { setValueAt(aValue, it, column) }
+
+                node.dropCache()
+            }
+
+            is CCv2TreeNode.Replica -> {
+                if (doEnable) selectedReplicas.add(node.replica.name)
+                else selectedReplicas.remove(node.replica.name)
+
+                node.dropCache()
+            }
+        }
     }
 
     override fun setTree(tree: JTree?) {

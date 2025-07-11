@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.ccv2.ui
+package com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
@@ -25,7 +25,6 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
-import com.intellij.profile.codeInspection.ui.table.ThreeStateCheckBoxRenderer
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.ui.treeStructure.treetable.TreeTable
 import com.intellij.util.ui.UIUtil
@@ -35,8 +34,9 @@ import java.util.*
 import javax.swing.tree.DefaultMutableTreeNode
 
 class CCv2TreeTable(
+    private val selectedReplicas: MutableCollection<String>,
     private val root: DefaultMutableTreeNode = CCv2TreeNode.RootNode(),
-    private val myModel: CCv2TreeTableModel = CCv2TreeTableModel(root)
+    private val myModel: CCv2TreeTableModel = CCv2TreeTableModel(root, selectedReplicas)
 ) : TreeTable(myModel), Disposable {
 
     val loadingState = AtomicProperty<CCv2Subscription?>(null)
@@ -49,8 +49,8 @@ class CCv2TreeTable(
 
         with(columnModel.getColumn(CCv2TreeTableModel.IS_ENABLED_COLUMN)) {
             setMaxWidth(JBUIScale.scale(22 + if (SystemInfo.isMac) 16 else 0))
-            setCellRenderer(ThreeStateCheckBoxRenderer().apply { isOpaque = true })
-            setCellEditor(ThreeStateCheckBoxRenderer())
+            setCellRenderer(CCv2ThreeStateCheckBoxRenderer().apply { isOpaque = true })
+            setCellEditor(CCv2ThreeStateCheckBoxRenderer())
         }
     }
 
@@ -81,7 +81,7 @@ class CCv2TreeTable(
                             ?.map { serviceNode ->
                                 serviceNode.service.replicas
                                     .filter { replica -> replica.ready }
-                                    .map { replica -> CCv2TreeNode.Replica(replica) }
+                                    .map { replica -> CCv2TreeNode.Replica(replica, selectedReplicas) }
                                     .forEach { replicaNode -> serviceNode.add(replicaNode) }
 
                                 serviceNode
@@ -95,7 +95,7 @@ class CCv2TreeTable(
                             }
                     }
 
-                TreeUtil.expandAll(tree)
+                TreeUtil.expand(tree, 1)
                 isEnabled = true
                 loadingState.set(null)
             },

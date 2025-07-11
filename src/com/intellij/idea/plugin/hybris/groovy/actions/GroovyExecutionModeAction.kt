@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.ExecutionMode
-import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteExecutionContext
 import com.intellij.idea.plugin.hybris.toolwindow.ReplicasSelectionDialog
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -57,11 +57,12 @@ class GroovyBatchExecutionModeAction : GroovyExecutionModeAction(ExecutionMode.B
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-        val replicaType = editor.getOrCreateUserDataUnsafe(HybrisConstants.KEY_GROOVY_BATCH_REPLICA_TYPE) { ReplicaType.CCV2 }
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
+        val executionContext = editor.getUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTEXT)
+            ?: RemoteExecutionContext.blank()
 
-        val result = ReplicasSelectionDialog(project, replicaType, component).showAndGet()
+        val result = ReplicasSelectionDialog(project, executionContext, component).showAndGet()
         super.setSelected(e, result)
     }
 }
