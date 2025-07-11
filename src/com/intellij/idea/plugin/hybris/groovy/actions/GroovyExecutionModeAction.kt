@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.ReplicasSelectionDialog
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.KeepPopupOnPerform
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
 import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.util.asSafely
@@ -35,6 +36,11 @@ open class GroovyExecutionModeAction(private val executionMode: ExecutionMode) :
     message("hybris.groovy.actions.executionMode.${executionMode.name.lowercase()}.description"),
     null
 ) {
+
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        e.presentation.keepPopupOnPerform = KeepPopupOnPerform.Never
+    }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 

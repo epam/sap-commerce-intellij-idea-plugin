@@ -43,6 +43,7 @@ import com.intellij.ui.InlineBanner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
 import java.awt.Component
@@ -109,7 +110,7 @@ class ReplicasSelectionDialog(
         }
             .apply {
                 border = JBUI.Borders.empty(16)
-                preferredSize = JBUI.DialogSizes.medium()
+                preferredSize = JBUI.DialogSizes.large()
             }
 
         return JBLoadingPanel(BorderLayout(), this).apply {
@@ -122,7 +123,10 @@ class ReplicasSelectionDialog(
         row {
             cell(
                 InlineBanner(
-                    "Manual mode is only planned for implementation",
+                    """
+                        Manual mode is only planned for implementation
+                        wait, hope, cross fingers...
+                        """.trimIndent(),
                     EditorNotificationPanel.Status.Warning
                 )
                     .showCloseButton(false)
@@ -135,6 +139,18 @@ class ReplicasSelectionDialog(
     }
 
     private fun Panel.ccv2Settings() {
+        row {
+            cell(
+                InlineBanner(
+                    "Each selected replica will result into a standalone request to hAC associated with <strong>ROUTE</strong> cookie value of the replica id.",
+                    EditorNotificationPanel.Status.Info
+                )
+                    .showCloseButton(false)
+            )
+                .customize(UnscaledGaps(12, 12, 12, 12))
+                .align(Align.CENTER)
+        }
+
         row {
             ccv2SubscriptionComboBox = comboBox(
                 ccv2SubscriptionsComboBoxModel,
