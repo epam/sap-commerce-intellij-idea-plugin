@@ -56,13 +56,10 @@ class HacChooseConnectionAction : DefaultActionGroup() {
                     override fun actionPerformed(e: AnActionEvent) = RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, it)
                 }
             }
-        val replicas = listOf(ActionManager.getInstance().getAction("hybris.hac.configureReplica"))
 
         return actions +
             Separator.create("Available Connections") +
-            connectionActions +
-            Separator.create("Replicas") +
-            replicas
+            connectionActions
     }
 
     override fun update(e: AnActionEvent) {
