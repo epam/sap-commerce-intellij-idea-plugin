@@ -22,21 +22,24 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.profile.codeInspection.ui.table.ThreeStateCheckBoxRenderer
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.ui.treeStructure.treetable.TreeTable
 import com.intellij.util.ui.UIUtil
+import com.intellij.util.ui.tree.TreeUtil
 import java.io.Serial
 import java.util.*
 import javax.swing.tree.DefaultMutableTreeNode
-import javax.swing.tree.TreePath
 
 class CCv2TreeTable(
     private val root: DefaultMutableTreeNode = CCv2TreeNode.RootNode(),
     private val myModel: CCv2TreeTableModel = CCv2TreeTableModel(root)
 ) : TreeTable(myModel), Disposable {
+
+    val loadingState = AtomicProperty<CCv2Subscription?>(null)
 
     init {
         setRootVisible(false)
@@ -51,17 +54,21 @@ class CCv2TreeTable(
         }
     }
 
+    fun reset() {
+        emptyText.text = "No replicas found"
+
+        root.removeAllChildren()
+        myModel.reload(root)
+    }
+
     fun refresh(project: Project, subscription: CCv2Subscription) {
         isEnabled = false
 
         CCv2Service.Companion.getInstance(project).fetchEnvironments(
             listOf(subscription),
             onStartCallback = {
-                while (root.childCount != 0) {
-                    root.remove(0)
-                }
-                myModel.reload(root)
-//                startLoading("Fetching environments...")
+                loadingState.set(subscription)
+                reset()
             },
             onCompleteCallback = { response ->
                 response[subscription]
@@ -86,9 +93,9 @@ class CCv2TreeTable(
                             }
                     }
 
-                tree.expandPath(TreePath(root))
-//                TreeUtil.expandAll(tree)
+                TreeUtil.expandAll(tree)
                 isEnabled = true
+                loadingState.set(null)
             },
             sendEvents = false,
             statuses = EnumSet.of(CCv2EnvironmentStatus.AVAILABLE),

@@ -56,7 +56,17 @@ class ReplicasSelectionDialog(
     private val manualReplicaSettings = AtomicBooleanProperty(currentReplicaType == ReplicaType.MANUAL)
     private val ccv2ReplicaSettings = AtomicBooleanProperty(currentReplicaType == ReplicaType.CCV2)
     private val ccv2SettingsRefresh = AtomicBooleanProperty(true)
-    private val ccv2TreeTable by lazy { CCv2TreeTable().also { Disposer.register(this, it) } }
+    private val ccv2TreeTable by lazy {
+        CCv2TreeTable()
+            .apply {
+                Disposer.register(this@ReplicasSelectionDialog, this)
+
+                loadingState.afterChange {
+                    if (it != null) startLoading("Loading replicas for ${it.name}, please wait...")
+                    else stopLoading()
+                }
+            }
+    }
 
     private val replicaType = AtomicProperty(currentReplicaType).apply {
         afterChange { selectedReplica ->
@@ -145,10 +155,11 @@ class ReplicasSelectionDialog(
                 override fun getActionUpdateThread() = ActionUpdateThread.BGT
                 override fun actionPerformed(e: AnActionEvent) {
                     ccv2SubscriptionsComboBoxModel.refresh()
+                    ccv2TreeTable.reset()
                     project.service<CCv2Service>().resetCache()
                 }
             })
-                .enabledIf(ccv2SettingsRefresh)
+                .enabledIf(editable)
         }.visibleIf(ccv2ReplicaSettings)
 
         row {

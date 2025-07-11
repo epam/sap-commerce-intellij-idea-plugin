@@ -43,15 +43,18 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
         }
     }
 
-    class EnvironmentNode(val environment: CCv2EnvironmentDto): Group(environment.name) {
-        override fun hint() = environment.status.title
+    class EnvironmentNode(val environment: CCv2EnvironmentDto) : Group(environment.code) {
+        override fun hint() = "${environment.services?.flatMap { it.replicas }?.size ?: 0} replica(s)"
 
         companion object {
             @Serial
             private const val serialVersionUID: Long = -693843320512859193L
         }
     }
-    class ServiceNode(val service: CCv2ServiceDto): Group(service.name) {
+
+    class ServiceNode(val service: CCv2ServiceDto) : Group(service.name) {
+        override fun hint() = "${service.replicas.size} replica(s)"
+
         companion object {
             @Serial
             private const val serialVersionUID: Long = 7004468229126469011L
@@ -79,6 +82,7 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
             .map { getChildAt(it) }
             .filterIsInstance<CCv2TreeNode>()
             .any { it.isProperSetting() }
+
         override fun label(): String = label
 
         companion object {
