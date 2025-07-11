@@ -62,8 +62,6 @@ class CCv2TreeTableModel(
         when (node) {
             is CCv2TreeNode.Group -> {
                 TreeUtil.listChildren(node).forEach { setValueAt(aValue, it, column) }
-
-                node.dropCache()
             }
 
             is CCv2TreeNode.Replica -> {
@@ -71,6 +69,9 @@ class CCv2TreeTableModel(
                 else selectedReplicas.remove(node.replica.name)
 
                 node.dropCache()
+
+                generateSequence(node.parent.asSafely<CCv2TreeNode.Group>()) { it.parent.asSafely<CCv2TreeNode.Group>() }
+                    .forEach { it.dropCache() }
             }
         }
     }
