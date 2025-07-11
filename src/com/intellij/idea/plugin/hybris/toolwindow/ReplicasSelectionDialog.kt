@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow
 
+import com.intellij.idea.plugin.hybris.ccv2.ui.CCv2TreeTable
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2TreeTable
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -33,6 +33,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.dsl.builder.*
@@ -53,7 +54,7 @@ class ReplicasSelectionDialog(
     private val manualReplicaSettings = AtomicBooleanProperty(currentReplicaType == ReplicaType.MANUAL)
     private val ccv2ReplicaSettings = AtomicBooleanProperty(currentReplicaType == ReplicaType.CCV2)
     private val ccv2SettingsRefresh = AtomicBooleanProperty(true)
-    private val ccv2TreeTable by lazy { CCv2TreeTable() }
+    private val ccv2TreeTable by lazy { CCv2TreeTable().also { Disposer.register(this, it) } }
 
     private val replicaType = AtomicProperty(currentReplicaType).apply {
         afterChange { selectedReplica ->
@@ -64,7 +65,7 @@ class ReplicasSelectionDialog(
     private val ccv2SubscriptionsComboBoxModel = CCv2SubscriptionsComboBoxModelFactory.create(project, null)
 
     init {
-        title = "Batch Replica Selection"
+        title = "Replicas Selection"
         isResizable = false
 
         super.init()
@@ -103,17 +104,12 @@ class ReplicasSelectionDialog(
                     }
             }.layout(RowLayout.PARENT_GRID)
 
-            ccv2Settings().visibleIf(ccv2ReplicaSettings)
+            ccv2Settings()
         }
             .apply {
                 border = JBUI.Borders.empty(16)
                 preferredSize = JBUI.DialogSizes.medium()
             }
-
-//        ccv2TableModel.addRow(listOf("1", "2", "3").toTypedArray())
-//        ccv2TableModel.addRow(listOf("1", "2", "3").toTypedArray())
-//        ccv2TableModel.addRow(listOf("1", "2", "3").toTypedArray())
-//        ccv2TableModel.addRow(listOf("1", "2", "3").toTypedArray())
 
         return JBLoadingPanel(BorderLayout(), this).apply {
             add(centerPanel, BorderLayout.CENTER)
@@ -121,7 +117,7 @@ class ReplicasSelectionDialog(
         }
     }
 
-    private fun Panel.ccv2Settings() = panel {
+    private fun Panel.ccv2Settings() {
         row {
             ccv2SubscriptionComboBox = comboBox(
                 ccv2SubscriptionsComboBoxModel,
@@ -149,16 +145,15 @@ class ReplicasSelectionDialog(
                     ccv2SubscriptionsComboBoxModel.refresh()
                 }
             })
-                .align(AlignX.RIGHT)
                 .enabledIf(ccv2SettingsRefresh)
-        }
-            .layout(RowLayout.PARENT_GRID)
+        }.visibleIf(ccv2ReplicaSettings)
 
         row {
-            cell(ccv2TreeTable)
+            scrollCell(ccv2TreeTable)
                 .align(Align.FILL)
         }
-            .layout(RowLayout.PARENT_GRID)
+            .resizableRow()
+            .visibleIf(ccv2ReplicaSettings)
     }
 
     override fun dispose() {

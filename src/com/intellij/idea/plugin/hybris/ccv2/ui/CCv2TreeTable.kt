@@ -16,9 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.ccv2
+package com.intellij.idea.plugin.hybris.ccv2.ui
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
@@ -26,35 +25,27 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.profile.codeInspection.ui.table.ThreeStateCheckBoxRenderer
-import com.intellij.ui.scale.JBUIScale.scale
+import com.intellij.ui.scale.JBUIScale
 import com.intellij.ui.treeStructure.treetable.TreeTable
-import com.intellij.ui.treeStructure.treetable.TreeTableModel
-import com.intellij.ui.treeStructure.treetable.TreeTableTree
-import com.intellij.util.asSafely
 import com.intellij.util.ui.UIUtil
+import java.io.Serial
 import java.util.*
-import javax.swing.Icon
-import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
-import javax.swing.tree.DefaultTreeModel
-import javax.swing.tree.TreeNode
 import javax.swing.tree.TreePath
-
-private const val TREE_COLUMN = 0
-private const val SEVERITIES_COLUMN = 1
-private const val IS_ENABLED_COLUMN = 2
 
 class CCv2TreeTable(
     private val root: DefaultMutableTreeNode = CCv2TreeNode.RootNode(),
-    private val myModel: CCv2ReplicasTreeTableModel = CCv2ReplicasTreeTableModel(root)
+    private val myModel: CCv2TreeTableModel = CCv2TreeTableModel(root)
 ) : TreeTable(myModel), Disposable {
 
     init {
         setRootVisible(false)
         emptyText.text = "No replicas found"
 
-        with (columnModel.getColumn(IS_ENABLED_COLUMN)) {
-            setMaxWidth(scale(22 + if (SystemInfo.isMac) 16 else 0))
+        setTreeCellRenderer(CCv2TreeCellRenderer())
+
+        with(columnModel.getColumn(CCv2TreeTableModel.IS_ENABLED_COLUMN)) {
+            setMaxWidth(JBUIScale.scale(22 + if (SystemInfo.isMac) 16 else 0))
             setCellRenderer(ThreeStateCheckBoxRenderer().apply { isOpaque = true })
             setCellEditor(ThreeStateCheckBoxRenderer())
         }
@@ -63,7 +54,7 @@ class CCv2TreeTable(
     fun refresh(project: Project, subscription: CCv2Subscription) {
         isEnabled = false
 
-        CCv2Service.getInstance(project).fetchEnvironments(
+        CCv2Service.Companion.getInstance(project).fetchEnvironments(
             listOf(subscription),
             onStartCallback = {
                 while (root.childCount != 0) {
@@ -84,22 +75,19 @@ class CCv2TreeTable(
                                     .map { replica -> CCv2TreeNode.Replica(replica) }
                                     .forEach { replicaNode -> serviceNode.add(replicaNode) }
 
-                                tree.expandPath(TreePath(serviceNode))
-
                                 serviceNode
                             }
                             ?.takeIf { it.isNotEmpty() }
                             ?.let { serviceNodes ->
                                 CCv2TreeNode.EnvironmentNode(environment).also { environmentNode ->
                                     serviceNodes.forEach { environmentNode.add(it) }
-
-                                    tree.expandPath(TreePath(environmentNode))
                                     root.add(environmentNode)
                                 }
                             }
                     }
 
                 tree.expandPath(TreePath(root))
+//                TreeUtil.expandAll(tree)
                 isEnabled = true
             },
             sendEvents = false,
@@ -111,44 +99,9 @@ class CCv2TreeTable(
     }
 
     override fun dispose() = UIUtil.dispose(this)
-}
 
-class CCv2ReplicasTreeTableModel(root: TreeNode) : DefaultTreeModel(root), TreeTableModel {
-    private var myTreeTable: TreeTable? = null
-
-    override fun getColumnCount(): Int = 3
-    override fun getColumnName(column: Int) = null
-
-    override fun getColumnClass(column: Int) = when (column) {
-        // TODO: add constants
-        TREE_COLUMN -> TreeTableModel::class.java
-        SEVERITIES_COLUMN -> Icon::class.java
-        IS_ENABLED_COLUMN -> Boolean::class.java
-        else -> throw java.lang.IllegalArgumentException("Unexpected value: $column")
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 5062030489991250736L
     }
-
-    override fun getValueAt(node: Any?, column: Int): Any? = when (column) {
-        TREE_COLUMN -> node?.asSafely<CCv2TreeNode>()?.label()
-        SEVERITIES_COLUMN -> HybrisIcons.CCv2.DESCRIPTOR // TODO: implement
-        IS_ENABLED_COLUMN -> isEnabled(node)
-        else -> throw IllegalArgumentException()
-    }
-
-    private fun isEnabled(node: Any?): Any? {
-        // TODO: implement me
-        return true
-    }
-
-    override fun isCellEditable(node: Any?, column: Int): Boolean = column == IS_ENABLED_COLUMN
-
-    override fun setValueAt(aValue: Any?, node: Any?, column: Int) {
-        val doEnable = aValue?.asSafely<Boolean>() ?: return
-
-        // TODO: implement me
-    }
-
-    override fun setTree(tree: JTree?) {
-        myTreeTable = (tree as TreeTableTree).treeTable
-    }
-
 }

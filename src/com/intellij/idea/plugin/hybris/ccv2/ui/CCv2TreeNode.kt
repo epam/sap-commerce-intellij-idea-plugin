@@ -16,12 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.ccv2
+package com.intellij.idea.plugin.hybris.ccv2.ui
 
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.openapi.util.ClearableLazyValue
+import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 
 abstract class CCv2TreeNode : DefaultMutableTreeNode() {
@@ -29,30 +30,65 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
     private val myProperSetting = ClearableLazyValue.create<Boolean> { this.calculateIsProperSettings() }
 
     abstract fun label(): String
+    open fun hint(): String? = null
     protected abstract fun calculateIsProperSettings(): Boolean
 
     fun isProperSetting() = myProperSetting.getValue()
     fun dropCache() = myProperSetting.drop()
 
-    class RootNode : Group("root")
-    class EnvironmentNode(val environment: CCv2EnvironmentDto): Group(environment.name)
-    class ServiceNode(val service: CCv2ServiceDto): Group(service.name)
+    class RootNode : Group("root") {
+        companion object {
+            @Serial
+            private const val serialVersionUID: Long = -7468617334648819996L
+        }
+    }
+
+    class EnvironmentNode(val environment: CCv2EnvironmentDto): Group(environment.name) {
+        override fun hint() = environment.status.title
+
+        companion object {
+            @Serial
+            private const val serialVersionUID: Long = -693843320512859193L
+        }
+    }
+    class ServiceNode(val service: CCv2ServiceDto): Group(service.name) {
+        companion object {
+            @Serial
+            private const val serialVersionUID: Long = 7004468229126469011L
+        }
+    }
 
     class Replica(private val replica: CCv2ServiceReplicaDto) : CCv2TreeNode() {
         override fun label(): String = replica.name
+        override fun hint(): String? = replica.status
 
         override fun calculateIsProperSettings(): Boolean {
             // TODO: implement me
             return true
         }
+
+        companion object {
+            @Serial
+            private const val serialVersionUID: Long = -2448235934797692419L
+        }
     }
 
     open class Group(private val label: String) : CCv2TreeNode() {
 
-        override fun calculateIsProperSettings(): Boolean = (0..childCount)
+        override fun calculateIsProperSettings(): Boolean = (0..childCount - 1)
             .map { getChildAt(it) }
             .filterIsInstance<CCv2TreeNode>()
             .any { it.isProperSetting() }
         override fun label(): String = label
+
+        companion object {
+            @Serial
+            private const val serialVersionUID: Long = -3751728934087860385L
+        }
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 6777454376714796894L
     }
 }
