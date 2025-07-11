@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree
 
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentType
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.openapi.util.ClearableLazyValue
@@ -41,6 +42,15 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
         companion object {
             @Serial
             private const val serialVersionUID: Long = -7468617334648819996L
+        }
+    }
+
+    class EnvironmentTypeNode(val environmentType: CCv2EnvironmentType, private val environments: Collection<CCv2EnvironmentDto>) : Group(environmentType.title) {
+        override fun hint() = "${environments.mapNotNull { it.services }.flatten().map { it.replicas }.size} replica(s)"
+
+        companion object {
+            @Serial
+            private const val serialVersionUID: Long = -693843320512859193L
         }
     }
 

@@ -73,23 +73,34 @@ class CCv2TreeTable(
             onCompleteCallback = { response ->
                 response[subscription]
                     ?.filter { it.accessible }
-                    ?.forEach { environment ->
-                        environment.services
-                            ?.filter { it.code.startsWith("hcs_platform_") }
-                            ?.filter { it.replicas.isNotEmpty() }
-                            ?.map { CCv2TreeNode.ServiceNode(it) }
-                            ?.map { serviceNode ->
-                                serviceNode.service.replicas
-                                    .filter { replica -> replica.ready }
-                                    .map { replica -> CCv2TreeNode.Replica(replica, selectedReplicas) }
-                                    .forEach { replicaNode -> serviceNode.add(replicaNode) }
+                    ?.groupBy { it.type }
+                    ?.forEach { (type, environments) ->
+                        environments
+                            .mapNotNull { environment ->
+                                environment.services
+                                    ?.filter { it.code.startsWith("hcs_platform_") }
+                                    ?.filter { it.replicas.isNotEmpty() }
+                                    ?.map { CCv2TreeNode.ServiceNode(it) }
+                                    ?.map { serviceNode ->
+                                        serviceNode.service.replicas
+                                            .filter { replica -> replica.ready }
+                                            .map { replica -> CCv2TreeNode.Replica(replica, selectedReplicas) }
+                                            .forEach { replicaNode -> serviceNode.add(replicaNode) }
 
-                                serviceNode
+                                        serviceNode
+                                    }
+                                    ?.takeIf { it.isNotEmpty() }
+                                    ?.let { serviceNodes ->
+                                        CCv2TreeNode.EnvironmentNode(environment).also { environmentNode ->
+                                            serviceNodes.forEach { environmentNode.add(it) }
+//                                            root.add(environmentNode)
+                                        }
+                                    }
                             }
-                            ?.takeIf { it.isNotEmpty() }
-                            ?.let { serviceNodes ->
-                                CCv2TreeNode.EnvironmentNode(environment).also { environmentNode ->
-                                    serviceNodes.forEach { environmentNode.add(it) }
+                            .takeIf { it.isNotEmpty() }
+                            ?.let { environmentNodes ->
+                                CCv2TreeNode.EnvironmentTypeNode(type, environments).also {environmentNode ->
+                                    environmentNodes.forEach { environmentNode.add(it) }
                                     root.add(environmentNode)
                                 }
                             }
