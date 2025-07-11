@@ -31,11 +31,14 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
+import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.InlineBanner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.dsl.builder.*
@@ -53,9 +56,7 @@ class ReplicasSelectionDialog(
 
     private val editable = AtomicBooleanProperty(true)
 
-    private val manualReplicaSettings = AtomicBooleanProperty(currentReplicaType == ReplicaType.MANUAL)
     private val ccv2ReplicaSettings = AtomicBooleanProperty(currentReplicaType == ReplicaType.CCV2)
-    private val ccv2SettingsRefresh = AtomicBooleanProperty(true)
     private val ccv2TreeTable by lazy {
         CCv2TreeTable()
             .apply {
@@ -70,7 +71,6 @@ class ReplicasSelectionDialog(
 
     private val replicaType = AtomicProperty(currentReplicaType).apply {
         afterChange { selectedReplica ->
-            manualReplicaSettings.set(selectedReplica == ReplicaType.MANUAL)
             ccv2ReplicaSettings.set(selectedReplica == ReplicaType.CCV2)
         }
     }
@@ -89,14 +89,12 @@ class ReplicasSelectionDialog(
 
     private fun startLoading(text: String = "Loading...") {
         editable.set(false)
-        ccv2SettingsRefresh.set(false)
         jbLoadingPanel.setLoadingText(text)
         jbLoadingPanel.startLoading()
     }
 
     private fun stopLoading() {
         editable.set(true)
-        ccv2SettingsRefresh.set(true)
         jbLoadingPanel.stopLoading()
     }
 
@@ -117,6 +115,7 @@ class ReplicasSelectionDialog(
             }.layout(RowLayout.PARENT_GRID)
 
             ccv2Settings()
+            manualSettings()
         }
             .apply {
                 border = JBUI.Borders.empty(16)
@@ -127,6 +126,22 @@ class ReplicasSelectionDialog(
             add(centerPanel, BorderLayout.CENTER)
             jbLoadingPanel = this
         }
+    }
+
+    private fun Panel.manualSettings() {
+        row {
+            cell(
+                InlineBanner(
+                    "Manual mode is only planned for implementation",
+                    EditorNotificationPanel.Status.Warning
+                )
+                    .showCloseButton(false)
+            )
+                .align(Align.CENTER)
+                .resizableColumn()
+        }
+            .resizableRow()
+            .visibleIf(ccv2ReplicaSettings.not())
     }
 
     private fun Panel.ccv2Settings() {

@@ -44,8 +44,10 @@ open class GroovyExecutionModeAction(private val executionMode: ExecutionMode) :
         ?: false
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        e.getData(CommonDataKeys.EDITOR)
-            ?.putUserData(HybrisConstants.KEY_GROOVY_EXECUTION_MODE, executionMode)
+        if (state) {
+            e.getData(CommonDataKeys.EDITOR)
+                ?.putUserData(HybrisConstants.KEY_GROOVY_EXECUTION_MODE, executionMode)
+        }
     }
 }
 
@@ -59,8 +61,7 @@ class GroovyBatchExecutionModeAction : GroovyExecutionModeAction(ExecutionMode.B
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
 
-        ReplicasSelectionDialog(project, replicaType, component).showAndGet()
-
-        super.setSelected(e, state)
+        val result = ReplicasSelectionDialog(project, replicaType, component).showAndGet()
+        super.setSelected(e, result)
     }
 }
