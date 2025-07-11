@@ -75,6 +75,7 @@ class CCv2TreeTable(
                     ?.filter { it.accessible }
                     ?.forEach { environment ->
                         environment.services
+                            ?.filter { it.code.startsWith("hcs_platform_") }
                             ?.filter { it.replicas.isNotEmpty() }
                             ?.map { CCv2TreeNode.ServiceNode(it) }
                             ?.map { serviceNode ->
