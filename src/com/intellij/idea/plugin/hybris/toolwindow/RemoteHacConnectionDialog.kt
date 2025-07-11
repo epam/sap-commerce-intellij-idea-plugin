@@ -55,7 +55,7 @@ class RemoteHacConnectionDialog(
     }
 
     override fun testConnection(testSettings: RemoteConnectionSettings): String = HybrisHacHttpClient.getInstance(project)
-        .login(project, testSettings)
+        .login(testSettings)
 
     override fun panel() = panel {
         row {

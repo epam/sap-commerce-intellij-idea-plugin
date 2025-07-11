@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.tools.remote.http;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.UserDataHolderBase;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -60,6 +60,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
+import java.io.Serial;
 import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
@@ -74,11 +75,12 @@ import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.apache.http.HttpVersion.HTTP_1_1;
 
-public abstract class AbstractHybrisHacHttpClient {
+public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
 
     private static final Logger LOG = Logger.getInstance(AbstractHybrisHacHttpClient.class);
-    private static final Key<Replica> KEY_REPLICA = Key.create("hybris.http.replica");
-    private final Project project;
+    private static final Key<Replica> KEY_REPLICA = Key.create("hybris.http.replica");;
+    @Serial
+    private static final long serialVersionUID = -4915832410081381025L;
 
     public static final int DEFAULT_HAC_TIMEOUT = 6000;
 
@@ -101,23 +103,19 @@ public abstract class AbstractHybrisHacHttpClient {
 
     private final Map<RemoteConnectionSettings, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
 
-    public AbstractHybrisHacHttpClient(final Project project) {
-        this.project = project;
-    }
-
     @Nullable
     public Replica getReplica() {
-        return project.getUserData(KEY_REPLICA);
+        return getUserData(KEY_REPLICA);
     }
 
     public void setReplica(final Replica replica) {
-        project.putUserData(KEY_REPLICA, replica);
+        putUserData(KEY_REPLICA, replica);
         cookiesPerSettings.clear();
     }
 
-    public String login(@NotNull final Project project, @NotNull final RemoteConnectionSettings settings) {
+    public String login(@NotNull final RemoteConnectionSettings settings) {
         final var hostHacURL = settings.getGeneratedURL();
-        retrieveCookies(hostHacURL, project, settings);
+        retrieveCookies(hostHacURL, settings);
         final var cookieName = getCookieName(settings);
         final var sessionId = Optional.ofNullable(cookiesPerSettings.get(settings))
             .map(it -> it.get(cookieName))
@@ -132,7 +130,7 @@ public abstract class AbstractHybrisHacHttpClient {
             new BasicNameValuePair("_csrf", csrfToken)
         );
         final var loginURL = hostHacURL + "/j_spring_security_check";
-        final HttpResponse response = post(project, loginURL, params, false, DEFAULT_HAC_TIMEOUT, settings);
+        final HttpResponse response = post(loginURL, params, false, DEFAULT_HAC_TIMEOUT, settings);
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY) {
             final Header location = response.getFirstHeader("Location");
             if (location != null && location.getValue().contains("login_error")) {
@@ -160,7 +158,6 @@ public abstract class AbstractHybrisHacHttpClient {
 
     @NotNull
     public final HttpResponse post(
-        @NotNull final Project project,
         @NotNull final String actionUrl,
         @NotNull final List<BasicNameValuePair> params,
         final boolean canReLoginIfNeeded,
@@ -170,7 +167,7 @@ public abstract class AbstractHybrisHacHttpClient {
         final String cookieName = getCookieName(settings);
         var cookies = cookiesPerSettings.get(settings);
         if (cookies == null || !cookies.containsKey(cookieName)) {
-            final String errorMessage = login(project, settings);
+            final String errorMessage = login(settings);
             if (StringUtils.isNotBlank(errorMessage)) {
                 return createErrorResponse(errorMessage);
             }
@@ -182,7 +179,7 @@ public abstract class AbstractHybrisHacHttpClient {
             cookiesPerSettings.remove(settings);
 
             if (canReLoginIfNeeded) {
-                return post(project, actionUrl, params, false, timeout, settings);
+                return post(actionUrl, params, false, timeout, settings);
             }
             return createErrorResponse("Unable to obtain csrfToken for sessionId=" + sessionId);
         }
@@ -226,7 +223,7 @@ public abstract class AbstractHybrisHacHttpClient {
         if (needsLogin) {
             cookiesPerSettings.remove(settings);
             if (canReLoginIfNeeded) {
-                return post(project, actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings);
+                return post(actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings);
             }
         }
         return response;
@@ -265,13 +262,12 @@ public abstract class AbstractHybrisHacHttpClient {
 
     protected void retrieveCookies(
         final String hacURL,
-        final @NotNull Project project,
         final @NotNull RemoteConnectionSettings settings
     ) {
         final var cookies = cookiesPerSettings.computeIfAbsent(settings, _settings -> new HashMap<>());
         cookies.clear();
 
-        final var res = getResponseForUrl(project, hacURL, settings);
+        final var res = getResponseForUrl(hacURL, settings);
 
         if (res == null) return;
 
@@ -290,7 +286,6 @@ public abstract class AbstractHybrisHacHttpClient {
 
     @Nullable
     protected Response getResponseForUrl(
-        final Project project,
         final String hacURL,
         final @NotNull RemoteConnectionSettings settings
     ) {

@@ -21,12 +21,14 @@ package com.intellij.idea.plugin.hybris.toolwindow
 import com.intellij.idea.plugin.hybris.ccv2.ui.CCv2TreeTable
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.service
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project
@@ -143,6 +145,7 @@ class ReplicasSelectionDialog(
                 override fun getActionUpdateThread() = ActionUpdateThread.BGT
                 override fun actionPerformed(e: AnActionEvent) {
                     ccv2SubscriptionsComboBoxModel.refresh()
+                    project.service<CCv2Service>().resetCache()
                 }
             })
                 .enabledIf(ccv2SettingsRefresh)
