@@ -29,7 +29,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.KeepPopupOnPerform
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
-import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.util.asSafely
 import java.awt.Component
@@ -44,9 +43,6 @@ abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode
         super.update(e)
 
         e.presentation.keepPopupOnPerform = KeepPopupOnPerform.Never
-        e.presentation.icon = if (isSelected(e)) replicaSelectionMode.icon
-        else IconLoader.getDisabledIcon(replicaSelectionMode.icon)
-//        e.presentation.hoveredIcon = replicaSelectionMode.icon
     }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

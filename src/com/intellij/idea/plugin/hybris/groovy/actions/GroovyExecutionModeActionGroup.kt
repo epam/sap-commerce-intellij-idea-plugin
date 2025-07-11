@@ -44,6 +44,7 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
             { ReplicaSelectionMode.AUTO }
         val mode = message("hybris.groovy.actions.executionMode.${replicaSelectionMode.name.lowercase()}")
 
+        e.presentation.icon = replicaSelectionMode.icon
         e.presentation.text = message("hybris.groovy.actions.executionMode", mode)
     }
 }
