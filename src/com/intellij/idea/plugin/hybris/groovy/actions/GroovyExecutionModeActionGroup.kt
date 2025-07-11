@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.ExecutionMode
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaSelectionMode
 import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -39,8 +39,10 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-        val executionMode = editor.getOrCreateUserDataUnsafe(HybrisConstants.KEY_GROOVY_EXECUTION_MODE) { ExecutionMode.SINGLE }
-        val mode = message("hybris.groovy.actions.executionMode.${executionMode.name.lowercase()}")
+        val replicaSelectionMode = editor
+            .getOrCreateUserDataUnsafe(HybrisConstants.KEY_GROOVY_REPLICA_SELECTION_MODE)
+            { ReplicaSelectionMode.AUTO }
+        val mode = message("hybris.groovy.actions.executionMode.${replicaSelectionMode.name.lowercase()}")
 
         e.presentation.text = message("hybris.groovy.actions.executionMode", mode)
     }

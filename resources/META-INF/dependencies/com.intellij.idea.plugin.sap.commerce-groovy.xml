@@ -51,8 +51,9 @@
             <group id="hybris.groovy.toolbar.mode" popup="true"
                    class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecutionModeActionGroup">
                 <separator key="hybris.groovy.actions.executionMode.separator"/>
-                <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovySingleExecutionModeAction"/>
-                <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyBatchExecutionModeAction"/>
+                <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyAutoReplicaSelectionModeAction"/>
+                <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyCCv2ReplicaSelectionModeAction"/>
+                <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyManualReplicaSelectionModeAction"/>
             </group>
         </group>
         <group id="hybris.groovy.toolbar.right">

@@ -16,26 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote
+package com.intellij.idea.plugin.hybris.tools.remote.http
 
-import com.intellij.icons.AllIcons
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import javax.swing.Icon
-
-enum class ReplicaType(val tooltip: String, val title: String, val icon: Icon) {
-    AUTO(
-        "Automatically discover replica",
-        "Auto-discover",
-        AllIcons.Actions.Lightning
-    ),
-    CCV2(
-        "Select id of the CCv2 service specific replica",
-        "CCv2",
-        HybrisIcons.CCv2.DESCRIPTOR
-    ),
-    MANUAL(
-        "Manually specify replica id and corresponding cookie name",
-        "Manual",
-        AllIcons.Actions.Edit
-    )
-}
+data class ReplicaAwareExecutionContext(
+    val id: String,
+    val cookieName: String = "ROUTE"
+)

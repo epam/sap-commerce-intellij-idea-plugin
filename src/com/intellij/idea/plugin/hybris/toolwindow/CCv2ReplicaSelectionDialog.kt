@@ -23,19 +23,15 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree.CCv2TreeTable
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.ReplicaType
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
-import com.intellij.openapi.observable.properties.AtomicProperty
-import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.EditorNotificationPanel
@@ -47,22 +43,19 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
 import java.awt.Component
-import java.util.*
 import javax.swing.JComponent
 
-class ReplicasSelectionDialog(
+class CCv2ReplicaSelectionDialog(
     private val project: Project,
-    private val currentExecutionContext: RemoteExecutionContext,
+    private val currentExecutionContext: ReplicaContext,
     parentComponent: Component,
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
     private val editable = AtomicBooleanProperty(true)
-
-    private val ccv2ReplicaSettings = AtomicBooleanProperty(currentExecutionContext.replicaType == ReplicaType.CCV2)
     private val ccv2TreeTable by lazy {
-        CCv2TreeTable(currentExecutionContext.replicas.toMutableSet())
+        CCv2TreeTable(currentExecutionContext.replicas.map { it.id }.toMutableSet())
             .apply {
-                Disposer.register(this@ReplicasSelectionDialog, this)
+                Disposer.register(this@CCv2ReplicaSelectionDialog, this)
 
                 loadingState.afterChange {
                     if (it != null) startLoading("Loading replicas for ${it.name}, please wait...")
@@ -71,11 +64,6 @@ class ReplicasSelectionDialog(
             }
     }
 
-    private val replicaType = AtomicProperty(currentExecutionContext.replicaType).apply {
-        afterChange { selectedReplica ->
-            ccv2ReplicaSettings.set(selectedReplica == ReplicaType.CCV2)
-        }
-    }
     private val ccv2SubscriptionsComboBoxModel = CCv2SubscriptionsComboBoxModelFactory.create(project, null)
 
     init {
@@ -86,27 +74,11 @@ class ReplicasSelectionDialog(
     }
 
     private lateinit var jbLoadingPanel: JBLoadingPanel
-    private lateinit var centerPanel: DialogPanel
     private lateinit var ccv2SubscriptionComboBox: ComboBox<CCv2Subscription>
 
     override fun createCenterPanel(): JComponent? {
-        centerPanel = panel {
-            row {
-                segmentedButton(EnumSet.of(ReplicaType.MANUAL, ReplicaType.CCV2), {
-                    this.text = it.title
-                    this.icon = it.icon
-                })
-                    .align(AlignX.FILL)
-                    .gap(RightGap.SMALL)
-                    .whenItemSelected { replicaType.set(it) }
-                    .apply {
-                        selectedItem = currentExecutionContext.replicaType
-                        enabledIf(editable)
-                    }
-            }.layout(RowLayout.PARENT_GRID)
-
+        val centerPanel = panel {
             ccv2Settings()
-            manualSettings()
         }
             .apply {
                 border = JBUI.Borders.empty(16)
@@ -117,25 +89,6 @@ class ReplicasSelectionDialog(
             add(centerPanel, BorderLayout.CENTER)
             jbLoadingPanel = this
         }
-    }
-
-    private fun Panel.manualSettings() {
-        row {
-            cell(
-                InlineBanner(
-                    """
-                        Manual mode is only planned for implementation
-                        wait, hope, cross fingers...
-                        """.trimIndent(),
-                    EditorNotificationPanel.Status.Warning
-                )
-                    .showCloseButton(false)
-            )
-                .align(Align.CENTER)
-                .resizableColumn()
-        }
-            .resizableRow()
-            .visibleIf(ccv2ReplicaSettings.not())
     }
 
     private fun Panel.ccv2Settings() {
@@ -181,14 +134,13 @@ class ReplicasSelectionDialog(
                 }
             })
                 .enabledIf(editable)
-        }.visibleIf(ccv2ReplicaSettings)
+        }
 
         row {
             scrollCell(ccv2TreeTable)
                 .align(Align.FILL)
         }
             .resizableRow()
-            .visibleIf(ccv2ReplicaSettings)
     }
 
     override fun dispose() {

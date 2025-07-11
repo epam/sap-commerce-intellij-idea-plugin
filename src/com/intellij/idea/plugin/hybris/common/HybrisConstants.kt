@@ -27,8 +27,8 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.ExecutionMode
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaSelectionMode
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
@@ -730,8 +730,8 @@ object HybrisConstants {
     val KEY_FINALIZE_PROJECT_IMPORT: Key<Triple<HybrisProjectDescriptor, List<ModuleDescriptor>, Boolean>> = Key.create("hybrisProjectImportFinalize")
     val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
     val KEY_LOGGER_IDENTIFIER_DATA_CONTEXT = DataKey.create<String>("sap.cx.logger.identifier")
-    val KEY_GROOVY_EXECUTION_MODE = Key.create<ExecutionMode>("sap.cx.groovy.executionMode")
-    val KEY_REMOTE_EXECUTION_CONTEXT = Key.create<RemoteExecutionContext>("sap.cx.remote.executionContext")
+    val KEY_GROOVY_REPLICA_SELECTION_MODE = Key.create<ReplicaSelectionMode>("sap.cx.groovy.replicaSelectionMode")
+    val KEY_REMOTE_EXECUTION_CONTEXT = Key.create<ReplicaContext>("sap.cx.remote.executionContext")
 
     const val FXS_DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
     val FXS_SUPPORTED_ELEMENT_TYPES = setOf(
