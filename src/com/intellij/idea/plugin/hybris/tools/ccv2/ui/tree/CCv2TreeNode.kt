@@ -46,8 +46,6 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
     }
 
     class EnvironmentTypeNode(val environmentType: CCv2EnvironmentType, private val environments: Collection<CCv2EnvironmentDto>) : Group(environmentType.title) {
-        override fun hint() = "${environments.mapNotNull { it.services }.flatten().map { it.replicas }.size} replica(s)"
-
         companion object {
             @Serial
             private const val serialVersionUID: Long = -693843320512859193L
@@ -55,8 +53,6 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
     }
 
     class EnvironmentNode(val environment: CCv2EnvironmentDto) : Group(environment.code) {
-        override fun hint() = "${environment.services?.flatMap { it.replicas }?.size ?: 0} replica(s)"
-
         companion object {
             @Serial
             private const val serialVersionUID: Long = -693843320512859193L
@@ -64,8 +60,6 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
     }
 
     class ServiceNode(val service: CCv2ServiceDto) : Group(service.name) {
-        override fun hint() = "${service.replicas.size} replica(s)"
-
         companion object {
             @Serial
             private const val serialVersionUID: Long = 7004468229126469011L
@@ -73,17 +67,31 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
     }
 
     abstract class Group(private val label: String) : CCv2TreeNode() {
+        private var selected: Int = 0
+        private var unSelected: Int = 0
+        private val allReplicas: Int get() = selected + unSelected
 
         override fun calculateState(): State {
             val childrenStates = children
                 .filterIsInstance<CCv2TreeNode>()
                 .groupBy { it.calculateState() }
 
+            selected = (childrenStates[State.SELECTED]?.filterIsInstance<Replica>()?.size ?: 0) +
+                childrenStates.values.flatten().filterIsInstance<Group>().sumOf { it.selected }
+            unSelected = (childrenStates[State.NOT_SELECTED]?.filterIsInstance<Replica>()?.size ?: 0) +
+                childrenStates.values.flatten().filterIsInstance<Group>().sumOf { it.unSelected }
+
             return when {
                 childrenStates.size == 2 -> State.DONT_CARE
                 childrenStates.containsKey(State.SELECTED) -> State.SELECTED
                 else -> State.NOT_SELECTED
             }
+        }
+
+        override fun hint() = when {
+            selected < allReplicas -> "$selected of $allReplicas replica(s)"
+            selected == allReplicas -> "$selected replica(s)"
+            else -> null
         }
 
         override fun label(): String = label
@@ -95,6 +103,10 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
     }
 
     class Replica(val replica: CCv2ServiceReplicaDto, private val selectedReplicas: Collection<String>) : CCv2TreeNode() {
+
+        init {
+            allowsChildren = false
+        }
 
         override fun label(): String = replica.name
         override fun calculateState(): State = if (selectedReplicas.contains(replica.name)) State.SELECTED
