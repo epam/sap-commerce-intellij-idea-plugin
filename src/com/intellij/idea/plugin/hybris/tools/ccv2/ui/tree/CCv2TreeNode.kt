@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.util.ui.ThreeStateCheckBox.State
+import com.intellij.util.ui.tree.TreeUtil
 import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 
@@ -72,7 +73,7 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
         private val allReplicas: Int get() = selected + unSelected
 
         override fun calculateState(): State {
-            val childrenStates = children
+            val childrenStates = TreeUtil.listChildren(this)
                 .filterIsInstance<CCv2TreeNode>()
                 .groupBy { it.selectionState() }
 
