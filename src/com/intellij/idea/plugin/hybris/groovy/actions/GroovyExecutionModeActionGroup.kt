@@ -17,16 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaSelectionMode
 import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 
 class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 
@@ -38,13 +35,14 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-        val replicaSelectionMode = editor
-            .getOrCreateUserDataUnsafe(HybrisConstants.KEY_GROOVY_REPLICA_SELECTION_MODE)
-            { ReplicaSelectionMode.AUTO }
-        val mode = message("hybris.groovy.actions.executionMode.${replicaSelectionMode.name.lowercase()}")
+        val project = e.project ?: return
+        val replicaContext = HybrisHacHttpClient.getInstance(project).replicaContext
+        val text = when (replicaContext.mode) {
+            ReplicaSelectionMode.AUTO -> "Auto-Discover Replica"
+            else -> "Execute on ${replicaContext.replicas.size} replica(s)"
+        }
 
-        e.presentation.icon = replicaSelectionMode.icon
-        e.presentation.text = message("hybris.groovy.actions.executionMode", mode)
+        e.presentation.icon = replicaContext.mode.icon
+        e.presentation.text = text
     }
 }

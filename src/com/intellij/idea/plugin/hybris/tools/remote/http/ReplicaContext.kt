@@ -44,7 +44,8 @@ data class ReplicaContext(
         }
 
     companion object {
-        fun ccv2() = ReplicaContext(ReplicaSelectionMode.AUTO)
+        fun auto() = ReplicaContext(ReplicaSelectionMode.AUTO)
+        fun ccv2() = ReplicaContext(ReplicaSelectionMode.CCV2)
         fun manual() = ReplicaContext(ReplicaSelectionMode.MANUAL)
     }
 }

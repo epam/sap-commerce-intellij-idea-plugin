@@ -79,6 +79,7 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
 
     private static final Logger LOG = Logger.getInstance(AbstractHybrisHacHttpClient.class);
     private static final Key<ReplicaAwareExecutionContext> KEY_REPLICA_AWARE_EXECUTION_CONTEXT = Key.create("hybris.http.replica");
+    private static final Key<ReplicaContext> KEY_REMOTE_EXECUTION_CONTEXT = Key.create("hybris.http.execution.context");
     @Serial
     private static final long serialVersionUID = -4915832410081381025L;
 
@@ -103,11 +104,23 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
 
     private final Map<RemoteConnectionSettings, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
 
+    public ReplicaContext getReplicaContext() {
+        return putUserDataIfAbsent(KEY_REMOTE_EXECUTION_CONTEXT, ReplicaContext.Companion.auto());
+    }
+
+    public void setReplicaContext(final ReplicaContext replicaContext) {
+        putUserData(KEY_REMOTE_EXECUTION_CONTEXT, replicaContext);
+        // TODO: this is wrong for multi-node execution
+        cookiesPerSettings.clear();
+    }
+
+    @Deprecated
     @Nullable
     public ReplicaAwareExecutionContext getReplica() {
         return getUserData(KEY_REPLICA_AWARE_EXECUTION_CONTEXT);
     }
 
+    @Deprecated
     public void setReplicaExecutionContext(final ReplicaAwareExecutionContext replicaAwareExecutionContext) {
         putUserData(KEY_REPLICA_AWARE_EXECUTION_CONTEXT, replicaAwareExecutionContext);
         cookiesPerSettings.clear();

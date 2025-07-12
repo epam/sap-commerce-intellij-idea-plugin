@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
@@ -26,10 +25,8 @@ import com.intellij.idea.plugin.hybris.toolwindow.CCv2ReplicaSelectionDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ManualReplicaSelectionDialog
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.KeepPopupOnPerform
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
-import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.util.asSafely
 import java.awt.Component
 
@@ -47,25 +44,17 @@ abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun isSelected(e: AnActionEvent): Boolean = e.getData(CommonDataKeys.EDITOR)
-        ?.getOrCreateUserDataUnsafe(HybrisConstants.KEY_GROOVY_REPLICA_SELECTION_MODE) { replicaSelectionMode }
-        ?.let { it == replicaSelectionMode }
-        ?: false
-
-    override fun setSelected(e: AnActionEvent, state: Boolean) {
-        if (state) {
-            e.getData(CommonDataKeys.EDITOR)
-                ?.putUserData(HybrisConstants.KEY_GROOVY_REPLICA_SELECTION_MODE, replicaSelectionMode)
-        }
-    }
+    override fun isSelected(e: AnActionEvent): Boolean = e.project
+        ?.let { HybrisHacHttpClient.getInstance(it).replicaContext }
+        ?.mode == replicaSelectionMode
 }
 
 class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(ReplicaSelectionMode.AUTO) {
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
-        HybrisHacHttpClient.getInstance(project).setReplicaExecutionContext(null)
-        super.setSelected(e, state)
+
+        HybrisHacHttpClient.getInstance(project).replicaContext = ReplicaContext.auto()
     }
 }
 
@@ -73,15 +62,17 @@ class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val executionContext = editor.getUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTEXT)
-            ?.takeIf { it.mode == ReplicaSelectionMode.MANUAL }
+        val executionContext = HybrisHacHttpClient.getInstance(project).replicaContext
+            .takeIf { it.mode == ReplicaSelectionMode.MANUAL }
             ?: ReplicaContext.manual()
 
         val result = ManualReplicaSelectionDialog(project, executionContext, component).showAndGet()
-        super.setSelected(e, result)
+
+        if (result) {
+            HybrisHacHttpClient.getInstance(project).replicaContext = executionContext
+        }
     }
 }
 
@@ -89,14 +80,16 @@ class GroovyCCv2ReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Re
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val executionContext = editor.getUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTEXT)
-            ?.takeIf { it.mode == ReplicaSelectionMode.CCV2 }
+        val executionContext = HybrisHacHttpClient.getInstance(project).replicaContext
+            .takeIf { it.mode == ReplicaSelectionMode.CCV2 }
             ?: ReplicaContext.ccv2()
 
         val result = CCv2ReplicaSelectionDialog(project, executionContext, component).showAndGet()
-        super.setSelected(e, result)
+
+        if (result) {
+            HybrisHacHttpClient.getInstance(project).replicaContext = executionContext
+        }
     }
 }
