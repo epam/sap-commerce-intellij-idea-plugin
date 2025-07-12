@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.toolwindow
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaSelectionMode
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
@@ -35,7 +34,7 @@ import javax.swing.JComponent
 
 class ManualReplicaSelectionDialog(
     private val project: Project,
-    private val replicaContext: ReplicaContext,
+    private val replicas: Collection<ReplicaAwareExecutionContext>,
     parentComponent: Component
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
@@ -53,12 +52,12 @@ class ManualReplicaSelectionDialog(
     private lateinit var manualReplicaId: JBTextField
 
     override fun createCenterPanel(): JComponent {
-        val firstReplica = replicaContext.replicas.firstOrNull()
+        val firstReplica = replicas.firstOrNull()
         return panel {
             row {
                 manualReplicaId = textField()
                     .label("Replica id:")
-                    // TODO: implement to list
+                    // TODO: implement as a 0
                     .text(firstReplica?.id ?: "")
                     .align(AlignX.FILL)
                     .component
@@ -81,14 +80,7 @@ class ManualReplicaSelectionDialog(
 
         val replicaAwareExecutionContext = ReplicaAwareExecutionContext(manualReplicaId.text, manualCookieName.text)
 
-        // TODO : persist me
-        val replicaContext = ReplicaContext(
-            mode = ReplicaSelectionMode.MANUAL,
-            replicas = listOf(
-                replicaAwareExecutionContext
-            )
-        )
-
+        HybrisHacHttpClient.getInstance(project).replicaContext = ReplicaContext.manual(listOf(replicaAwareExecutionContext))
         HybrisHacHttpClient.getInstance(project).setReplicaExecutionContext(replicaAwareExecutionContext)
     }
 }

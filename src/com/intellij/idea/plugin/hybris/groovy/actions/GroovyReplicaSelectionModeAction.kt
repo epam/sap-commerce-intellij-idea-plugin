@@ -64,15 +64,12 @@ class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val executionContext = HybrisHacHttpClient.getInstance(project).replicaContext
+        val replicas = HybrisHacHttpClient.getInstance(project).replicaContext
             .takeIf { it.mode == ReplicaSelectionMode.MANUAL }
-            ?: ReplicaContext.manual()
+            ?.replicas
+            ?: emptyList()
 
-        val result = ManualReplicaSelectionDialog(project, executionContext, component).showAndGet()
-
-        if (result) {
-            HybrisHacHttpClient.getInstance(project).replicaContext = executionContext
-        }
+        ManualReplicaSelectionDialog(project, replicas, component).showAndGet()
     }
 }
 
@@ -82,14 +79,11 @@ class GroovyCCv2ReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Re
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val executionContext = HybrisHacHttpClient.getInstance(project).replicaContext
+        val replicas = HybrisHacHttpClient.getInstance(project).replicaContext
             .takeIf { it.mode == ReplicaSelectionMode.CCV2 }
-            ?: ReplicaContext.ccv2()
+            ?.replicas
+            ?: emptyList()
 
-        val result = CCv2ReplicaSelectionDialog(project, executionContext, component).showAndGet()
-
-        if (result) {
-            HybrisHacHttpClient.getInstance(project).replicaContext = executionContext
-        }
+        CCv2ReplicaSelectionDialog(project, replicas, component).showAndGet()
     }
 }

@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree.CCv2TreeTable
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -47,13 +49,14 @@ import javax.swing.JComponent
 
 class CCv2ReplicaSelectionDialog(
     private val project: Project,
-    private val currentExecutionContext: ReplicaContext,
+    currentReplicas: Collection<ReplicaAwareExecutionContext>,
     parentComponent: Component,
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
+    private val newReplicas = currentReplicas.map { it.id }.toMutableSet()
     private val editable = AtomicBooleanProperty(true)
     private val ccv2TreeTable by lazy {
-        CCv2TreeTable(currentExecutionContext.replicas.map { it.id }.toMutableSet())
+        CCv2TreeTable(newReplicas)
             .apply {
                 Disposer.register(this@CCv2ReplicaSelectionDialog, this)
 
@@ -67,7 +70,7 @@ class CCv2ReplicaSelectionDialog(
     private val ccv2SubscriptionsComboBoxModel = CCv2SubscriptionsComboBoxModelFactory.create(project, null)
 
     init {
-        title = "Replicas Selection"
+        title = "CCv2 Replica Selection"
         isResizable = false
 
         super.init()
@@ -141,6 +144,10 @@ class CCv2ReplicaSelectionDialog(
                 .align(Align.FILL)
         }
             .resizableRow()
+    }
+
+    override fun applyFields() {
+        HybrisHacHttpClient.getInstance(project).replicaContext = ReplicaContext.ccv2(newReplicas)
     }
 
     override fun dispose() {

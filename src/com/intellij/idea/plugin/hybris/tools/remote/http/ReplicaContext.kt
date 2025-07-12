@@ -45,7 +45,15 @@ data class ReplicaContext(
 
     companion object {
         fun auto() = ReplicaContext(ReplicaSelectionMode.AUTO)
-        fun ccv2() = ReplicaContext(ReplicaSelectionMode.CCV2)
-        fun manual() = ReplicaContext(ReplicaSelectionMode.MANUAL)
+
+        fun ccv2(replicas: Collection<String> = emptyList()) = ReplicaContext(
+            ReplicaSelectionMode.CCV2,
+            replicas.map { ReplicaAwareExecutionContext(it) }
+        )
+
+        fun manual(replicas: Collection<ReplicaAwareExecutionContext> = emptyList()) = ReplicaContext(
+            ReplicaSelectionMode.MANUAL,
+            replicas
+        )
     }
 }
