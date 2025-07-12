@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.text.StringUtil
 import java.util.*
 
 object RemoteConnectionUtil {
@@ -33,7 +34,7 @@ object RemoteConnectionUtil {
     fun generateUrl(ssl: Boolean, host: String?, port: String?, webroot: String?) = buildString {
         if (ssl) append(HybrisConstants.HTTPS_PROTOCOL)
         else append(HybrisConstants.HTTP_PROTOCOL)
-        append(host?.trim() ?: "")
+        append(host?.trim()?.replace("-public.model-t.cc.commerce.ondemand.com", StringUtil.THREE_DOTS) ?: "")
         port
             ?.takeIf { it.isNotBlank() }
             ?.takeUnless { "443" == it && ssl }

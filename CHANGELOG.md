@@ -14,6 +14,9 @@
 - Respect an editor for `FlexibleSearch` inlay hints [#1446](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1446)
 - Refresh a parameters panel for all `FlexibleSearch` editors on PSI-elements tree change [#1447](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1447)
 
+### `Remote Connection` enhancements
+- Shorten CCv2 url without custom name [#1449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1449)
+
 ### Fixes
 - Fixed [#1205](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1205) JSoap's inability to parse response with the `&quot;` sequence [#1439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1439)
 - Ensure that action toolbar is always installed for new Editors [#1445](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1445)
