@@ -74,7 +74,7 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
         override fun calculateState(): State {
             val childrenStates = children
                 .filterIsInstance<CCv2TreeNode>()
-                .groupBy { it.calculateState() }
+                .groupBy { it.selectionState() }
 
             selected = (childrenStates[State.SELECTED]?.filterIsInstance<Replica>()?.size ?: 0) +
                 childrenStates.values.flatten().filterIsInstance<Group>().sumOf { it.selected }

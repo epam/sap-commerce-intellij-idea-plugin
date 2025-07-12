@@ -49,10 +49,8 @@ class CCv2TreeTableModel(
         else -> throw IllegalArgumentException()
     }
 
-    private fun isSelected(node: Any?): Any? {
-        return node.asSafely<CCv2TreeNode>()
-            ?.selectionState()
-    }
+    private fun isSelected(node: Any?): Any? = node.asSafely<CCv2TreeNode>()
+        ?.selectionState()
 
     override fun isCellEditable(node: Any?, column: Int): Boolean = column == IS_ENABLED_COLUMN
 
