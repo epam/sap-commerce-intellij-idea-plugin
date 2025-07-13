@@ -148,7 +148,7 @@ class CCv2ReplicaSelectionDialog(
     }
 
     override fun applyFields() {
-        HybrisHacHttpClient.getInstance(project).replicaContext = if (selectedReplicaIds.isEmpty()) ExecutionContext.auto()
+        HybrisHacHttpClient.getInstance(project).executionContext = if (selectedReplicaIds.isEmpty()) ExecutionContext.auto()
         else ExecutionContext.ccv2(selectedReplicaIds)
     }
 

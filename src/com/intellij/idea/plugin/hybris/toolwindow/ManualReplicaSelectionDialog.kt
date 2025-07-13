@@ -80,6 +80,6 @@ class ManualReplicaSelectionDialog(
 
         val replicaAwareExecutionContext = ReplicaAwareExecutionContext(manualReplicaId.text, manualCookieName.text)
 
-        HybrisHacHttpClient.getInstance(project).replicaContext = ExecutionContext.manual(listOf(replicaAwareExecutionContext))
+        HybrisHacHttpClient.getInstance(project).executionContext = ExecutionContext.manual(listOf(replicaAwareExecutionContext))
     }
 }

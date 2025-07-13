@@ -53,10 +53,10 @@ class GroovyExecuteAction : AbstractExecuteAction(
                 val commitMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode == TransactionMode.COMMIT
                 console.updateCommitMode(commitMode)
 
-                val replicas = HybrisHacHttpClient.getInstance(project).replicaContext.contexts
+                val replicaExecutionContexts = HybrisHacHttpClient.getInstance(project).executionContext.contexts
 
-                if (replicas.isNotEmpty()) {
-                    replicas
+                if (replicaExecutionContexts.isNotEmpty()) {
+                    replicaExecutionContexts
                         .map {
                             it.content = e.dataContext.asSafely<UserDataHolder>()?.getUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT)
                                 ?: ""

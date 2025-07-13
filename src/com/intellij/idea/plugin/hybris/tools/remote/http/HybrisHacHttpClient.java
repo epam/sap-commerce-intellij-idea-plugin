@@ -314,8 +314,6 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = settings.getGeneratedURL() + "/platform/log4j/changeLevel/";
 
-        // TODO: Support multiple replicas for Log level change
-
         final HttpResponse response = post(actionUrl, params, true, timeout, settings, null);
         final StatusLine statusLine = response.getStatusLine();
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
