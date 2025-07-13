@@ -193,9 +193,7 @@ object FlexibleSearchInEditorParametersView {
                                 }
                             }
 
-                        "String",
-                        "java.lang.String",
-                        "localized:java.lang.String" -> when {
+                        "String", "java.lang.String", "localized:java.lang.String" -> when {
                             parameter.operand == FlexibleSearchTypes.IN_EXPRESSION -> multivalueTextArea()
                             else -> textField()
                         }
