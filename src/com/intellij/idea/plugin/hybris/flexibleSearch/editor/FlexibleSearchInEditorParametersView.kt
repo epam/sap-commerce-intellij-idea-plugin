@@ -149,12 +149,12 @@ object FlexibleSearchInEditorParametersView {
             queryParameters.forEach { name, parameter ->
                 row {
                     when (parameter.type) {
-                        "byte", "java.lang.Byte" -> numberTextField(parameter, fileEditor, Byte.MIN_VALUE, Byte.MAX_VALUE) { it.toByteOrNull() == null }
-                        "short", "java.lang.Short" -> numberTextField(parameter, fileEditor, Short.MIN_VALUE, Short.MAX_VALUE) { it.toShortOrNull() == null }
-                        "int", "java.lang.Integer" -> numberTextField(parameter, fileEditor, Integer.MIN_VALUE, Integer.MAX_VALUE) { it.toIntOrNull() == null }
-                        "long", "java.lang.Long" -> numberTextField(parameter, fileEditor, Long.MIN_VALUE, Long.MAX_VALUE) { it.toLongOrNull() == null }
-                        "float", "java.lang.Float" -> numberTextField(parameter, fileEditor, Float.MIN_VALUE, Float.MAX_VALUE) { it.toFloatOrNull() == null }
-                        "double", "java.lang.Double" -> numberTextField(parameter, fileEditor, Double.MIN_VALUE, Double.MAX_VALUE) { it.toDoubleOrNull() == null }
+                        "byte", "java.lang.Byte" -> numberTextField(parameter, fileEditor, "-128", "127", "byte") { it.toByteOrNull() == null }
+                        "short", "java.lang.Short" -> numberTextField(parameter, fileEditor, "-32,768", "32,767", "short") { it.toShortOrNull() == null }
+                        "int", "java.lang.Integer" -> numberTextField(parameter, fileEditor, "-2,147,483,648", "2,147,483,647", "int") { it.toIntOrNull() == null }
+                        "long", "java.lang.Long" -> numberTextField(parameter, fileEditor, "-9,223,372,036,854,775,808", "9,223,372,036,854,775,807", "long") { it.toLongOrNull() == null }
+                        "float", "java.lang.Float" -> numberTextField(parameter, fileEditor, "1.4E-45F", "3.4E+38F", "float") { it.toFloatOrNull() == null }
+                        "double", "java.lang.Double" -> numberTextField(parameter, fileEditor, "4.9E-324", "1.8E+308", "double") { it.toDoubleOrNull() == null }
 
                         "boolean",
                         "java.lang.Boolean" -> checkBox(parameter.displayName)
@@ -209,12 +209,15 @@ object FlexibleSearchInEditorParametersView {
     private fun Row.numberTextField(
         parameter: FlexibleSearchQueryParameter,
         fileEditor: FlexibleSearchSplitEditor,
-        from: Number, to: Number,
+        from: String, to: String,
+        numberType: String,
         validation: (String) -> Boolean
     ) = when {
         parameter.operand == FlexibleSearchTypes.IN_EXPRESSION -> multivalueTextArea()
         else -> textField().validationOnInput {
-            if (validation.invoke(it.text)) error(UIBundle.message("please.enter.a.number.from.0.to.1", from, to))
+            if (validation.invoke(it.text)) error(
+                UIBundle.message("please.enter.a.number.from.0.to.1", from, "$to ($numberType)")
+            )
             else null
         }
     }
