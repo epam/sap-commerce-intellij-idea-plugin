@@ -72,6 +72,7 @@ data class FlexibleSearchQueryParameter(
             ?: ""
 
         String::class -> rawValue?.asSafely<String>()
+            ?.replace("'", "''")
             ?.let { stringValue ->
                 if (operand == FlexibleSearchTypes.IN_EXPRESSION) stringValue
                     .split("\n")

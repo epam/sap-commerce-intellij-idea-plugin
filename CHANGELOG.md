@@ -16,6 +16,7 @@
 - Shorten long parameter names in the `In-Editor Parameters` view [#1451](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1451)
 - Use text area editor for _in_ expressions in the `In-Editor Parameters` view [#1452](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1452)
 - Improved _numbers_ editors in the `In-Editor Parameters` view [#1453](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1453)
+- Automatically Escape `'` in the _text_ editors in the `In-Editor Parameters` view [#1454](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1454)
 
 ### `Groovy` enhancements
 - Introduced `batch` execution mode for Groovy files [#1450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1450)
