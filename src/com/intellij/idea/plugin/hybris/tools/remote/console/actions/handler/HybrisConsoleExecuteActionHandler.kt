@@ -102,18 +102,24 @@ class HybrisConsoleExecuteActionHandler(
         activeConnectionSettings.displayName
             ?.let { name -> console.print("($name) ", LOG_INFO_OUTPUT) }
         executionContext
-            ?.replicaId
+            ?.cookieReplica
             ?.let { console.print("($it) ", LOG_INFO_OUTPUT) }
 
         console.print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
 
-    private fun printPlainText(console: HybrisConsole, httpResult: HybrisHttpResult?) {
+    private fun printPlainText(console: HybrisConsole, httpResult: HybrisHttpResult) {
+        console.print("Headers:\n", NORMAL_OUTPUT)
+        httpResult.headers.forEach {
+            console.print(" ${it.first}: ${it.second}\n", NORMAL_OUTPUT)
+        }
+        console.print("\n", NORMAL_OUTPUT)
+
         val result = createResult()
-            .errorMessage(httpResult?.errorMessage)
-            .output(httpResult?.output)
-            .result(httpResult?.result)
-            .detailMessage(httpResult?.detailMessage)
+            .errorMessage(httpResult.errorMessage)
+            .output(httpResult.output)
+            .result(httpResult.result)
+            .detailMessage(httpResult.detailMessage)
             .build()
         val detailMessage = result.detailMessage
         val output = result.output
@@ -134,7 +140,7 @@ class HybrisConsoleExecuteActionHandler(
             console.print(res, NORMAL_OUTPUT)
         }
 
-        console.print("\n\n", NORMAL_OUTPUT)
+        console.print("\n", NORMAL_OUTPUT)
     }
 
     private fun printSyntaxText(console: HybrisConsole, output: String, fileType: FileType) {

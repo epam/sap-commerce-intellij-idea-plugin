@@ -209,6 +209,14 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
 
         final HttpResponse response;
         try {
+            if (executionContext != null) {
+                System.out.println("Target: " + executionContext.getCookieReplica());
+                final var headers = Arrays.stream(post.getAllHeaders())
+                    .map(it -> Pair.pair(it.getName(), it.getValue()))
+                    .toList();
+                System.out.println("Headers:\n" + headers);
+            }
+
             post.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
             response = client.execute(post);
         } catch (IOException e) {
@@ -283,7 +291,7 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
         cookies.putAll(res.cookies());
 
         if (executionContext != null) {
-            cookies.put(executionContext.getCookieName(), executionContext.getReplicaId());
+            cookies.put(executionContext.getCookieName(), executionContext.getCookieReplica());
         }
     }
 
@@ -303,7 +311,7 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
             final var connection = connect(hacURL, sslProtocol);
 
             if (executionContext != null) {
-                connection.cookie(executionContext.getCookieName(), executionContext.getReplicaId());
+                connection.cookie(executionContext.getCookieName(), executionContext.getCookieReplica());
             }
 
             return connection

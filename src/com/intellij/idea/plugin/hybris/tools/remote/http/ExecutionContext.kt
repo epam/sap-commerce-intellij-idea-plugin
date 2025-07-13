@@ -22,4 +22,8 @@ data class ExecutionContext(
     val replicaId: String,
     val cookieName: String = "ROUTE",
     var content: String = ""
-)
+) {
+    val cookieReplica: String
+        get() = if (replicaId.startsWith(".")) replicaId
+        else ".$replicaId"
+}

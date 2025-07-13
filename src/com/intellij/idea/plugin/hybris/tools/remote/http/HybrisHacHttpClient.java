@@ -30,6 +30,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClien
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Pair;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -221,10 +222,11 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             .build();
     }
 
-    public @NotNull
-    HybrisHttpResult executeGroovyScript(
+    @NotNull
+    public HybrisHttpResult executeGroovyScript(
         final Project project,
-        final String content, @Nullable final ExecutionContext executionContext,
+        final String content,
+        @Nullable final ExecutionContext executionContext,
         final boolean isCommitMode, final int timeout
     ) {
         final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
@@ -238,6 +240,10 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 
         final HttpResponse response = post(actionUrl, params, true, timeout, settings, executionContext);
         final StatusLine statusLine = response.getStatusLine();
+        final var headers = Arrays.stream(response.getAllHeaders())
+            .map(it -> Pair.pair(it.getName(), it.getValue()))
+            .toList();
+        resultBuilder.headers(headers);
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
         if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
             return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
