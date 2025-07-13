@@ -41,7 +41,6 @@ class CCv2TreeCellRenderer : DefaultTreeCellRenderer() {
 
         val foreground = when {
             selected -> UIUtil.getTreeSelectionForeground(reallyHasFocus)
-//            node.selectionState() -> PlatformColors.BLUE
             else -> UIUtil.getTreeForeground()
         }
 
