@@ -58,7 +58,8 @@ class GroovyExecuteAction : AbstractExecuteAction(
                 if (replicaExecutionContexts.isNotEmpty()) {
                     replicaExecutionContexts
                         .map {
-                            it.content = e.dataContext.asSafely<UserDataHolder>()?.getUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT)
+                            it.content = e.dataContext.asSafely<UserDataHolder>()
+                                ?.getUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT)
                                 ?: ""
 
                             SimpleDataContext.builder()
