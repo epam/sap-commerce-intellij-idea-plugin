@@ -143,7 +143,6 @@ object FlexibleSearchInEditorParametersView {
         group("Parameters") {
             queryParameters.forEach { name, parameter ->
                 row {
-                    // TODO: migrate to proper property binding
                     when (parameter.type) {
                         "java.lang.Float", "java.lang.Double", "java.lang.Byte", "java.lang.Short", "java.lang.Long", "java.lang.Integer",
                         "float", "double", "byte", "short", "long", "int" -> when {
