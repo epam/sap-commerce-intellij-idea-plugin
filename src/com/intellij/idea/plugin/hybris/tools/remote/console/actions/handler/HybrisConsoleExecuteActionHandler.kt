@@ -102,7 +102,7 @@ class HybrisConsoleExecuteActionHandler(
         activeConnectionSettings.displayName
             ?.let { name -> console.print("($name) ", LOG_INFO_OUTPUT) }
         replicaAwareExecutionContext
-            ?.cookieReplica
+            ?.replicaCookie
             ?.let { console.print("($it) ", LOG_INFO_OUTPUT) }
 
         console.print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)

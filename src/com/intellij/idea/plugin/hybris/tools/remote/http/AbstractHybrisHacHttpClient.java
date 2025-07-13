@@ -283,7 +283,7 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
         cookies.putAll(res.cookies());
 
         if (replicaAwareExecutionContext != null) {
-            cookies.put(replicaAwareExecutionContext.getCookieName(), replicaAwareExecutionContext.getCookieReplica());
+            cookies.put(replicaAwareExecutionContext.getCookieName(), replicaAwareExecutionContext.getReplicaCookie());
         }
     }
 
@@ -303,7 +303,7 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
             final var connection = connect(hacURL, sslProtocol);
 
             if (replicaAwareExecutionContext != null) {
-                connection.cookie(replicaAwareExecutionContext.getCookieName(), replicaAwareExecutionContext.getCookieReplica());
+                connection.cookie(replicaAwareExecutionContext.getCookieName(), replicaAwareExecutionContext.getReplicaCookie());
             }
 
             return connection
