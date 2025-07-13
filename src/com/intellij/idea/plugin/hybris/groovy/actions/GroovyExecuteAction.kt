@@ -25,10 +25,13 @@ import com.intellij.idea.plugin.hybris.settings.TransactionMode
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.UserDataHolder
 import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
@@ -46,10 +49,28 @@ class GroovyExecuteAction : AbstractExecuteAction(
 
         consoleService.getActiveConsole()
             ?.asSafely<HybrisGroovyConsole>()
-            ?.also {
+            ?.also { console ->
                 val commitMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode == TransactionMode.COMMIT
-                it.updateCommitMode(commitMode)
-                super.doExecute(e, consoleService)
+                console.updateCommitMode(commitMode)
+
+                val replicas = HybrisHacHttpClient.getInstance(project).replicaContext.replicas
+
+                if (replicas.isNotEmpty()) {
+                    replicas
+                        .map {
+                            it.content = e.dataContext.asSafely<UserDataHolder>()?.getUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT)
+                                ?: ""
+
+                            SimpleDataContext.builder()
+                                .add(CommonDataKeys.PROJECT, project)
+                                .add(HybrisConstants.DATA_KEY_REMOTE_EXECUTION_CONTEXT, it)
+                                .build()
+                        }
+                        .map { AnActionEvent.createEvent(it, e.presentation, e.place, e.uiKind, e.inputEvent) }
+                        .forEach { super.doExecute(it, consoleService) }
+                } else {
+                    super.doExecute(e, consoleService)
+                }
             }
     }
 

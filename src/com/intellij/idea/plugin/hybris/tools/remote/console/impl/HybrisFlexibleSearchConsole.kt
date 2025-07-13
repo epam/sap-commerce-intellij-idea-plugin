@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
@@ -62,7 +63,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
         ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
     }
 
-    override fun execute(query: String) = HybrisHacHttpClient.getInstance(project)
+    override fun execute(query: String, executionContext: ExecutionContext?) = HybrisHacHttpClient.getInstance(project)
         .executeFlexibleSearch(
             project,
             commitCheckbox.isSelected,

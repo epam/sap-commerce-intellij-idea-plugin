@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.text.StringUtil
 import java.util.*
 
 object RemoteConnectionUtil {
@@ -34,7 +33,7 @@ object RemoteConnectionUtil {
     fun generateUrl(ssl: Boolean, host: String?, port: String?, webroot: String?) = buildString {
         if (ssl) append(HybrisConstants.HTTPS_PROTOCOL)
         else append(HybrisConstants.HTTP_PROTOCOL)
-        append(host?.trim()?.replace("-public.model-t.cc.commerce.ondemand.com", StringUtil.THREE_DOTS) ?: "")
+        append(host?.trim() ?: "")
         port
             ?.takeIf { it.isNotBlank() }
             ?.takeUnless { "443" == it && ssl }

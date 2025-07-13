@@ -120,7 +120,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         val dataContext = SimpleDataContext.builder()
             .add(CommonDataKeys.PROJECT, project)
             .add(CommonDataKeys.EDITOR, editor)
-            .add(HybrisConstants.KEY_LOGGER_IDENTIFIER_DATA_CONTEXT, loggerIdentifier)
+            .add(HybrisConstants.DATA_KEY_LOGGER_IDENTIFIER_DATA_CONTEXT, loggerIdentifier)
             .build()
 
         val popup = JBPopupFactory.getInstance()

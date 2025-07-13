@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.http
 
 data class ReplicaContext(
     val mode: ReplicaSelectionMode,
-    val replicas: Collection<ReplicaAwareExecutionContext> = emptyList(),
+    val replicas: Collection<ExecutionContext> = emptyList(),
 ) {
     override fun toString() = when (mode) {
         ReplicaSelectionMode.AUTO -> "Auto-discover replica"
@@ -48,10 +48,10 @@ data class ReplicaContext(
 
         fun ccv2(replicas: Collection<String> = emptyList()) = ReplicaContext(
             ReplicaSelectionMode.CCV2,
-            replicas.map { ReplicaAwareExecutionContext(it) }
+            replicas.map { ExecutionContext(it) }
         )
 
-        fun manual(replicas: Collection<ReplicaAwareExecutionContext> = emptyList()) = ReplicaContext(
+        fun manual(replicas: Collection<ExecutionContext> = emptyList()) = ReplicaContext(
             ReplicaSelectionMode.MANUAL,
             replicas
         )

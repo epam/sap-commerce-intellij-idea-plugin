@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisSolrSearchConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
 import com.intellij.json.JsonFileType
@@ -53,14 +53,14 @@ class HybrisConsoleExecuteActionHandler(
         application.invokeLater { console.consoleEditor.component.updateUI() }
     }
 
-    private fun processLine(console: HybrisConsole, query: String) {
+    private fun processLine(console: HybrisConsole, query: String, executionContext: ExecutionContext?) {
         application.runReadAction {
             ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to SAP Commerce...") {
                 override fun run(indicator: ProgressIndicator) {
                     isProcessRunning = true
                     try {
                         setEditorEnabled(console, false)
-                        val httpResult = console.execute(query)
+                        val httpResult = console.execute(query, executionContext)
 
                         when (console) {
                             is HybrisImpexMonitorConsole -> {
@@ -71,18 +71,17 @@ class HybrisConsoleExecuteActionHandler(
                             is HybrisSolrSearchConsole -> {
                                 console.clear()
 
-                                printCurrentHost(console, RemoteConnectionType.SOLR)
+                                printCurrentHost(console, RemoteConnectionType.SOLR, executionContext)
 
                                 if (httpResult.hasError()) {
                                     printSyntaxText(console, httpResult.errorMessage, PlainTextFileType.INSTANCE)
                                 } else {
                                     printSyntaxText(console, httpResult.output, JsonFileType.INSTANCE)
                                 }
-
                             }
 
                             else -> {
-                                printCurrentHost(console, RemoteConnectionType.Hybris)
+                                printCurrentHost(console, RemoteConnectionType.Hybris, executionContext)
 
                                 printPlainText(console, httpResult)
                             }
@@ -97,13 +96,14 @@ class HybrisConsoleExecuteActionHandler(
         }
     }
 
-    private fun printCurrentHost(console: HybrisConsole, remoteConnectionType: RemoteConnectionType) {
+    private fun printCurrentHost(console: HybrisConsole, remoteConnectionType: RemoteConnectionType, executionContext: ExecutionContext?) {
         val activeConnectionSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, remoteConnectionType)
         console.print("[HOST] ", SYSTEM_OUTPUT)
         activeConnectionSettings.displayName
             ?.let { name -> console.print("($name) ", LOG_INFO_OUTPUT) }
-        HybrisHacHttpClient.getInstance(project).replica
-            ?.let { replica -> console.print("($replica) ", LOG_INFO_OUTPUT) }
+        executionContext
+            ?.replicaId
+            ?.let { console.print("($it) ", LOG_INFO_OUTPUT) }
 
         console.print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
@@ -133,29 +133,33 @@ class HybrisConsoleExecuteActionHandler(
             console.print("[RESULT] \n", SYSTEM_OUTPUT)
             console.print(res, NORMAL_OUTPUT)
         }
+
+        console.print("\n\n", NORMAL_OUTPUT)
     }
 
     private fun printSyntaxText(console: HybrisConsole, output: String, fileType: FileType) {
         ConsoleViewUtil.printAsFileType(console, output, fileType)
     }
 
-    fun runExecuteAction() {
+    fun runExecuteAction(executionContext: ExecutionContext?) {
         val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole() ?: return
 
         ConsoleHistoryController.getController(activeConsole)
-            ?.let { execute(activeConsole, it) }
+            ?.let { execute(activeConsole, it, executionContext) }
     }
 
     private fun execute(
         console: HybrisConsole,
-        consoleHistoryController: ConsoleHistoryController
+        consoleHistoryController: ConsoleHistoryController,
+        executionContext: ExecutionContext?
     ) {
 
         // Process input and add to history
         val document = console.currentEditor.document
         val textForHistory = document.text
 
-        val query = document.text
+        val query = executionContext?.content
+            ?: document.text
         val range = TextRange(0, document.textLength)
 
         if (query.isNotEmpty() || console is HybrisImpexMonitorConsole) {
@@ -167,7 +171,7 @@ class HybrisConsoleExecuteActionHandler(
                 consoleHistoryController.addToHistory(textForHistory.trim())
             }
 
-            processLine(console, query)
+            processLine(console, query, executionContext)
         }
     }
 

@@ -45,7 +45,7 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
         val project = e.project ?: return
 
         val dataContext = e.dataContext
-        val logIdentifier = dataContext.getData(HybrisConstants.KEY_LOGGER_IDENTIFIER_DATA_CONTEXT)
+        val logIdentifier = dataContext.getData(HybrisConstants.DATA_KEY_LOGGER_IDENTIFIER_DATA_CONTEXT)
 
         if (logIdentifier == null) {
             notify(

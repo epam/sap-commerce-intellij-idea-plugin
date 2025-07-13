@@ -64,6 +64,10 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     @Serial
     private static final long serialVersionUID = -6570347636518523678L;
 
+    public HybrisHacHttpClient() {
+
+    }
+
     public static HybrisHacHttpClient getInstance(@NotNull final Project project) {
         return project.getService(HybrisHacHttpClient.class);
     }
@@ -71,7 +75,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     @NotNull
     public HybrisHttpResult validateImpex(final Project project, final Map<String, String> requestParams) {
         final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
-        final HttpResponse response = getHttpResponse("/console/impex/import/validate", requestParams, settings);
+        final HttpResponse response = getImpExHttpResponse("/console/impex/import/validate", requestParams, settings);
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
         if (response.getStatusLine().getStatusCode() != SC_OK) {
@@ -102,7 +106,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         return resultBuilder.errorMessage("No data in response").build();
     }
 
-    private HttpResponse getHttpResponse(
+    private HttpResponse getImpExHttpResponse(
         final String urlSuffix,
         final Map<String, String> requestParams,
         final RemoteConnectionSettings settings
@@ -110,7 +114,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     ) {
         final List<BasicNameValuePair> params = createParamsList(requestParams);
         final String actionUrl = settings.getGeneratedURL() + urlSuffix;
-        return post(actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings);
+        return post(actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings, null);
     }
 
     private List<BasicNameValuePair> createParamsList(final Map<String, String> requestParams) {
@@ -122,7 +126,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     @NotNull
     public HybrisHttpResult importImpex(final Project project, final Map<String, String> requestParams) {
         final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
-        final HttpResponse response = getHttpResponse("/console/impex/import", requestParams, settings);
+        final HttpResponse response = getImpExHttpResponse("/console/impex/import", requestParams, settings);
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
         if (response.getStatusLine().getStatusCode() != SC_OK) {
@@ -179,7 +183,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = settings.getGeneratedURL() + "/console/flexsearch/execute";
 
-        final HttpResponse response = post(actionUrl, params, true, DEFAULT_HAC_TIMEOUT, settings);
+        final HttpResponse response = post(actionUrl, params, true, DEFAULT_HAC_TIMEOUT, settings, null);
         final StatusLine statusLine = response.getStatusLine();
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
         if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
@@ -223,9 +227,10 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 
     public @NotNull
     HybrisHttpResult executeGroovyScript(
-        final Project project, final String content, final boolean isCommitMode, final int timeout
+        final Project project,
+        final String content, @Nullable final ExecutionContext executionContext,
+        final boolean isCommitMode, final int timeout
     ) {
-
         final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
         final var params = Arrays.asList(
             new BasicNameValuePair("scriptType", "groovy"),
@@ -235,7 +240,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = settings.getGeneratedURL() + "/console/scripting/execute";
 
-        final HttpResponse response = post(actionUrl, params, true, timeout, settings);
+        final HttpResponse response = post(actionUrl, params, true, timeout, settings, executionContext);
         final StatusLine statusLine = response.getStatusLine();
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
         if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
@@ -304,7 +309,6 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         final String logLevel,
         final int timeout
     ) {
-
         final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
         final var params = Arrays.asList(
             new BasicNameValuePair("loggerName", loggerName),
@@ -313,7 +317,9 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = settings.getGeneratedURL() + "/platform/log4j/changeLevel/";
 
-        final HttpResponse response = post(actionUrl, params, true, timeout, settings);
+        // TODO: Support multiple replicas for Log level change
+
+        final HttpResponse response = post(actionUrl, params, true, timeout, settings, null);
         final StatusLine statusLine = response.getStatusLine();
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
         if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {

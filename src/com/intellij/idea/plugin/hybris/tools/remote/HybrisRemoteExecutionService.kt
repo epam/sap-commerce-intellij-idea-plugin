@@ -34,7 +34,7 @@ class HybrisRemoteExecutionService(private val project: Project, private val cor
         coroutineScope.launch {
             withBackgroundProgress(project, "Execute HTTP Call to SAP Commerce...", true) {
                 val result = reportProgress { progressReporter ->
-                    console.execute(query)
+                    console.execute(query, null)
                 }
 
                 resultCallback.invoke(result)

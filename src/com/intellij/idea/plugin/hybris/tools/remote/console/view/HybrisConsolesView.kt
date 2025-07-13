@@ -108,6 +108,7 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
     }
 
     fun validateImpex(e: AnActionEvent) = performAction(e, HybrisImpexValidateAction::class.java)
+
     fun execute(e: AnActionEvent) = performAction(e, HybrisExecuteImmediatelyAction::class.java)
 
     private fun performAction(e: AnActionEvent, clazz: Class<out AnAction>) {

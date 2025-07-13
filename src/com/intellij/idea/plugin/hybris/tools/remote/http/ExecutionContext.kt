@@ -18,7 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http
 
-data class ReplicaAwareExecutionContext(
-    val id: String,
-    val cookieName: String = "ROUTE"
+data class ExecutionContext(
+    val replicaId: String,
+    val cookieName: String = "ROUTE",
+    var content: String = ""
 )

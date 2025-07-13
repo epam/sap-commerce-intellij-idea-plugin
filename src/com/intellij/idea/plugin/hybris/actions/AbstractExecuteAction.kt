@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.actions
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
@@ -31,6 +32,8 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.UserDataHolder
+import com.intellij.util.asSafely
 import javax.swing.Icon
 
 abstract class AbstractExecuteAction(
@@ -67,6 +70,9 @@ abstract class AbstractExecuteAction(
             LOG.warn("unable to find console $consoleName")
             return
         }
+
+        e.dataContext.asSafely<UserDataHolder>()?.putUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT, content)
+
         consoleService.setActiveConsole(console)
         console.setInputText(content)
 

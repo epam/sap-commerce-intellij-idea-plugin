@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 
 import com.intellij.codeInsight.lookup.LookupManager
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
@@ -43,7 +44,9 @@ class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteA
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
-        executeActionHandler.runExecuteAction()
+        val remoteExecutionContext = e.getData(HybrisConstants.DATA_KEY_REMOTE_EXECUTION_CONTEXT)
+
+        executeActionHandler.runExecuteAction(remoteExecutionContext)
     }
 
     override fun update(e: AnActionEvent) {

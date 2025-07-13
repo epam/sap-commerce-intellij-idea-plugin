@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console
 
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
@@ -38,7 +39,7 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
         this.printDefaultText()
     }
 
-    abstract fun execute(query: String): HybrisHttpResult
+    abstract fun execute(query: String, executionContext: ExecutionContext? = null): HybrisHttpResult
 
     abstract fun title(): String
 
