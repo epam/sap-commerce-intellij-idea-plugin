@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor.Companion.KEY_FLEXIBLE_SEARCH_PARAMETERS
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
@@ -143,11 +144,16 @@ object FlexibleSearchInEditorParametersView {
         group("Parameters") {
             queryParameters.forEach { parameter ->
                 row {
-                    //todo limit the long name depends on width of the panel
                     // TODO: migrate to proper property binding
                     when (parameter.type) {
                         "java.lang.Float", "java.lang.Double", "java.lang.Byte", "java.lang.Short", "java.lang.Long", "java.lang.Integer",
-                        "float", "double", "byte", "short", "long", "int" -> intTextField()
+                        "float", "double", "byte", "short", "long", "int" -> when {
+                            parameter.operand == FlexibleSearchTypes.IN_EXPRESSION -> textArea()
+                                .rows(3)
+                                .comment("Use new line as a value separator.")
+
+                            else -> intTextField()
+                        }
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
                             .text(parameter.value)
@@ -193,7 +199,13 @@ object FlexibleSearchInEditorParametersView {
 
                         "String",
                         "java.lang.String",
-                        "localized:java.lang.String" -> textField()
+                        "localized:java.lang.String" -> when {
+                            parameter.operand == FlexibleSearchTypes.IN_EXPRESSION -> textArea()
+                                .rows(3)
+                                .comment("Use new line as a value separator.")
+
+                            else -> textField()
+                        }
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
                             .text(StringUtil.unquoteString(parameter.value, '\''))
@@ -203,7 +215,7 @@ object FlexibleSearchInEditorParametersView {
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
                             .text(parameter.value)
-                            .onChanged { applyValue(fileEditor, parameter, it.text) { "${it.text}" } }
+                            .onChanged { applyValue(fileEditor, parameter, it.text) { it.text } }
                     }
 
                 }.layout(RowLayout.PARENT_GRID)

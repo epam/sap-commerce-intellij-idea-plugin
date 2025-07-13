@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.elementType
 
 data class FlexibleSearchQueryParameter(
     val name: String,
@@ -40,7 +41,7 @@ data class FlexibleSearchQueryParameter(
             val value = currentParameter?.value ?: resolveInitialValue(itemType)
             val presentationValue = currentParameter?.presentationValue ?: resolveInitialPresentationValue(itemType)
 
-            return FlexibleSearchQueryParameter(parameter, value, presentationValue, type = itemType)
+            return FlexibleSearchQueryParameter(parameter, value, presentationValue, type = itemType, bindParameter.expression?.elementType)
         }
 
         private fun resolveInitialValue(itemType: String?): String = when (itemType) {
