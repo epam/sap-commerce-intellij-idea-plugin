@@ -44,7 +44,7 @@ class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteA
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
-        val remoteExecutionContext = e.getData(HybrisConstants.DATA_KEY_REMOTE_EXECUTION_CONTEXT)
+        val remoteExecutionContext = e.getData(HybrisConstants.DATA_KEY_REPLICA_CONTEXT)
 
         executeActionHandler.runExecuteAction(remoteExecutionContext)
     }

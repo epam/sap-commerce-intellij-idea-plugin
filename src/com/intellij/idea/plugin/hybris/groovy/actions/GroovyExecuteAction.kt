@@ -53,7 +53,7 @@ class GroovyExecuteAction : AbstractExecuteAction(
                 val commitMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode == TransactionMode.COMMIT
                 console.updateCommitMode(commitMode)
 
-                val replicaExecutionContexts = HybrisHacHttpClient.getInstance(project).executionContext.contexts
+                val replicaExecutionContexts = HybrisHacHttpClient.getInstance(project).executionContext.replicaContexts
 
                 if (replicaExecutionContexts.isNotEmpty()) {
                     replicaExecutionContexts
@@ -64,7 +64,7 @@ class GroovyExecuteAction : AbstractExecuteAction(
 
                             SimpleDataContext.builder()
                                 .add(CommonDataKeys.PROJECT, project)
-                                .add(HybrisConstants.DATA_KEY_REMOTE_EXECUTION_CONTEXT, it)
+                                .add(HybrisConstants.DATA_KEY_REPLICA_CONTEXT, it)
                                 .build()
                         }
                         .map { AnActionEvent.createEvent(it, e.presentation, e.place, e.uiKind, e.inputEvent) }

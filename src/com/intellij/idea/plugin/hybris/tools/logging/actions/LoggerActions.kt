@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.logging.actions
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
@@ -35,17 +35,14 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
-import javax.swing.Icon
 
-abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon) : AnAction(logLevel, "", icon) {
+abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(logLevel.name, null, logLevel.icon) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-
-        val dataContext = e.dataContext
-        val logIdentifier = dataContext.getData(HybrisConstants.DATA_KEY_LOGGER_IDENTIFIER_DATA_CONTEXT)
+        val logIdentifier = e.getData(HybrisConstants.DATA_KEY_LOGGER_IDENTIFIER)
 
         if (logIdentifier == null) {
             notify(
@@ -124,12 +121,12 @@ abstract class AbstractLoggerAction(private val logLevel: String, val icon: Icon
 
 }
 
-class AllLoggerAction : AbstractLoggerAction("ALL", HybrisIcons.Log.Level.ALL)
-class OffLoggerAction : AbstractLoggerAction("OFF", HybrisIcons.Log.Level.OFF)
-class TraceLoggerAction : AbstractLoggerAction("TRACE", HybrisIcons.Log.Level.TRACE)
-class DebugLoggerAction : AbstractLoggerAction("DEBUG", HybrisIcons.Log.Level.DEBUG)
-class InfoLoggerAction : AbstractLoggerAction("INFO", HybrisIcons.Log.Level.INFO)
-class WarnLoggerAction : AbstractLoggerAction("WARN", HybrisIcons.Log.Level.WARN)
-class ErrorLoggerAction : AbstractLoggerAction("ERROR", HybrisIcons.Log.Level.ERROR)
-class FatalLoggerAction : AbstractLoggerAction("FATAL", HybrisIcons.Log.Level.FATAL)
-class SevereLoggerAction : AbstractLoggerAction("SEVERE", HybrisIcons.Log.Level.SEVERE)
+class AllLoggerAction : AbstractLoggerAction(LogLevel.ALL)
+class OffLoggerAction : AbstractLoggerAction(LogLevel.OFF)
+class TraceLoggerAction : AbstractLoggerAction(LogLevel.TRACE)
+class DebugLoggerAction : AbstractLoggerAction(LogLevel.DEBUG)
+class InfoLoggerAction : AbstractLoggerAction(LogLevel.INFO)
+class WarnLoggerAction : AbstractLoggerAction(LogLevel.WARN)
+class ErrorLoggerAction : AbstractLoggerAction(LogLevel.ERROR)
+class FatalLoggerAction : AbstractLoggerAction(LogLevel.FATAL)
+class SevereLoggerAction : AbstractLoggerAction(LogLevel.SEVERE)

@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.google.gson.Gson;
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.tools.logging.LogLevel;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil;
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.TableBuilder;
@@ -225,7 +226,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     public HybrisHttpResult executeGroovyScript(
         final Project project,
         final String content,
-        @Nullable final ReplicaAwareExecutionContext replicaAwareExecutionContext,
+        @Nullable final ReplicaContext replicaContext,
         final boolean isCommitMode, final int timeout
     ) {
         final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
@@ -237,7 +238,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = settings.getGeneratedURL() + "/console/scripting/execute";
 
-        final HttpResponse response = post(actionUrl, params, true, timeout, settings, replicaAwareExecutionContext);
+        final HttpResponse response = post(actionUrl, params, true, timeout, settings, replicaContext);
         final StatusLine statusLine = response.getStatusLine();
         resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
         if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
@@ -303,13 +304,13 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     public HybrisHttpResult executeLogUpdate(
         final Project project,
         final String loggerName,
-        final String logLevel,
+        final LogLevel logLevel,
         final int timeout
     ) {
         final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
         final var params = Arrays.asList(
             new BasicNameValuePair("loggerName", loggerName),
-            new BasicNameValuePair("levelName", logLevel)
+            new BasicNameValuePair("levelName", logLevel.name())
         );
         HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = settings.getGeneratedURL() + "/platform/log4j/changeLevel/";

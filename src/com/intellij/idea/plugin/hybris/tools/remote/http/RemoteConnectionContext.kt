@@ -18,23 +18,23 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http
 
-data class ExecutionContext(
-    val mode: ReplicaSelectionMode,
-    val contexts: Collection<ReplicaAwareExecutionContext> = emptyList(),
+data class RemoteConnectionContext(
+    val replicaSelectionMode: ReplicaSelectionMode,
+    val replicaContexts: Collection<ReplicaContext> = emptyList(),
 ) {
-    override fun toString() = when (mode) {
+    override fun toString() = when (replicaSelectionMode) {
         ReplicaSelectionMode.AUTO -> "Auto-discover replica"
         ReplicaSelectionMode.MANUAL -> "Manual"
         ReplicaSelectionMode.CCV2 -> "CCv2"
     }
 
     val description
-        get() = when (mode) {
-            ReplicaSelectionMode.CCV2 -> "- CCv2 ${contexts.size} replica(s) -"
+        get() = when (replicaSelectionMode) {
+            ReplicaSelectionMode.CCV2 -> "- CCv2 ${replicaContexts.size} replica(s) -"
 
             ReplicaSelectionMode.MANUAL -> listOfNotNull(
                 "- Manually configured replica(s) -",
-                contexts.groupBy { it.cookieName }
+                replicaContexts.groupBy { it.cookieName }
                     .map { (cookieName, ids) ->
                         "Cookie: $cookieName (${ids.size} replica(s))"
                     }
@@ -44,14 +44,14 @@ data class ExecutionContext(
         }
 
     companion object {
-        fun auto() = ExecutionContext(ReplicaSelectionMode.AUTO)
+        fun auto() = RemoteConnectionContext(ReplicaSelectionMode.AUTO)
 
-        fun ccv2(replicaIds: Collection<String> = emptyList()) = ExecutionContext(
+        fun ccv2(replicaIds: Collection<String> = emptyList()) = RemoteConnectionContext(
             ReplicaSelectionMode.CCV2,
-            replicaIds.map { ReplicaAwareExecutionContext(it) }
+            replicaIds.map { ReplicaContext(it) }
         )
 
-        fun manual(executionContexts: Collection<ReplicaAwareExecutionContext> = emptyList()) = ExecutionContext(
+        fun manual(executionContexts: Collection<ReplicaContext> = emptyList()) = RemoteConnectionContext(
             ReplicaSelectionMode.MANUAL,
             executionContexts
         )

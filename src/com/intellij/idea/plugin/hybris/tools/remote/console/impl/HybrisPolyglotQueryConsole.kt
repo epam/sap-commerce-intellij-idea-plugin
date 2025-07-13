@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -61,7 +61,7 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, Hybr
         ConsoleHistoryController(MyConsoleRootType, ID, this).install()
     }
 
-    override fun execute(query: String, replicaAwareExecutionContext: ReplicaAwareExecutionContext?) = HybrisHacHttpClient.getInstance(project).executeFlexibleSearch(
+    override fun execute(query: String, replicaContext: ReplicaContext?) = HybrisHacHttpClient.getInstance(project).executeFlexibleSearch(
         project,
         commitCheckbox.isSelected,
         false,

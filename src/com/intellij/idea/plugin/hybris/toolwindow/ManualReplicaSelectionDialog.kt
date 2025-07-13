@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow
 
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
@@ -34,7 +34,7 @@ import javax.swing.JComponent
 
 class ManualReplicaSelectionDialog(
     private val project: Project,
-    private val replicas: Collection<ReplicaAwareExecutionContext>,
+    private val replicas: Collection<ReplicaContext>,
     parentComponent: Component
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
@@ -92,8 +92,8 @@ class ManualReplicaSelectionDialog(
     override fun applyFields() {
         super.applyFields()
 
-        val replicaAwareExecutionContext = ReplicaAwareExecutionContext(manualReplicaId.text, manualCookieName.text)
+        val replicaContext = ReplicaContext(manualReplicaId.text, manualCookieName.text)
 
-        HybrisHacHttpClient.getInstance(project).executionContext = ExecutionContext.manual(listOf(replicaAwareExecutionContext))
+        HybrisHacHttpClient.getInstance(project).executionContext = RemoteConnectionContext.manual(listOf(replicaContext))
     }
 }

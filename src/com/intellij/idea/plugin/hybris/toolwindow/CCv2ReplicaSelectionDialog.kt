@@ -23,9 +23,9 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree.CCv2TreeTable
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -49,11 +49,11 @@ import javax.swing.JComponent
 
 class CCv2ReplicaSelectionDialog(
     private val project: Project,
-    replicaAwareExecutionContexts: Collection<ReplicaAwareExecutionContext>,
+    replicaContexts: Collection<ReplicaContext>,
     parentComponent: Component,
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
-    private val previousReplicaIds = replicaAwareExecutionContexts.map { it.replicaId }
+    private val previousReplicaIds = replicaContexts.map { it.replicaId }
     private val selectedReplicaIds = mutableSetOf<String>()
     private val editable = AtomicBooleanProperty(true)
     private val ccv2TreeTable by lazy {
@@ -148,8 +148,8 @@ class CCv2ReplicaSelectionDialog(
     }
 
     override fun applyFields() {
-        HybrisHacHttpClient.getInstance(project).executionContext = if (selectedReplicaIds.isEmpty()) ExecutionContext.auto()
-        else ExecutionContext.ccv2(selectedReplicaIds)
+        HybrisHacHttpClient.getInstance(project).executionContext = if (selectedReplicaIds.isEmpty()) RemoteConnectionContext.auto()
+        else RemoteConnectionContext.ccv2(selectedReplicaIds)
     }
 
     override fun dispose() {

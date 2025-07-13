@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -81,7 +81,7 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
     override fun tip(): String = "ImpEx Console"
     override fun icon(): Icon = HybrisIcons.ImpEx.FILE
 
-    override fun execute(query: String, replicaAwareExecutionContext: ReplicaAwareExecutionContext?): HybrisHttpResult {
+    override fun execute(query: String, replicaContext: ReplicaContext?): HybrisHttpResult {
         val requestParams = getRequestParams(query)
         return HybrisHacHttpClient.getInstance(project).importImpex(project, requestParams)
     }

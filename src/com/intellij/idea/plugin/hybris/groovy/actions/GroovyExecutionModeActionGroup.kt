@@ -36,13 +36,14 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val replicaContext = HybrisHacHttpClient.getInstance(project).executionContext
-        val text = when (replicaContext.mode) {
+        val connectionContext = HybrisHacHttpClient.getInstance(project).executionContext
+        val text = when (connectionContext.replicaSelectionMode) {
             ReplicaSelectionMode.AUTO -> "Auto-Discover Replica"
-            else -> "Execute on ${replicaContext.contexts.size} replica(s)"
+            else -> "Execute on ${connectionContext.replicaContexts.size} replica(s)"
         }
 
-        e.presentation.icon = replicaContext.mode.icon
+        e.presentation.icon = connectionContext.replicaSelectionMode.icon
         e.presentation.text = text
+        e.presentation.description = connectionContext.description
     }
 }

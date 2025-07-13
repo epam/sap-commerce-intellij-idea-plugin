@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
@@ -148,7 +148,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole(project, HybrisC
         emptyList()
     }
 
-    override fun execute(query: String, replicaAwareExecutionContext: ReplicaAwareExecutionContext?) = HybrisHacHttpClient.getInstance(project).executeSolrSearch(project, buildSolrQueryObject(query))
+    override fun execute(query: String, replicaContext: ReplicaContext?) = HybrisHacHttpClient.getInstance(project).executeSolrSearch(project, buildSolrQueryObject(query))
 
     override fun title() = "Solr Search"
     override fun tip() = "Solr Search Console"

@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -59,8 +59,8 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
         ConsoleHistoryController(MyConsoleRootType, "hybris.groovy.shell", this).install()
     }
 
-    override fun execute(query: String, replicaAwareExecutionContext: ReplicaAwareExecutionContext?) = HybrisHacHttpClient.getInstance(project).executeGroovyScript(
-        project, query, replicaAwareExecutionContext,commitCheckbox.isSelected,
+    override fun execute(query: String, replicaContext: ReplicaContext?) = HybrisHacHttpClient.getInstance(project).executeGroovyScript(
+        project, query, replicaContext,commitCheckbox.isSelected,
         timeoutSpinner.value.toString().toInt() * 1000
     )
 
