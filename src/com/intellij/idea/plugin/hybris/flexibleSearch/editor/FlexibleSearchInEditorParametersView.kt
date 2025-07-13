@@ -149,30 +149,30 @@ object FlexibleSearchInEditorParametersView {
             queryParameters.forEach { name, parameter ->
                 row {
                     when (parameter.type) {
-                        "byte", "java.lang.Byte" -> numberTextField(parameter, fileEditor, "-128", "127", "byte")
+                        Byte::class -> numberTextField(parameter, fileEditor, "-128", "127", "byte")
                         { it.toByteOrNull() == null }
 
-                        "short", "java.lang.Short" -> numberTextField(parameter, fileEditor, "-32,768", "32,767", "short")
+                        Short::class -> numberTextField(parameter, fileEditor, "-32,768", "32,767", "short")
                         { it.toShortOrNull() == null }
 
-                        "int", "java.lang.Integer" -> numberTextField(parameter, fileEditor, "-2,147,483,648", "2,147,483,647", "int")
+                        Int::class -> numberTextField(parameter, fileEditor, "-2,147,483,648", "2,147,483,647", "int")
                         { it.toIntOrNull() == null }
 
-                        "float", "java.lang.Float" -> numberTextField(parameter, fileEditor, "1.4E-45F", "3.4E+38F", "float")
-                        { it.toFloatOrNull() == null }
-
-                        "double", "java.lang.Double" -> numberTextField(parameter, fileEditor, "4.9E-324", "1.8E+308", "double")
-                        { it.toDoubleOrNull() == null }
-
-                        "long", "java.lang.Long" -> numberTextField(parameter, fileEditor, "-9,223,372,036,854,775,808", "9,223,372,036,854,775,807", "long")
+                        Long::class -> numberTextField(parameter, fileEditor, "-9,223,372,036,854,775,808", "9,223,372,036,854,775,807", "long")
                         { it.toLongOrNull() == null }
 
-                        "boolean", "java.lang.Boolean" -> checkBox(parameter.displayName)
+                        Float::class -> numberTextField(parameter, fileEditor, "1.4E-45F", "3.4E+38F", "float")
+                        { it.toFloatOrNull() == null }
+
+                        Double::class -> numberTextField(parameter, fileEditor, "4.9E-324", "1.8E+308", "double")
+                        { it.toDoubleOrNull() == null }
+
+                        Boolean::class -> checkBox(parameter.displayName)
                             .align(AlignX.FILL)
                             .selected(parameter.sqlValue == "1")
                             .onChanged { applyValue(fileEditor, parameter, it.isSelected) }
 
-                        "java.util.Date" -> cell(
+                        Date::class -> cell(
                             DatePicker(
                                 parameter.rawValue?.asSafely<Date>(),
                                 SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
@@ -193,7 +193,7 @@ object FlexibleSearchInEditorParametersView {
                                 }
                             }
 
-                        "String", "java.lang.String", "localized:java.lang.String" -> when {
+                        String::class -> when {
                             parameter.operand == FlexibleSearchTypes.IN_EXPRESSION -> multivalueTextArea()
                             else -> textField()
                         }

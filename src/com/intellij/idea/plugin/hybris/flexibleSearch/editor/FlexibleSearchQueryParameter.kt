@@ -27,16 +27,31 @@ import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.reflect.KClass
 
 data class FlexibleSearchQueryParameter(
     val name: String,
-    val type: String? = null,
     val operand: IElementType? = null,
-    val displayName: String = StringUtil.shortenPathWithEllipsis(name, 20)
+    private val rawType: String? = null,
+    val displayName: String = StringUtil.shortenPathWithEllipsis(name, 20),
 ) {
 
     private val lazySqlValue = ClearableLazyValue.create<String> { this.evaluateSqlValue() }
     private val lazyPresentationValue = ClearableLazyValue.create<String> { this.evaluatePresentationValue() }
+
+    val type: KClass<*> = when (rawType) {
+        "boolean", "java.lang.Boolean" -> Boolean::class
+        "String", "java.lang.String", "localized:java.lang.String" -> String::class
+        "byte", "java.lang.Byte" -> Byte::class
+        "short", "java.lang.Short" -> Short::class
+        "int", "java.lang.Integer" -> Int::class
+        "float", "java.lang.Float" -> Float::class
+        "double", "java.lang.Double" -> Double::class
+        "long", "java.lang.Long" -> Long::class
+        "java.util.Date" -> Date::class
+
+        else -> Any::class
+    }
 
     var rawValue: Any? = null
         set(value) {
@@ -49,14 +64,14 @@ data class FlexibleSearchQueryParameter(
     val presentationValue: String get() = lazyPresentationValue.get()
 
     private fun evaluateSqlValue(): String = when (type) {
-        "boolean", "java.lang.Boolean" -> rawValue?.asSafely<Boolean>()?.takeIf { it }
+        Boolean::class -> rawValue?.asSafely<Boolean>()?.takeIf { it }
             ?.let { "1" }
             ?: "0"
 
-        "java.util.Date" -> rawValue?.asSafely<Date>()?.time?.toString()
+        Date::class -> rawValue?.asSafely<Date>()?.time?.toString()
             ?: ""
 
-        "String", "java.lang.String", "localized:java.lang.String" -> rawValue?.asSafely<String>()
+        String::class -> rawValue?.asSafely<String>()
             ?.let { stringValue ->
                 if (operand == FlexibleSearchTypes.IN_EXPRESSION) stringValue
                     .split("\n")
@@ -67,8 +82,7 @@ data class FlexibleSearchQueryParameter(
             }
             ?: "''"
 
-        "java.lang.Float", "java.lang.Double", "java.lang.Byte", "java.lang.Short", "java.lang.Long", "java.lang.Integer",
-        "float", "double", "byte", "short", "long", "int" -> (rawValue?.asSafely<String>() ?: "")
+        Byte::class, Short::class, Int::class, Long::class, Float::class, Double::class -> (rawValue?.asSafely<String>() ?: "")
             .let { numberValue ->
                 if (operand == FlexibleSearchTypes.IN_EXPRESSION) numberValue
                     .split("\n")
@@ -82,14 +96,9 @@ data class FlexibleSearchQueryParameter(
     }
 
     private fun evaluatePresentationValue(): String = when (type) {
-        "boolean", "java.lang.Boolean" -> if (sqlValue == "1") "true" else "false"
+        Boolean::class -> if (sqlValue == "1") "true" else "false"
 
-        "String", "java.lang.String", "localized:java.lang.String" -> sqlValue
-
-        "java.lang.Float", "java.lang.Double", "java.lang.Byte", "java.lang.Short", "java.lang.Long", "java.lang.Integer",
-        "float", "double", "byte", "short", "long", "int" -> sqlValue
-
-        "java.util.Date" -> rawValue
+        Date::class -> rawValue
             ?.asSafely<Date>()
             ?.let { SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(it) }
             ?: ""
@@ -101,8 +110,8 @@ data class FlexibleSearchQueryParameter(
 
         fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Map<String, FlexibleSearchQueryParameter>) = FlexibleSearchQueryParameter(
             name = bindParameter.value,
-            type = bindParameter.itemType,
             operand = bindParameter.expression?.elementType,
+            rawType = bindParameter.itemType,
         ).apply {
             rawValue = currentParameters[name]?.rawValue
         }
