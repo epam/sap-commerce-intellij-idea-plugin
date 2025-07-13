@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
@@ -731,7 +731,7 @@ object HybrisConstants {
     val KEY_REMOTE_EXECUTION_CONTENT = Key.create<String>("hybris.http.remote.execution.content")
 
     val DATA_KEY_LOGGER_IDENTIFIER_DATA_CONTEXT = DataKey.create<String>("sap.cx.logger.identifier")
-    val DATA_KEY_REMOTE_EXECUTION_CONTEXT = DataKey.create<ExecutionContext>("hybris.http.remote.execution.context")
+    val DATA_KEY_REMOTE_EXECUTION_CONTEXT = DataKey.create<ReplicaAwareExecutionContext>("hybris.http.remote.execution.context")
 
     const val FXS_DUMMY_IDENTIFIER = CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED
     val FXS_SUPPORTED_ELEMENT_TYPES = setOf(

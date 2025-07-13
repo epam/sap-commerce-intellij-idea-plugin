@@ -34,12 +34,14 @@ import java.util.*
 import javax.swing.tree.DefaultMutableTreeNode
 
 class CCv2TreeTable(
-    private val selectedReplicas: MutableCollection<String>,
+    private val previousReplicaIds: MutableCollection<String>,
     private val root: DefaultMutableTreeNode = CCv2TreeNode.RootNode(),
-    private val myModel: CCv2TreeTableModel = CCv2TreeTableModel(root, selectedReplicas)
+    private val myModel: CCv2TreeTableModel = CCv2TreeTableModel(root),
 ) : TreeTable(myModel), Disposable {
 
     val loadingState = AtomicProperty<CCv2Subscription?>(null)
+    val selectedReplicaIds
+        get() = myModel.selectedReplicaIds.toList()
 
     init {
         setRootVisible(false)
@@ -84,7 +86,12 @@ class CCv2TreeTable(
                                     ?.map { serviceNode ->
                                         serviceNode.service.replicas
                                             .filter { replica -> replica.ready }
-                                            .map { replica -> CCv2TreeNode.Replica(replica, selectedReplicas) }
+                                            .map { replica ->
+                                                if (previousReplicaIds.contains(replica.name)) {
+                                                    myModel.selectedReplicaIds.add(replica.name)
+                                                }
+                                                CCv2TreeNode.Replica(replica, selectedReplicaIds)
+                                            }
                                             .forEach { replicaNode -> serviceNode.add(replicaNode) }
 
                                         serviceNode
@@ -93,13 +100,12 @@ class CCv2TreeTable(
                                     ?.let { serviceNodes ->
                                         CCv2TreeNode.EnvironmentNode(environment).also { environmentNode ->
                                             serviceNodes.forEach { environmentNode.add(it) }
-//                                            root.add(environmentNode)
                                         }
                                     }
                             }
                             .takeIf { it.isNotEmpty() }
                             ?.let { environmentNodes ->
-                                CCv2TreeNode.EnvironmentTypeNode(type, environments).also {environmentNode ->
+                                CCv2TreeNode.EnvironmentTypeNode(type, environments).also { environmentNode ->
                                     environmentNodes.forEach { environmentNode.add(it) }
                                     root.add(environmentNode)
                                 }

@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.TimeOption
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.monitorImpexFiles
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -88,7 +88,7 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
 
     private fun timeOption() = (timeComboBox.selectedItem as TimeOption)
     private fun workingDir() = obtainDataFolder(project)
-    override fun execute(query: String, executionContext: ExecutionContext?) = monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())
+    override fun execute(query: String, replicaAwareExecutionContext: ReplicaAwareExecutionContext?) = monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())
 
     override fun title() = "ImpEx Monitor"
     override fun tip() = "Last imported ImpEx files"

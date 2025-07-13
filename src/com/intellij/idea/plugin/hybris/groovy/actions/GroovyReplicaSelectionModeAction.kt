@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaSelectionMode
 import com.intellij.idea.plugin.hybris.toolwindow.CCv2ReplicaSelectionDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ManualReplicaSelectionDialog
@@ -54,7 +54,7 @@ class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Re
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
 
-        HybrisHacHttpClient.getInstance(project).replicaContext = ReplicaContext.auto()
+        HybrisHacHttpClient.getInstance(project).replicaContext = ExecutionContext.auto()
     }
 }
 
@@ -66,7 +66,7 @@ class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(
             ?: return
         val replicas = HybrisHacHttpClient.getInstance(project).replicaContext
             .takeIf { it.mode == ReplicaSelectionMode.MANUAL }
-            ?.replicas
+            ?.contexts
             ?: emptyList()
 
         ManualReplicaSelectionDialog(project, replicas, component).showAndGet()
@@ -81,7 +81,7 @@ class GroovyCCv2ReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Re
             ?: return
         val replicas = HybrisHacHttpClient.getInstance(project).replicaContext
             .takeIf { it.mode == ReplicaSelectionMode.CCV2 }
-            ?.replicas
+            ?.contexts
             ?: emptyList()
 
         CCv2ReplicaSelectionDialog(project, replicas, component).showAndGet()

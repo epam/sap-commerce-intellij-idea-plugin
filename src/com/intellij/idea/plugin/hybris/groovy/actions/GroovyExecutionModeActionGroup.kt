@@ -39,7 +39,7 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
         val replicaContext = HybrisHacHttpClient.getInstance(project).replicaContext
         val text = when (replicaContext.mode) {
             ReplicaSelectionMode.AUTO -> "Auto-Discover Replica"
-            else -> "Execute on ${replicaContext.replicas.size} replica(s)"
+            else -> "Execute on ${replicaContext.contexts.size} replica(s)"
         }
 
         e.presentation.icon = replicaContext.mode.icon

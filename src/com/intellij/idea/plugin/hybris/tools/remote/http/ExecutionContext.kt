@@ -19,11 +19,41 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http
 
 data class ExecutionContext(
-    val replicaId: String,
-    val cookieName: String = "ROUTE",
-    var content: String = ""
+    val mode: ReplicaSelectionMode,
+    val contexts: Collection<ReplicaAwareExecutionContext> = emptyList(),
 ) {
-    val cookieReplica: String
-        get() = if (replicaId.startsWith(".")) replicaId
-        else ".$replicaId"
+    override fun toString() = when (mode) {
+        ReplicaSelectionMode.AUTO -> "Auto-discover replica"
+        ReplicaSelectionMode.MANUAL -> "Manual"
+        ReplicaSelectionMode.CCV2 -> "CCv2"
+    }
+
+    val description
+        get() = when (mode) {
+            ReplicaSelectionMode.CCV2 -> "- CCv2 ${contexts.size} replica(s) -"
+
+            ReplicaSelectionMode.MANUAL -> listOfNotNull(
+                "- Manually configured replica(s) -",
+                contexts.groupBy { it.cookieName }
+                    .map { (cookieName, ids) ->
+                        "Cookie: $cookieName (${ids.size} replica(s))"
+                    }
+            ).joinToString("\n")
+
+            else -> null
+        }
+
+    companion object {
+        fun auto() = ExecutionContext(ReplicaSelectionMode.AUTO)
+
+        fun ccv2(replicaIds: Collection<String> = emptyList()) = ExecutionContext(
+            ReplicaSelectionMode.CCV2,
+            replicaIds.map { ReplicaAwareExecutionContext(it) }
+        )
+
+        fun manual(executionContexts: Collection<ReplicaAwareExecutionContext> = emptyList()) = ExecutionContext(
+            ReplicaSelectionMode.MANUAL,
+            executionContexts
+        )
+    }
 }

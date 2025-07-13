@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console
 
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
@@ -39,7 +39,7 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
         this.printDefaultText()
     }
 
-    abstract fun execute(query: String, executionContext: ExecutionContext? = null): HybrisHttpResult
+    abstract fun execute(query: String, replicaAwareExecutionContext: ReplicaAwareExecutionContext? = null): HybrisHttpResult
 
     abstract fun title(): String
 

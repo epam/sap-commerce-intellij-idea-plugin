@@ -53,7 +53,7 @@ class GroovyExecuteAction : AbstractExecuteAction(
                 val commitMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode == TransactionMode.COMMIT
                 console.updateCommitMode(commitMode)
 
-                val replicas = HybrisHacHttpClient.getInstance(project).replicaContext.replicas
+                val replicas = HybrisHacHttpClient.getInstance(project).replicaContext.contexts
 
                 if (replicas.isNotEmpty()) {
                     replicas

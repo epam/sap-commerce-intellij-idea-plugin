@@ -30,7 +30,7 @@ import javax.swing.tree.TreeNode
 
 class CCv2TreeTableModel(
     root: TreeNode,
-    private val selectedReplicas: MutableCollection<String>,
+    val selectedReplicaIds: MutableCollection<String> = mutableListOf(),
 ) : DefaultTreeModel(root), TreeTableModel {
     private var myTreeTable: TreeTable? = null
 
@@ -63,8 +63,8 @@ class CCv2TreeTableModel(
             }
 
             is CCv2TreeNode.Replica -> {
-                if (doEnable) selectedReplicas.add(node.replica.name)
-                else selectedReplicas.remove(node.replica.name)
+                if (doEnable) selectedReplicaIds.add(node.replica.name)
+                else selectedReplicaIds.remove(node.replica.name)
 
                 node.dropCache()
 
