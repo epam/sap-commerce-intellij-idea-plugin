@@ -104,11 +104,11 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
 
     private final Map<Pair<RemoteConnectionSettings, ReplicaContext>, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
 
-    public RemoteConnectionContext getExecutionContext() {
+    public RemoteConnectionContext getConnectionContext() {
         return putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, RemoteConnectionContext.Companion.auto());
     }
 
-    public void setExecutionContext(final RemoteConnectionContext remoteConnectionContext) {
+    public void setConnectionContext(final RemoteConnectionContext remoteConnectionContext) {
         putUserData(KEY_REMOTE_CONNECTION_CONTEXT, remoteConnectionContext);
     }
 

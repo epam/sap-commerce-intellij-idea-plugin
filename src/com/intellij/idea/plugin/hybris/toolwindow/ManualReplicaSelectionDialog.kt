@@ -94,6 +94,6 @@ class ManualReplicaSelectionDialog(
 
         val replicaContext = ReplicaContext(manualReplicaId.text, manualCookieName.text)
 
-        HybrisHacHttpClient.getInstance(project).executionContext = RemoteConnectionContext.manual(listOf(replicaContext))
+        HybrisHacHttpClient.getInstance(project).connectionContext = RemoteConnectionContext.manual(listOf(replicaContext))
     }
 }
