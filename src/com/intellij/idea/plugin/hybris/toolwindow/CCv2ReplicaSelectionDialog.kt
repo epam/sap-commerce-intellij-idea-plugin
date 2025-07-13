@@ -54,7 +54,7 @@ class CCv2ReplicaSelectionDialog(
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
     private val previousReplicaIds = replicaAwareExecutionContexts.map { it.replicaId }
-    private val selectedReplicaIds = mutableListOf<String>()
+    private val selectedReplicaIds = mutableSetOf<String>()
     private val editable = AtomicBooleanProperty(true)
     private val ccv2TreeTable by lazy {
         CCv2TreeTable(previousReplicaIds, selectedReplicaIds)
