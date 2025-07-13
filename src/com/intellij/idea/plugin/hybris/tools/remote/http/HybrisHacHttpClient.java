@@ -64,10 +64,6 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     @Serial
     private static final long serialVersionUID = -6570347636518523678L;
 
-    public HybrisHacHttpClient() {
-
-    }
-
     public static HybrisHacHttpClient getInstance(@NotNull final Project project) {
         return project.getService(HybrisHacHttpClient.class);
     }
