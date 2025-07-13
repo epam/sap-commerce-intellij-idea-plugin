@@ -24,11 +24,11 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaAwareExecutionCo
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.InlineBanner
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.builder.text
+import com.intellij.ui.dsl.builder.*
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import java.awt.Component
 import javax.swing.JComponent
 
@@ -54,6 +54,20 @@ class ManualReplicaSelectionDialog(
     override fun createCenterPanel(): JComponent {
         val firstReplica = replicas.firstOrNull()
         return panel {
+            row {
+                cell(
+                    InlineBanner(
+                        """Possibility to specify multiple replicas is planned for future releases.<br>
+                            Feel free to contribute to the Plugin. 
+                        """.trimIndent(),
+                        EditorNotificationPanel.Status.Info
+                    )
+                        .showCloseButton(false)
+                )
+                    .customize(UnscaledGaps(12, 12, 12, 12))
+                    .align(Align.CENTER)
+            }
+
             row {
                 manualReplicaId = textField()
                     .label("Replica id:")
