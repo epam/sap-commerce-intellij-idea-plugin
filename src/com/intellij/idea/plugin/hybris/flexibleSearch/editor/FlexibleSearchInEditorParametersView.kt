@@ -148,13 +148,13 @@ object FlexibleSearchInEditorParametersView {
                     when (parameter.type) {
                         "java.lang.Float", "java.lang.Double", "java.lang.Byte", "java.lang.Short", "java.lang.Long", "java.lang.Integer",
                         "float", "double", "byte", "short", "long", "int" -> intTextField()
-                            .label("${parameter.name}:")
+                            .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
                             .text(parameter.value)
                             .onChanged { applyValue(fileEditor, parameter, it.text) { it.text } }
 
                         "boolean",
-                        "java.lang.Boolean" -> checkBox(parameter.name)
+                        "java.lang.Boolean" -> checkBox(parameter.displayName)
                             .align(AlignX.FILL)
                             .selected(parameter.value == "1")
                             .onChanged {
@@ -171,7 +171,7 @@ object FlexibleSearchInEditorParametersView {
                                 SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
                             )
                         )
-                            .label("${parameter.name}:")
+                            .label("${parameter.displayName}:")
                             .align(Align.FILL).apply {
                                 component.also { datePicker ->
                                     val listener = PropertyChangeListener { event ->
@@ -194,13 +194,13 @@ object FlexibleSearchInEditorParametersView {
                         "String",
                         "java.lang.String",
                         "localized:java.lang.String" -> textField()
-                            .label("${parameter.name}:")
+                            .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
                             .text(StringUtil.unquoteString(parameter.value, '\''))
                             .onChanged { applyValue(fileEditor, parameter, "'${it.text}'") { "'${it.text}'" } }
 
                         else -> textField()
-                            .label("${parameter.name}:")
+                            .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
                             .text(parameter.value)
                             .onChanged { applyValue(fileEditor, parameter, it.text) { "${it.text}" } }

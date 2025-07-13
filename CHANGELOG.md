@@ -13,6 +13,7 @@
 - Support tabulation for In-Editor parameters [#1444](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1444)
 - Respect an editor for `FlexibleSearch` inlay hints [#1446](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1446)
 - Refresh a parameters panel for all `FlexibleSearch` editors on PSI-elements tree change [#1447](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1447)
+- Shorten long parameter names in the `In-Editor Parameters` view [#1451](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1451)
 
 ### `Groovy` enhancements
 - Introduced `batch` execution mode for Groovy files [#1450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1450)

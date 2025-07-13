@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 
 data class FlexibleSearchQueryParameter(
@@ -28,6 +29,9 @@ data class FlexibleSearchQueryParameter(
     val type: String? = null,
     val operand: IElementType? = null
 ) {
+    val displayName
+        get() = StringUtil.shortenPathWithEllipsis(name, 20)
+
     companion object {
         fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Collection<FlexibleSearchQueryParameter>): FlexibleSearchQueryParameter {
             val parameter = bindParameter.value
