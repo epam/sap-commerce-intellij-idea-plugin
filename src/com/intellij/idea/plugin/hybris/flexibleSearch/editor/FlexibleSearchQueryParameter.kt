@@ -19,41 +19,93 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
+import com.intellij.util.asSafely
+import java.text.SimpleDateFormat
+import java.util.*
 
 data class FlexibleSearchQueryParameter(
     val name: String,
-    var value: String = "",
-    var presentationValue: String = value,
     val type: String? = null,
-    val operand: IElementType? = null
+    val operand: IElementType? = null,
+    val displayName: String = StringUtil.shortenPathWithEllipsis(name, 20)
 ) {
-    val displayName
-        get() = StringUtil.shortenPathWithEllipsis(name, 20)
+
+    private val lazySqlValue = ClearableLazyValue.create<String> { this.evaluateSqlValue() }
+    private val lazyPresentationValue = ClearableLazyValue.create<String> { this.evaluatePresentationValue() }
+
+    var rawValue: Any? = null
+        set(value) {
+            field = value
+            lazySqlValue.drop()
+            lazyPresentationValue.drop()
+        }
+
+    val sqlValue: String get() = lazySqlValue.get()
+    val presentationValue: String get() = lazyPresentationValue.get()
+
+    private fun evaluateSqlValue(): String = when (type) {
+        "boolean", "java.lang.Boolean" -> rawValue?.asSafely<Boolean>()?.takeIf { it }
+            ?.let { "1" }
+            ?: "0"
+
+        "java.util.Date" -> rawValue?.asSafely<Date>()?.time?.toString()
+            ?: ""
+
+        "String", "java.lang.String", "localized:java.lang.String" -> rawValue?.asSafely<String>()
+            ?.let { stringValue ->
+                if (operand == FlexibleSearchTypes.IN_EXPRESSION) stringValue
+                    .split("\n")
+                    .filter { it.isNotBlank() }
+                    .takeIf { it.isNotEmpty() }
+                    ?.joinToString(",") { "'$it'" }
+                else "'$stringValue'"
+            }
+            ?: "''"
+
+        "java.lang.Float", "java.lang.Double", "java.lang.Byte", "java.lang.Short", "java.lang.Long", "java.lang.Integer",
+        "float", "double", "byte", "short", "long", "int" -> (rawValue?.asSafely<String>() ?: "")
+            .let { numberValue ->
+                if (operand == FlexibleSearchTypes.IN_EXPRESSION) numberValue
+                    .split("\n")
+                    .map { it.trim() }
+                    .filter { it.isNotBlank() }
+                    .joinToString(",")
+                else numberValue
+            }
+
+        else -> rawValue?.asSafely<String>() ?: ""
+    }
+
+    private fun evaluatePresentationValue() = when (type) {
+        "boolean", "java.lang.Boolean" -> if (sqlValue == "1") "true" else "false"
+
+        "String", "java.lang.String", "localized:java.lang.String" -> sqlValue
+
+        "java.lang.Float", "java.lang.Double", "java.lang.Byte", "java.lang.Short", "java.lang.Long", "java.lang.Integer",
+        "float", "double", "byte", "short", "long", "int" -> sqlValue
+
+        "java.util.Date" -> rawValue
+            ?.asSafely<Date>()
+            ?.let { SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(it) }
+            ?: ""
+
+        else -> sqlValue
+    }
 
     companion object {
-        fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Collection<FlexibleSearchQueryParameter>): FlexibleSearchQueryParameter {
-            val parameter = bindParameter.value
-            val currentParameter = currentParameters.find { it.name == parameter }
-            val itemType = bindParameter.itemType
-            val value = currentParameter?.value ?: resolveInitialValue(itemType)
-            val presentationValue = currentParameter?.presentationValue ?: resolveInitialPresentationValue(itemType)
 
-            return FlexibleSearchQueryParameter(parameter, value, presentationValue, type = itemType, bindParameter.expression?.elementType)
+        fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Map<String, FlexibleSearchQueryParameter>) = FlexibleSearchQueryParameter(
+            name = bindParameter.value,
+            type = bindParameter.itemType,
+            operand = bindParameter.expression?.elementType,
+        ).apply {
+            rawValue = currentParameters[name]?.rawValue
         }
 
-        private fun resolveInitialValue(itemType: String?): String = when (itemType) {
-            "boolean", "java.lang.Boolean" -> "0"
-            "String", "java.lang.String", "localized:java.lang.String" -> "''"
-            else -> ""
-        }
-
-        private fun resolveInitialPresentationValue(itemType: String?): String = when (itemType) {
-            "boolean", "java.lang.Boolean" -> "false"
-            "String", "java.lang.String", "localized:java.lang.String" -> "''"
-            else -> ""
-        }
     }
 }

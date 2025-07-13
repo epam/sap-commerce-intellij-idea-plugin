@@ -46,7 +46,7 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
         }
     }
 
-    class EnvironmentTypeNode(val environmentType: CCv2EnvironmentType, private val environments: Collection<CCv2EnvironmentDto>) : Group(environmentType.title) {
+    class EnvironmentTypeNode(environmentType: CCv2EnvironmentType) : Group(environmentType.title) {
         companion object {
             @Serial
             private const val serialVersionUID: Long = -693843320512859193L

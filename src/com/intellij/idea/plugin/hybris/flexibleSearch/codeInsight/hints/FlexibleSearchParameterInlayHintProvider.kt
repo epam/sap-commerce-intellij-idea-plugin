@@ -45,12 +45,13 @@ class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
 
             textEditor.takeIf { it.inEditorParameters }
                 ?.queryParameters
-                ?.find { it.name == element.value && it.presentationValue.isNotBlank() }
+                ?.get(element.value)
+                ?.takeIf { it.presentationValue.isNotBlank() }
                 ?.let {
                     sink.addPresentation(
                         position = InlineInlayPosition(element.textRange.endOffset, true),
                         payloads = null,
-                        tooltip = "SQL value: ${it.value}",
+                        tooltip = "SQL value: ${it.sqlValue}",
                         hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
                     ) {
                         text("= ${it.presentationValue}")

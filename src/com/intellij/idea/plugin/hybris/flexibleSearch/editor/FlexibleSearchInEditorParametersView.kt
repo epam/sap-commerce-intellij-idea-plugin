@@ -31,7 +31,6 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
@@ -60,7 +59,7 @@ object FlexibleSearchInEditorParametersView {
 
             val panel = if (!isTypeSystemInitialized(project)) renderTypeSystemInitializationPanel()
             else {
-                val queryParameters = collectParameters(project, fileEditor)
+                val queryParameters = collectQueryParameters(project, fileEditor)
                 renderParametersPanel(queryParameters, fileEditor)
             }
 
@@ -79,7 +78,7 @@ object FlexibleSearchInEditorParametersView {
     }
 
     private fun renderParametersPanel(
-        queryParameters: Collection<FlexibleSearchQueryParameter>,
+        queryParameters: Map<String, FlexibleSearchQueryParameter>,
         fileEditor: FlexibleSearchSplitEditor,
     ): DialogPanel {
         val parentDisposable = Disposer.newDisposable().apply {
@@ -137,12 +136,12 @@ object FlexibleSearchInEditorParametersView {
     }.customize(UnscaledGaps(16, 16, 16, 16))
 
     private fun Panel.parametersPanel(
-        queryParameters: Collection<FlexibleSearchQueryParameter>,
+        queryParameters: Map<String, FlexibleSearchQueryParameter>,
         fileEditor: FlexibleSearchSplitEditor,
         parentDisposable: Disposable
     ) = panel {
         group("Parameters") {
-            queryParameters.forEach { parameter ->
+            queryParameters.forEach { name, parameter ->
                 row {
                     // TODO: migrate to proper property binding
                     when (parameter.type) {
@@ -156,24 +155,18 @@ object FlexibleSearchInEditorParametersView {
                         }
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
-                            .text(parameter.value)
-                            .onChanged { applyValue(fileEditor, parameter, it.text) { it.text } }
+                            .text(parameter.rawValue?.asSafely<String>() ?: "")
+                            .onChanged { applyValue(fileEditor, parameter, it.text) }
 
                         "boolean",
                         "java.lang.Boolean" -> checkBox(parameter.displayName)
                             .align(AlignX.FILL)
-                            .selected(parameter.value == "1")
-                            .onChanged {
-                                val presentationValue = if (it.isSelected) "true" else "false"
-                                applyValue(fileEditor, parameter, presentationValue) { if (it.isSelected) "1" else "0" }
-                            }
-                            .also {
-                                parameter.value = (if (parameter.value == "1") "1" else "0")
-                            }
+                            .selected(parameter.sqlValue == "1")
+                            .onChanged { applyValue(fileEditor, parameter, it.isSelected) }
 
                         "java.util.Date" -> cell(
                             DatePicker(
-                                parameter.value.toLongOrNull()?.let { Date(it) },
+                                parameter.rawValue?.asSafely<Date>(),
                                 SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
                             )
                         )
@@ -182,12 +175,7 @@ object FlexibleSearchInEditorParametersView {
                                 component.also { datePicker ->
                                     val listener = PropertyChangeListener { event ->
                                         if (event.propertyName == "date") {
-                                            val newValue = event.newValue?.asSafely<Date>()
-                                            val presentationValue = newValue?.let { date -> SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(date) } ?: ""
-
-                                            applyValue(fileEditor, parameter, presentationValue) {
-                                                newValue?.time?.toString() ?: ""
-                                            }
+                                            applyValue(fileEditor, parameter, event.newValue?.asSafely<Date>())
                                         }
                                     }
                                     datePicker.addPropertyChangeListener(listener)
@@ -208,14 +196,14 @@ object FlexibleSearchInEditorParametersView {
                         }
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
-                            .text(StringUtil.unquoteString(parameter.value, '\''))
-                            .onChanged { applyValue(fileEditor, parameter, "'${it.text}'") { "'${it.text}'" } }
+                            .text(parameter.rawValue?.asSafely<String>() ?: "")
+                            .onChanged { applyValue(fileEditor, parameter, it.text) }
 
                         else -> textField()
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
-                            .text(parameter.value)
-                            .onChanged { applyValue(fileEditor, parameter, it.text) { it.text } }
+                            .text(parameter.sqlValue)
+                            .onChanged { applyValue(fileEditor, parameter, it.text) }
                     }
 
                 }.layout(RowLayout.PARENT_GRID)
@@ -223,27 +211,29 @@ object FlexibleSearchInEditorParametersView {
         }
     }
 
-    private suspend fun collectParameters(project: Project, fileEditor: FlexibleSearchSplitEditor): Collection<FlexibleSearchQueryParameter> {
-        val currentParameters = fileEditor.queryParameters ?: emptySet()
+    private suspend fun collectQueryParameters(project: Project, fileEditor: FlexibleSearchSplitEditor): Map<String, FlexibleSearchQueryParameter> {
+        val currentQueryParameters = fileEditor.queryParameters
+            ?: emptyMap()
 
-        val parameters = readAction {
+        return readAction {
             PsiDocumentManager.getInstance(project).getPsiFile(fileEditor.editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
-                ?.map { FlexibleSearchQueryParameter.of(it, currentParameters) }
+                ?.map { FlexibleSearchQueryParameter.of(it, currentQueryParameters) }
                 ?.distinctBy { it.name }
-                ?: emptySet()
+                ?.associateBy { it.name }
+                ?: emptyMap()
         }
-
-        fileEditor.putUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS, parameters)
-        return parameters
+            .also {
+                fileEditor.putUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS, it)
+            }
     }
 
-    private fun applyValue(fileEditor: FlexibleSearchSplitEditor, parameter: FlexibleSearchQueryParameter, presentationValue: String, newValueProvider: () -> String) {
-        val originalValue = parameter.value
-        parameter.presentationValue = presentationValue
-        parameter.value = newValueProvider.invoke()
+    private fun applyValue(fileEditor: FlexibleSearchSplitEditor, parameter: FlexibleSearchQueryParameter, newRawValue: Any?) {
+        val originalRawValue = parameter.rawValue
 
-        if (originalValue != parameter.value) {
+        parameter.rawValue = newRawValue
+
+        if (originalRawValue != parameter.rawValue) {
             fileEditor.reparseTextEditor()
         }
     }

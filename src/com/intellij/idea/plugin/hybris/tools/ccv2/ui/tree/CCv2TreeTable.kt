@@ -105,7 +105,7 @@ class CCv2TreeTable(
                             }
                             .takeIf { it.isNotEmpty() }
                             ?.let { environmentNodes ->
-                                CCv2TreeNode.EnvironmentTypeNode(type, environments).also { environmentNode ->
+                                CCv2TreeNode.EnvironmentTypeNode(type).also { environmentNode ->
                                     environmentNodes.forEach { environmentNode.add(it) }
                                     root.add(environmentNode)
                                 }

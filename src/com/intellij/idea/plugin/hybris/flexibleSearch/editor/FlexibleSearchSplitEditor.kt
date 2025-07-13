@@ -56,7 +56,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
-        internal val KEY_FLEXIBLE_SEARCH_PARAMETERS: Key<Collection<FlexibleSearchQueryParameter>> = Key.create("flexibleSearch.parameters.key")
+        internal val KEY_FLEXIBLE_SEARCH_PARAMETERS: Key<Map<String, FlexibleSearchQueryParameter>> = Key.create("flexibleSearch.parameters.key")
         private val KEY_IN_EDITOR_RESULTS: Key<Boolean> = Key.create("flexibleSearch.in_editor_results.key")
     }
 
@@ -77,16 +77,17 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
             reparseTextEditor()
         }
 
-    val queryParameters: Collection<FlexibleSearchQueryParameter>?
+    val queryParameters: Map<String, FlexibleSearchQueryParameter>?
         get() = getUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS)
 
     val query: String
         get() = queryParameters
+            ?.values
             ?.sortedByDescending { it.name.length }
             ?.let { properties ->
                 var updatedContent = getText()
                 properties.forEach {
-                    updatedContent = updatedContent.replace("?${it.name}", it.value)
+                    updatedContent = updatedContent.replace("?${it.name}", it.sqlValue)
                 }
                 return@let updatedContent
             }
