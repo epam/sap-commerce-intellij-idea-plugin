@@ -53,10 +53,11 @@ class CCv2ReplicaSelectionDialog(
     parentComponent: Component,
 ) : DialogWrapper(project, parentComponent, false, IdeModalityType.IDE), Disposable {
 
-    private val previousReplicaIds = replicaAwareExecutionContexts.map { it.replicaId }.toMutableSet()
+    private val previousReplicaIds = replicaAwareExecutionContexts.map { it.replicaId }
+    private val selectedReplicaIds = mutableListOf<String>()
     private val editable = AtomicBooleanProperty(true)
     private val ccv2TreeTable by lazy {
-        CCv2TreeTable(previousReplicaIds)
+        CCv2TreeTable(previousReplicaIds, selectedReplicaIds)
             .apply {
                 Disposer.register(this@CCv2ReplicaSelectionDialog, this)
 
@@ -147,7 +148,7 @@ class CCv2ReplicaSelectionDialog(
     }
 
     override fun applyFields() {
-        HybrisHacHttpClient.getInstance(project).replicaContext = ExecutionContext.ccv2(ccv2TreeTable.selectedReplicaIds)
+        HybrisHacHttpClient.getInstance(project).replicaContext = ExecutionContext.ccv2(selectedReplicaIds)
     }
 
     override fun dispose() {

@@ -34,14 +34,13 @@ import java.util.*
 import javax.swing.tree.DefaultMutableTreeNode
 
 class CCv2TreeTable(
-    private val previousReplicaIds: MutableCollection<String>,
+    private val previousReplicaIds: Collection<String>,
+    private val selectedReplicaIds: MutableCollection<String>,
     private val root: DefaultMutableTreeNode = CCv2TreeNode.RootNode(),
-    private val myModel: CCv2TreeTableModel = CCv2TreeTableModel(root),
+    private val myModel: CCv2TreeTableModel = CCv2TreeTableModel(root, selectedReplicaIds),
 ) : TreeTable(myModel), Disposable {
 
     val loadingState = AtomicProperty<CCv2Subscription?>(null)
-    val selectedReplicaIds
-        get() = myModel.selectedReplicaIds.toList()
 
     init {
         setRootVisible(false)
@@ -69,6 +68,7 @@ class CCv2TreeTable(
         CCv2Service.Companion.getInstance(project).fetchEnvironments(
             listOf(subscription),
             onStartCallback = {
+                selectedReplicaIds.clear()
                 loadingState.set(subscription)
                 reset()
             },
@@ -88,7 +88,7 @@ class CCv2TreeTable(
                                             .filter { replica -> replica.ready }
                                             .map { replica ->
                                                 if (previousReplicaIds.contains(replica.name)) {
-                                                    myModel.selectedReplicaIds.add(replica.name)
+                                                    selectedReplicaIds.add(replica.name)
                                                 }
                                                 CCv2TreeNode.Replica(replica, selectedReplicaIds)
                                             }

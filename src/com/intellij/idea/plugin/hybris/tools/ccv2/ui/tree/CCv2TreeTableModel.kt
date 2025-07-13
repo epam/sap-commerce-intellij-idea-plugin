@@ -30,7 +30,7 @@ import javax.swing.tree.TreeNode
 
 class CCv2TreeTableModel(
     root: TreeNode,
-    val selectedReplicaIds: MutableCollection<String> = mutableListOf(),
+    private val selectedReplicaIds: MutableCollection<String>,
 ) : DefaultTreeModel(root), TreeTableModel {
     private var myTreeTable: TreeTable? = null
 
