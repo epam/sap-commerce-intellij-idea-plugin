@@ -83,7 +83,8 @@ abstract class CCv2TreeNode : DefaultMutableTreeNode() {
                 childrenStates.values.flatten().filterIsInstance<Group>().sumOf { it.unSelected }
 
             return when {
-                childrenStates.size == 2 -> State.DONT_CARE
+                childrenStates.size == 2
+                    || (childrenStates.size == 1 && childrenStates.containsKey(State.DONT_CARE))-> State.DONT_CARE
                 childrenStates.containsKey(State.SELECTED) -> State.SELECTED
                 else -> State.NOT_SELECTED
             }
