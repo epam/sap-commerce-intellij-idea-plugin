@@ -19,11 +19,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http.impex;
 
-import com.intellij.openapi.util.Pair;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
 import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -37,7 +32,6 @@ public class HybrisHttpResult {
     private String output;
     private String result;
     private int statusCode;
-    private Collection<Pair<String, String>> headers;
 
     private HybrisHttpResult() {
     }
@@ -66,10 +60,6 @@ public class HybrisHttpResult {
         return result;
     }
 
-    public Collection<Pair<String, String>> getHeaders() {
-        return headers;
-    }
-
     static public class HybrisHttpResultBuilder {
 
         private boolean hasError = false;
@@ -79,7 +69,6 @@ public class HybrisHttpResult {
         private String output= EMPTY;
         private String result= EMPTY;
         private int statusCode = SC_OK;
-        private Collection<Pair<String, String>> headers = new ArrayList<>();
 
         private HybrisHttpResultBuilder() {
         }
@@ -119,11 +108,6 @@ public class HybrisHttpResult {
             return this;
         }
 
-        public HybrisHttpResultBuilder headers(final Collection<Pair<String, String>> headers) {
-            this.headers.addAll(headers);
-            return this;
-        }
-
         public HybrisHttpResult build() {
             final HybrisHttpResult httpResult = new HybrisHttpResult();
             httpResult.hasError = this.hasError;
@@ -132,7 +116,6 @@ public class HybrisHttpResult {
             httpResult.output = this.output;
             httpResult.result = this.result;
             httpResult.statusCode = this.statusCode;
-            httpResult.headers = this.headers;
 
             return httpResult;
         }

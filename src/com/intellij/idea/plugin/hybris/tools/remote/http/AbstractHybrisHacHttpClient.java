@@ -209,14 +209,6 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
 
         final HttpResponse response;
         try {
-            if (executionContext != null) {
-                System.out.println("Target: " + executionContext.getCookieReplica());
-                final var headers = Arrays.stream(post.getAllHeaders())
-                    .map(it -> Pair.pair(it.getName(), it.getValue()))
-                    .toList();
-                System.out.println("Headers:\n" + headers);
-            }
-
             post.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
             response = client.execute(post);
         } catch (IOException e) {

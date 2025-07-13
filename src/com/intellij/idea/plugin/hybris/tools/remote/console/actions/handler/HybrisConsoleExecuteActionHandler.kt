@@ -109,12 +109,6 @@ class HybrisConsoleExecuteActionHandler(
     }
 
     private fun printPlainText(console: HybrisConsole, httpResult: HybrisHttpResult) {
-        console.print("Headers:\n", NORMAL_OUTPUT)
-        httpResult.headers.forEach {
-            console.print(" ${it.first}: ${it.second}\n", NORMAL_OUTPUT)
-        }
-        console.print("\n", NORMAL_OUTPUT)
-
         val result = createResult()
             .errorMessage(httpResult.errorMessage)
             .output(httpResult.output)
