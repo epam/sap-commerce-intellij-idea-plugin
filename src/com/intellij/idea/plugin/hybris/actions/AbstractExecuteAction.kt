@@ -71,7 +71,8 @@ abstract class AbstractExecuteAction(
             return
         }
 
-        e.dataContext.asSafely<UserDataHolder>()?.putUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT, content)
+        e.dataContext.asSafely<UserDataHolder>()
+            ?.putUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT, content)
 
         consoleService.setActiveConsole(console)
         console.setInputText(content)
