@@ -167,8 +167,7 @@ object FlexibleSearchInEditorParametersView {
                         "long", "java.lang.Long" -> numberTextField(parameter, fileEditor, "-9,223,372,036,854,775,808", "9,223,372,036,854,775,807", "long")
                         { it.toLongOrNull() == null }
 
-                        "boolean",
-                        "java.lang.Boolean" -> checkBox(parameter.displayName)
+                        "boolean", "java.lang.Boolean" -> checkBox(parameter.displayName)
                             .align(AlignX.FILL)
                             .selected(parameter.sqlValue == "1")
                             .onChanged { applyValue(fileEditor, parameter, it.isSelected) }
