@@ -81,7 +81,7 @@ data class FlexibleSearchQueryParameter(
         else -> rawValue?.asSafely<String>() ?: ""
     }
 
-    private fun evaluatePresentationValue() = when (type) {
+    private fun evaluatePresentationValue(): String = when (type) {
         "boolean", "java.lang.Boolean" -> if (sqlValue == "1") "true" else "false"
 
         "String", "java.lang.String", "localized:java.lang.String" -> sqlValue
