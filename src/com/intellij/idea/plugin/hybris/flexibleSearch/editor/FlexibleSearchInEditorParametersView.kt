@@ -202,7 +202,10 @@ object FlexibleSearchInEditorParametersView {
                             .text(parameter.rawValue?.asSafely<String>() ?: "")
                             .onChanged { applyValue(fileEditor, parameter, it.text) }
 
-                        else -> textField()
+                        else -> when {
+                            parameter.operand == FlexibleSearchTypes.IN_EXPRESSION -> multivalueTextArea()
+                            else -> textField()
+                        }
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
                             .text(parameter.sqlValue)

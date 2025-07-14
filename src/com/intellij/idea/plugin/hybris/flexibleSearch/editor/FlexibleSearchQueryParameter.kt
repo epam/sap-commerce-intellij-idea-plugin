@@ -83,17 +83,16 @@ data class FlexibleSearchQueryParameter(
             }
             ?: "''"
 
-        Byte::class, Short::class, Int::class, Long::class, Float::class, Double::class -> (rawValue?.asSafely<String>() ?: "")
-            .let { numberValue ->
-                if (operand == FlexibleSearchTypes.IN_EXPRESSION) numberValue
+        else -> rawValue?.asSafely<String>()
+            ?.let { plainValue ->
+                if (operand == FlexibleSearchTypes.IN_EXPRESSION) plainValue
                     .split("\n")
                     .map { it.trim() }
                     .filter { it.isNotBlank() }
                     .joinToString(",")
-                else numberValue
+                else plainValue
             }
-
-        else -> rawValue?.asSafely<String>() ?: ""
+            ?: ""
     }
 
     private fun evaluatePresentationValue(): String = when (type) {

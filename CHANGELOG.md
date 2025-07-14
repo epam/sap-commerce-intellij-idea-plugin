@@ -15,6 +15,7 @@
 - Refresh a parameters panel for all `FlexibleSearch` editors on PSI-elements tree change [#1447](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1447)
 - Shorten long parameter names in the `In-Editor Parameters` view [#1451](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1451)
 - Use text area editor for _in_ expressions in the `In-Editor Parameters` view [#1452](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1452)
+- Use text area editor for any _in_ expressions in the `In-Editor Parameters` view [#1455](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1455)
 - Improved _numbers_ editors in the `In-Editor Parameters` view [#1453](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1453)
 - Automatically Escape `'` in the _text_ editors in the `In-Editor Parameters` view [#1454](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1454)
 
