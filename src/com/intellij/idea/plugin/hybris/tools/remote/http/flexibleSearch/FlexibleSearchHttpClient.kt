@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
@@ -80,11 +81,10 @@ class FlexibleSearchHttpClient(private val project: Project, private val corouti
 
         val tableBuilder = TableBuilder()
 
-        val headers = json["headers"] as MutableList<String>
-        val resultList = json["resultList"] as List<List<String>>
-
-        tableBuilder.addHeaders(headers)
-        resultList.forEach { tableBuilder.addRow(it) }
+        json["headers"].asSafely<MutableList<String>>()
+            ?.let { headers -> tableBuilder.addHeaders(headers)}
+        json["resultList"].asSafely<List<List<String>>>()
+            ?.forEach { row -> tableBuilder.addRow(row) }
 
         return resultBuilder
             .output(tableBuilder.toString())
