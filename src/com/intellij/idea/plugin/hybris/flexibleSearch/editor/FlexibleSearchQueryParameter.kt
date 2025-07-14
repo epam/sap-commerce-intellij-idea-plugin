@@ -100,13 +100,15 @@ data class FlexibleSearchQueryParameter(
 
         Date::class -> rawValue
             ?.asSafely<Date>()
-            ?.let { SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(it) }
+            ?.let { SimpleDateFormat(DATE_FORMAT).format(it) }
             ?: ""
 
         else -> sqlValue
     }
 
     companion object {
+
+        const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"
 
         fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Map<String, FlexibleSearchQueryParameter>) = FlexibleSearchQueryParameter(
             name = bindParameter.value,

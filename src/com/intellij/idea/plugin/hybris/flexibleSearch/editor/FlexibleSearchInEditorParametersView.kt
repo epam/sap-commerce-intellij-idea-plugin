@@ -175,7 +175,7 @@ object FlexibleSearchInEditorParametersView {
                         Date::class -> cell(
                             DatePicker(
                                 parameter.rawValue?.asSafely<Date>(),
-                                SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+                                SimpleDateFormat(FlexibleSearchQueryParameter.DATE_FORMAT)
                             )
                         )
                             .label("${parameter.displayName}:")
