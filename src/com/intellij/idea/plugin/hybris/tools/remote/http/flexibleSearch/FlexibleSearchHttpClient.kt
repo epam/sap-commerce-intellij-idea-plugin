@@ -39,17 +39,18 @@ import java.nio.charset.StandardCharsets
 class FlexibleSearchHttpClient(private val project: Project, private val coroutineScope: CoroutineScope) : HttpClient<FlexibleSearchExecutionContext, HybrisHttpResult>(project, coroutineScope) {
 
     override suspend fun execute(context: FlexibleSearchExecutionContext): HybrisHttpResult {
-        val hacClient = HybrisHacHttpClient.getInstance(project)
         val settings = getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
         val params = context.params(settings)
             .map { BasicNameValuePair(it.key, it.value) }
         val actionUrl = settings.generatedURL + "/console/flexsearch/execute"
 
-        val response: HttpResponse = hacClient.post(actionUrl, params, true, AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT.toLong(), settings, null)
+        val response: HttpResponse = HybrisHacHttpClient.getInstance(project)
+            .post(actionUrl, params, true, AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT.toLong(), settings, null)
         val statusLine = response.statusLine
-        val resultBuilder = HybrisHttpResultBuilder.createResult().httpCode(statusLine.statusCode)
+
         if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
-            return resultBuilder
+            return HybrisHttpResultBuilder.createResult()
+                .httpCode(statusLine.statusCode)
                 .errorMessage("[${statusLine.statusCode}] ${statusLine.reasonPhrase}")
                 .build()
         }
@@ -61,7 +62,8 @@ class FlexibleSearchHttpClient(private val project: Project, private val corouti
                 .toString(StandardCharsets.UTF_8)
             json = Gson().fromJson(responseContent, HashMap::class.java)
         } catch (e: Exception) {
-            return resultBuilder
+            return HybrisHttpResultBuilder.createResult()
+                .httpCode(statusLine.statusCode)
                 .errorMessage("${e.message} $actionUrl")
                 .httpCode(HttpStatus.SC_BAD_REQUEST)
                 .build()
@@ -69,12 +71,14 @@ class FlexibleSearchHttpClient(private val project: Project, private val corouti
 
         if (json == null) {
             return HybrisHttpResultBuilder.createResult()
+                .httpCode(statusLine.statusCode)
                 .errorMessage("Cannot parse response from the server...")
                 .build()
         }
 
         if (json["exception"] != null) {
             return HybrisHttpResultBuilder.createResult()
+                .httpCode(statusLine.statusCode)
                 .errorMessage((json["exception"] as MutableMap<*, *>)["message"].toString())
                 .build()
         }
@@ -86,7 +90,8 @@ class FlexibleSearchHttpClient(private val project: Project, private val corouti
         json["resultList"].asSafely<List<List<String>>>()
             ?.forEach { row -> tableBuilder.addRow(row) }
 
-        return resultBuilder
+        return HybrisHttpResultBuilder.createResult()
+            .httpCode(statusLine.statusCode)
             .output(tableBuilder.toString())
             .build()
     }
