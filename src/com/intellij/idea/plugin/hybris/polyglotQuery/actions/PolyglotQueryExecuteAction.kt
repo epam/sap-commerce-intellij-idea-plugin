@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 
-class PolyglotQueryExecuteQueryAction : AbstractExecuteAction(
+class PolyglotQueryExecuteAction : AbstractExecuteAction(
     PolyglotQueryLanguage,
     HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY,
     message("hybris.pgq.actions.execute_query"),

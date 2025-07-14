@@ -25,8 +25,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
-import com.intellij.idea.plugin.hybris.tools.remote.HybrisRemoteExecutionService
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.service
@@ -38,7 +38,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
+class FlexibleSearchExecuteAction : AbstractExecuteAction(
     FlexibleSearchLanguage,
     HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
     message("hybris.fxs.actions.execute_query"),
@@ -69,23 +69,22 @@ class FlexibleSearchExecuteQueryAction : AbstractExecuteAction(
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = e.flexibleSearchSplitEditor()
         if (fileEditor?.inEditorResults ?: false) {
-            HybrisConsoleService.getInstance(project).findConsole(consoleName)
-                ?.let { console ->
-                    fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
-                    fileEditor.beforeExecution()
+            val context = FlexibleSearchExecutionContext(
+                content = content
+            )
 
-                    project.service<HybrisRemoteExecutionService>()
-                        .execute(console, content)
-                        {
-                            fileEditor.renderExecutionResult(it)
-                            fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
+            fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
+            fileEditor.beforeExecution()
 
-                            CoroutineScope(Dispatchers.Default).launch {
-                                readAction { this@FlexibleSearchExecuteQueryAction.update(e) }
-                            }
-                        }
+            project.service<FlexibleSearchHttpClient>().execute(context)
+            {
+                fileEditor.renderExecutionResult(it)
+                fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
+
+                CoroutineScope(Dispatchers.Default).launch {
+                    readAction { this@FlexibleSearchExecuteAction.update(e) }
                 }
-                ?: super.actionPerformed(e, project, content)
+            }
         } else {
             super.actionPerformed(e, project, content)
         }

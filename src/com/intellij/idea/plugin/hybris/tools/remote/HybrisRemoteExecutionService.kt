@@ -18,12 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote
 
+import com.intellij.idea.plugin.hybris.settings.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.QueryMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgress
+import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -34,6 +40,15 @@ class HybrisRemoteExecutionService(private val project: Project, private val cor
         coroutineScope.launch {
             withBackgroundProgress(project, "Execute HTTP Call to SAP Commerce...", true) {
                 val result = reportProgress { progressReporter ->
+                    project.service<FlexibleSearchHttpClient>()
+                        .execute(
+                            FlexibleSearchExecutionContext(
+                                content = query,
+                                maxCount = maxRowsSpinner.value.asSafely<Int>() ?: 200,
+                                transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
+                                queryMode = if (plainSqlCheckbox.isSelected) QueryMode.SQL else QueryMode.FlexibleSearch,
+                            )
+                        )
                     console.execute(query, null)
                 }
 
