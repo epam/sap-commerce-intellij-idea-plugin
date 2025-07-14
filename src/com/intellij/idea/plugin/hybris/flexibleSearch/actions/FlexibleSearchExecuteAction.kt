@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
-import com.intellij.idea.plugin.hybris.settings.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -72,8 +71,6 @@ class FlexibleSearchExecuteAction : AbstractExecuteAction(
         if (fileEditor?.inEditorResults ?: false) {
             val context = FlexibleSearchExecutionContext(
                 content = content,
-
-                transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
             )
 
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)

@@ -25,6 +25,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
+import org.apache.commons.lang3.BooleanUtils
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.reflect.KClass
@@ -96,7 +97,7 @@ data class FlexibleSearchQueryParameter(
     }
 
     private fun evaluatePresentationValue(): String = when (type) {
-        Boolean::class -> if (sqlValue == "1") "true" else "false"
+        Boolean::class -> BooleanUtils.toStringTrueFalse(sqlValue == "1")
 
         Date::class -> rawValue
             ?.asSafely<Date>()

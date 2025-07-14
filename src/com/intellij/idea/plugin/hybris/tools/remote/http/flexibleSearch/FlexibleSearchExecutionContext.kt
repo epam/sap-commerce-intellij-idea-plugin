@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
-import com.intellij.idea.plugin.hybris.settings.TransactionMode
 import org.apache.commons.lang3.BooleanUtils
 
 data class FlexibleSearchExecutionContext(
@@ -27,13 +26,13 @@ data class FlexibleSearchExecutionContext(
     private val maxCount: Int = 200,
     private val locale: String = "en",
     private val dataSource: String = "master",
-    private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
+    private val transactionMode: FxSTransactionMode = FxSTransactionMode.ROLLBACK,
     private val queryMode: QueryMode = QueryMode.FlexibleSearch,
     private val user: String? = null
 ) {
     fun params(settings: RemoteConnectionSettings): Map<String, String> = buildMap {
         put("scriptType", "flexibleSearch")
-        put("commit", BooleanUtils.toStringTrueFalse(transactionMode == TransactionMode.COMMIT))
+        put("commit", BooleanUtils.toStringTrueFalse(transactionMode == FxSTransactionMode.COMMIT))
         put("maxCount", maxCount.toString())
         put("user", user ?: settings.username)
         put("dataSource", dataSource)
@@ -51,4 +50,8 @@ data class FlexibleSearchExecutionContext(
 
 enum class QueryMode {
     SQL, FlexibleSearch
+}
+
+enum class FxSTransactionMode {
+    COMMIT, ROLLBACK
 }
