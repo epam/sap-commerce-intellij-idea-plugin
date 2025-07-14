@@ -23,17 +23,12 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.idea.plugin.hybris.settings.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.QueryMode
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
-import com.intellij.util.asSafely
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
 import java.io.Serial
@@ -68,14 +63,13 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
         ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
     }
 
-    override fun execute(query: String, replicaContext: ReplicaContext?) = project.service<FlexibleSearchHttpClient>()
-        .execute(
-            FlexibleSearchExecutionContext(
-                content = query,
-                maxCount = maxRowsSpinner.value.asSafely<Int>() ?: 200,
-                transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
-                queryMode = if (plainSqlCheckbox.isSelected) QueryMode.SQL else QueryMode.FlexibleSearch,
-            )
+    override fun execute(query: String, replicaContext: ReplicaContext?) = HybrisHacHttpClient.getInstance(project)
+        .executeFlexibleSearch(
+            project,
+            commitCheckbox.isSelected,
+            plainSqlCheckbox.isSelected,
+            maxRowsSpinner.value.toString(),
+            query
         )
 
     override fun title(): String = "FlexibleSearch"
