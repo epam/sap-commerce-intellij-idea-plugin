@@ -19,6 +19,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http.impex;
 
+import org.apache.http.HttpStatus;
+
 import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -105,6 +107,11 @@ public class HybrisHttpResult {
 
         public HybrisHttpResultBuilder httpCode(final int statusCode) {
             this.statusCode = statusCode;
+            return this;
+        }
+
+        public HybrisHttpResultBuilder badRequest() {
+            this.statusCode = HttpStatus.SC_BAD_REQUEST;
             return this;
         }
 

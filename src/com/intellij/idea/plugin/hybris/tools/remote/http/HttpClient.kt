@@ -26,8 +26,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 abstract class HttpClient<C, R : HybrisHttpResult>(
-    private val project: Project,
-    private val coroutineScope: CoroutineScope
+    protected val project: Project,
+    protected val coroutineScope: CoroutineScope
 ) {
 
     fun execute(context: C, resultCallback: (HybrisHttpResult) -> Unit) {

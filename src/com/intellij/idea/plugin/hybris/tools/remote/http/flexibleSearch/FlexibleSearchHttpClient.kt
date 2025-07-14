@@ -20,8 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch
 
 import com.google.gson.Gson
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil.getActiveRemoteConnectionSettings
-import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.HttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
@@ -36,64 +35,61 @@ import org.apache.http.message.BasicNameValuePair
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class FlexibleSearchHttpClient(private val project: Project, private val coroutineScope: CoroutineScope) : HttpClient<FlexibleSearchExecutionContext, HybrisHttpResult>(project, coroutineScope) {
+class FlexibleSearchHttpClient(project: Project, coroutineScope: CoroutineScope) : HttpClient<FlexibleSearchExecutionContext, HybrisHttpResult>(project, coroutineScope) {
 
     override suspend fun execute(context: FlexibleSearchExecutionContext): HybrisHttpResult {
-        val settings = getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
         val params = context.params(settings)
             .map { BasicNameValuePair(it.key, it.value) }
-        val actionUrl = settings.generatedURL + "/console/flexsearch/execute"
+        val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
 
-        val response: HttpResponse = HybrisHacHttpClient.getInstance(project)
-            .post(actionUrl, params, true, AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT.toLong(), settings, null)
+        val response = HybrisHacHttpClient.getInstance(project)
+            .post(actionUrl, params, true, context.timeout.toLong(), settings, null)
         val statusLine = response.statusLine
-
-        if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
-            return HybrisHttpResultBuilder.createResult()
-                .httpCode(statusLine.statusCode)
+        val resultBuilder = when {
+            statusLine.statusCode != HttpStatus.SC_OK || response.entity == null -> HybrisHttpResultBuilder.createResult()
+                .badRequest()
                 .errorMessage("[${statusLine.statusCode}] ${statusLine.reasonPhrase}")
-                .build()
+
+            else -> parseResponse(response, actionUrl)
         }
 
-        val json: MutableMap<*, *>?
-        try {
-            val responseContent = response.entity.content
-                .readAllBytes()
-                .toString(StandardCharsets.UTF_8)
-            json = Gson().fromJson(responseContent, HashMap::class.java)
-        } catch (e: Exception) {
-            return HybrisHttpResultBuilder.createResult()
-                .httpCode(statusLine.statusCode)
-                .errorMessage("${e.message} $actionUrl")
-                .httpCode(HttpStatus.SC_BAD_REQUEST)
-                .build()
-        }
+        return resultBuilder.build()
+    }
 
-        if (json == null) {
-            return HybrisHttpResultBuilder.createResult()
-                .httpCode(statusLine.statusCode)
-                .errorMessage("Cannot parse response from the server...")
-                .build()
-        }
+    private fun parseResponse(response: HttpResponse, actionUrl: String) = try {
+        val json = response.entity.content
+            .readAllBytes()
+            .toString(StandardCharsets.UTF_8)
+            .let { Gson().fromJson(it, HashMap::class.java) }
 
-        if (json["exception"] != null) {
-            return HybrisHttpResultBuilder.createResult()
-                .httpCode(statusLine.statusCode)
-                .errorMessage((json["exception"] as MutableMap<*, *>)["message"].toString())
-                .build()
-        }
+        json["exception"]
+            ?.asSafely<MutableMap<*, *>>()
+            ?.let { it["message"] }
+            ?.toString()
+            ?.let {
+                HybrisHttpResultBuilder.createResult()
+                    .badRequest()
+                    .errorMessage(it)
+            }
+            ?: HybrisHttpResultBuilder.createResult()
+                .output(buildTableResult(json))
+    } catch (e: Exception) {
+        HybrisHttpResultBuilder.createResult()
+            .badRequest()
+            .errorMessage("Cannot parse response from the server: ${e.message} $actionUrl")
+    }
 
+    private fun buildTableResult(json: HashMap<*, *>): String {
         val tableBuilder = TableBuilder()
 
         json["headers"].asSafely<MutableList<String>>()
-            ?.let { headers -> tableBuilder.addHeaders(headers)}
+            ?.let { headers -> tableBuilder.addHeaders(headers) }
         json["resultList"].asSafely<List<List<String>>>()
             ?.forEach { row -> tableBuilder.addRow(row) }
 
-        return HybrisHttpResultBuilder.createResult()
-            .httpCode(statusLine.statusCode)
-            .output(tableBuilder.toString())
-            .build()
+        return tableBuilder.toString()
+
     }
 
 }
