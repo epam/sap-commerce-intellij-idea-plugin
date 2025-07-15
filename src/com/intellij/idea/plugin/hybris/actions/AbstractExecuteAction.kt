@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.actions
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
@@ -35,10 +36,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolder
 import com.intellij.util.asSafely
 import javax.swing.Icon
+import kotlin.reflect.KClass
 
-abstract class AbstractExecuteAction(
+abstract class AbstractExecuteAction<C : HybrisConsole>(
     internal val language: Language,
-    internal val consoleName: String,
+    internal val consoleClass: KClass<C>,
     internal val name: String,
     internal val description: String,
     internal val icon: Icon
@@ -46,7 +48,7 @@ abstract class AbstractExecuteAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    protected open fun doExecute(e: AnActionEvent, consoleService: HybrisConsoleService) {
+    protected open fun doExecute(e: AnActionEvent, content: String, console: C, consoleService: HybrisConsoleService) {
         consoleService.executeStatement(e)
     }
 
@@ -65,9 +67,9 @@ abstract class AbstractExecuteAction(
         }
 
         val consoleService = HybrisConsoleService.getInstance(project)
-        val console = consoleService.findConsole(consoleName)
+        val console = consoleService.findConsole(consoleClass)
         if (console == null) {
-            LOG.warn("unable to find console $consoleName")
+            LOG.warn("unable to find console ${this@AbstractExecuteAction.consoleClass}")
             return
         }
 
@@ -78,7 +80,7 @@ abstract class AbstractExecuteAction(
         console.setInputText(content)
 
         invokeLater {
-            doExecute(e, consoleService)
+            doExecute(e, content, console, consoleService)
         }
     }
 

@@ -33,6 +33,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
 import com.intellij.json.JsonFileType
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.progress.ProgressIndicator
@@ -43,10 +44,11 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.application
 
-class HybrisConsoleExecuteActionHandler(
-    private val project: Project,
-    private val preserveMarkup: Boolean
-) {
+@Service(Service.Level.PROJECT)
+class HybrisConsoleExecuteActionHandler(private val project: Project) {
+
+    private val preserveMarkup: Boolean = false
+    var isProcessRunning: Boolean = false
 
     private fun setEditorEnabled(console: HybrisConsole, enabled: Boolean) {
         console.consoleEditor.isRendererMode = !enabled
@@ -62,30 +64,7 @@ class HybrisConsoleExecuteActionHandler(
                         setEditorEnabled(console, false)
                         val httpResult = console.execute(query, replicaContext)
 
-                        when (console) {
-                            is HybrisImpexMonitorConsole -> {
-                                console.clear()
-                                printSyntaxText(console, httpResult.output, ImpexFileType)
-                            }
-
-                            is HybrisSolrSearchConsole -> {
-                                console.clear()
-
-                                printCurrentHost(console, RemoteConnectionType.SOLR, replicaContext)
-
-                                if (httpResult.hasError()) {
-                                    printSyntaxText(console, httpResult.errorMessage, PlainTextFileType.INSTANCE)
-                                } else {
-                                    printSyntaxText(console, httpResult.output, JsonFileType.INSTANCE)
-                                }
-                            }
-
-                            else -> {
-                                printCurrentHost(console, RemoteConnectionType.Hybris, replicaContext)
-
-                                printPlainText(console, httpResult)
-                            }
-                        }
+                        printResults(console, httpResult, replicaContext)
                     } finally {
                         isProcessRunning = false
                         setEditorEnabled(console, true)
@@ -93,6 +72,37 @@ class HybrisConsoleExecuteActionHandler(
                 }
 
             })
+        }
+    }
+
+    fun printResults(
+        console: HybrisConsole,
+        httpResult: HybrisHttpResult,
+        replicaContext: ReplicaContext? = null
+    ) {
+        when (console) {
+            is HybrisImpexMonitorConsole -> {
+                console.clear()
+                printSyntaxText(console, httpResult.output, ImpexFileType)
+            }
+
+            is HybrisSolrSearchConsole -> {
+                console.clear()
+
+                printCurrentHost(console, RemoteConnectionType.SOLR, replicaContext)
+
+                if (httpResult.hasError()) {
+                    printSyntaxText(console, httpResult.errorMessage, PlainTextFileType.INSTANCE)
+                } else {
+                    printSyntaxText(console, httpResult.output, JsonFileType.INSTANCE)
+                }
+            }
+
+            else -> {
+                printCurrentHost(console, RemoteConnectionType.Hybris, replicaContext)
+
+                printPlainText(console, httpResult)
+            }
         }
     }
 
@@ -144,16 +154,16 @@ class HybrisConsoleExecuteActionHandler(
     fun runExecuteAction(replicaContext: ReplicaContext?) {
         val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole() ?: return
 
-        ConsoleHistoryController.getController(activeConsole)
-            ?.let { execute(activeConsole, it, replicaContext) }
+        addQueryToHistory(activeConsole, replicaContext)
+            ?.let { processLine(activeConsole, it, replicaContext) }
     }
 
-    private fun execute(
+    fun addQueryToHistory(
         console: HybrisConsole,
-        consoleHistoryController: ConsoleHistoryController,
-        replicaContext: ReplicaContext?
-    ) {
-
+        replicaContext: ReplicaContext? = null
+    ): String? {
+        val consoleHistoryController = ConsoleHistoryController.getController(console)
+            ?: return null
         // Process input and add to history
         val document = console.currentEditor.document
         val textForHistory = document.text
@@ -171,10 +181,8 @@ class HybrisConsoleExecuteActionHandler(
                 consoleHistoryController.addToHistory(textForHistory.trim())
             }
 
-            processLine(console, query, replicaContext)
+            return query
         }
+        return null
     }
-
-    var isProcessRunning: Boolean = false
-
 }

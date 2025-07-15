@@ -17,14 +17,15 @@
  */
 package com.intellij.idea.plugin.hybris.polyglotQuery.file.actions
 
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisPolyglotQueryConsole
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 
 class PolyglotQueryCopyFileAction : AnAction(
@@ -37,14 +38,13 @@ class PolyglotQueryCopyFileAction : AnAction(
 
     override fun update(event: AnActionEvent) {
         val project = event.project ?: return
-        event.presentation.isEnabledAndVisible = project.isHybrisProject && CopyFileToHybrisConsoleUtils.isRequiredMultipleFileExtension(
-            project,
-            PolyglotQueryFileType.defaultExtension
-        )
+        event.presentation.isEnabledAndVisible = project.isHybrisProject
+            && project.service<CopyFileToHybrisConsoleService>().isRequiredMultipleFileExtension(PolyglotQueryFileType.defaultExtension)
     }
 
     override fun actionPerformed(event: AnActionEvent) {
-        val project = event.project ?: return
-        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryFileType.defaultExtension)
+        event.project
+            ?.service<CopyFileToHybrisConsoleService>()
+            ?.copySelectedFilesToConsole(HybrisPolyglotQueryConsole::class, PolyglotQueryFileType.defaultExtension)
     }
 }

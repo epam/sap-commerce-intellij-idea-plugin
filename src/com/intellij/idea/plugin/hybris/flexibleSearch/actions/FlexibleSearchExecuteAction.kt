@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -34,13 +34,11 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.ui.AnimatedIcon
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FlexibleSearchExecuteAction : AbstractExecuteAction(
+class FlexibleSearchExecuteAction : AbstractExecuteAction<HybrisFlexibleSearchConsole>(
     FlexibleSearchLanguage,
-    HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
+    HybrisFlexibleSearchConsole::class,
     message("hybris.fxs.actions.execute_query"),
     message("hybris.fxs.actions.execute_query.description"),
     HybrisIcons.Console.Actions.EXECUTE
@@ -76,12 +74,11 @@ class FlexibleSearchExecuteAction : AbstractExecuteAction(
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.beforeExecution()
 
-            project.service<FlexibleSearchHttpClient>().execute(context)
-            {
-                fileEditor.renderExecutionResult(it)
+            project.service<FlexibleSearchHttpClient>().execute(context) { coroutineScope, result ->
+                fileEditor.renderExecutionResult(result)
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
-                CoroutineScope(Dispatchers.Default).launch {
+                coroutineScope.launch {
                     readAction { this@FlexibleSearchExecuteAction.update(e) }
                 }
             }

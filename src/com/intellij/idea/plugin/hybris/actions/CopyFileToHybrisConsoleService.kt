@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.toolwindow.CopyFileToHybrisConsoleDialog
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
@@ -35,24 +36,26 @@ import com.intellij.psi.PsiManager
 import com.intellij.util.asSafely
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
+import kotlin.reflect.KClass
 
-object CopyFileToHybrisConsoleUtils {
+@Service(Service.Level.PROJECT)
+class CopyFileToHybrisConsoleService(private val project: Project) {
 
-    fun copySelectedFilesToConsole(project: Project, consoleTitle: String, dialogTitle: String) {
-        val console = HybrisConsoleService.getInstance(project).findConsole(consoleTitle) ?: return
-        val query = getQueryFromSelectedFiles(project)
+    fun copySelectedFilesToConsole(consoleClass: KClass<out HybrisConsole>, fileExtension: String) {
+        val console = HybrisConsoleService.getInstance(project).findConsole(consoleClass) ?: return
+        val content = getContentFromSelectedFiles()
 
-        if (getTextFromHybrisConsole(project, console).isNotEmpty()) {
-            CopyFileToHybrisConsoleDialog(project, getDialogTitleFromProperties(dialogTitle))
-                .show { copyQueryToConsole(project, consoleTitle, query) }
+        if (getTextFromHybrisConsole(console).isNotEmpty()) {
+            CopyFileToHybrisConsoleDialog(project, getDialogTitleFromProperties(fileExtension))
+                .show { copyQueryToConsole(consoleClass, content) }
         } else {
-            copyQueryToConsole(project, consoleTitle, query)
+            copyQueryToConsole(consoleClass, content)
         }
     }
 
-    fun copyQueryToConsole(project: Project, consoleTitle: String, query: String) {
+    fun copyQueryToConsole(consoleClass: KClass<out HybrisConsole>, content: String) {
         val hybrisConsoleService = HybrisConsoleService.getInstance(project)
-        val console = hybrisConsoleService.findConsole(consoleTitle) ?: return
+        val console = hybrisConsoleService.findConsole(consoleClass) ?: return
 
         with(HybrisToolWindowService.getInstance(project)) {
             this.activateToolWindow()
@@ -62,21 +65,21 @@ object CopyFileToHybrisConsoleUtils {
         with(console) {
             hybrisConsoleService.setActiveConsole(this)
             this.clear()
-            this.setInputText(query)
+            this.setInputText(content)
         }
     }
 
-    fun isRequiredSingleFileExtension(project: Project, fileExtension: String) = getFileExtensions(project)
+    fun isRequiredSingleFileExtension(fileExtension: String) = getFileExtensions()
         .takeIf { it.size == 1 }
         ?.any { it == fileExtension }
         ?: false
 
-    fun isRequiredMultipleFileExtension(project: Project, fileExtension: String) = getFileExtensions(project)
+    fun isRequiredMultipleFileExtension(fileExtension: String) = getFileExtensions()
         .takeUnless { it.isEmpty() }
         ?.all { it == fileExtension }
         ?: false
 
-    private fun getTextFromHybrisConsole(project: Project, console: HybrisConsole): String {
+    private fun getTextFromHybrisConsole(console: HybrisConsole): String {
         val helper = LanguageConsoleImpl.Helper(project, console.virtualFile)
         val consoleExecutionEditor = ConsoleExecutionEditor(helper)
         val text = consoleExecutionEditor.document.text
@@ -85,17 +88,17 @@ object CopyFileToHybrisConsoleUtils {
         return text
     }
 
-    private fun getFileExtensions(project: Project) = getSelectedFiles(project)
+    private fun getFileExtensions() = getSelectedFiles()
         .mapNotNull { it.extension }
 
-    private fun getQueryFromSelectedFiles(project: Project) = getSelectedFiles(project)
-        .mapNotNull { getPsiFileNode(project, it) }
+    private fun getContentFromSelectedFiles() = getSelectedFiles()
+        .mapNotNull { getPsiFileNode(it) }
         .joinToString(System.lineSeparator()) { it.text }
 
-    private fun getPsiFileNode(project: Project, virtualFile: VirtualFile) = PsiManager.getInstance(project)
+    private fun getPsiFileNode(virtualFile: VirtualFile) = PsiManager.getInstance(project)
         .findFile(virtualFile)
 
-    private fun getSelectedFiles(project: Project) = getSelectedTreePaths(project)
+    private fun getSelectedFiles() = getSelectedTreePaths()
         ?.mapNotNull { getVirtualFile(it) }
         ?: emptyList()
 
@@ -106,7 +109,7 @@ object CopyFileToHybrisConsoleUtils {
         ?.virtualFile
         ?.takeUnless { it.isDirectory }
 
-    private fun getSelectedTreePaths(project: Project) = ProjectView.getInstance(project)
+    private fun getSelectedTreePaths() = ProjectView.getInstance(project)
         .currentProjectViewPane
         ?.selectionPaths
 

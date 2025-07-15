@@ -18,23 +18,21 @@
 package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-class ImpExValidateAction : AbstractExecuteAction(
+class ImpExValidateAction : AbstractExecuteAction<HybrisImpexConsole>(
     ImpexLanguage,
-    HybrisConstants.CONSOLE_TITLE_IMPEX,
+    HybrisImpexConsole::class,
     "Validate ImpEx",
     "Validate ImpEx file via remote SAP Commerce instance",
     HybrisIcons.ImpEx.Actions.VALIDATE
 ) {
 
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-    override fun doExecute(e: AnActionEvent, consoleService: HybrisConsoleService) {
+    override fun doExecute(e: AnActionEvent, content: String, console: HybrisImpexConsole, consoleService: HybrisConsoleService) {
         consoleService.validateImpex(e)
     }
 }

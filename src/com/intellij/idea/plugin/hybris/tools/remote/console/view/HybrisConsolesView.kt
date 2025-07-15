@@ -30,6 +30,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
@@ -37,6 +38,8 @@ import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel
 import javax.swing.SwingConstants.TOP
+import kotlin.reflect.KClass
+import kotlin.reflect.cast
 
 class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Disposable {
 
@@ -71,7 +74,7 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         actionToolbar.targetComponent = hybrisTabs.component
         panel.add(actionToolbar.component, BorderLayout.WEST)
 
-        val actionHandler = HybrisConsoleExecuteActionHandler(project, false)
+        val actionHandler = project.service<HybrisConsoleExecuteActionHandler>()
         val validateHandler = HybrisConsoleExecuteValidateActionHandler(project, false)
         val executeAction = HybrisExecuteImmediatelyAction(actionHandler)
         executeAction.registerCustomShortcutSet(CommonShortcuts.ALT_ENTER, this.component)
@@ -97,12 +100,11 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         return hybrisTabs.activeConsole()
     }
 
-    fun findConsole(consoleTitle: String): HybrisConsole? {
+    fun <C : HybrisConsole> findConsole(consoleClass: KClass<C>): C? {
         for (index in 0 until hybrisTabs.tabCount) {
-            val component = hybrisTabs.getComponentAt(index) as HybrisConsole
-            if (component.title == consoleTitle) {
-                return component
-            }
+            val c = hybrisTabs.getComponentAt(index)
+
+            if (consoleClass.isInstance(c)) return consoleClass.cast(c)
         }
         return null
     }

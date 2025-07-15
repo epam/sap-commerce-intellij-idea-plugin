@@ -18,14 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.impex.file.actions
 
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.CONSOLE_TITLE_IMPEX
+import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleService
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_FILE_EXTENSION
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 
 class ImpexCopyFileAction : AnAction(
@@ -38,11 +39,13 @@ class ImpexCopyFileAction : AnAction(
 
     override fun update(event: AnActionEvent) {
         val project = event.project ?: return
-        event.presentation.isEnabledAndVisible = project.isHybrisProject && CopyFileToHybrisConsoleUtils.isRequiredMultipleFileExtension(project, IMPEX_FILE_EXTENSION)
+        event.presentation.isEnabledAndVisible = project.isHybrisProject
+            && project.service<CopyFileToHybrisConsoleService>().isRequiredMultipleFileExtension(IMPEX_FILE_EXTENSION)
     }
 
     override fun actionPerformed(event: AnActionEvent) {
-        val project = event.project ?: return
-        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, CONSOLE_TITLE_IMPEX, IMPEX_FILE_EXTENSION)
+        event.project
+            ?.service<CopyFileToHybrisConsoleService>()
+            ?.copySelectedFilesToConsole(HybrisImpexConsole::class, IMPEX_FILE_EXTENSION)
     }
 }

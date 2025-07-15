@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,13 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 import org.jetbrains.plugins.groovy.GroovyFileType
@@ -31,7 +32,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType
 class GroovyOpenQueryAction : AnAction() {
 
     init {
-        with (templatePresentation) {
+        with(templatePresentation) {
             text = message("hybris.groovy.actions.open_query")
             description = message("hybris.groovy.actions.open_query.description")
             icon = HybrisIcons.Console.Actions.OPEN
@@ -40,18 +41,16 @@ class GroovyOpenQueryAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val query = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+        val content = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
             ?.firstOrNull()
             ?.takeIf { it.fileType is GroovyFileType }
             ?.takeUnless { SingleRootFileViewProvider.isTooLargeForIntelligence(it) }
-            ?.let { FileDocumentManager.getInstance().getDocument(it) }?.text
+            ?.let { FileDocumentManager.getInstance().getDocument(it) }
+            ?.text
             ?: return
 
-        CopyFileToHybrisConsoleUtils.copyQueryToConsole(
-            project,
-            HybrisConstants.CONSOLE_TITLE_GROOVY,
-            query
-        )
+        project.service<CopyFileToHybrisConsoleService>()
+            .copyQueryToConsole(HybrisGroovyConsole::class, content)
     }
 
 }

@@ -21,12 +21,13 @@ import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import kotlin.reflect.KClass
 
 @Service(Service.Level.PROJECT)
 class HybrisConsoleService(private val project: Project) {
 
-    fun findConsole(consoleTitle: String) = HybrisToolWindowService.getInstance(project).findConsolesView()
-        ?.findConsole(consoleTitle)
+    fun <C: HybrisConsole>findConsole(consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView()
+        ?.findConsole(consoleClass)
 
     fun setActiveConsole(console: HybrisConsole) {
         HybrisToolWindowService.getInstance(project).findConsolesView()

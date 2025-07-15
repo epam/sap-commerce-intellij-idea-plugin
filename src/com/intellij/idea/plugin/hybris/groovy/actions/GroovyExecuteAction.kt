@@ -36,43 +36,39 @@ import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 
-class GroovyExecuteAction : AbstractExecuteAction(
+class GroovyExecuteAction : AbstractExecuteAction<HybrisGroovyConsole>(
     GroovyLanguage,
-    HybrisConstants.CONSOLE_TITLE_GROOVY,
+    HybrisGroovyConsole::class,
     "Execute Groovy Script",
     "Execute Groovy Script on a remote SAP Commerce instance",
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    override fun doExecute(e: AnActionEvent, consoleService: HybrisConsoleService) {
+    override fun doExecute(e: AnActionEvent, content: String, console: HybrisGroovyConsole, consoleService: HybrisConsoleService) {
         val project = e.project ?: return
 
-        consoleService.getActiveConsole()
-            ?.asSafely<HybrisGroovyConsole>()
-            ?.also { console ->
-                val commitMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode == TransactionMode.COMMIT
-                console.updateCommitMode(commitMode)
+        val commitMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode == TransactionMode.COMMIT
+        console.updateCommitMode(commitMode)
 
-                val replicaContexts = HybrisHacHttpClient.getInstance(project).connectionContext.replicaContexts
+        val replicaContexts = HybrisHacHttpClient.getInstance(project).connectionContext.replicaContexts
 
-                if (replicaContexts.isNotEmpty()) {
-                    replicaContexts
-                        .map {
-                            it.content = e.dataContext.asSafely<UserDataHolder>()
-                                ?.getUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT)
-                                ?: ""
+        if (replicaContexts.isNotEmpty()) {
+            replicaContexts
+                .map {
+                    it.content = e.dataContext.asSafely<UserDataHolder>()
+                        ?.getUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT)
+                        ?: ""
 
-                            SimpleDataContext.builder()
-                                .add(CommonDataKeys.PROJECT, project)
-                                .add(HybrisConstants.DATA_KEY_REPLICA_CONTEXT, it)
-                                .build()
-                        }
-                        .map { AnActionEvent.createEvent(it, e.presentation, e.place, e.uiKind, e.inputEvent) }
-                        .forEach { super.doExecute(it, consoleService) }
-                } else {
-                    super.doExecute(e, consoleService)
+                    SimpleDataContext.builder()
+                        .add(CommonDataKeys.PROJECT, project)
+                        .add(HybrisConstants.DATA_KEY_REPLICA_CONTEXT, it)
+                        .build()
                 }
-            }
+                .map { AnActionEvent.createEvent(it, e.presentation, e.place, e.uiKind, e.inputEvent) }
+                .forEach { super.doExecute(it, content, console, consoleService) }
+        } else {
+            super.doExecute(e, content, console, consoleService)
+        }
     }
 
     override fun update(e: AnActionEvent) {

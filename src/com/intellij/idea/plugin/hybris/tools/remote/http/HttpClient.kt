@@ -30,17 +30,17 @@ abstract class HttpClient<C, R : HybrisHttpResult>(
     protected val coroutineScope: CoroutineScope
 ) {
 
-    fun execute(context: C, resultCallback: (HybrisHttpResult) -> Unit) {
+    fun execute(context: C, resultCallback: (CoroutineScope, HybrisHttpResult) -> Unit) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Execute HTTP Call to SAP Commerce...", true) {
                 val result = reportProgress { progressReporter ->
                     execute(context)
                 }
 
-                resultCallback.invoke(result)
+                resultCallback.invoke(this, result)
             }
         }
     }
 
-    protected abstract suspend fun execute(context: C): R
+    internal abstract suspend fun execute(context: C): R
 }

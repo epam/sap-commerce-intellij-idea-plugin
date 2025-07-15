@@ -18,15 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.file.actions
 
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils.isRequiredSingleFileExtension
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH
+import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleService
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_FILE_EXTENSION
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 
 class FlexibleSearchCopyFileAction : AnAction(
@@ -39,11 +39,13 @@ class FlexibleSearchCopyFileAction : AnAction(
 
     override fun update(event: AnActionEvent) {
         val project = event.project ?: return
-        event.presentation.isEnabledAndVisible = project.isHybrisProject && isRequiredSingleFileExtension(project, FLEXIBLE_SEARCH_FILE_EXTENSION)
+        event.presentation.isEnabledAndVisible = project.isHybrisProject && project.service<CopyFileToHybrisConsoleService>()
+            .isRequiredSingleFileExtension(FLEXIBLE_SEARCH_FILE_EXTENSION)
     }
 
     override fun actionPerformed(event: AnActionEvent) {
-        val project = event.project ?: return
-        CopyFileToHybrisConsoleUtils.copySelectedFilesToConsole(project, CONSOLE_TITLE_FLEXIBLE_SEARCH, FLEXIBLE_SEARCH_FILE_EXTENSION)
+        event.project
+            ?.service<CopyFileToHybrisConsoleService>()
+            ?.copySelectedFilesToConsole(HybrisFlexibleSearchConsole::class, FLEXIBLE_SEARCH_FILE_EXTENSION)
     }
 }

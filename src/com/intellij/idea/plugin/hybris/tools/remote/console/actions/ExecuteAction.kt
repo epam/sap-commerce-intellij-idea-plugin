@@ -29,6 +29,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import javax.swing.Icon
 
+@Deprecated("Due migration to new hAC API")
 abstract class HybrisExecuteActionBase(
     val executeActionHandler: HybrisConsoleExecuteActionHandler,
     icon: Icon
@@ -39,6 +40,7 @@ abstract class HybrisExecuteActionBase(
     }
 }
 
+@Deprecated("Due migration to new hAC API")
 class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, HybrisIcons.Console.Actions.EXECUTE) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -61,6 +63,7 @@ class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteA
     }
 }
 
+@Deprecated("Due migration to new hAC API")
 class HybrisSuspendAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, HybrisIcons.Console.Actions.SUSPEND) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

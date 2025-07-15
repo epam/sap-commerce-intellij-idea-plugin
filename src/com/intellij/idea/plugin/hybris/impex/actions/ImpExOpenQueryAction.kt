@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,21 +17,22 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleUtils
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 
 class ImpExOpenQueryAction : AnAction() {
 
     init {
-        with (templatePresentation) {
+        with(templatePresentation) {
             text = message("hybris.impex.actions.open_query")
             description = message("hybris.impex.actions.open_query.description")
             icon = HybrisIcons.Console.Actions.OPEN
@@ -40,18 +41,16 @@ class ImpExOpenQueryAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val query = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
+        val content = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
             ?.firstOrNull()
             ?.takeIf { it.fileType is ImpexFileType }
             ?.takeUnless { SingleRootFileViewProvider.isTooLargeForIntelligence(it) }
-            ?.let { FileDocumentManager.getInstance().getDocument(it) }?.text
+            ?.let { FileDocumentManager.getInstance().getDocument(it) }
+            ?.text
             ?: return
 
-        CopyFileToHybrisConsoleUtils.copyQueryToConsole(
-            project,
-            HybrisConstants.CONSOLE_TITLE_IMPEX,
-            query
-        )
+        project.service<CopyFileToHybrisConsoleService>()
+            .copyQueryToConsole(HybrisImpexConsole::class, content)
     }
 
 }

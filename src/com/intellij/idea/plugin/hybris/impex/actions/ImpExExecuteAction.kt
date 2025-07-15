@@ -18,19 +18,45 @@
 package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExHttpClient
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.components.service
+import kotlinx.coroutines.launch
 
-class ImpExExecuteAction : AbstractExecuteAction(
+class ImpExExecuteAction : AbstractExecuteAction<HybrisImpexConsole>(
     ImpexLanguage,
-    HybrisConstants.CONSOLE_TITLE_IMPEX,
+    HybrisImpexConsole::class,
     message("hybris.impex.actions.execute_query"),
     message("hybris.impex.actions.execute_query.description"),
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+    override fun doExecute(e: AnActionEvent, content: String, console: HybrisImpexConsole, consoleService: HybrisConsoleService) {
+        val project = e.project ?: return
+        if (e.place == HybrisActionPlaces.CONSOLE_TOOLBAR) return super.actionPerformed(e, project, content)
+
+        val context = ImpExExecutionContext(
+            content = content
+        )
+
+        project.service<ImpExHttpClient>().execute(context) { coroutineScope, result ->
+            with(project.service<HybrisConsoleExecuteActionHandler>()) {
+                coroutineScope.launch {
+                    edtWriteAction {
+                        addQueryToHistory(console)
+                        printResults(console, result)
+                    }
+                }
+            }
+        }
+    }
 }
