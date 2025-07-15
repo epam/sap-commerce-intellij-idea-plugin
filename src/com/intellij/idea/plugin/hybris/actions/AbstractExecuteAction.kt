@@ -24,10 +24,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.lang.Language
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
@@ -53,9 +50,15 @@ abstract class AbstractExecuteAction<C : HybrisConsole>(
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val editor = CommonDataKeys.EDITOR.getData(e.dataContext) ?: return
         val project = e.project ?: return
-        val content = getExecutableContent(editor, e, project)
+        val content = CommonDataKeys.EDITOR.getData(e.dataContext)
+            ?.let { editor -> getExecutableContent(editor, e, project) }
+            ?: e.getData(PlatformDataKeys.TOOL_WINDOW)
+                ?.let { HybrisConsoleService.getInstance(project).findConsole(it, consoleClass) }
+                ?.currentEditor
+                ?.document
+                ?.text
+            ?: return
 
         actionPerformed(e, project, content)
     }
@@ -87,7 +90,11 @@ abstract class AbstractExecuteAction<C : HybrisConsole>(
     open fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project) = content
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = this.language == e.dataContext.getData(CommonDataKeys.LANGUAGE)
+        val project = e.project ?: return
+
+        e.presentation.isEnabledAndVisible = e.getData(PlatformDataKeys.TOOL_WINDOW)
+            ?.let { HybrisConsoleService.getInstance(project).findConsole(it, consoleClass) != null }
+            ?: (this.language == e.dataContext.getData(CommonDataKeys.LANGUAGE))
     }
 
     private fun getExecutableContent(

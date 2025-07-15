@@ -20,9 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisClearAllAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisExecuteImmediatelyAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisImpexValidateAction
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.ConsoleExecuteStatementAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
@@ -70,17 +68,14 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         actionToolbar.targetComponent = hybrisTabs.component
         panel.add(actionToolbar.component, BorderLayout.WEST)
 
-        val executeAction = HybrisExecuteImmediatelyAction()
-        executeAction.registerCustomShortcutSet(CommonShortcuts.ALT_ENTER, this.component)
-
         with(toolbarActions) {
             add(ActionManager.getInstance().getAction("hybris.hac.chooseConnection"))
-            add(executeAction)
-            add(HybrisImpexValidateAction())
+            add(ActionManager.getInstance().getAction("hybris.hac.executeConsoleStatement"))
+            add(ActionManager.getInstance().getAction("hybris.hac.console.impex.validate"))
         }
 
         val actions = impexConsole.createConsoleActions()
-        actions[5] = HybrisClearAllAction()
+        actions[5] = ActionManager.getInstance().getAction("hybris.hac.console.clearAll")
         toolbarActions.addAll(*actions)
         add(panel)
     }
@@ -102,9 +97,7 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         return null
     }
 
-    fun validateImpex(e: AnActionEvent) = performAction(e, HybrisImpexValidateAction::class.java)
-
-    fun execute(e: AnActionEvent) = performAction(e, HybrisExecuteImmediatelyAction::class.java)
+    fun execute(e: AnActionEvent) = performAction(e, ConsoleExecuteStatementAction::class.java)
 
     private fun performAction(e: AnActionEvent, clazz: Class<out AnAction>) {
         val action = actionToolbar.actions.firstOrNull { clazz.isInstance(it) } ?: return

@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.util.application
 import com.intellij.util.asSafely
@@ -49,7 +50,7 @@ class HybrisToolWindowService(val project: Project) {
             }
     }
 
-    fun findConsolesView() = hybrisToolWindow()
+    fun findConsolesView(toolWindow: ToolWindow? = null) = (toolWindow ?: hybrisToolWindow())
         ?.contentManager
         ?.findContent(HybrisToolWindowFactory.CONSOLES_ID)
         ?.component

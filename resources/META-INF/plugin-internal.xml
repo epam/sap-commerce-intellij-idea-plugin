@@ -81,11 +81,6 @@
         <!--                text="Generate DOM Model...">-->
         <!--            <add-to-group group-id="ToolsMenu" anchor="last"/>-->
         <!--        </action>-->
-        <action id="Console.Execute.Immediately"
-                class="com.intellij.openapi.actionSystem.EmptyAction"
-                text="Execute Current Statement">
-            <keyboard-shortcut keymap="$default" first-keystroke="alt ENTER"/>
-        </action>
     </actions>
 
 </idea-plugin>

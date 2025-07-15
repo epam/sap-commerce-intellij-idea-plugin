@@ -19,44 +19,44 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 
 import com.intellij.codeInsight.lookup.LookupManager
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecuteActionHandler
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.intellij.ui.AnimatedIcon
 
-class HybrisImpexValidateAction() : AnAction(
-    message("action.console.hybris.impex.validate.message.text"),
-    message("action.console.hybris.impex.validate.message.title"),
-    HybrisIcons.ImpEx.Actions.VALIDATE
+class ConsoleExecuteStatementAction : AnAction(
+    "Execute Current Statement",
+    "",
+    HybrisIcons.Console.Actions.EXECUTE
 ) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
+        val remoteExecutionContext = e.getData(HybrisConstants.DATA_KEY_REPLICA_CONTEXT)
+        val project = e.project ?: return
+
+//        project.service<HybrisConsoleService>()
+//            .execute(e)
+
         e.project
-            ?.service<HybrisConsoleExecuteValidateActionHandler>()
-            ?.runExecuteAction()
+            ?.service<ConsoleExecuteActionHandler>()
+            ?.runExecuteAction(remoteExecutionContext)
     }
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole() ?: return
-
+        val consoleService = HybrisConsoleService.getInstance(project)
+        val activeConsole = consoleService.getActiveConsole() ?: return
         val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
 
-        e.presentation.isEnabled = !project.service<HybrisConsoleExecuteValidateActionHandler>().isProcessRunning &&
-            (lookup == null || !lookup.isCompletion)
-            && activeConsole is HybrisImpexConsole
-
-        e.presentation.isVisible = activeConsole is HybrisImpexConsole
+        e.presentation.isEnabled = !consoleService.isProcessRunning && (lookup == null || !lookup.isCompletion)
         e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
     }
-
 }

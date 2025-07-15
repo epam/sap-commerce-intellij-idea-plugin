@@ -18,12 +18,11 @@
 package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
-import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecuteActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExHttpClient
@@ -42,14 +41,12 @@ class ImpExExecuteAction : AbstractExecuteAction<HybrisImpexConsole>(
 
     override fun doExecute(e: AnActionEvent, content: String, console: HybrisImpexConsole, consoleService: HybrisConsoleService) {
         val project = e.project ?: return
-        if (e.place == HybrisActionPlaces.CONSOLE_TOOLBAR) return super.actionPerformed(e, project, content)
-
         val context = ImpExExecutionContext(
             content = content
         )
 
         project.service<ImpExHttpClient>().execute(context) { coroutineScope, result ->
-            with(project.service<HybrisConsoleExecuteActionHandler>()) {
+            with(project.service<ConsoleExecuteActionHandler>()) {
                 coroutineScope.launch {
                     edtWriteAction {
                         addQueryToHistory(console)

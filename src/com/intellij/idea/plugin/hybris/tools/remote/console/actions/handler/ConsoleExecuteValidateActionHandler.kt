@@ -23,19 +23,13 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisSolrSearchConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
-import com.intellij.json.JsonFileType
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.fileTypes.FileType
-import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -45,7 +39,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.application
 
 @Service(Service.Level.PROJECT)
-class HybrisConsoleExecuteActionHandler(private val project: Project) {
+class ConsoleExecuteValidateActionHandler(private val project: Project) {
 
     private val preserveMarkup: Boolean = false
     var isProcessRunning: Boolean = false
@@ -55,76 +49,34 @@ class HybrisConsoleExecuteActionHandler(private val project: Project) {
         application.invokeLater { console.consoleEditor.component.updateUI() }
     }
 
-    private fun processLine(console: HybrisConsole, query: String, replicaContext: ReplicaContext?) {
+    private fun processLine(console: HybrisConsole, text: String) {
         application.runReadAction {
             ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to SAP Commerce...") {
                 override fun run(indicator: ProgressIndicator) {
                     isProcessRunning = true
                     try {
                         setEditorEnabled(console, false)
-                        val httpResult = console.execute(query, replicaContext)
+                        val httpResult = (console as HybrisImpexConsole).validate(text)
 
-                        printResults(console, httpResult, replicaContext)
+                        printResults(console, httpResult)
                     } finally {
                         isProcessRunning = false
                         setEditorEnabled(console, true)
                     }
                 }
-
             })
         }
     }
 
-    fun printResults(
-        console: HybrisConsole,
-        httpResult: HybrisHttpResult,
-        replicaContext: ReplicaContext? = null
-    ) {
+    fun printResults(console: HybrisConsole, httpResult: HybrisHttpResult) {
         when (console) {
-            is HybrisImpexMonitorConsole -> {
-                console.clear()
-                printSyntaxText(console, httpResult.output, ImpexFileType)
-            }
-
-            is HybrisSolrSearchConsole -> {
-                console.clear()
-
-                printCurrentHost(console, RemoteConnectionType.SOLR, replicaContext)
-
-                if (httpResult.hasError()) {
-                    printSyntaxText(console, httpResult.errorMessage, PlainTextFileType.INSTANCE)
-                } else {
-                    printSyntaxText(console, httpResult.output, JsonFileType.INSTANCE)
-                }
-            }
-
-            else -> {
-                printCurrentHost(console, RemoteConnectionType.Hybris, replicaContext)
-
-                printPlainText(console, httpResult)
-            }
+            is HybrisImpexMonitorConsole -> printSyntaxText(console, httpResult)
+            else -> printPlainText(console, httpResult)
         }
     }
 
-    private fun printCurrentHost(console: HybrisConsole, remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
-        val activeConnectionSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, remoteConnectionType)
-        console.print("[HOST] ", SYSTEM_OUTPUT)
-        activeConnectionSettings.displayName
-            ?.let { name -> console.print("($name) ", LOG_INFO_OUTPUT) }
-        replicaContext
-            ?.replicaCookie
-            ?.let { console.print("($it) ", LOG_INFO_OUTPUT) }
-
-        console.print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
-    }
-
-    private fun printPlainText(console: HybrisConsole, httpResult: HybrisHttpResult) {
-        val result = createResult()
-            .errorMessage(httpResult.errorMessage)
-            .output(httpResult.output)
-            .result(httpResult.result)
-            .detailMessage(httpResult.detailMessage)
-            .build()
+    private fun printPlainText(console: HybrisConsole, httpResult: HybrisHttpResult?) {
+        val result = createResult().errorMessage(httpResult?.errorMessage).output(httpResult?.output).result(httpResult?.result).detailMessage(httpResult?.detailMessage).build()
         val detailMessage = result.detailMessage
         val output = result.output
         val res = result.result
@@ -139,50 +91,50 @@ class HybrisConsoleExecuteActionHandler(private val project: Project) {
             console.print("[OUTPUT] \n", SYSTEM_OUTPUT)
             console.print(output, NORMAL_OUTPUT)
         }
-        if (!StringUtil.isEmptyOrSpaces(res)) {
+        if (!StringUtil.isEmptyOrSpaces(output)) {
             console.print("[RESULT] \n", SYSTEM_OUTPUT)
             console.print(res, NORMAL_OUTPUT)
         }
-
-        console.print("\n", NORMAL_OUTPUT)
     }
 
-    private fun printSyntaxText(console: HybrisConsole, output: String, fileType: FileType) {
-        ConsoleViewUtil.printAsFileType(console, output, fileType)
+    private fun printSyntaxText(console: HybrisConsole, httpResult: HybrisHttpResult?) {
+        val result = createResult().errorMessage(httpResult?.errorMessage)
+            .output(httpResult?.output)
+            .result(httpResult?.result)
+            .detailMessage(httpResult?.detailMessage)
+            .build()
+        val output = result.output
+
+        console.clear()
+        ConsoleViewUtil.printAsFileType(console, output, ImpexFileType)
     }
 
-    fun runExecuteAction(replicaContext: ReplicaContext?) {
+    fun runExecuteAction() {
         val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole() ?: return
 
-        addQueryToHistory(activeConsole, replicaContext)
-            ?.let { processLine(activeConsole, it, replicaContext) }
+        addQueryToHistory(activeConsole)
+            ?.let { processLine(activeConsole, it) }
     }
 
-    fun addQueryToHistory(
-        console: HybrisConsole,
-        replicaContext: ReplicaContext? = null
-    ): String? {
+    fun addQueryToHistory(console: HybrisConsole): String? {
         val consoleHistoryController = ConsoleHistoryController.getController(console)
             ?: return null
-        // Process input and add to history
         val document = console.currentEditor.document
-        val textForHistory = document.text
 
-        val query = replicaContext?.content
-            ?: document.text
+        val text = document.text
         val range = TextRange(0, document.textLength)
 
-        if (query.isNotEmpty() || console is HybrisImpexMonitorConsole) {
+        if (text.isNotEmpty() || console is HybrisImpexMonitorConsole) {
             console.currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
             console.addToHistory(range, console.consoleEditor, preserveMarkup)
-            console.printDefaultText()
-
-            if (!StringUtil.isEmptyOrSpaces(textForHistory)) {
-                consoleHistoryController.addToHistory(textForHistory.trim())
+            console.setInputText("")
+            if (!StringUtil.isEmptyOrSpaces(text)) {
+                consoleHistoryController.addToHistory(text.trim())
             }
 
-            return query
+            return text
         }
         return null
     }
+
 }

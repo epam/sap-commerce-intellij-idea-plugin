@@ -21,8 +21,14 @@ import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecuteValidateActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExHttpClient
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.components.service
+import kotlinx.coroutines.launch
 
 class ImpExValidateAction : AbstractExecuteAction<HybrisImpexConsole>(
     ImpexLanguage,
@@ -33,6 +39,20 @@ class ImpExValidateAction : AbstractExecuteAction<HybrisImpexConsole>(
 ) {
 
     override fun doExecute(e: AnActionEvent, content: String, console: HybrisImpexConsole, consoleService: HybrisConsoleService) {
-        consoleService.validateImpex(e)
+        val project = e.project ?: return
+        val context = ImpExExecutionContext(
+            content = content
+        )
+
+        project.service<ImpExHttpClient>().execute(context) { coroutineScope, result ->
+            with(project.service<ConsoleExecuteValidateActionHandler>()) {
+                coroutineScope.launch {
+                    edtWriteAction {
+                        addQueryToHistory(console)
+                        printResults(console, result)
+                    }
+                }
+            }
+        }
     }
 }
