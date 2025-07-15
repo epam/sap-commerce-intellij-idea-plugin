@@ -72,7 +72,7 @@ class FlexibleSearchExecuteAction : AbstractExecuteAction<HybrisFlexibleSearchCo
             )
 
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
-            fileEditor.beforeExecution()
+            fileEditor.showLoader()
 
             project.service<FlexibleSearchHttpClient>().execute(context) { coroutineScope, result ->
                 fileEditor.renderExecutionResult(result)
