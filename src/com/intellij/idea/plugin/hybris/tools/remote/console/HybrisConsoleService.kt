@@ -27,13 +27,13 @@ import kotlin.reflect.KClass
 @Service(Service.Level.PROJECT)
 class HybrisConsoleService(private val project: Project) {
 
-    fun <C : HybrisConsole> findConsole(consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView()
+    fun <C : HybrisConsole<*>> findConsole(consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView()
         ?.findConsole(consoleClass)
 
-    fun <C : HybrisConsole> findConsole(toolWindow: ToolWindow, consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView(toolWindow)
+    fun <C : HybrisConsole<*>> findConsole(toolWindow: ToolWindow, consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView(toolWindow)
         ?.findConsole(consoleClass)
 
-    fun setActiveConsole(console: HybrisConsole) {
+    fun setActiveConsole(console: HybrisConsole<*>) {
         HybrisToolWindowService.getInstance(project).findConsolesView()
             ?.setActiveConsole(console)
     }

@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http.impex
 
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import org.apache.commons.lang3.BooleanUtils
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
@@ -37,7 +38,7 @@ data class ImpExExecutionContext(
     private val _sldEnabled: Toggle = Toggle.ON,
     val executionMode: ExecutionMode = ExecutionMode.IMPORT,
     val timeout: Int = AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
-) {
+) : ExecutionContext {
     fun params(): Map<String, String> = buildMap {
         put("scriptContent", content)
         put("validationEnum", validationMode.name)

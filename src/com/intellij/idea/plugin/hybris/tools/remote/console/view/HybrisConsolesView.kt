@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
@@ -41,13 +42,6 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         //NOP
     }
 
-    private val impexConsole = HybrisImpexConsole(project)
-    private val groovyConsole = HybrisGroovyConsole(project)
-    private val monitorConsole = HybrisImpexMonitorConsole(project)
-    private val flexibleSearchConsole = HybrisFlexibleSearchConsole(project)
-    private val polyglotQueryConsole = HybrisPolyglotQueryConsole(project)
-    private val solrSearchConsole = HybrisSolrSearchConsole(project)
-
     private val actionToolbar: ActionToolbar
     private val hybrisTabs: HybrisConsoleTabs
 
@@ -60,7 +54,14 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
 
         val panel = JPanel(BorderLayout())
 
-        val consoles = arrayOf(flexibleSearchConsole, impexConsole, groovyConsole, polyglotQueryConsole, monitorConsole, solrSearchConsole)
+        val consoles = arrayOf(
+            project.service<HybrisImpexConsole>(),
+            project.service<HybrisGroovyConsole>(),
+            project.service<HybrisImpexMonitorConsole>(),
+            project.service<HybrisFlexibleSearchConsole>(),
+            project.service<HybrisPolyglotQueryConsole>(),
+            project.service<HybrisSolrSearchConsole>()
+        )
         consoles.forEach { Disposer.register(this, it) }
         hybrisTabs = HybrisConsoleTabs(project, TOP, consoles, this)
 
@@ -74,21 +75,21 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
             add(ActionManager.getInstance().getAction("hybris.hac.console.impex.validate"))
         }
 
-        val actions = impexConsole.createConsoleActions()
+        val actions = consoles.first().createConsoleActions()
         actions[5] = ActionManager.getInstance().getAction("hybris.hac.console.clearAll")
         toolbarActions.addAll(*actions)
         add(panel)
     }
 
-    fun setActiveConsole(console: HybrisConsole) {
+    fun setActiveConsole(console: HybrisConsole<*>) {
         hybrisTabs.setActiveConsole(console)
     }
 
-    fun getActiveConsole(): HybrisConsole {
+    fun getActiveConsole(): HybrisConsole<*> {
         return hybrisTabs.activeConsole()
     }
 
-    fun <C : HybrisConsole> findConsole(consoleClass: KClass<C>): C? {
+    fun <C : HybrisConsole<*>> findConsole(consoleClass: KClass<C>): C? {
         for (index in 0 until hybrisTabs.tabCount) {
             val c = hybrisTabs.getComponentAt(index)
 

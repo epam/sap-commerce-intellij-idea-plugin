@@ -26,6 +26,8 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -37,7 +39,8 @@ import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
-class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH, FlexibleSearchLanguage) {
+@Service(Service.Level.PROJECT)
+class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext>(project, HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH, FlexibleSearchLanguage) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
 
@@ -49,6 +52,10 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole(project, Hyb
         .also { it.border = borders10 }
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
         .also { it.border = borders5 }
+
+    override fun execute(context: FlexibleSearchExecutionContext) {
+        TODO("Not yet implemented")
+    }
 
     init {
         isEditable = true

@@ -23,8 +23,10 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.GroovyExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -37,7 +39,8 @@ import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
-class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_GROOVY, GroovyLanguage) {
+@Service(Service.Level.PROJECT)
+class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionContext>(project, HybrisConstants.CONSOLE_TITLE_GROOVY, GroovyLanguage) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.groovy.shell", null)
 
@@ -45,6 +48,10 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole(project, HybrisConst
         .also { it.border = borders10 }
     private val timeoutSpinner = JSpinner(SpinnerNumberModel(AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 10))
         .also { it.border = borders5 }
+
+    override fun execute(context: GroovyExecutionContext) {
+        TODO("Not yet implemented")
+    }
 
     init {
         isEditable = true

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console
 
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.lang.Language
@@ -29,7 +30,7 @@ import com.intellij.util.ui.JBUI
 import java.io.Serial
 import javax.swing.Icon
 
-abstract class HybrisConsole(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
+abstract class HybrisConsole<E: ExecutionContext>(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
 
     protected val borders10 = JBUI.Borders.empty(10)
     protected val borders5 = JBUI.Borders.empty(5, 10)
@@ -38,6 +39,8 @@ abstract class HybrisConsole(project: Project, title: String, language: Language
     init {
         this.printDefaultText()
     }
+
+    abstract fun execute(context: E)
 
     abstract fun execute(query: String, replicaContext: ReplicaContext? = null): HybrisHttpResult
 

@@ -24,15 +24,22 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecutionService
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExHttpClient
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
+import kotlinx.coroutines.launch
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
@@ -40,7 +47,8 @@ import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
-class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_IMPEX, ImpexLanguage) {
+@Service(Service.Level.PROJECT)
+class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext>(project, HybrisConstants.CONSOLE_TITLE_IMPEX, ImpexLanguage) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 
@@ -89,6 +97,19 @@ class HybrisImpexConsole(project: Project) : HybrisConsole(project, HybrisConsta
     fun validate(query: String): HybrisHttpResult {
         val requestParams = getRequestParams(query)
         return HybrisHacHttpClient.getInstance(project).validateImpex(project, requestParams)
+    }
+
+    override fun execute(context: ImpExExecutionContext) {
+        project.service<ImpExHttpClient>().execute(context) { coroutineScope, result ->
+            with(project.service<ConsoleExecutionService>()) {
+                coroutineScope.launch {
+                    edtWriteAction {
+                        addQueryToHistory(this@HybrisImpexConsole)
+                        printResults(this@HybrisImpexConsole, result)
+                    }
+                }
+            }
+        }
     }
 
     private fun getRequestParams(query: String): MutableMap<String, String> {

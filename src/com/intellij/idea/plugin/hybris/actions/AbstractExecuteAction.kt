@@ -35,7 +35,7 @@ import com.intellij.util.asSafely
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
-abstract class AbstractExecuteAction<C : HybrisConsole>(
+abstract class AbstractExecuteAction<C : HybrisConsole<*>>(
     internal val language: Language,
     internal val consoleClass: KClass<C>,
     internal val name: String,

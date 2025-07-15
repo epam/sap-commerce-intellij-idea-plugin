@@ -49,12 +49,12 @@ class ConsoleExecutionService(private val project: Project) {
     private val preserveMarkup: Boolean = false
     var isProcessRunning: Boolean = false
 
-    private fun setEditorEnabled(console: HybrisConsole, enabled: Boolean) {
+    private fun setEditorEnabled(console: HybrisConsole<*>, enabled: Boolean) {
         console.consoleEditor.isRendererMode = !enabled
         application.invokeLater { console.consoleEditor.component.updateUI() }
     }
 
-    private fun <C : HybrisConsole> processLine(
+    private fun <C : HybrisConsole<*>> processLine(
         console: C,
         query: String,
         replicaContext: ReplicaContext?,
@@ -79,7 +79,7 @@ class ConsoleExecutionService(private val project: Project) {
     }
 
     fun printResults(
-        console: HybrisConsole,
+        console: HybrisConsole<*>,
         httpResult: HybrisHttpResult,
         replicaContext: ReplicaContext? = null
     ) {
@@ -109,7 +109,7 @@ class ConsoleExecutionService(private val project: Project) {
         }
     }
 
-    private fun printCurrentHost(console: HybrisConsole, remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
+    private fun printCurrentHost(console: HybrisConsole<*>, remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
         val activeConnectionSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, remoteConnectionType)
         console.print("[HOST] ", SYSTEM_OUTPUT)
         activeConnectionSettings.displayName
@@ -121,7 +121,7 @@ class ConsoleExecutionService(private val project: Project) {
         console.print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
 
-    private fun printPlainText(console: HybrisConsole, httpResult: HybrisHttpResult) {
+    private fun printPlainText(console: HybrisConsole<*>, httpResult: HybrisHttpResult) {
         val result = createResult()
             .errorMessage(httpResult.errorMessage)
             .output(httpResult.output)
@@ -150,7 +150,7 @@ class ConsoleExecutionService(private val project: Project) {
         console.print("\n", NORMAL_OUTPUT)
     }
 
-    fun <C : HybrisConsole> execute(
+    fun <C : HybrisConsole<*>> execute(
         console: C,
         e: AnActionEvent,
         executor: (String, ReplicaContext?) -> HybrisHttpResult = { query, replicaContext -> console.execute(query, replicaContext) }
@@ -162,7 +162,7 @@ class ConsoleExecutionService(private val project: Project) {
     }
 
     fun addQueryToHistory(
-        console: HybrisConsole,
+        console: HybrisConsole<*>,
         replicaContext: ReplicaContext? = null
     ): String? {
         val consoleHistoryController = ConsoleHistoryController.getController(console)

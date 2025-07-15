@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,9 +26,9 @@ import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
 import javax.swing.Icon
 
-class HybrisConsoleTabs(project: Project, tabPlacement: Int, defaultConsoles: Array<HybrisConsole>, disposable: Disposable) : JBTabsPaneImpl(project, tabPlacement, disposable) {
+class HybrisConsoleTabs(project: Project, tabPlacement: Int, defaultConsoles: Array<HybrisConsole<*>>, disposable: Disposable) : JBTabsPaneImpl(project, tabPlacement, disposable) {
 
-    private val consoles = arrayListOf<HybrisConsole>()
+    private val consoles = arrayListOf<HybrisConsole<*>>()
 
     init {
         defaultConsoles.forEach {
@@ -38,18 +38,18 @@ class HybrisConsoleTabs(project: Project, tabPlacement: Int, defaultConsoles: Ar
         addChangeListener {
             it.source.asSafely<JBEditorTabs>()
                 ?.selectedInfo
-                ?.component.asSafely<HybrisConsole>()
+                ?.component.asSafely<HybrisConsole<*>>()
                 ?.onSelection()
         }
     }
 
-    private fun addConsoleTab(title: String, icon: Icon?, console: HybrisConsole, tip: String) {
+    private fun addConsoleTab(title: String, icon: Icon?, console: HybrisConsole<*>, tip: String) {
         insertTab(title, icon, console.component, tip, consoles.size)
         consoles.add(console)
     }
 
     fun activeConsole() = consoles[selectedIndex]
-    fun setActiveConsole(console: HybrisConsole) {
+    fun setActiveConsole(console: HybrisConsole<*>) {
         selectedIndex = consoles.indexOf(console)
     }
 }

@@ -26,8 +26,10 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.TimeOption
+import com.intellij.idea.plugin.hybris.tools.remote.http.ImpexMonitorExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.monitorImpexFiles
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil
@@ -41,7 +43,8 @@ import java.io.Serial
 import java.util.concurrent.TimeUnit
 import javax.swing.JPanel
 
-class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_IMPEX_MONITOR, ImpexLanguage) {
+@Service(Service.Level.PROJECT)
+class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpexMonitorExecutionContext>(project, HybrisConstants.CONSOLE_TITLE_IMPEX_MONITOR, ImpexLanguage) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.impex.monitor.shell", null)
 
@@ -88,6 +91,10 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole(project, Hybri
 
     private fun timeOption() = (timeComboBox.selectedItem as TimeOption)
     private fun workingDir() = obtainDataFolder(project)
+    override fun execute(context: ImpexMonitorExecutionContext) {
+        TODO("Not yet implemented")
+    }
+
     override fun execute(query: String, replicaContext: ReplicaContext?) = monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())
 
     override fun title() = "ImpEx Monitor"

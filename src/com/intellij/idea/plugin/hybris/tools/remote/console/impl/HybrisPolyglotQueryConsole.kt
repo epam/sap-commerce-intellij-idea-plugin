@@ -25,7 +25,9 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.PolyglotQueryExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -36,7 +38,8 @@ import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
-class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryLanguage) {
+@Service(Service.Level.PROJECT)
+class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole<PolyglotQueryExecutionContext>(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryLanguage) {
 
     private object MyConsoleRootType : ConsoleRootType(ID, null)
 
@@ -46,6 +49,10 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole(project, Hybr
         .also { it.border = borders10 }
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
         .also { it.border = borders5 }
+
+    override fun execute(context: PolyglotQueryExecutionContext) {
+        TODO("Not yet implemented")
+    }
 
     init {
         isEditable = true
