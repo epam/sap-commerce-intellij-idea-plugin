@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisClearAllAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisExecuteImmediatelyAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisImpexValidateAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
@@ -71,14 +70,13 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         actionToolbar.targetComponent = hybrisTabs.component
         panel.add(actionToolbar.component, BorderLayout.WEST)
 
-        val validateHandler = HybrisConsoleExecuteValidateActionHandler(project, false)
         val executeAction = HybrisExecuteImmediatelyAction()
         executeAction.registerCustomShortcutSet(CommonShortcuts.ALT_ENTER, this.component)
 
         with(toolbarActions) {
             add(ActionManager.getInstance().getAction("hybris.hac.chooseConnection"))
             add(executeAction)
-            add(HybrisImpexValidateAction(validateHandler))
+            add(HybrisImpexValidateAction())
         }
 
         val actions = impexConsole.createConsoleActions()

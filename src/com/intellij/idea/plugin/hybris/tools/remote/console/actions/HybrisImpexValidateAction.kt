@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,10 +27,10 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexCons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.service
+import com.intellij.ui.AnimatedIcon
 
-class HybrisImpexValidateAction(
-    private val executeValidationActionHandler: HybrisConsoleExecuteValidateActionHandler
-) : AnAction(
+class HybrisImpexValidateAction() : AnAction(
     message("action.console.hybris.impex.validate.message.text"),
     message("action.console.hybris.impex.validate.message.title"),
     HybrisIcons.ImpEx.Actions.VALIDATE
@@ -39,7 +39,9 @@ class HybrisImpexValidateAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
-        executeValidationActionHandler.runExecuteAction()
+        e.project
+            ?.service<HybrisConsoleExecuteValidateActionHandler>()
+            ?.runExecuteAction()
     }
 
     override fun update(e: AnActionEvent) {
@@ -49,10 +51,12 @@ class HybrisImpexValidateAction(
         val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
 
-        e.presentation.isEnabled = !executeValidationActionHandler.isProcessRunning &&
-            (lookup == null || !lookup.isCompletion) && activeConsole is HybrisImpexConsole
+        e.presentation.isEnabled = !project.service<HybrisConsoleExecuteValidateActionHandler>().isProcessRunning &&
+            (lookup == null || !lookup.isCompletion)
+            && activeConsole is HybrisImpexConsole
 
         e.presentation.isVisible = activeConsole is HybrisImpexConsole
+        e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
     }
 
 }

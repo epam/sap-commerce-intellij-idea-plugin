@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexCons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -37,10 +38,10 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.application
 
-class HybrisConsoleExecuteValidateActionHandler(
-    private val project: Project,
-    private val preserveMarkup: Boolean
-) {
+@Service(Service.Level.PROJECT)
+class HybrisConsoleExecuteValidateActionHandler(private val project: Project) {
+
+    private val preserveMarkup: Boolean = false
 
     private fun setEditorEnabled(console: HybrisConsole, enabled: Boolean) {
         console.consoleEditor.isRendererMode = !enabled
