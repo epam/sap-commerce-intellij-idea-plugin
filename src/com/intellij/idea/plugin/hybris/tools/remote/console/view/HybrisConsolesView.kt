@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisClearAllAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisExecuteImmediatelyAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisImpexValidateAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisSuspendAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
@@ -82,7 +81,6 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         with(toolbarActions) {
             add(ActionManager.getInstance().getAction("hybris.hac.chooseConnection"))
             add(executeAction)
-            add(HybrisSuspendAction(actionHandler))
             add(HybrisImpexValidateAction(validateHandler))
         }
 
