@@ -21,17 +21,18 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.execution.ui.ConsoleViewContentType.*
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisSolrSearchConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
 import com.intellij.json.JsonFileType
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.progress.ProgressIndicator
@@ -43,7 +44,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.application
 
 @Service(Service.Level.PROJECT)
-class ConsoleExecuteActionHandler(private val project: Project) {
+class ConsoleExecutionService(private val project: Project) {
 
     private val preserveMarkup: Boolean = false
     var isProcessRunning: Boolean = false
@@ -53,14 +54,19 @@ class ConsoleExecuteActionHandler(private val project: Project) {
         application.invokeLater { console.consoleEditor.component.updateUI() }
     }
 
-    private fun processLine(console: HybrisConsole, query: String, replicaContext: ReplicaContext?) {
+    private fun <C : HybrisConsole> processLine(
+        console: C,
+        query: String,
+        replicaContext: ReplicaContext?,
+        executor: (String, ReplicaContext?) -> HybrisHttpResult
+    ) {
         application.runReadAction {
             ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to SAP Commerce...") {
                 override fun run(indicator: ProgressIndicator) {
                     isProcessRunning = true
                     try {
                         setEditorEnabled(console, false)
-                        val httpResult = console.execute(query, replicaContext)
+                        val httpResult = executor.invoke(query, replicaContext)
 
                         printResults(console, httpResult, replicaContext)
                     } finally {
@@ -144,11 +150,15 @@ class ConsoleExecuteActionHandler(private val project: Project) {
         console.print("\n", NORMAL_OUTPUT)
     }
 
-    fun runExecuteAction(replicaContext: ReplicaContext?) {
-        val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole() ?: return
+    fun <C : HybrisConsole> execute(
+        console: C,
+        e: AnActionEvent,
+        executor: (String, ReplicaContext?) -> HybrisHttpResult = { query, replicaContext -> console.execute(query, replicaContext) }
+    ) {
+        val replicaContext = e.getData(HybrisConstants.DATA_KEY_REPLICA_CONTEXT)
 
-        addQueryToHistory(activeConsole, replicaContext)
-            ?.let { processLine(activeConsole, it, replicaContext) }
+        addQueryToHistory(console, replicaContext)
+            ?.let { processLine(console, it, replicaContext, executor) }
     }
 
     fun addQueryToHistory(

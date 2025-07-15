@@ -22,13 +22,10 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
-import com.intellij.util.application
 import kotlin.reflect.KClass
 
 @Service(Service.Level.PROJECT)
 class HybrisConsoleService(private val project: Project) {
-
-    var isProcessRunning: Boolean = false
 
     fun <C : HybrisConsole> findConsole(consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView()
         ?.findConsole(consoleClass)
@@ -48,13 +45,6 @@ class HybrisConsoleService(private val project: Project) {
         HybrisToolWindowService.getInstance(project).findConsolesView()
             ?.execute(e)
     }
-
-    private fun setEditorEnabled(console: HybrisConsole, enabled: Boolean) {
-        console.consoleEditor.isRendererMode = !enabled
-        application.invokeLater { console.consoleEditor.component.updateUI() }
-    }
-
-    fun execute(e: AnActionEvent) {}
 
     companion object {
         fun getInstance(project: Project): HybrisConsoleService = project.getService(HybrisConsoleService::class.java)

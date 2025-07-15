@@ -21,12 +21,14 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecuteValidateActionHandler
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecutionService
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.intellij.ui.AnimatedIcon
+import com.intellij.util.asSafely
 
 class ConsoleImpExValidateAction : AnAction(
     "Execute Current Statement",
@@ -37,9 +39,15 @@ class ConsoleImpExValidateAction : AnAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
-        e.project
-            ?.service<ConsoleExecuteValidateActionHandler>()
-            ?.runExecuteAction()
+        val project = e.project ?: return
+        val consoleService = project.service<HybrisConsoleService>()
+        val consoleExecutionService = project.service<ConsoleExecutionService>()
+        val console = consoleService.getActiveConsole()
+            ?.asSafely<HybrisImpexConsole>() ?: return
+
+        consoleExecutionService.execute(console, e) { query, replicaContext ->
+            console.validate(query)
+        }
     }
 
     override fun update(e: AnActionEvent) {
@@ -50,7 +58,7 @@ class ConsoleImpExValidateAction : AnAction(
 
         val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
-        e.presentation.isEnabled = !project.service<ConsoleExecuteValidateActionHandler>().isProcessRunning && (lookup == null || !lookup.isCompletion)
+        e.presentation.isEnabled = !project.service<ConsoleExecutionService>().isProcessRunning && (lookup == null || !lookup.isCompletion)
         e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
     }
 }

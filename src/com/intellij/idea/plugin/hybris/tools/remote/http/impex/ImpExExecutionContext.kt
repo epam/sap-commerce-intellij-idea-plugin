@@ -35,6 +35,7 @@ data class ImpExExecutionContext(
     private val _enableCodeExecution: Toggle = Toggle.ON,
     private val _distributedMode: Toggle = Toggle.ON,
     private val _sldEnabled: Toggle = Toggle.ON,
+    val executionMode: ExecutionMode = ExecutionMode.IMPORT,
     val timeout: Int = AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
 ) {
     fun params(): Map<String, String> = buildMap {
@@ -50,6 +51,10 @@ data class ImpExExecutionContext(
         put("enableCodeExecution", BooleanUtils.toStringTrueFalse(enableCodeExecution))
         put("sldEnabled", BooleanUtils.toStringTrueFalse(sldEnabled))
     }
+}
+
+enum class ExecutionMode {
+    IMPORT, VALIDATE
 }
 
 enum class ValidationMode {

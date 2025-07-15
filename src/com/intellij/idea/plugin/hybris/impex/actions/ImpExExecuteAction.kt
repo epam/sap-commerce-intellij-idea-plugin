@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecuteActionHandler
+import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecutionService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExHttpClient
@@ -46,7 +46,7 @@ class ImpExExecuteAction : AbstractExecuteAction<HybrisImpexConsole>(
         )
 
         project.service<ImpExHttpClient>().execute(context) { coroutineScope, result ->
-            with(project.service<ConsoleExecuteActionHandler>()) {
+            with(project.service<ConsoleExecutionService>()) {
                 coroutineScope.launch {
                     edtWriteAction {
                         addQueryToHistory(console)

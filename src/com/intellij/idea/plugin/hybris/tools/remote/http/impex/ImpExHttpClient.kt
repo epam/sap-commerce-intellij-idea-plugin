@@ -28,7 +28,6 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
-import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
@@ -43,9 +42,12 @@ class ImpExHttpClient(project: Project, coroutineScope: CoroutineScope) : HttpCl
 
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
-        val actionUrl = settings.generatedURL + "/console/impex/import"
+        val actionUrl = when (context.executionMode) {
+            ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
+            ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"
+        }
 
-        val response: HttpResponse = HybrisHacHttpClient.getInstance(project)
+        val response = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, false, AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT.toLong(), settings, null)
         val resultBuilder = HybrisHttpResultBuilder.createResult().httpCode(response.statusLine.statusCode)
 
