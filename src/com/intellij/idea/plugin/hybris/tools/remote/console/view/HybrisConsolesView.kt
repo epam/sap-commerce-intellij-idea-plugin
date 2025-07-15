@@ -23,13 +23,11 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisClearAllAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisExecuteImmediatelyAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.HybrisImpexValidateAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.HybrisConsoleExecuteValidateActionHandler
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
@@ -73,7 +71,6 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         actionToolbar.targetComponent = hybrisTabs.component
         panel.add(actionToolbar.component, BorderLayout.WEST)
 
-        val actionHandler = project.service<HybrisConsoleExecuteActionHandler>()
         val validateHandler = HybrisConsoleExecuteValidateActionHandler(project, false)
         val executeAction = HybrisExecuteImmediatelyAction()
         executeAction.registerCustomShortcutSet(CommonShortcuts.ALT_ENTER, this.component)
