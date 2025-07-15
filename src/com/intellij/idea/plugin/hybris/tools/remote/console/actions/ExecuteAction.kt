@@ -27,14 +27,12 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.components.service
 import com.intellij.ui.AnimatedIcon
 import javax.swing.Icon
 
 @Deprecated("Due migration to new hAC API")
-abstract class HybrisExecuteActionBase(
-    val executeActionHandler: HybrisConsoleExecuteActionHandler,
-    icon: Icon
-) : AnAction(null, null, icon) {
+abstract class HybrisExecuteActionBase(icon: Icon) : AnAction(null, null, icon) {
 
     init {
         ActionUtil.mergeFrom(this, "Console.Execute.Immediately")
@@ -42,14 +40,15 @@ abstract class HybrisExecuteActionBase(
 }
 
 @Deprecated("Due migration to new hAC API")
-class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteActionHandler) : HybrisExecuteActionBase(executeActionHandler, HybrisIcons.Console.Actions.EXECUTE) {
+class HybrisExecuteImmediatelyAction() : HybrisExecuteActionBase(HybrisIcons.Console.Actions.EXECUTE) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
         val remoteExecutionContext = e.getData(HybrisConstants.DATA_KEY_REPLICA_CONTEXT)
-
-        executeActionHandler.runExecuteAction(remoteExecutionContext)
+        e.project
+            ?.service<HybrisConsoleExecuteActionHandler>()
+            ?.runExecuteAction(remoteExecutionContext)
     }
 
     override fun update(e: AnActionEvent) {
@@ -60,7 +59,7 @@ class HybrisExecuteImmediatelyAction(executeActionHandler: HybrisConsoleExecuteA
 
         val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
-        e.presentation.isEnabled = !executeActionHandler.isProcessRunning && (lookup == null || !lookup.isCompletion)
+        e.presentation.isEnabled = !project.service<HybrisConsoleExecuteActionHandler>().isProcessRunning && (lookup == null || !lookup.isCompletion)
         e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
     }
 }

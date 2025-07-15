@@ -75,7 +75,7 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
 
         val actionHandler = project.service<HybrisConsoleExecuteActionHandler>()
         val validateHandler = HybrisConsoleExecuteValidateActionHandler(project, false)
-        val executeAction = HybrisExecuteImmediatelyAction(actionHandler)
+        val executeAction = HybrisExecuteImmediatelyAction()
         executeAction.registerCustomShortcutSet(CommonShortcuts.ALT_ENTER, this.component)
 
         with(toolbarActions) {
