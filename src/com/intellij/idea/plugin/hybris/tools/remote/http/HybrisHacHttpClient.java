@@ -99,11 +99,11 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         }
 
         @Override
-        public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s) {
+        public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
         }
 
         @Override
-        public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s) {
+        public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
         }
     };
 

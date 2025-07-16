@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,26 +19,24 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.components.Service;
 import org.apache.http.Header;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CookieParser {
+@Service
+public final class CookieParser {
 
     private final static Pattern PATTERN = Pattern.compile("JSESSIONID=[a-zA-Z0-9_.-]*");
 
-    private static final CookieParser cookieParser = new CookieParser();
-
     public static CookieParser getInstance() {
-        return cookieParser;
-    }
-
-    private CookieParser() {
+        return ApplicationManager.getApplication().getService(CookieParser.class);
     }
 
     public String getSpecialCookie(final Header[] headers) {
-        if(headers.length > 0) {
+        if (headers.length > 0) {
             for (final Header header : headers) {
                 if ("Set-Cookie".equalsIgnoreCase(header.getName())) {
                     final Matcher matcher = PATTERN.matcher(header.getValue());
