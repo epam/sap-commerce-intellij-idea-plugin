@@ -68,6 +68,7 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             val json = Json.parseToJsonElement(jsonAsString)
 
             val loggers = json.jsonObject["loggers"]
+            // TODO: @Eugeni to use this response
         } catch (e: SerializationException) {
             thisLogger().error("Cannot parse response", e)
 
