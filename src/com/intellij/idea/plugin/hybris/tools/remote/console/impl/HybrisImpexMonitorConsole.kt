@@ -22,7 +22,6 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
@@ -108,7 +107,6 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorEx
 
     override fun title() = "ImpEx Monitor"
     override fun tip() = "Last imported ImpEx files"
-    override fun icon() = HybrisIcons.MONITORING
 
     companion object {
         @Serial

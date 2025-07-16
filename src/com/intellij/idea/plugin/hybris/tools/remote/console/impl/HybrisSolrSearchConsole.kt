@@ -178,7 +178,6 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecuti
 
     override fun title() = "Solr Search"
     override fun tip() = "Solr Search Console"
-    override fun icon() = HybrisIcons.Console.SOLR
 
     companion object {
         @Serial

@@ -30,7 +30,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
-import icons.JetgroovyIcons
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import java.awt.BorderLayout
 import java.io.Serial
@@ -73,7 +72,6 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionConte
 
     override fun title() = "Groovy Scripting"
     override fun tip() = "Groovy Console"
-    override fun icon() = JetgroovyIcons.Groovy.Groovy_16x16
 
     fun updateCommitMode(commitMode: Boolean) {
         commitCheckbox.isSelected = commitMode

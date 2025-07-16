@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
@@ -77,7 +76,6 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole<FlexibleSearc
 
     override fun title() = "Polyglot Query"
     override fun tip() = "Polyglot Persistence Query Language Console (available only for 1905+)"
-    override fun icon() = HybrisIcons.PolyglotQuery.FILE
 
     companion object {
         @Serial

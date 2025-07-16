@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
@@ -36,7 +35,6 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import java.awt.BorderLayout
 import java.io.Serial
-import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
@@ -93,7 +91,6 @@ class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext
 
     override fun title(): String = HybrisConstants.IMPEX
     override fun tip(): String = "ImpEx Console"
-    override fun icon(): Icon = HybrisIcons.ImpEx.FILE
 
     companion object {
         @Serial
