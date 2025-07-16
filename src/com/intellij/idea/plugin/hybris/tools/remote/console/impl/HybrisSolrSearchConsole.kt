@@ -50,15 +50,17 @@ import com.intellij.util.asSafely
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import com.jetbrains.rd.swing.selectedItemProperty
 import com.jetbrains.rd.util.reactive.adviseEternal
+import kotlinx.coroutines.CoroutineScope
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.*
 
 @Service(Service.Level.PROJECT)
-class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecutionContext>(
+class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<SolrQueryExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH,
     PlainTextLanguage.INSTANCE,
+    coroutineScope
 ) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)

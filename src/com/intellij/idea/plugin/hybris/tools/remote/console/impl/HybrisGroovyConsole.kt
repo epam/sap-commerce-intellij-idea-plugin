@@ -22,14 +22,15 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyTransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
+import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import java.awt.BorderLayout
 import java.io.Serial
@@ -38,10 +39,11 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionContext>(
+class HybrisGroovyConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<GroovyExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_GROOVY,
     GroovyLanguage,
+    coroutineScope
 ) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.groovy.shell", null)
@@ -66,16 +68,12 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionConte
 
     override fun currentExecutionContext(content: String) = GroovyExecutionContext(
         content,
-        if (commitCheckbox.isSelected) GroovyTransactionMode.COMMIT else GroovyTransactionMode.ROLLBACK,
+        if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         timeoutSpinner.value.toString().toInt() * 1000,
     )
 
     override fun title() = "Groovy Scripting"
     override fun tip() = "Groovy Console"
-
-    fun updateCommitMode(commitMode: Boolean) {
-        commitCheckbox.isSelected = commitMode
-    }
 
     companion object {
         @Serial

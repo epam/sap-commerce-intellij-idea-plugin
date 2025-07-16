@@ -37,6 +37,7 @@ import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
+import kotlinx.coroutines.CoroutineScope
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
@@ -46,10 +47,11 @@ import java.util.concurrent.TimeUnit
 import javax.swing.JPanel
 
 @Service(Service.Level.PROJECT)
-class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorExecutionContext>(
+class HybrisImpexMonitorConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExMonitorExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX_MONITOR,
     ImpexLanguage,
+    coroutineScope
 ) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.impex.monitor.shell", null)

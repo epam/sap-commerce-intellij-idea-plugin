@@ -19,21 +19,18 @@
 package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.TransactionMode
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
+import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.UserDataHolder
-import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 
@@ -47,28 +44,23 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
 
     override fun doExecute(e: AnActionEvent, content: String, console: HybrisGroovyConsole, consoleService: HybrisConsoleService) {
         val project = e.project ?: return
+        val transactionMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode
+        val executionClient = project.service<GroovyExecutionClient>()
+        val contexts = executionClient.connectionContext.replicaContexts
+            .map {
+                GroovyExecutionContext(
+                    content = content,
+                    transactionMode = transactionMode,
+                    replicaContext = it
+                )
+            }
+            .takeIf { it.isNotEmpty() }
+            ?: listOf(GroovyExecutionContext(content, transactionMode))
 
-        val commitMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode == TransactionMode.COMMIT
-        console.updateCommitMode(commitMode)
-
-        val replicaContexts = project.service<GroovyExecutionClient>().connectionContext.replicaContexts
-
-        if (replicaContexts.isNotEmpty()) {
-            replicaContexts
-                .map {
-                    it.content = e.dataContext.asSafely<UserDataHolder>()
-                        ?.getUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT)
-                        ?: ""
-
-                    SimpleDataContext.builder()
-                        .add(CommonDataKeys.PROJECT, project)
-                        .add(HybrisConstants.DATA_KEY_REPLICA_CONTEXT, it)
-                        .build()
-                }
-                .map { AnActionEvent.createEvent(it, e.presentation, e.place, e.uiKind, e.inputEvent) }
-                .forEach { super.doExecute(it, content, console, consoleService) }
-        } else {
-            super.doExecute(e, content, console, consoleService)
+        contexts.forEach {
+            executionClient.execute(it) { coroutineScope, result ->
+                console.print(result)
+            }
         }
     }
 

@@ -16,13 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.tools.remote.execution
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
-
-data class GroovySettings(
-    var enableActionsToolbar: Boolean = true,
-    var enableActionsToolbarForGroovyTest: Boolean = false,
-    var enableActionsToolbarForGroovyIdeConsole: Boolean = false,
-    var txMode: TransactionMode = TransactionMode.ROLLBACK,
-)
+enum class TransactionMode {
+    COMMIT, ROLLBACK
+}

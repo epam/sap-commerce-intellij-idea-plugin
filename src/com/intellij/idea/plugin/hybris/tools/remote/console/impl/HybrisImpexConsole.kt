@@ -33,6 +33,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
+import kotlinx.coroutines.CoroutineScope
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel
@@ -40,10 +41,11 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext>(
+class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX,
     ImpexLanguage,
+    coroutineScope
 ) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)

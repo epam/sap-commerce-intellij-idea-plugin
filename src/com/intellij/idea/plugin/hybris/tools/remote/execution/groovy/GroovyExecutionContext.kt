@@ -19,22 +19,20 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import org.apache.commons.lang3.BooleanUtils
 
 data class GroovyExecutionContext(
     private val content: String,
-    private val transactionMode: GroovyTransactionMode,
-    val timeout: Int,
+    private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
+    val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,
     val replicaContext: ReplicaContext? = null
 ) : ExecutionContext {
 
     fun params(): Map<String, String> = buildMap {
         put("scriptType", "groovy")
-        put("commit", BooleanUtils.toStringTrueFalse(transactionMode == GroovyTransactionMode.COMMIT))
+        put("commit", BooleanUtils.toStringTrueFalse(transactionMode == TransactionMode.COMMIT))
         put("script", content)
     }
-}
-
-enum class GroovyTransactionMode {
-    COMMIT, ROLLBACK
 }

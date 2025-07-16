@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.actions
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
@@ -34,8 +33,6 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.UserDataHolder
-import com.intellij.util.asSafely
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
@@ -74,9 +71,6 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
             LOG.warn("unable to find console ${this@ExecuteStatementAction.consoleClass}")
             return
         }
-
-        e.dataContext.asSafely<UserDataHolder>()
-            ?.putUserData(HybrisConstants.KEY_REMOTE_EXECUTION_CONTENT, content)
 
         consoleService.setActiveConsole(console)
         console.setInputText(content)

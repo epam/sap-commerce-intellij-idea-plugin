@@ -44,6 +44,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     project: Project,
     title: String,
     language: Language,
+    private val coroutineScope: CoroutineScope
 ) : LanguageConsoleImpl(project, title, language) {
 
     protected val borders10 = JBUI.Borders.empty(10)
@@ -70,7 +71,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     open fun canExecute(): Boolean = isEditable
     open fun printDefaultText() = setInputText("")
 
-    fun printExecutionResults(coroutineScope: CoroutineScope, result: ExecutionResult) {
+    fun print(result: ExecutionResult) {
         coroutineScope.launch {
             edtWriteAction {
                 addCurrentQueryToHistory()
@@ -107,35 +108,12 @@ abstract class HybrisConsole<E : ExecutionContext>(
         return query
     }
 
-    @Deprecated("review")
-    open fun getQuery(): String? {
-        val consoleHistoryController = ConsoleHistoryController.getController(this)
-            ?: return null
-        // Process input and add to history
-        val document = currentEditor.document
-        val query = document.text
-        val range = TextRange(0, document.textLength)
-
-        if (query.isNotEmpty()) {
-            currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
-            addToHistory(range, consoleEditor, false)
-            printDefaultText()
-
-            if (!StringUtil.isEmptyOrSpaces(query)) {
-                consoleHistoryController.addToHistory(query.trim())
-            }
-
-            return query
-        }
-        return null
-    }
-
-    internal open fun printResults(httpResult: ExecutionResult, replicaContext: ReplicaContext? = null) {
+    protected open fun printResults(httpResult: ExecutionResult, replicaContext: ReplicaContext? = null) {
         printCurrentHost(RemoteConnectionType.Hybris, replicaContext)
         printPlainText(httpResult)
     }
 
-    internal fun printCurrentHost(remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
+    protected fun printCurrentHost(remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
         val activeConnectionSettings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(remoteConnectionType)
         print("[HOST] ", SYSTEM_OUTPUT)
         activeConnectionSettings.displayName

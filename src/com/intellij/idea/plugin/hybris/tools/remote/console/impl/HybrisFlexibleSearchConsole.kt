@@ -23,14 +23,15 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FxSTransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
+import kotlinx.coroutines.CoroutineScope
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel
@@ -38,10 +39,11 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext>(
+class HybrisFlexibleSearchConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
     FlexibleSearchLanguage,
+    coroutineScope
 ) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
@@ -71,7 +73,7 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole<FlexibleSear
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
         content = content,
         maxCount = maxRowsSpinner.value.toString().toInt(),
-        transactionMode = if (commitCheckbox.isSelected) FxSTransactionMode.COMMIT else FxSTransactionMode.ROLLBACK,
+        transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         queryMode = if (plainSqlCheckbox.isSelected) QueryMode.SQL else QueryMode.FlexibleSearch
     )
 
