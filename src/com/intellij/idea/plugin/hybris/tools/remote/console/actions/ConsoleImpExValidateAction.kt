@@ -33,8 +33,8 @@ import com.intellij.ui.AnimatedIcon
 import com.intellij.util.asSafely
 
 class ConsoleImpExValidateAction : AnAction(
-    "Execute Current Statement",
-    "",
+    "Validate ImpEx",
+    "Validate ImpEx file via remote SAP Commerce instance",
     HybrisIcons.ImpEx.Actions.VALIDATE
 ) {
 
