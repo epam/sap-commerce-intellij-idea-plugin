@@ -22,6 +22,7 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
@@ -89,6 +90,8 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorEx
 
         ConsoleHistoryController(MyConsoleRootType, "hybris.impex.monitor.shell", this).install()
     }
+
+    override fun icon() = HybrisIcons.MONITORING
 
     private fun obtainDataFolder(project: Project): String {
         val settings = ProjectSettingsComponent.getInstance(project).state

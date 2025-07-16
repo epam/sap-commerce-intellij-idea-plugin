@@ -35,7 +35,7 @@ import com.intellij.util.asSafely
 class ConsoleImpExValidateAction : AnAction(
     "Execute Current Statement",
     "",
-    HybrisIcons.Console.Actions.EXECUTE
+    HybrisIcons.ImpEx.Actions.VALIDATE
 ) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -63,6 +63,7 @@ class ConsoleImpExValidateAction : AnAction(
         val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
 
+        e.presentation.isVisible = activeConsole is HybrisImpexConsole
         e.presentation.isEnabled = activeConsole.canExecute() && (lookup == null || !lookup.isCompletion)
         e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
     }
