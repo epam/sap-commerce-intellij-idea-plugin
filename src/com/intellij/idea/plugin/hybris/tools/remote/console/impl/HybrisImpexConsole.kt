@@ -25,12 +25,10 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.Toggle
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ValidationMode
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
@@ -45,11 +43,10 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext, ExecutionResult, ImpExExecutionClient>(
+class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext, ExecutionResult>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX,
     ImpexLanguage,
-    project.service<ImpExExecutionClient>()
 ) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)

@@ -23,13 +23,16 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ExecutionMode
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.service
 import com.intellij.ui.AnimatedIcon
 import com.intellij.util.asSafely
+import kotlinx.coroutines.launch
 
 class ConsoleImpExValidateAction : AnAction(
     "Execute Current Statement",
@@ -50,7 +53,14 @@ class ConsoleImpExValidateAction : AnAction(
             executionMode = ExecutionMode.VALIDATE,
         )
 
-        console.execute(context)
+        project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
+            coroutineScope.launch {
+                edtWriteAction {
+                    console.addQueryToHistory()
+                    console.printResults(result)
+                }
+            }
+        }
     }
 
     override fun update(e: AnActionEvent) {

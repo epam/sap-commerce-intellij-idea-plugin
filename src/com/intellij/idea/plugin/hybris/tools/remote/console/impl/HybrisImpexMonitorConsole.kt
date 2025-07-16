@@ -30,10 +30,8 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.TimeOption
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionContext
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.TextRange
@@ -49,11 +47,10 @@ import java.util.concurrent.TimeUnit
 import javax.swing.JPanel
 
 @Service(Service.Level.PROJECT)
-class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorExecutionContext, ExecutionResult, ImpExMonitorExecutionClient>(
+class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorExecutionContext, ExecutionResult>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX_MONITOR,
     ImpexLanguage,
-    project.service<ImpExMonitorExecutionClient>()
 ) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.impex.monitor.shell", null)

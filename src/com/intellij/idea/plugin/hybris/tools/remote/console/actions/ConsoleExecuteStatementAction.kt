@@ -21,6 +21,12 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -36,12 +42,41 @@ class ConsoleExecuteStatementAction : AnAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
         val console = e.project
             ?.service<HybrisConsoleService>()
             ?.getActiveConsole()
             ?: return
 
-        console.execute()
+        console.isEditable = false
+
+        when (console) {
+            is HybrisGroovyConsole -> project.service<GroovyExecutionClient>().execute(console.context) { coroutineScope, result ->
+                console.printExecutionResults(coroutineScope, result)
+            }
+
+            is HybrisImpexConsole -> project.service<ImpExExecutionClient>().execute(console.context) { coroutineScope, result ->
+                console.printExecutionResults(coroutineScope, result)
+            }
+
+            is HybrisPolyglotQueryConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
+                console.printExecutionResults(coroutineScope, result)
+            }
+
+            is HybrisFlexibleSearchConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
+                console.printExecutionResults(coroutineScope, result)
+            }
+
+            is HybrisSolrSearchConsole -> SolrExecutionClient.getInstance(project).execute(console.context) { coroutineScope, result ->
+                console.printExecutionResults(coroutineScope, result)
+            }
+
+            is HybrisImpexMonitorConsole -> project.service<ImpExMonitorExecutionClient>().execute(console.context) { coroutineScope, result ->
+                console.printExecutionResults(coroutineScope, result)
+            }
+
+            else -> throw NotImplementedError("This action cannot be used with the ${console::class.qualifiedName}")
+        }
     }
 
     override fun update(e: AnActionEvent) {

@@ -58,11 +58,10 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecutionContext, ExecutionResult, SolrExecutionClient>(
+class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecutionContext, ExecutionResult>(
     project,
     HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH,
     PlainTextLanguage.INSTANCE,
-    SolrExecutionClient.getInstance(project)
 ) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)
@@ -157,7 +156,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecuti
     }
 
     private fun retrieveListOfCores() = try {
-        httpClient.coresData().toList()
+        SolrExecutionClient.getInstance(project).coresData().toList()
     } catch (e: Exception) {
         Notifications.create(
             NotificationType.WARNING,

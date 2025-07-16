@@ -83,15 +83,15 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         add(panel)
     }
 
-    fun setActiveConsole(console: HybrisConsole<out ExecutionContext, out ExecutionResult, *>) {
+    fun setActiveConsole(console: HybrisConsole<out ExecutionContext, out ExecutionResult>) {
         hybrisTabs.setActiveConsole(console)
     }
 
-    fun getActiveConsole(): HybrisConsole<out ExecutionContext, out ExecutionResult, *> {
+    fun getActiveConsole(): HybrisConsole<out ExecutionContext, out ExecutionResult> {
         return hybrisTabs.activeConsole()
     }
 
-    fun <C : HybrisConsole<out ExecutionContext, out ExecutionResult, *>> findConsole(consoleClass: KClass<C>): C? {
+    fun <C : HybrisConsole<out ExecutionContext, out ExecutionResult>> findConsole(consoleClass: KClass<C>): C? {
         for (index in 0 until hybrisTabs.tabCount) {
             val c = hybrisTabs.getComponentAt(index)
 

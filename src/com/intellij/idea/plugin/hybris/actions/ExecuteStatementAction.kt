@@ -40,7 +40,7 @@ import com.intellij.util.asSafely
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
-abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext, out ExecutionResult, *>>(
+abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext, out ExecutionResult>>(
     internal val language: Language,
     internal val consoleClass: KClass<C>,
     internal val name: String,

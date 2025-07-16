@@ -26,9 +26,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexCons
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.service
-import kotlinx.coroutines.launch
 
 class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
     ImpexLanguage,
@@ -45,12 +43,7 @@ class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
         )
 
         project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
-            coroutineScope.launch {
-                edtWriteAction {
-                    console.addQueryToHistory()
-                    console.printResults(result)
-                }
-            }
+            console.printExecutionResults(coroutineScope, result)
         }
     }
 }
