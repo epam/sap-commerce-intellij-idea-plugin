@@ -25,13 +25,16 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
-import org.apache.commons.lang3.StringUtils
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
@@ -46,49 +49,48 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             .map { BasicNameValuePair(it.key, it.value) }
 
         val actionUrl = settings.generatedURL + "/platform/log4j/changeLevel/"
-        val hybrisHacHttpClient = HybrisHacHttpClient.getInstance(project)
-        val response = hybrisHacHttpClient
+        val response = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, null)
 
         val statusLine = response.statusLine
         val resultBuilder = ExecutionResult.builder().httpCode(statusLine.statusCode)
+
         if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
             return resultBuilder
+                .httpCode(HttpStatus.SC_BAD_REQUEST)
                 .errorMessage("[${statusLine.statusCode}] ${statusLine.reasonPhrase}")
                 .build()
         }
-        val document: Document
+
         try {
-            document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
-        } catch (e: IOException) {
-            return resultBuilder.errorMessage(e.message + ' ' + actionUrl).httpCode(HttpStatus.SC_BAD_REQUEST).build()
-        }
-        val fsResultStatus = document.getElementsByTag("body")
-        if (fsResultStatus == null) {
-            return resultBuilder.errorMessage("No data in response").build()
-        }
-        val json = parseResponse(fsResultStatus)
+            val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
+            val jsonAsString = document.getElementsByTag("body").text()
+            val json = Json.parseToJsonElement(jsonAsString)
 
-        if (json == null) {
-            return ExecutionResult.builder()
+            val loggers = json.jsonObject["loggers"]
+        } catch (e: SerializationException) {
+            thisLogger().error("Cannot parse response", e)
+
+            resultBuilder
+                .httpCode(HttpStatus.SC_BAD_REQUEST)
                 .errorMessage("Cannot parse response from the server...")
-                .build()
+        } catch (e: IOException) {
+            resultBuilder
+                .errorMessage("${e.message} $actionUrl")
+                .httpCode(HttpStatus.SC_BAD_REQUEST)
         }
 
-        val stacktraceText = json["stacktraceText"]
-        if (stacktraceText != null && StringUtils.isNotEmpty(stacktraceText.toString())) {
-            return ExecutionResult.builder()
-                .errorMessage(stacktraceText.toString())
-                .build()
-        }
-
-        if (json["outputText"] != null) {
-            resultBuilder.output(json["outputText"].toString())
-        }
-        if (json["executionResult"] != null) {
-            resultBuilder.result(json["executionResult"].toString())
-        }
         return resultBuilder.build()
+    }
+
+    internal fun parseJson(jsonAsString: String): JsonElement? {
+        try {
+            return Json.parseToJsonElement(jsonAsString)
+        } catch (e: Exception) {
+            thisLogger().error("Cannot parse response", e)
+
+            return null
+        }
     }
 
     companion object {

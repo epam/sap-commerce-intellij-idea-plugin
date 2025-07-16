@@ -27,15 +27,18 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext.Companion.auto
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
-import org.jetbrains.kotlin.idea.gradleTooling.get
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
@@ -54,13 +57,13 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
 
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
-        val actionUrl = "${settings.generatedURL}/console/scripting/execute"
 
+        val actionUrl = "${settings.generatedURL}/console/scripting/execute"
         val response: HttpResponse = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
+
         val statusLine = response.statusLine
-        val resultBuilder = ExecutionResult.builder()
-            .httpCode(statusLine.statusCode)
+        val resultBuilder = ExecutionResult.builder().httpCode(statusLine.statusCode)
 
         if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
             return resultBuilder
@@ -68,43 +71,39 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
                 .errorMessage("[${statusLine.statusCode}] ${statusLine.reasonPhrase}")
                 .build()
         }
-        val document: Document
+
         try {
-            document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
+            val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
+            val jsonAsString = document.getElementsByTag("body").text()
+            val json = Json.parseToJsonElement(jsonAsString)
+
+            json.jsonObject["stacktraceText"]
+
+            val errorText = json.jsonObject["stacktraceText"]
+                ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
+
+            if (errorText != null) resultBuilder.errorMessage(errorText)
+            else {
+                json.jsonObject["outputText"]
+                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
+                    ?.let { resultBuilder.output(it) }
+                json.jsonObject["executionResult"]
+                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
+                    ?.let { resultBuilder.result(it) }
+            }
+        } catch (e: SerializationException) {
+            thisLogger().error("Cannot parse response", e)
+
+            resultBuilder
+                .httpCode(HttpStatus.SC_BAD_REQUEST)
+                .errorMessage("Cannot parse response from the server...")
         } catch (e: IOException) {
-            return resultBuilder
+            resultBuilder
                 .httpCode(HttpStatus.SC_BAD_REQUEST)
                 .errorMessage("${e.message} $actionUrl")
-                .build()
-        }
-        val fsResultStatus = document.getElementsByTag("body")
-        if (fsResultStatus == null) {
-            return resultBuilder
-                .httpCode(HttpStatus.SC_BAD_REQUEST)
-                .errorMessage("No data in response")
-                .build()
-        }
-        val json = parseResponse(fsResultStatus)
-
-        if (json == null) {
-            return resultBuilder
-                .errorMessage("Cannot parse response from the server...")
-                .build()
         }
 
-        val errorText = json["stacktraceText"]?.toString()
-            ?.takeIf { it.isNotBlank() }
-        if (errorText != null) {
-            resultBuilder.errorMessage(errorText)
-        } else {
-            json["outputText"]?.toString()
-                ?.let { resultBuilder.output(it) }
-            json["executionResult"]?.toString()
-                ?.let { resultBuilder.result(it) }
-        }
-
-        return resultBuilder
-            .build()
+        return resultBuilder.build()
     }
 
     companion object {

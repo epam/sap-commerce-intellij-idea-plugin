@@ -18,15 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution
 
-import com.google.gson.Gson
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.jsoup.select.Elements
 import java.io.Serial
 
 abstract class ExecutionClient<E : ExecutionContext>(
@@ -47,16 +44,6 @@ abstract class ExecutionClient<E : ExecutionContext>(
     }
 
     internal abstract suspend fun execute(context: E): ExecutionResult
-
-    internal suspend fun parseResponse(fsResultStatus: Elements): Map<*, *>? {
-        try {
-            return Gson().fromJson(fsResultStatus.text(), HashMap::class.java)
-        } catch (e: Exception) {
-            thisLogger().error("Cannot parse response", e)
-
-            return null
-        }
-    }
 
     companion object {
         @Serial
