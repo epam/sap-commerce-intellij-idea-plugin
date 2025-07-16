@@ -22,10 +22,11 @@ import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
@@ -70,16 +71,17 @@ class CommonIdeaService {
         .firstNotNullOfOrNull { it as? PlatformModuleDescriptor }
 
     fun fixRemoteConnectionSettings(project: Project) {
+        val remoteConnectionService = project.service<RemoteConnectionService>()
         listOf(
             RemoteConnectionType.Hybris,
             RemoteConnectionType.SOLR
         ).forEach {
-            val remoteConnections = RemoteConnectionUtil.getRemoteConnections(project, it)
+            val remoteConnections = remoteConnectionService.getRemoteConnections(it)
 
             if (remoteConnections.isEmpty()) {
-                val settings = RemoteConnectionUtil.createDefaultRemoteConnectionSettings(project, it)
-                RemoteConnectionUtil.addRemoteConnection(project, settings)
-                RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, settings)
+                val settings = remoteConnectionService.createDefaultRemoteConnectionSettings(it)
+                remoteConnectionService.addRemoteConnection(settings)
+                remoteConnectionService.setActiveRemoteConnectionSettings(settings)
             } else {
                 fixSslRemoteConnectionSettings(remoteConnections)
             }

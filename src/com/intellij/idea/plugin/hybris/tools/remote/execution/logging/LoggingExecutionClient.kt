@@ -18,14 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil.getActiveRemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import org.apache.commons.lang3.StringUtils
@@ -40,7 +41,7 @@ import java.nio.charset.StandardCharsets
 class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<LoggingExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: LoggingExecutionContext): ExecutionResult {
-        val settings = getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+        val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
 
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }

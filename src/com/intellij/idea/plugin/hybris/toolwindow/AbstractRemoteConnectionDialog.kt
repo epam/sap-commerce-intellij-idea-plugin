@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,9 +24,10 @@ import com.intellij.execution.wsl.WSLDistribution
 import com.intellij.execution.wsl.WslDistributionManager
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -134,7 +135,7 @@ abstract class AbstractRemoteConnectionDialog(
         } else {
             // change of the scope
             if (originalScope != settings.scope) {
-                RemoteConnectionUtil.changeRemoteConnectionScope(project, settings, originalScope)
+                project.service<RemoteConnectionService>().changeRemoteConnectionScope(settings, originalScope)
             }
         }
 
@@ -168,7 +169,7 @@ abstract class AbstractRemoteConnectionDialog(
     override fun getStyle() = DialogStyle.COMPACT
     override fun getPreferredFocusedComponent() = connectionNameTextField
 
-    protected fun generateUrl() = RemoteConnectionUtil.generateUrl(
+    protected fun generateUrl() = RemoteConnectionService.generateUrl(
         sslProtocolCheckBox.isSelected,
         hostTextField.text,
         portTextField.text,

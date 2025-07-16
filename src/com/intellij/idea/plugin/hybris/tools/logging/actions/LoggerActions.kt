@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.tools.logging.actions
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
 import com.intellij.idea.plugin.hybris.util.PackageUtils
@@ -49,10 +49,8 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(l
         val context = LoggingExecutionContext(logIdentifier, logLevel)
 
         project.service<LoggingExecutionClient>().execute(context) { coroutineScope, result ->
-            val server = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+            val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
             val abbreviationLogIdentifier = PackageUtils.abbreviatePackageName(logIdentifier)
-
-
 
             if (result.statusCode == 200) {
                 Notifications.info(

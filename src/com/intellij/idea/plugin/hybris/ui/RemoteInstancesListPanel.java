@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.ui;
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.AddEditDeleteListPanel;
 import com.intellij.ui.ToolbarDecorator;
@@ -99,7 +99,7 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Re
     protected void addElement(@Nullable final RemoteConnectionSettings itemToAdd) {
         super.addElement(itemToAdd);
 
-        if (itemToAdd != null) RemoteConnectionUtil.INSTANCE.addRemoteConnection(myProject, itemToAdd);
+        if (itemToAdd != null) myProject.getService(RemoteConnectionService.class).addRemoteConnection(itemToAdd);
     }
 
     @Override

@@ -21,14 +21,15 @@ package com.intellij.idea.plugin.hybris.tools.remote.console
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.execution.ui.ConsoleViewContentType.*
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder.createResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.lang.Language
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
@@ -141,7 +142,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     }
 
     internal fun printCurrentHost(remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
-        val activeConnectionSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, remoteConnectionType)
+        val activeConnectionSettings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(remoteConnectionType)
         print("[HOST] ", SYSTEM_OUTPUT)
         activeConnectionSettings.displayName
             ?.let { name -> print("($name) ", LOG_INFO_OUTPUT) }

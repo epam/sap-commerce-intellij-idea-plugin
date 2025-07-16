@@ -25,13 +25,14 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.ui.RemoteHacInstancesListPanel
 import com.intellij.idea.plugin.hybris.ui.RemoteInstancesListPanel
 import com.intellij.idea.plugin.hybris.ui.RemoteSolrInstancesListPanel
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.components.service
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -56,8 +57,8 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
 
         @Volatile
         private var isReset = false
-        private val currentActiveHybrisConnection = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
-        private val currentActiveSolrConnection = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.SOLR)
+        private val currentActiveHybrisConnection = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        private val currentActiveSolrConnection = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.SOLR)
 
         private lateinit var activeCCv2SubscriptionComboBox: ComboBox<CCv2Subscription>
         private val activeHacServerModel = DefaultComboBoxModel<RemoteConnectionSettings>()
@@ -65,7 +66,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
         private val hacInstances = RemoteHacInstancesListPanel(project) { eventType, data ->
             if (!isReset) {
                 if (eventType == RemoteInstancesListPanel.EventType.REMOVE) {
-                    RemoteConnectionUtil.saveRemoteConnections(project, RemoteConnectionType.Hybris, data);
+                    project.service<RemoteConnectionService>().saveRemoteConnections(RemoteConnectionType.Hybris, data);
                 }
                 updateModel(activeHacServerModel, activeHacServerModel.selectedItem as RemoteConnectionSettings?, data)
             }
@@ -74,7 +75,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
         private val solrInstances = RemoteSolrInstancesListPanel(project) { eventType, data ->
             if (!isReset) {
                 if (eventType == RemoteInstancesListPanel.EventType.REMOVE) {
-                    RemoteConnectionUtil.saveRemoteConnections(project, RemoteConnectionType.Hybris, data);
+                    project.service<RemoteConnectionService>().saveRemoteConnections(RemoteConnectionType.Hybris, data);
                     updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as RemoteConnectionSettings?, data)
                 }
             }
@@ -126,11 +127,11 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
                         .label(message("hybris.settings.project.remote_instances.hac.active.title"))
                         .onApply {
                             (activeHacServerModel.selectedItem as RemoteConnectionSettings?)
-                                ?.let { settings -> RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, settings) }
+                                ?.let { settings -> project.service<RemoteConnectionService>().setActiveRemoteConnectionSettings(settings) }
                         }
                         .onIsModified {
                             (activeHacServerModel.selectedItem as RemoteConnectionSettings?)
-                                ?.let { it.uuid != RemoteConnectionUtil.getActiveRemoteConnectionId(project, it.type) }
+                                ?.let { it.uuid != project.service<RemoteConnectionService>().getActiveRemoteConnectionId(it.type) }
                                 ?: false
                         }
                         .align(AlignX.FILL)
@@ -145,11 +146,11 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
                         .label(message("hybris.settings.project.remote_instances.solr.active.title"))
                         .onApply {
                             (activeSolrServerModel.selectedItem as RemoteConnectionSettings?)
-                                ?.let { settings -> RemoteConnectionUtil.setActiveRemoteConnectionSettings(project, settings) }
+                                ?.let { settings -> project.service<RemoteConnectionService>().setActiveRemoteConnectionSettings(settings) }
                         }
                         .onIsModified {
                             (activeSolrServerModel.selectedItem as RemoteConnectionSettings?)
-                                ?.let { it.uuid != RemoteConnectionUtil.getActiveRemoteConnectionId(project, it.type) }
+                                ?.let { it.uuid != project.service<RemoteConnectionService>().getActiveRemoteConnectionId(it.type) }
                                 ?: false
                         }
                         .align(AlignX.FILL)
@@ -176,8 +177,8 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
 
             activeCCv2SubscriptionComboBox.selectedItem = devSettingsComponent.getActiveCCv2Subscription()
 
-            hacInstances.setData(RemoteConnectionUtil.getRemoteConnections(project, RemoteConnectionType.Hybris))
-            solrInstances.setData(RemoteConnectionUtil.getRemoteConnections(project, RemoteConnectionType.SOLR))
+            hacInstances.setData(project.service<RemoteConnectionService>().getRemoteConnections(RemoteConnectionType.Hybris))
+            solrInstances.setData(project.service<RemoteConnectionService>().getRemoteConnections(RemoteConnectionType.SOLR))
 
             updateModel(activeHacServerModel, currentActiveHybrisConnection, hacInstances.data)
             updateModel(activeSolrServerModel, currentActiveSolrConnection, solrInstances.data)

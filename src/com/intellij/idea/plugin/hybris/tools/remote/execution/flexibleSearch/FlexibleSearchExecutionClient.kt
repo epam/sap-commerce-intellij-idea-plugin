@@ -19,13 +19,14 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 
 import com.google.gson.Gson
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
@@ -38,7 +39,7 @@ import java.nio.charset.StandardCharsets
 class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<FlexibleSearchExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: FlexibleSearchExecutionContext): ExecutionResult {
-        val settings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+        val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val params = context.params(settings)
             .map { BasicNameValuePair(it.key, it.value) }
         val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"

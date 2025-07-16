@@ -19,11 +19,12 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.solr
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import com.intellij.util.containers.mapSmartNotNull
@@ -114,7 +115,7 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : Ex
     }
 
     // active or default
-    private fun solrConnectionSettings(project: Project) = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.SOLR)
+    private fun solrConnectionSettings(project: Project) = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.SOLR)
 
     companion object {
         @JvmStatic
