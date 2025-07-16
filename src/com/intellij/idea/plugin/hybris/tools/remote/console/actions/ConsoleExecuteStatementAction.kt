@@ -31,7 +31,6 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
-import com.intellij.ui.AnimatedIcon
 
 class ConsoleExecuteStatementAction : AnAction(
     "Execute Current Statement",
@@ -53,26 +52,32 @@ class ConsoleExecuteStatementAction : AnAction(
         when (console) {
             is HybrisGroovyConsole -> project.service<GroovyExecutionClient>().execute(console.context) { coroutineScope, result ->
                 console.printExecutionResults(coroutineScope, result)
+                console.isEditable = true
             }
 
             is HybrisImpexConsole -> project.service<ImpExExecutionClient>().execute(console.context) { coroutineScope, result ->
                 console.printExecutionResults(coroutineScope, result)
+                console.isEditable = true
             }
 
             is HybrisPolyglotQueryConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
                 console.printExecutionResults(coroutineScope, result)
+                console.isEditable = true
             }
 
             is HybrisFlexibleSearchConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
                 console.printExecutionResults(coroutineScope, result)
+                console.isEditable = true
             }
 
             is HybrisSolrSearchConsole -> SolrExecutionClient.getInstance(project).execute(console.context) { coroutineScope, result ->
                 console.printExecutionResults(coroutineScope, result)
+                console.isEditable = true
             }
 
             is HybrisImpexMonitorConsole -> project.service<ImpExMonitorExecutionClient>().execute(console.context) { coroutineScope, result ->
                 console.printExecutionResults(coroutineScope, result)
+                console.isEditable = true
             }
 
             else -> throw NotImplementedError("This action cannot be used with the ${console::class.qualifiedName}")
@@ -87,6 +92,6 @@ class ConsoleExecuteStatementAction : AnAction(
         val lookup = LookupManager.getActiveLookup(editor)
 
         e.presentation.isEnabled = console.canExecute() && (lookup == null || !lookup.isCompletion)
-        e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
+        e.presentation.disabledIcon = console.disabledIcon()
     }
 }

@@ -42,8 +42,10 @@ class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
             content = content
         )
 
+        console.isEditable = false
         project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
             console.printExecutionResults(coroutineScope, result)
+            console.isEditable = true
         }
     }
 }

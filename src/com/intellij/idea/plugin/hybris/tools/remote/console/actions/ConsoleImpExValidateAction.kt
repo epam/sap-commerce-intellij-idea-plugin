@@ -51,8 +51,11 @@ class ConsoleImpExValidateAction : AnAction(
             executionMode = ExecutionMode.VALIDATE,
         )
 
+        console.isEditable = false
+
         project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
             console.printExecutionResults(coroutineScope, result)
+            console.isEditable = true
         }
     }
 

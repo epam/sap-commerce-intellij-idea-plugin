@@ -34,6 +34,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
+import com.intellij.ui.AnimatedIcon
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -65,6 +66,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     abstract fun tip(): String
 
     open fun icon(): Icon? = language.associatedFileType?.icon
+    open fun disabledIcon(): Icon? = AnimatedIcon.Default.INSTANCE
     open fun onSelection() = Unit
     open fun canExecute(): Boolean = isEditable
     open fun printDefaultText() = setInputText("")
@@ -74,8 +76,6 @@ abstract class HybrisConsole<E : ExecutionContext>(
             edtWriteAction {
                 addQueryToHistory()
                 printResults(result)
-
-                isEditable = true
             }
         }
     }

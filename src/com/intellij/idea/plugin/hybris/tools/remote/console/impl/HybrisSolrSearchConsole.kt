@@ -52,10 +52,7 @@ import com.jetbrains.rd.swing.selectedItemProperty
 import com.jetbrains.rd.util.reactive.adviseEternal
 import java.awt.BorderLayout
 import java.io.Serial
-import javax.swing.JButton
-import javax.swing.JPanel
-import javax.swing.JSpinner
-import javax.swing.SpinnerNumberModel
+import javax.swing.*
 
 @Service(Service.Level.PROJECT)
 class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecutionContext>(
@@ -107,6 +104,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecuti
     }
 
     override fun icon() = HybrisIcons.Console.SOLR
+    override fun disabledIcon(): Icon? = null
 
     override fun printDefaultText() {
         this.setInputText("*:*")
