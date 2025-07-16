@@ -26,7 +26,10 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.lang.Language
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
@@ -55,11 +58,6 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext, ou
         val project = e.project ?: return
         val content = CommonDataKeys.EDITOR.getData(e.dataContext)
             ?.let { editor -> getExecutableContent(editor, e, project) }
-            ?: e.getData(PlatformDataKeys.TOOL_WINDOW)
-                ?.let { HybrisConsoleService.getInstance(project).findConsole(it, consoleClass) }
-                ?.currentEditor
-                ?.document
-                ?.text
             ?: return
 
         actionPerformed(e, project, content)
