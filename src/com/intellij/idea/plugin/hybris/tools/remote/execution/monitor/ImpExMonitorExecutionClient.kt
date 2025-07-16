@@ -33,7 +33,7 @@ import java.time.ZoneId
 class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<ImpExMonitorExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: ImpExMonitorExecutionContext): ExecutionResult {
-        val resultBuilder = ExecutionResult.HybrisHttpResultBuilder.createResult()
+        val resultBuilder = ExecutionResult.builder()
         val unit = context.timeOption.unit
         val duration = context.timeOption.value.toLong()
         val minutesAgo = LocalDateTime.now().minusMinutes(unit.toMinutes(duration))

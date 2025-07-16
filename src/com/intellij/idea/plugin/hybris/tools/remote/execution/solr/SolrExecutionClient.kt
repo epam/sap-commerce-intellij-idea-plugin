@@ -96,10 +96,8 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : Ex
     private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryExecutionContext, queryRequest: QueryRequest): ExecutionResult =
         buildHttpSolrClient("${solrConnectionSettings.generatedURL}/${queryObject.core}")
             .runCatching { request(queryRequest) }
-            .map { resultBuilder().output(it["response"] as String?).build() }
-            .getOrElse { resultBuilder().errorMessage(it.message).httpCode(HttpStatus.SC_BAD_GATEWAY).build() }
-
-    private fun resultBuilder() = ExecutionResult.HybrisHttpResultBuilder.createResult()
+            .map { ExecutionResult.builder().output(it["response"] as String?).build() }
+            .getOrElse { ExecutionResult.builder().errorMessage(it.message).httpCode(HttpStatus.SC_BAD_GATEWAY).build() }
 
     private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: RemoteConnectionSettings) = QueryRequest(solrQuery).apply {
         setBasicAuthCredentials(solrConnectionSettings.username, solrConnectionSettings.password)

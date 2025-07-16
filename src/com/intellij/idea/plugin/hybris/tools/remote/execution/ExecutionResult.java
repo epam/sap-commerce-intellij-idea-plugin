@@ -62,24 +62,24 @@ public class ExecutionResult {
         return result;
     }
 
-    static public class HybrisHttpResultBuilder {
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    static public class Builder {
 
         private boolean hasError = false;
-        private String errorMessage= EMPTY;
-        private String detailMessage= EMPTY;
+        private String errorMessage = EMPTY;
+        private String detailMessage = EMPTY;
 
-        private String output= EMPTY;
-        private String result= EMPTY;
+        private String output = EMPTY;
+        private String result = EMPTY;
         private int statusCode = SC_OK;
 
-        private HybrisHttpResultBuilder() {
+        private Builder() {
         }
 
-        public static HybrisHttpResultBuilder createResult() {
-            return new HybrisHttpResultBuilder();
-        }
-
-        public HybrisHttpResultBuilder errorMessage(final String errorMessage) {
+        public Builder errorMessage(final String errorMessage) {
             if (isNotEmpty(errorMessage)) {
                 this.errorMessage = errorMessage;
                 this.hasError = true;
@@ -87,7 +87,7 @@ public class ExecutionResult {
             return this;
         }
 
-        public HybrisHttpResultBuilder detailMessage(final String detailMessage) {
+        public Builder detailMessage(final String detailMessage) {
             if (isNotEmpty(detailMessage)) {
                 this.detailMessage = detailMessage;
                 this.hasError = true;
@@ -95,22 +95,22 @@ public class ExecutionResult {
             return this;
         }
 
-        public HybrisHttpResultBuilder output(final String output) {
+        public Builder output(final String output) {
             this.output = output;
             return this;
         }
 
-        public HybrisHttpResultBuilder result(final String result) {
+        public Builder result(final String result) {
             this.result = result;
             return this;
         }
 
-        public HybrisHttpResultBuilder httpCode(final int statusCode) {
+        public Builder httpCode(final int statusCode) {
             this.statusCode = statusCode;
             return this;
         }
 
-        public HybrisHttpResultBuilder badRequest() {
+        public Builder badRequest() {
             this.statusCode = HttpStatus.SC_BAD_REQUEST;
             return this;
         }

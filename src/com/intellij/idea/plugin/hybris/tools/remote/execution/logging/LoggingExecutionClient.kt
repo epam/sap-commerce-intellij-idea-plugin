@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -52,7 +51,7 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, null)
 
         val statusLine = response.statusLine
-        val resultBuilder = HybrisHttpResultBuilder.createResult().httpCode(statusLine.statusCode)
+        val resultBuilder = ExecutionResult.builder().httpCode(statusLine.statusCode)
         if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
             return resultBuilder
                 .errorMessage("[${statusLine.statusCode}] ${statusLine.reasonPhrase}")
@@ -71,14 +70,14 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
         val json = parseResponse(fsResultStatus)
 
         if (json == null) {
-            return HybrisHttpResultBuilder.createResult()
+            return ExecutionResult.builder()
                 .errorMessage("Cannot parse response from the server...")
                 .build()
         }
 
         val stacktraceText = json["stacktraceText"]
         if (stacktraceText != null && StringUtils.isNotEmpty(stacktraceText.toString())) {
-            return HybrisHttpResultBuilder.createResult()
+            return ExecutionResult.builder()
                 .errorMessage(stacktraceText.toString())
                 .build()
         }

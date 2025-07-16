@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder.createResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.lang.Language
 import com.intellij.openapi.application.edtWriteAction
@@ -71,11 +70,11 @@ abstract class HybrisConsole<E : ExecutionContext>(
     open fun canExecute(): Boolean = isEditable
     open fun printDefaultText() = setInputText("")
 
-    fun printExecutionResults(coroutineScope: CoroutineScope, result: ExecutionResult) {
+    fun printExecutionResults(coroutineScope: CoroutineScope, context: E, result: ExecutionResult) {
         coroutineScope.launch {
             edtWriteAction {
-                addQueryToHistory()
-                printResults(result)
+                addCurrentQueryToHistory()
+                printResults(context, result)
             }
         }
     }
@@ -85,7 +84,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         super.dispose()
     }
 
-    fun addQueryToHistory(): String? {
+    private fun addCurrentQueryToHistory(): String? {
         val consoleHistoryController = ConsoleHistoryController.getController(this)
             ?: return null
         // Process input and add to history
@@ -93,20 +92,19 @@ abstract class HybrisConsole<E : ExecutionContext>(
         val textForHistory = document.text
 
         val query = document.text
+            .takeIf { it.isNotEmpty() }
+            ?: return null
         val range = TextRange(0, document.textLength)
 
-        if (query.isNotEmpty()) {
-            currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
-            addToHistory(range, consoleEditor, false)
-            printDefaultText()
+        currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
+        addToHistory(range, consoleEditor, false)
+        printDefaultText()
 
-            if (!StringUtil.isEmptyOrSpaces(textForHistory)) {
-                consoleHistoryController.addToHistory(textForHistory.trim())
-            }
-
-            return query
+        if (!StringUtil.isEmptyOrSpaces(textForHistory)) {
+            consoleHistoryController.addToHistory(textForHistory.trim())
         }
-        return null
+
+        return query
     }
 
     @Deprecated("review")
@@ -132,10 +130,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         return null
     }
 
-    internal open fun printResults(
-        httpResult: ExecutionResult,
-        replicaContext: ReplicaContext? = null
-    ) {
+    internal open fun printResults(context: E, httpResult: ExecutionResult, replicaContext: ReplicaContext? = null) {
         printCurrentHost(RemoteConnectionType.Hybris, replicaContext)
         printPlainText(httpResult)
     }
@@ -152,12 +147,13 @@ abstract class HybrisConsole<E : ExecutionContext>(
         print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
 
-    internal fun printPlainText(httpResult: ExecutionResult) {
-        val result = createResult()
-            .errorMessage(httpResult.errorMessage)
-            .output(httpResult.output)
-            .result(httpResult.result)
-            .detailMessage(httpResult.detailMessage)
+    // TODO: why recreating the result?
+    private fun printPlainText(executionResult: ExecutionResult) {
+        val result = ExecutionResult.builder()
+            .errorMessage(executionResult.errorMessage)
+            .output(executionResult.output)
+            .result(executionResult.result)
+            .detailMessage(executionResult.detailMessage)
             .build()
         val detailMessage = result.detailMessage
         val output = result.output

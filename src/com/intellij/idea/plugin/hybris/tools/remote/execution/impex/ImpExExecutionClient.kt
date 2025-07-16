@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -32,6 +31,7 @@ import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
@@ -51,36 +51,24 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : E
 
         val response = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, null)
-        val resultBuilder = HybrisHttpResultBuilder.createResult().httpCode(response.statusLine.statusCode)
 
-        if (response.statusLine.statusCode != HttpStatus.SC_OK) {
+        val statusLine = response.statusLine
+        val resultBuilder = ExecutionResult.builder()
+            .httpCode(statusLine.statusCode)
+
+        if (statusLine.statusCode != HttpStatus.SC_OK) {
             return resultBuilder
-                .errorMessage(response.statusLine.reasonPhrase)
+                .errorMessage(statusLine.reasonPhrase)
                 .build()
         }
 
         try {
             val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
 
-            document.getElementById("impexResult")
-                ?.takeIf { it.hasAttr("data-level") && it.hasAttr("data-result") }
-                ?.let { resultElement ->
-                    val dataResult = resultElement.attr("data-result")
-                    if (resultElement.attr("data-level") == "error") {
-                        document.getElementsByClass("impexResult")
-                            .first()?.children()?.first()?.text()
-                            ?.let { it ->
-                                resultBuilder
-                                    .errorMessage(dataResult)
-                                    .detailMessage(it)
-                            }
-                            ?: resultBuilder.errorMessage("No data in response")
-                    } else {
-                        resultBuilder.output(dataResult)
-                    }
-                }
-                ?: resultBuilder.errorMessage("No data in response")
-
+            when (context.executionMode) {
+                ExecutionMode.IMPORT -> processImportResponse(document, resultBuilder)
+                ExecutionMode.VALIDATE -> processValidateResponse(document, resultBuilder)
+            }
         } catch (e: IOException) {
             thisLogger().warn(e.message, e)
 
@@ -88,6 +76,42 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : E
         }
 
         return resultBuilder.build()
+    }
+
+    private fun processImportResponse(document: Document, resultBuilder: ExecutionResult.Builder) {
+        document.getElementById("impexResult")
+            ?.takeIf { it.hasAttr("data-level") && it.hasAttr("data-result") }
+            ?.let { resultElement ->
+                val dataResult = resultElement.attr("data-result")
+                if (resultElement.attr("data-level") == "error") {
+                    document.getElementsByClass("impexResult")
+                        .first()?.children()?.first()?.text()
+                        ?.let { it ->
+                            resultBuilder
+                                .errorMessage(dataResult)
+                                .detailMessage(it)
+                        }
+                        ?: resultBuilder.errorMessage("No data in response")
+                } else {
+                    resultBuilder.output(dataResult)
+                }
+            }
+            ?: resultBuilder.errorMessage("No data in response")
+    }
+
+    private fun processValidateResponse(document: Document, resultBuilder: ExecutionResult.Builder) {
+        document.getElementById("validationResultMsg")
+            ?.takeIf { it.hasAttr("data-level") && it.hasAttr("data-result") }
+            ?.let {
+                if ("error" == it.attr("data-level")) {
+                    val dataResult = it.attr("data-result")
+                    resultBuilder.errorMessage(dataResult).build()
+                } else {
+                    val dataResult = it.attr("data-result")
+                    resultBuilder.output(dataResult)
+                }
+            }
+            ?: resultBuilder.errorMessage("No data in response")
     }
 
     companion object {

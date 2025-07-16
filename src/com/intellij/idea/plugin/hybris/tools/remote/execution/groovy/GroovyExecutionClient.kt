@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext.Companion.auto
@@ -60,7 +59,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         val response: HttpResponse = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
         val statusLine = response.statusLine
-        val resultBuilder = HybrisHttpResultBuilder.createResult()
+        val resultBuilder = ExecutionResult.builder()
             .httpCode(statusLine.statusCode)
 
         if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {

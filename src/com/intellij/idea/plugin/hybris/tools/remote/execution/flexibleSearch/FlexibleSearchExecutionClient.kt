@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -49,7 +48,7 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
             .post(actionUrl, params, true, context.timeout, settings, null)
         val statusLine = response.statusLine
         val resultBuilder = when {
-            statusLine.statusCode != HttpStatus.SC_OK || response.entity == null -> HybrisHttpResultBuilder.createResult()
+            statusLine.statusCode != HttpStatus.SC_OK || response.entity == null -> ExecutionResult.builder()
                 .badRequest()
                 .errorMessage("[${statusLine.statusCode}] ${statusLine.reasonPhrase}")
 
@@ -70,14 +69,14 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
             ?.let { it["message"] }
             ?.toString()
             ?.let {
-                HybrisHttpResultBuilder.createResult()
+                ExecutionResult.builder()
                     .badRequest()
                     .errorMessage(it)
             }
-            ?: HybrisHttpResultBuilder.createResult()
+            ?: ExecutionResult.builder()
                 .output(buildTableResult(json))
     } catch (e: Exception) {
-        HybrisHttpResultBuilder.createResult()
+        ExecutionResult.builder()
             .badRequest()
             .errorMessage("Cannot parse response from the server: ${e.message} $actionUrl")
     }
