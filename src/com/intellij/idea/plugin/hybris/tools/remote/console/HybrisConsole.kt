@@ -119,7 +119,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         activeConnectionSettings.displayName
             ?.let { name -> print("($name) ", LOG_INFO_OUTPUT) }
         replicaContext
-            ?.replicaCookie
+            ?.replicaId
             ?.let { print("($it) ", LOG_INFO_OUTPUT) }
 
         print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)

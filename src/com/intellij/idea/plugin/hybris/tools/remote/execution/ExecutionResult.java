@@ -135,6 +135,7 @@ public class ExecutionResult {
             httpResult.output = this.output;
             httpResult.result = this.result;
             httpResult.statusCode = this.statusCode;
+            httpResult.replicaContext = this.replicaContext;
 
             return httpResult;
         }
