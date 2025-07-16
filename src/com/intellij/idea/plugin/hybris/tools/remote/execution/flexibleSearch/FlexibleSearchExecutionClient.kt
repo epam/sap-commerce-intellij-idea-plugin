@@ -45,7 +45,7 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
         val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
 
         val response = HybrisHacHttpClient.getInstance(project)
-            .post(actionUrl, params, true, context.timeout.toLong(), settings, null)
+            .post(actionUrl, params, true, context.timeout, settings, null)
         val statusLine = response.statusLine
         val resultBuilder = when {
             statusLine.statusCode != HttpStatus.SC_OK || response.entity == null -> HybrisHttpResultBuilder.createResult()

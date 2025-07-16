@@ -49,7 +49,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
 
         val hacHttpClient = HybrisHacHttpClient.getInstance(project)
         val response: HttpResponse = hacHttpClient
-            .post(actionUrl, params, true, context.timeout.toLong(), settings, context.replicaContext)
+            .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
         val statusLine = response.statusLine
         val resultBuilder = HybrisHttpResultBuilder.createResult()
             .httpCode(statusLine.statusCode)

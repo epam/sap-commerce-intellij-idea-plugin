@@ -49,7 +49,7 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : E
         }
 
         val response = HybrisHacHttpClient.getInstance(project)
-            .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT.toLong(), settings, null)
+            .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, null)
         val resultBuilder = HybrisHttpResultBuilder.createResult().httpCode(response.statusLine.statusCode)
 
         if (response.statusLine.statusCode != HttpStatus.SC_OK) {
