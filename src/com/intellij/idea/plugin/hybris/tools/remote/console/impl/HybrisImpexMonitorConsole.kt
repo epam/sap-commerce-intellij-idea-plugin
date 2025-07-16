@@ -34,7 +34,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonit
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
@@ -100,15 +99,6 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorEx
     override fun printResults(httpResult: ExecutionResult, replicaContext: ReplicaContext?) {
         clear()
         ConsoleViewUtil.printAsFileType(this, httpResult.output, ImpexFileType)
-    }
-
-    override fun getQuery(): String? {
-        val document = currentEditor.document
-        val range = TextRange(0, document.textLength)
-        currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
-        addToHistory(range, consoleEditor, false)
-        printDefaultText()
-        return null
     }
 
     override fun currentExecutionContext(content: String) = ImpExMonitorExecutionContext(

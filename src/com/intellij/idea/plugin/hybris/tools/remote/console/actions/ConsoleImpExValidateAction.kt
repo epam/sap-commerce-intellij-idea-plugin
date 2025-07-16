@@ -28,11 +28,9 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecuti
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.service
 import com.intellij.ui.AnimatedIcon
 import com.intellij.util.asSafely
-import kotlinx.coroutines.launch
 
 class ConsoleImpExValidateAction : AnAction(
     "Execute Current Statement",
@@ -54,12 +52,7 @@ class ConsoleImpExValidateAction : AnAction(
         )
 
         project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
-            coroutineScope.launch {
-                edtWriteAction {
-                    console.addQueryToHistory()
-                    console.printResults(result)
-                }
-            }
+            console.printExecutionResults(coroutineScope, result)
         }
     }
 

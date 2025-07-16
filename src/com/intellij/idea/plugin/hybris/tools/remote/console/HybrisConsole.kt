@@ -68,10 +68,6 @@ abstract class HybrisConsole<E : ExecutionContext>(
     open fun icon(): Icon? = null
     open fun printDefaultText() = setInputText("")
 
-    open fun onSelection() {
-        //NOP
-    }
-
     fun printExecutionResults(coroutineScope: CoroutineScope, result: ExecutionResult) {
         coroutineScope.launch {
             edtWriteAction {
@@ -135,7 +131,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         return null
     }
 
-    open fun printResults(
+    internal open fun printResults(
         httpResult: ExecutionResult,
         replicaContext: ReplicaContext? = null
     ) {

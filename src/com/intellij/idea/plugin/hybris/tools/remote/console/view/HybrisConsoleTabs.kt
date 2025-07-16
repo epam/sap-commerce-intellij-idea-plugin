@@ -23,8 +23,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBTabsPaneImpl
-import com.intellij.ui.tabs.impl.JBEditorTabs
-import com.intellij.util.asSafely
 import javax.swing.Icon
 
 class HybrisConsoleTabs(
@@ -39,13 +37,6 @@ class HybrisConsoleTabs(
     init {
         defaultConsoles.forEach {
             addConsoleTab(it.title(), it.icon(), it, it.tip())
-        }
-
-        addChangeListener {
-            it.source.asSafely<JBEditorTabs>()
-                ?.selectedInfo
-                ?.component.asSafely<HybrisConsole<in ExecutionContext>>()
-                ?.onSelection()
         }
     }
 
