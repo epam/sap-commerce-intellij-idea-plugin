@@ -18,7 +18,7 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
+import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
@@ -36,7 +36,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.ui.AnimatedIcon
 import kotlinx.coroutines.launch
 
-class FlexibleSearchExecuteAction : AbstractExecuteAction<HybrisFlexibleSearchConsole>(
+class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchConsole>(
     FlexibleSearchLanguage,
     HybrisFlexibleSearchConsole::class,
     message("hybris.fxs.actions.execute_query"),

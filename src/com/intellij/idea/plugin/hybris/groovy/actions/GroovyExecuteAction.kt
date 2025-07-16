@@ -18,7 +18,7 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
+import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.TransactionMode
@@ -36,7 +36,7 @@ import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 
-class GroovyExecuteAction : AbstractExecuteAction<HybrisGroovyConsole>(
+class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
     GroovyLanguage,
     HybrisGroovyConsole::class,
     "Execute Groovy Script",

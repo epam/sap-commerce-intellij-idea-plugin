@@ -16,6 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http
+package com.intellij.idea.plugin.hybris.tools.remote.http.groovy
 
-data class PolyglotQueryExecutionContext(val content: String) : ExecutionContext
+data class ReplicaContext(
+    val replicaId: String,
+    val cookieName: String = "ROUTE",
+    var content: String = ""
+) {
+    val replicaCookie: String
+        get() = if (replicaId.startsWith(".")) replicaId
+        else ".$replicaId"
+}

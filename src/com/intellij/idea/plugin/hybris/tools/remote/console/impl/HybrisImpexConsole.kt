@@ -24,12 +24,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExHttpClient
-import com.intellij.openapi.application.edtWriteAction
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.Toggle
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ValidationMode
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -38,7 +37,6 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
-import kotlinx.coroutines.launch
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
@@ -47,7 +45,12 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext>(project, HybrisConstants.CONSOLE_TITLE_IMPEX, ImpexLanguage) {
+class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext, HybrisHttpResult, ImpExHttpClient>(
+    project,
+    HybrisConstants.CONSOLE_TITLE_IMPEX,
+    ImpexLanguage,
+    project.service<ImpExHttpClient>()
+) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
 
@@ -59,16 +62,14 @@ class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext
         .also { it.border = borders10 }
     private val maxThreadsSpinner = JSpinner(SpinnerNumberModel(1, 1, 100, 1))
         .also { it.border = borders5 }
-    private val importModeComboBox = ComboBox(arrayOf("IMPORT_STRICT", "IMPORT_RELAXED"), 175)
+    private val importModeComboBox = ComboBox(ValidationMode.entries.toTypedArray(), 175)
         .also {
             it.border = borders5
-            it.selectedItem = "IMPORT_STRICT"
-            it.renderer = SimpleListCellRenderer.create("...") { value -> value }
+            it.selectedItem = ValidationMode.IMPORT_STRICT
+            it.renderer = SimpleListCellRenderer.create("...") { value -> value.name }
         }
 
     init {
-        isEditable = true
-
         val panel = JPanel(WrappedFlowLayout(0, 0))
         panel.add(JBLabel("UTF-8").also { it.border = borders10 })
         panel.add(JBLabel("Validation mode:").also { it.border = bordersLabel })
@@ -84,53 +85,19 @@ class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext
         ConsoleHistoryController(MyConsoleRootType, "hybris.impex.shell", this).install()
     }
 
+    override fun currentExecutionContext(content: String) = ImpExExecutionContext(
+        content = content,
+        validationMode = importModeComboBox.selectedItem as ValidationMode,
+        maxThreads = maxThreadsSpinner.value.toString().toInt(),
+        legacyMode = if (legacyModeCheckbox.isSelected) Toggle.ON else Toggle.OFF,
+        enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) Toggle.ON else Toggle.OFF,
+        sldEnabled = if (directPersistenceCheckbox.isSelected) Toggle.ON else Toggle.OFF,
+        _distributedMode = Toggle.ON,
+    )
+
     override fun title(): String = HybrisConstants.IMPEX
     override fun tip(): String = "ImpEx Console"
     override fun icon(): Icon = HybrisIcons.ImpEx.FILE
-
-    override fun execute(query: String, replicaContext: ReplicaContext?): HybrisHttpResult {
-        val requestParams = getRequestParams(query)
-        return HybrisHacHttpClient.getInstance(project).importImpex(project, requestParams)
-    }
-
-    fun validate(query: String): HybrisHttpResult {
-        val requestParams = getRequestParams(query)
-        return HybrisHacHttpClient.getInstance(project).validateImpex(project, requestParams)
-    }
-
-    override fun execute(context: ImpExExecutionContext) {
-        this.isEditable = false
-
-        project.service<ImpExHttpClient>().execute(context) { coroutineScope, result ->
-            coroutineScope.launch {
-
-                this@HybrisImpexConsole.isEditable = true
-
-                edtWriteAction {
-                    addQueryToHistory()
-                    printResults(result)
-                }
-            }
-        }
-    }
-
-    private fun getRequestParams(query: String): MutableMap<String, String> {
-        val requestParams = mutableMapOf(
-            "scriptContent" to query,
-            "validationEnum" to importModeComboBox.selectedItem as String,
-            "encoding" to "UTF-8",
-            "maxThreads" to maxThreadsSpinner.value.toString(),
-            "_legacyMode" to "on", // Legacy Mode
-            "_enableCodeExecution" to "on",
-            "_distributedMode" to "on", // Distributed mode
-            "_sldEnabled" to "on", // Direct Persistence
-        )
-        if (legacyModeCheckbox.isSelected) requestParams["legacyMode"] = "true"
-        if (enableCodeExecutionCheckbox.isSelected) requestParams["enableCodeExecution"] = "true"
-        if (directPersistenceCheckbox.isSelected) requestParams["sldEnabled"] = "true"
-
-        return requestParams
-    }
 
     companion object {
         @Serial

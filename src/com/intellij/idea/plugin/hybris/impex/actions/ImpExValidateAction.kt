@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
+import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
@@ -30,7 +30,7 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.service
 import kotlinx.coroutines.launch
 
-class ImpExValidateAction : AbstractExecuteAction<HybrisImpexConsole>(
+class ImpExValidateAction : ExecuteStatementAction<HybrisImpexConsole>(
     ImpexLanguage,
     HybrisImpexConsole::class,
     "Validate ImpEx",

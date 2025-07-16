@@ -18,7 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
+import com.intellij.diff.util.DiffUtil.isEditable
 import com.intellij.execution.console.ConsoleHistoryController
+import com.intellij.execution.console.ConsoleHistoryController.addToHistory
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
@@ -28,10 +30,9 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.TimeOption
-import com.intellij.idea.plugin.hybris.tools.remote.http.ImpexMonitorExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.monitorImpexFiles
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpexMonitorExecutionContext
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -44,6 +45,9 @@ import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.io.File
 import java.io.Serial
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import javax.swing.JPanel
 
@@ -118,6 +122,30 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpexMonitorEx
     override fun title() = "ImpEx Monitor"
     override fun tip() = "Last imported ImpEx files"
     override fun icon() = HybrisIcons.MONITORING
+
+    private fun monitorImpexFiles(value: Int, unit: TimeUnit, pathToData: String): HybrisHttpResult {
+        val resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult()
+        val minutesAgo = LocalDateTime.now().minusMinutes(unit.toMinutes(value.toLong()))
+        val out = StringBuilder()
+        File(pathToData).walk()
+            .filter { file -> file.extension == "bin" }
+            .filter { file -> file.lastModified().toLocalDateTime().isAfter(minutesAgo) }
+            .sortedBy { it.lastModified() }
+            .forEach {
+                val header = "# File Path:  ${it.path}\n# file modified: ${it.lastModified().toLocalDateTime()}"
+                out.append("\n#" + "-".repeat(header.length - 1) + "\n")
+                out.append(header)
+                out.append("\n#" + "-".repeat(header.length - 1) + "\n")
+                out.append("\n${it.readText()}\n")
+            }
+
+        return resultBuilder.httpCode(200)
+            .output(out.toString())
+            .build()
+    }
+
+    private fun Long.toLocalDateTime() = Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalDateTime()
+
 
     companion object {
         @Serial

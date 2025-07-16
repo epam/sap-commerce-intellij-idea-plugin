@@ -24,10 +24,13 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.PolyglotQueryExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FxSTransactionMode
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -39,7 +42,12 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole<PolyglotQueryExecutionContext>(project, HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY, PolyglotQueryLanguage) {
+class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext, HybrisHttpResult, FlexibleSearchHttpClient>(
+    project,
+    HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY,
+    PolyglotQueryLanguage,
+    project.service<FlexibleSearchHttpClient>()
+) {
 
     private object MyConsoleRootType : ConsoleRootType(ID, null)
 
@@ -49,10 +57,6 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole<PolyglotQuery
         .also { it.border = borders10 }
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
         .also { it.border = borders5 }
-
-    override fun execute(context: PolyglotQueryExecutionContext) {
-        TODO("Not yet implemented")
-    }
 
     init {
         isEditable = true
@@ -68,12 +72,11 @@ class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole<PolyglotQuery
         ConsoleHistoryController(MyConsoleRootType, ID, this).install()
     }
 
-    override fun execute(query: String, replicaContext: ReplicaContext?) = HybrisHacHttpClient.getInstance(project).executeFlexibleSearch(
-        project,
-        commitCheckbox.isSelected,
-        false,
-        maxRowsSpinner.value.toString(),
-        query
+    override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
+        content = content,
+        maxCount = maxRowsSpinner.value.toString().toInt(),
+        transactionMode = if (commitCheckbox.isSelected) FxSTransactionMode.COMMIT else FxSTransactionMode.ROLLBACK,
+        queryMode = QueryMode.PolyglotQuery
     )
 
     override fun title() = "Polyglot Query"

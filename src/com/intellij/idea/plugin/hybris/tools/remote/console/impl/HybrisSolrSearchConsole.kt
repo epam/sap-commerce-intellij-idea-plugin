@@ -27,12 +27,10 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.SolrExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
 import com.intellij.json.JsonFileType
 import com.intellij.notification.NotificationType
@@ -60,7 +58,12 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrExecutionContext>(project, HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH, PlainTextLanguage.INSTANCE) {
+class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecutionContext, HybrisHttpResult, SolrHttpClient>(
+    project,
+    HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH,
+    PlainTextLanguage.INSTANCE,
+    SolrHttpClient.getInstance(project)
+) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)
 
@@ -103,8 +106,6 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrExecutionCon
 
         ConsoleHistoryController(MyConsoleRootType, "hybris.solr.search.shell", this).install()
     }
-
-    override fun connectionType() = RemoteConnectionType.SOLR
 
     override fun printDefaultText() {
         this.setInputText("*:*")
@@ -156,7 +157,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrExecutionCon
     }
 
     private fun retrieveListOfCores() = try {
-        SolrHttpClient.getInstance(project).coresData(project).toList()
+        httpClient.coresData().toList()
     } catch (e: Exception) {
         Notifications.create(
             NotificationType.WARNING,
@@ -167,20 +168,18 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrExecutionCon
         emptyList()
     }
 
-    override fun execute(context: SolrExecutionContext) {
-        TODO("Not yet implemented")
-    }
+    override fun canExecute() = super.canExecute()
+        && coresComboBox.selectedItem.asSafely<SolrCoreData>() != null
 
-    override fun execute(query: String, replicaContext: ReplicaContext?) = HybrisHacHttpClient.getInstance(project).executeSolrSearch(project, buildSolrQueryObject(query))
+    override fun currentExecutionContext(content: String) = SolrQueryExecutionContext(
+        content = content,
+        core = (coresComboBox.selectedItem as SolrCoreData).core,
+        rows = maxRowsSpinner.value as Int
+    )
 
     override fun title() = "Solr Search"
     override fun tip() = "Solr Search Console"
     override fun icon() = HybrisIcons.Console.SOLR
-
-    private fun buildSolrQueryObject(query: String) = coresComboBox.selectedItem
-        ?.asSafely<SolrCoreData>()
-        ?.core
-        ?.let { SolrQueryObject(query, it, maxRowsSpinner.value as Int) }
 
     companion object {
         @Serial

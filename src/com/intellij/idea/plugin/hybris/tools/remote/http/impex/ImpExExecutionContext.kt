@@ -29,13 +29,10 @@ data class ImpExExecutionContext(
     private val validationMode: ValidationMode = ValidationMode.IMPORT_STRICT,
     private val encoding: Charset = StandardCharsets.UTF_8,
     private val maxThreads: Int = 20,
-    private val legacyMode: Boolean = false,
-    private val enableCodeExecution: Boolean = true,
-    private val sldEnabled: Boolean = true,
-    private val _legacyMode: Toggle = Toggle.ON,
-    private val _enableCodeExecution: Toggle = Toggle.ON,
+    private val legacyMode: Toggle = Toggle.ON,
+    private val enableCodeExecution: Toggle = Toggle.ON,
+    private val sldEnabled: Toggle = Toggle.ON,
     private val _distributedMode: Toggle = Toggle.ON,
-    private val _sldEnabled: Toggle = Toggle.ON,
     val executionMode: ExecutionMode = ExecutionMode.IMPORT,
     val timeout: Int = AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
 ) : ExecutionContext {
@@ -44,13 +41,13 @@ data class ImpExExecutionContext(
         put("validationEnum", validationMode.name)
         put("encoding", encoding.name())
         put("maxThreads", maxThreads.toString())
-        put("_legacyMode", _legacyMode.value)
-        put("_enableCodeExecution", _enableCodeExecution.value)
+        put("legacyMode", BooleanUtils.toStringTrueFalse(legacyMode == Toggle.ON))
+        put("enableCodeExecution", BooleanUtils.toStringTrueFalse(enableCodeExecution == Toggle.ON))
+        put("sldEnabled", BooleanUtils.toStringTrueFalse(sldEnabled == Toggle.ON))
+        put("_sldEnabled", sldEnabled.value)
+        put("_enableCodeExecution", enableCodeExecution.value)
+        put("_legacyMode", legacyMode.value)
         put("_distributedMode", _distributedMode.value)
-        put("_sldEnabled", _sldEnabled.value)
-        put("legacyMode", BooleanUtils.toStringTrueFalse(legacyMode))
-        put("enableCodeExecution", BooleanUtils.toStringTrueFalse(enableCodeExecution))
-        put("sldEnabled", BooleanUtils.toStringTrueFalse(sldEnabled))
     }
 }
 

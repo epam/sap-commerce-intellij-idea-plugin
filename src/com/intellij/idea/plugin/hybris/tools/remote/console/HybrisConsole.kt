@@ -24,55 +24,76 @@ import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.HttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult.HybrisHttpResultBuilder.createResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext
 import com.intellij.lang.Language
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.util.ui.JBUI
+import kotlinx.coroutines.launch
 import java.io.Serial
 import javax.swing.Icon
 
-abstract class HybrisConsole<E : ExecutionContext>(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
+abstract class HybrisConsole<E : ExecutionContext, R : HybrisHttpResult, H : HttpClient<E, R>>(
+    project: Project,
+    title: String,
+    language: Language,
+    internal val httpClient: H
+) : LanguageConsoleImpl(project, title, language) {
 
     protected val borders10 = JBUI.Borders.empty(10)
     protected val borders5 = JBUI.Borders.empty(5, 10)
     protected val bordersLabel = JBUI.Borders.empty(10, 10, 10, 0)
 
     init {
+        isEditable = true
         this.printDefaultText()
-    }
-
-    abstract fun execute(context: E)
-
-    abstract fun execute(query: String, replicaContext: ReplicaContext? = null): HybrisHttpResult
-
-    abstract fun title(): String
-
-    abstract fun tip(): String
-
-    open fun icon(): Icon? = null
-
-    open fun printDefaultText() = setInputText("")
-
-    open fun connectionType() = RemoteConnectionType.Hybris
-
-    open fun onSelection() {
-        //NOP
     }
 
     val content: String
         get() = currentEditor.document.text
+
+    internal abstract fun currentExecutionContext(content: String): E
+
+    abstract fun title(): String
+    abstract fun tip(): String
+
+    open fun canExecute(): Boolean = isEditable
+    open fun icon(): Icon? = null
+    open fun printDefaultText() = setInputText("")
+
+    open fun onSelection() {
+        //NOP
+    }
 
     override fun dispose() {
         LineStatusTrackerManager.getInstance(project).releaseTrackerFor(editorDocument, consoleEditor)
         super.dispose()
     }
 
-    open fun addQueryToHistory(): String? {
+    open fun execute() = execute(currentExecutionContext(content))
+
+    open fun execute(context: E) {
+        this.isEditable = false
+
+        httpClient.execute(context) { coroutineScope, result ->
+            coroutineScope.launch {
+                edtWriteAction {
+                    addQueryToHistory()
+                    printResults(result)
+                }
+
+                this@HybrisConsole.isEditable = true
+            }
+        }
+    }
+
+    fun addQueryToHistory(): String? {
         val consoleHistoryController = ConsoleHistoryController.getController(this)
             ?: return null
         // Process input and add to history

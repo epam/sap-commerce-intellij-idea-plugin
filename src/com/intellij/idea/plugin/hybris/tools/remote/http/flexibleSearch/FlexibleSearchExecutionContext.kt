@@ -33,6 +33,7 @@ data class FlexibleSearchExecutionContext(
     private val user: String? = null,
     val timeout: Int = AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
 ) : ExecutionContext {
+
     fun params(settings: RemoteConnectionSettings): Map<String, String> = buildMap {
         put("scriptType", "flexibleSearch")
         put("commit", BooleanUtils.toStringTrueFalse(transactionMode == FxSTransactionMode.COMMIT))
@@ -41,18 +42,18 @@ data class FlexibleSearchExecutionContext(
         put("dataSource", dataSource)
         put("locale", locale)
 
-        if (queryMode == QueryMode.FlexibleSearch) {
-            put("flexibleSearchQuery", content)
-            put("sqlQuery", "")
-        } else {
+        if (queryMode == QueryMode.SQL) {
             put("flexibleSearchQuery", "")
             put("sqlQuery", content)
+        } else {
+            put("flexibleSearchQuery", content)
+            put("sqlQuery", "")
         }
     }
 }
 
 enum class QueryMode {
-    SQL, FlexibleSearch
+    SQL, FlexibleSearch, PolyglotQuery
 }
 
 enum class FxSTransactionMode {

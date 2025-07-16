@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
+import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.Pair;

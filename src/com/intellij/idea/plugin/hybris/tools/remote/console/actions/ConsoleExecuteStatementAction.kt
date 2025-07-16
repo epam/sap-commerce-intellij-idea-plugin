@@ -21,13 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecutionService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
-import com.intellij.idea.plugin.hybris.tools.remote.http.GroovyExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.PolyglotQueryExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.SolrExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -48,25 +42,12 @@ class ConsoleExecuteStatementAction : AnAction(
         val console = consoleService.getActiveConsole() ?: return
 
         when (console) {
-            is HybrisGroovyConsole -> console.execute(
-                GroovyExecutionContext(console.content)
-            )
-
-            is HybrisImpexConsole -> console.execute(
-                ImpExExecutionContext(console.content)
-            )
-
-            is HybrisPolyglotQueryConsole -> console.execute(
-                PolyglotQueryExecutionContext(console.content)
-            )
-
-            is HybrisFlexibleSearchConsole -> console.execute(
-                FlexibleSearchExecutionContext(console.content)
-            )
-
-            is HybrisSolrSearchConsole -> console.execute(
-                SolrExecutionContext(console.content)
-            )
+            is HybrisGroovyConsole -> console.execute()
+            is HybrisImpexConsole -> console.execute()
+            is HybrisPolyglotQueryConsole -> console.execute()
+            is HybrisFlexibleSearchConsole -> console.execute()
+            is HybrisSolrSearchConsole -> console.execute()
+            is HybrisImpexMonitorConsole -> console.execute()
 
             else -> throw NotImplementedError("This action cannot be used with the ${console::class.qualifiedName}")
         }
@@ -75,10 +56,11 @@ class ConsoleExecuteStatementAction : AnAction(
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
         val consoleService = HybrisConsoleService.getInstance(project)
-        val editor = consoleService.getActiveConsole()?.consoleEditor ?: return
+        val console = consoleService.getActiveConsole() ?: return
+        val editor = console.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
 
-        e.presentation.isEnabled = !project.service<ConsoleExecutionService>().isProcessRunning && (lookup == null || !lookup.isCompletion)
+        e.presentation.isEnabled = console.canExecute() && (lookup == null || !lookup.isCompletion)
         e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
     }
 }

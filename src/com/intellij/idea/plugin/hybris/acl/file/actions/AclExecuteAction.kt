@@ -19,13 +19,13 @@
 package com.intellij.idea.plugin.hybris.acl.file.actions
 
 import com.intellij.idea.plugin.hybris.acl.AclLanguage
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
+import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 
-class AclExecuteAction : AbstractExecuteAction<HybrisImpexConsole>(
+class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
     AclLanguage,
     HybrisImpexConsole::class,
     message("hybris.acl.actions.execute_query"),

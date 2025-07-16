@@ -24,10 +24,13 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FxSTransactionMode
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -40,7 +43,12 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext>(project, HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH, FlexibleSearchLanguage) {
+class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext, HybrisHttpResult, FlexibleSearchHttpClient>(
+    project,
+    HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
+    FlexibleSearchLanguage,
+    project.service<FlexibleSearchHttpClient>()
+) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
 
@@ -52,10 +60,6 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole<FlexibleSear
         .also { it.border = borders10 }
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
         .also { it.border = borders5 }
-
-    override fun execute(context: FlexibleSearchExecutionContext) {
-        TODO("Not yet implemented")
-    }
 
     init {
         isEditable = true
@@ -70,14 +74,12 @@ class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole<FlexibleSear
         ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
     }
 
-    override fun execute(query: String, replicaContext: ReplicaContext?) = HybrisHacHttpClient.getInstance(project)
-        .executeFlexibleSearch(
-            project,
-            commitCheckbox.isSelected,
-            plainSqlCheckbox.isSelected,
-            maxRowsSpinner.value.toString(),
-            query
-        )
+    override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
+        content = content,
+        maxCount = maxRowsSpinner.value.toString().toInt(),
+        transactionMode = if (commitCheckbox.isSelected) FxSTransactionMode.COMMIT else FxSTransactionMode.ROLLBACK,
+        queryMode = if (plainSqlCheckbox.isSelected) QueryMode.SQL else QueryMode.FlexibleSearch
+    )
 
     override fun title(): String = "FlexibleSearch"
     override fun tip(): String = "FlexibleSearch Console"

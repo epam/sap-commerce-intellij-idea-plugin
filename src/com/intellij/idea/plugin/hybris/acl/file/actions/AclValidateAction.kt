@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.acl.file.actions
 
 import com.intellij.idea.plugin.hybris.acl.AclLanguage
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
+import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 
-class AclValidateAction : AbstractExecuteAction<HybrisImpexConsole>(
+class AclValidateAction : ExecuteStatementAction<HybrisImpexConsole>(
     AclLanguage,
     HybrisImpexConsole::class,
     "Validate Access Control Lists",

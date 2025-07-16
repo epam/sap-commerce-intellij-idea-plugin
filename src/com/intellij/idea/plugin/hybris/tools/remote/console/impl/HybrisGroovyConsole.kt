@@ -23,10 +23,12 @@ import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.GroovyExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.GroovyExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.GroovyHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.GroovyTransactionMode
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -40,7 +42,12 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionContext>(project, HybrisConstants.CONSOLE_TITLE_GROOVY, GroovyLanguage) {
+class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionContext, HybrisHttpResult, GroovyHttpClient>(
+    project,
+    HybrisConstants.CONSOLE_TITLE_GROOVY,
+    GroovyLanguage,
+    project.service<GroovyHttpClient>()
+) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.groovy.shell", null)
 
@@ -48,10 +55,6 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionConte
         .also { it.border = borders10 }
     private val timeoutSpinner = JSpinner(SpinnerNumberModel(AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 10))
         .also { it.border = borders5 }
-
-    override fun execute(context: GroovyExecutionContext) {
-        TODO("Not yet implemented")
-    }
 
     init {
         isEditable = true
@@ -66,9 +69,10 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionConte
         ConsoleHistoryController(MyConsoleRootType, "hybris.groovy.shell", this).install()
     }
 
-    override fun execute(query: String, replicaContext: ReplicaContext?) = HybrisHacHttpClient.getInstance(project).executeGroovyScript(
-        project, query, replicaContext,commitCheckbox.isSelected,
-        timeoutSpinner.value.toString().toInt() * 1000
+    override fun currentExecutionContext(content: String) = GroovyExecutionContext(
+        content,
+        if (commitCheckbox.isSelected) GroovyTransactionMode.COMMIT else GroovyTransactionMode.ROLLBACK,
+        timeoutSpinner.value.toString().toInt() * 1000,
     )
 
     override fun title() = "Groovy Scripting"

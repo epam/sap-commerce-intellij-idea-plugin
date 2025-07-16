@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,13 +21,15 @@ package com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.HttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryExecutionContext
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import com.intellij.util.containers.mapSmartNotNull
+import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
 import org.apache.solr.client.solrj.SolrQuery
 import org.apache.solr.client.solrj.SolrRequest
@@ -40,15 +42,29 @@ import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
 
 @Service(Service.Level.PROJECT)
-class SolrHttpClient {
+class SolrHttpClient(project: Project, coroutineScope: CoroutineScope) : HttpClient<SolrQueryExecutionContext, HybrisHttpResult>(project, coroutineScope) {
 
-    fun coresData(project: Project): Array<SolrCoreData> = coresData(solrConnectionSettings(project))
+    fun coresData(): Array<SolrCoreData> = coresData(solrConnectionSettings(project))
 
     fun listOfCores(solrConnectionSettings: RemoteConnectionSettings) = coresData(solrConnectionSettings)
         .map { it.core }
         .toTypedArray()
 
-    fun executeSolrQuery(project: Project, queryObject: SolrQueryObject) = executeSolrQuery(solrConnectionSettings(project), queryObject)
+    override suspend fun execute(context: SolrQueryExecutionContext): HybrisHttpResult {
+        val settings = solrConnectionSettings(project)
+        val solrQuery = buildSolrQuery(context)
+        val queryRequest = buildQueryRequest(solrQuery, settings)
+
+        return executeSolrRequest(settings, context, queryRequest)
+    }
+
+    fun executeSolrQuery(context: SolrQueryExecutionContext) = with(solrConnectionSettings(project)) {
+        executeSolrRequest(
+            this,
+            context,
+            buildQueryRequest(buildSolrQuery(context), this)
+        )
+    }
 
     private fun coresData(settings: RemoteConnectionSettings) = CoreAdminRequest()
         .apply {
@@ -77,19 +93,7 @@ class SolrHttpClient {
 
     private fun buildHttpSolrClient(url: String) = HttpSolrClient.Builder(url).build()
 
-    private fun executeSolrQuery(
-        solrConnectionSettings: RemoteConnectionSettings,
-        queryObject: SolrQueryObject
-    ): HybrisHttpResult = executeSolrRequest(
-        solrConnectionSettings,
-        queryObject,
-        buildQueryRequest(
-            buildSolrQuery(queryObject),
-            solrConnectionSettings
-        )
-    )
-
-    private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryObject, queryRequest: QueryRequest): HybrisHttpResult =
+    private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryExecutionContext, queryRequest: QueryRequest): HybrisHttpResult =
         buildHttpSolrClient("${solrConnectionSettings.generatedURL}/${queryObject.core}")
             .runCatching { request(queryRequest) }
             .map { resultBuilder().output(it["response"] as String?).build() }
@@ -105,9 +109,9 @@ class SolrHttpClient {
         responseParser = NoOpResponseParser("json")
     }
 
-    private fun buildSolrQuery(queryObject: SolrQueryObject) = SolrQuery().apply {
+    private fun buildSolrQuery(queryObject: SolrQueryExecutionContext) = SolrQuery().apply {
         rows = queryObject.rows
-        query = queryObject.query
+        query = queryObject.content
         setParam("wt", "json")
     }
 

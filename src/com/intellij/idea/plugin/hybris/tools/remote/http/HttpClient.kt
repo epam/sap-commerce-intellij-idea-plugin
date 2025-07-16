@@ -18,19 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http
 
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-abstract class HttpClient<C, R : HybrisHttpResult>(
+abstract class HttpClient<E : ExecutionContext, R : HybrisHttpResult>(
     protected val project: Project,
     protected val coroutineScope: CoroutineScope
 ) {
 
-    fun execute(context: C, resultCallback: (CoroutineScope, HybrisHttpResult) -> Unit) {
+    fun execute(context: E, resultCallback: (CoroutineScope, R) -> Unit) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Execute HTTP Call to SAP Commerce...", true) {
                 val result = reportProgress { progressReporter ->
@@ -42,5 +41,5 @@ abstract class HttpClient<C, R : HybrisHttpResult>(
         }
     }
 
-    internal abstract suspend fun execute(context: C): R
+    internal abstract suspend fun execute(context: E): R
 }

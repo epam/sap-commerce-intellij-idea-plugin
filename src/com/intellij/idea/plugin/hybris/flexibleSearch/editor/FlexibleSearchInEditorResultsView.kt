@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 import com.intellij.database.editor.CsvTableFileEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.service

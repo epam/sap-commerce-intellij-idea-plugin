@@ -17,13 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.polyglotQuery.actions
 
-import com.intellij.idea.plugin.hybris.actions.AbstractExecuteAction
+import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisPolyglotQueryConsole
 
-class PolyglotQueryExecuteAction : AbstractExecuteAction<HybrisPolyglotQueryConsole>(
+class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryConsole>(
     PolyglotQueryLanguage,
     HybrisPolyglotQueryConsole::class,
     message("hybris.pgq.actions.execute_query"),

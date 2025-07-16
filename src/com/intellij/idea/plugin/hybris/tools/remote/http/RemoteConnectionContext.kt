@@ -18,6 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http
 
+import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaSelectionMode
+
 data class RemoteConnectionContext(
     val replicaSelectionMode: ReplicaSelectionMode,
     val replicaContexts: Collection<ReplicaContext> = emptyList(),

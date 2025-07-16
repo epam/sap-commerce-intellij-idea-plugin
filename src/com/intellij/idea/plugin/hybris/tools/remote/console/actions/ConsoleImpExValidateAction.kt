@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecutionService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ExecutionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
@@ -56,13 +55,12 @@ class ConsoleImpExValidateAction : AnAction(
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-
         val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?: return
-
         val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
-        e.presentation.isEnabled = !project.service<ConsoleExecutionService>().isProcessRunning && (lookup == null || !lookup.isCompletion)
+
+        e.presentation.isEnabled = activeConsole.canExecute() && (lookup == null || !lookup.isCompletion)
         e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
     }
 }

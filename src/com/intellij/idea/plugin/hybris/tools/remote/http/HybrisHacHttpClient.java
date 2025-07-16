@@ -20,27 +20,21 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.google.gson.Gson;
-import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil;
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.TableBuilder;
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult;
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject;
+import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryExecutionContext;
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -48,11 +42,9 @@ import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult;
+import static com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult.HybrisHttpResultBuilder.createResult;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -70,218 +62,9 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     }
 
     @NotNull
-    public HybrisHttpResult validateImpex(final Project project, final Map<String, String> requestParams) {
-        final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
-        final HttpResponse response = getImpExHttpResponse("/console/impex/import/validate", requestParams, settings);
-        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
-        resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
-        if (response.getStatusLine().getStatusCode() != SC_OK) {
-            return resultBuilder.errorMessage(response.getStatusLine().getReasonPhrase()).build();
-        }
-        final Document document;
-        try {
-            document = Jsoup.parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "");
-        } catch (IOException e) {
-            LOG.warn(e.getMessage(), e);
-            return resultBuilder.errorMessage(e.getMessage()).build();
-        }
-        final Element impexResultStatus = document.getElementById("validationResultMsg");
-        if (impexResultStatus == null) {
-            return resultBuilder.errorMessage("No data in response").build();
-        }
-        final boolean hasDataLevelAttr = impexResultStatus.hasAttr("data-level");
-        final boolean hasDataResultAttr = impexResultStatus.hasAttr("data-result");
-        if (hasDataLevelAttr && hasDataResultAttr) {
-            if ("error".equals(impexResultStatus.attr("data-level"))) {
-                final String dataResult = impexResultStatus.attr("data-result");
-                return resultBuilder.errorMessage(dataResult).build();
-            } else {
-                final String dataResult = impexResultStatus.attr("data-result");
-                return resultBuilder.output(dataResult).build();
-            }
-        }
-        return resultBuilder.errorMessage("No data in response").build();
-    }
-
-    private HttpResponse getImpExHttpResponse(
-        final String urlSuffix,
-        final Map<String, String> requestParams,
-        final RemoteConnectionSettings settings
-
-    ) {
-        final List<BasicNameValuePair> params = createParamsList(requestParams);
-        final String actionUrl = settings.getGeneratedURL() + urlSuffix;
-        return post(actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings, null);
-    }
-
-    private List<BasicNameValuePair> createParamsList(final Map<String, String> requestParams) {
-        return requestParams.entrySet().stream()
-            .map(entry -> new BasicNameValuePair(entry.getKey(), entry.getValue()))
-            .collect(Collectors.toList());
-    }
-
-    @NotNull
-    public HybrisHttpResult importImpex(final Project project, final Map<String, String> requestParams) {
-        final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
-        final HttpResponse response = getImpExHttpResponse("/console/impex/import", requestParams, settings);
-        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
-        resultBuilder = resultBuilder.httpCode(response.getStatusLine().getStatusCode());
-        if (response.getStatusLine().getStatusCode() != SC_OK) {
-            return resultBuilder.errorMessage(response.getStatusLine().getReasonPhrase()).build();
-        }
-        final Document document;
-        try {
-            document = Jsoup.parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "");
-        } catch (IOException e) {
-            LOG.warn(e.getMessage(), e);
-            return resultBuilder.errorMessage(e.getMessage()).build();
-        }
-        final Element impexResultStatus = document.getElementById("impexResult");
-        if (impexResultStatus == null) {
-            return resultBuilder.errorMessage("No data in response").build();
-        }
-        final boolean hasDataLevelAttr = impexResultStatus.hasAttr("data-level");
-        final boolean hasDataResultAttr = impexResultStatus.hasAttr("data-result");
-        if (hasDataLevelAttr && hasDataResultAttr) {
-            if ("error".equals(impexResultStatus.attr("data-level"))) {
-                final String dataResult = impexResultStatus.attr("data-result");
-                final Element detailMessage = document.getElementsByClass("impexResult").first().children().first();
-                return createResult()
-                    .errorMessage(dataResult)
-                    .detailMessage(detailMessage.text())
-                    .build();
-            } else {
-                final String dataResult = impexResultStatus.attr("data-result");
-                return createResult().output(dataResult).build();
-            }
-        }
-        return resultBuilder.errorMessage("No data in response").build();
-    }
-
-    @NotNull
-    public HybrisHttpResult executeFlexibleSearch(
-        final Project project,
-        final boolean shouldCommit,
-        final boolean isPlainSQL,
-        final String maxRows,
-        final String content
-    ) {
-        final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
-        final var params = Arrays.asList(
-            new BasicNameValuePair("scriptType", "flexibleSearch"),
-            new BasicNameValuePair("commit", BooleanUtils.toStringTrueFalse(shouldCommit)),
-            new BasicNameValuePair("flexibleSearchQuery", isPlainSQL ? "" : content),
-            new BasicNameValuePair("sqlQuery", isPlainSQL ? content : ""),
-            new BasicNameValuePair("maxCount", maxRows),
-            new BasicNameValuePair("user", settings.getUsername())
-//            new BasicNameValuePair("dataSource", "master"),
-//            new BasicNameValuePair("locale", "en")
-        );
-        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
-        final String actionUrl = settings.getGeneratedURL() + "/console/flexsearch/execute";
-
-        final HttpResponse response = post(actionUrl, params, true, DEFAULT_HAC_TIMEOUT, settings, null);
-        final StatusLine statusLine = response.getStatusLine();
-        resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
-        if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
-            return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
-                statusLine.getReasonPhrase()).build();
-        }
-
-        final Map json;
-        try {
-            final var inputStream = response.getEntity().getContent();
-            final var responseContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            json = new Gson().fromJson(responseContent, HashMap.class);
-        } catch (final Exception e) {
-            return resultBuilder.errorMessage(e.getMessage() + ' ' + actionUrl).httpCode(SC_BAD_REQUEST).build();
-        }
-
-        if (json == null) {
-            return createResult()
-                .errorMessage("Cannot parse response from the server...")
-                .build();
-        }
-
-        if (json.get("exception") != null) {
-            return createResult()
-                .errorMessage(((Map<String, Object>) json.get("exception")).get("message").toString())
-                .build();
-        }
-
-        final TableBuilder tableBuilder = new TableBuilder();
-
-        final List<String> headers = (List<String>) json.get("headers");
-        final List<List<String>> resultList = (List<List<String>>) json.get("resultList");
-
-        tableBuilder.addHeaders(headers);
-        resultList.forEach(tableBuilder::addRow);
-
-        return resultBuilder
-            .output(tableBuilder.toString())
-            .build();
-    }
-
-    @NotNull
-    public HybrisHttpResult executeGroovyScript(
-        final Project project,
-        final String content,
-        @Nullable final ReplicaContext replicaContext,
-        final boolean isCommitMode, final int timeout
-    ) {
-        final var settings = RemoteConnectionUtil.INSTANCE.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris);
-        final var params = Arrays.asList(
-            new BasicNameValuePair("scriptType", "groovy"),
-            new BasicNameValuePair("commit", String.valueOf(isCommitMode)),
-            new BasicNameValuePair("script", content)
-        );
-        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
-        final String actionUrl = settings.getGeneratedURL() + "/console/scripting/execute";
-
-        final HttpResponse response = post(actionUrl, params, true, timeout, settings, replicaContext);
-        final StatusLine statusLine = response.getStatusLine();
-        resultBuilder = resultBuilder.httpCode(statusLine.getStatusCode());
-        if (statusLine.getStatusCode() != SC_OK || response.getEntity() == null) {
-            return resultBuilder.errorMessage("[" + statusLine.getStatusCode() + "] " +
-                statusLine.getReasonPhrase()).build();
-        }
-        final Document document;
-        try {
-            document = parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "");
-        } catch (final IOException e) {
-            return resultBuilder.errorMessage(e.getMessage() + ' ' + actionUrl).httpCode(SC_BAD_REQUEST).build();
-        }
-        final Elements fsResultStatus = document.getElementsByTag("body");
-        if (fsResultStatus == null) {
-            return resultBuilder.errorMessage("No data in response").build();
-        }
-        final Map json = parseResponse(fsResultStatus);
-
-        if (json == null) {
-            return createResult()
-                .errorMessage("Cannot parse response from the server...")
-                .build();
-        }
-
-        if (json.get("stacktraceText") != null && isNotEmpty(json.get("stacktraceText").toString())) {
-            return createResult()
-                .errorMessage(json.get("stacktraceText").toString())
-                .build();
-        }
-
-        if (json.get("outputText") != null) {
-            resultBuilder.output(json.get("outputText").toString());
-        }
-        if (json.get("executionResult") != null) {
-            resultBuilder.result(json.get("executionResult").toString());
-        }
-        return resultBuilder.build();
-    }
-
-    @NotNull
-    public HybrisHttpResult executeSolrSearch(final Project project, @Nullable final SolrQueryObject queryObject) {
+    public HybrisHttpResult executeSolrSearch(final Project project, @Nullable final SolrQueryExecutionContext queryObject) {
         if (queryObject != null) {
-            return SolrHttpClient.getInstance(project).executeSolrQuery(project, queryObject);
+            return SolrHttpClient.getInstance(project).executeSolrQuery(queryObject);
         }
 
         return HybrisHttpResult.HybrisHttpResultBuilder
@@ -291,7 +74,8 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             .build();
     }
 
-    private static @Nullable Map parseResponse(final Elements fsResultStatus) {
+    @Nullable
+    public Map<?, ?> parseResponse(final Elements fsResultStatus) {
         try {
             return new Gson().fromJson(fsResultStatus.text(), HashMap.class);
         } catch (final Exception e) {

@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.lang.Language
@@ -36,7 +37,7 @@ import com.intellij.util.asSafely
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
-abstract class AbstractExecuteAction<C : HybrisConsole<out ExecutionContext>>(
+abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext, out HybrisHttpResult, *>>(
     internal val language: Language,
     internal val consoleClass: KClass<C>,
     internal val name: String,
@@ -73,7 +74,7 @@ abstract class AbstractExecuteAction<C : HybrisConsole<out ExecutionContext>>(
         val consoleService = HybrisConsoleService.getInstance(project)
         val console = consoleService.findConsole(consoleClass)
         if (console == null) {
-            LOG.warn("unable to find console ${this@AbstractExecuteAction.consoleClass}")
+            LOG.warn("unable to find console ${this@ExecuteStatementAction.consoleClass}")
             return
         }
 
@@ -91,12 +92,6 @@ abstract class AbstractExecuteAction<C : HybrisConsole<out ExecutionContext>>(
     open fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project) = content
 
     override fun update(e: AnActionEvent) {
-        val project = e.project ?: return
-
-//        e.presentation.isEnabledAndVisible = e.getData(PlatformDataKeys.TOOL_WINDOW)
-//            ?.let { HybrisConsoleService.getInstance(project).findConsole(it, consoleClass) != null }
-//            ?: (this.language == e.dataContext.getData(CommonDataKeys.LANGUAGE))
-
         e.presentation.isEnabledAndVisible = this.language == e.dataContext.getData(CommonDataKeys.LANGUAGE)
     }
 
@@ -115,6 +110,6 @@ abstract class AbstractExecuteAction<C : HybrisConsole<out ExecutionContext>>(
     }
 
     companion object {
-        private val LOG = Logger.getInstance(AbstractExecuteAction::class.java)
+        private val LOG = Logger.getInstance(ExecuteStatementAction::class.java)
     }
 }
