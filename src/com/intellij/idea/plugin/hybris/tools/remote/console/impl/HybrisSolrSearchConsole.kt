@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
+import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -29,12 +30,15 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.SolrExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryObject
 import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
+import com.intellij.json.JsonFileType
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -109,6 +113,18 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrExecutionCon
     override fun onSelection() {
         val selectedCore = coresComboBox.selectedItem.asSafely<SolrCoreData>()
         reloadCores(selectedCore)
+    }
+
+    override fun printResults(httpResult: HybrisHttpResult, replicaContext: ReplicaContext?) {
+        clear()
+
+        printCurrentHost(RemoteConnectionType.SOLR, replicaContext)
+
+        if (httpResult.hasError()) {
+            ConsoleViewUtil.printAsFileType(this, httpResult.errorMessage, PlainTextFileType.INSTANCE)
+        } else {
+            ConsoleViewUtil.printAsFileType(this, httpResult.output, JsonFileType.INSTANCE)
+        }
     }
 
     private fun reloadCores(selectedCore: SolrCoreData? = null) {

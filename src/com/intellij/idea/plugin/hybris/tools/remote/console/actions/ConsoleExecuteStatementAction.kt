@@ -22,6 +22,12 @@ import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecutionService
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
+import com.intellij.idea.plugin.hybris.tools.remote.http.GroovyExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.PolyglotQueryExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.SolrExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -39,10 +45,31 @@ class ConsoleExecuteStatementAction : AnAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val consoleService = project.service<HybrisConsoleService>()
-        val consoleExecutionService = project.service<ConsoleExecutionService>()
         val console = consoleService.getActiveConsole() ?: return
 
-        consoleExecutionService.execute(console, e)
+        when (console) {
+            is HybrisGroovyConsole -> console.execute(
+                GroovyExecutionContext(console.content)
+            )
+
+            is HybrisImpexConsole -> console.execute(
+                ImpExExecutionContext(console.content)
+            )
+
+            is HybrisPolyglotQueryConsole -> console.execute(
+                PolyglotQueryExecutionContext(console.content)
+            )
+
+            is HybrisFlexibleSearchConsole -> console.execute(
+                FlexibleSearchExecutionContext(console.content)
+            )
+
+            is HybrisSolrSearchConsole -> console.execute(
+                SolrExecutionContext(console.content)
+            )
+
+            else -> throw NotImplementedError("This action cannot be used with the ${console::class.qualifiedName}")
+        }
     }
 
     override fun update(e: AnActionEvent) {

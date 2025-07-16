@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.actions
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
+import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.lang.Language
@@ -35,7 +36,7 @@ import com.intellij.util.asSafely
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
-abstract class AbstractExecuteAction<C : HybrisConsole<*>>(
+abstract class AbstractExecuteAction<C : HybrisConsole<out ExecutionContext>>(
     internal val language: Language,
     internal val consoleClass: KClass<C>,
     internal val name: String,
@@ -92,9 +93,11 @@ abstract class AbstractExecuteAction<C : HybrisConsole<*>>(
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
 
-        e.presentation.isEnabledAndVisible = e.getData(PlatformDataKeys.TOOL_WINDOW)
-            ?.let { HybrisConsoleService.getInstance(project).findConsole(it, consoleClass) != null }
-            ?: (this.language == e.dataContext.getData(CommonDataKeys.LANGUAGE))
+//        e.presentation.isEnabledAndVisible = e.getData(PlatformDataKeys.TOOL_WINDOW)
+//            ?.let { HybrisConsoleService.getInstance(project).findConsole(it, consoleClass) != null }
+//            ?: (this.language == e.dataContext.getData(CommonDataKeys.LANGUAGE))
+
+        e.presentation.isEnabledAndVisible = this.language == e.dataContext.getData(CommonDataKeys.LANGUAGE)
     }
 
     private fun getExecutableContent(

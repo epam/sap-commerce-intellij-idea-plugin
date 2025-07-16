@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexMonitorConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisSolrSearchConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
@@ -49,12 +50,12 @@ class ConsoleExecutionService(private val project: Project) {
     private val preserveMarkup: Boolean = false
     var isProcessRunning: Boolean = false
 
-    private fun setEditorEnabled(console: HybrisConsole<*>, enabled: Boolean) {
+    private fun setEditorEnabled(console: HybrisConsole<in ExecutionContext>, enabled: Boolean) {
         console.consoleEditor.isRendererMode = !enabled
         application.invokeLater { console.consoleEditor.component.updateUI() }
     }
 
-    private fun <C : HybrisConsole<*>> processLine(
+    private fun <C : HybrisConsole<in ExecutionContext>> processLine(
         console: C,
         query: String,
         replicaContext: ReplicaContext?,
@@ -79,7 +80,7 @@ class ConsoleExecutionService(private val project: Project) {
     }
 
     fun printResults(
-        console: HybrisConsole<*>,
+        console: HybrisConsole<in ExecutionContext>,
         httpResult: HybrisHttpResult,
         replicaContext: ReplicaContext? = null
     ) {
@@ -109,7 +110,7 @@ class ConsoleExecutionService(private val project: Project) {
         }
     }
 
-    private fun printCurrentHost(console: HybrisConsole<*>, remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
+    private fun printCurrentHost(console: HybrisConsole<in ExecutionContext>, remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
         val activeConnectionSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, remoteConnectionType)
         console.print("[HOST] ", SYSTEM_OUTPUT)
         activeConnectionSettings.displayName
@@ -121,7 +122,7 @@ class ConsoleExecutionService(private val project: Project) {
         console.print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
 
-    private fun printPlainText(console: HybrisConsole<*>, httpResult: HybrisHttpResult) {
+    private fun printPlainText(console: HybrisConsole<in ExecutionContext>, httpResult: HybrisHttpResult) {
         val result = createResult()
             .errorMessage(httpResult.errorMessage)
             .output(httpResult.output)
@@ -150,7 +151,7 @@ class ConsoleExecutionService(private val project: Project) {
         console.print("\n", NORMAL_OUTPUT)
     }
 
-    fun <C : HybrisConsole<*>> execute(
+    fun <C : HybrisConsole<in ExecutionContext>> execute(
         console: C,
         e: AnActionEvent,
         executor: (String, ReplicaContext?) -> HybrisHttpResult = { query, replicaContext -> console.execute(query, replicaContext) }
@@ -162,7 +163,7 @@ class ConsoleExecutionService(private val project: Project) {
     }
 
     fun addQueryToHistory(
-        console: HybrisConsole<*>,
+        console: HybrisConsole<in ExecutionContext>,
         replicaContext: ReplicaContext? = null
     ): String? {
         val consoleHistoryController = ConsoleHistoryController.getController(console)

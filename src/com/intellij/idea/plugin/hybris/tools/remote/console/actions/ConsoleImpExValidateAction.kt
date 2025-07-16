@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecutionService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ExecutionMode
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -41,13 +43,15 @@ class ConsoleImpExValidateAction : AnAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val consoleService = project.service<HybrisConsoleService>()
-        val consoleExecutionService = project.service<ConsoleExecutionService>()
         val console = consoleService.getActiveConsole()
             ?.asSafely<HybrisImpexConsole>() ?: return
 
-        consoleExecutionService.execute(console, e) { query, replicaContext ->
-            console.validate(query)
-        }
+        val context = ImpExExecutionContext(
+            content = console.content,
+            executionMode = ExecutionMode.VALIDATE,
+        )
+
+        console.execute(context)
     }
 
     override fun update(e: AnActionEvent) {

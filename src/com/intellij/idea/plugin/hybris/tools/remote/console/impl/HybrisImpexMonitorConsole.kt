@@ -20,18 +20,22 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
+import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.TimeOption
 import com.intellij.idea.plugin.hybris.tools.remote.http.ImpexMonitorExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.monitorImpexFiles
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLabel
@@ -93,6 +97,20 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpexMonitorEx
     private fun workingDir() = obtainDataFolder(project)
     override fun execute(context: ImpexMonitorExecutionContext) {
         TODO("Not yet implemented")
+    }
+
+    override fun printResults(httpResult: HybrisHttpResult, replicaContext: ReplicaContext?) {
+        clear()
+        ConsoleViewUtil.printAsFileType(this, httpResult.output, ImpexFileType)
+    }
+
+    override fun getQuery(): String? {
+        val document = currentEditor.document
+        val range = TextRange(0, document.textLength)
+        currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
+        addToHistory(range, consoleEditor, false)
+        printDefaultText()
+        return null
     }
 
     override fun execute(query: String, replicaContext: ReplicaContext?) = monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())

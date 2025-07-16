@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.ConsoleExecuteStatementAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
+import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
@@ -81,15 +82,15 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         add(panel)
     }
 
-    fun setActiveConsole(console: HybrisConsole<*>) {
+    fun setActiveConsole(console: HybrisConsole<out ExecutionContext>) {
         hybrisTabs.setActiveConsole(console)
     }
 
-    fun getActiveConsole(): HybrisConsole<*> {
+    fun getActiveConsole(): HybrisConsole<out ExecutionContext> {
         return hybrisTabs.activeConsole()
     }
 
-    fun <C : HybrisConsole<*>> findConsole(consoleClass: KClass<C>): C? {
+    fun <C : HybrisConsole<out ExecutionContext>> findConsole(consoleClass: KClass<C>): C? {
         for (index in 0 until hybrisTabs.tabCount) {
             val c = hybrisTabs.getComponentAt(index)
 

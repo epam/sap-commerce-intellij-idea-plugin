@@ -18,19 +18,25 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console
 
+import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.LanguageConsoleImpl
+import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
 import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult.HybrisHttpResultBuilder.createResult
 import com.intellij.lang.Language
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.util.ui.JBUI
 import java.io.Serial
 import javax.swing.Icon
 
-abstract class HybrisConsole<E: ExecutionContext>(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
+abstract class HybrisConsole<E : ExecutionContext>(project: Project, title: String, language: Language) : LanguageConsoleImpl(project, title, language) {
 
     protected val borders10 = JBUI.Borders.empty(10)
     protected val borders5 = JBUI.Borders.empty(5, 10)
@@ -58,9 +64,107 @@ abstract class HybrisConsole<E: ExecutionContext>(project: Project, title: Strin
         //NOP
     }
 
+    val content: String
+        get() = currentEditor.document.text
+
     override fun dispose() {
         LineStatusTrackerManager.getInstance(project).releaseTrackerFor(editorDocument, consoleEditor)
         super.dispose()
+    }
+
+    open fun addQueryToHistory(): String? {
+        val consoleHistoryController = ConsoleHistoryController.getController(this)
+            ?: return null
+        // Process input and add to history
+        val document = currentEditor.document
+        val textForHistory = document.text
+
+        val query = document.text
+        val range = TextRange(0, document.textLength)
+
+        if (query.isNotEmpty()) {
+            currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
+            addToHistory(range, consoleEditor, false)
+            printDefaultText()
+
+            if (!StringUtil.isEmptyOrSpaces(textForHistory)) {
+                consoleHistoryController.addToHistory(textForHistory.trim())
+            }
+
+            return query
+        }
+        return null
+    }
+
+    open fun getQuery(): String? {
+        val consoleHistoryController = ConsoleHistoryController.getController(this)
+            ?: return null
+        // Process input and add to history
+        val document = currentEditor.document
+        val query = document.text
+        val range = TextRange(0, document.textLength)
+
+        if (query.isNotEmpty()) {
+            currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
+            addToHistory(range, consoleEditor, false)
+            printDefaultText()
+
+            if (!StringUtil.isEmptyOrSpaces(query)) {
+                consoleHistoryController.addToHistory(query.trim())
+            }
+
+            return query
+        }
+        return null
+    }
+
+    open fun printResults(
+        httpResult: HybrisHttpResult,
+        replicaContext: ReplicaContext? = null
+    ) {
+        printCurrentHost(RemoteConnectionType.Hybris, replicaContext)
+        printPlainText(httpResult)
+    }
+
+    internal fun printCurrentHost(remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
+        val activeConnectionSettings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, remoteConnectionType)
+        print("[HOST] ", SYSTEM_OUTPUT)
+        activeConnectionSettings.displayName
+            ?.let { name -> print("($name) ", LOG_INFO_OUTPUT) }
+        replicaContext
+            ?.replicaCookie
+            ?.let { print("($it) ", LOG_INFO_OUTPUT) }
+
+        print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
+    }
+
+    internal fun printPlainText(httpResult: HybrisHttpResult) {
+        val result = createResult()
+            .errorMessage(httpResult.errorMessage)
+            .output(httpResult.output)
+            .result(httpResult.result)
+            .detailMessage(httpResult.detailMessage)
+            .build()
+        val detailMessage = result.detailMessage
+        val output = result.output
+        val res = result.result
+        val errorMessage = result.errorMessage
+
+        if (result.hasError()) {
+            print("[ERROR] \n", SYSTEM_OUTPUT)
+            print("$errorMessage\n$detailMessage\n", ERROR_OUTPUT)
+            return
+        }
+        if (!StringUtil.isEmptyOrSpaces(output)) {
+            print("[OUTPUT] \n", SYSTEM_OUTPUT)
+            print(output, NORMAL_OUTPUT)
+        }
+        if (!StringUtil.isEmptyOrSpaces(res)) {
+            print("[RESULT] \n", SYSTEM_OUTPUT)
+            print(res, NORMAL_OUTPUT)
+        }
+
+        print("\n", NORMAL_OUTPUT)
     }
 
     companion object {

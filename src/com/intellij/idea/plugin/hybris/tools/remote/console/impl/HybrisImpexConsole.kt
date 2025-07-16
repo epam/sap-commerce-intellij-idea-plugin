@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.handler.ConsoleExecutionService
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.impex.HybrisHttpResult
@@ -100,13 +99,16 @@ class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext
     }
 
     override fun execute(context: ImpExExecutionContext) {
+        this.isEditable = false
+
         project.service<ImpExHttpClient>().execute(context) { coroutineScope, result ->
-            with(project.service<ConsoleExecutionService>()) {
-                coroutineScope.launch {
-                    edtWriteAction {
-                        addQueryToHistory(this@HybrisImpexConsole)
-                        printResults(this@HybrisImpexConsole, result)
-                    }
+            coroutineScope.launch {
+
+                this@HybrisImpexConsole.isEditable = true
+
+                edtWriteAction {
+                    addQueryToHistory()
+                    printResults(result)
                 }
             }
         }

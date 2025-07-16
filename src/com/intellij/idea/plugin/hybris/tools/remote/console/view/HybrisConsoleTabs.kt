@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
+import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBTabsPaneImpl
@@ -26,9 +27,9 @@ import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
 import javax.swing.Icon
 
-class HybrisConsoleTabs(project: Project, tabPlacement: Int, defaultConsoles: Array<HybrisConsole<*>>, disposable: Disposable) : JBTabsPaneImpl(project, tabPlacement, disposable) {
+class HybrisConsoleTabs(project: Project, tabPlacement: Int, defaultConsoles: Array<HybrisConsole<out ExecutionContext>>, disposable: Disposable) : JBTabsPaneImpl(project, tabPlacement, disposable) {
 
-    private val consoles = arrayListOf<HybrisConsole<*>>()
+    private val consoles = arrayListOf<HybrisConsole<out ExecutionContext>>()
 
     init {
         defaultConsoles.forEach {
@@ -38,18 +39,18 @@ class HybrisConsoleTabs(project: Project, tabPlacement: Int, defaultConsoles: Ar
         addChangeListener {
             it.source.asSafely<JBEditorTabs>()
                 ?.selectedInfo
-                ?.component.asSafely<HybrisConsole<*>>()
+                ?.component.asSafely<HybrisConsole<in ExecutionContext>>()
                 ?.onSelection()
         }
     }
 
-    private fun addConsoleTab(title: String, icon: Icon?, console: HybrisConsole<*>, tip: String) {
+    private fun addConsoleTab(title: String, icon: Icon?, console: HybrisConsole<out ExecutionContext>, tip: String) {
         insertTab(title, icon, console.component, tip, consoles.size)
         consoles.add(console)
     }
 
     fun activeConsole() = consoles[selectedIndex]
-    fun setActiveConsole(console: HybrisConsole<*>) {
+    fun setActiveConsole(console: HybrisConsole<out ExecutionContext>) {
         selectedIndex = consoles.indexOf(console)
     }
 }
