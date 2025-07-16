@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaCont
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.UserDataHolderBase;
 import org.apache.commons.lang3.StringUtils;
@@ -88,7 +87,6 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         return project.getService(HybrisHacHttpClient.class);
     }
 
-    private static final Key<RemoteConnectionContext> KEY_REMOTE_CONNECTION_CONTEXT = Key.create("hybris.http.remote.connection.context");
     @Serial
     private static final long serialVersionUID = -4915832410081381025L;
 
@@ -110,14 +108,6 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
     };
 
     private final Map<Pair<RemoteConnectionSettings, ReplicaContext>, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
-
-    public RemoteConnectionContext getConnectionContext() {
-        return putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, RemoteConnectionContext.Companion.auto());
-    }
-
-    public void setConnectionContext(final RemoteConnectionContext remoteConnectionContext) {
-        putUserData(KEY_REMOTE_CONNECTION_CONTEXT, remoteConnectionContext);
-    }
 
     public String login(
         @NotNull final RemoteConnectionSettings settings,
@@ -169,7 +159,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
     }
 
     @NotNull
-    public final HttpResponse post(
+    public HttpResponse post(
         @NotNull final String actionUrl,
         @NotNull final List<BasicNameValuePair> params,
         final boolean canReLoginIfNeeded,

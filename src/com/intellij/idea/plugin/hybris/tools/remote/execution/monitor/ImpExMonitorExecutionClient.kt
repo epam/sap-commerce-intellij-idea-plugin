@@ -24,6 +24,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
+import java.io.Serial
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -57,5 +58,10 @@ class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineSco
     private fun Long.toLocalDateTime() = Instant.ofEpochMilli(this)
         .atZone(ZoneId.systemDefault())
         .toLocalDateTime()
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -6318486147370249181L
+    }
 
 }

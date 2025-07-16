@@ -24,9 +24,12 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext.Companion.auto
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
@@ -35,20 +38,26 @@ import org.jetbrains.kotlin.idea.gradleTooling.get
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.io.IOException
+import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
 class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<GroovyExecutionContext>(project, coroutineScope) {
+
+    var connectionContext: RemoteConnectionContext
+        get() = putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, auto())
+        set(value) {
+            putUserData(KEY_REMOTE_CONNECTION_CONTEXT, value)
+        }
 
     override suspend fun execute(context: GroovyExecutionContext): ExecutionResult {
         val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
 
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
-        val actionUrl = settings.generatedURL + "/console/scripting/execute"
+        val actionUrl = "${settings.generatedURL}/console/scripting/execute"
 
-        val hacHttpClient = HybrisHacHttpClient.getInstance(project)
-        val response: HttpResponse = hacHttpClient
+        val response: HttpResponse = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
         val statusLine = response.statusLine
         val resultBuilder = HybrisHttpResultBuilder.createResult()
@@ -97,6 +106,12 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
 
         return resultBuilder
             .build()
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 3297887080603991051L
+        val KEY_REMOTE_CONNECTION_CONTEXT = Key.create<RemoteConnectionContext>("hybris.http.remote.connection.context")
     }
 
 }

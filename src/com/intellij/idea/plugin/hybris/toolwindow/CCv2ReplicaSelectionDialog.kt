@@ -23,8 +23,8 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree.CCv2TreeTable
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -148,7 +148,7 @@ class CCv2ReplicaSelectionDialog(
     }
 
     override fun applyFields() {
-        HybrisHacHttpClient.getInstance(project).connectionContext = if (selectedReplicaIds.isEmpty()) RemoteConnectionContext.auto()
+        project.service<GroovyExecutionClient>().connectionContext = if (selectedReplicaIds.isEmpty()) RemoteConnectionContext.auto()
         else RemoteConnectionContext.ccv2(selectedReplicaIds)
     }
 

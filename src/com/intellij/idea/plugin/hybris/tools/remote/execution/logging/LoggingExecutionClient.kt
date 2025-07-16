@@ -34,6 +34,7 @@ import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.io.IOException
+import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
@@ -89,6 +90,11 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             resultBuilder.result(json["executionResult"].toString())
         }
         return resultBuilder.build()
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 576041226131571722L
     }
 
 }

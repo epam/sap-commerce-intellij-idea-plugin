@@ -33,6 +33,7 @@ import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import java.io.IOException
+import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
@@ -87,6 +88,11 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : E
         }
 
         return resultBuilder.build()
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -1646069318244320642L
     }
 
 }

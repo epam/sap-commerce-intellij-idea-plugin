@@ -25,10 +25,11 @@ import com.intellij.idea.plugin.hybris.settings.TransactionMode
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.UserDataHolder
@@ -50,7 +51,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
         val commitMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode == TransactionMode.COMMIT
         console.updateCommitMode(commitMode)
 
-        val replicaContexts = HybrisHacHttpClient.getInstance(project).connectionContext.replicaContexts
+        val replicaContexts = project.service<GroovyExecutionClient>().connectionContext.replicaContexts
 
         if (replicaContexts.isNotEmpty()) {
             replicaContexts

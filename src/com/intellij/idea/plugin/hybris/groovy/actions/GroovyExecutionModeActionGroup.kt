@@ -17,13 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaSelectionMode
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.components.service
 
 class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 
@@ -36,7 +37,7 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val connectionContext = HybrisHacHttpClient.getInstance(project).connectionContext
+        val connectionContext = project.service<GroovyExecutionClient>().connectionContext
         val text = when (connectionContext.replicaSelectionMode) {
             ReplicaSelectionMode.AUTO -> "Auto-Discover Replica"
             else -> "Execute on ${connectionContext.replicaContexts.size} replica(s)"

@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaSelectionMode
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
 import com.intellij.idea.plugin.hybris.toolwindow.CCv2ReplicaSelectionDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ManualReplicaSelectionDialog
@@ -27,6 +27,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.KeepPopupOnPerform
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
+import com.intellij.openapi.components.service
 import com.intellij.util.asSafely
 import java.awt.Component
 
@@ -45,7 +46,8 @@ abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean = e.project
-        ?.let { HybrisHacHttpClient.getInstance(it).connectionContext }
+        ?.service<GroovyExecutionClient>()
+        ?.connectionContext
         ?.replicaSelectionMode == replicaSelectionMode
 }
 
@@ -54,7 +56,7 @@ class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Re
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
 
-        HybrisHacHttpClient.getInstance(project).connectionContext = RemoteConnectionContext.auto()
+        project.service<GroovyExecutionClient>().connectionContext = RemoteConnectionContext.auto()
     }
 }
 
@@ -64,7 +66,7 @@ class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val replicaContexts = HybrisHacHttpClient.getInstance(project).connectionContext
+        val replicaContexts = project.service<GroovyExecutionClient>().connectionContext
             .takeIf { it.replicaSelectionMode == ReplicaSelectionMode.MANUAL }
             ?.replicaContexts
             ?: emptyList()
@@ -79,7 +81,7 @@ class GroovyCCv2ReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Re
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val replicaContexts = HybrisHacHttpClient.getInstance(project).connectionContext
+        val replicaContexts = project.service<GroovyExecutionClient>().connectionContext
             .takeIf { it.replicaSelectionMode == ReplicaSelectionMode.CCV2 }
             ?.replicaContexts
             ?: emptyList()

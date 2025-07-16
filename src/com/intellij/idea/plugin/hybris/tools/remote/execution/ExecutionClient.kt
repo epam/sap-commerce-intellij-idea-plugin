@@ -21,16 +21,18 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution
 import com.google.gson.Gson
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jsoup.select.Elements
+import java.io.Serial
 
 abstract class ExecutionClient<E : ExecutionContext>(
     protected val project: Project,
     protected val coroutineScope: CoroutineScope
-) {
+) : UserDataHolderBase() {
 
     fun execute(context: E, resultCallback: (CoroutineScope, ExecutionResult) -> Unit) {
         coroutineScope.launch {
@@ -54,5 +56,10 @@ abstract class ExecutionClient<E : ExecutionContext>(
 
             return null
         }
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -3086939180615991870L
     }
 }

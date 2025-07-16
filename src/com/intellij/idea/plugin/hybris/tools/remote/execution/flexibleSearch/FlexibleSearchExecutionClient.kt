@@ -33,6 +33,7 @@ import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
+import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
@@ -90,7 +91,11 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
             ?.forEach { row -> tableBuilder.addRow(row) }
 
         return tableBuilder.toString()
+    }
 
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -1238922198933240517L
     }
 
 }

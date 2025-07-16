@@ -39,6 +39,7 @@ import org.apache.solr.client.solrj.request.QueryRequest
 import org.apache.solr.client.solrj.response.CoreAdminResponse
 import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
+import java.io.Serial
 
 @Service(Service.Level.PROJECT)
 class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<SolrQueryExecutionContext>(project, coroutineScope) {
@@ -118,6 +119,9 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : Ex
     private fun solrConnectionSettings(project: Project) = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.SOLR)
 
     companion object {
+        @Serial
+        private const val serialVersionUID: Long = -4606760283632482489L
+
         @JvmStatic
         fun getInstance(project: Project): SolrExecutionClient = project.getService(SolrExecutionClient::class.java)
     }
