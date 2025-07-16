@@ -38,7 +38,7 @@ class HybrisConsoleTabs(
 
     init {
         defaultConsoles.forEach {
-            addConsoleTab(it.title(), it.icon, it, it.tip())
+            addConsoleTab(it.title(), it.icon(), it, it.tip())
         }
 
         addChangeListener {

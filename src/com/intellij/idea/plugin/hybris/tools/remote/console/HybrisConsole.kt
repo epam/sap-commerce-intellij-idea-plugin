@@ -59,13 +59,12 @@ abstract class HybrisConsole<E : ExecutionContext>(
         get() = currentEditor.document.text
     val context
         get() = currentExecutionContext(content)
-    val icon: Icon?
-        get() = language.associatedFileType?.icon
 
     internal abstract fun currentExecutionContext(content: String): E
     abstract fun title(): String
     abstract fun tip(): String
 
+    open fun icon(): Icon? = language.associatedFileType?.icon
     open fun onSelection() = Unit
     open fun canExecute(): Boolean = isEditable
     open fun printDefaultText() = setInputText("")

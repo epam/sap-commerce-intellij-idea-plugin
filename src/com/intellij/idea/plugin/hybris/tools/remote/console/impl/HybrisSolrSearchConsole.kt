@@ -106,6 +106,8 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecuti
         ConsoleHistoryController(MyConsoleRootType, "hybris.solr.search.shell", this).install()
     }
 
+    override fun icon() = HybrisIcons.Console.SOLR
+
     override fun printDefaultText() {
         this.setInputText("*:*")
     }
