@@ -115,7 +115,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecuti
         reloadCores(selectedCore)
     }
 
-    override fun printResults(context: SolrQueryExecutionContext, httpResult: ExecutionResult, replicaContext: ReplicaContext?) {
+    override fun printResults(httpResult: ExecutionResult, replicaContext: ReplicaContext?) {
         clear()
 
         printCurrentHost(RemoteConnectionType.SOLR, replicaContext)

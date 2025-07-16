@@ -98,7 +98,7 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorEx
         return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
     }
 
-    override fun printResults(context: ImpExMonitorExecutionContext, httpResult: ExecutionResult, replicaContext: ReplicaContext?) {
+    override fun printResults(httpResult: ExecutionResult, replicaContext: ReplicaContext?) {
         clear()
         ConsoleViewUtil.printAsFileType(this, httpResult.output, ImpexFileType)
     }

@@ -70,11 +70,11 @@ abstract class HybrisConsole<E : ExecutionContext>(
     open fun canExecute(): Boolean = isEditable
     open fun printDefaultText() = setInputText("")
 
-    fun printExecutionResults(coroutineScope: CoroutineScope, context: E, result: ExecutionResult) {
+    fun printExecutionResults(coroutineScope: CoroutineScope, result: ExecutionResult) {
         coroutineScope.launch {
             edtWriteAction {
                 addCurrentQueryToHistory()
-                printResults(context, result)
+                printResults(result)
             }
         }
     }
@@ -130,7 +130,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         return null
     }
 
-    internal open fun printResults(context: E, httpResult: ExecutionResult, replicaContext: ReplicaContext? = null) {
+    internal open fun printResults(httpResult: ExecutionResult, replicaContext: ReplicaContext? = null) {
         printCurrentHost(RemoteConnectionType.Hybris, replicaContext)
         printPlainText(httpResult)
     }

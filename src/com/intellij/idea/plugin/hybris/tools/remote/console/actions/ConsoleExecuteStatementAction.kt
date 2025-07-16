@@ -51,32 +51,32 @@ class ConsoleExecuteStatementAction : AnAction(
 
         when (console) {
             is HybrisGroovyConsole -> project.service<GroovyExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printExecutionResults(coroutineScope,, result)
+                console.printExecutionResults(coroutineScope, result)
                 console.isEditable = true
             }
 
             is HybrisImpexConsole -> project.service<ImpExExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printExecutionResults(coroutineScope,, result)
+                console.printExecutionResults(coroutineScope, result)
                 console.isEditable = true
             }
 
             is HybrisPolyglotQueryConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printExecutionResults(coroutineScope,, result)
+                console.printExecutionResults(coroutineScope, result)
                 console.isEditable = true
             }
 
             is HybrisFlexibleSearchConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printExecutionResults(coroutineScope,, result)
+                console.printExecutionResults(coroutineScope, result)
                 console.isEditable = true
             }
 
             is HybrisSolrSearchConsole -> SolrExecutionClient.getInstance(project).execute(console.context) { coroutineScope, result ->
-                console.printExecutionResults(coroutineScope,, result)
+                console.printExecutionResults(coroutineScope, result)
                 console.isEditable = true
             }
 
             is HybrisImpexMonitorConsole -> project.service<ImpExMonitorExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printExecutionResults(coroutineScope,, result)
+                console.printExecutionResults(coroutineScope, result)
                 console.isEditable = true
             }
 
