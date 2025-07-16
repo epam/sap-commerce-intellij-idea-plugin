@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -42,16 +41,7 @@ class ConsoleExecuteStatementAction : AnAction(
             ?.getActiveConsole()
             ?: return
 
-        when (console) {
-            is HybrisGroovyConsole -> console.execute()
-            is HybrisImpexConsole -> console.execute()
-            is HybrisPolyglotQueryConsole -> console.execute()
-            is HybrisFlexibleSearchConsole -> console.execute()
-            is HybrisSolrSearchConsole -> console.execute()
-            is HybrisImpexMonitorConsole -> console.execute()
-
-            else -> throw NotImplementedError("This action cannot be used with the ${console::class.qualifiedName}")
-        }
+        console.execute()
     }
 
     override fun update(e: AnActionEvent) {
