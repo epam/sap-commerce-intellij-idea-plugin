@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyTransactionMode
-import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
@@ -48,7 +48,7 @@ class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionConte
 
     private val commitCheckbox = JBCheckBox("Commit mode")
         .also { it.border = borders10 }
-    private val timeoutSpinner = JSpinner(SpinnerNumberModel(AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 10))
+    private val timeoutSpinner = JSpinner(SpinnerNumberModel(HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 10))
         .also { it.border = borders5 }
 
     init {

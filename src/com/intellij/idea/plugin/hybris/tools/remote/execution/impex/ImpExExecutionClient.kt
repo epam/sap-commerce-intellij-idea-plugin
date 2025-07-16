@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
-import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -50,7 +49,7 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : E
         }
 
         val response = HybrisHacHttpClient.getInstance(project)
-            .post(actionUrl, params, false, AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT.toLong(), settings, null)
+            .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT.toLong(), settings, null)
         val resultBuilder = HybrisHttpResultBuilder.createResult().httpCode(response.statusLine.statusCode)
 
         if (response.statusLine.statusCode != HttpStatus.SC_OK) {

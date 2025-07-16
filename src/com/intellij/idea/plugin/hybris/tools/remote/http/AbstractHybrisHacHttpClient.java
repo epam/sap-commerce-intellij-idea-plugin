@@ -84,8 +84,6 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
     @Serial
     private static final long serialVersionUID = -4915832410081381025L;
 
-    public static final int DEFAULT_HAC_TIMEOUT = 6000;
-
     private static final X509TrustManager X_509_TRUST_MANAGER = new X509TrustManager() {
 
         @Override
@@ -136,7 +134,7 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
             new BasicNameValuePair("_csrf", csrfToken)
         );
         final var loginURL = hostHacURL + "/j_spring_security_check";
-        final HttpResponse response = post(loginURL, params, false, DEFAULT_HAC_TIMEOUT, settings, replicaContext);
+        final HttpResponse response = post(loginURL, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, replicaContext);
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY) {
             final Header location = response.getFirstHeader("Location");
             if (location != null && location.getValue().contains("login_error")) {
@@ -231,7 +229,7 @@ public abstract class AbstractHybrisHacHttpClient extends UserDataHolderBase {
         if (needsLogin) {
             cookiesPerSettings.remove(cookiesKey);
             if (canReLoginIfNeeded) {
-                return post(actionUrl, params, false, DEFAULT_HAC_TIMEOUT, settings, replicaContext);
+                return post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, replicaContext);
             }
         }
         return response;

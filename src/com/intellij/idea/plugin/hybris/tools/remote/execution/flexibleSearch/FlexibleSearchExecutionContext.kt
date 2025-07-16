@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import org.apache.commons.lang3.BooleanUtils
 
 data class FlexibleSearchExecutionContext(
@@ -31,7 +31,7 @@ data class FlexibleSearchExecutionContext(
     private val transactionMode: FxSTransactionMode = FxSTransactionMode.ROLLBACK,
     private val queryMode: QueryMode = QueryMode.FlexibleSearch,
     private val user: String? = null,
-    val timeout: Int = AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
+    val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
 ) : ExecutionContext {
 
     fun params(settings: RemoteConnectionSettings): Map<String, String> = buildMap {

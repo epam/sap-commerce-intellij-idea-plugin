@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 @Service(Service.Level.PROJECT)
 public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
 
+    public static final int DEFAULT_HAC_TIMEOUT = 6000;
+
     public static HybrisHacHttpClient getInstance(@NotNull final Project project) {
         return project.getService(HybrisHacHttpClient.class);
     }

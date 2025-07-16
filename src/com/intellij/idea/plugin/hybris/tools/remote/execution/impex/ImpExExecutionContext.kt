@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.impex
 
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import org.apache.commons.lang3.BooleanUtils
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
@@ -34,7 +34,7 @@ data class ImpExExecutionContext(
     private val sldEnabled: Toggle = Toggle.ON,
     private val _distributedMode: Toggle = Toggle.ON,
     val executionMode: ExecutionMode = ExecutionMode.IMPORT,
-    val timeout: Int = AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
+    val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
 ) : ExecutionContext {
     fun params(): Map<String, String> = buildMap {
         put("scriptContent", content)

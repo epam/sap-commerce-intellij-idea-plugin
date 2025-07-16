@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
-import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -49,7 +48,7 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
         val actionUrl = settings.generatedURL + "/platform/log4j/changeLevel/"
         val hybrisHacHttpClient = HybrisHacHttpClient.getInstance(project)
         val response = hybrisHacHttpClient
-            .post(actionUrl, params, false, AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT.toLong(), settings, null)
+            .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT.toLong(), settings, null)
 
         val statusLine = response.statusLine
         val resultBuilder = HybrisHttpResultBuilder.createResult().httpCode(statusLine.statusCode)
