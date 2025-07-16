@@ -23,18 +23,13 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
-import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
 import com.intellij.idea.plugin.hybris.util.PackageUtils
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
-import com.intellij.openapi.project.Project
-import com.intellij.util.application
+import com.intellij.openapi.components.service
 
 abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(logLevel.name, null, logLevel.icon) {
 
@@ -45,55 +40,41 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(l
         val logIdentifier = e.getData(HybrisConstants.DATA_KEY_LOGGER_IDENTIFIER)
 
         if (logIdentifier == null) {
-            notify(
-                project,
-                NotificationType.ERROR,
-                "Unable to change the log level",
-                "Cannot retrieve a logger name."
-            )
+            Notifications.error("Unable to change the log level", "Cannot retrieve a logger name.")
+                .hideAfter(5)
+                .notify(project)
             return
         }
 
-        application.runReadAction {
-            ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Execute HTTP Call to SAP Commerce...") {
-                override fun run(indicator: ProgressIndicator) {
-                    try {
-                        val result = HybrisHacHttpClient.getInstance(project).executeLogUpdate(
-                            project,
-                            logIdentifier,
-                            logLevel,
-                            AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
-                        )
+        val context = LoggingExecutionContext(logIdentifier, logLevel)
 
-                        val server = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
-                        val abbreviationLogIdentifier = PackageUtils.abbreviatePackageName(logIdentifier)
+        project.service<LoggingExecutionClient>().execute(context) { coroutineScope, result ->
+            val server = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
+            val abbreviationLogIdentifier = PackageUtils.abbreviatePackageName(logIdentifier)
 
-                        if (result.statusCode == 200) {
-                            notify(
-                                project,
-                                NotificationType.INFORMATION,
-                                "Log level updated",
-                                """
-                                    <p>Level  : $logLevel</p>
-                                    <p>Logger : $abbreviationLogIdentifier</p>
-                                    <p>${server.shortenConnectionName()}</p>"""
 
-                            )
-                        } else {
-                            notify(
-                                project,
-                                NotificationType.ERROR,
-                                "Failed to update log level",
-                                """
-                                    <p>Level  : $logLevel</p>
-                                    <p>Logger : $abbreviationLogIdentifier</p>
-                                    <p>${server.shortenConnectionName()}</p>"""
-                            )
-                        }
-                    } finally {
-                    }
-                }
-            })
+
+            if (result.statusCode == 200) {
+                Notifications.info(
+                    "Log level updated",
+                    """
+                        <p>Level  : $logLevel</p>
+                        <p>Logger : $abbreviationLogIdentifier</p>
+                        <p>${server.shortenConnectionName()}</p>
+                        """.trimIndent()
+                )
+                    .hideAfter(5)
+                    .notify(project)
+            } else {
+                Notifications.error(
+                    "Failed to update log level",
+                    """
+                        <p>Level  : $logLevel</p>
+                        <p>Logger : $abbreviationLogIdentifier</p>
+                        <p>${server.shortenConnectionName()}</p>
+                        """.trimIndent()
+                )
+            }
         }
     }
 
@@ -102,21 +83,6 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(l
         val isRightPlace = "GoToAction" != e.place
         e.presentation.isEnabled = isRightPlace
         e.presentation.isVisible = isRightPlace
-    }
-
-    private fun notify(
-        project: Project,
-        notificationType: NotificationType,
-        title: String,
-        content: String
-    ) {
-        Notifications.create(
-            notificationType,
-            title,
-            content
-        )
-            .hideAfter(5)
-            .notify(project)
     }
 
 }

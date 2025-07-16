@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,17 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http;
+package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
-import com.intellij.openapi.components.Service;
-import com.intellij.openapi.project.Project;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 
-@Service(Service.Level.PROJECT)
-public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
-
-    public static HybrisHacHttpClient getInstance(@NotNull final Project project) {
-        return project.getService(HybrisHacHttpClient.class);
+data class LoggingExecutionContext(
+    private val loggerName: String,
+    private val logLevel: LogLevel,
+    val timeout: Int = AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
+) : ExecutionContext {
+    fun params(): Map<String, String> = buildMap {
+        put("loggerName", loggerName)
+        put("levelName", logLevel.name)
     }
-
 }

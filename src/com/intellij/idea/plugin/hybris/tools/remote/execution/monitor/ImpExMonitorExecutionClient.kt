@@ -29,7 +29,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Service(Service.Level.PROJECT)
-class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<ImpExMonitorExecutionContext, ExecutionResult>(project, coroutineScope) {
+class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<ImpExMonitorExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: ImpExMonitorExecutionContext): ExecutionResult {
         val resultBuilder = ExecutionResult.HybrisHttpResultBuilder.createResult()

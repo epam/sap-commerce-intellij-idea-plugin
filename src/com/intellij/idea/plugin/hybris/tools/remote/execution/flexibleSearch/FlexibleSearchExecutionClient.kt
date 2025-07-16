@@ -35,7 +35,7 @@ import org.apache.http.message.BasicNameValuePair
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<FlexibleSearchExecutionContext, ExecutionResult>(project, coroutineScope) {
+class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<FlexibleSearchExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: FlexibleSearchExecutionContext): ExecutionResult {
         val settings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)

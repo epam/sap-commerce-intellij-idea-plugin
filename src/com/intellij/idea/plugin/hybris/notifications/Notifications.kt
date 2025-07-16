@@ -108,5 +108,14 @@ class Notifications private constructor(type: NotificationType, title: String, c
 
         @JvmStatic
         fun create(type: NotificationType, title: String, content: String = "") = Notifications(type, title, content)
+
+        @JvmStatic
+        fun error(title: String, content: String = "") = create(NotificationType.ERROR, title, content)
+
+        @JvmStatic
+        fun warning(title: String, content: String = "") = create(NotificationType.WARNING, title, content)
+
+        @JvmStatic
+        fun info(title: String, content: String = "") = create(NotificationType.INFORMATION, title, content)
     }
 }

@@ -37,7 +37,7 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<GroovyExecutionContext, ExecutionResult>(project, coroutineScope) {
+class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<GroovyExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: GroovyExecutionContext): ExecutionResult {
         val settings = getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
@@ -75,7 +75,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
                 .errorMessage("No data in response")
                 .build()
         }
-        val json = hacHttpClient.parseResponse(fsResultStatus)
+        val json = parseResponse(fsResultStatus)
 
         if (json == null) {
             return resultBuilder

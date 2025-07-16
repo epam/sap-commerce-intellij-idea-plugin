@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.impex
+package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil.getActiveRemoteConnectionSettings
@@ -26,66 +26,68 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.Hy
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
+import org.apache.commons.lang3.StringUtils
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<ImpExExecutionContext>(project, coroutineScope) {
+class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<LoggingExecutionContext>(project, coroutineScope) {
 
-    override suspend fun execute(context: ImpExExecutionContext): ExecutionResult {
+    override suspend fun execute(context: LoggingExecutionContext): ExecutionResult {
         val settings = getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
 
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
-        val actionUrl = when (context.executionMode) {
-            ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
-            ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"
-        }
 
-        val response = HybrisHacHttpClient.getInstance(project)
+        val actionUrl = settings.generatedURL + "/platform/log4j/changeLevel/"
+        val hybrisHacHttpClient = HybrisHacHttpClient.getInstance(project)
+        val response = hybrisHacHttpClient
             .post(actionUrl, params, false, AbstractHybrisHacHttpClient.DEFAULT_HAC_TIMEOUT.toLong(), settings, null)
-        val resultBuilder = HybrisHttpResultBuilder.createResult().httpCode(response.statusLine.statusCode)
 
-        if (response.statusLine.statusCode != HttpStatus.SC_OK) {
+        val statusLine = response.statusLine
+        val resultBuilder = HybrisHttpResultBuilder.createResult().httpCode(statusLine.statusCode)
+        if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
             return resultBuilder
-                .errorMessage(response.statusLine.reasonPhrase)
+                .errorMessage("[${statusLine.statusCode}] ${statusLine.reasonPhrase}")
+                .build()
+        }
+        val document: Document
+        try {
+            document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
+        } catch (e: IOException) {
+            return resultBuilder.errorMessage(e.message + ' ' + actionUrl).httpCode(HttpStatus.SC_BAD_REQUEST).build()
+        }
+        val fsResultStatus = document.getElementsByTag("body")
+        if (fsResultStatus == null) {
+            return resultBuilder.errorMessage("No data in response").build()
+        }
+        val json = parseResponse(fsResultStatus)
+
+        if (json == null) {
+            return HybrisHttpResultBuilder.createResult()
+                .errorMessage("Cannot parse response from the server...")
                 .build()
         }
 
-        try {
-            val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
-
-            document.getElementById("impexResult")
-                ?.takeIf { it.hasAttr("data-level") && it.hasAttr("data-result") }
-                ?.let { resultElement ->
-                    val dataResult = resultElement.attr("data-result")
-                    if (resultElement.attr("data-level") == "error") {
-                        document.getElementsByClass("impexResult")
-                            .first()?.children()?.first()?.text()
-                            ?.let { it ->
-                                resultBuilder
-                                    .errorMessage(dataResult)
-                                    .detailMessage(it)
-                            }
-                            ?: resultBuilder.errorMessage("No data in response")
-                    } else {
-                        resultBuilder.output(dataResult)
-                    }
-                }
-                ?: resultBuilder.errorMessage("No data in response")
-
-        } catch (e: IOException) {
-            thisLogger().warn(e.message, e)
-
-            resultBuilder.errorMessage(e.message)
+        val stacktraceText = json["stacktraceText"]
+        if (stacktraceText != null && StringUtils.isNotEmpty(stacktraceText.toString())) {
+            return HybrisHttpResultBuilder.createResult()
+                .errorMessage(stacktraceText.toString())
+                .build()
         }
 
+        if (json["outputText"] != null) {
+            resultBuilder.output(json["outputText"].toString())
+        }
+        if (json["executionResult"] != null) {
+            resultBuilder.result(json["executionResult"].toString())
+        }
         return resultBuilder.build()
     }
 

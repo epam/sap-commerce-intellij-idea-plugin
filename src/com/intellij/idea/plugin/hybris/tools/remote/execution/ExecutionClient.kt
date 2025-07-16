@@ -18,18 +18,21 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution
 
+import com.google.gson.Gson
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.jsoup.select.Elements
 
-abstract class ExecutionClient<E : ExecutionContext, R : ExecutionResult>(
+abstract class ExecutionClient<E : ExecutionContext>(
     protected val project: Project,
     protected val coroutineScope: CoroutineScope
 ) {
 
-    fun execute(context: E, resultCallback: (CoroutineScope, R) -> Unit) {
+    fun execute(context: E, resultCallback: (CoroutineScope, ExecutionResult) -> Unit) {
         coroutineScope.launch {
             withBackgroundProgress(project, "Execute HTTP Call to SAP Commerce...", true) {
                 val result = reportProgress { progressReporter ->
@@ -41,5 +44,15 @@ abstract class ExecutionClient<E : ExecutionContext, R : ExecutionResult>(
         }
     }
 
-    internal abstract suspend fun execute(context: E): R
+    internal abstract suspend fun execute(context: E): ExecutionResult
+
+    internal suspend fun parseResponse(fsResultStatus: Elements): Map<*, *>? {
+        try {
+            return Gson().fromJson(fsResultStatus.text(), HashMap::class.java)
+        } catch (e: Exception) {
+            thisLogger().error("Cannot parse response", e)
+
+            return null
+        }
+    }
 }

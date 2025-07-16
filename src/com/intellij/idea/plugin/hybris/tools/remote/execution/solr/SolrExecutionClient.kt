@@ -40,7 +40,7 @@ import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
 
 @Service(Service.Level.PROJECT)
-class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<SolrQueryExecutionContext, ExecutionResult>(project, coroutineScope) {
+class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<SolrQueryExecutionContext>(project, coroutineScope) {
 
     fun coresData(): Array<SolrCoreData> = coresData(solrConnectionSettings(project))
 
