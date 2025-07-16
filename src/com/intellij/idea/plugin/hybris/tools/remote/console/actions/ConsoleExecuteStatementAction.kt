@@ -37,9 +37,10 @@ class ConsoleExecuteStatementAction : AnAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-        val consoleService = project.service<HybrisConsoleService>()
-        val console = consoleService.getActiveConsole() ?: return
+        val console = e.project
+            ?.service<HybrisConsoleService>()
+            ?.getActiveConsole()
+            ?: return
 
         when (console) {
             is HybrisGroovyConsole -> console.execute()

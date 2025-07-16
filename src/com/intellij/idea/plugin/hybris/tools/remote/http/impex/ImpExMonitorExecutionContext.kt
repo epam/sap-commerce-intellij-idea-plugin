@@ -20,4 +20,4 @@ package com.intellij.idea.plugin.hybris.tools.remote.http.impex
 
 import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 
-data class ImpexMonitorExecutionContext(val content: String) : ExecutionContext
+data class ImpExMonitorExecutionContext(val content: String) : ExecutionContext
