@@ -18,10 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.monitor
 
-import com.intellij.idea.plugin.hybris.tools.remote.console.TimeOption
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
+import java.util.concurrent.TimeUnit
 
 data class ImpExMonitorExecutionContext(
     val timeOption: TimeOption,
     val workingDir: String,
 ) : ExecutionContext
+
+data class TimeOption(val name: String, val value: Int, val unit: TimeUnit)
