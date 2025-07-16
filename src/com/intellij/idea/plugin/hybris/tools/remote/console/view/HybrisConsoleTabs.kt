@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBTabsPaneImpl
@@ -31,11 +30,11 @@ import javax.swing.Icon
 class HybrisConsoleTabs(
     project: Project,
     tabPlacement: Int,
-    defaultConsoles: Array<HybrisConsole<out ExecutionContext, out ExecutionResult>>,
+    defaultConsoles: Array<HybrisConsole<out ExecutionContext>>,
     disposable: Disposable
 ) : JBTabsPaneImpl(project, tabPlacement, disposable) {
 
-    private val consoles = arrayListOf<HybrisConsole<out ExecutionContext, out ExecutionResult>>()
+    private val consoles = arrayListOf<HybrisConsole<out ExecutionContext>>()
 
     init {
         defaultConsoles.forEach {
@@ -45,18 +44,18 @@ class HybrisConsoleTabs(
         addChangeListener {
             it.source.asSafely<JBEditorTabs>()
                 ?.selectedInfo
-                ?.component.asSafely<HybrisConsole<in ExecutionContext, in ExecutionResult>>()
+                ?.component.asSafely<HybrisConsole<in ExecutionContext>>()
                 ?.onSelection()
         }
     }
 
-    private fun addConsoleTab(title: String, icon: Icon?, console: HybrisConsole<out ExecutionContext, out ExecutionResult>, tip: String) {
+    private fun addConsoleTab(title: String, icon: Icon?, console: HybrisConsole<out ExecutionContext>, tip: String) {
         insertTab(title, icon, console.component, tip, consoles.size)
         consoles.add(console)
     }
 
     fun activeConsole() = consoles[selectedIndex]
-    fun setActiveConsole(console: HybrisConsole<out ExecutionContext, out ExecutionResult>) {
+    fun setActiveConsole(console: HybrisConsole<out ExecutionContext>) {
         selectedIndex = consoles.indexOf(console)
     }
 }

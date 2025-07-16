@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.toolwindow.CopyFileToHybrisConsoleDialog
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
@@ -43,7 +42,7 @@ import kotlin.reflect.KClass
 @Service(Service.Level.PROJECT)
 class CopyFileToHybrisConsoleService(private val project: Project) {
 
-    fun copySelectedFilesToConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext, out ExecutionResult>>, fileExtension: String) {
+    fun copySelectedFilesToConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext>>, fileExtension: String) {
         val console = HybrisConsoleService.getInstance(project).findConsole(consoleClass) ?: return
         val content = getContentFromSelectedFiles()
 
@@ -55,7 +54,7 @@ class CopyFileToHybrisConsoleService(private val project: Project) {
         }
     }
 
-    fun copyQueryToConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext, out ExecutionResult>>, content: String) {
+    fun copyQueryToConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext>>, content: String) {
         val hybrisConsoleService = HybrisConsoleService.getInstance(project)
         val console = hybrisConsoleService.findConsole(consoleClass) ?: return
 
@@ -81,7 +80,7 @@ class CopyFileToHybrisConsoleService(private val project: Project) {
         ?.all { it == fileExtension }
         ?: false
 
-    private fun getTextFromHybrisConsole(console: HybrisConsole<out ExecutionContext, out ExecutionResult>): String {
+    private fun getTextFromHybrisConsole(console: HybrisConsole<out ExecutionContext>): String {
         val helper = LanguageConsoleImpl.Helper(project, console.virtualFile)
         val consoleExecutionEditor = ConsoleExecutionEditor(helper)
         val text = consoleExecutionEditor.document.text

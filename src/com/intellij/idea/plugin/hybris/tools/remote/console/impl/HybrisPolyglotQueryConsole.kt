@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FxSTransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
@@ -40,7 +39,7 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext, ExecutionResult>(
+class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY,
     PolyglotQueryLanguage,

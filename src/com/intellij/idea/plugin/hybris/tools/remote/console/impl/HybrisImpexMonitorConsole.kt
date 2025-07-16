@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit
 import javax.swing.JPanel
 
 @Service(Service.Level.PROJECT)
-class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorExecutionContext, ExecutionResult>(
+class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX_MONITOR,
     ImpexLanguage,

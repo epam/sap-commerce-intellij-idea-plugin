@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.lang.Language
@@ -40,7 +39,7 @@ import com.intellij.util.asSafely
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
-abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext, out ExecutionResult>>(
+abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
     internal val language: Language,
     internal val consoleClass: KClass<C>,
     internal val name: String,

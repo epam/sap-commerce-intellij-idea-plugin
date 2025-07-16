@@ -22,7 +22,6 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyTransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
@@ -40,7 +39,7 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionContext, ExecutionResult>(
+class HybrisGroovyConsole(project: Project) : HybrisConsole<GroovyExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_GROOVY,
     GroovyLanguage,

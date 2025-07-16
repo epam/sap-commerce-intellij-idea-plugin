@@ -58,7 +58,7 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecutionContext, ExecutionResult>(
+class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH,
     PlainTextLanguage.INSTANCE,

@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 import java.io.Serial
 import javax.swing.Icon
 
-abstract class HybrisConsole<E : ExecutionContext, R : ExecutionResult>(
+abstract class HybrisConsole<E : ExecutionContext>(
     project: Project,
     title: String,
     language: Language,
@@ -72,7 +72,7 @@ abstract class HybrisConsole<E : ExecutionContext, R : ExecutionResult>(
         //NOP
     }
 
-    fun printExecutionResults(coroutineScope: CoroutineScope, result: R) {
+    fun printExecutionResults(coroutineScope: CoroutineScope, result: ExecutionResult) {
         coroutineScope.launch {
             edtWriteAction {
                 addQueryToHistory()
@@ -112,6 +112,7 @@ abstract class HybrisConsole<E : ExecutionContext, R : ExecutionResult>(
         return null
     }
 
+    @Deprecated("review")
     open fun getQuery(): String? {
         val consoleHistoryController = ConsoleHistoryController.getController(this)
             ?: return null
@@ -135,7 +136,7 @@ abstract class HybrisConsole<E : ExecutionContext, R : ExecutionResult>(
     }
 
     open fun printResults(
-        httpResult: R,
+        httpResult: ExecutionResult,
         replicaContext: ReplicaContext? = null
     ) {
         printCurrentHost(RemoteConnectionType.Hybris, replicaContext)
@@ -154,7 +155,7 @@ abstract class HybrisConsole<E : ExecutionContext, R : ExecutionResult>(
         print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
 
-    internal fun printPlainText(httpResult: R) {
+    internal fun printPlainText(httpResult: ExecutionResult) {
         val result = createResult()
             .errorMessage(httpResult.errorMessage)
             .output(httpResult.output)

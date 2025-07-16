@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.Toggle
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ValidationMode
@@ -43,7 +42,7 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext, ExecutionResult>(
+class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX,
     ImpexLanguage,
