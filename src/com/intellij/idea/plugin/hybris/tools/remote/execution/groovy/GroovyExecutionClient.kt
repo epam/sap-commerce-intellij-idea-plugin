@@ -35,7 +35,6 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
@@ -59,11 +58,13 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             .map { BasicNameValuePair(it.key, it.value) }
 
         val actionUrl = "${settings.generatedURL}/console/scripting/execute"
-        val response: HttpResponse = HybrisHacHttpClient.getInstance(project)
+        val response = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
 
         val statusLine = response.statusLine
-        val resultBuilder = ExecutionResult.builder().httpCode(statusLine.statusCode)
+        val resultBuilder = ExecutionResult.builder()
+            .replicaContext(context.replicaContext)
+            .httpCode(statusLine.statusCode)
 
         if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
             return resultBuilder

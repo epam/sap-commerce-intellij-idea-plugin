@@ -19,6 +19,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution;
 
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext;
 import org.apache.http.HttpStatus;
 
 import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
@@ -34,6 +35,7 @@ public class ExecutionResult {
     private String output;
     private String result;
     private int statusCode;
+    private ReplicaContext replicaContext;
 
     private ExecutionResult() {
     }
@@ -62,6 +64,10 @@ public class ExecutionResult {
         return result;
     }
 
+    public ReplicaContext getReplicaContext() {
+        return replicaContext;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -75,6 +81,7 @@ public class ExecutionResult {
         private String output = EMPTY;
         private String result = EMPTY;
         private int statusCode = SC_OK;
+        private ReplicaContext replicaContext;
 
         private Builder() {
         }
@@ -112,6 +119,11 @@ public class ExecutionResult {
 
         public Builder badRequest() {
             this.statusCode = HttpStatus.SC_BAD_REQUEST;
+            return this;
+        }
+
+        public Builder replicaContext(final ReplicaContext replicaContext) {
+            this.replicaContext = replicaContext;
             return this;
         }
 

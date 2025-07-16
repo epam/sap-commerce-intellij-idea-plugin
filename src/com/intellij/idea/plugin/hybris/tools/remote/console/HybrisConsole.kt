@@ -108,8 +108,8 @@ abstract class HybrisConsole<E : ExecutionContext>(
         return query
     }
 
-    protected open fun printResults(httpResult: ExecutionResult, replicaContext: ReplicaContext? = null) {
-        printCurrentHost(RemoteConnectionType.Hybris, replicaContext)
+    protected open fun printResults(httpResult: ExecutionResult) {
+        printCurrentHost(RemoteConnectionType.Hybris, httpResult.replicaContext)
         printPlainText(httpResult)
     }
 

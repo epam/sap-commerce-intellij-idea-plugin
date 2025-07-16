@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrCoreData
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrQueryExecutionContext
@@ -117,10 +116,10 @@ class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) 
         reloadCores(selectedCore)
     }
 
-    override fun printResults(httpResult: ExecutionResult, replicaContext: ReplicaContext?) {
+    override fun printResults(httpResult: ExecutionResult) {
         clear()
 
-        printCurrentHost(RemoteConnectionType.SOLR, replicaContext)
+        printCurrentHost(RemoteConnectionType.SOLR, httpResult.replicaContext)
 
         if (httpResult.hasError()) {
             ConsoleViewUtil.printAsFileType(this, httpResult.errorMessage, PlainTextFileType.INSTANCE)
