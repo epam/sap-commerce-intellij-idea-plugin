@@ -18,9 +18,9 @@
 package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaSelectionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaSelectionMode
 import com.intellij.idea.plugin.hybris.toolwindow.CCv2ReplicaSelectionDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ManualReplicaSelectionDialog
 import com.intellij.openapi.actionSystem.ActionUpdateThread

@@ -16,14 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http.groovy
+package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil.getActiveRemoteConnectionSettings
-import com.intellij.idea.plugin.hybris.tools.remote.http.HttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult.HybrisHttpResultBuilder
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
@@ -37,9 +37,9 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class GroovyHttpClient(project: Project, coroutineScope: CoroutineScope) : HttpClient<GroovyExecutionContext, HybrisHttpResult>(project, coroutineScope) {
+class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<GroovyExecutionContext, ExecutionResult>(project, coroutineScope) {
 
-    override suspend fun execute(context: GroovyExecutionContext): HybrisHttpResult {
+    override suspend fun execute(context: GroovyExecutionContext): ExecutionResult {
         val settings = getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
 
         val params = context.params()

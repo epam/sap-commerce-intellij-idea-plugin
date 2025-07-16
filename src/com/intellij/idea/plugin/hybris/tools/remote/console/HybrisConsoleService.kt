@@ -17,8 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.tools.remote.console
 
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.Service
@@ -29,13 +29,13 @@ import kotlin.reflect.KClass
 @Service(Service.Level.PROJECT)
 class HybrisConsoleService(private val project: Project) {
 
-    fun <C : HybrisConsole<out ExecutionContext, out HybrisHttpResult, *>> findConsole(consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView()
+    fun <C : HybrisConsole<out ExecutionContext, out ExecutionResult, *>> findConsole(consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView()
         ?.findConsole(consoleClass)
 
-    fun <C : HybrisConsole<out ExecutionContext, out HybrisHttpResult, *>> findConsole(toolWindow: ToolWindow, consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView(toolWindow)
+    fun <C : HybrisConsole<out ExecutionContext, out ExecutionResult, *>> findConsole(toolWindow: ToolWindow, consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView(toolWindow)
         ?.findConsole(consoleClass)
 
-    fun setActiveConsole(console: HybrisConsole<out ExecutionContext, out HybrisHttpResult, *>) {
+    fun setActiveConsole(console: HybrisConsole<out ExecutionContext, out ExecutionResult, *>) {
         HybrisToolWindowService.getInstance(project).findConsolesView()
             ?.setActiveConsole(console)
     }

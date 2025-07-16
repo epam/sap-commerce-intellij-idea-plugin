@@ -18,9 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
-import com.intellij.diff.util.DiffUtil.isEditable
 import com.intellij.execution.console.ConsoleHistoryController
-import com.intellij.execution.console.ConsoleHistoryController.addToHistory
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
@@ -30,10 +28,12 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.TimeOption
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExMonitorExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionContext
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.TextRange
@@ -45,17 +45,15 @@ import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.io.File
 import java.io.Serial
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import javax.swing.JPanel
 
 @Service(Service.Level.PROJECT)
-class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorExecutionContext>(
+class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorExecutionContext, ExecutionResult, ImpExMonitorExecutionClient>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX_MONITOR,
-    ImpexLanguage
+    ImpexLanguage,
+    project.service<ImpExMonitorExecutionClient>()
 ) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.impex.monitor.shell", null)
@@ -70,6 +68,7 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorEx
         )
     )
         .also { it.renderer = SimpleListCellRenderer.create("...") { cell -> cell.name } }
+
     private val workingDirLabel = JBLabel("Data folder: ${obtainDataFolder(project)}")
         .also { it.border = bordersLabel }
 
@@ -101,13 +100,7 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorEx
         return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
     }
 
-    private fun timeOption() = (timeComboBox.selectedItem as TimeOption)
-    private fun workingDir() = obtainDataFolder(project)
-    override fun execute(context: ImpExMonitorExecutionContext) {
-        TODO("Not yet implemented")
-    }
-
-    override fun printResults(httpResult: HybrisHttpResult, replicaContext: ReplicaContext?) {
+    override fun printResults(httpResult: ExecutionResult, replicaContext: ReplicaContext?) {
         clear()
         ConsoleViewUtil.printAsFileType(this, httpResult.output, ImpexFileType)
     }
@@ -121,35 +114,14 @@ class HybrisImpexMonitorConsole(project: Project) : HybrisConsole<ImpExMonitorEx
         return null
     }
 
-    override fun execute(query: String, replicaContext: ReplicaContext?) = monitorImpexFiles(timeOption().value, timeOption().unit, workingDir())
+    override fun currentExecutionContext(content: String) = ImpExMonitorExecutionContext(
+        timeOption = timeComboBox.selectedItem as TimeOption,
+        workingDir = obtainDataFolder(project),
+    )
 
     override fun title() = "ImpEx Monitor"
     override fun tip() = "Last imported ImpEx files"
     override fun icon() = HybrisIcons.MONITORING
-
-    private fun monitorImpexFiles(value: Int, unit: TimeUnit, pathToData: String): HybrisHttpResult {
-        val resultBuilder = HybrisHttpResult.HybrisHttpResultBuilder.createResult()
-        val minutesAgo = LocalDateTime.now().minusMinutes(unit.toMinutes(value.toLong()))
-        val out = StringBuilder()
-        File(pathToData).walk()
-            .filter { file -> file.extension == "bin" }
-            .filter { file -> file.lastModified().toLocalDateTime().isAfter(minutesAgo) }
-            .sortedBy { it.lastModified() }
-            .forEach {
-                val header = "# File Path:  ${it.path}\n# file modified: ${it.lastModified().toLocalDateTime()}"
-                out.append("\n#" + "-".repeat(header.length - 1) + "\n")
-                out.append(header)
-                out.append("\n#" + "-".repeat(header.length - 1) + "\n")
-                out.append("\n${it.readText()}\n")
-            }
-
-        return resultBuilder.httpCode(200)
-            .output(out.toString())
-            .build()
-    }
-
-    private fun Long.toLocalDateTime() = Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalDateTime()
-
 
     companion object {
         @Serial

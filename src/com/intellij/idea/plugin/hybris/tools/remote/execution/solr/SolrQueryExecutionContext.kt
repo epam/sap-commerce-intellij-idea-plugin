@@ -1,5 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,10 +17,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http.solr
+package com.intellij.idea.plugin.hybris.tools.remote.execution.solr
 
-class SolrCoreData(val core: String, val docs: Int) {
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 
-    override fun toString() = core
-
-}
+data class SolrQueryExecutionContext(
+    val content: String,
+    val core: String,
+    val rows: Int
+) : ExecutionContext

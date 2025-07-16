@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http;
+package com.intellij.idea.plugin.hybris.tools.remote.execution;
 
 import org.apache.http.HttpStatus;
 
@@ -25,7 +25,7 @@ import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.http.HttpStatus.SC_OK;
 
-public class HybrisHttpResult {
+public class ExecutionResult {
 
     private boolean hasError;
     private String errorMessage;
@@ -35,7 +35,7 @@ public class HybrisHttpResult {
     private String result;
     private int statusCode;
 
-    private HybrisHttpResult() {
+    private ExecutionResult() {
     }
 
     public int getStatusCode() {
@@ -115,8 +115,8 @@ public class HybrisHttpResult {
             return this;
         }
 
-        public HybrisHttpResult build() {
-            final HybrisHttpResult httpResult = new HybrisHttpResult();
+        public ExecutionResult build() {
+            final ExecutionResult httpResult = new ExecutionResult();
             httpResult.hasError = this.hasError;
             httpResult.errorMessage = this.errorMessage;
             httpResult.detailMessage = this.detailMessage;

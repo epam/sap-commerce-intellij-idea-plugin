@@ -16,25 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http.groovy
+package com.intellij.idea.plugin.hybris.tools.remote.execution.solr
 
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
-import org.apache.commons.lang3.BooleanUtils
+class SolrCoreData(val core: String, val docs: Int) {
 
-data class GroovyExecutionContext(
-    private val content: String,
-    private val transactionMode: GroovyTransactionMode,
-    val timeout: Int,
-    val replicaContext: ReplicaContext? = null
-) : ExecutionContext {
+    override fun toString() = core
 
-    fun params(): Map<String, String> = buildMap {
-        put("scriptType", "groovy")
-        put("commit", BooleanUtils.toStringTrueFalse(transactionMode == GroovyTransactionMode.COMMIT))
-        put("script", content)
-    }
-}
-
-enum class GroovyTransactionMode {
-    COMMIT, ROLLBACK
 }

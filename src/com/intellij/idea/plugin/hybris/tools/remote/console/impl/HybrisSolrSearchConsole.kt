@@ -27,11 +27,11 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrCoreData
+import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrQueryExecutionContext
 import com.intellij.json.JsonFileType
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.invokeLater
@@ -58,11 +58,11 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecutionContext, HybrisHttpResult, SolrHttpClient>(
+class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecutionContext, ExecutionResult, SolrExecutionClient>(
     project,
     HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH,
     PlainTextLanguage.INSTANCE,
-    SolrHttpClient.getInstance(project)
+    SolrExecutionClient.getInstance(project)
 ) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)
@@ -116,7 +116,7 @@ class HybrisSolrSearchConsole(project: Project) : HybrisConsole<SolrQueryExecuti
         reloadCores(selectedCore)
     }
 
-    override fun printResults(httpResult: HybrisHttpResult, replicaContext: ReplicaContext?) {
+    override fun printResults(httpResult: ExecutionResult, replicaContext: ReplicaContext?) {
         clear()
 
         printCurrentHost(RemoteConnectionType.SOLR, replicaContext)

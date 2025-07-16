@@ -16,15 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch
+package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 
 import com.google.gson.Gson
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
-import com.intellij.idea.plugin.hybris.tools.remote.http.HttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult.HybrisHttpResultBuilder
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
@@ -35,9 +35,9 @@ import org.apache.http.message.BasicNameValuePair
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class FlexibleSearchHttpClient(project: Project, coroutineScope: CoroutineScope) : HttpClient<FlexibleSearchExecutionContext, HybrisHttpResult>(project, coroutineScope) {
+class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<FlexibleSearchExecutionContext, ExecutionResult>(project, coroutineScope) {
 
-    override suspend fun execute(context: FlexibleSearchExecutionContext): HybrisHttpResult {
+    override suspend fun execute(context: FlexibleSearchExecutionContext): ExecutionResult {
         val settings = RemoteConnectionUtil.getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
         val params = context.params(settings)
             .map { BasicNameValuePair(it.key, it.value) }

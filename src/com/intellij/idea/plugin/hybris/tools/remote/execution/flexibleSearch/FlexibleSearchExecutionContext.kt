@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch
+package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import org.apache.commons.lang3.BooleanUtils
 
 data class FlexibleSearchExecutionContext(

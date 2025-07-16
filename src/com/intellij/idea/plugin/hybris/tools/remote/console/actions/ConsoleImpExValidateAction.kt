@@ -22,8 +22,8 @@ import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ExecutionMode
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ExecutionMode
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent

@@ -25,8 +25,8 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.service
@@ -74,7 +74,7 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader()
 
-            project.service<FlexibleSearchHttpClient>().execute(context) { coroutineScope, result ->
+            project.service<FlexibleSearchExecutionClient>().execute(context) { coroutineScope, result ->
                 fileEditor.renderExecutionResult(result)
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 

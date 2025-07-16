@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow
 
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper

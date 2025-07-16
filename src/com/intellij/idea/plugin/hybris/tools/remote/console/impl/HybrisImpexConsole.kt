@@ -24,11 +24,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.Toggle
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ValidationMode
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.Toggle
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ValidationMode
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -45,11 +45,11 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext, HybrisHttpResult, ImpExHttpClient>(
+class HybrisImpexConsole(project: Project) : HybrisConsole<ImpExExecutionContext, ExecutionResult, ImpExExecutionClient>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX,
     ImpexLanguage,
-    project.service<ImpExHttpClient>()
+    project.service<ImpExExecutionClient>()
 ) {
 
     private object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)

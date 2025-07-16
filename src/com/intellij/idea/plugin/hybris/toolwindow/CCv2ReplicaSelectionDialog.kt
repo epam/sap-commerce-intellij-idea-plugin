@@ -23,9 +23,9 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree.CCv2TreeTable
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction

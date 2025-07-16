@@ -22,9 +22,9 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ExecutionMode
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.impex.ImpExHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ExecutionMode
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.service
@@ -45,7 +45,7 @@ class ImpExValidateAction : ExecuteStatementAction<HybrisImpexConsole>(
             executionMode = ExecutionMode.VALIDATE
         )
 
-        project.service<ImpExHttpClient>().execute(context) { coroutineScope, result ->
+        project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
             coroutineScope.launch {
                 edtWriteAction {
                     console.addQueryToHistory()

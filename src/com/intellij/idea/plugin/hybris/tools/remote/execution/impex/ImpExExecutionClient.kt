@@ -16,15 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http.impex
+package com.intellij.idea.plugin.hybris.tools.remote.execution.impex
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil.getActiveRemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.HttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult.HybrisHttpResultBuilder
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
@@ -36,9 +36,9 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class ImpExHttpClient(project: Project, coroutineScope: CoroutineScope) : HttpClient<ImpExExecutionContext, HybrisHttpResult>(project, coroutineScope) {
+class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<ImpExExecutionContext, ExecutionResult>(project, coroutineScope) {
 
-    override suspend fun execute(context: ImpExExecutionContext): HybrisHttpResult {
+    override suspend fun execute(context: ImpExExecutionContext): ExecutionResult {
         val settings = getActiveRemoteConnectionSettings(project, RemoteConnectionType.Hybris)
 
         val params = context.params()

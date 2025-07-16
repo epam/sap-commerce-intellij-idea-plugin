@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 import com.intellij.database.editor.CsvTableFileEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.service
@@ -67,7 +67,7 @@ object FlexibleSearchInEditorResultsView {
         }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
     }
 
-    fun renderExecutionResult(project: Project, fileEditor: FlexibleSearchSplitEditor, result: HybrisHttpResult) {
+    fun renderExecutionResult(project: Project, fileEditor: FlexibleSearchSplitEditor, result: ExecutionResult) {
         if (result.errorMessage.isNotBlank()) {
             fileEditor.inEditorResultsView = renderInEditorError(result)
         } else {
@@ -75,7 +75,7 @@ object FlexibleSearchInEditorResultsView {
         }
     }
 
-    private fun renderInEditorResults(project: Project, fileEditor: FlexibleSearchSplitEditor, result: HybrisHttpResult) {
+    private fun renderInEditorResults(project: Project, fileEditor: FlexibleSearchSplitEditor, result: ExecutionResult) {
         CoroutineScope(Dispatchers.Default).launch {
             if (project.isDisposed) return@launch
 
@@ -94,7 +94,7 @@ object FlexibleSearchInEditorResultsView {
         }
     }
 
-    private fun renderInEditorError(result: HybrisHttpResult) = panel {
+    private fun renderInEditorError(result: ExecutionResult) = panel {
         panel {
             row {
                 cell(

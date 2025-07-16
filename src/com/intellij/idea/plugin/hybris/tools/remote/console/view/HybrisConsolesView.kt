@@ -22,8 +22,8 @@ import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.actions.ConsoleExecuteStatementAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
@@ -59,10 +59,10 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         val consoles = arrayOf(
             project.service<HybrisImpexConsole>(),
             project.service<HybrisGroovyConsole>(),
-            project.service<HybrisImpexMonitorConsole>(),
             project.service<HybrisFlexibleSearchConsole>(),
             project.service<HybrisPolyglotQueryConsole>(),
-            project.service<HybrisSolrSearchConsole>()
+            project.service<HybrisSolrSearchConsole>(),
+            project.service<HybrisImpexMonitorConsole>()
         )
         consoles.forEach { Disposer.register(this, it) }
         hybrisTabs = HybrisConsoleTabs(project, TOP, consoles, this)
@@ -83,15 +83,15 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         add(panel)
     }
 
-    fun setActiveConsole(console: HybrisConsole<out ExecutionContext, out HybrisHttpResult, *>) {
+    fun setActiveConsole(console: HybrisConsole<out ExecutionContext, out ExecutionResult, *>) {
         hybrisTabs.setActiveConsole(console)
     }
 
-    fun getActiveConsole(): HybrisConsole<out ExecutionContext, out HybrisHttpResult, *> {
+    fun getActiveConsole(): HybrisConsole<out ExecutionContext, out ExecutionResult, *> {
         return hybrisTabs.activeConsole()
     }
 
-    fun <C : HybrisConsole<out ExecutionContext, out HybrisHttpResult, *>> findConsole(consoleClass: KClass<C>): C? {
+    fun <C : HybrisConsole<out ExecutionContext, out ExecutionResult, *>> findConsole(consoleClass: KClass<C>): C? {
         for (index in 0 until hybrisTabs.tabCount) {
             val c = hybrisTabs.getComponentAt(index)
 

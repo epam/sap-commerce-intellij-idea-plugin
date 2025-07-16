@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt

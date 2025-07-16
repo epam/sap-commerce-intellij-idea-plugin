@@ -16,15 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl
+package com.intellij.idea.plugin.hybris.tools.remote.execution.solr
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
-import com.intellij.idea.plugin.hybris.tools.remote.http.HttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrCoreData
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
@@ -42,7 +40,7 @@ import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
 
 @Service(Service.Level.PROJECT)
-class SolrHttpClient(project: Project, coroutineScope: CoroutineScope) : HttpClient<SolrQueryExecutionContext, HybrisHttpResult>(project, coroutineScope) {
+class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<SolrQueryExecutionContext, ExecutionResult>(project, coroutineScope) {
 
     fun coresData(): Array<SolrCoreData> = coresData(solrConnectionSettings(project))
 
@@ -50,7 +48,7 @@ class SolrHttpClient(project: Project, coroutineScope: CoroutineScope) : HttpCli
         .map { it.core }
         .toTypedArray()
 
-    override suspend fun execute(context: SolrQueryExecutionContext): HybrisHttpResult {
+    override suspend fun execute(context: SolrQueryExecutionContext): ExecutionResult {
         val settings = solrConnectionSettings(project)
         val solrQuery = buildSolrQuery(context)
         val queryRequest = buildQueryRequest(solrQuery, settings)
@@ -93,13 +91,13 @@ class SolrHttpClient(project: Project, coroutineScope: CoroutineScope) : HttpCli
 
     private fun buildHttpSolrClient(url: String) = HttpSolrClient.Builder(url).build()
 
-    private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryExecutionContext, queryRequest: QueryRequest): HybrisHttpResult =
+    private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryExecutionContext, queryRequest: QueryRequest): ExecutionResult =
         buildHttpSolrClient("${solrConnectionSettings.generatedURL}/${queryObject.core}")
             .runCatching { request(queryRequest) }
             .map { resultBuilder().output(it["response"] as String?).build() }
             .getOrElse { resultBuilder().errorMessage(it.message).httpCode(HttpStatus.SC_BAD_GATEWAY).build() }
 
-    private fun resultBuilder() = HybrisHttpResult.HybrisHttpResultBuilder.createResult()
+    private fun resultBuilder() = ExecutionResult.HybrisHttpResultBuilder.createResult()
 
     private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: RemoteConnectionSettings) = QueryRequest(solrQuery).apply {
         setBasicAuthCredentials(solrConnectionSettings.username, solrConnectionSettings.password)
@@ -120,6 +118,6 @@ class SolrHttpClient(project: Project, coroutineScope: CoroutineScope) : HttpCli
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): SolrHttpClient = project.getService(SolrHttpClient::class.java)
+        fun getInstance(project: Project): SolrExecutionClient = project.getService(SolrExecutionClient::class.java)
     }
 }

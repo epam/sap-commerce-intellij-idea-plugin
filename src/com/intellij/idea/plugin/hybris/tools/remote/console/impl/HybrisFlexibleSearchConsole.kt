@@ -24,11 +24,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FxSTransactionMode
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.QueryMode
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FxSTransactionMode
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -43,11 +43,11 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext, HybrisHttpResult, FlexibleSearchHttpClient>(
+class HybrisFlexibleSearchConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext, ExecutionResult, FlexibleSearchExecutionClient>(
     project,
     HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
     FlexibleSearchLanguage,
-    project.service<FlexibleSearchHttpClient>()
+    project.service<FlexibleSearchExecutionClient>()
 ) {
 
     object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)

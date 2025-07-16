@@ -17,8 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaSelectionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaSelectionMode
 import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent

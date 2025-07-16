@@ -23,13 +23,11 @@ import com.google.gson.Gson;
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil;
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.SolrQueryExecutionContext;
-import com.intellij.idea.plugin.hybris.tools.remote.http.solr.impl.SolrHttpClient;
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicNameValuePair;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +42,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult.HybrisHttpResultBuilder.createResult;
+import static com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder.createResult;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -61,19 +59,6 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
         return project.getService(HybrisHacHttpClient.class);
     }
 
-    @NotNull
-    public HybrisHttpResult executeSolrSearch(final Project project, @Nullable final SolrQueryExecutionContext queryObject) {
-        if (queryObject != null) {
-            return SolrHttpClient.getInstance(project).executeSolrQuery(queryObject);
-        }
-
-        return HybrisHttpResult.HybrisHttpResultBuilder
-            .createResult()
-            .httpCode(HttpStatus.SC_BAD_GATEWAY)
-            .errorMessage("Unable to connect to Solr server. Please, check connection configuration")
-            .build();
-    }
-
     @Nullable
     public Map<?, ?> parseResponse(final Elements fsResultStatus) {
         try {
@@ -85,7 +70,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
     }
 
     @NotNull
-    public HybrisHttpResult executeLogUpdate(
+    public ExecutionResult executeLogUpdate(
         final Project project,
         final String loggerName,
         final LogLevel logLevel,
@@ -96,7 +81,7 @@ public final class HybrisHacHttpClient extends AbstractHybrisHacHttpClient {
             new BasicNameValuePair("loggerName", loggerName),
             new BasicNameValuePair("levelName", logLevel.name())
         );
-        HybrisHttpResult.HybrisHttpResultBuilder resultBuilder = createResult();
+        ExecutionResult.HybrisHttpResultBuilder resultBuilder = createResult();
         final String actionUrl = settings.getGeneratedURL() + "/platform/log4j/changeLevel/";
 
         final HttpResponse response = post(actionUrl, params, true, timeout, settings, null);

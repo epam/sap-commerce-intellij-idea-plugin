@@ -19,13 +19,14 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
 import javax.swing.Icon
+import kotlin.collections.forEach
 
 class HybrisConsoleTabs(project: Project, tabPlacement: Int, defaultConsoles: Array<HybrisConsole<out ExecutionContext>>, disposable: Disposable) : JBTabsPaneImpl(project, tabPlacement, disposable) {
 

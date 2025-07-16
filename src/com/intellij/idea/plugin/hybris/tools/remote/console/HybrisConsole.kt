@@ -23,11 +23,11 @@ import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionUtil
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.HttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult.HybrisHttpResultBuilder.createResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.groovy.ReplicaContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult.HybrisHttpResultBuilder.createResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.lang.Language
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.project.Project
@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 import java.io.Serial
 import javax.swing.Icon
 
-abstract class HybrisConsole<E : ExecutionContext, R : HybrisHttpResult, H : HttpClient<E, R>>(
+abstract class HybrisConsole<E : ExecutionContext, R : ExecutionResult, H : ExecutionClient<E, R>>(
     project: Project,
     title: String,
     language: Language,
@@ -140,7 +140,7 @@ abstract class HybrisConsole<E : ExecutionContext, R : HybrisHttpResult, H : Htt
     }
 
     open fun printResults(
-        httpResult: HybrisHttpResult,
+        httpResult: ExecutionResult,
         replicaContext: ReplicaContext? = null
     ) {
         printCurrentHost(RemoteConnectionType.Hybris, replicaContext)
@@ -159,7 +159,7 @@ abstract class HybrisConsole<E : ExecutionContext, R : HybrisHttpResult, H : Htt
         print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
 
-    internal fun printPlainText(httpResult: HybrisHttpResult) {
+    internal fun printPlainText(httpResult: ExecutionResult) {
         val result = createResult()
             .errorMessage(httpResult.errorMessage)
             .output(httpResult.output)

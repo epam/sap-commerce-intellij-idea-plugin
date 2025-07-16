@@ -24,11 +24,11 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHttpResult
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FlexibleSearchHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.FxSTransactionMode
-import com.intellij.idea.plugin.hybris.tools.remote.http.flexibleSearch.QueryMode
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FxSTransactionMode
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -42,11 +42,11 @@ import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext, HybrisHttpResult, FlexibleSearchHttpClient>(
+class HybrisPolyglotQueryConsole(project: Project) : HybrisConsole<FlexibleSearchExecutionContext, ExecutionResult, FlexibleSearchExecutionClient>(
     project,
     HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY,
     PolyglotQueryLanguage,
-    project.service<FlexibleSearchHttpClient>()
+    project.service<FlexibleSearchExecutionClient>()
 ) {
 
     private object MyConsoleRootType : ConsoleRootType(ID, null)

@@ -16,10 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http.impex
+package com.intellij.idea.plugin.hybris.tools.remote.execution.impex
 
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.AbstractHybrisHacHttpClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
 import org.apache.commons.lang3.BooleanUtils
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets

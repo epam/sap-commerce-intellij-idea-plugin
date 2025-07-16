@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http
+package com.intellij.idea.plugin.hybris.tools.remote.execution
 
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
@@ -24,7 +24,7 @@ import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-abstract class HttpClient<E : ExecutionContext, R : HybrisHttpResult>(
+abstract class ExecutionClient<E : ExecutionContext, R : ExecutionResult>(
     protected val project: Project,
     protected val coroutineScope: CoroutineScope
 ) {

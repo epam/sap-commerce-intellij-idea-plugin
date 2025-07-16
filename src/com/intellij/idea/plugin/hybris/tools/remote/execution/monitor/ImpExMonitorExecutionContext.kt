@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http.solr
+package com.intellij.idea.plugin.hybris.tools.remote.execution.monitor
 
-import com.intellij.idea.plugin.hybris.tools.remote.http.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.console.TimeOption
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 
-data class SolrQueryExecutionContext(
-    val content: String,
-    val core: String,
-    val rows: Int
+data class ImpExMonitorExecutionContext(
+    val timeOption: TimeOption,
+    val workingDir: String,
 ) : ExecutionContext
