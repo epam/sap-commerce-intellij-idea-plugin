@@ -68,19 +68,16 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         )
         fetching = true
         project.service<LoggingExecutionClient>().execute(context) { coroutineScope, result ->
-            val loggers = result.result
+            updateCache(result.loggers)
 
-            if (loggers != null) {
-                updateCache(
-                    loggers
-                        .distinctBy { it.name }
-                        .associateBy { it.name }
-                )
-                notify(NotificationType.INFORMATION, "Log Level Updated", logLevel, loggerName, server)
-            } else {
-                updateCache(null)
-                notify(NotificationType.ERROR, "Failed To Update Log Level", logLevel, loggerName, server)
-            }
+            val notificationContent = """
+                <p>Level  : $logLevel</p>
+                <p>Logger : $loggerName</p>
+                <p>${server.shortenConnectionName()}</p>
+            """.trimIndent()
+
+            if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level", notificationContent)
+            else notify(NotificationType.INFORMATION, "Log Level Updated", notificationContent)
         }
     }
 
@@ -91,43 +88,40 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             transactionMode = TransactionMode.ROLLBACK,
             title = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]..."
         )
+
         fetching = true
 
         project.service<GroovyExecutionClient>().execute(context) { coroutineScope, result ->
-            if (result.statusCode == 200) {
-                result.result
-                    ?.split("\n")
-                    ?.map { it -> it.split(" | ") }
-                    ?.filter { it.size == 3 }
-                    ?.map { CxLoggerModel(it[0], it[2], if (it.size == 3) it[1] else null) }
-                    ?.distinctBy { it.name }
-                    ?.associateBy { it.name }
-                    .let { updateCache(it) }
+            val loggers = result.result
+                ?.split("\n")
+                ?.map { it -> it.split(" | ") }
+                ?.filter { it.size == 3 }
+                ?.map { CxLoggerModel(it[0], it[2], if (it.size == 3) it[1] else null) }
+                ?.distinctBy { it.name }
+                ?.associateBy { it.name }
 
-                notify(
-                    NotificationType.INFORMATION,
-                    "Loggers state is fetched.",
-                    server
-                )
-            } else {
-                updateCache(null)
-                notify(
-                    NotificationType.ERROR,
-                    "Failed to fetch logger states",
-                    server
-                )
-            }
+            updateCache(loggers)
+
+            if (result.hasError) notify(
+                NotificationType.ERROR, "Failed to fetch logger states",
+                "<p>Server: ${server.shortenConnectionName()}</p>"
+            )
+            else notify(
+                NotificationType.INFORMATION, "Loggers state is fetched.",
+                "<p>Server: ${server.shortenConnectionName()}</p>"
+            )
         }
 
     }
 
-    private fun updateCache(map: Map<String, CxLoggerModel>?) {
+    private fun updateCache(loggers: Map<String, CxLoggerModel>?) {
         coroutineScope.launch {
-            putUserData(KEY_LOGGERS_STATE, map)
+            putUserData(KEY_LOGGERS_STATE, loggers)
 
             edtWriteAction {
                 PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
             }
+
             fetching = false
         }
     }
@@ -139,25 +133,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             .notify(project)
     }
 
-    private fun notify(
-        type: NotificationType,
-        title: String,
-        logLevel: LogLevel,
-        loggerName: String,
-        server: RemoteConnectionSettings
-    ) {
-        Notifications.create(
-            type,
-            title,
-            """
-                <p>Level  : $logLevel</p>
-                <p>Logger : $loggerName</p>
-                <p>${server.shortenConnectionName()}</p>
-            """.trimIndent()
-        )
-            .hideAfter(5)
-            .notify(project)
-    }
+    private fun notify(type: NotificationType, title: String, content: String) = Notifications
+        .create(type, title, content)
+        .hideAfter(5)
+        .notify(project)
 
     companion object {
         fun getInstance(project: Project): CxLoggerAccess = project.getService(CxLoggerAccess::class.java)

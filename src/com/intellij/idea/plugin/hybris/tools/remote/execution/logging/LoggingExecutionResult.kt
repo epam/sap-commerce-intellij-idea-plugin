@@ -19,17 +19,20 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
+import org.apache.http.HttpStatus
 
 data class LoggingExecutionResult(
-    var hasError: Boolean = false,
-    var errorMessage: String? = null,
-    var detailMessage: String? = null,
-    var output: String? = null,
-    var result: List<CxLoggerModel>? = null,
-    var statusCode: Int = 0,
-    val remoteConnectionType: RemoteConnectionType? = null,
-    val replicaContext: ReplicaContext? = null,
-) : ExecutionResult
+    val statusCode: Int = HttpStatus.SC_OK,
+    val errorMessage: String? = null,
+    private val result: List<CxLoggerModel>? = null,
+) : ExecutionResult {
+
+    val loggers
+        get() = result
+            ?.distinctBy { it.name }
+            ?.associateBy { it.name }
+
+    val hasError
+        get() = errorMessage != null
+}

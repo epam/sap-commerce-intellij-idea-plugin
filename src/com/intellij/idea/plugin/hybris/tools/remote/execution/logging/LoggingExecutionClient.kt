@@ -54,44 +54,47 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, null)
 
         val statusLine = response.statusLine
-        val result = LoggingExecutionResult(
-            remoteConnectionType = RemoteConnectionType.Hybris,
-            statusCode = statusLine.statusCode
-        )
+        val statusCode = statusLine.statusCode
 
-        if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
-            result.statusCode = HttpStatus.SC_BAD_REQUEST
-            result.errorMessage = "[${statusLine.statusCode}] ${statusLine.reasonPhrase}"
-
-            return result
+        if (statusCode != HttpStatus.SC_OK || response.entity == null) {
+            return LoggingExecutionResult(
+                statusCode = statusCode,
+                errorMessage = "[$statusCode] ${statusLine.reasonPhrase}"
+            )
         }
 
         try {
-            val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
-            val jsonAsString = document.getElementsByTag("body").text()
-            val json = Json.parseToJsonElement(jsonAsString)
-
-            json.jsonObject["loggers"]
+            val loggerModels = Jsoup
+                .parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
+                .getElementsByTag("body").text()
+                .let { Json.parseToJsonElement(it) }
+                .jsonObject["loggers"]
                 ?.jsonArray
                 ?.mapNotNull {
                     val name = it.jsonObject["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val effectiveLevel = it.jsonObject["effectiveLevel"]?.jsonObject["standardLevel"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val parentName = it.jsonObject["parentName"]?.jsonPrimitive?.content
+
                     CxLoggerModel(name, effectiveLevel, parentName)
                 }
-                ?.let { result.result = it }
 
+            return LoggingExecutionResult(
+                statusCode = statusCode,
+                result = loggerModels,
+            )
         } catch (e: SerializationException) {
             thisLogger().error("Cannot parse response", e)
 
-            result.statusCode = HttpStatus.SC_BAD_REQUEST
-            result.errorMessage = "Cannot parse response from the server..."
+            return LoggingExecutionResult(
+                statusCode = HttpStatus.SC_BAD_REQUEST,
+                errorMessage = "Cannot parse response from the server..."
+            )
         } catch (e: IOException) {
-            result.statusCode = HttpStatus.SC_BAD_REQUEST
-            result.errorMessage = "${e.message} $actionUrl"
+            return LoggingExecutionResult(
+                statusCode = HttpStatus.SC_BAD_REQUEST,
+                errorMessage = "${e.message} $actionUrl"
+            )
         }
-
-        return result
     }
 
     companion object {
