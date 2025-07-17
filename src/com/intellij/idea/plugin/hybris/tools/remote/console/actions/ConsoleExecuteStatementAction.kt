@@ -47,42 +47,35 @@ class ConsoleExecuteStatementAction : AnAction(
             ?.getActiveConsole()
             ?: return
 
-        console.isEditable = false
+        console.beforeExecution()
 
         when (console) {
             is HybrisGroovyConsole -> project.service<GroovyExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.print(result)
-                console.isEditable = true
+                console.printConsoleResult(result)
             }
 
             is HybrisImpexConsole -> project.service<ImpExExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.print(result)
-                console.isEditable = true
+                console.printConsoleResult(result)
             }
 
             is HybrisPolyglotQueryConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.print(result)
-                console.isEditable = true
+                console.printConsoleResult(result)
             }
 
             is HybrisFlexibleSearchConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.print(result)
-                console.isEditable = true
+                console.printConsoleResult(result)
             }
 
             is HybrisSolrSearchConsole -> project.service<SolrExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.print(result)
-                console.isEditable = true
+                console.printConsoleResult(result)
             }
 
             is HybrisImpexMonitorConsole -> project.service<ImpExMonitorExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.print(result)
-                console.isEditable = true
+                console.printConsoleResult(result)
             }
 
             is HybrisSQLConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.print(result)
-                console.isEditable = true
+                console.printConsoleResult(result)
             }
 
             else -> throw NotImplementedError("This action cannot be used with the ${console::class.qualifiedName}")

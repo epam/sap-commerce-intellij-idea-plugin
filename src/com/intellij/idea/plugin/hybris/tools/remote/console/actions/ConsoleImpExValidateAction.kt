@@ -30,7 +30,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.intellij.ui.AnimatedIcon
-import com.intellij.util.asSafely
 
 class ConsoleImpExValidateAction : AnAction(
     "Validate ImpEx",
@@ -42,20 +41,20 @@ class ConsoleImpExValidateAction : AnAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val consoleService = project.service<HybrisConsoleService>()
-        val console = consoleService.getActiveConsole()
-            ?.asSafely<HybrisImpexConsole>() ?: return
+        val console = e.project
+            ?.service<HybrisConsoleService>()
+            ?.getActiveConsole()
+            ?: return
 
         val context = ImpExExecutionContext(
             content = console.content,
             executionMode = ExecutionMode.VALIDATE,
         )
 
-        console.isEditable = false
+        console.beforeExecution()
 
         project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
-            console.print(result)
-            console.isEditable = true
+            console.printConsoleResult(result)
         }
     }
 

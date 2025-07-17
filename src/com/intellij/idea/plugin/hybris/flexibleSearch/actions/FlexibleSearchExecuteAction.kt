@@ -85,11 +85,9 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
             }
         } else {
             val console = openConsole(project, content) ?: return
-            console.isEditable = false
 
             project.service<FlexibleSearchExecutionClient>().execute(context) { coroutineScope, result ->
                 console.print(result)
-                console.isEditable = true
             }
         }
     }

@@ -56,12 +56,10 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
             .takeIf { it.isNotEmpty() }
             ?: listOf(GroovyExecutionContext(content, transactionMode))
 
-        console.isEditable = false
-
         executionClient.execute(
             contexts,
-            { coroutineScope, result -> console.print(result) },
-            { coroutineScope, results -> console.isEditable = true }
+            { coroutineScope, result -> console.print(result, false) },
+            { coroutineScope, results -> console.afterExecution() }
         )
     }
 

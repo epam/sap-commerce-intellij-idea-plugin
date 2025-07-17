@@ -75,21 +75,39 @@ abstract class HybrisConsole<E : ExecutionContext>(
     open fun canExecute(): Boolean = isEditable
     open fun printDefaultText() = setInputText("")
 
-    fun print(result: ExecutionResult) {
-        coroutineScope.launch {
-            edtWriteAction {
-                addCurrentQueryToHistory()
-                printResult(result)
-            }
-        }
-    }
-
     override fun dispose() {
         LineStatusTrackerManager.getInstance(project).releaseTrackerFor(editorDocument, consoleEditor)
         super.dispose()
     }
 
-    private fun addCurrentQueryToHistory() {
+    fun beforeExecution() {
+        isEditable = false
+    }
+
+    fun afterExecution() {
+        isEditable = true
+    }
+
+    fun print(result: ExecutionResult, isEditable: Boolean = true) {
+        coroutineScope.launch {
+            edtWriteAction {
+                printResult(result)
+                this@HybrisConsole.isEditable = isEditable
+            }
+        }
+    }
+
+    fun printConsoleResult(result: ExecutionResult) {
+        coroutineScope.launch {
+            edtWriteAction {
+                addQueryToHistory()
+                print(result)
+                afterExecution()
+            }
+        }
+    }
+
+    fun addQueryToHistory() {
         // Process input and add to history
         val document = currentEditor.document
         val textForHistory = document.text.trim()

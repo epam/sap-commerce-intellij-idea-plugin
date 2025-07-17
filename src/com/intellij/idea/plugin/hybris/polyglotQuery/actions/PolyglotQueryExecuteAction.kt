@@ -43,10 +43,8 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             queryMode = QueryMode.PolyglotQuery
         )
 
-        console.isEditable = false
         project.service<FlexibleSearchExecutionClient>().execute(context) { coroutineScope, result ->
             console.print(result)
-            console.isEditable = true
         }
     }
 }

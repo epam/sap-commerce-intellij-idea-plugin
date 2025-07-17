@@ -44,10 +44,8 @@ class AclValidateAction : ExecuteStatementAction<HybrisImpexConsole>(
             executionMode = ExecutionMode.VALIDATE
         )
 
-        console.isEditable = false
         project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
             console.print(result)
-            console.isEditable = true
         }
     }
 }

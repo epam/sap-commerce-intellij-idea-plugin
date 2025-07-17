@@ -43,10 +43,8 @@ class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
             content = content,
         )
 
-        console.isEditable = false
         project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
             console.print(result)
-            console.isEditable = true
         }
     }
 }
