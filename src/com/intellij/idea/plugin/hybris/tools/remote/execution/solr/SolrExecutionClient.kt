@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.solr
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -42,7 +42,7 @@ import org.apache.solr.common.util.NamedList
 import java.io.Serial
 
 @Service(Service.Level.PROJECT)
-class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<SolrQueryExecutionContext>(project, coroutineScope) {
+class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<SolrQueryExecutionContext>(project, coroutineScope) {
 
     fun coresData(): Array<SolrCoreData> = coresData(solrConnectionSettings(project))
 
@@ -50,7 +50,7 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : Ex
         .map { it.core }
         .toTypedArray()
 
-    override suspend fun execute(context: SolrQueryExecutionContext): ExecutionResult {
+    override suspend fun execute(context: SolrQueryExecutionContext): DefaultExecutionResult {
         val settings = solrConnectionSettings(project)
         val solrQuery = buildSolrQuery(context)
         val queryRequest = buildQueryRequest(solrQuery, settings)
@@ -93,13 +93,21 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : Ex
 
     private fun buildHttpSolrClient(url: String) = HttpSolrClient.Builder(url).build()
 
-    private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryExecutionContext, queryRequest: QueryRequest): ExecutionResult {
-        val resultBuilder = ExecutionResult.builder()
-            .remoteConnectionType(RemoteConnectionType.SOLR)
+    private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryExecutionContext, queryRequest: QueryRequest): DefaultExecutionResult {
+        val result = DefaultExecutionResult(
+            remoteConnectionType = RemoteConnectionType.SOLR
+        )
         return buildHttpSolrClient("${solrConnectionSettings.generatedURL}/${queryObject.core}")
             .runCatching { request(queryRequest) }
-            .map { resultBuilder.output(it["response"] as String?).build() }
-            .getOrElse { resultBuilder.errorMessage(it.message).httpCode(HttpStatus.SC_BAD_GATEWAY).build() }
+            .map {
+                result.output = it["response"] as String
+                result
+            }
+            .getOrElse {
+                result.errorMessage = it.message
+                result.statusCode = HttpStatus.SC_BAD_GATEWAY
+                result
+            }
     }
 
     private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: RemoteConnectionSettings) = QueryRequest(solrQuery).apply {

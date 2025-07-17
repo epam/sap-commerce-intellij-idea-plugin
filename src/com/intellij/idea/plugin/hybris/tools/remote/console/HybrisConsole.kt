@@ -24,8 +24,8 @@ import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.lang.Language
 import com.intellij.openapi.application.edtWriteAction
@@ -93,7 +93,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         isEditable = true
     }
 
-    fun print(result: ExecutionResult, isEditable: Boolean = true) {
+    fun print(result: DefaultExecutionResult, isEditable: Boolean = true) {
         coroutineScope.launch {
             edtWriteAction {
                 printResult(result)
@@ -117,7 +117,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         }
     }
 
-    protected open fun printResult(result: ExecutionResult) {
+    protected open fun printResult(result: DefaultExecutionResult) {
         printHost(result.remoteConnectionType, result.replicaContext)
         printPlainText(result)
     }
@@ -134,8 +134,8 @@ abstract class HybrisConsole<E : ExecutionContext>(
         print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
 
-    private fun printPlainText(result: ExecutionResult) {
-        if (result.hasError()) {
+    private fun printPlainText(result: DefaultExecutionResult) {
+        if (result.hasError) {
             print("[ERROR] \n", SYSTEM_OUTPUT)
             print("${result.errorMessage}\n", ERROR_OUTPUT)
             print("${result.detailMessage}\n", ERROR_OUTPUT)
@@ -147,7 +147,8 @@ abstract class HybrisConsole<E : ExecutionContext>(
                 print("[OUTPUT] \n", SYSTEM_OUTPUT)
                 print(it, NORMAL_OUTPUT)
             }
-        result.result.takeIf { it.isNotBlank() }
+        result.result
+            ?.takeIf { it.isNotBlank() }
             ?.let {
                 print("[RESULT] \n", SYSTEM_OUTPUT)
                 print(it, NORMAL_OUTPUT)

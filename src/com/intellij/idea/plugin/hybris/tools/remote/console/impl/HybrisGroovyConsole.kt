@@ -61,9 +61,9 @@ class HybrisGroovyConsole(project: Project, coroutineScope: CoroutineScope) : Hy
     }
 
     override fun currentExecutionContext(content: String) = GroovyExecutionContext(
-        content,
-        if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
-        timeoutSpinner.value.toString().toInt() * 1000,
+        content= content,
+        transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
+        timeout = timeoutSpinner.value.toString().toInt() * 1000,
     )
 
     override fun title() = "Groovy Scripting"

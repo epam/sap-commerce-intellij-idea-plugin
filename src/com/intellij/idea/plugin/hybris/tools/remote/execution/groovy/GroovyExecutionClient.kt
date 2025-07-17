@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext.Companion.auto
@@ -43,7 +43,7 @@ import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<GroovyExecutionContext>(project, coroutineScope) {
+class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<GroovyExecutionContext>(project, coroutineScope) {
 
     var connectionContext: RemoteConnectionContext
         get() = putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, auto())
@@ -51,7 +51,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             putUserData(KEY_REMOTE_CONNECTION_CONTEXT, value)
         }
 
-    override suspend fun execute(context: GroovyExecutionContext): ExecutionResult {
+    override suspend fun execute(context: GroovyExecutionContext): DefaultExecutionResult {
         val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
 
         val params = context.params()
@@ -62,16 +62,15 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
 
         val statusLine = response.statusLine
-        val resultBuilder = ExecutionResult.builder()
-            .replicaContext(context.replicaContext)
-            .remoteConnectionType(RemoteConnectionType.Hybris)
-            .httpCode(statusLine.statusCode)
+        val result = DefaultExecutionResult(
+            replicaContext = context.replicaContext,
+            statusCode = statusLine.statusCode
+        )
 
         if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
-            return resultBuilder
-                .httpCode(HttpStatus.SC_BAD_REQUEST)
-                .errorMessage("[${statusLine.statusCode}] ${statusLine.reasonPhrase}")
-                .build()
+            result.statusCode = HttpStatus.SC_BAD_REQUEST
+            result.errorMessage = "[${statusLine.statusCode}] ${statusLine.reasonPhrase}"
+            return result
         }
 
         try {
@@ -84,28 +83,26 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             val errorText = json.jsonObject["stacktraceText"]
                 ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
 
-            if (errorText != null) resultBuilder.errorMessage(errorText)
+            if (errorText != null) result.errorMessage = errorText
             else {
                 json.jsonObject["outputText"]
                     ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
-                    ?.let { resultBuilder.output(it) }
+                    ?.let { result.output = it }
                 json.jsonObject["executionResult"]
                     ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
-                    ?.let { resultBuilder.result(it) }
+                    ?.let { result.result = it }
             }
         } catch (e: SerializationException) {
             thisLogger().error("Cannot parse response", e)
 
-            resultBuilder
-                .httpCode(HttpStatus.SC_BAD_REQUEST)
-                .errorMessage("Cannot parse response from the server...")
+            result.statusCode = HttpStatus.SC_BAD_REQUEST
+            result.errorMessage = "Cannot parse response from the server..."
         } catch (e: IOException) {
-            resultBuilder
-                .httpCode(HttpStatus.SC_BAD_REQUEST)
-                .errorMessage("${e.message} $actionUrl")
+            result.statusCode = HttpStatus.SC_BAD_REQUEST
+            result.errorMessage = "${e.message} $actionUrl"
         }
 
-        return resultBuilder.build()
+        return result
     }
 
     companion object {

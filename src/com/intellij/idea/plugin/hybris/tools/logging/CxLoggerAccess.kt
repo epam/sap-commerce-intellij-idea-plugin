@@ -50,8 +50,11 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     private var fetching: Boolean = false
     val loggers
         get() = getUserData(KEY_LOGGERS_STATE)
+
     val canRefresh: Boolean
         get() = !fetching
+
+    fun logger(loggerIdentifier: String) = loggers?.get(loggerIdentifier)
 
     fun set(loggerName: String, logLevel: LogLevel) {
         val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
@@ -78,11 +81,11 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         project.service<GroovyExecutionClient>().execute(context) { coroutineScope, result ->
             if (result.statusCode == 200) {
                 result.result
-                    .split("\n")
-                    .map { it -> it.split(" | ") }
-                    .filter { it.size == 3 }
-                    .map { CxLoggerModel(it[0], it[2], it[1]) }
-                    .associateBy { it.name }
+                    ?.split("\n")
+                    ?.map { it -> it.split(" | ") }
+                    ?.filter { it.size == 3 }
+                    ?.map { CxLoggerModel(it[0], it[2], it[1]) }
+                    ?.associateBy { it.name }
                     .let { putUserData(KEY_LOGGERS_STATE, it) }
 
                 notifySuccess()

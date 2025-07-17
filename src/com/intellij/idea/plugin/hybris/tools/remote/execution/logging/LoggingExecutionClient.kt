@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -39,9 +38,9 @@ import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<LoggingExecutionContext>(project, coroutineScope) {
+class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<LoggingExecutionContext, LoggingExecutionResult>(project, coroutineScope) {
 
-    override suspend fun execute(context: LoggingExecutionContext): ExecutionResult {
+    override suspend fun execute(context: LoggingExecutionContext): LoggingExecutionResult {
         val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
 
         val params = context.params()
@@ -52,15 +51,16 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, null)
 
         val statusLine = response.statusLine
-        val resultBuilder = ExecutionResult.builder()
-            .remoteConnectionType(RemoteConnectionType.Hybris)
-            .httpCode(statusLine.statusCode)
+        val result = LoggingExecutionResult(
+            remoteConnectionType = RemoteConnectionType.Hybris,
+            statusCode = statusLine.statusCode
+        )
 
         if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
-            return resultBuilder
-                .httpCode(HttpStatus.SC_BAD_REQUEST)
-                .errorMessage("[${statusLine.statusCode}] ${statusLine.reasonPhrase}")
-                .build()
+            result.statusCode = HttpStatus.SC_BAD_REQUEST
+            result.errorMessage = "[${statusLine.statusCode}] ${statusLine.reasonPhrase}"
+
+            return result
         }
 
         try {
@@ -70,19 +70,20 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
 
             val loggers = json.jsonObject["loggers"]
             // TODO: @Eugeni to use this response
+
+            result.result = listOf()
+
         } catch (e: SerializationException) {
             thisLogger().error("Cannot parse response", e)
 
-            resultBuilder
-                .httpCode(HttpStatus.SC_BAD_REQUEST)
-                .errorMessage("Cannot parse response from the server...")
+            result.statusCode = HttpStatus.SC_BAD_REQUEST
+            result.errorMessage = "Cannot parse response from the server..."
         } catch (e: IOException) {
-            resultBuilder
-                .errorMessage("${e.message} $actionUrl")
-                .httpCode(HttpStatus.SC_BAD_REQUEST)
+            result.statusCode = HttpStatus.SC_BAD_REQUEST
+            result.errorMessage = "${e.message} $actionUrl"
         }
 
-        return resultBuilder.build()
+        return result
     }
 
     companion object {

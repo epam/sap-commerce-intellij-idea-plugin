@@ -28,7 +28,17 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import java.io.Serial
 
-abstract class ExecutionClient<E : ExecutionContext>(
+abstract class DefaultExecutionClient<E : ExecutionContext>(
+    project: Project,
+    coroutineScope: CoroutineScope
+) : ExecutionClient<E, DefaultExecutionResult>(project, coroutineScope) {
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -7785886660763821295L
+    }
+}
+
+abstract class ExecutionClient<E : ExecutionContext, R : ExecutionResult>(
     protected val project: Project,
     protected val coroutineScope: CoroutineScope
 ) : UserDataHolderBase() {
@@ -36,7 +46,7 @@ abstract class ExecutionClient<E : ExecutionContext>(
     fun execute(
         context: E,
         beforeCallback: (CoroutineScope) -> Unit = { _ -> },
-        resultCallback: (CoroutineScope, ExecutionResult) -> Unit
+        resultCallback: (CoroutineScope, R) -> Unit
     ) {
         execute(
             contexts = listOf(context),
@@ -48,8 +58,8 @@ abstract class ExecutionClient<E : ExecutionContext>(
     fun execute(
         contexts: Collection<E>,
         beforeCallback: (CoroutineScope) -> Unit = { _ -> },
-        resultCallback: (CoroutineScope, ExecutionResult) -> Unit,
-        resultsCallback: (CoroutineScope, Collection<ExecutionResult>) -> Unit = { _, _ -> }
+        resultCallback: (CoroutineScope, R) -> Unit,
+        resultsCallback: (CoroutineScope, Collection<R>) -> Unit = { _, _ -> }
     ) {
         coroutineScope.launch {
             beforeCallback.invoke(this)
@@ -66,11 +76,11 @@ abstract class ExecutionClient<E : ExecutionContext>(
         }
     }
 
-    internal abstract suspend fun execute(context: E): ExecutionResult
+    internal abstract suspend fun execute(context: E): R
 
     private suspend fun process(
         context: E,
-        resultCallback: (CoroutineScope, ExecutionResult) -> Unit
+        resultCallback: (CoroutineScope, R) -> Unit
     ) = withBackgroundProgress(project, context.title, true) {
         val result = reportProgress { progressReporter ->
             execute(context)

@@ -18,11 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.monitor
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
+import org.apache.http.HttpStatus
 import java.io.File
 import java.io.Serial
 import java.time.Instant
@@ -30,9 +31,9 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 @Service(Service.Level.PROJECT)
-class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<ImpExMonitorExecutionContext>(project, coroutineScope) {
+class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<ImpExMonitorExecutionContext>(project, coroutineScope) {
 
-    override suspend fun execute(context: ImpExMonitorExecutionContext): ExecutionResult {
+    override suspend fun execute(context: ImpExMonitorExecutionContext): DefaultExecutionResult {
         val unit = context.timeOption.unit
         val duration = context.timeOption.value.toLong()
         val minutesAgo = LocalDateTime.now().minusMinutes(unit.toMinutes(duration))
@@ -49,10 +50,10 @@ class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineSco
                 out.append("\n${it.readText()}\n")
             }
 
-        return ExecutionResult.builder()
-            .ok()
-            .output(out.toString())
-            .build()
+        return DefaultExecutionResult(
+            statusCode = HttpStatus.SC_OK,
+            output = out.toString()
+        )
     }
 
     private fun Long.toLocalDateTime() = Instant.ofEpochMilli(this)

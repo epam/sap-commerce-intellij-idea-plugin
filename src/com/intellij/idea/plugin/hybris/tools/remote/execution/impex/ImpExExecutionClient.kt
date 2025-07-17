@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.impex
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -37,9 +37,9 @@ import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<ImpExExecutionContext>(project, coroutineScope) {
+class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<ImpExExecutionContext>(project, coroutineScope) {
 
-    override suspend fun execute(context: ImpExExecutionContext): ExecutionResult {
+    override suspend fun execute(context: ImpExExecutionContext): DefaultExecutionResult {
         val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
 
         val params = context.params()
@@ -53,33 +53,35 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : E
             .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, null)
 
         val statusLine = response.statusLine
-        val resultBuilder = ExecutionResult.builder()
-            .remoteConnectionType(RemoteConnectionType.Hybris)
-            .httpCode(statusLine.statusCode)
 
         if (statusLine.statusCode != HttpStatus.SC_OK) {
-            return resultBuilder
-                .errorMessage(statusLine.reasonPhrase)
-                .build()
+            return DefaultExecutionResult(
+                statusCode = statusLine.statusCode,
+                errorMessage = statusLine.reasonPhrase
+            )
         }
+
+        val result = DefaultExecutionResult(
+            statusCode = statusLine.statusCode
+        )
 
         try {
             val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
 
             when (context.executionMode) {
-                ExecutionMode.IMPORT -> processImportResponse(document, resultBuilder)
-                ExecutionMode.VALIDATE -> processValidateResponse(document, resultBuilder)
+                ExecutionMode.IMPORT -> processImportResponse(document, result)
+                ExecutionMode.VALIDATE -> processValidateResponse(document, result)
             }
         } catch (e: IOException) {
             thisLogger().warn(e.message, e)
 
-            resultBuilder.errorMessage(e.message)
+            result.errorMessage = e.message
         }
 
-        return resultBuilder.build()
+        return result
     }
 
-    private fun processImportResponse(document: Document, resultBuilder: ExecutionResult.Builder) {
+    private fun processImportResponse(document: Document, result: DefaultExecutionResult) {
         document.getElementById("impexResult")
             ?.takeIf { it.hasAttr("data-level") && it.hasAttr("data-result") }
             ?.let { resultElement ->
@@ -88,31 +90,36 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : E
                     document.getElementsByClass("impexResult")
                         .first()?.children()?.first()?.text()
                         ?.let { it ->
-                            resultBuilder
-                                .errorMessage(dataResult)
-                                .detailMessage(it)
+                            result.errorMessage = dataResult
+                            result.detailMessage = it
                         }
-                        ?: resultBuilder.errorMessage("No data in response")
+                        ?: {
+                            result.errorMessage = "No data in response"
+                        }
                 } else {
-                    resultBuilder.output(dataResult)
+                    result.output = dataResult
                 }
             }
-            ?: resultBuilder.errorMessage("No data in response")
+            ?: {
+                result.errorMessage = "No data in response"
+            }
     }
 
-    private fun processValidateResponse(document: Document, resultBuilder: ExecutionResult.Builder) {
+    private fun processValidateResponse(document: Document, result: DefaultExecutionResult) {
         document.getElementById("validationResultMsg")
             ?.takeIf { it.hasAttr("data-level") && it.hasAttr("data-result") }
             ?.let {
                 if ("error" == it.attr("data-level")) {
                     val dataResult = it.attr("data-result")
-                    resultBuilder.errorMessage(dataResult).build()
+                    result.errorMessage = dataResult
                 } else {
                     val dataResult = it.attr("data-result")
-                    resultBuilder.output(dataResult)
+                    result.output = dataResult
                 }
             }
-            ?: resultBuilder.errorMessage("No data in response")
+            ?: {
+                result.errorMessage = "No data in response"
+            }
     }
 
     companion object {

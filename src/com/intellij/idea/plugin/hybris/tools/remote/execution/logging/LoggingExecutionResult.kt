@@ -16,8 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution
+package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
-interface ExecutionResult {
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 
-}
+data class LoggingExecutionResult(
+    var hasError: Boolean = false,
+    var errorMessage: String? = null,
+    var detailMessage: String? = null,
+    var output: String? = null,
+    var result: List<CxLoggerModel>? = null,
+    var statusCode: Int = 0,
+    val remoteConnectionType: RemoteConnectionType? = null,
+    val replicaContext: ReplicaContext? = null,
+) : ExecutionResult
