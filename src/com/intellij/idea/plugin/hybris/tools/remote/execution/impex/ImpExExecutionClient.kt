@@ -42,25 +42,22 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
 
     override suspend fun execute(context: ImpExExecutionContext): DefaultExecutionResult {
         val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-
-        val params = context.params()
-            .map { BasicNameValuePair(it.key, it.value) }
         val actionUrl = when (context.executionMode) {
             ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
             ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"
         }
+        val params = context.params()
+            .map { BasicNameValuePair(it.key, it.value) }
 
-        val response = HybrisHacHttpClient.getInstance(project)
+        val response = project.service<HybrisHacHttpClient>()
             .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, null)
-
         val statusLine = response.statusLine
+        val statusCode = statusLine.statusCode
 
-        if (statusLine.statusCode != HttpStatus.SC_OK) {
-            return DefaultExecutionResult(
-                statusCode = statusLine.statusCode,
-                errorMessage = statusLine.reasonPhrase
-            )
-        }
+        if (statusCode != HttpStatus.SC_OK) return DefaultExecutionResult(
+            statusCode = statusCode,
+            errorMessage = statusLine.reasonPhrase
+        )
 
         try {
             val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")

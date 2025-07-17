@@ -50,7 +50,7 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             .map { BasicNameValuePair(it.key, it.value) }
 
         val actionUrl = settings.generatedURL + "/platform/log4j/changeLevel/"
-        val response = HybrisHacHttpClient.getInstance(project)
+        val response = project.service<HybrisHacHttpClient>()
             .post(actionUrl, params, false, context.timeout, settings, null)
 
         val statusLine = response.statusLine

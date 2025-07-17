@@ -53,14 +53,11 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
 
     override suspend fun execute(context: GroovyExecutionContext): DefaultExecutionResult {
         val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-
+        val actionUrl = "${settings.generatedURL}/console/scripting/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
-
-        val actionUrl = "${settings.generatedURL}/console/scripting/execute"
-        val response = HybrisHacHttpClient.getInstance(project)
+        val response = project.service<HybrisHacHttpClient>()
             .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
-
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 

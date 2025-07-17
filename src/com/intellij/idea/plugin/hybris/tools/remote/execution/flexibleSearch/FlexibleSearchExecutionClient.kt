@@ -39,49 +39,47 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
 
     override suspend fun execute(context: FlexibleSearchExecutionContext): DefaultExecutionResult {
         val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
         val params = context.params(settings)
             .map { BasicNameValuePair(it.key, it.value) }
-        val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
-
-        val response = HybrisHacHttpClient.getInstance(project)
+        val response = project.service<HybrisHacHttpClient>()
             .post(actionUrl, params, true, context.timeout, settings, null)
         val statusLine = response.statusLine
+        val statusCode = statusLine.statusCode
 
-        val result = DefaultExecutionResult(
-            statusCode = statusLine.statusCode
+        if (statusCode != HttpStatus.SC_OK || response.entity == null) return DefaultExecutionResult(
+            statusCode = HttpStatus.SC_BAD_REQUEST,
+            errorMessage = "[$statusCode] ${statusLine.reasonPhrase}"
         )
 
-        if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
-            result.statusCode = HttpStatus.SC_BAD_REQUEST
-            result.errorMessage = "[${statusLine.statusCode}] ${statusLine.reasonPhrase}"
-        } else {
-            try {
-                val json = response.entity.content
-                    .readAllBytes()
-                    .toString(StandardCharsets.UTF_8)
-                    .let { Gson().fromJson(it, HashMap::class.java) }
+        try {
+            val json = response.entity.content
+                .readAllBytes()
+                .toString(StandardCharsets.UTF_8)
+                .let { Gson().fromJson(it, HashMap::class.java) }
 
-                json["exception"]
-                    ?.asSafely<MutableMap<*, *>>()
-                    ?.let { it["message"] }
-                    ?.toString()
-                    ?.let {
-                        result.statusCode = HttpStatus.SC_BAD_REQUEST
-                        result.errorMessage = it
-
-                    }
-                    ?: buildTableResult(result, json)
-
-            } catch (e: Exception) {
-                result.statusCode = HttpStatus.SC_BAD_REQUEST
-                result.errorMessage = "Cannot parse response from the server: ${e.message} $actionUrl"
-            }
+            return json["exception"]
+                ?.asSafely<MutableMap<*, *>>()
+                ?.let { it["message"] }
+                ?.toString()
+                ?.let {
+                    DefaultExecutionResult(
+                        statusCode = HttpStatus.SC_BAD_REQUEST,
+                        errorMessage = it
+                    )
+                }
+                ?: DefaultExecutionResult(
+                    output = buildTableResult(json)
+                )
+        } catch (e: Exception) {
+            return DefaultExecutionResult(
+                statusCode = HttpStatus.SC_BAD_REQUEST,
+                errorMessage = "Cannot parse response from the server: ${e.message} $actionUrl"
+            )
         }
-
-        return result
     }
 
-    private fun buildTableResult(result: DefaultExecutionResult, json: HashMap<*, *>) {
+    private fun buildTableResult(json: HashMap<*, *>): String {
         val tableBuilder = TableBuilder()
 
         json["headers"].asSafely<MutableList<String>>()
@@ -89,7 +87,7 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
         json["resultList"].asSafely<List<List<String>>>()
             ?.forEach { row -> tableBuilder.addRow(row) }
 
-        result.output = tableBuilder.toString()
+        return tableBuilder.toString()
     }
 
     companion object {

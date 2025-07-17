@@ -23,12 +23,12 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaCont
 import org.apache.http.HttpStatus
 
 data class DefaultExecutionResult(
-    var errorMessage: String? = null,
-    var detailMessage: String? = null,
-    var output: String = "",
-    var result: String? = null,
-    var statusCode: Int = HttpStatus.SC_OK,
     val remoteConnectionType: RemoteConnectionType = RemoteConnectionType.Hybris,
+    val statusCode: Int = HttpStatus.SC_OK,
+    val result: String? = null,
+    val output: String = "",
+    val errorMessage: String? = null,
+    val detailMessage: String? = null,
     val replicaContext: ReplicaContext? = null,
 ) : ExecutionResult {
 
