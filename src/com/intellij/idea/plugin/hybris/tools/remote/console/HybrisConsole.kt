@@ -81,7 +81,12 @@ abstract class HybrisConsole<E : ExecutionContext>(
     }
 
     fun beforeExecution() {
-        isEditable = false
+        coroutineScope.launch {
+            edtWriteAction {
+                isEditable = false
+                addQueryToHistory()
+            }
+        }
     }
 
     fun afterExecution() {
@@ -93,16 +98,6 @@ abstract class HybrisConsole<E : ExecutionContext>(
             edtWriteAction {
                 printResult(result)
                 this@HybrisConsole.isEditable = isEditable
-            }
-        }
-    }
-
-    fun printConsoleResult(result: ExecutionResult) {
-        coroutineScope.launch {
-            edtWriteAction {
-                addQueryToHistory()
-                print(result)
-                afterExecution()
             }
         }
     }

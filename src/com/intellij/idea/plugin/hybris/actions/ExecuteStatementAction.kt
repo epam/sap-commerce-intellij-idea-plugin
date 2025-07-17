@@ -57,7 +57,6 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
         val console = HybrisConsoleService.getInstance(project).openConsole(consoleClass) ?: return null
 
         console.setInputText(content)
-        console.addQueryToHistory()
         console.beforeExecution()
 
         return console

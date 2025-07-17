@@ -47,36 +47,48 @@ class ConsoleExecuteStatementAction : AnAction(
             ?.getActiveConsole()
             ?: return
 
-        console.beforeExecution()
-
         when (console) {
-            is HybrisGroovyConsole -> project.service<GroovyExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printConsoleResult(result)
-            }
+            is HybrisGroovyConsole -> project.service<GroovyExecutionClient>().execute(
+                context = console.context,
+                beforeCallback = { coroutineScope -> console.beforeExecution() },
+                resultCallback = { coroutineScope, result -> console.print(result) }
+            )
 
-            is HybrisImpexConsole -> project.service<ImpExExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printConsoleResult(result)
-            }
+            is HybrisImpexConsole -> project.service<ImpExExecutionClient>().execute(
+                context = console.context,
+                beforeCallback = { coroutineScope -> console.beforeExecution() },
+                resultCallback = { coroutineScope, result -> console.print(result) }
+            )
 
-            is HybrisPolyglotQueryConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printConsoleResult(result)
-            }
+            is HybrisPolyglotQueryConsole -> project.service<FlexibleSearchExecutionClient>().execute(
+                context = console.context,
+                beforeCallback = { coroutineScope -> console.beforeExecution() },
+                resultCallback = { coroutineScope, result -> console.print(result) }
+            )
 
-            is HybrisFlexibleSearchConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printConsoleResult(result)
-            }
+            is HybrisFlexibleSearchConsole -> project.service<FlexibleSearchExecutionClient>().execute(
+                context = console.context,
+                beforeCallback = { coroutineScope -> console.beforeExecution() },
+                resultCallback = { coroutineScope, result -> console.print(result) }
+            )
 
-            is HybrisSolrSearchConsole -> project.service<SolrExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printConsoleResult(result)
-            }
+            is HybrisSolrSearchConsole -> project.service<SolrExecutionClient>().execute(
+                context = console.context,
+                beforeCallback = { coroutineScope -> console.beforeExecution() },
+                resultCallback = { coroutineScope, result -> console.print(result) }
+            )
 
-            is HybrisImpexMonitorConsole -> project.service<ImpExMonitorExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printConsoleResult(result)
-            }
+            is HybrisImpexMonitorConsole -> project.service<ImpExMonitorExecutionClient>().execute(
+                context = console.context,
+                beforeCallback = { coroutineScope -> console.beforeExecution() },
+                resultCallback = { coroutineScope, result -> console.print(result) }
+            )
 
-            is HybrisSQLConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
-                console.printConsoleResult(result)
-            }
+            is HybrisSQLConsole -> project.service<FlexibleSearchExecutionClient>().execute(
+                context = console.context,
+                beforeCallback = { coroutineScope -> console.beforeExecution() },
+                resultCallback = { coroutineScope, result -> console.print(result) }
+            )
 
             else -> throw NotImplementedError("This action cannot be used with the ${console::class.qualifiedName}")
         }

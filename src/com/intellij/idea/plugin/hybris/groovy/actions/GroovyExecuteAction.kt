@@ -57,9 +57,9 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
             ?: listOf(GroovyExecutionContext(content, transactionMode))
 
         executionClient.execute(
-            contexts,
-            { coroutineScope, result -> console.print(result, false) },
-            { coroutineScope, results -> console.afterExecution() }
+            contexts = contexts,
+            resultCallback = { coroutineScope, result -> console.print(result, false) },
+            resultsCallback = { coroutineScope, results -> console.afterExecution() }
         )
     }
 

@@ -51,11 +51,11 @@ class ConsoleImpExValidateAction : AnAction(
             executionMode = ExecutionMode.VALIDATE,
         )
 
-        console.beforeExecution()
-
-        project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
-            console.printConsoleResult(result)
-        }
+        project.service<ImpExExecutionClient>().execute(
+            context = context,
+            beforeCallback = { coroutineScope -> console.beforeExecution() },
+            resultCallback = { coroutineScope, result -> console.print(result) }
+        )
     }
 
     override fun update(e: AnActionEvent) {

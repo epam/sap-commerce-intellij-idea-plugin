@@ -33,16 +33,27 @@ abstract class ExecutionClient<E : ExecutionContext>(
     protected val coroutineScope: CoroutineScope
 ) : UserDataHolderBase() {
 
-    fun execute(context: E, resultCallback: (CoroutineScope, ExecutionResult) -> Unit) {
-        execute(listOf(context), resultCallback) { _, _ -> }
+    fun execute(
+        context: E,
+        beforeCallback: (CoroutineScope) -> Unit = { _ -> },
+        resultCallback: (CoroutineScope, ExecutionResult) -> Unit
+    ) {
+        execute(
+            contexts = listOf(context),
+            beforeCallback = beforeCallback,
+            resultCallback = resultCallback,
+        )
     }
 
     fun execute(
         contexts: Collection<E>,
+        beforeCallback: (CoroutineScope) -> Unit = { _ -> },
         resultCallback: (CoroutineScope, ExecutionResult) -> Unit,
-        resultsCallback: (CoroutineScope, Collection<ExecutionResult>) -> Unit
+        resultsCallback: (CoroutineScope, Collection<ExecutionResult>) -> Unit = { _, _ -> }
     ) {
         coroutineScope.launch {
+            beforeCallback.invoke(this)
+
             val results = contexts
                 .map { context ->
                     async {
