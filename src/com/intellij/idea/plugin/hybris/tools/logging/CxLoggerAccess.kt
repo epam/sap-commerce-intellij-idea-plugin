@@ -150,10 +150,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             type,
             title,
             """
-                            <p>Level  : $logLevel</p>
-                            <p>Logger : $loggerName</p>
-                            <p>${server.shortenConnectionName()}</p>
-                            """.trimIndent()
+                <p>Level  : $logLevel</p>
+                <p>Logger : $loggerName</p>
+                <p>${server.shortenConnectionName()}</p>
+            """.trimIndent()
         )
             .hideAfter(5)
             .notify(project)
