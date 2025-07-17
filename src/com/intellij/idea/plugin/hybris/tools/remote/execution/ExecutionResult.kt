@@ -18,6 +18,4 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution
 
-interface ExecutionResult {
-
-}
+interface ExecutionResult
