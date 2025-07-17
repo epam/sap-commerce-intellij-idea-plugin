@@ -23,6 +23,8 @@ import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import java.io.Serial
 
@@ -33,17 +35,42 @@ abstract class ExecutionClient<E : ExecutionContext>(
 
     fun execute(context: E, resultCallback: (CoroutineScope, ExecutionResult) -> Unit) {
         coroutineScope.launch {
-            withBackgroundProgress(project, context.title, true) {
-                val result = reportProgress { progressReporter ->
-                    execute(context)
-                }
+            process(context, resultCallback)
+        }
+    }
 
-                resultCallback.invoke(this, result)
-            }
+    fun execute(
+        contexts: Collection<E>,
+        resultCallback: (CoroutineScope, ExecutionResult) -> Unit,
+        resultsCallback: (CoroutineScope, Collection<ExecutionResult>) -> Unit
+    ) {
+        coroutineScope.launch {
+            val results = contexts
+                .map { context ->
+                    async {
+                        process(context, resultCallback)
+                    }
+                }
+                .awaitAll()
+
+            resultsCallback.invoke(this, results)
         }
     }
 
     internal abstract suspend fun execute(context: E): ExecutionResult
+
+    private suspend fun process(
+        context: E,
+        resultCallback: (CoroutineScope, ExecutionResult) -> Unit
+    ) = withBackgroundProgress(project, context.title, true) {
+        val result = reportProgress { progressReporter ->
+            execute(context)
+        }
+
+        resultCallback.invoke(this, result)
+
+        result
+    }
 
     companion object {
         @Serial

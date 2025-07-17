@@ -58,18 +58,11 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
 
         console.isEditable = false
 
-        var executions = 0
-
-        contexts.forEach {
-            executionClient.execute(it) { coroutineScope, result ->
-                console.print(result)
-
-                executions++
-                if (executions == contexts.size) {
-                    console.isEditable = true
-                }
-            }
-        }
+        executionClient.execute(
+            contexts,
+            { coroutineScope, result -> console.print(result) },
+            { coroutineScope, results -> console.isEditable = true }
+        )
     }
 
     override fun update(e: AnActionEvent) {

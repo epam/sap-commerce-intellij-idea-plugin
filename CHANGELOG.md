@@ -25,6 +25,14 @@
 ### `Remote Connection` enhancements
 - Shorten CCv2 url without custom name [#1449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1449)
 
+### Other
+- Re-implemented consoles related API [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
+- Re-implemented hAC, SOLR & ImpEx Monitor API [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
+- Introduced new SQL console [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
+- Removed non-working console actions [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
+- Removed copy to console actions (use in-editor execute actions) [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
+- New API for parallel executions of the requests [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
+
 ### Fixes
 - Fixed [#1205](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1205) JSoap's inability to parse response with the `&quot;` sequence [#1439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1439)
 - Ensure that action toolbar is always installed for new Editors [#1445](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1445)
