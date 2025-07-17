@@ -70,12 +70,17 @@ class ConsoleExecuteStatementAction : AnAction(
                 console.isEditable = true
             }
 
-            is HybrisSolrSearchConsole -> SolrExecutionClient.getInstance(project).execute(console.context) { coroutineScope, result ->
+            is HybrisSolrSearchConsole -> project.service<SolrExecutionClient>().execute(console.context) { coroutineScope, result ->
                 console.print(result)
                 console.isEditable = true
             }
 
             is HybrisImpexMonitorConsole -> project.service<ImpExMonitorExecutionClient>().execute(console.context) { coroutineScope, result ->
+                console.print(result)
+                console.isEditable = true
+            }
+
+            is HybrisSQLConsole -> project.service<FlexibleSearchExecutionClient>().execute(console.context) { coroutineScope, result ->
                 console.print(result)
                 console.isEditable = true
             }

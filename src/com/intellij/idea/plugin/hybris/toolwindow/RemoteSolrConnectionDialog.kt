@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
@@ -152,7 +153,7 @@ class RemoteSolrConnectionDialog(
     }
 
     override fun testConnection(testSettings: RemoteConnectionSettings): String? = try {
-        SolrExecutionClient.getInstance(project).listOfCores(testSettings)
+        project.service<SolrExecutionClient>().listOfCores(testSettings)
 
         null
     } catch (e: Exception) {

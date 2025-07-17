@@ -163,6 +163,7 @@ object HybrisIcons {
 
     object FlexibleSearch {
         val FILE = getIcon("/icons/fileTypes/flexibleSearchFile.svg")
+        val SQL = getIcon("/icons/flexibleSearch/sql.svg")
 
         val TABLE_ALIAS = getIcon("/icons/flexibleSearch/tableAlias.svg")
         val COLUMN_ALIAS = getIcon("/icons/flexibleSearch/columnAlias.svg")

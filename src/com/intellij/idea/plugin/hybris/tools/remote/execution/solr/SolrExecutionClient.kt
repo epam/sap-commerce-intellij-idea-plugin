@@ -122,8 +122,5 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : Ex
     companion object {
         @Serial
         private const val serialVersionUID: Long = -4606760283632482489L
-
-        @JvmStatic
-        fun getInstance(project: Project): SolrExecutionClient = project.getService(SolrExecutionClient::class.java)
     }
 }

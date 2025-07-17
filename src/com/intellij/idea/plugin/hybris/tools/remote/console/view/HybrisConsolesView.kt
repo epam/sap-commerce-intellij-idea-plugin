@@ -61,7 +61,8 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
             project.service<HybrisFlexibleSearchConsole>(),
             project.service<HybrisPolyglotQueryConsole>(),
             project.service<HybrisSolrSearchConsole>(),
-            project.service<HybrisImpexMonitorConsole>()
+            project.service<HybrisImpexMonitorConsole>(),
+            project.service<HybrisSQLConsole>()
         )
         consoles.forEach { Disposer.register(this, it) }
 

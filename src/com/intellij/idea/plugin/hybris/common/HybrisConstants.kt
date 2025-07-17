@@ -83,6 +83,7 @@ object HybrisConstants {
     const val CONSOLE_TITLE_IMPEX_MONITOR = "[y] Monitor Console"
     const val CONSOLE_TITLE_GROOVY = "[y] Groovy Console"
     const val CONSOLE_TITLE_FLEXIBLE_SEARCH = "[y] FxS Console"
+    const val CONSOLE_TITLE_SQL = "[y] SQL Console"
     const val CONSOLE_TITLE_SOLR_SEARCH = "[y] Solr search"
     const val CONSOLE_TITLE_POLYGLOT_QUERY = "[y] PolyglotQuery"
 

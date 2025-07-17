@@ -19,38 +19,46 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.project.Project
+import com.intellij.sql.psi.SqlLanguage
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import kotlinx.coroutines.CoroutineScope
 import java.awt.BorderLayout
 import java.io.Serial
+import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisFlexibleSearchConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
+class HybrisSQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
     project,
-    HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
-    FlexibleSearchLanguage,
+    HybrisConstants.CONSOLE_TITLE_SQL,
+    if (Plugin.DATABASE.isActive()) SqlLanguage.INSTANCE else PlainTextLanguage.INSTANCE,
     coroutineScope
 ) {
 
     private val panel = JPanel(WrappedFlowLayout(0, 0))
 
+    private val commitCheckbox = JBCheckBox("Commit mode")
+        .also { it.border = borders10 }
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
         .also { it.border = borders5 }
 
     init {
         isEditable = true
 
+        panel.add(commitCheckbox)
         panel.add(JBLabel("Rows:").also { it.border = bordersLabel })
         panel.add(maxRowsSpinner)
 
@@ -60,12 +68,13 @@ class HybrisFlexibleSearchConsole(project: Project, coroutineScope: CoroutineSco
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
         content = content,
         maxCount = maxRowsSpinner.value.toString().toInt(),
-        transactionMode = TransactionMode.ROLLBACK,
-        queryMode = QueryMode.FlexibleSearch
+        transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
+        queryMode = QueryMode.SQL
     )
 
-    override fun title(): String = "FlexibleSearch"
-    override fun tip(): String = "FlexibleSearch Console"
+    override fun title(): String = "SQL"
+    override fun tip(): String = "SQL Console"
+    override fun icon(): Icon? = HybrisIcons.FlexibleSearch.SQL
 
     companion object {
         @Serial

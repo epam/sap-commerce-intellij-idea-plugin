@@ -33,6 +33,7 @@ import com.intellij.json.JsonFileType
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.progress.ProgressIndicator
@@ -151,7 +152,7 @@ class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) 
     }
 
     private fun retrieveListOfCores() = try {
-        SolrExecutionClient.getInstance(project).coresData().toList()
+        project.service<SolrExecutionClient>().coresData().toList()
     } catch (e: Exception) {
         Notifications.create(
             NotificationType.WARNING,
