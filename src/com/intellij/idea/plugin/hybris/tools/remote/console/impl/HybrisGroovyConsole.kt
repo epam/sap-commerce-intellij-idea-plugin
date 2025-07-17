@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
-import com.intellij.execution.console.ConsoleHistoryController
-import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
@@ -46,8 +44,6 @@ class HybrisGroovyConsole(project: Project, coroutineScope: CoroutineScope) : Hy
     coroutineScope
 ) {
 
-    private object MyConsoleRootType : ConsoleRootType("hybris.groovy.shell", null)
-
     private val commitCheckbox = JBCheckBox("Commit mode")
         .also { it.border = borders10 }
     private val timeoutSpinner = JSpinner(SpinnerNumberModel(HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 10))
@@ -62,8 +58,6 @@ class HybrisGroovyConsole(project: Project, coroutineScope: CoroutineScope) : Hy
         panel.add(timeoutSpinner)
 
         add(panel, BorderLayout.NORTH)
-
-        ConsoleHistoryController(MyConsoleRootType, "hybris.groovy.shell", this).install()
     }
 
     override fun currentExecutionContext(content: String) = GroovyExecutionContext(

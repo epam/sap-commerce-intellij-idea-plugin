@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
-import com.intellij.execution.console.ConsoleHistoryController
-import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
@@ -48,8 +46,6 @@ class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : Hyb
     coroutineScope
 ) {
 
-    private object MyConsoleRootType : ConsoleRootType("hybris.impex.shell", null)
-
     private val legacyModeCheckbox = JBCheckBox("Legacy mode")
         .also { it.border = borders10 }
     private val enableCodeExecutionCheckbox = JBCheckBox("Enable code execution", true)
@@ -77,8 +73,6 @@ class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : Hyb
         panel.add(legacyModeCheckbox)
 
         add(panel, BorderLayout.NORTH)
-
-        ConsoleHistoryController(MyConsoleRootType, "hybris.impex.shell", this).install()
     }
 
     override fun currentExecutionContext(content: String) = ImpExExecutionContext(

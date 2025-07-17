@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
-import com.intellij.execution.console.ConsoleHistoryController
-import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
@@ -46,8 +44,6 @@ class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScop
     coroutineScope
 ) {
 
-    private object MyConsoleRootType : ConsoleRootType(ID, null)
-
     private val commitCheckbox = JBCheckBox("Commit mode")
         .also { it.border = borders10 }
     private val plainSqlCheckbox = JBCheckBox("Plain SQL")
@@ -65,8 +61,6 @@ class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScop
         panel.add(maxRowsSpinner)
 
         add(panel, BorderLayout.NORTH)
-
-        ConsoleHistoryController(MyConsoleRootType, ID, this).install()
     }
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
@@ -82,6 +76,5 @@ class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScop
     companion object {
         @Serial
         private val serialVersionUID: Long = -1330953384857131472L
-        const val ID = "hybris.polyglot.query.shell"
     }
 }

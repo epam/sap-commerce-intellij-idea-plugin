@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
-import com.intellij.execution.console.ConsoleHistoryController
-import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -52,8 +50,6 @@ class HybrisImpexMonitorConsole(project: Project, coroutineScope: CoroutineScope
     ImpexLanguage,
     coroutineScope
 ) {
-
-    private object MyConsoleRootType : ConsoleRootType("hybris.impex.monitor.shell", null)
 
     private val timeComboBox = ComboBox(
         arrayOf(
@@ -88,8 +84,6 @@ class HybrisImpexMonitorConsole(project: Project, coroutineScope: CoroutineScope
         panel.add(workingDirLabel, constraints)
 
         add(panel, BorderLayout.NORTH)
-
-        ConsoleHistoryController(MyConsoleRootType, "hybris.impex.monitor.shell", this).install()
     }
 
     override fun icon() = HybrisIcons.MONITORING

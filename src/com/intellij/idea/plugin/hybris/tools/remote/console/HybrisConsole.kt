@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console
 
 import com.intellij.execution.console.ConsoleHistoryController
+import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
@@ -41,9 +42,7 @@ import java.io.Serial
 import javax.swing.Icon
 
 abstract class HybrisConsole<E : ExecutionContext>(
-    project: Project,
-    title: String,
-    language: Language,
+    project: Project, title: String, language: Language,
     private val coroutineScope: CoroutineScope
 ) : LanguageConsoleImpl(project, title, language) {
 
@@ -51,9 +50,15 @@ abstract class HybrisConsole<E : ExecutionContext>(
     protected val borders5 = JBUI.Borders.empty(5, 10)
     protected val bordersLabel = JBUI.Borders.empty(10, 10, 10, 0)
 
+    private val consoleId: String = "hybris.console.$title"
+    private val consoleRootType = object : ConsoleRootType(consoleId, null) {}
+    private val consoleHistoryController = ConsoleHistoryController(consoleRootType, consoleId, this)
+
     init {
         isEditable = true
-        this.printDefaultText()
+        printDefaultText()
+
+        consoleHistoryController.install()
     }
 
     val content: String
@@ -86,8 +91,6 @@ abstract class HybrisConsole<E : ExecutionContext>(
     }
 
     private fun addCurrentQueryToHistory() {
-        val consoleHistoryController = ConsoleHistoryController.getController(this)
-            ?: return
         // Process input and add to history
         val document = currentEditor.document
         val textForHistory = document.text.trim()

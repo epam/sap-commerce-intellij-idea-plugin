@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
-import com.intellij.execution.console.ConsoleHistoryController
-import com.intellij.execution.console.ConsoleRootType
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
@@ -46,8 +44,6 @@ class HybrisFlexibleSearchConsole(project: Project, coroutineScope: CoroutineSco
     coroutineScope
 ) {
 
-    object MyConsoleRootType : ConsoleRootType("hybris.flexible.search.shell", null)
-
     private val panel = JPanel(WrappedFlowLayout(0, 0))
 
     private val commitCheckbox = JBCheckBox("Commit mode")
@@ -66,8 +62,6 @@ class HybrisFlexibleSearchConsole(project: Project, coroutineScope: CoroutineSco
         panel.add(maxRowsSpinner)
 
         add(panel, BorderLayout.NORTH)
-
-        ConsoleHistoryController(MyConsoleRootType, "hybris.flexible.search.shell", this).install()
     }
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(

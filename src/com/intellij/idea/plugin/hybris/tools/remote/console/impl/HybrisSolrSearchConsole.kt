@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
-import com.intellij.execution.console.ConsoleHistoryController
-import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
@@ -62,8 +60,6 @@ class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) 
     coroutineScope
 ) {
 
-    private object MyConsoleRootType : ConsoleRootType("hybris.solr.search.shell", null)
-
     val docs = "Docs: "
     val coresComboBoxModel = CollectionComboBoxModel(ArrayList<SolrCoreData>())
 
@@ -100,8 +96,6 @@ class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) 
         panel.add(maxRowsSpinner)
 
         add(panel, BorderLayout.NORTH)
-
-        ConsoleHistoryController(MyConsoleRootType, "hybris.solr.search.shell", this).install()
     }
 
     override fun icon() = HybrisIcons.Console.SOLR
