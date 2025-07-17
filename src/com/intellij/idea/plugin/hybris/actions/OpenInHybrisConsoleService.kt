@@ -26,9 +26,9 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.toolwindow.CopyFileToHybrisConsoleDialog
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
+import com.intellij.idea.plugin.hybris.toolwindow.OpenInConsoleConsoleDialog
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -40,21 +40,21 @@ import javax.swing.tree.TreePath
 import kotlin.reflect.KClass
 
 @Service(Service.Level.PROJECT)
-class CopyFileToHybrisConsoleService(private val project: Project) {
+class OpenInHybrisConsoleService(private val project: Project) {
 
-    fun copySelectedFilesToConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext>>, fileExtension: String) {
+    fun openSelectedFilesInConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext>>, fileExtension: String) {
         val console = HybrisConsoleService.getInstance(project).findConsole(consoleClass) ?: return
         val content = getContentFromSelectedFiles()
 
         if (getTextFromHybrisConsole(console).isNotEmpty()) {
-            CopyFileToHybrisConsoleDialog(project, getDialogTitleFromProperties(fileExtension))
-                .show { copyQueryToConsole(consoleClass, content) }
+            OpenInConsoleConsoleDialog(project, getDialogTitleFromProperties(fileExtension))
+                .show { openInConsole(consoleClass, content) }
         } else {
-            copyQueryToConsole(consoleClass, content)
+            openInConsole(consoleClass, content)
         }
     }
 
-    fun copyQueryToConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext>>, content: String) {
+    fun openInConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext>>, content: String) {
         val hybrisConsoleService = HybrisConsoleService.getInstance(project)
         val console = hybrisConsoleService.findConsole(consoleClass) ?: return
 

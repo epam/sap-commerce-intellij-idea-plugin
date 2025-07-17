@@ -51,12 +51,6 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <group id="hybris.acl.context.actions">
-            <action id="hybris.acl.openFileInConsole" class="com.intellij.idea.plugin.hybris.acl.file.actions.AclCopyFileAction"/>
-            <separator/>
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
-        </group>
-
         <group id="hybris.acl.toolbar.left">
             <action id="hybris.acl.import" class="com.intellij.idea.plugin.hybris.acl.file.actions.AclExecuteAction">
                 <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>

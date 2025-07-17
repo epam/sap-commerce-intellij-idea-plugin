@@ -30,7 +30,7 @@ import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAware
 import java.awt.datatransfer.StringSelection
 
-class FlexibleSearchCopyQueryToClipboardAction : AnAction(
+class FlexibleSearchCopyToClipboardAction : AnAction(
     message("hybris.fxs.actions.copy_query_to_clipboard"),
     message("hybris.fxs.actions.copy_query_to_clipboard.description"),
     HybrisIcons.FlexibleSearch.COPY_TO_CLIPBOARD

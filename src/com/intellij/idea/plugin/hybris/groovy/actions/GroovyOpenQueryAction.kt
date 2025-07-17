@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleService
+import com.intellij.idea.plugin.hybris.actions.OpenInHybrisConsoleService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
@@ -49,8 +49,8 @@ class GroovyOpenQueryAction : AnAction() {
             ?.text
             ?: return
 
-        project.service<CopyFileToHybrisConsoleService>()
-            .copyQueryToConsole(HybrisGroovyConsole::class, content)
+        project.service<OpenInHybrisConsoleService>()
+            .openInConsole(HybrisGroovyConsole::class, content)
     }
 
 }

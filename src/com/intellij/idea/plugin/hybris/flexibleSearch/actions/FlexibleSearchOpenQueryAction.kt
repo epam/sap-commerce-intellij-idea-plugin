@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleService
+import com.intellij.idea.plugin.hybris.actions.OpenInHybrisConsoleService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
@@ -44,8 +44,8 @@ class FlexibleSearchOpenQueryAction : AnAction(
             ?.text
             ?: return
 
-        project.service<CopyFileToHybrisConsoleService>()
-            .copyQueryToConsole(HybrisFlexibleSearchConsole::class, content)
+        project.service<OpenInHybrisConsoleService>()
+            .openInConsole(HybrisFlexibleSearchConsole::class, content)
     }
 
 }

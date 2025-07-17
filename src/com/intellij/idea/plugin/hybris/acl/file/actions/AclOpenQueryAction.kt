@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.acl.file.actions
 
 import com.intellij.idea.plugin.hybris.acl.file.AclFileType
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleService
+import com.intellij.idea.plugin.hybris.actions.OpenInHybrisConsoleService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
@@ -49,8 +49,8 @@ class AclOpenQueryAction : AnAction() {
             ?.text
             ?: return
 
-        project.service<CopyFileToHybrisConsoleService>()
-            .copyQueryToConsole(HybrisImpexConsole::class, content)
+        project.service<OpenInHybrisConsoleService>()
+            .openInConsole(HybrisImpexConsole::class, content)
     }
 
 }

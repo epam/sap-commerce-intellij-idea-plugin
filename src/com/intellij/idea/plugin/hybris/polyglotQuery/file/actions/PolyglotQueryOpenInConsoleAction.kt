@@ -15,13 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.acl.file.actions
+package com.intellij.idea.plugin.hybris.polyglotQuery.file.actions
 
-import com.intellij.idea.plugin.hybris.actions.CopyFileToHybrisConsoleService
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_FILE_EXTENSION
+import com.intellij.idea.plugin.hybris.actions.OpenInHybrisConsoleService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
+import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
+import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisPolyglotQueryConsole
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -29,9 +28,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 
-class AclCopyFileAction : AnAction(
-    "Copy to ImpEx Console",
-    "Copy ACL file to SAP Commerce console",
+class PolyglotQueryOpenInConsoleAction : AnAction(
+    "Copy to Polyglot Query Console",
+    "Copy Polyglot Query file to SAP Commerce console",
     HybrisIcons.Console.Actions.OPEN
 ), DumbAware {
 
@@ -40,12 +39,12 @@ class AclCopyFileAction : AnAction(
     override fun update(event: AnActionEvent) {
         val project = event.project ?: return
         event.presentation.isEnabledAndVisible = project.isHybrisProject
-            && project.service<CopyFileToHybrisConsoleService>().isRequiredMultipleFileExtension(IMPEX_FILE_EXTENSION)
+            && project.service<OpenInHybrisConsoleService>().isRequiredMultipleFileExtension(PolyglotQueryFileType.defaultExtension)
     }
 
     override fun actionPerformed(event: AnActionEvent) {
         event.project
-            ?.service<CopyFileToHybrisConsoleService>()
-            ?.copySelectedFilesToConsole(HybrisImpexConsole::class, HybrisConstants.ACL_FILE_EXTENSION)
+            ?.service<OpenInHybrisConsoleService>()
+            ?.openSelectedFilesInConsole(HybrisPolyglotQueryConsole::class, PolyglotQueryFileType.defaultExtension)
     }
 }

@@ -85,18 +85,13 @@
     <actions>
 
         <action id="hybris.fxs.openFileInConsole"
-                class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchCopyFileAction"/>
+                class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchOpenInConsoleAction"/>
         <action id="FlexibleSearch.NewFlexibleSearchFile"
                 class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchFileCreateAction"
                 text="FlexibleSearch File" description="Create new FlexibleSearch file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <group id="hybris.fxs.context.actions">
-            <reference ref="hybris.fxs.openFileInConsole"/>
-            <separator/>
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="before" relative-to-action="CompareTwoFiles"/>
-        </group>
         <group id="FSRemoteControl.Actions" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchActionsGroup">
             <action id="hybris.fxs.execute" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchExecuteAction">
                 <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
@@ -110,7 +105,7 @@
         <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenSettingsAction"/>
         <action id="hybris.fxs.toggleParameters" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchToggleParametersEditorAction"/>
         <action id="hybris.fxs.toggleInEditorResults" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchToggleInEditorResultsAction"/>
-        <action id="hybris.fxs.copyToClipboard" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchCopyQueryToClipboardAction"/>
+        <action id="hybris.fxs.copyToClipboard" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchCopyToClipboardAction"/>
 
         <group id="hybris.fxs.toolbar.left">
             <reference ref="hybris.fxs.execute"/>
