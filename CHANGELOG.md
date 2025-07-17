@@ -35,7 +35,7 @@
 - Removed non-working console actions [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
 - Removed copy to console actions (use in-editor execute actions) [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
 - New API for parallel executions of the requests [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
-- Simplified console API [#1458](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1458)
+- Simplified console API [#1459](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1459)
 - Simplified ExecutionClient API [#1460](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1460)
 
 ### Fixes
