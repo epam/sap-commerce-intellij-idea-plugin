@@ -34,9 +34,7 @@ abstract class ExecutionClient<E : ExecutionContext>(
 ) : UserDataHolderBase() {
 
     fun execute(context: E, resultCallback: (CoroutineScope, ExecutionResult) -> Unit) {
-        coroutineScope.launch {
-            process(context, resultCallback)
-        }
+        execute(listOf(context), resultCallback) { _, _ -> }
     }
 
     fun execute(
