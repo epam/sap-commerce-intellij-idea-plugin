@@ -23,9 +23,9 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionToolbar
-import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
@@ -49,8 +49,8 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
     init {
         layout = BorderLayout()
 
-        val toolbarActions = DefaultActionGroup()
         val actionManager = ActionManager.getInstance()
+        val toolbarActions = actionManager.getAction("hybris.console.actionGroup") as ActionGroup
         actionToolbar = actionManager.createActionToolbar(HybrisActionPlaces.CONSOLE_TOOLBAR, toolbarActions, false)
 
         val panel = JPanel(BorderLayout())
@@ -64,21 +64,13 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
             project.service<HybrisImpexMonitorConsole>()
         )
         consoles.forEach { Disposer.register(this, it) }
+
         hybrisTabs = HybrisConsoleTabs(project, TOP, consoles, this)
+        actionToolbar.targetComponent = hybrisTabs.component
 
         panel.add(hybrisTabs.component, BorderLayout.CENTER)
-        actionToolbar.targetComponent = hybrisTabs.component
         panel.add(actionToolbar.component, BorderLayout.WEST)
 
-        with(toolbarActions) {
-            add(ActionManager.getInstance().getAction("hybris.hac.chooseConnection"))
-            add(ActionManager.getInstance().getAction("hybris.hac.executeConsoleStatement"))
-            add(ActionManager.getInstance().getAction("hybris.hac.console.impex.validate"))
-        }
-
-        val actions = consoles.first().createConsoleActions()
-        actions[5] = ActionManager.getInstance().getAction("hybris.hac.console.clearAll")
-        toolbarActions.addAll(*actions)
         add(panel)
     }
 
