@@ -50,11 +50,11 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
             .map { BasicNameValuePair(it.key, it.value) }
 
         val response = project.service<HybrisHacHttpClient>()
-            .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, null)
+            .post(actionUrl, params, false, context.timeout, settings, null)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 
-        if (statusCode != HttpStatus.SC_OK) return DefaultExecutionResult(
+        if (statusCode != HttpStatus.SC_OK || response.entity == null) return DefaultExecutionResult(
             statusCode = statusCode,
             errorMessage = statusLine.reasonPhrase
         )

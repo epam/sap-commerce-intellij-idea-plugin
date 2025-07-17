@@ -56,18 +56,17 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         val actionUrl = "${settings.generatedURL}/console/scripting/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
+
         val response = project.service<HybrisHacHttpClient>()
             .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 
-        if (statusCode != HttpStatus.SC_OK || response.entity == null) {
-            return DefaultExecutionResult(
-                replicaContext = context.replicaContext,
-                statusCode = statusCode,
-                errorMessage = "[$statusCode] ${statusLine.reasonPhrase}"
-            )
-        }
+        if (statusCode != HttpStatus.SC_OK || response.entity == null) return DefaultExecutionResult(
+            replicaContext = context.replicaContext,
+            statusCode = statusCode,
+            errorMessage = "[$statusCode] ${statusLine.reasonPhrase}"
+        )
 
         try {
             val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
