@@ -74,19 +74,14 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 updateCache(
                     loggers
                         .distinctBy { it.name }
-                        .associateBy { it.name })
-
-
-                notify(NotificationType.INFORMATION, "Log level updated", logLevel, loggerName, server)
+                        .associateBy { it.name }
+                )
+                notify(NotificationType.INFORMATION, "Log Level Updated", logLevel, loggerName, server)
             } else {
                 updateCache(null)
-
-                notify(NotificationType.ERROR, "Failed to update log level", logLevel, loggerName, server)
+                notify(NotificationType.ERROR, "Failed To Update Log Level", logLevel, loggerName, server)
             }
-
         }
-
-
     }
 
     fun fetch() {
