@@ -93,16 +93,13 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
                             result.errorMessage = dataResult
                             result.detailMessage = it
                         }
-                        ?: {
-                            result.errorMessage = "No data in response"
-                        }
+                        ?: "No data in response".let { result.errorMessage = it }
                 } else {
                     result.output = dataResult
                 }
             }
-            ?: {
-                result.errorMessage = "No data in response"
-            }
+            ?: "No data in response".let { result.errorMessage = it }
+
     }
 
     private fun processValidateResponse(document: Document, result: DefaultExecutionResult) {
@@ -117,9 +114,7 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
                     result.output = dataResult
                 }
             }
-            ?: {
-                result.errorMessage = "No data in response"
-            }
+            ?: "No data in response".let { result.errorMessage = it }
     }
 
     companion object {

@@ -70,9 +70,8 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
                         result.errorMessage = it
 
                     }
-                    ?: {
-                        result.output = buildTableResult(json)
-                    }
+                    ?: buildTableResult(result, json)
+
             } catch (e: Exception) {
                 result.statusCode = HttpStatus.SC_BAD_REQUEST
                 result.errorMessage = "Cannot parse response from the server: ${e.message} $actionUrl"
@@ -82,7 +81,7 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
         return result
     }
 
-    private fun buildTableResult(json: HashMap<*, *>): String {
+    private fun buildTableResult(result: DefaultExecutionResult, json: HashMap<*, *>) {
         val tableBuilder = TableBuilder()
 
         json["headers"].asSafely<MutableList<String>>()
@@ -90,7 +89,7 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
         json["resultList"].asSafely<List<List<String>>>()
             ?.forEach { row -> tableBuilder.addRow(row) }
 
-        return tableBuilder.toString()
+        result.output = tableBuilder.toString()
     }
 
     companion object {
