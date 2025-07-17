@@ -28,7 +28,6 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -63,11 +62,7 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
         }
 
         val consoleService = HybrisConsoleService.getInstance(project)
-        val console = consoleService.findConsole(consoleClass)
-        if (console == null) {
-            thisLogger().warn("unable to find console ${this@ExecuteStatementAction.consoleClass}")
-            return null
-        }
+        val console = consoleService.findConsole(consoleClass) ?: return null
 
         consoleService.setActiveConsole(console)
         console.setInputText(content)

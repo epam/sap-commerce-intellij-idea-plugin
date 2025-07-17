@@ -110,15 +110,15 @@ class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) 
         reloadCores(selectedCore)
     }
 
-    override fun printResults(httpResult: ExecutionResult) {
+    override fun printResult(result: ExecutionResult) {
         clear()
 
-        printCurrentHost(RemoteConnectionType.SOLR, httpResult.replicaContext)
+        printHost(RemoteConnectionType.SOLR, result.replicaContext)
 
-        if (httpResult.hasError()) {
-            ConsoleViewUtil.printAsFileType(this, httpResult.errorMessage, PlainTextFileType.INSTANCE)
+        if (result.hasError()) {
+            ConsoleViewUtil.printAsFileType(this, result.errorMessage, PlainTextFileType.INSTANCE)
         } else {
-            ConsoleViewUtil.printAsFileType(this, httpResult.output, JsonFileType.INSTANCE)
+            ConsoleViewUtil.printAsFileType(this, result.output, JsonFileType.INSTANCE)
         }
     }
 

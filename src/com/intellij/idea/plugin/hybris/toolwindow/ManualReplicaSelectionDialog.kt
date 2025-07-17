@@ -53,6 +53,7 @@ class ManualReplicaSelectionDialog(
     private lateinit var manualReplicaId: JBTextField
 
     override fun createCenterPanel(): JComponent {
+        // TODO: support multiple replicas
         val firstReplica = replicas.firstOrNull()
         return panel {
             row {
@@ -72,7 +73,6 @@ class ManualReplicaSelectionDialog(
             row {
                 manualReplicaId = textField()
                     .label("Replica id:")
-                    // TODO: implement as a 0
                     .text(firstReplica?.replicaId ?: "")
                     .align(AlignX.FILL)
                     .component

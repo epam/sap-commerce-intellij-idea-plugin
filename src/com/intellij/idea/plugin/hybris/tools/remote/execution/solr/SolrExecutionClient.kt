@@ -93,11 +93,14 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : Ex
 
     private fun buildHttpSolrClient(url: String) = HttpSolrClient.Builder(url).build()
 
-    private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryExecutionContext, queryRequest: QueryRequest): ExecutionResult =
-        buildHttpSolrClient("${solrConnectionSettings.generatedURL}/${queryObject.core}")
+    private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryExecutionContext, queryRequest: QueryRequest): ExecutionResult {
+        val resultBuilder = ExecutionResult.builder()
+            .remoteConnectionType(RemoteConnectionType.SOLR)
+        return buildHttpSolrClient("${solrConnectionSettings.generatedURL}/${queryObject.core}")
             .runCatching { request(queryRequest) }
-            .map { ExecutionResult.builder().output(it["response"] as String?).build() }
-            .getOrElse { ExecutionResult.builder().errorMessage(it.message).httpCode(HttpStatus.SC_BAD_GATEWAY).build() }
+            .map { resultBuilder.output(it["response"] as String?).build() }
+            .getOrElse { resultBuilder.errorMessage(it.message).httpCode(HttpStatus.SC_BAD_GATEWAY).build() }
+    }
 
     private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: RemoteConnectionSettings) = QueryRequest(solrQuery).apply {
         setBasicAuthCredentials(solrConnectionSettings.username, solrConnectionSettings.password)

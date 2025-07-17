@@ -54,6 +54,7 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : E
 
         val statusLine = response.statusLine
         val resultBuilder = ExecutionResult.builder()
+            .remoteConnectionType(RemoteConnectionType.Hybris)
             .httpCode(statusLine.statusCode)
 
         if (statusLine.statusCode != HttpStatus.SC_OK) {

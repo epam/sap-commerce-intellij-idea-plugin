@@ -64,6 +64,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         val statusLine = response.statusLine
         val resultBuilder = ExecutionResult.builder()
             .replicaContext(context.replicaContext)
+            .remoteConnectionType(RemoteConnectionType.Hybris)
             .httpCode(statusLine.statusCode)
 
         if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {

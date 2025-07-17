@@ -33,7 +33,6 @@ import java.time.ZoneId
 class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<ImpExMonitorExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: ImpExMonitorExecutionContext): ExecutionResult {
-        val resultBuilder = ExecutionResult.builder()
         val unit = context.timeOption.unit
         val duration = context.timeOption.value.toLong()
         val minutesAgo = LocalDateTime.now().minusMinutes(unit.toMinutes(duration))
@@ -50,7 +49,8 @@ class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineSco
                 out.append("\n${it.readText()}\n")
             }
 
-        return resultBuilder.httpCode(200)
+        return ExecutionResult.builder()
+            .ok()
             .output(out.toString())
             .build()
     }

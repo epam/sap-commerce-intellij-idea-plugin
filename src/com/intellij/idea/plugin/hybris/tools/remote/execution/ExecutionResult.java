@@ -19,8 +19,10 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution;
 
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext;
 import org.apache.http.HttpStatus;
+import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.openapi.util.text.StringUtil.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -35,6 +37,7 @@ public class ExecutionResult {
     private String output;
     private String result;
     private int statusCode;
+    private RemoteConnectionType remoteConnectionType;
     private ReplicaContext replicaContext;
 
     private ExecutionResult() {
@@ -64,6 +67,11 @@ public class ExecutionResult {
         return result;
     }
 
+    public RemoteConnectionType getRemoteConnectionType() {
+        return remoteConnectionType;
+    }
+
+    @Nullable
     public ReplicaContext getReplicaContext() {
         return replicaContext;
     }
@@ -81,6 +89,8 @@ public class ExecutionResult {
         private String output = EMPTY;
         private String result = EMPTY;
         private int statusCode = SC_OK;
+
+        private RemoteConnectionType remoteConnectionType;
         private ReplicaContext replicaContext;
 
         private Builder() {
@@ -117,6 +127,11 @@ public class ExecutionResult {
             return this;
         }
 
+        public Builder ok() {
+            this.statusCode = HttpStatus.SC_OK;
+            return this;
+        }
+
         public Builder badRequest() {
             this.statusCode = HttpStatus.SC_BAD_REQUEST;
             return this;
@@ -124,6 +139,11 @@ public class ExecutionResult {
 
         public Builder replicaContext(final ReplicaContext replicaContext) {
             this.replicaContext = replicaContext;
+            return this;
+        }
+
+        public Builder remoteConnectionType(final RemoteConnectionType remoteConnectionType) {
+            this.remoteConnectionType = remoteConnectionType;
             return this;
         }
 
@@ -136,6 +156,7 @@ public class ExecutionResult {
             httpResult.result = this.result;
             httpResult.statusCode = this.statusCode;
             httpResult.replicaContext = this.replicaContext;
+            httpResult.remoteConnectionType = this.remoteConnectionType;
 
             return httpResult;
         }

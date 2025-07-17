@@ -30,7 +30,6 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
@@ -53,7 +52,9 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             .post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, null)
 
         val statusLine = response.statusLine
-        val resultBuilder = ExecutionResult.builder().httpCode(statusLine.statusCode)
+        val resultBuilder = ExecutionResult.builder()
+            .remoteConnectionType(RemoteConnectionType.Hybris)
+            .httpCode(statusLine.statusCode)
 
         if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
             return resultBuilder
@@ -82,16 +83,6 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
         }
 
         return resultBuilder.build()
-    }
-
-    internal fun parseJson(jsonAsString: String): JsonElement? {
-        try {
-            return Json.parseToJsonElement(jsonAsString)
-        } catch (e: Exception) {
-            thisLogger().error("Cannot parse response", e)
-
-            return null
-        }
     }
 
     companion object {

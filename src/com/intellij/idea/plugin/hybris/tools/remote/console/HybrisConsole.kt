@@ -80,7 +80,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         coroutineScope.launch {
             edtWriteAction {
                 addCurrentQueryToHistory()
-                printResults(result)
+                printResult(result)
             }
         }
     }
@@ -105,12 +105,12 @@ abstract class HybrisConsole<E : ExecutionContext>(
         }
     }
 
-    protected open fun printResults(httpResult: ExecutionResult) {
-        printCurrentHost(RemoteConnectionType.Hybris, httpResult.replicaContext)
-        printPlainText(httpResult)
+    protected open fun printResult(result: ExecutionResult) {
+        printHost(result.remoteConnectionType, result.replicaContext)
+        printPlainText(result)
     }
 
-    protected fun printCurrentHost(remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
+    protected fun printHost(remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
         val activeConnectionSettings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(remoteConnectionType)
         print("[HOST] ", SYSTEM_OUTPUT)
         activeConnectionSettings.displayName
@@ -125,6 +125,8 @@ abstract class HybrisConsole<E : ExecutionContext>(
     // TODO: why recreating the result?
     private fun printPlainText(executionResult: ExecutionResult) {
         val result = ExecutionResult.builder()
+            .remoteConnectionType(executionResult.remoteConnectionType)
+            .replicaContext(executionResult.replicaContext)
             .errorMessage(executionResult.errorMessage)
             .output(executionResult.output)
             .result(executionResult.result)

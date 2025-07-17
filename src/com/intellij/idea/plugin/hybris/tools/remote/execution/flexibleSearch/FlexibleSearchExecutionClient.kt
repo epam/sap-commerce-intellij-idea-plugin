@@ -29,7 +29,6 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
-import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import java.io.Serial
@@ -47,38 +46,40 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
         val response = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, true, context.timeout, settings, null)
         val statusLine = response.statusLine
-        val resultBuilder = when {
-            statusLine.statusCode != HttpStatus.SC_OK || response.entity == null -> ExecutionResult.builder()
+
+        val resultBuilder = ExecutionResult.builder()
+            .remoteConnectionType(RemoteConnectionType.Hybris)
+            .httpCode(statusLine.statusCode)
+
+        if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
+            resultBuilder
                 .badRequest()
                 .errorMessage("[${statusLine.statusCode}] ${statusLine.reasonPhrase}")
+        } else {
+            try {
+                val json = response.entity.content
+                    .readAllBytes()
+                    .toString(StandardCharsets.UTF_8)
+                    .let { Gson().fromJson(it, HashMap::class.java) }
 
-            else -> parseResponse(response, actionUrl)
+                json["exception"]
+                    ?.asSafely<MutableMap<*, *>>()
+                    ?.let { it["message"] }
+                    ?.toString()
+                    ?.let {
+                        resultBuilder
+                            .badRequest()
+                            .errorMessage(it)
+                    }
+                    ?: resultBuilder.output(buildTableResult(json))
+            } catch (e: Exception) {
+                resultBuilder
+                    .badRequest()
+                    .errorMessage("Cannot parse response from the server: ${e.message} $actionUrl")
+            }
         }
 
         return resultBuilder.build()
-    }
-
-    private fun parseResponse(response: HttpResponse, actionUrl: String) = try {
-        val json = response.entity.content
-            .readAllBytes()
-            .toString(StandardCharsets.UTF_8)
-            .let { Gson().fromJson(it, HashMap::class.java) }
-
-        json["exception"]
-            ?.asSafely<MutableMap<*, *>>()
-            ?.let { it["message"] }
-            ?.toString()
-            ?.let {
-                ExecutionResult.builder()
-                    .badRequest()
-                    .errorMessage(it)
-            }
-            ?: ExecutionResult.builder()
-                .output(buildTableResult(json))
-    } catch (e: Exception) {
-        ExecutionResult.builder()
-            .badRequest()
-            .errorMessage("Cannot parse response from the server: ${e.message} $actionUrl")
     }
 
     private fun buildTableResult(json: HashMap<*, *>): String {
