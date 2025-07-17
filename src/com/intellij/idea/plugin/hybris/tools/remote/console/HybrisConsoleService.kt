@@ -30,49 +30,35 @@ import kotlin.reflect.KClass
 @Service(Service.Level.PROJECT)
 class HybrisConsoleService(private val project: Project) {
 
-    fun <C : HybrisConsole<out ExecutionContext>> findConsole(consoleClass: KClass<C>): C? = findConsolesView()
-        ?.findConsole(consoleClass)
-
     fun <C : HybrisConsole<out ExecutionContext>> openConsole(consoleClass: KClass<C>): C? {
-        val console = findConsole(consoleClass) ?: return null
+        val view = findConsolesView() ?: return null
+        val console = view.findConsole(consoleClass) ?: return null
         activateToolWindow()
         activateToolWindowTab()
-        setActiveConsole(console)
-        return console
-    }
 
-    fun openConsole(console: HybrisConsole<out ExecutionContext>) {
-        activateToolWindow()
-        activateToolWindowTab()
-        setActiveConsole(console)
+        view.activeConsole = console
+
+        return console
     }
 
     fun getActiveConsole() = findConsolesView()
         ?.activeConsole
 
-    fun activateToolWindow() {
-        hybrisToolWindow()
-            ?.let {
-                invokeLater {
-                    it.isAvailable = true
-                    it.activate(null, true)
-                }
+    fun activateToolWindow() = hybrisToolWindow()
+        ?.let {
+            invokeLater {
+                it.isAvailable = true
+                it.activate(null, true)
             }
-    }
+        }
 
-    private fun setActiveConsole(console: HybrisConsole<out ExecutionContext>) {
-        findConsolesView()
-            ?.activeConsole = console
-    }
-
-    private fun activateToolWindowTab() {
-        hybrisToolWindow()
-            ?.contentManager
-            ?.let { contentManager ->
-                contentManager.findContent(HybrisToolWindowFactory.CONSOLES_ID)
-                    ?.let { contentManager.setSelectedContent(it) }
-            }
-    }
+    private fun activateToolWindowTab() = hybrisToolWindow()
+        ?.contentManager
+        ?.let { contentManager ->
+            contentManager
+                .findContent(HybrisToolWindowFactory.CONSOLES_ID)
+                ?.let { contentManager.setSelectedContent(it) }
+        }
 
     private fun findConsolesView() = hybrisToolWindow()
         ?.contentManager
