@@ -25,9 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
-import com.intellij.idea.plugin.hybris.util.PackageUtils
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -56,32 +54,7 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel, val icon: Ic
             logLevel = logLevel
         )
 
-        project.service<LoggingExecutionClient>().execute(context) { coroutineScope, result ->
-            val abbreviationLogIdentifier = PackageUtils.abbreviatePackageName(logIdentifier)
-
-            if (result.statusCode == 200) {
-                Notifications.info(
-                    "Log level updated",
-                    """
-                        <p>Level  : $logLevel</p>
-                        <p>Logger : $abbreviationLogIdentifier</p>
-                        <p>${server.shortenConnectionName()}</p>
-                        """.trimIndent()
-                )
-                    .hideAfter(5)
-                    .notify(project)
-                CxLoggerAccess.getInstance(project).fetch()
-            } else {
-                Notifications.error(
-                    "Failed to update log level",
-                    """
-                        <p>Level  : $logLevel</p>
-                        <p>Logger : $abbreviationLogIdentifier</p>
-                        <p>${server.shortenConnectionName()}</p>
-                        """.trimIndent()
-                )
-            }
-        }
+        CxLoggerAccess.getInstance(project).setLogger(logIdentifier, logLevel)
     }
 
     override fun update(e: AnActionEvent) {

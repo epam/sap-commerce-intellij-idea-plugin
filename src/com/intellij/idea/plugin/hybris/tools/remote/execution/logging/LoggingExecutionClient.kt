@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
@@ -29,7 +30,9 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
@@ -68,10 +71,15 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             val jsonAsString = document.getElementsByTag("body").text()
             val json = Json.parseToJsonElement(jsonAsString)
 
-            val loggers = json.jsonObject["loggers"]
-            // TODO: @Eugeni to use this response
-
-            result.result = listOf()
+            json.jsonObject["loggers"]
+                ?.jsonArray
+                ?.mapNotNull {
+                    val name = it.jsonObject["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
+                    val effectiveLevel = it.jsonObject["effectiveLevel"]?.jsonObject["standardLevel"]?.jsonPrimitive?.content ?: return@mapNotNull null
+                    val parentName = it.jsonObject["parentName"]?.jsonPrimitive?.content
+                    CxLoggerModel(name, effectiveLevel, parentName)
+                }
+                ?.let { result.result = it }
 
         } catch (e: SerializationException) {
             thisLogger().error("Cannot parse response", e)

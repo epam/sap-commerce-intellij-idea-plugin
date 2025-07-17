@@ -18,4 +18,4 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
-data class CxLoggerModel(val name: String, val effectiveLevel: String, val parentName: String)
+data class CxLoggerModel(val name: String, val effectiveLevel: String, val parentName: String?)

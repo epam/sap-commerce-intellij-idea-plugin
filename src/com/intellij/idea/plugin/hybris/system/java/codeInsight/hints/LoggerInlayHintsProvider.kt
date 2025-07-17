@@ -89,7 +89,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
                 project.getService(CxLoggerAccess::class.java)
                     ?.logger(loggerIdentifier)
                     ?.effectiveLevel
-                    ?.let { text.append(" [$it]", SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.green)) }
+                    ?.let { text.append(" [$it]", SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue)) }
 
                 val handler = ClickHandler(targetElement, loggerIdentifier, text)
 

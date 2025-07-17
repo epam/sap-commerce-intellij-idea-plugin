@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.logging
 
 import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
@@ -27,13 +28,15 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecu
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolderBase
-import com.intellij.openapi.util.removeUserData
+import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 private const val FETCH_LOGGERS_STATE_GROOVY_SCRIPT = """
     import de.hybris.platform.core.Registry
@@ -56,19 +59,35 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
     fun logger(loggerIdentifier: String) = loggers?.get(loggerIdentifier)
 
-    fun set(loggerName: String, logLevel: LogLevel) {
+    fun setLogger(loggerName: String, logLevel: LogLevel) {
         val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val context = LoggingExecutionContext(
             title = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName()}]...",
             loggerName = loggerName,
             logLevel = logLevel
         )
+        fetching = true
         project.service<LoggingExecutionClient>().execute(context) { coroutineScope, result ->
+            val loggers = result.result
+
+            if (loggers != null) {
+                updateCache(
+                    loggers
+                        .distinctBy { it.name }
+                        .associateBy { it.name })
+
+
+                notify(NotificationType.INFORMATION, "Log level updated", logLevel, loggerName, server)
+            } else {
+                updateCache(null)
+
+                notify(NotificationType.ERROR, "Failed to update log level", logLevel, loggerName, server)
+            }
 
         }
 
-    }
 
+    }
 
     fun fetch() {
         val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
@@ -77,6 +96,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             transactionMode = TransactionMode.ROLLBACK,
             title = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]..."
         )
+        fetching = true
 
         project.service<GroovyExecutionClient>().execute(context) { coroutineScope, result ->
             if (result.statusCode == 200) {
@@ -84,45 +104,62 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                     ?.split("\n")
                     ?.map { it -> it.split(" | ") }
                     ?.filter { it.size == 3 }
-                    ?.map { CxLoggerModel(it[0], it[2], it[1]) }
+                    ?.map { CxLoggerModel(it[0], it[2], if (it.size == 3) it[1] else null) }
+                    ?.distinctBy { it.name }
                     ?.associateBy { it.name }
-                    .let { putUserData(KEY_LOGGERS_STATE, it) }
+                    .let { updateCache(it) }
 
-                notifySuccess()
+                notify(
+                    NotificationType.INFORMATION,
+                    "Loggers state is fetched.",
+                    server
+                )
             } else {
-                removeUserData(KEY_LOGGERS_STATE)
-                notifyError()
+                updateCache(null)
+                notify(
+                    NotificationType.ERROR,
+                    "Failed to fetch logger states",
+                    server
+                )
             }
         }
 
     }
 
-    private fun notifyError() {
-        val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+    private fun updateCache(map: Map<String, CxLoggerModel>?) {
+        coroutineScope.launch {
+            putUserData(KEY_LOGGERS_STATE, map)
+
+            edtWriteAction {
+                PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
+            }
+            fetching = false
+        }
+    }
+
+    private fun notify(type: NotificationType, title: String, server: RemoteConnectionSettings) {
         Notifications
-            .create(
-                NotificationType.ERROR,
-                "Loading loggers from SAP Commerce...",
-                """
-                            <p>Failed to fetch logger states.</p>
-                            <p>${server.shortenConnectionName()}</p>
-                        """.trimIndent()
-            )
+            .create(type, title, "<p>Server: ${server.shortenConnectionName()}</p>")
             .hideAfter(5)
             .notify(project)
     }
 
-    private fun notifySuccess() {
-        val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-        Notifications
-            .create(
-                NotificationType.INFORMATION,
-                "Loading loggers from SAP Commerce...",
-                """
-                            <p>Loggers state is fetched.</p>
+    private fun notify(
+        type: NotificationType,
+        title: String,
+        logLevel: LogLevel,
+        loggerName: String,
+        server: RemoteConnectionSettings
+    ) {
+        Notifications.create(
+            type,
+            title,
+            """
+                            <p>Level  : $logLevel</p>
+                            <p>Logger : $loggerName</p>
                             <p>${server.shortenConnectionName()}</p>
-                        """.trimIndent()
-            )
+                            """.trimIndent()
+        )
             .hideAfter(5)
             .notify(project)
     }
