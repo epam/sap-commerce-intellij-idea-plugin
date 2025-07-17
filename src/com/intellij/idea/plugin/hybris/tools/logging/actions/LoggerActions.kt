@@ -46,10 +46,14 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(l
             return
         }
 
-        val context = LoggingExecutionContext(logIdentifier, logLevel)
+        val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val context = LoggingExecutionContext(
+            title = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]",
+            loggerName = logIdentifier,
+            logLevel = logLevel
+        )
 
         project.service<LoggingExecutionClient>().execute(context) { coroutineScope, result ->
-            val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
             val abbreviationLogIdentifier = PackageUtils.abbreviatePackageName(logIdentifier)
 
             if (result.statusCode == 200) {

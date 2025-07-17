@@ -23,9 +23,10 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 
 data class LoggingExecutionContext(
+    override val title: String,
     private val loggerName: String,
     private val logLevel: LogLevel,
-    val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
+    val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,
 ) : ExecutionContext {
     fun params(): Map<String, String> = buildMap {
         put("loggerName", loggerName)

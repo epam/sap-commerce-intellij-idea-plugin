@@ -18,4 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution
 
-interface ExecutionContext
+interface ExecutionContext {
+    val title: String
+        get() = "Execute HTTP Call to SAP Commerce..."
+}

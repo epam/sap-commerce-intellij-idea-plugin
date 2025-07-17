@@ -33,7 +33,7 @@ abstract class ExecutionClient<E : ExecutionContext>(
 
     fun execute(context: E, resultCallback: (CoroutineScope, ExecutionResult) -> Unit) {
         coroutineScope.launch {
-            withBackgroundProgress(project, "Execute HTTP Call to SAP Commerce...", true) {
+            withBackgroundProgress(project, context.title, true) {
                 val result = reportProgress { progressReporter ->
                     execute(context)
                 }
