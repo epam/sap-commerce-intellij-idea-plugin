@@ -17,15 +17,15 @@
  */
 package com.intellij.idea.plugin.hybris.startup
 
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.updateSettings.impl.UpdateSettings
-import com.intellij.util.application
 
 class HybrisPluginUpdateCheckerStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        application.invokeLater {
+        invokeLater {
             if (project.isDisposed) return@invokeLater
 
             UpdateSettings.getInstance().state.isCheckNeeded = true
