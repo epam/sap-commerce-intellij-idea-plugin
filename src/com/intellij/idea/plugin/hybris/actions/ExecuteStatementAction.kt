@@ -21,8 +21,6 @@ package com.intellij.idea.plugin.hybris.actions
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.lang.Language
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -56,15 +54,8 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
     abstract fun actionPerformed(e: AnActionEvent, project: Project, content: String)
 
     protected fun openConsole(project: Project, content: String): C? {
-        with(HybrisToolWindowService.getInstance(project)) {
-            activateToolWindow()
-            activateToolWindowTab(HybrisToolWindowFactory.CONSOLES_ID)
-        }
+        val console = HybrisConsoleService.getInstance(project).openConsole(consoleClass) ?: return null
 
-        val consoleService = HybrisConsoleService.getInstance(project)
-        val console = consoleService.findConsole(consoleClass) ?: return null
-
-        consoleService.setActiveConsole(console)
         console.setInputText(content)
 
         return console

@@ -30,12 +30,15 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
+import com.intellij.ui.JBTabsPaneImpl
+import com.intellij.ui.tabs.impl.JBEditorTabs
+import com.intellij.util.asSafely
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel
-import javax.swing.SwingConstants.TOP
+import javax.swing.SwingConstants
 import kotlin.reflect.KClass
-import kotlin.reflect.cast
+import kotlin.reflect.safeCast
 
 class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Disposable {
 
@@ -44,7 +47,16 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
     }
 
     private val actionToolbar: ActionToolbar
-    private val hybrisTabs: HybrisConsoleTabs
+    private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
+    private val consoles = arrayOf(
+        project.service<HybrisImpexConsole>(),
+        project.service<HybrisGroovyConsole>(),
+        project.service<HybrisFlexibleSearchConsole>(),
+        project.service<HybrisPolyglotQueryConsole>(),
+        project.service<HybrisSolrSearchConsole>(),
+        project.service<HybrisImpexMonitorConsole>(),
+        project.service<HybrisSQLConsole>()
+    )
 
     init {
         layout = BorderLayout()
@@ -53,44 +65,40 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         val toolbarActions = actionManager.getAction("hybris.console.actionGroup") as ActionGroup
         actionToolbar = actionManager.createActionToolbar(HybrisActionPlaces.CONSOLE_TOOLBAR, toolbarActions, false)
 
-        val panel = JPanel(BorderLayout())
+        val rootPanel = JPanel(BorderLayout())
 
-        val consoles = arrayOf(
-            project.service<HybrisImpexConsole>(),
-            project.service<HybrisGroovyConsole>(),
-            project.service<HybrisFlexibleSearchConsole>(),
-            project.service<HybrisPolyglotQueryConsole>(),
-            project.service<HybrisSolrSearchConsole>(),
-            project.service<HybrisImpexMonitorConsole>(),
-            project.service<HybrisSQLConsole>()
-        )
-        consoles.forEach { Disposer.register(this, it) }
-
-        hybrisTabs = HybrisConsoleTabs(project, TOP, consoles, this)
-        actionToolbar.targetComponent = hybrisTabs.component
-
-        panel.add(hybrisTabs.component, BorderLayout.CENTER)
-        panel.add(actionToolbar.component, BorderLayout.WEST)
-
-        add(panel)
-    }
-
-    fun setActiveConsole(console: HybrisConsole<out ExecutionContext>) {
-        hybrisTabs.setActiveConsole(console)
-    }
-
-    fun getActiveConsole(): HybrisConsole<out ExecutionContext> {
-        return hybrisTabs.activeConsole()
-    }
-
-    fun <C : HybrisConsole<out ExecutionContext>> findConsole(consoleClass: KClass<C>): C? {
-        for (index in 0 until hybrisTabs.tabCount) {
-            val c = hybrisTabs.getComponentAt(index)
-
-            if (consoleClass.isInstance(c)) return consoleClass.cast(c)
+        consoles.forEachIndexed { index, console ->
+            Disposer.register(this, console)
+            tabsPanel.insertTab(console.title(), console.icon(), console.component, console.tip(), index)
         }
-        return null
+
+        tabsPanel.addChangeListener { event ->
+            val console = event.source.asSafely<JBEditorTabs>()
+                ?.selectedInfo
+                ?.component
+                ?.asSafely<HybrisConsole<in ExecutionContext>>()
+                ?: return@addChangeListener
+
+
+            console.onSelection()
+        }
+
+        actionToolbar.targetComponent = tabsPanel.component
+
+        rootPanel.add(tabsPanel.component, BorderLayout.CENTER)
+        rootPanel.add(actionToolbar.component, BorderLayout.WEST)
+
+        add(rootPanel)
     }
+
+    var activeConsole: HybrisConsole<out ExecutionContext>
+        set(console) {
+            tabsPanel.selectedIndex = consoles.indexOf(console)
+        }
+        get() = consoles[tabsPanel.selectedIndex]
+
+    fun <C : HybrisConsole<out ExecutionContext>> findConsole(consoleClass: KClass<C>): C? = consoles
+        .firstNotNullOfOrNull { consoleClass.safeCast(it) }
 
     companion object {
         @Serial

@@ -26,8 +26,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
 import com.intellij.idea.plugin.hybris.toolwindow.OpenInConsoleConsoleDialog
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
@@ -43,7 +41,7 @@ import kotlin.reflect.KClass
 class OpenInHybrisConsoleService(private val project: Project) {
 
     fun openSelectedFilesInConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext>>, fileExtension: String) {
-        val console = HybrisConsoleService.getInstance(project).findConsole(consoleClass) ?: return
+        val console = HybrisConsoleService.getInstance(project).openConsole(consoleClass) ?: return
         val content = getContentFromSelectedFiles()
 
         if (getTextFromHybrisConsole(console).isNotEmpty()) {
@@ -55,19 +53,10 @@ class OpenInHybrisConsoleService(private val project: Project) {
     }
 
     fun openInConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext>>, content: String) {
-        val hybrisConsoleService = HybrisConsoleService.getInstance(project)
-        val console = hybrisConsoleService.findConsole(consoleClass) ?: return
+        val console = HybrisConsoleService.getInstance(project).openConsole(consoleClass) ?: return
 
-        with(HybrisToolWindowService.getInstance(project)) {
-            this.activateToolWindow()
-            this.activateToolWindowTab(HybrisToolWindowFactory.CONSOLES_ID)
-        }
-
-        with(console) {
-            hybrisConsoleService.setActiveConsole(this)
-            this.clear()
-            this.setInputText(content)
-        }
+        console.clear()
+        console.setInputText(content)
     }
 
     fun isRequiredSingleFileExtension(fileExtension: String) = getFileExtensions()

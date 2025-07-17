@@ -32,6 +32,7 @@
 - Removed non-working console actions [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
 - Removed copy to console actions (use in-editor execute actions) [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
 - New API for parallel executions of the requests [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
+- Simplified console API [#1458](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1458)
 
 ### Fixes
 - Fixed [#1205](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1205) JSoap's inability to parse response with the `&quot;` sequence [#1439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1439)

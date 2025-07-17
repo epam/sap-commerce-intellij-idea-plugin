@@ -17,25 +17,70 @@
  */
 package com.intellij.idea.plugin.hybris.tools.remote.console
 
+import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
+import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.ToolWindowManager
+import com.intellij.util.application
+import com.intellij.util.asSafely
 import kotlin.reflect.KClass
 
 @Service(Service.Level.PROJECT)
 class HybrisConsoleService(private val project: Project) {
 
-    fun <C : HybrisConsole<out ExecutionContext>> findConsole(consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView()
+    fun <C : HybrisConsole<out ExecutionContext>> findConsole(consoleClass: KClass<C>): C? = findConsolesView()
         ?.findConsole(consoleClass)
 
-    fun setActiveConsole(console: HybrisConsole<out ExecutionContext>) {
-        HybrisToolWindowService.getInstance(project).findConsolesView()
-            ?.setActiveConsole(console)
+    fun <C : HybrisConsole<out ExecutionContext>> openConsole(consoleClass: KClass<C>): C? {
+        val console = findConsole(consoleClass) ?: return null
+        activateToolWindow()
+        activateToolWindowTab()
+        setActiveConsole(console)
+        return console
     }
 
-    fun getActiveConsole() = HybrisToolWindowService.getInstance(project).findConsolesView()
-        ?.getActiveConsole()
+    fun openConsole(console: HybrisConsole<out ExecutionContext>) {
+        activateToolWindow()
+        activateToolWindowTab()
+        setActiveConsole(console)
+    }
+
+    fun getActiveConsole() = findConsolesView()
+        ?.activeConsole
+
+    fun activateToolWindow() {
+        hybrisToolWindow()
+            ?.let {
+                application.invokeLater {
+                    it.isAvailable = true
+                    it.activate(null, true)
+                }
+            }
+    }
+
+    private fun setActiveConsole(console: HybrisConsole<out ExecutionContext>) {
+        findConsolesView()
+            ?.activeConsole = console
+    }
+
+    private fun activateToolWindowTab() {
+        hybrisToolWindow()
+            ?.contentManager
+            ?.let { contentManager ->
+                contentManager.findContent(HybrisToolWindowFactory.CONSOLES_ID)
+                    ?.let { contentManager.setSelectedContent(it) }
+            }
+    }
+
+    private fun findConsolesView() = hybrisToolWindow()
+        ?.contentManager
+        ?.findContent(HybrisToolWindowFactory.CONSOLES_ID)
+        ?.component
+        ?.asSafely<HybrisConsolesView>()
+
+    private fun hybrisToolWindow() = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID)
 
     companion object {
         fun getInstance(project: Project): HybrisConsoleService = project.getService(HybrisConsoleService::class.java)

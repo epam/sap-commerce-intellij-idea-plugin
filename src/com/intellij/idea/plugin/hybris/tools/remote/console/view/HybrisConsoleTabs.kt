@@ -25,7 +25,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
-import javax.swing.Icon
 
 class HybrisConsoleTabs(
     project: Project,
@@ -38,7 +37,7 @@ class HybrisConsoleTabs(
 
     init {
         defaultConsoles.forEach {
-            addConsoleTab(it.title(), it.icon(), it, it.tip())
+            insertTab(it.title(), it.icon(), it.component, it.tip(), consoles.size)
         }
 
         addChangeListener {
@@ -47,11 +46,6 @@ class HybrisConsoleTabs(
                 ?.component.asSafely<HybrisConsole<in ExecutionContext>>()
                 ?.onSelection()
         }
-    }
-
-    private fun addConsoleTab(title: String, icon: Icon?, console: HybrisConsole<out ExecutionContext>, tip: String) {
-        insertTab(title, icon, console.component, tip, consoles.size)
-        consoles.add(console)
     }
 
     fun activeConsole() = consoles[selectedIndex]
