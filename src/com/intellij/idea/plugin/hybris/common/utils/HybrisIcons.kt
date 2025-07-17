@@ -476,8 +476,7 @@ object HybrisIcons {
         }
 
         object Action {
-            val FETCH = getIcon("/icons/logging/action/fetch.svg")
-            val REFRESH = getIcon("/icons/logging/action/refresh.svg")
+            val FETCH = AllIcons.Vcs.Fetch
         }
     }
 
