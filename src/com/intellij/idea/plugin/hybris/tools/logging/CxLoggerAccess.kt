@@ -70,14 +70,19 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         project.service<LoggingExecutionClient>().execute(context) { coroutineScope, result ->
             updateCache(result.loggers)
 
-            val notificationContent = """
-                <p>Level  : $logLevel</p>
-                <p>Logger : $loggerName</p>
-                <p>${server.shortenConnectionName()}</p>
+            if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
+                """
+                <p>${result.errorMessage}</p>
+                <p>Server: ${server.shortenConnectionName()}</p>
             """.trimIndent()
-
-            if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level", notificationContent)
-            else notify(NotificationType.INFORMATION, "Log Level Updated", notificationContent)
+            }
+            else notify(NotificationType.INFORMATION, "Log Level Updated") {
+                """
+                <p>Level : $logLevel</p>
+                <p>Logger: $loggerName</p>
+                <p>Server: ${server.shortenConnectionName()}</p>
+            """.trimIndent()
+            }
         }
     }
 
@@ -102,14 +107,13 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
             updateCache(loggers)
 
-            if (result.hasError) notify(
-                NotificationType.ERROR, "Failed to fetch logger states",
+            if (result.hasError) notify(NotificationType.ERROR, "Failed to fetch logger states") {
+                "<p>${result.errorMessage}</p>"
                 "<p>Server: ${server.shortenConnectionName()}</p>"
-            )
-            else notify(
-                NotificationType.INFORMATION, "Loggers state is fetched.",
+            }
+            else notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
                 "<p>Server: ${server.shortenConnectionName()}</p>"
-            )
+            }
         }
 
     }
@@ -133,8 +137,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             .notify(project)
     }
 
-    private fun notify(type: NotificationType, title: String, content: String) = Notifications
-        .create(type, title, content)
+    private fun notify(type: NotificationType, title: String, contentProvider: () -> String) = Notifications
+        .create(type, title, contentProvider.invoke())
         .hideAfter(5)
         .notify(project)
 
