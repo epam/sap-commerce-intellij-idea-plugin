@@ -62,15 +62,14 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
 
         val statusLine = response.statusLine
-        val result = DefaultExecutionResult(
-            replicaContext = context.replicaContext,
-            statusCode = statusLine.statusCode
-        )
+        val statusCode = statusLine.statusCode
 
-        if (statusLine.statusCode != HttpStatus.SC_OK || response.entity == null) {
-            result.statusCode = HttpStatus.SC_BAD_REQUEST
-            result.errorMessage = "[${statusLine.statusCode}] ${statusLine.reasonPhrase}"
-            return result
+        if (statusCode != HttpStatus.SC_OK || response.entity == null) {
+            return DefaultExecutionResult(
+                replicaContext = context.replicaContext,
+                statusCode = statusCode,
+                errorMessage = "[$statusCode] ${statusLine.reasonPhrase}"
+            )
         }
 
         try {
@@ -83,26 +82,33 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             val errorText = json.jsonObject["stacktraceText"]
                 ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
 
-            if (errorText != null) result.errorMessage = errorText
-            else {
-                json.jsonObject["outputText"]
-                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
-                    ?.let { result.output = it }
-                json.jsonObject["executionResult"]
-                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
-                    ?.let { result.result = it }
-            }
+            return if (errorText != null) DefaultExecutionResult(
+                statusCode = HttpStatus.SC_BAD_REQUEST,
+                replicaContext = context.replicaContext,
+                errorMessage = errorText
+            )
+            else DefaultExecutionResult(
+                replicaContext = context.replicaContext,
+                output = json.jsonObject["outputText"]
+                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() } ?: "",
+                result = json.jsonObject["executionResult"]
+                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() } ?: ""
+            )
         } catch (e: SerializationException) {
             thisLogger().error("Cannot parse response", e)
 
-            result.statusCode = HttpStatus.SC_BAD_REQUEST
-            result.errorMessage = "Cannot parse response from the server..."
+            return DefaultExecutionResult(
+                statusCode = HttpStatus.SC_BAD_REQUEST,
+                replicaContext = context.replicaContext,
+                errorMessage = "Cannot parse response from the server..."
+            )
         } catch (e: IOException) {
-            result.statusCode = HttpStatus.SC_BAD_REQUEST
-            result.errorMessage = "${e.message} $actionUrl"
+            return DefaultExecutionResult(
+                statusCode = HttpStatus.SC_BAD_REQUEST,
+                replicaContext = context.replicaContext,
+                errorMessage = "${e.message} $actionUrl"
+            )
         }
-
-        return result
     }
 
     companion object {
