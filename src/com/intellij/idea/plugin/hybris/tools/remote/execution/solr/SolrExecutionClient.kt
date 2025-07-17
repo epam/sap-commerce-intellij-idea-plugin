@@ -54,16 +54,23 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
         val settings = solrConnectionSettings(project)
         val solrQuery = buildSolrQuery(context)
         val queryRequest = buildQueryRequest(solrQuery, settings)
+        val url = "${settings.generatedURL}/${context.core}"
 
-        return executeSolrRequest(settings, context, queryRequest)
-    }
-
-    fun executeSolrQuery(context: SolrQueryExecutionContext) = with(solrConnectionSettings(project)) {
-        executeSolrRequest(
-            this,
-            context,
-            buildQueryRequest(buildSolrQuery(context), this)
-        )
+        return buildHttpSolrClient(url)
+            .runCatching { request(queryRequest) }
+            .map {
+                DefaultExecutionResult(
+                    remoteConnectionType = RemoteConnectionType.SOLR,
+                    output = it["response"] as String
+                )
+            }
+            .getOrElse {
+                DefaultExecutionResult(
+                    remoteConnectionType = RemoteConnectionType.SOLR,
+                    errorMessage = it.message,
+                    statusCode = HttpStatus.SC_BAD_GATEWAY
+                )
+            }
     }
 
     private fun coresData(settings: RemoteConnectionSettings) = CoreAdminRequest()
@@ -92,23 +99,6 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
     )
 
     private fun buildHttpSolrClient(url: String) = HttpSolrClient.Builder(url).build()
-
-    private fun executeSolrRequest(solrConnectionSettings: RemoteConnectionSettings, queryObject: SolrQueryExecutionContext, queryRequest: QueryRequest): DefaultExecutionResult {
-        val result = DefaultExecutionResult(
-            remoteConnectionType = RemoteConnectionType.SOLR
-        )
-        return buildHttpSolrClient("${solrConnectionSettings.generatedURL}/${queryObject.core}")
-            .runCatching { request(queryRequest) }
-            .map {
-                result.output = it["response"] as String
-                result
-            }
-            .getOrElse {
-                result.errorMessage = it.message
-                result.statusCode = HttpStatus.SC_BAD_GATEWAY
-                result
-            }
-    }
 
     private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: RemoteConnectionSettings) = QueryRequest(solrQuery).apply {
         setBasicAuthCredentials(solrConnectionSettings.username, solrConnectionSettings.password)
