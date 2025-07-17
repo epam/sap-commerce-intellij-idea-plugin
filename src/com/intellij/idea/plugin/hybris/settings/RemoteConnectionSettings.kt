@@ -89,7 +89,7 @@ class RemoteConnectionSettings : BaseState(), Comparable<RemoteConnectionSetting
     fun connectionName() = displayName ?: generatedURL
 
     fun shortenConnectionName() = (displayName ?: generatedURL)
-        .let { if (it.length > 20) it.take(20) + ".." else it }
+        .let { StringUtil.shortenPathWithEllipsis(it, 20) }
 
     override fun compareTo(other: RemoteConnectionSettings) = uuid
         ?.compareTo(other.uuid ?: "")

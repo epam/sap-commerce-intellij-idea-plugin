@@ -54,7 +54,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
                 )
             }
             .takeIf { it.isNotEmpty() }
-            ?: listOf(GroovyExecutionContext(content, transactionMode))
+            ?: listOf(GroovyExecutionContext(content = content, transactionMode = transactionMode))
 
         executionClient.execute(
             contexts = contexts,

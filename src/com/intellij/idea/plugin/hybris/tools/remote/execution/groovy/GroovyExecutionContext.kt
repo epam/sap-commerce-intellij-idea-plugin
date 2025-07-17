@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import org.apache.commons.lang3.BooleanUtils
 
 data class GroovyExecutionContext(
+    override val title: String = "Execute HTTP Call to SAP Commerce...",
     private val content: String,
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,

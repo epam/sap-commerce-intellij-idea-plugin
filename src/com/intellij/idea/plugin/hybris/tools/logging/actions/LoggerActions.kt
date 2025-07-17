@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
-import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
@@ -33,12 +32,6 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
-import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
-import com.intellij.openapi.project.Project
-import com.intellij.util.application
 import javax.swing.Icon
 
 abstract class AbstractLoggerAction(private val logLevel: LogLevel, val icon: Icon) : AnAction(logLevel.name, "", icon) {
@@ -77,7 +70,7 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel, val icon: Ic
                 )
                     .hideAfter(5)
                     .notify(project)
-                CxLoggerAccess.getInstance(project).refresh()
+                CxLoggerAccess.getInstance(project).fetch()
             } else {
                 Notifications.error(
                     "Failed to update log level",
@@ -118,7 +111,7 @@ class FetchLoggerStateAction : AnAction("Fetch Logger State", "", HybrisIcons.Lo
         val project = e.project ?: return
         val loggerAccessService = project.service<CxLoggerAccess>()
 
-        loggerAccessService.refresh()
+        loggerAccessService.fetch()
 
     }
 
