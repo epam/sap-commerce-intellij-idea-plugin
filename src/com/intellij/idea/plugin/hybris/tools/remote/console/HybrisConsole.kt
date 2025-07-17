@@ -85,27 +85,21 @@ abstract class HybrisConsole<E : ExecutionContext>(
         super.dispose()
     }
 
-    private fun addCurrentQueryToHistory(): String? {
+    private fun addCurrentQueryToHistory() {
         val consoleHistoryController = ConsoleHistoryController.getController(this)
-            ?: return null
+            ?: return
         // Process input and add to history
         val document = currentEditor.document
-        val textForHistory = document.text
-
-        val query = document.text
-            .takeIf { it.isNotEmpty() }
-            ?: return null
+        val textForHistory = document.text.trim()
         val range = TextRange(0, document.textLength)
 
         currentEditor.selectionModel.setSelection(range.startOffset, range.endOffset)
         addToHistory(range, consoleEditor, false)
         printDefaultText()
 
-        if (!StringUtil.isEmptyOrSpaces(textForHistory)) {
-            consoleHistoryController.addToHistory(textForHistory.trim())
+        if (textForHistory.isNotBlank()) {
+            consoleHistoryController.addToHistory(textForHistory)
         }
-
-        return query
     }
 
     protected open fun printResults(httpResult: ExecutionResult) {
@@ -120,7 +114,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
             ?.let { name -> print("($name) ", LOG_INFO_OUTPUT) }
         replicaContext
             ?.replicaId
-            ?.let { print("($it) ", LOG_INFO_OUTPUT) }
+            ?.let { print("($it) ", LOG_VERBOSE_OUTPUT) }
 
         print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }

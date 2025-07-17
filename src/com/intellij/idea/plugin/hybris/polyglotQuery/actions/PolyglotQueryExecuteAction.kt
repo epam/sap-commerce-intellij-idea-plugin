@@ -22,6 +22,12 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisPolyglotQueryConsole
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 
 class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryConsole>(
     PolyglotQueryLanguage,
@@ -29,4 +35,18 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
     message("hybris.pgq.actions.execute_query"),
     message("hybris.pgq.actions.execute_query.description"),
     HybrisIcons.Console.Actions.EXECUTE
-)
+) {
+    override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
+        val console = openConsole(project, content) ?: return
+        val context = FlexibleSearchExecutionContext(
+            content = content,
+            queryMode = QueryMode.PolyglotQuery
+        )
+
+        console.isEditable = false
+        project.service<FlexibleSearchExecutionClient>().execute(context) { coroutineScope, result ->
+            console.print(result)
+            console.isEditable = true
+        }
+    }
+}

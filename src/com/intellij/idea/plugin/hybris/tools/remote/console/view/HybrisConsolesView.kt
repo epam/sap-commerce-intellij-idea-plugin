@@ -20,12 +20,12 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.console.actions.ConsoleExecuteStatementAction
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionToolbar
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
@@ -97,13 +97,6 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
             if (consoleClass.isInstance(c)) return consoleClass.cast(c)
         }
         return null
-    }
-
-    fun execute(e: AnActionEvent) = performAction(e, ConsoleExecuteStatementAction::class.java)
-
-    private fun performAction(e: AnActionEvent, clazz: Class<out AnAction>) {
-        val action = actionToolbar.actions.firstOrNull { clazz.isInstance(it) } ?: return
-        ActionUtil.performActionDumbAwareWithCallbacks(action, e)
     }
 
     companion object {

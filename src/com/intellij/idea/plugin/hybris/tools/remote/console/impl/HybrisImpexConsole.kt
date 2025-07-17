@@ -88,7 +88,7 @@ class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : Hyb
         legacyMode = if (legacyModeCheckbox.isSelected) Toggle.ON else Toggle.OFF,
         enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) Toggle.ON else Toggle.OFF,
         sldEnabled = if (directPersistenceCheckbox.isSelected) Toggle.ON else Toggle.OFF,
-        _distributedMode = Toggle.ON,
+        distributedMode = Toggle.ON,
     )
 
     override fun title(): String = HybrisConstants.IMPEX

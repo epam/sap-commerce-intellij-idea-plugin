@@ -28,8 +28,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -46,10 +45,6 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    protected open fun doExecute(e: AnActionEvent, content: String, console: C, consoleService: HybrisConsoleService) {
-        consoleService.executeStatement(e)
-    }
-
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val content = CommonDataKeys.EDITOR.getData(e.dataContext)
@@ -59,7 +54,9 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
         actionPerformed(e, project, content)
     }
 
-    open fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
+    abstract fun actionPerformed(e: AnActionEvent, project: Project, content: String)
+
+    protected fun openConsole(project: Project, content: String): C? {
         with(HybrisToolWindowService.getInstance(project)) {
             activateToolWindow()
             activateToolWindowTab(HybrisToolWindowFactory.CONSOLES_ID)
@@ -68,16 +65,14 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
         val consoleService = HybrisConsoleService.getInstance(project)
         val console = consoleService.findConsole(consoleClass)
         if (console == null) {
-            LOG.warn("unable to find console ${this@ExecuteStatementAction.consoleClass}")
-            return
+            thisLogger().warn("unable to find console ${this@ExecuteStatementAction.consoleClass}")
+            return null
         }
 
         consoleService.setActiveConsole(console)
         console.setInputText(content)
 
-        invokeLater {
-            doExecute(e, content, console, consoleService)
-        }
+        return console
     }
 
     open fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project) = content
@@ -100,7 +95,4 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
         return processContent(e, content, editor, project)
     }
 
-    companion object {
-        private val LOG = Logger.getInstance(ExecuteStatementAction::class.java)
-    }
 }

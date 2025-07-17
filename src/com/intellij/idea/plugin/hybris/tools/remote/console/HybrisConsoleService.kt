@@ -19,19 +19,14 @@ package com.intellij.idea.plugin.hybris.tools.remote.console
 
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowService
-import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.wm.ToolWindow
 import kotlin.reflect.KClass
 
 @Service(Service.Level.PROJECT)
 class HybrisConsoleService(private val project: Project) {
 
     fun <C : HybrisConsole<out ExecutionContext>> findConsole(consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView()
-        ?.findConsole(consoleClass)
-
-    fun <C : HybrisConsole<out ExecutionContext>> findConsole(toolWindow: ToolWindow, consoleClass: KClass<C>): C? = HybrisToolWindowService.getInstance(project).findConsolesView(toolWindow)
         ?.findConsole(consoleClass)
 
     fun setActiveConsole(console: HybrisConsole<out ExecutionContext>) {
@@ -41,11 +36,6 @@ class HybrisConsoleService(private val project: Project) {
 
     fun getActiveConsole() = HybrisToolWindowService.getInstance(project).findConsolesView()
         ?.getActiveConsole()
-
-    fun executeStatement(e: AnActionEvent) {
-        HybrisToolWindowService.getInstance(project).findConsolesView()
-            ?.execute(e)
-    }
 
     companion object {
         fun getInstance(project: Project): HybrisConsoleService = project.getService(HybrisConsoleService::class.java)

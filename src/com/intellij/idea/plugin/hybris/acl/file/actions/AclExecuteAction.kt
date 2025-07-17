@@ -23,7 +23,11 @@ import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
-import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 
 class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
     AclLanguage,
@@ -33,5 +37,16 @@ class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+    override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
+        val console = openConsole(project, content) ?: return
+        val context = ImpExExecutionContext(
+            content = content,
+        )
+
+        console.isEditable = false
+        project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
+            console.print(result)
+            console.isEditable = true
+        }
+    }
 }

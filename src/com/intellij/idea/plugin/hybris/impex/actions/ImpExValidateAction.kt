@@ -20,13 +20,13 @@ package com.intellij.idea.plugin.hybris.impex.actions
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ExecutionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 
 class ImpExValidateAction : ExecuteStatementAction<HybrisImpexConsole>(
     ImpexLanguage,
@@ -35,8 +35,8 @@ class ImpExValidateAction : ExecuteStatementAction<HybrisImpexConsole>(
     "Validate ImpEx file via remote SAP Commerce instance",
     HybrisIcons.ImpEx.Actions.VALIDATE
 ) {
-
-    override fun doExecute(e: AnActionEvent, content: String, console: HybrisImpexConsole, consoleService: HybrisConsoleService) {
+    override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
+        val console = openConsole(project, content) ?: return
         val project = e.project ?: return
         val context = ImpExExecutionContext(
             content = content,
@@ -49,4 +49,5 @@ class ImpExValidateAction : ExecuteStatementAction<HybrisImpexConsole>(
             console.isEditable = true
         }
     }
+
 }

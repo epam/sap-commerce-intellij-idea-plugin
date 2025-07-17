@@ -50,6 +50,7 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
 
     override fun update(e: AnActionEvent) {
         super.update(e)
+
         val queryExecuting = e.flexibleSearchSplitEditor()
             ?.getUserData(KEY_QUERY_EXECUTING)
             ?: false
@@ -66,11 +67,11 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = e.flexibleSearchSplitEditor()
-        if (fileEditor?.inEditorResults ?: false) {
-            val context = FlexibleSearchExecutionContext(
-                content = content,
-            )
+        val context = FlexibleSearchExecutionContext(
+            content = content,
+        )
 
+        if (fileEditor?.inEditorResults ?: false) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader()
 
@@ -83,7 +84,13 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
                 }
             }
         } else {
-            super.actionPerformed(e, project, content)
+            val console = openConsole(project, content) ?: return
+            console.isEditable = false
+
+            project.service<FlexibleSearchExecutionClient>().execute(context) { coroutineScope, result ->
+                console.print(result)
+                console.isEditable = true
+            }
         }
     }
 }

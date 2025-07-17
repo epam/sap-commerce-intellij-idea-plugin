@@ -29,10 +29,10 @@ data class ImpExExecutionContext(
     private val validationMode: ValidationMode = ValidationMode.IMPORT_STRICT,
     private val encoding: Charset = StandardCharsets.UTF_8,
     private val maxThreads: Int = 20,
-    private val legacyMode: Toggle = Toggle.ON,
+    private val legacyMode: Toggle = Toggle.OFF,
     private val enableCodeExecution: Toggle = Toggle.ON,
     private val sldEnabled: Toggle = Toggle.ON,
-    private val _distributedMode: Toggle = Toggle.ON,
+    private val distributedMode: Toggle = Toggle.ON,
     val executionMode: ExecutionMode = ExecutionMode.IMPORT,
     val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
 ) : ExecutionContext {
@@ -47,7 +47,7 @@ data class ImpExExecutionContext(
         put("_sldEnabled", sldEnabled.value)
         put("_enableCodeExecution", enableCodeExecution.value)
         put("_legacyMode", legacyMode.value)
-        put("_distributedMode", _distributedMode.value)
+        put("_distributedMode", distributedMode.value)
     }
 }
 

@@ -21,12 +21,12 @@ import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
 
 class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
     ImpexLanguage,
@@ -36,8 +36,8 @@ class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    override fun doExecute(e: AnActionEvent, content: String, console: HybrisImpexConsole, consoleService: HybrisConsoleService) {
-        val project = e.project ?: return
+    override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
+        val console = openConsole(project, content) ?: return
         val context = ImpExExecutionContext(
             content = content
         )

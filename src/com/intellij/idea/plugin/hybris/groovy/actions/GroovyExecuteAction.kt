@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
@@ -42,8 +41,8 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    override fun doExecute(e: AnActionEvent, content: String, console: HybrisGroovyConsole, consoleService: HybrisConsoleService) {
-        val project = e.project ?: return
+    override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
+        val console = openConsole(project, content) ?: return
         val transactionMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode
         val executionClient = project.service<GroovyExecutionClient>()
         val contexts = executionClient.connectionContext.replicaContexts
@@ -57,9 +56,18 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
             .takeIf { it.isNotEmpty() }
             ?: listOf(GroovyExecutionContext(content, transactionMode))
 
+        console.isEditable = false
+
+        var executions = 0
+
         contexts.forEach {
             executionClient.execute(it) { coroutineScope, result ->
                 console.print(result)
+
+                executions++
+                if (executions == contexts.size) {
+                    console.isEditable = true
+                }
             }
         }
     }
@@ -82,12 +90,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
         }
     }
 
-    override fun processContent(
-        e: AnActionEvent,
-        content: String,
-        editor: Editor,
-        project: Project
-    ): String {
+    override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String {
         val psiFile = CommonDataKeys.PSI_FILE.getData(e.dataContext) ?: return content
 
         val selectionModel = editor.selectionModel
