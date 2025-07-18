@@ -47,13 +47,14 @@ import java.io.Serial
 import javax.swing.SwingConstants.CENTER
 
 class CCv2BuildDetailsView(
-    private val project: Project, private val subscription: CCv2Subscription, private var build: CCv2BuildDto
+    private val project: Project,
+    private val subscription: CCv2Subscription,
+    build: CCv2BuildDto
 ) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val deploymentHistoryPanel = JBPanel<JBPanel<*>>(GridBagLayout())
         .also { border = JBUI.Borders.empty() }
     private val showBuildHistory = AtomicBooleanProperty(false)
-    private var rootPanel = rootPanel()
     private var isBuildInProgress = build.status == CCv2BuildStatus.BUILDING
 
     override fun dispose() {
@@ -61,50 +62,50 @@ class CCv2BuildDetailsView(
     }
 
     init {
-        installToolbar()
-        initPanel()
+        initPanel(build)
     }
 
-    private fun installToolbar() {
+    private fun installToolbar(build: CCv2BuildDto) {
         val toolbar = with(DefaultActionGroup()) {
             val actionManager = ActionManager.getInstance()
 
-            add(actionManager.getAction("ccv2.environment.toolbar.actions"))
-
+            add(
+                CCv2FetchBuildDetailsAction(subscription, build, {
+                    initPanel(it)
+                })
+            )
             add(CCv2RedoBuildAction(subscription, build))
             if (build.canDeploy()) {
                 add(CCv2DeployBuildAction(subscription, build))
             }
-            if (build.canDelete()) {
-                add(CCv2DeleteBuildAction(subscription, build))
-            }
             if (build.canDownloadLogs()) {
                 add(CCv2DownloadBuildLogsAction(subscription, build))
             }
-            add(
-                CCv2FetchBuildDetailsAction(subscription, build, {}, {
-                    build = it
+            if (build.canDelete()) {
+                add(CCv2DeleteBuildAction(subscription, build))
+            }
+            add(actionManager.getAction("ccv2.reset.cache.action"))
 
-                    this@CCv2BuildDetailsView.remove(rootPanel)
-                    rootPanel = rootPanel()
-
-                    initPanel()
-                })
-            )
+            addSeparator()
+            add(actionManager.getAction("ccv2.environment.toolbar.actions"))
             actionManager.createActionToolbar("SAP_CX_CCv2_ENVIRONMENT_${System.identityHashCode(build)}", this, false)
         }
         toolbar.targetComponent = this
         setToolbar(toolbar.component)
     }
 
-    private fun initPanel() {
-        add(rootPanel)
-        initDeploymentHistoryPanel()
+    private fun initPanel(build: CCv2BuildDto) {
+        removeAll()
+
+        add(rootPanel(build))
+        installToolbar(build)
+
+        initDeploymentHistoryPanel(build)
     }
 
-    private fun initDeploymentHistoryPanel() {
-
-        CCv2Service.getInstance(project).fetchDeploymentsForBuild(subscription, build.code,
+    private fun initDeploymentHistoryPanel(build: CCv2BuildDto) {
+        CCv2Service.getInstance(project).fetchDeploymentsForBuild(
+            subscription, build.code,
             {
                 showBuildHistory.set(false)
                 deploymentHistoryPanel.removeAll()
@@ -131,95 +132,101 @@ class CCv2BuildDetailsView(
         }
     }
 
-    private fun rootPanel() = panel {
-        row {
-            label("$subscription - ${build.code}").comment("Build").bold().component.also {
-                it.font = JBUI.Fonts.label(26f)
-            }.horizontalAlignment = CENTER
-        }.topGap(TopGap.SMALL).bottomGap(BottomGap.SMALL)
-        group(build.code) {
+    private fun rootPanel(build: CCv2BuildDto) = panel {
+        indent {
             row {
-                panel {
-                    row {
-                        val buildName = build.link?.let { browserLink(build.name, it) } ?: label(build.name)
-                        buildName.comment(build.code).bold()
-                    }
-                }.gap(RightGap.COLUMNS)
+                label("$subscription - ${build.code}").comment("Build").bold().component.also {
+                    it.font = JBUI.Fonts.label(26f)
+                }.horizontalAlignment = CENTER
+            }
+                .topGap(TopGap.SMALL)
+                .bottomGap(BottomGap.SMALL)
 
-                panel {
-                    row {
-                        label(build.version).comment("Version")
-                    }
-                }.gap(RightGap.COLUMNS)
-
-                panel {
-                    row {
-                        icon(HybrisIcons.CCv2.Build.REVISION).gap(RightGap.SMALL)
-                        copyLink(project, "Revision", build.revision, "Build Revision copied to clipboard")
-                    }
-                }.gap(RightGap.SMALL)
-
-                panel {
-                    row {
-                        icon(HybrisIcons.CCv2.Build.BRANCH).gap(RightGap.SMALL)
-                        copyLink(project, "Branch", build.branch, "Build Branch copied to clipboard")
-                    }
-                }.gap(RightGap.COLUMNS)
-
-                panel {
-                    row {
-                        icon(build.status.icon).gap(RightGap.SMALL)
-                        label(build.status.title).comment("Status")
-                    }
-                }.gap(RightGap.COLUMNS)
-
-                panel {
-                    row {
-                        sUser(project, build.createdBy, HybrisIcons.CCv2.Build.CREATED_BY)
-                    }
-                }.gap(RightGap.COLUMNS)
-
-                panel {
-                    row {
-                        date("Start time", build.startTime)
-                    }
-                }.gap(RightGap.COLUMNS)
-
-                panel {
-                    row {
-                        date("End time", build.endTime)
-                    }
-                }
-                if (build.duration != "N/A") {
+            group(build.code) {
+                row {
                     panel {
                         row {
-                            if (build.status == CCv2BuildStatus.BUILDING) {
-                                label("-").comment("Duration")
-                            } else {
-                                build.duration.toString().concatWithSpace("minutes")
-                                    ?.let { label(it).comment("Duration") }
+                            val buildName = build.link?.let { browserLink(build.name, it) } ?: label(build.name)
+                            buildName.comment(build.code).bold()
+                        }
+                    }.gap(RightGap.COLUMNS)
+
+                    panel {
+                        row {
+                            label(build.version).comment("Version")
+                        }
+                    }.gap(RightGap.COLUMNS)
+
+                    panel {
+                        row {
+                            icon(HybrisIcons.CCv2.Build.REVISION).gap(RightGap.SMALL)
+                            copyLink(project, "Revision", build.revision, "Build Revision copied to clipboard")
+                        }
+                    }.gap(RightGap.SMALL)
+
+                    panel {
+                        row {
+                            icon(HybrisIcons.CCv2.Build.BRANCH).gap(RightGap.SMALL)
+                            copyLink(project, "Branch", build.branch, "Build Branch copied to clipboard")
+                        }
+                    }.gap(RightGap.COLUMNS)
+
+                    panel {
+                        row {
+                            icon(build.status.icon).gap(RightGap.SMALL)
+                            label(build.status.title).comment("Status")
+                        }
+                    }.gap(RightGap.COLUMNS)
+
+                    panel {
+                        row {
+                            sUser(project, build.createdBy, HybrisIcons.CCv2.Build.CREATED_BY)
+                        }
+                    }.gap(RightGap.COLUMNS)
+
+                    panel {
+                        row {
+                            date("Start time", build.startTime)
+                        }
+                    }.gap(RightGap.COLUMNS)
+
+                    panel {
+                        row {
+                            date("End time", build.endTime)
+                        }
+                    }
+                    if (build.duration != "N/A") {
+                        panel {
+                            row {
+                                if (build.status == CCv2BuildStatus.BUILDING) {
+                                    label("-").comment("Duration")
+                                } else {
+                                    build.duration.toString().concatWithSpace("minutes")
+                                        ?.let { label(it).comment("Duration") }
+                                }
                             }
                         }
                     }
-                }
-            }.layout(RowLayout.PARENT_GRID)
-        }
-
-        group("Deployment History") {
-            row {
-                cell(deploymentHistoryPanel).visibleIf(showBuildHistory)
+                }.layout(RowLayout.PARENT_GRID)
             }
 
-            row {
-                panel {
-                    row {
-                        icon(AnimatedIcon.Default.INSTANCE)
-                        label("Retrieving build details...")
-                    }
-                }.align(Align.CENTER)
-            }.visibleIf(showBuildHistory.not())
-        }.visible(!isBuildInProgress)
-    }.let { Dsl.scrollPanel(it) }
+            group("Deployment History") {
+                row {
+                    cell(deploymentHistoryPanel).visibleIf(showBuildHistory)
+                }
+
+                row {
+                    panel {
+                        row {
+                            icon(AnimatedIcon.Default.INSTANCE)
+                            label("Retrieving build details...")
+                        }
+                    }.align(Align.CENTER)
+                }.visibleIf(showBuildHistory.not())
+            }.visible(!isBuildInProgress)
+        }
+    }
+        .let { Dsl.scrollPanel(it) }
 
 
     private fun buildDeploymentHistoryPanel(groupedDeployments: Map<String, List<CCv2DeploymentDto>>) = panel {

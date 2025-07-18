@@ -34,7 +34,7 @@ class CCv2EventsSubscriberStartupActivity : ProjectActivity {
                 override fun onBuildCompleted(subscription: CCv2Subscription, buildCode: String, deploymentRequests: Collection<CCv2DeploymentRequest>) {
                     val ccv2Service = CCv2Service.getInstance(project)
 
-                    ccv2Service.fetchBuildWithCode(subscription, buildCode, {}) { build ->
+                    ccv2Service.fetchBuildWithCode(subscription, buildCode) { build ->
                         if (build.canDeploy()) {
                             deploymentRequests
                                 .forEach { ccv2Service.deployBuild(project, subscription, build, it) }

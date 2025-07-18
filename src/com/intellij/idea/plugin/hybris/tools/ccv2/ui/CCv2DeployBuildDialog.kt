@@ -68,15 +68,15 @@ class CCv2DeployBuildDialog(
         super.init()
 
         val subscriptions = ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
+
+        isOKActionEnabled = false
+        subscriptionComboBox.isEnabled = false
+        environmentComboBox.isEnabled = false
+        modeComboBox.isEnabled = false
+        strategyComboBox.isEnabled = false
+
         CCv2Service.getInstance(project).fetchEnvironments(
             subscriptions = subscriptions,
-            onStartCallback = {
-                isOKActionEnabled = false
-                subscriptionComboBox.isEnabled = false
-                environmentComboBox.isEnabled = false
-                modeComboBox.isEnabled = false
-                strategyComboBox.isEnabled = false
-            },
             onCompleteCallback = {
                 environments = it
                 updateEnvironments(subscriptionComboBox.selectedItem as CCv2Subscription)

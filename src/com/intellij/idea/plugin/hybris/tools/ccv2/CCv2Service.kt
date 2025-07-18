@@ -85,7 +85,6 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
     fun fetchEnvironments(
         subscriptions: Collection<CCv2Subscription>,
-        onStartCallback: () -> Unit,
         onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2EnvironmentDto>>) -> Unit,
         sendEvents: Boolean = true,
         statuses: EnumSet<CCv2EnvironmentStatus>? = null,
@@ -93,7 +92,6 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         requestV1Health: Boolean = true,
         requestServices: Boolean = false,
     ) {
-        onStartCallback.invoke()
         if (sendEvents) project.messageBus.syncPublisher(CCv2EnvironmentsListener.TOPIC).onFetchingStarted(subscriptions)
 
         val ccv2Settings = DeveloperSettingsComponent.getInstance(project).state.ccv2Settings
@@ -181,11 +179,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
     fun fetchEnvironmentBuild(
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
-        onStartCallback: () -> Unit,
         onCompleteCallback: (CCv2BuildDto?) -> Unit,
     ) {
-        onStartCallback.invoke()
-
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environment Build Details...", true) {
                 val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
@@ -206,11 +201,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
     fun fetchEnvironmentServices(
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
-        onStartCallback: () -> Unit,
         onCompleteCallback: (Collection<CCv2ServiceDto>?) -> Unit
     ) {
-        onStartCallback.invoke()
-
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environment Services...", true) {
                 val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
@@ -232,11 +224,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
     fun fetchEnvironmentDataBackups(
         subscription: CCv2Subscription,
         environment: CCv2EnvironmentDto,
-        onStartCallback: () -> Unit,
         onCompleteCallback: (Collection<CCv2DataBackupDto>?) -> Unit
     ) {
-        onStartCallback.invoke()
-
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Environment Data Backups...", true) {
                 val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
@@ -261,11 +250,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         environment: CCv2EnvironmentDto,
         service: CCv2ServiceDto,
         serviceProperties: CCv2ServiceProperties,
-        onStartCallback: () -> Unit,
         onCompleteCallback: (Map<String, String>?) -> Unit
     ) {
-        onStartCallback.invoke()
-
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching CCv2 Service Properties...", true) {
                 val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress
@@ -286,10 +272,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
     fun fetchBuilds(
         subscriptions: Collection<CCv2Subscription>,
-        onStartCallback: () -> Unit,
         onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2BuildDto>>) -> Unit
     ) {
-        onStartCallback.invoke()
         project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onFetchingStarted(subscriptions)
 
         val ccv2Settings = DeveloperSettingsComponent.getInstance(project).state.ccv2Settings
@@ -333,10 +317,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
 
     fun fetchDeployments(
         subscriptions: Collection<CCv2Subscription>,
-        onStartCallback: () -> Unit,
         onCompleteCallback: (SortedMap<CCv2Subscription, Collection<CCv2DeploymentDto>>) -> Unit
     ) {
-        onStartCallback.invoke()
         project.messageBus.syncPublisher(CCv2DeploymentsListener.TOPIC).onFetchingStarted(subscriptions)
 
         coroutineScope.launch {
@@ -529,10 +511,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         project: Project,
         subscription: CCv2Subscription,
         build: CCv2BuildDto,
-        onStartCallback: () -> Unit,
         onCompleteCallback: (Collection<VirtualFile>) -> Unit
     ) {
-        onStartCallback.invoke()
         coroutineScope.launch {
             withBackgroundProgress(project, "Downloading CCv2 Build Logs - ${build.code}...") {
                 project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onBuildDeploymentStarted(subscription, build)
@@ -599,11 +579,8 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
     fun fetchBuildWithCode(
         subscription: CCv2Subscription,
         buildCode: String,
-        onStartCallback: () -> Unit,
         onCompleteCallback: (CCv2BuildDto) -> Unit
     ) {
-        onStartCallback.invoke()
-
         coroutineScope.launch {
             withBackgroundProgress(project, "Fetching Build - $buildCode...", true) {
                 val ccv2Token = getCCv2Token(subscription) ?: return@withBackgroundProgress

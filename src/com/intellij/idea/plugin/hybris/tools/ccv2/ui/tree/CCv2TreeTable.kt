@@ -55,7 +55,7 @@ class CCv2TreeTable(
         }
     }
 
-    fun reset() {
+    fun resetTree() {
         emptyText.text = "No replicas found"
 
         root.removeAllChildren()
@@ -65,13 +65,12 @@ class CCv2TreeTable(
     fun refresh(project: Project, subscription: CCv2Subscription) {
         isEnabled = false
 
+        selectedReplicaIds.clear()
+        loadingState.set(subscription)
+        resetTree()
+
         CCv2Service.Companion.getInstance(project).fetchEnvironments(
             listOf(subscription),
-            onStartCallback = {
-                selectedReplicaIds.clear()
-                loadingState.set(subscription)
-                reset()
-            },
             onCompleteCallback = { response ->
                 response[subscription]
                     ?.filter { it.accessible }

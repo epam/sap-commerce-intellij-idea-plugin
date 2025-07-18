@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,8 +24,8 @@ import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComp
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
+import com.intellij.ui.AnimatedIcon
 import java.util.*
 import javax.swing.Icon
 
@@ -33,8 +33,8 @@ abstract class AbstractCCv2FetchAction<T : CCv2DTO>(
     tab: CCv2Tab,
     private val text: String,
     description: String? = null,
-    icon: Icon,
-    private val fetch: (Project, List<CCv2Subscription>, () -> Unit, (SortedMap<CCv2Subscription, Collection<T>>) -> Unit) -> Unit
+    private val icon: Icon,
+    private val fetch: (Project, List<CCv2Subscription>, (SortedMap<CCv2Subscription, Collection<T>>) -> Unit) -> Unit
 ) : AbstractCCv2Action(tab, text, description, icon) {
 
     private var fetching = false
@@ -47,23 +47,23 @@ abstract class AbstractCCv2FetchAction<T : CCv2DTO>(
             ?: ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
                 .sortedBy { it.toString() }
 
+        fetching = true
+
         fetch.invoke(
             project, subscriptions,
-            onStartCallback(e),
             onCompleteCallback(e)
         )
     }
 
     private fun onCompleteCallback(e: AnActionEvent): (SortedMap<CCv2Subscription, Collection<T>>) -> Unit = {
-        invokeLater {
-            fetching = false
-            e.presentation.text = text
-        }
+        fetching = false
     }
 
-    private fun onStartCallback(e: AnActionEvent): () -> Unit = {
-        fetching = true
-        e.presentation.text = "Fetching..."
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+
+        e.presentation.text = if (fetching) "Fetching..." else text
+        e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else icon
     }
 
     override fun isEnabled() = !fetching && super.isEnabled()

@@ -173,14 +173,14 @@ class CCv2CreateBuildDialog(
 
             return
         }
+
+        autoDeploymentPlaceholder.component = infoPanel(
+            "Re-fetching environments for the subscription...",
+            AnimatedIcon.Default.INSTANCE
+        )
+
         CCv2Service.getInstance(project).fetchEnvironments(
             subscriptions = listOf(subscription),
-            onStartCallback = {
-                autoDeploymentPlaceholder.component = infoPanel(
-                    "Re-fetching environments for the subscription...",
-                    AnimatedIcon.Default.INSTANCE
-                )
-            },
             onCompleteCallback = { environments ->
                 val environmentsPanel = getEnvironmentsPanel(environments, subscription)
 

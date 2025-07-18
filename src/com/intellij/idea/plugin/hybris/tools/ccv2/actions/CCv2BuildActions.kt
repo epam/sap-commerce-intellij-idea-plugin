@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Actions.FET
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
 import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildRequest
@@ -31,7 +30,6 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2CreateBuildDialog
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DeployBuildDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
-import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2ViewUtil
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -42,6 +40,7 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.AnimatedIcon
 
 val subscriptionKey = DataKey.create<CCv2Subscription>("subscription")
 val buildKey = DataKey.create<CCv2BuildDto>("build")
@@ -137,15 +136,14 @@ class CCv2FetchBuildsAction : AbstractCCv2FetchAction<CCv2BuildDto>(
     tab = CCv2Tab.BUILDS,
     text = "Fetch Builds",
     icon = FETCH,
-    fetch = { project, subscriptions, onStartCallback, onCompleteCallback ->
-        CCv2Service.getInstance(project).fetchBuilds(subscriptions, onStartCallback, onCompleteCallback)
+    fetch = { project, subscriptions, onCompleteCallback ->
+        CCv2Service.getInstance(project).fetchBuilds(subscriptions, onCompleteCallback)
     }
 )
 
 class CCv2FetchBuildDetailsAction(
     private val subscription: CCv2Subscription,
     private val build: CCv2BuildDto,
-    private val onStartCallback: () -> Unit,
     private val onCompleteCallback: (CCv2BuildDto) -> Unit
 ) : DumbAwareAction("Fetch Build", null, FETCH) {
 
@@ -155,19 +153,15 @@ class CCv2FetchBuildDetailsAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
+
+        fetching = true
+
         CCv2Service.getInstance(project).fetchBuildWithCode(
             subscription, build.code,
-            {
-                fetching = true
-                e.presentation.text = "Fetching..."
-
-                onStartCallback.invoke()
-            },
             { response ->
-                invokeLater {
-                    fetching = false
-                    e.presentation.text = "Fetch Build"
+                fetching = false
 
+                invokeLater {
                     onCompleteCallback.invoke(response)
                 }
             }
@@ -175,15 +169,10 @@ class CCv2FetchBuildDetailsAction(
     }
 
     override fun update(e: AnActionEvent) {
-        val isRightPlace = "GoToAction" != e.place
-        e.presentation.isEnabled = isRightPlace && isEnabled()
-        e.presentation.isVisible = isRightPlace && e.project
-            ?.let { CCv2View.getActiveTab(it) == CCv2Tab.BUILDS }
-            ?: false
-        e.presentation.isEnabled = !fetching && ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
+        e.presentation.isEnabled = !fetching
+        e.presentation.text = if (fetching) "Fetching" else "Fetch Build"
+        e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else FETCH
     }
-
-    fun isEnabled() = ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
 }
 
 class CCv2DownloadBuildLogsAction(
@@ -194,29 +183,27 @@ class CCv2DownloadBuildLogsAction(
     text = "Download Build Logs",
     icon = HybrisIcons.CCv2.Build.Actions.DOWNLOAD_LOGS
 ) {
-    private var processing = false
+    private var fetching = false
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
 
-        CCv2Service.getInstance(project).downloadBuildLogs(project, subscription, build, onStartCallback(), onCompleteCallback(project))
+        fetching = true
+
+        CCv2Service.getInstance(project).downloadBuildLogs(project, subscription, build, onCompleteCallback(project))
     }
 
     private fun onCompleteCallback(project: Project): (Collection<VirtualFile>) -> Unit = {
-        invokeLater {
-            processing = false
+        fetching = false
 
+        invokeLater {
             it.forEach {
                 FileEditorManager.getInstance(project).openFile(it, true)
             }
         }
     }
 
-    private fun onStartCallback(): () -> Unit = {
-        processing = true
-    }
-
-    override fun isEnabled() = !processing && super.isEnabled()
+    override fun isEnabled() = !fetching && super.isEnabled()
 }
 
 class CCv2ShowBuildDetailsAction(
@@ -233,7 +220,7 @@ class CCv2ShowBuildDetailsAction(
 
 }
 
-abstract class AbstractCCv2ShowBuildWithStatusAction(status: CCv2BuildStatus) : AbstractCCv2ShowWithStatusAction<CCv2BuildStatus>(
+abstract class CCv2ShowBuildWithStatusAction(status: CCv2BuildStatus) : CCv2ShowWithStatusAction<CCv2BuildStatus>(
     CCv2Tab.BUILDS,
     status,
     status.title,
@@ -243,9 +230,9 @@ abstract class AbstractCCv2ShowBuildWithStatusAction(status: CCv2BuildStatus) : 
     override fun getStatuses(settings: CCv2Settings) = settings.showBuildStatuses
 }
 
-class CCv2ShowDeletedBuildsAction : AbstractCCv2ShowBuildWithStatusAction(CCv2BuildStatus.DELETED)
-class CCv2ShowFailedBuildsAction : AbstractCCv2ShowBuildWithStatusAction(CCv2BuildStatus.FAIL)
-class CCv2ShowUnknownBuildsAction : AbstractCCv2ShowBuildWithStatusAction(CCv2BuildStatus.UNKNOWN)
-class CCv2ShowScheduledBuildsAction : AbstractCCv2ShowBuildWithStatusAction(CCv2BuildStatus.SCHEDULED)
-class CCv2ShowBuildingBuildsAction : AbstractCCv2ShowBuildWithStatusAction(CCv2BuildStatus.BUILDING)
-class CCv2ShowSuccessBuildsAction : AbstractCCv2ShowBuildWithStatusAction(CCv2BuildStatus.SUCCESS)
+class CCv2ShowDeletedBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.DELETED)
+class CCv2ShowFailedBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.FAIL)
+class CCv2ShowUnknownBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.UNKNOWN)
+class CCv2ShowScheduledBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.SCHEDULED)
+class CCv2ShowBuildingBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.BUILDING)
+class CCv2ShowSuccessBuildsAction : CCv2ShowBuildWithStatusAction(CCv2BuildStatus.SUCCESS)

@@ -38,20 +38,20 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
+import com.intellij.ui.AnimatedIcon
 
 class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction<CCv2EnvironmentDto>(
     tab = CCv2Tab.ENVIRONMENTS,
     text = "Fetch Environments",
     icon = HybrisIcons.CCv2.Actions.FETCH,
-    fetch = { project, subscriptions, onStartCallback, onCompleteCallback ->
-        CCv2Service.getInstance(project).fetchEnvironments(subscriptions, onStartCallback, onCompleteCallback)
+    fetch = { project, subscriptions, onCompleteCallback ->
+        CCv2Service.getInstance(project).fetchEnvironments(subscriptions, onCompleteCallback)
     }
 )
 
 class CCv2FetchEnvironmentAction(
     private val subscription: CCv2Subscription,
     private val environment: CCv2EnvironmentDto,
-    private val onStartCallback: () -> Unit,
     private val onCompleteCallback: (CCv2EnvironmentDto) -> Unit
 ) : DumbAwareAction("Fetch Environment", null, HybrisIcons.CCv2.Actions.FETCH) {
 
@@ -61,19 +61,15 @@ class CCv2FetchEnvironmentAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
+
+        fetching = true
+
         CCv2Service.getInstance(project).fetchEnvironments(
             listOf(subscription),
-            {
-                fetching = true
-                e.presentation.text = "Fetching..."
-
-                onStartCallback.invoke()
-            },
             { response ->
-                invokeLater {
-                    fetching = false
-                    e.presentation.text = "Fetch Environment"
+                fetching = false
 
+                invokeLater {
                     val fetchedEnvironment = response[subscription]
                         ?.find { it.code == environment.code }
 
@@ -96,6 +92,8 @@ class CCv2FetchEnvironmentAction(
 
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabled = !fetching && ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
+        e.presentation.text = if (fetching) "Fetching..." else "Fetch Environment"
+        e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else HybrisIcons.CCv2.Actions.FETCH
     }
 }
 
@@ -103,7 +101,6 @@ class CCv2FetchEnvironmentServiceAction(
     private val subscription: CCv2Subscription,
     private val environment: CCv2EnvironmentDto,
     private val service: CCv2ServiceDto,
-    private val onStartCallback: () -> Unit,
     private val onCompleteCallback: (CCv2ServiceDto) -> Unit
 ) : DumbAwareAction("Fetch Service", null, HybrisIcons.CCv2.Actions.FETCH) {
 
@@ -113,20 +110,16 @@ class CCv2FetchEnvironmentServiceAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
+
+        fetching = true
+
         CCv2Service.getInstance(project).fetchEnvironmentServices(
             subscription,
             environment,
-            {
-                fetching = true
-                e.presentation.text = "Fetching..."
-
-                onStartCallback.invoke()
-            },
             { response ->
-                invokeLater {
-                    fetching = false
-                    e.presentation.text = "Fetch Environment"
+                fetching = false
 
+                invokeLater {
                     val fetchedService = response
                         ?.find { it.code == service.code }
 
@@ -148,6 +141,8 @@ class CCv2FetchEnvironmentServiceAction(
 
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabled = !fetching && ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions.isNotEmpty()
+        e.presentation.text = if (fetching) "Fetching..." else "Fetch Service"
+        e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else HybrisIcons.CCv2.Actions.FETCH
     }
 }
 
@@ -184,7 +179,7 @@ class CCv2ShowEnvironmentDetailsAction(
     }
 }
 
-abstract class AbstractCCv2ShowEnvironmentWithStatusAction(status: CCv2EnvironmentStatus) : AbstractCCv2ShowWithStatusAction<CCv2EnvironmentStatus>(
+abstract class CCv2ShowEnvironmentWithStatusAction(status: CCv2EnvironmentStatus) : CCv2ShowWithStatusAction<CCv2EnvironmentStatus>(
     CCv2Tab.ENVIRONMENTS,
     status,
     status.title,
@@ -194,7 +189,7 @@ abstract class AbstractCCv2ShowEnvironmentWithStatusAction(status: CCv2Environme
     override fun getStatuses(settings: CCv2Settings) = settings.showEnvironmentStatuses
 }
 
-class CCv2ShowProvisioningEnvironmentsAction : AbstractCCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.PROVISIONING)
-class CCv2ShowAvailableEnvironmentsAction : AbstractCCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.AVAILABLE)
-class CCv2ShowTerminatingEnvironmentsAction : AbstractCCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.TERMINATING)
-class CCv2ShowTerminatedEnvironmentsAction : AbstractCCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.TERMINATED)
+class CCv2ShowProvisioningEnvironmentsAction : CCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.PROVISIONING)
+class CCv2ShowAvailableEnvironmentsAction : CCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.AVAILABLE)
+class CCv2ShowTerminatingEnvironmentsAction : CCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.TERMINATING)
+class CCv2ShowTerminatedEnvironmentsAction : CCv2ShowEnvironmentWithStatusAction(CCv2EnvironmentStatus.TERMINATED)

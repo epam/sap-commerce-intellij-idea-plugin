@@ -132,7 +132,7 @@ class CCv2ReplicaSelectionDialog(
                 override fun getActionUpdateThread() = ActionUpdateThread.BGT
                 override fun actionPerformed(e: AnActionEvent) {
                     ccv2SubscriptionsComboBoxModel.refresh()
-                    ccv2TreeTable.reset()
+                    ccv2TreeTable.resetTree()
                     CCv2Service.getInstance(project).resetCache()
                 }
             })

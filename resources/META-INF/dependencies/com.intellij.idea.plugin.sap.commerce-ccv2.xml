@@ -29,6 +29,7 @@
 
     <actions>
         <action id="ccv2.open.settings.action" class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2OpenSettingsAction"/>
+        <action id="ccv2.reset.cache.action" class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ResetCacheAction"/>
 
         <group id="ccv2.toolbar.actions">
             <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchEnvironmentsAction"/>
@@ -36,7 +37,7 @@
             <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2FetchBuildsAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2CreateBuildAction"/>
 
-            <action class="com.intellij.idea.plugin.hybris.tools.ccv2.actions.CCv2ResetCacheAction"/>
+            <reference ref="ccv2.reset.cache.action"/>
             <separator/>
 
             <group id="ccv2.toolbar.actions.show" text="View Options"
