@@ -28,6 +28,10 @@
 ### `Remote Connection` enhancements
 - Shorten CCv2 url without custom name [#1449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1449)
 
+### `CCv2` enhancements
+
+- Show progress icon during fetching action [#1461](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1461)
+
 ### Other
 - Re-implemented consoles related API [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
 - Re-implemented hAC, SOLR & ImpEx Monitor API [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
