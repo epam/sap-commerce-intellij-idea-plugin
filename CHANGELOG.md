@@ -29,7 +29,6 @@
 - Shorten CCv2 url without custom name [#1449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1449)
 
 ### `CCv2` enhancements
-
 - Show progress icon during fetching action [#1461](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1461)
 
 ### Other
