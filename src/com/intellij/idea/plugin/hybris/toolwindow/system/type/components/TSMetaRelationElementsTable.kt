@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.components
 
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaModifiers
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
@@ -32,13 +32,15 @@ class TSMetaRelationElementsTable private constructor(myProject: Project) : Abst
     override fun getSearchableColumnNames() = listOf(COLUMN_QUALIFIER, COLUMN_DESCRIPTION)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_ORDERED, COLUMN_DEPRECATED)
     override fun select(item: TSMetaRelation.TSMetaRelationElement) = selectRowWithValue(item.name, COLUMN_QUALIFIER)
-    override fun getItems(owner: TSGlobalMetaItem) = TSMetaItemService.getInstance(myProject).getRelationEnds(owner, true)
-        .sortedWith(compareBy(
-            { !it.isCustom },
-            { it.moduleName },
-            { it.name })
+    override fun getItems(owner: TSGlobalMetaItem) = TSMetaModelAccess.getInstance(myProject).getRelationEnds(owner, true)
+        ?.sortedWith(
+            compareBy(
+                { !it.isCustom },
+                { it.moduleName },
+                { it.name })
         )
-        .toMutableList()
+        ?.toMutableList()
+        ?: mutableListOf()
 
     override fun createModel(): ListTableModel<TSMetaRelation.TSMetaRelationElement> = with(ListTableModel<TSMetaRelation.TSMetaRelationElement>()) {
         columnInfos = arrayOf(

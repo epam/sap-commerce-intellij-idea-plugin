@@ -22,7 +22,6 @@ import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaEnum
@@ -43,7 +42,8 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
     constructor(element: PsiElement) : super(element, false)
     constructor(element: PsiElement, textRange: TextRange) : super(element, textRange, false)
 
-    private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AbstractAttributeDeclarationReference>>("HYBRIS_TS_CACHED_REFERENCE_${rangeInElement.startOffset}")
+    private val cacheKey =
+        Key.create<ParameterizedCachedValue<Array<ResolveResult>, AbstractAttributeDeclarationReference>>("HYBRIS_TS_CACHED_REFERENCE_${rangeInElement.startOffset}")
 
     override fun calculateDefaultRangeInElement(): TextRange =
         if (element.textLength == 0) super.calculateDefaultRangeInElement()
@@ -69,7 +69,6 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AbstractAttributeDeclarationReference> { ref ->
             val project = ref.element.project
             val metaModelAccess = TSMetaModelAccess.getInstance(project)
-            val metaItemService = TSMetaItemService.getInstance(project)
             val type = ref.resolveType(ref.element)
                 ?: return@ParameterizedCachedValueProvider emptyResult(project)
 
@@ -85,10 +84,9 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
             }
 
             val originalValue = ref.value
-            val result = metaItemService.findAttributesByName(metaItem, originalValue, true)
-                ?.firstOrNull()
+            val result = metaModelAccess.findAttributeByName(metaItem, originalValue, true)
                 ?.let { PsiUtils.getValidResults(arrayOf(AttributeResolveResult(it))) }
-                ?: metaItemService.findRelationEndsByQualifier(metaItem, originalValue, true)
+                ?: metaModelAccess.findRelationEndsByQualifier(metaItem, originalValue, true)
                     ?.firstOrNull()
                     ?.let { PsiUtils.getValidResults(arrayOf(RelationEndResolveResult(it))) }
                 ?: emptyArray()

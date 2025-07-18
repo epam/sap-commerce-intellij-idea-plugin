@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items
@@ -57,18 +57,8 @@ class TSCatalogAwareCatalogVersionAttributeQualifier : AbstractTSInspection() {
         val qualifier = TSMetaHelper.parseStringValue(domCustomProperty)
             ?: return
 
-        val metaItemService = TSMetaItemService.getInstance(project)
-        val attributes = metaItemService.findAttributesByName(meta, qualifier, true)
-
-        val isAttributeTypeCatalogAware = attributes
-            .any { attribute ->
-                HybrisConstants.TS_TYPE_CATALOG_VERSION.equals(attribute.type, true)
-                || metaModel.getMetaItem(attribute.type)?.let { attributeTypeMeta ->
-                    attributeTypeMeta.allExtends
-                        .mapNotNull { it.name }
-                        .any { HybrisConstants.TS_TYPE_CATALOG_VERSION.equals(it, true) }
-                } ?: false
-            }
+        val isAttributeTypeCatalogAware = TSMetaModelAccess.getInstance(project)
+            .isCatalogAware(meta, qualifier, true)
 
         if (!isAttributeTypeCatalogAware) {
             holder.createProblem(

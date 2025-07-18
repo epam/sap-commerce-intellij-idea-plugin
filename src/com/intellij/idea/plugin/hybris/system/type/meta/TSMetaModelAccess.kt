@@ -118,6 +118,28 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
 
     fun getReservedTypeCodes() = myReservedTypeCodes
 
+    fun getRelationEnds(meta: TSGlobalMetaItem, includeInherited: Boolean) = if (includeInherited) meta.allRelationEnds
+    else TSMetaModelStateService.state(project).getRelations(meta.name)
+
+    fun findRelationEndsByQualifier(meta: TSGlobalMetaItem, qualifier: String, includeInherited: Boolean) = getRelationEnds(meta, includeInherited)
+        ?.filter { qualifier.equals(it.qualifier, ignoreCase = true) }
+
+    fun findAttributeByName(meta: TSGlobalMetaItem, name: String?, includeInherited: Boolean) = if (includeInherited) meta.allAttributes[name]
+    else meta.attributes[name]
+
+    fun isCatalogAware(meta: TSGlobalMetaItem, name: String?, includeInherited: Boolean) = findAttributeByName(meta, name, includeInherited)
+        ?.let { attribute ->
+            if (HybrisConstants.TS_TYPE_CATALOG_VERSION.equals(attribute.type, true)) return@let true
+
+            TSMetaModelStateService.state(project).getMetaItem(attribute.type)
+                ?.let { attributeTypeMeta ->
+                    attributeTypeMeta.allExtends
+                        .mapNotNull { extends -> extends.name }
+                        .any { HybrisConstants.TS_TYPE_CATALOG_VERSION.equals(it, true) }
+                } ?: false
+        }
+        ?: false
+
     private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? = TSMetaModelStateService.state(project)
         .getMetaType<T>(metaType)[name]
 

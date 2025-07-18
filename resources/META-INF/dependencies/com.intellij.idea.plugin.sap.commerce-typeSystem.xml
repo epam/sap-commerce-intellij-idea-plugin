@@ -37,9 +37,6 @@
 
         <xmlStructureViewBuilderProvider order="first" implementation="com.intellij.idea.plugin.hybris.system.type.structureView.TSXmlStructureViewBuilderProvider"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.system.type.meta.TSMetaItemService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaItemServiceImpl"/>
-
         <projectConfigurable id="hybris.project.ts.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
