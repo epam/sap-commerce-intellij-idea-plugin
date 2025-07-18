@@ -35,19 +35,19 @@ interface CCv2SettingsListener {
     fun onActiveSubscriptionChanged(subscription: CCv2Subscription?) = Unit
 
     companion object {
-        val TOPIC = Topic("HYBRIS_CCV2_SETTINGS", CCv2SettingsListener::class.java)
+        val TOPIC = Topic( CCv2SettingsListener::class.java)
     }
 }
 
 interface CCv2EnvironmentsListener : CCv2Listener<CCv2EnvironmentDto> {
     companion object {
-        val TOPIC = Topic("HYBRIS_CCV2_ENVIRONMENTS_LISTENER", CCv2EnvironmentsListener::class.java)
+        val TOPIC = Topic(CCv2EnvironmentsListener::class.java)
     }
 }
 
 interface CCv2DeploymentsListener : CCv2Listener<CCv2DeploymentDto> {
     companion object {
-        val TOPIC = Topic("HYBRIS_CCV2_DEPLOYMENTS_LISTENER", CCv2DeploymentsListener::class.java)
+        val TOPIC = Topic( CCv2DeploymentsListener::class.java)
     }
 }
 
@@ -61,6 +61,6 @@ interface CCv2BuildsListener : CCv2Listener<CCv2BuildDto> {
     fun onBuildDeploymentRequested(subscription: CCv2Subscription, build: CCv2BuildDto) = Unit
 
     companion object {
-        val TOPIC = Topic("HYBRIS_CCV2_BUILDS_LISTENER", CCv2BuildsListener::class.java)
+        val TOPIC = Topic( CCv2BuildsListener::class.java)
     }
 }

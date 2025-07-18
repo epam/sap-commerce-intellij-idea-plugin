@@ -30,6 +30,6 @@ interface MetaModelChangeListener {
     fun cngSystemChanged(globalMetaModel: CngGlobalMetaModel) = Unit
 
     companion object {
-        val TOPIC = Topic("HYBRIS_META_SYSTEM_LISTENER", MetaModelChangeListener::class.java)
+        val TOPIC = Topic( MetaModelChangeListener::class.java)
     }
 }

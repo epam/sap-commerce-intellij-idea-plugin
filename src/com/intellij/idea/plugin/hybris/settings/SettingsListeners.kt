@@ -18,6 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
+import com.intellij.util.messages.Topic
+
 interface RemoteConnectionListener {
-    fun onActiveConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
+    fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
+    fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
+
+    companion object {
+        val TOPIC = Topic(RemoteConnectionListener::class.java)
+    }
 }

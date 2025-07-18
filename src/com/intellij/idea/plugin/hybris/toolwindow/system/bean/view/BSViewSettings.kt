@@ -70,7 +70,7 @@ class BSViewSettings(myProject: Project) : PersistentStateComponent<BSViewSettin
         fun settingsChanged(changeType: ChangeType)
 
         companion object {
-            val TOPIC = Topic("Hybris Bean System View settings", BSViewListener::class.java)
+            val TOPIC = Topic(BSViewListener::class.java)
         }
     }
 

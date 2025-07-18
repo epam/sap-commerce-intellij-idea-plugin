@@ -102,7 +102,7 @@ class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettin
         fun settingsChanged(changeType: ChangeType)
 
         companion object {
-            val TOPIC = Topic("Hybris Type System View settings", TSViewListener::class.java)
+            val TOPIC = Topic( TSViewListener::class.java)
         }
     }
 

@@ -22,6 +22,7 @@ import ai.grazie.utils.toLinkedSet
 import com.intellij.credentialStore.Credentials
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.properties.PropertyService
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
@@ -120,10 +121,12 @@ class RemoteConnectionService(private val project: Project) {
         when (settings.type) {
             RemoteConnectionType.Hybris -> {
                 developerSettings.activeRemoteConnectionID = settings.uuid
+                project.messageBus.syncPublisher(RemoteConnectionListener.TOPIC).onActiveHybrisConnectionChanged(settings)
             }
 
             RemoteConnectionType.SOLR -> {
                 developerSettings.activeSolrConnectionID = settings.uuid
+                project.messageBus.syncPublisher(RemoteConnectionListener.TOPIC).onActiveHybrisConnectionChanged(settings)
             }
         }
     }
