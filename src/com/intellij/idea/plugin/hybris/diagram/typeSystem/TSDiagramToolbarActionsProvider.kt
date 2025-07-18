@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.components.service
 import com.intellij.uml.core.actions.DiagramToolbarActionsProviderImpl
 import com.intellij.util.application
 
@@ -36,6 +37,6 @@ class TSDiagramToolbarActionsProvider : DiagramToolbarActionsProviderImpl() {
     }
 
     companion object {
-        fun getInstance(): TSDiagramToolbarActionsProvider = application.getService(TSDiagramToolbarActionsProvider::class.java)
+        fun getInstance(): TSDiagramToolbarActionsProvider = application.service()
     }
 }

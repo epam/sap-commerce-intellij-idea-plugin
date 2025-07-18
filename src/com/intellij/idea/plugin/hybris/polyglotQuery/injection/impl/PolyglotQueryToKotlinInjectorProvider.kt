@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryUtils
+import com.intellij.openapi.components.service
 import com.intellij.util.application
 
 class PolyglotQueryToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(PolyglotQueryLanguage) {
@@ -28,7 +29,7 @@ class PolyglotQueryToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorPr
     override fun canProcess(expression: String) = PolyglotQueryUtils.isPolyglotQuery(expression)
 
     companion object {
-        fun getInstance(): PolyglotQueryToKotlinInjectorProvider? = application.getService(PolyglotQueryToKotlinInjectorProvider::class.java)
+        fun getInstance(): PolyglotQueryToKotlinInjectorProvider? = application.service()
     }
 
 }

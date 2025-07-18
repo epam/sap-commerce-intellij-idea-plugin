@@ -30,6 +30,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2MediaStorageDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.util.application
 import java.util.concurrent.TimeUnit
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO as V2EnvironmentDetailDTO
@@ -125,7 +126,7 @@ class CCv1Api {
     private fun createRequestParams(ccv2Token: String) = mapOf("Authorization" to "Bearer $ccv2Token")
 
     companion object {
-        fun getInstance(): CCv1Api = application.getService(CCv1Api::class.java)
+        fun getInstance(): CCv1Api = application.service()
     }
 
 }

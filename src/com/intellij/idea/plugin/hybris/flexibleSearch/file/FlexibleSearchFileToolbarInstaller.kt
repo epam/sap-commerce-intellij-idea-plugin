@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.file
 
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
@@ -33,7 +34,7 @@ class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
 ) {
 
     companion object {
-        fun getInstance(): FlexibleSearchFileToolbarInstaller = application.getService(FlexibleSearchFileToolbarInstaller::class.java)
+        fun getInstance(): FlexibleSearchFileToolbarInstaller = application.service()
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx) = true

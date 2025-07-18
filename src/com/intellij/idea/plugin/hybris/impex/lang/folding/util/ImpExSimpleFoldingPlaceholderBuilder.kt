@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding.util
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingPlaceholderBuilder
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.util.application
 
@@ -33,7 +34,7 @@ class ImpExSimpleFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
     }
 
     companion object {
-        fun getInstance(): ImpExSimpleFoldingPlaceholderBuilder = application.getService(ImpExSimpleFoldingPlaceholderBuilder::class.java)
+        fun getInstance(): ImpExSimpleFoldingPlaceholderBuilder = application.service()
     }
 
 }

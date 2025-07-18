@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingPlaceholderBuilder
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.firstLeaf
@@ -149,6 +150,6 @@ class ImpExSmartFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
         const val IMPEX_PARAMETERS_PLACEHOLDER = "()"
         private val QUOTES_PATTERN = Pattern.compile("[\"\']")
 
-        fun getInstance(): ImpExSmartFoldingPlaceholderBuilder = application.getService(ImpExSmartFoldingPlaceholderBuilder::class.java)
+        fun getInstance(): ImpExSmartFoldingPlaceholderBuilder = application.service()
     }
 }

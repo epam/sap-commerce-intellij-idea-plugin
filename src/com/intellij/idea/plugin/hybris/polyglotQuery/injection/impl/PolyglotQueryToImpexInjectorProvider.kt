@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjec
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryUtils
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiLanguageInjectionHost
@@ -39,7 +40,7 @@ class PolyglotQueryToImpexInjectorProvider : AbstractLanguageInjectorProvider(Po
     ) {
         if (host !is ImpexString) return
 
-        val expression = StringUtil.unquoteString(host.getText()).lowercase(Locale.getDefault())
+        val expression = StringUtil.unquoteString(host.text).lowercase(Locale.getDefault())
 
         // do not inject executable statement
         if (expression.startsWith("#%")) return
@@ -50,6 +51,6 @@ class PolyglotQueryToImpexInjectorProvider : AbstractLanguageInjectorProvider(Po
     }
 
     companion object {
-        fun getInstance(): PolyglotQueryToImpexInjectorProvider? = application.getService(PolyglotQueryToImpexInjectorProvider::class.java)
+        fun getInstance(): PolyglotQueryToImpexInjectorProvider? = application.service()
     }
 }

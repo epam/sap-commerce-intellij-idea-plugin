@@ -100,7 +100,7 @@ class ApplicationSettingsComponent : PersistentStateComponent<ApplicationSetting
 
     companion object {
         @JvmStatic
-        fun getInstance(): ApplicationSettingsComponent = application.getService(ApplicationSettingsComponent::class.java)
+        fun getInstance(): ApplicationSettingsComponent = application.service()
 
         @JvmStatic
         fun toIdeaGroup(group: String?): Array<String>? {

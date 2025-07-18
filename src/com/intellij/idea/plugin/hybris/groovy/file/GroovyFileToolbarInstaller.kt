@@ -21,6 +21,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
@@ -34,7 +35,7 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
 ) {
 
     companion object {
-        fun getInstance(): GroovyFileToolbarInstaller? = application.getService(GroovyFileToolbarInstaller::class.java)
+        fun getInstance(): GroovyFileToolbarInstaller? = application.service()
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean {

@@ -30,6 +30,7 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.util.application
 import kotlinx.coroutines.CoroutineScope
@@ -373,7 +374,7 @@ class CCv2Api {
     } else null
 
     companion object {
-        fun getInstance(): CCv2Api = application.getService(CCv2Api::class.java)
+        fun getInstance(): CCv2Api = application.service()
     }
 
 }

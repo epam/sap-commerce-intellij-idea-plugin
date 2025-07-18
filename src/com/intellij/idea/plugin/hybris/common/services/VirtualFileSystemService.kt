@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.common.services
 
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.ThrowableComputable
 import com.intellij.openapi.util.io.FileUtil
@@ -102,6 +103,6 @@ class VirtualFileSystemService {
 
     companion object {
         @JvmStatic
-        fun getInstance(): VirtualFileSystemService = application.getService(VirtualFileSystemService::class.java)
+        fun getInstance(): VirtualFileSystemService = application.service()
     }
 }

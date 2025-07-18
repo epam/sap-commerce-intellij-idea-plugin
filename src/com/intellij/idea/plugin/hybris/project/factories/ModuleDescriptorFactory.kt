@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ObjectFactory
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.application
 import jakarta.xml.bind.JAXBContext
@@ -39,7 +40,7 @@ object ModuleDescriptorFactory {
 
     @Throws(HybrisConfigurationException::class)
     fun createDescriptor(file: File, rootProjectDescriptor: HybrisProjectDescriptor): ModuleDescriptor {
-        val hybrisProjectService = application.getService(HybrisProjectService::class.java)
+        val hybrisProjectService: HybrisProjectService = application.service()
         val resolvedFile = try {
             file.canonicalFile
         } catch (e: IOException) {

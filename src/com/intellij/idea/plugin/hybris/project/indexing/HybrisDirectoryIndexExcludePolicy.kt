@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.project.indexing
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootModel
 import com.intellij.openapi.roots.impl.DirectoryIndexExcludePolicy
@@ -117,7 +118,7 @@ class HybrisDirectoryIndexExcludePolicy(project: Project) : DirectoryIndexExclud
         override fun dispose() = Unit
 
         companion object {
-            fun getInstance(): HybrisVirtualFilePointerProvider = application.getService(HybrisVirtualFilePointerProvider::class.java)
+            fun getInstance(): HybrisVirtualFilePointerProvider = application.service()
         }
     }
 }

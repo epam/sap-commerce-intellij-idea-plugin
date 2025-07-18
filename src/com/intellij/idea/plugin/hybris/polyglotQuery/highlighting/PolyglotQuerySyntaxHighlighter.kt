@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLexer
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
@@ -37,7 +38,7 @@ class PolyglotQuerySyntaxHighlighter : SyntaxHighlighterBase() {
         ?: emptyArray()
 
     companion object {
-        fun getInstance(): PolyglotQuerySyntaxHighlighter = application.getService(PolyglotQuerySyntaxHighlighter::class.java)
+        fun getInstance(): PolyglotQuerySyntaxHighlighter = application.service()
 
         private val BAD_CHARACTER_KEYS = pack(HighlighterColors.BAD_CHARACTER)
 

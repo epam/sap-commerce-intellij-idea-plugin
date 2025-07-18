@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
+import com.intellij.openapi.components.service
 import com.intellij.util.application
 
 class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(FlexibleSearchLanguage) {
@@ -28,7 +29,7 @@ class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorP
     override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
 
     companion object {
-        fun getInstance(): FlexibleSearchToKotlinInjectorProvider? = application.getService(FlexibleSearchToKotlinInjectorProvider::class.java)
+        fun getInstance(): FlexibleSearchToKotlinInjectorProvider? = application.service()
     }
 
 }

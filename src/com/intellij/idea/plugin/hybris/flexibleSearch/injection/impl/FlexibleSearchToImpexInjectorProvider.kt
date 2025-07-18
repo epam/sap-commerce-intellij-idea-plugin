@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjectorProvider
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiLanguageInjectionHost
@@ -126,7 +127,7 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
     }
 
     companion object {
-        fun getInstance(): FlexibleSearchToImpexInjectorProvider? = application.getService(FlexibleSearchToImpexInjectorProvider::class.java)
+        fun getInstance(): FlexibleSearchToImpexInjectorProvider? = application.service()
     }
 
 }

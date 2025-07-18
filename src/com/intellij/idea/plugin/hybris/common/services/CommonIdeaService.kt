@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
@@ -101,6 +102,6 @@ class CommonIdeaService {
         private val regex = "https?://".toRegex()
 
         @JvmStatic
-        fun getInstance(): CommonIdeaService = application.getService(CommonIdeaService::class.java)
+        fun getInstance(): CommonIdeaService = application.service()
     }
 }

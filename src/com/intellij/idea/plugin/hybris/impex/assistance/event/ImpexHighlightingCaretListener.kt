@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.editor.event.CaretEvent
@@ -156,7 +157,7 @@ class ImpexHighlightingCaretListener : CaretListener {
     companion object {
         private val CACHE_KEY = Key.create<List<TextRange>>("IMPEX_COLUMN_HIGHLIGHT_CACHE")
 
-        fun getInstance(): ImpexHighlightingCaretListener = application.getService(ImpexHighlightingCaretListener::class.java)
+        fun getInstance(): ImpexHighlightingCaretListener = application.service()
     }
 
 }

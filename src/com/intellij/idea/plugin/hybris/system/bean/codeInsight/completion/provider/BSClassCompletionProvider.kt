@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaClassifier
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaEnum
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
+import com.intellij.openapi.components.service
 import com.intellij.util.ProcessingContext
 import com.intellij.util.application
 import java.util.*
@@ -58,6 +59,6 @@ open class BSClassCompletionProvider(
     }
 
     companion object {
-        fun getInstance(): BSClassCompletionProvider = application.getService(BSClassCompletionProvider::class.java)
+        fun getInstance(): BSClassCompletionProvider = application.service()
     }
 }
