@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceProperties
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.*
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2ViewUtil
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -87,7 +88,14 @@ class CCv2ServiceDetailsView(
                     subscription,
                     environment,
                     service,
-                    { initPanel(it) }
+                    {
+                        // hard reset service details on re-fetch
+                        it.initialPasswords = null
+                        it.customerProperties = null
+                        it.greenDeploymentSupported = null
+
+                        initPanel(it)
+                    }
                 ))
             add(actionManager.getAction("ccv2.reset.cache.action"))
 
@@ -112,7 +120,6 @@ class CCv2ServiceDetailsView(
             service.initialPasswords,
             showInitialPasswords,
             initialPasswordsPanel,
-            { service.initialPasswords = null },
             { service.initialPasswords = it },
             { propertiesPanel(it) }
         )
@@ -123,7 +130,6 @@ class CCv2ServiceDetailsView(
             service.customerProperties,
             showCustomerProperties,
             customerPropertiesPanel,
-            { service.customerProperties = null },
             { service.customerProperties = it },
             { propertiesPanel(it) }
         )
@@ -134,7 +140,6 @@ class CCv2ServiceDetailsView(
             service.greenDeploymentSupported?.let { mapOf(CCv2ServiceProperties.GREEN_DEPLOYMENT_SUPPORTED_KEY to it.toString()) },
             showGreenDeploymentSupported,
             greenDeploymentSupportedPanel,
-            { service.greenDeploymentSupported = null },
             { service.greenDeploymentSupported = it?.get(CCv2ServiceProperties.GREEN_DEPLOYMENT_SUPPORTED_KEY)?.let { value -> value == "true" } },
             { greenDeploymentSupportedPanel(service.greenDeploymentSupported) }
         )
@@ -164,36 +169,37 @@ class CCv2ServiceDetailsView(
         serviceProperties: CCv2ServiceProperties,
         currentProperties: Map<String, String>?,
         showFlag: AtomicBooleanProperty,
-        panel: JPanel,
-        onStartCallback: () -> Unit,
+        container: JPanel,
         onCompleteCallback: (Map<String, String>?) -> Unit,
         panelProvider: (Map<String, String>) -> DialogPanel
     ) {
         if (!service.supportedProperties.contains(serviceProperties)) return
 
-        panel.removeAll()
+        container.removeAll()
 
         if (currentProperties != null) {
-            panel.add(panelProvider.invoke(currentProperties))
-        } else {
-            showFlag.set(false)
-            onStartCallback.invoke()
+            container.add(panelProvider.invoke(currentProperties))
 
-            CCv2Service.getInstance(project).fetchEnvironmentServiceProperties(
-                subscription, environment, service, serviceProperties,
-                {
-                    onCompleteCallback.invoke(it)
-
-                    showFlag.set(it != null)
-
-                    invokeLater {
-                        if (it != null) {
-                            panel.add(panelProvider.invoke(it))
-                        }
-                    }
-                }
-            )
+            return
         }
+
+        showFlag.set(false)
+
+        CCv2Service.getInstance(project).fetchEnvironmentServiceProperties(
+            subscription, environment, service, serviceProperties,
+            {
+                onCompleteCallback.invoke(it)
+
+                invokeLater {
+                    val panel = if (it != null) panelProvider.invoke(it)
+                    else CCv2ViewUtil.noDataPanel("No ${serviceProperties.title} found")
+
+                    container.removeAll()
+                    container.add(panel)
+                    showFlag.set(true)
+                }
+            }
+        )
     }
 
     private fun propertiesPanel(properties: Map<String, String>) = panel {

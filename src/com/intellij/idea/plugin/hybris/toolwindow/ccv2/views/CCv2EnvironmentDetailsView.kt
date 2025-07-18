@@ -30,6 +30,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DataBackupDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.*
+import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2ViewUtil
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
@@ -43,8 +44,6 @@ import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.AnimatedIcon
-import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.InlineBanner
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
@@ -125,9 +124,7 @@ class CCv2EnvironmentDetailsView(
             return
         }
 
-        invokeLater {
-            showBuild.set(false)
-        }
+        showBuild.set(false)
 
         CCv2Service.getInstance(project).fetchEnvironmentBuild(
             subscription, environment,
@@ -136,7 +133,7 @@ class CCv2EnvironmentDetailsView(
 
                 invokeLater {
                     val panel = if (build != null) buildPanel(build)
-                    else noData("No build found")
+                    else CCv2ViewUtil.noDataPanel("No build found")
 
                     buildPanel.removeAll()
                     buildPanel.add(panel)
@@ -154,9 +151,7 @@ class CCv2EnvironmentDetailsView(
             return
         }
 
-        invokeLater {
-            showServices.set(false)
-        }
+        showServices.set(false)
 
         CCv2Service.getInstance(project).fetchEnvironmentServices(
             subscription, environment,
@@ -165,7 +160,7 @@ class CCv2EnvironmentDetailsView(
 
                 invokeLater {
                     val panel = if (it != null) servicesPanel(environment, it)
-                    else noData("No services found")
+                    else CCv2ViewUtil.noDataPanel("No services found")
 
                     servicesPanel.removeAll()
                     servicesPanel.add(panel)
@@ -183,9 +178,7 @@ class CCv2EnvironmentDetailsView(
             return
         }
 
-        invokeLater {
-            showDataBackups.set(false)
-        }
+        showDataBackups.set(false)
 
         CCv2Service.getInstance(project).fetchEnvironmentDataBackups(
             subscription, environment,
@@ -194,7 +187,7 @@ class CCv2EnvironmentDetailsView(
 
                 invokeLater {
                     val panel = if (it != null) dataBackupsPanel(it)
-                    else noData("No data backups found")
+                    else CCv2ViewUtil.noDataPanel("No data backups found")
 
                     dataBackupsPanel.removeAll()
                     dataBackupsPanel.add(panel)
@@ -564,19 +557,6 @@ class CCv2EnvironmentDetailsView(
         }
     }
         .let { Dsl.scrollPanel(it) }
-
-    private fun noData(message: String) = panel {
-        row {
-            cell(
-                InlineBanner(message, EditorNotificationPanel.Status.Info)
-                    .showCloseButton(false)
-            )
-                .align(Align.CENTER)
-                .resizableColumn()
-        }
-            .resizableRow()
-            .topGap(TopGap.MEDIUM)
-    }
 
     companion object {
         @Serial
