@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSModificationTracker
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.psi.BSConstants
 import com.intellij.idea.plugin.hybris.system.bean.psi.OccPropertyMapping
-import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -71,7 +70,7 @@ class OccLevelMappingReference(
             val project = element.project
             CachedValueProvider.Result.create(
                 result,
-                project.service<BSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
+                BSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

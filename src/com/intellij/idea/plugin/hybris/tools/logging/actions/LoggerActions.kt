@@ -29,7 +29,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExe
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 
 abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(logLevel.name, "", logLevel.icon) {
 
@@ -46,7 +45,7 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(l
             return
         }
 
-        val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val context = LoggingExecutionContext(
             title = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]",
             loggerName = logIdentifier,
@@ -61,7 +60,7 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(l
         val isRightPlace = "GoToAction" != e.place
         val project = e.project ?: return
 
-        e.presentation.isEnabled = isRightPlace && project.service<CxLoggerAccess>().canRefresh
+        e.presentation.isEnabled = isRightPlace && CxLoggerAccess.getInstance(project).canRefresh
         e.presentation.isVisible = isRightPlace
     }
 
@@ -81,7 +80,7 @@ class FetchLoggerStateAction : AnAction("Fetch Logger State", "", HybrisIcons.Lo
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val loggerAccessService = project.service<CxLoggerAccess>()
+        val loggerAccessService = CxLoggerAccess.getInstance(project)
 
         loggerAccessService.fetch()
     }
@@ -90,7 +89,7 @@ class FetchLoggerStateAction : AnAction("Fetch Logger State", "", HybrisIcons.Lo
         val isRightPlace = "GoToAction" != e.place
         val project = e.project ?: return
 
-        e.presentation.isEnabled = isRightPlace && project.service<CxLoggerAccess>().canRefresh
+        e.presentation.isEnabled = isRightPlace && CxLoggerAccess.getInstance(project).canRefresh
         e.presentation.isVisible = isRightPlace
     }
 }

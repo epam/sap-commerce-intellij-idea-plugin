@@ -29,7 +29,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.lang.Language
 import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
@@ -123,7 +122,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     }
 
     protected fun printHost(remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
-        val activeConnectionSettings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(remoteConnectionType)
+        val activeConnectionSettings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(remoteConnectionType)
         print("[HOST] ", SYSTEM_OUTPUT)
         activeConnectionSettings.displayName
             ?.let { name -> print("($name) ", LOG_INFO_OUTPUT) }
@@ -136,26 +135,22 @@ abstract class HybrisConsole<E : ExecutionContext>(
 
     private fun printPlainText(result: DefaultExecutionResult) {
         if (result.hasError) {
-            print("[ERROR] \n", SYSTEM_OUTPUT)
+            print("[ERROR]\n", SYSTEM_OUTPUT)
             listOfNotNull(result.errorMessage, result.detailMessage)
                 .forEach { print("$it\n", ERROR_OUTPUT) }
 
             return
         }
 
-        result.output.takeIf { it.isNotBlank() }
-            ?.let {
-                print("[OUTPUT] \n", SYSTEM_OUTPUT)
-                print(it, NORMAL_OUTPUT)
-            }
-        result.result
-            ?.takeIf { it.isNotBlank() }
-            ?.let {
-                print("[RESULT] \n", SYSTEM_OUTPUT)
-                print(it, NORMAL_OUTPUT)
-            }
+        printOutput("OUTPUT", result.output)
+        printOutput("RESULT", result.result)
 
         print("\n", NORMAL_OUTPUT)
+    }
+
+    private fun printOutput(type: String, text: String?) = text?.let {
+        print("[$type]\n", SYSTEM_OUTPUT)
+        print(it, NORMAL_OUTPUT)
     }
 
     companion object {

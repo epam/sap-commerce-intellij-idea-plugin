@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.UserDataHolderBase;
 import org.apache.commons.lang3.StringUtils;
@@ -103,6 +104,10 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
     };
 
     private final Map<Pair<RemoteConnectionSettings, ReplicaContext>, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
+
+    public static HybrisHacHttpClient getInstance(final Project project) {
+        return project.getService(HybrisHacHttpClient.class);
+    }
 
     @NotNull
     public String testConnection(@NotNull final RemoteConnectionSettings settings) {

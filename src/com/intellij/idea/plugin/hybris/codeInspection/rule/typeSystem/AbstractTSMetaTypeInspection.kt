@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
@@ -51,7 +50,7 @@ abstract class AbstractTSMetaTypeInspection(private val messageKey: String) : Ab
         project: Project
     ) {
         val name = dom.stringValue ?: return
-        project.service<TSMetaModelStateService>().get()
+        TSMetaModelStateService.state(project)
             .getMetaItem(name)
             ?.takeUnless { isValidMetaType(it) }
             ?: return

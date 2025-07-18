@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
-import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
@@ -53,7 +52,7 @@ class CngFlowTSItemReference(element: PsiElement) : CngTSItemReference(element) 
 
             CachedValueProvider.Result.create(
                 result,
-                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
+                TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

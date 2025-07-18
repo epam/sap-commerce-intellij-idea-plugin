@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 
 class FlexibleSearchOpenInConsoleAction : AnAction(
@@ -39,13 +38,13 @@ class FlexibleSearchOpenInConsoleAction : AnAction(
 
     override fun update(event: AnActionEvent) {
         val project = event.project ?: return
-        event.presentation.isEnabledAndVisible = project.isHybrisProject && project.service<OpenInHybrisConsoleService>()
+        event.presentation.isEnabledAndVisible = project.isHybrisProject && OpenInHybrisConsoleService.getInstance(project)
             .isRequiredSingleFileExtension(FLEXIBLE_SEARCH_FILE_EXTENSION)
     }
 
     override fun actionPerformed(event: AnActionEvent) {
-        event.project
-            ?.service<OpenInHybrisConsoleService>()
-            ?.openSelectedFilesInConsole(HybrisFlexibleSearchConsole::class, FLEXIBLE_SEARCH_FILE_EXTENSION)
+        val project = event.project ?: return
+        OpenInHybrisConsoleService.getInstance(project)
+            .openSelectedFilesInConsole(HybrisFlexibleSearchConsole::class, FLEXIBLE_SEARCH_FILE_EXTENSION)
     }
 }

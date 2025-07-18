@@ -21,6 +21,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.impl.BSMetaModelBuilder
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelProcessor
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
@@ -33,4 +34,8 @@ class BSMetaModelProcessor(project: Project) : MetaModelProcessor<Beans, BSMetaM
             withEventTypes(dom.beans)
             build()
         }
+
+    companion object {
+        fun getInstance(project: Project): BSMetaModelProcessor = project.service()
+    }
 }

@@ -27,7 +27,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.all
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
@@ -56,7 +55,7 @@ class TSDeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspecti
 
         val itemTypeCode = dom.code.stringValue ?: return
 
-        val metaItem = project.service<TSMetaModelStateService>().get().getMetaItem(itemTypeCode)
+        val metaItem = TSMetaModelStateService.state(project).getMetaItem(itemTypeCode)
             ?: return
 
         if (StringUtils.isNotBlank(metaItem.deployment?.typeCode)) return

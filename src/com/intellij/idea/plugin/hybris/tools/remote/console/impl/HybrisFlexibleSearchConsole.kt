@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
@@ -70,5 +71,7 @@ class HybrisFlexibleSearchConsole(project: Project, coroutineScope: CoroutineSco
     companion object {
         @Serial
         private val serialVersionUID: Long = -112651125533211607L
+
+        fun getInstance(project: Project): HybrisFlexibleSearchConsole = project.service()
     }
 }

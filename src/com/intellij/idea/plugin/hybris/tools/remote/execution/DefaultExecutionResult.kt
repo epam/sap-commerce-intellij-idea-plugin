@@ -26,7 +26,7 @@ data class DefaultExecutionResult(
     val remoteConnectionType: RemoteConnectionType = RemoteConnectionType.Hybris,
     val statusCode: Int = HttpStatus.SC_OK,
     val result: String? = null,
-    val output: String = "",
+    val output: String? = null,
     val errorMessage: String? = null,
     val detailMessage: String? = null,
     val replicaContext: ReplicaContext? = null,

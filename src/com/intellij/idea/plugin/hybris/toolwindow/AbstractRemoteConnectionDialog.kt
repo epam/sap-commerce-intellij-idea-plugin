@@ -27,7 +27,6 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -135,7 +134,7 @@ abstract class AbstractRemoteConnectionDialog(
         } else {
             // change of the scope
             if (originalScope != settings.scope) {
-                project.service<RemoteConnectionService>().changeRemoteConnectionScope(settings, originalScope)
+                RemoteConnectionService.getInstance(project).changeRemoteConnectionScope(settings, originalScope)
             }
         }
 

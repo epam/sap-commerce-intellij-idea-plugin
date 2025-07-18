@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaType
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
-import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReferenceBase
@@ -72,7 +71,7 @@ class PolyglotQueryDefinedTableReference(owner: PolyglotQueryTypeKeyName) : PsiR
 
             CachedValueProvider.Result.create(
                 results,
-                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
+                TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

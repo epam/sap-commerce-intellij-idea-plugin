@@ -38,12 +38,12 @@ import java.nio.charset.StandardCharsets
 class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<FlexibleSearchExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: FlexibleSearchExecutionContext): DefaultExecutionResult {
-        val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
         val params = context.params(settings)
             .map { BasicNameValuePair(it.key, it.value) }
 
-        val response = project.service<HybrisHacHttpClient>()
+        val response = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, true, context.timeout, settings, null)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
@@ -94,6 +94,7 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
     companion object {
         @Serial
         private const val serialVersionUID: Long = -1238922198933240517L
+        fun getInstance(project: Project): FlexibleSearchExecutionClient = project.service()
     }
 
 }

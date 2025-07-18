@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.EditorDefinitionResolveResult
-import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -45,14 +44,14 @@ class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : 
             val value = ref.value
             val project = element.project
 
-            val result = project.service<CngMetaModelStateService>().get()
+            val result = CngMetaModelStateService.getInstance(project).get()
                 .editorDefinitions[value]
                 ?.let { PsiUtils.getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(
                 result,
-                project.service<CngModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
+                CngModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelation
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -96,13 +95,13 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
 
             CachedValueProvider.Result.create(
                 result,
-                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
+                TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
 
         private fun emptyResult(project: Project): CachedValueProvider.Result<Array<ResolveResult>> = CachedValueProvider.Result.create(
             emptyArray(),
-            project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
+            TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
         )
     }
 }

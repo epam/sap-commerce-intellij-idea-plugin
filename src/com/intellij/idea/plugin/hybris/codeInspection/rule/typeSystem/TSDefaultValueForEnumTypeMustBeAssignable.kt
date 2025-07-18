@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.all
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
@@ -81,7 +80,7 @@ class TSDefaultValueForEnumTypeMustBeAssignable : AbstractTSInspection() {
             return
         }
 
-        val meta = project.service<TSMetaModelStateService>().get().getMetaEnum(dom.type.stringValue)
+        val meta = TSMetaModelStateService.state(project).getMetaEnum(dom.type.stringValue)
             ?: return
 
         // 3rd validation:

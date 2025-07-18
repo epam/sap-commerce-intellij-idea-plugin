@@ -29,8 +29,8 @@ import kotlinx.coroutines.CoroutineScope
 @Service(Service.Level.PROJECT)
 class BSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<BSGlobalMetaModel, BSMetaModel, Beans>(
     project, coroutineScope, "Bean",
-    project.service<BSMetaCollector>(),
-    project.service<BSMetaModelProcessor>()
+    BSMetaCollector.getInstance(project),
+    BSMetaModelProcessor.getInstance(project)
 ) {
 
     override fun onCompletion(newState: BSGlobalMetaModel) {
@@ -39,6 +39,10 @@ class BSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) 
 
     override suspend fun create(metaModelsToMerge: Collection<BSMetaModel>): BSGlobalMetaModel = BSGlobalMetaModel().also {
         readAction { BSMetaModelMerger.merge(it, metaModelsToMerge.sortedBy { meta -> !meta.custom }) }
+    }
+
+    companion object {
+        fun getInstance(project: Project): BSMetaModelStateService = project.service()
     }
 
 }

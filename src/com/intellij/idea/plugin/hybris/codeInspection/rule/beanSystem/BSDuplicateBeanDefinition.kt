@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
@@ -36,7 +35,7 @@ class BSDuplicateBeanDefinition : AbstractBSInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        val metaModelAccess = project.service<BSMetaModelAccess>()
+        val metaModelAccess = BSMetaModelAccess.getInstance(project)
 
         dom.beans
             .forEach { inspect(it, holder, severity, metaModelAccess) }

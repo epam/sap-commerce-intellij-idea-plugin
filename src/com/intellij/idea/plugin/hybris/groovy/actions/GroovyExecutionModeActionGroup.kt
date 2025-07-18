@@ -24,7 +24,6 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.components.service
 
 class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 
@@ -37,7 +36,7 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val connectionContext = project.service<GroovyExecutionClient>().connectionContext
+        val connectionContext = GroovyExecutionClient.getInstance(project).connectionContext
         val text = when (connectionContext.replicaSelectionMode) {
             ReplicaSelectionMode.AUTO -> "Auto-Discover Replica"
             else -> "Execute on ${connectionContext.replicaContexts.size} replica(s)"

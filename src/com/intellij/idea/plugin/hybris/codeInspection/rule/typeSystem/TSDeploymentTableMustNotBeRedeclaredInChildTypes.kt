@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.all
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
@@ -48,7 +47,7 @@ class TSDeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTSInspection() 
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val metaItem = project.service<TSMetaModelStateService>().get().getMetaItem(dom.code.stringValue)
+        val metaItem = TSMetaModelStateService.state(project).getMetaItem(dom.code.stringValue)
             ?: return
 
         val currentMetaTypeCode = metaItem.deployment?.typeCode

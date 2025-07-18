@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.WidgetDefinitionResolveResult
-import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
@@ -46,14 +45,14 @@ class CngWidgetDefinitionReference(element: PsiElement) : PsiReferenceBase.Poly<
             val lookingForName = ref.value
             val project = element.project
 
-            val result = project.service<CngMetaModelStateService>().get()
+            val result = CngMetaModelStateService.getInstance(project).get()
                 .widgetDefinitions[lookingForName]
                 ?.let { PsiUtils.getValidResults(arrayOf(WidgetDefinitionResolveResult(it))) }
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(
                 result,
-                project.service<CngModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
+                CngModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

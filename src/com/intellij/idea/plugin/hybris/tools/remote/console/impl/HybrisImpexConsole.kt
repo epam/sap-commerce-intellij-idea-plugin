@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecuti
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.Toggle
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ValidationMode
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
@@ -91,5 +92,7 @@ class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : Hyb
     companion object {
         @Serial
         private val serialVersionUID: Long = -8798339041999147739L
+
+        fun getInstance(project: Project): HybrisImpexConsole = project.service()
     }
 }

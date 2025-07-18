@@ -27,7 +27,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
-import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -81,7 +80,7 @@ class ImpExValueTSClassifierReference(
 
             CachedValueProvider.Result.create(
                 results,
-                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT,
+                TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT,
             )
         }
     }

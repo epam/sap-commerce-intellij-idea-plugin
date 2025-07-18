@@ -31,7 +31,6 @@ import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSTreeP
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
@@ -41,12 +40,12 @@ import com.intellij.ui.components.JBPanel
 import java.awt.GridBagLayout
 import java.io.Serial
 
-class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Disposable {
+class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val myItemsViewActionGroup: DefaultActionGroup by lazy(::initItemsViewActionGroup)
-    private val mySettings = TSViewSettings.getInstance(myProject)
-    private val myTreePane = TSTreePanel(myProject)
-    private val metaModelStateService by lazy { myProject.service<TSMetaModelStateService>() }
+    private val mySettings = TSViewSettings.getInstance(project)
+    private val myTreePane = TSTreePanel(project)
+    private val metaModelStateService by lazy { TSMetaModelStateService.getInstance(project) }
 
     override fun dispose() {
         //NOP
@@ -56,7 +55,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
         installToolbar()
 
         when {
-            DumbService.isDumb(myProject) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
+            DumbService.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
                 add(JBLabel(message("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
                 setContent(this)
             }
@@ -84,7 +83,7 @@ class TSView(val myProject: Project) : SimpleToolWindowPanel(false, true), Dispo
     }
 
     private fun installSettingsListener() {
-        with(myProject.messageBus.connect(this)) {
+        with(project.messageBus.connect(this)) {
             subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
                 override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
                     refreshContent(changeType)

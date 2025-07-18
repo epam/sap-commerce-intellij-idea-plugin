@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecution
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 
 class ConsoleExecuteStatementAction : AnAction(
     "Execute Current Statement",
@@ -42,49 +41,37 @@ class ConsoleExecuteStatementAction : AnAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val console = e.project
-            ?.service<HybrisConsoleService>()
-            ?.getActiveConsole()
+        val console = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?: return
 
         when (console) {
-            is HybrisGroovyConsole -> project.service<GroovyExecutionClient>().execute(
+            is HybrisGroovyConsole -> GroovyExecutionClient.getInstance(project).execute(
                 context = console.context,
                 beforeCallback = { coroutineScope -> console.beforeExecution() },
                 resultCallback = { coroutineScope, result -> console.print(result) }
             )
 
-            is HybrisImpexConsole -> project.service<ImpExExecutionClient>().execute(
+            is HybrisImpexConsole -> ImpExExecutionClient.getInstance(project).execute(
                 context = console.context,
                 beforeCallback = { coroutineScope -> console.beforeExecution() },
                 resultCallback = { coroutineScope, result -> console.print(result) }
             )
 
-            is HybrisPolyglotQueryConsole -> project.service<FlexibleSearchExecutionClient>().execute(
+            is HybrisPolyglotQueryConsole,
+            is HybrisFlexibleSearchConsole,
+            is HybrisSQLConsole -> FlexibleSearchExecutionClient.getInstance(project).execute(
                 context = console.context,
                 beforeCallback = { coroutineScope -> console.beforeExecution() },
                 resultCallback = { coroutineScope, result -> console.print(result) }
             )
 
-            is HybrisFlexibleSearchConsole -> project.service<FlexibleSearchExecutionClient>().execute(
+            is HybrisSolrSearchConsole -> SolrExecutionClient.getInstance(project).execute(
                 context = console.context,
                 beforeCallback = { coroutineScope -> console.beforeExecution() },
                 resultCallback = { coroutineScope, result -> console.print(result) }
             )
 
-            is HybrisSolrSearchConsole -> project.service<SolrExecutionClient>().execute(
-                context = console.context,
-                beforeCallback = { coroutineScope -> console.beforeExecution() },
-                resultCallback = { coroutineScope, result -> console.print(result) }
-            )
-
-            is HybrisImpexMonitorConsole -> project.service<ImpExMonitorExecutionClient>().execute(
-                context = console.context,
-                beforeCallback = { coroutineScope -> console.beforeExecution() },
-                resultCallback = { coroutineScope, result -> console.print(result) }
-            )
-
-            is HybrisSQLConsole -> project.service<FlexibleSearchExecutionClient>().execute(
+            is HybrisImpexMonitorConsole -> ImpExMonitorExecutionClient.getInstance(project).execute(
                 context = console.context,
                 beforeCallback = { coroutineScope -> console.beforeExecution() },
                 resultCallback = { coroutineScope, result -> console.print(result) }

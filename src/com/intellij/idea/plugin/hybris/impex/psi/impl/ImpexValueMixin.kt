@@ -33,7 +33,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.AttributeResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.lang.ASTNode
-import com.intellij.openapi.components.service
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiElement
@@ -59,7 +58,7 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
     override fun getReferences(): Array<PsiReference> = CachedValuesManager.getManager(project).getCachedValue(this) {
         CachedValueProvider.Result.create(
             collectReferences(),
-            project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
+            TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
         )
     }
 

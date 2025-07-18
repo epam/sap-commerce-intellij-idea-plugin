@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -76,5 +77,7 @@ class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScop
     companion object {
         @Serial
         private val serialVersionUID: Long = -1330953384857131472L
+
+        fun getInstance(project: Project): HybrisPolyglotQueryConsole = project.service()
     }
 }

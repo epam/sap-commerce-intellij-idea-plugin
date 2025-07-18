@@ -20,7 +20,12 @@ package com.intellij.idea.plugin.hybris.system.type.meta
 import com.intellij.idea.plugin.hybris.system.meta.MetaCollector
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
-class TSMetaCollector(myProject: Project) : MetaCollector<Items>(myProject, Items::class.java, nameProvider = TSModificationTracker.KEY_PROVIDER)
+class TSMetaCollector(myProject: Project) : MetaCollector<Items>(myProject, Items::class.java, nameProvider = TSModificationTracker.KEY_PROVIDER) {
+    companion object {
+        fun getInstance(project: Project): TSMetaCollector = project.service()
+    }
+}

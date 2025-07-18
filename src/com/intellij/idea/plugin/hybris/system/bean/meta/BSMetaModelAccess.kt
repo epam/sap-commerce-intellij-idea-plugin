@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
@@ -35,7 +34,7 @@ class BSMetaModelAccess(project: Project) {
         fun getInstance(project: Project): BSMetaModelAccess = project.getService(BSMetaModelAccess::class.java)
     }
 
-    private val metaModelStateService by lazy { project.service<BSMetaModelStateService>() }
+    private val metaModelStateService by lazy { BSMetaModelStateService.getInstance(project) }
 
     fun getAllBeans() = getAll<BSGlobalMetaBean>(BSMetaType.META_BEAN) +
         getAll(BSMetaType.META_WS_BEAN) +

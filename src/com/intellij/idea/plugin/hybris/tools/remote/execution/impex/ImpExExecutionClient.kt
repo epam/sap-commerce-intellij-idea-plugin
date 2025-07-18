@@ -41,7 +41,7 @@ import java.nio.charset.StandardCharsets
 class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<ImpExExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: ImpExExecutionContext): DefaultExecutionResult {
-        val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val actionUrl = when (context.executionMode) {
             ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
             ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"
@@ -49,7 +49,7 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
-        val response = project.service<HybrisHacHttpClient>()
+        val response = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, false, context.timeout, settings, null)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
@@ -63,25 +63,25 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
             val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
 
             return when (context.executionMode) {
-                ExecutionMode.IMPORT -> processResponse(document, "impexResult") {
-                    if (it.attr("data-level") == "error") DefaultExecutionResult(
+                ExecutionMode.IMPORT -> processResponse(document, "impexResult") { element ->
+                    if (element.attr("data-level") == "error") DefaultExecutionResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
-                        errorMessage = it.attr("data-result"),
-                        detailMessage = it.first().children().first()?.text()
+                        errorMessage = element.attr("data-result").takeIf { it.isNotBlank() },
+                        detailMessage = element.first().children().first()?.text()
                             ?: "No data in response"
                     )
                     else DefaultExecutionResult(
-                        output = it.attr("data-result")
+                        output = element.attr("data-result").takeIf { it.isNotBlank() }
                     )
                 }
 
-                ExecutionMode.VALIDATE -> processResponse(document, "validationResultMsg") {
-                    if ("error" == it.attr("data-level")) DefaultExecutionResult(
+                ExecutionMode.VALIDATE -> processResponse(document, "validationResultMsg") { element ->
+                    if ("error" == element.attr("data-level")) DefaultExecutionResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
-                        errorMessage = it.attr("data-result")
+                        errorMessage = element.attr("data-result").takeIf { it.isNotBlank() }
                     )
                     else DefaultExecutionResult(
-                        output = it.attr("data-result")
+                        output = element.attr("data-result").takeIf { it.isNotBlank() }
                     )
                 }
             }
@@ -105,6 +105,8 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
     companion object {
         @Serial
         private const val serialVersionUID: Long = -1646069318244320642L
+
+        fun getInstance(project: Project): ImpExExecutionClient = project.service()
     }
 
 }

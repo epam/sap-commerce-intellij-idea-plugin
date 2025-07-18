@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteSolrConnectionDialog
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import java.io.Serial
 
@@ -38,7 +37,7 @@ class RemoteSolrInstancesListPanel(
     }
 
     public override fun addItem() {
-        val item = myProject.service<RemoteConnectionService>().createDefaultRemoteConnectionSettings(RemoteConnectionType.SOLR)
+        val item = RemoteConnectionService.getInstance(myProject).createDefaultRemoteConnectionSettings(RemoteConnectionType.SOLR)
         val dialog = RemoteSolrConnectionDialog(myProject, this, item)
         if (dialog.showAndGet()) {
             addElement(item)

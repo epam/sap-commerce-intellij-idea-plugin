@@ -28,7 +28,7 @@ import com.intellij.psi.xml.XmlFile
 @Service(Service.Level.PROJECT)
 class TSModificationTracker(project: Project) : MetaModelModificationTracker(project) {
 
-    private val stateService by lazy { project.service<TSMetaModelStateService>() }
+    private val stateService by lazy { TSMetaModelStateService.getInstance(project) }
 
     override fun getKeys(vararg xmlFiles: XmlFile): Collection<String>? = xmlFiles.map { it.name }
 
@@ -38,5 +38,7 @@ class TSModificationTracker(project: Project) : MetaModelModificationTracker(pro
 
     companion object {
         val KEY_PROVIDER: (VirtualFile) -> String = { it.name }
+
+        fun getInstance(project: Project): TSModificationTracker = project.service()
     }
 }

@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateSe
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.hybris.MergeMode
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
@@ -57,7 +56,7 @@ object CngUtils {
 
     fun isConfigFile(file: XmlFile) = DomManager.getDomManager(file.project).getFileElement(file, Config::class.java) != null
 
-    fun getValidMergeByValues(project: Project) = project.service<CngMetaModelStateService>().get()
+    fun getValidMergeByValues(project: Project) = CngMetaModelStateService.getInstance(project).get()
         .contextAttributes
         .keys
         // exclude itself

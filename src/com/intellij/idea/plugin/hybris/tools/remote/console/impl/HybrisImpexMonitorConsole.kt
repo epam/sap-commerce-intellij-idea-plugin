@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionRe
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.TimeOption
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil
@@ -95,7 +96,8 @@ class HybrisImpexMonitorConsole(project: Project, coroutineScope: CoroutineScope
 
     override fun printResult(result: DefaultExecutionResult) {
         clear()
-        ConsoleViewUtil.printAsFileType(this, result.output, ImpexFileType)
+        val text = result.output ?: return
+        ConsoleViewUtil.printAsFileType(this, text, ImpexFileType)
     }
 
     override fun currentExecutionContext(content: String) = ImpExMonitorExecutionContext(
@@ -109,5 +111,7 @@ class HybrisImpexMonitorConsole(project: Project, coroutineScope: CoroutineScope
     companion object {
         @Serial
         private val serialVersionUID: Long = 4809264328611290133L
+
+        fun getInstance(project: Project): HybrisImpexMonitorConsole = project.service()
     }
 }

@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import java.io.Serial
 
@@ -32,7 +31,7 @@ class RemoteHacInstancesListPanel(
 ) : RemoteInstancesListPanel(project, RemoteConnectionType.Hybris, HybrisIcons.Y.REMOTE) {
 
     public override fun addItem() {
-        val settings = myProject.service<RemoteConnectionService>().createDefaultRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(myProject).createDefaultRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val dialog = RemoteHacConnectionDialog(myProject, this, settings)
         if (dialog.showAndGet()) {
             addElement(settings)

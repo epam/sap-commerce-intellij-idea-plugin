@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.Fle
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryConsole>(
@@ -43,7 +42,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             queryMode = QueryMode.PolyglotQuery
         )
 
-        project.service<FlexibleSearchExecutionClient>().execute(context) { coroutineScope, result ->
+        FlexibleSearchExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
             console.print(result)
         }
     }

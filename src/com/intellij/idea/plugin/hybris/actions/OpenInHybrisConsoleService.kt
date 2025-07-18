@@ -28,6 +28,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.toolwindow.OpenInConsoleConsoleDialog
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
@@ -104,4 +105,8 @@ class OpenInHybrisConsoleService(private val project: Project) {
         ?.selectionPaths
 
     private fun getDialogTitleFromProperties(fileExtension: String) = messageFallback(HybrisConstants.DIALOG_TITLE + fileExtension, fileExtension)
+
+    companion object {
+        fun getInstance(project: Project): OpenInHybrisConsoleService = project.service()
+    }
 }

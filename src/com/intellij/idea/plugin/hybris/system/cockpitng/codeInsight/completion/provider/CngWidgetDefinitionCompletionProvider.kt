@@ -22,7 +22,6 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
-import com.intellij.openapi.components.service
 import com.intellij.util.ProcessingContext
 
 class CngWidgetDefinitionCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -36,7 +35,7 @@ class CngWidgetDefinitionCompletionProvider : CompletionProvider<CompletionParam
 
         val resultCaseInsensitive = result.caseInsensitive()
 
-        with(project.service<CngMetaModelStateService>().get()) {
+        with(CngMetaModelStateService.getInstance(project).get()) {
             widgetDefinitions
                 .values
                 .map { CngLookupElementFactory.build(it, it.id) }

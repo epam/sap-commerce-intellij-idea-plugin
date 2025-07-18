@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -268,5 +267,5 @@ object FlexibleSearchInEditorParametersView {
 
     private fun isTypeSystemInitialized(project: Project): Boolean = !project.isDisposed
         && !DumbService.isDumb(project)
-        && project.service<TSMetaModelStateService>().initialized()
+        && TSMetaModelStateService.getInstance(project).initialized()
 }

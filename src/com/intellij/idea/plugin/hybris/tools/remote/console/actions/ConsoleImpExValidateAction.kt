@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecuti
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.ui.AnimatedIcon
 
 class ConsoleImpExValidateAction : AnAction(
@@ -41,9 +40,7 @@ class ConsoleImpExValidateAction : AnAction(
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val console = e.project
-            ?.service<HybrisConsoleService>()
-            ?.getActiveConsole()
+        val console = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?: return
 
         val context = ImpExExecutionContext(
@@ -51,7 +48,7 @@ class ConsoleImpExValidateAction : AnAction(
             executionMode = ExecutionMode.VALIDATE,
         )
 
-        project.service<ImpExExecutionClient>().execute(
+        ImpExExecutionClient.getInstance(project).execute(
             context = context,
             beforeCallback = { coroutineScope -> console.beforeExecution() },
             resultCallback = { coroutineScope, result -> console.print(result) }

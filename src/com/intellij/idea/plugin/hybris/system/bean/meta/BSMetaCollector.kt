@@ -20,7 +20,12 @@ package com.intellij.idea.plugin.hybris.system.bean.meta
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.idea.plugin.hybris.system.meta.MetaCollector
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
-class BSMetaCollector(project: Project) : MetaCollector<Beans>(project, Beans::class.java, nameProvider = BSModificationTracker.KEY_PROVIDER)
+class BSMetaCollector(project: Project) : MetaCollector<Beans>(project, Beans::class.java, nameProvider = BSModificationTracker.KEY_PROVIDER) {
+    companion object {
+        fun getInstance(project: Project): BSMetaCollector = project.service()
+    }
+}

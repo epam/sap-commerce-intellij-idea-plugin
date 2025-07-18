@@ -21,7 +21,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAwareAction
 
 class CCv2ResetCacheAction : DumbAwareAction("Reset Cached CCv2 Details", null, HybrisIcons.Actions.FORCE_REFRESH) {
@@ -30,11 +29,11 @@ class CCv2ResetCacheAction : DumbAwareAction("Reset Cached CCv2 Details", null, 
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        project.service<CCv2Service>().resetCache()
+        CCv2Service.getInstance(project).resetCache()
     }
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        e.presentation.isEnabled = project.service<CCv2Service>().cached()
+        e.presentation.isEnabled = CCv2Service.getInstance(project).cached()
     }
 }

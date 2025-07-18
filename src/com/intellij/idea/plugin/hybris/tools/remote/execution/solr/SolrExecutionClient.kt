@@ -58,10 +58,10 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
 
         return buildHttpSolrClient(url)
             .runCatching { request(queryRequest) }
-            .map {
+            .map { namedList ->
                 DefaultExecutionResult(
                     remoteConnectionType = RemoteConnectionType.SOLR,
-                    output = it["response"] as String
+                    output = (namedList["response"] as String).takeIf { it.isNotBlank() }
                 )
             }
             .getOrElse {
@@ -115,10 +115,12 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
     }
 
     // active or default
-    private fun solrConnectionSettings(project: Project) = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.SOLR)
+    private fun solrConnectionSettings(project: Project) = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.SOLR)
 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -4606760283632482489L
+
+        fun getInstance(project: Project): SolrExecutionClient = project.service()
     }
 }

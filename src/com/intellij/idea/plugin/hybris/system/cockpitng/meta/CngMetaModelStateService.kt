@@ -30,8 +30,8 @@ import kotlinx.coroutines.CoroutineScope
 @Service(Service.Level.PROJECT)
 class CngMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<CngGlobalMetaModel, CngMeta<DomElement>, DomElement>(
     project, coroutineScope, "Cockpit NG",
-    project.service<CngMetaCollector>(),
-    project.service<CngMetaModelAggregatedProcessor>()
+    CngMetaCollector.getInstance(project),
+    CngMetaModelAggregatedProcessor.getInstance(project)
 ) {
 
     override fun onCompletion(newState: CngGlobalMetaModel) {
@@ -40,6 +40,11 @@ class CngMetaModelStateService(project: Project, coroutineScope: CoroutineScope)
 
     override suspend fun create(metaModelsToMerge: Collection<CngMeta<DomElement>>): CngGlobalMetaModel = CngGlobalMetaModel().also {
         readAction { CngMetaModelMerger.merge(it, metaModelsToMerge.sortedBy { meta -> !meta.custom }) }
+    }
+
+    companion object {
+        fun state(project: Project) = getInstance(project).get()
+        fun getInstance(project: Project): CngMetaModelStateService = project.service()
     }
 
 }

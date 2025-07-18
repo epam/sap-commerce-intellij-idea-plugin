@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyCon
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 import org.jetbrains.plugins.groovy.GroovyFileType
@@ -49,7 +48,7 @@ class GroovyOpenQueryAction : AnAction() {
             ?.text
             ?: return
 
-        project.service<OpenInHybrisConsoleService>()
+        OpenInHybrisConsoleService.getInstance(project)
             .openInConsole(HybrisGroovyConsole::class, content)
     }
 

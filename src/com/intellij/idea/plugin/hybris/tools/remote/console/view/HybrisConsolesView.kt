@@ -26,7 +26,6 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionToolbar
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
@@ -49,13 +48,13 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
     private val actionToolbar: ActionToolbar
     private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
     private val consoles = arrayOf(
-        project.service<HybrisImpexConsole>(),
-        project.service<HybrisGroovyConsole>(),
-        project.service<HybrisFlexibleSearchConsole>(),
-        project.service<HybrisPolyglotQueryConsole>(),
-        project.service<HybrisSolrSearchConsole>(),
-        project.service<HybrisImpexMonitorConsole>(),
-        project.service<HybrisSQLConsole>()
+        HybrisImpexConsole.getInstance(project),
+        HybrisGroovyConsole.getInstance(project),
+        HybrisFlexibleSearchConsole.getInstance(project),
+        HybrisPolyglotQueryConsole.getInstance(project),
+        HybrisSolrSearchConsole.getInstance(project),
+        HybrisImpexMonitorConsole.getInstance(project),
+        HybrisSQLConsole.getInstance(project)
     )
 
     init {

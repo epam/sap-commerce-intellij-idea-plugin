@@ -23,7 +23,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
-import com.intellij.openapi.components.service
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
@@ -42,7 +41,7 @@ class CngContextParentNonItemTypeCompletionProvider : CompletionProvider<Complet
             .firstOrNull { it.localName == "context" }
             ?.getAttributeValue(Context.MERGE_BY)
             ?: return
-        project.service<CngMetaModelStateService>().get().contextAttributes[mergeBy]
+        CngMetaModelStateService.getInstance(project).get().contextAttributes[mergeBy]
             ?.map { LookupElementBuilder.create(it) }
             ?.forEach { resultCaseInsensitive.addElement(it) }
     }

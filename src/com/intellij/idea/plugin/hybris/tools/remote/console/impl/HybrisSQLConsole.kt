@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.project.Project
 import com.intellij.sql.psi.SqlLanguage
@@ -79,5 +80,7 @@ class HybrisSQLConsole(project: Project, coroutineScope: CoroutineScope) : Hybri
     companion object {
         @Serial
         private val serialVersionUID: Long = -112651125533211607L
+
+        fun getInstance(project: Project): HybrisSQLConsole = project.service()
     }
 }

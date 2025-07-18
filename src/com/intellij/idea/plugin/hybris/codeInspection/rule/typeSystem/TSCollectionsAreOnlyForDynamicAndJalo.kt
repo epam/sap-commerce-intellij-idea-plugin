@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
@@ -50,7 +49,7 @@ class TSCollectionsAreOnlyForDynamicAndJalo : AbstractTSInspection() {
     ) {
 
         if (!arrayOf(PersistenceType.DYNAMIC, PersistenceType.JALO).contains(attribute.persistence.type.value)) {
-            project.service<TSMetaModelStateService>().get().getMetaCollection(attribute.type.stringValue)
+            TSMetaModelStateService.state(project).getMetaCollection(attribute.type.stringValue)
                 ?: return
 
             holder.createProblem(

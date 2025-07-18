@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaRelati
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.EnumResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.RelationResolveResult
-import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -86,7 +85,7 @@ open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>
 
             CachedValueProvider.Result.create(
                 results,
-                project.service<TSModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
+                TSModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
 

@@ -44,13 +44,13 @@ import java.nio.charset.StandardCharsets
 class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<LoggingExecutionContext, LoggingExecutionResult>(project, coroutineScope) {
 
     override suspend fun execute(context: LoggingExecutionContext): LoggingExecutionResult {
-        val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
 
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
         val actionUrl = settings.generatedURL + "/platform/log4j/changeLevel/"
-        val response = project.service<HybrisHacHttpClient>()
+        val response = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, false, context.timeout, settings, null)
 
         val statusLine = response.statusLine
@@ -100,6 +100,8 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
     companion object {
         @Serial
         private const val serialVersionUID: Long = 576041226131571722L
+
+        fun getInstance(project: Project): LoggingExecutionClient = project.service()
     }
 
 }

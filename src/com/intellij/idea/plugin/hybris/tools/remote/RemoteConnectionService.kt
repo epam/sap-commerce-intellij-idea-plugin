@@ -26,39 +26,12 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import java.util.*
 
 @Service(Service.Level.PROJECT)
 class RemoteConnectionService(private val project: Project) {
-
-    companion object {
-        fun generateUrl(ssl: Boolean, host: String?, port: String?, webroot: String?) = buildString {
-            if (ssl) append(HybrisConstants.HTTPS_PROTOCOL)
-            else append(HybrisConstants.HTTP_PROTOCOL)
-            append(host?.trim() ?: "")
-            port
-                ?.takeIf { it.isNotBlank() }
-                ?.takeUnless { "443" == it && ssl }
-                ?.takeUnless { "80" == it && !ssl }
-                ?.let {
-                    append(HybrisConstants.URL_PORT_DELIMITER)
-                    append(it)
-                }
-                ?: ""
-            webroot
-                ?.takeUnless { it.isBlank() }
-                ?.let {
-                    append('/')
-                    append(
-                        it
-                            .trimStart(' ', '/')
-                            .trimEnd(' ', '/')
-                    )
-                }
-                ?: ""
-        }
-    }
 
     fun getActiveRemoteConnectionSettings(type: RemoteConnectionType): RemoteConnectionSettings {
         val instances = getRemoteConnections(type)
@@ -188,4 +161,34 @@ class RemoteConnectionService(private val project: Project) {
     private fun getPropertyOrDefault(project: Project, key: String, fallback: String) = PropertyService.getInstance(project)
         ?.findProperty(key)
         ?: fallback
+
+    companion object {
+        fun generateUrl(ssl: Boolean, host: String?, port: String?, webroot: String?) = buildString {
+            if (ssl) append(HybrisConstants.HTTPS_PROTOCOL)
+            else append(HybrisConstants.HTTP_PROTOCOL)
+            append(host?.trim() ?: "")
+            port
+                ?.takeIf { it.isNotBlank() }
+                ?.takeUnless { "443" == it && ssl }
+                ?.takeUnless { "80" == it && !ssl }
+                ?.let {
+                    append(HybrisConstants.URL_PORT_DELIMITER)
+                    append(it)
+                }
+                ?: ""
+            webroot
+                ?.takeUnless { it.isBlank() }
+                ?.let {
+                    append('/')
+                    append(
+                        it
+                            .trimStart(' ', '/')
+                            .trimEnd(' ', '/')
+                    )
+                }
+                ?: ""
+        }
+
+        fun getInstance(project: Project): RemoteConnectionService = project.service()
+    }
 }

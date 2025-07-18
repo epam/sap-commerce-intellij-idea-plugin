@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 
 class PolyglotQueryOpenInConsoleAction : AnAction(
@@ -39,12 +38,12 @@ class PolyglotQueryOpenInConsoleAction : AnAction(
     override fun update(event: AnActionEvent) {
         val project = event.project ?: return
         event.presentation.isEnabledAndVisible = project.isHybrisProject
-            && project.service<OpenInHybrisConsoleService>().isRequiredMultipleFileExtension(PolyglotQueryFileType.defaultExtension)
+            && OpenInHybrisConsoleService.getInstance(project).isRequiredMultipleFileExtension(PolyglotQueryFileType.defaultExtension)
     }
 
     override fun actionPerformed(event: AnActionEvent) {
-        event.project
-            ?.service<OpenInHybrisConsoleService>()
-            ?.openSelectedFilesInConsole(HybrisPolyglotQueryConsole::class, PolyglotQueryFileType.defaultExtension)
+        val project = event.project ?: return
+        OpenInHybrisConsoleService.getInstance(project)
+            .openSelectedFilesInConsole(HybrisPolyglotQueryConsole::class, PolyglotQueryFileType.defaultExtension)
     }
 }

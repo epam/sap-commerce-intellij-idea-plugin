@@ -23,7 +23,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
-import com.intellij.openapi.components.service
 import com.intellij.psi.util.parentsOfType
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
@@ -51,7 +50,7 @@ class CngWidgetSettingCompletionProvider : CompletionProvider<CompletionParamete
             }
             .forEach { resultCaseInsensitive.addElement(it) }
 
-        project.service<CngMetaModelStateService>().get()
+        CngMetaModelStateService.getInstance(project).get()
             .widgetDefinitions[widgetDefinitionId]
             ?.settings
             ?.values

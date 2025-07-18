@@ -30,7 +30,6 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -134,7 +133,7 @@ class CCv2ReplicaSelectionDialog(
                 override fun actionPerformed(e: AnActionEvent) {
                     ccv2SubscriptionsComboBoxModel.refresh()
                     ccv2TreeTable.reset()
-                    project.service<CCv2Service>().resetCache()
+                    CCv2Service.getInstance(project).resetCache()
                 }
             })
                 .enabledIf(editable)
@@ -148,7 +147,7 @@ class CCv2ReplicaSelectionDialog(
     }
 
     override fun applyFields() {
-        project.service<GroovyExecutionClient>().connectionContext = if (selectedReplicaIds.isEmpty()) RemoteConnectionContext.auto()
+        GroovyExecutionClient.getInstance(project).connectionContext = if (selectedReplicaIds.isEmpty()) RemoteConnectionContext.auto()
         else RemoteConnectionContext.ccv2(selectedReplicaIds)
     }
 

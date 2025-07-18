@@ -27,7 +27,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecu
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.groovy.GroovyLanguage
@@ -44,7 +43,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val console = openConsole(project, content) ?: return
         val transactionMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode
-        val executionClient = project.service<GroovyExecutionClient>()
+        val executionClient = GroovyExecutionClient.getInstance(project)
         val contexts = executionClient.connectionContext.replicaContexts
             .map {
                 GroovyExecutionContext(

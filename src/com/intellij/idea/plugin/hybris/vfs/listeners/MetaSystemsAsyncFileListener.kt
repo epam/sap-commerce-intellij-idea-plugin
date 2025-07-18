@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateSe
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -43,10 +42,10 @@ import com.intellij.util.asSafely
 class MetaSystemsAsyncFileListener : AsyncFileListener {
 
     private fun mapToTracker(fileName: String, fqn: String, project: Project, trackedCngModels: Set<String>) = when {
-        fileName.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> project.service<TSModificationTracker>() to fileName
-        fileName.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING) -> project.service<BSModificationTracker>() to fileName
+        fileName.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING) -> TSModificationTracker.getInstance(project) to fileName
+        fileName.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING) -> BSModificationTracker.getInstance(project) to fileName
         // in case of the CockpitNG FQN is being tracked
-        trackedCngModels.contains(fqn) -> project.service<CngModificationTracker>() to fqn
+        trackedCngModels.contains(fqn) -> CngModificationTracker.getInstance(project) to fqn
         else -> null
     }
 
@@ -54,7 +53,7 @@ class MetaSystemsAsyncFileListener : AsyncFileListener {
         .filterNot { DumbService.isDumb(it) }
         .filter { it.isHybrisProject }
         .mapNotNull { project ->
-            val trackedCngModels by lazy { project.service<CngMetaModelStateService>().getTrackedModels() }
+            val trackedCngModels by lazy { CngMetaModelStateService.getInstance(project).getTrackedModels() }
 
             events
                 .map { event ->

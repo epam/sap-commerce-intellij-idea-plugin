@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
 import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.components.service
 import com.intellij.openapi.options.ShowSettingsUtil
 import kotlinx.html.div
 import kotlinx.html.p
@@ -47,7 +46,7 @@ class HacChooseConnectionAction : DefaultActionGroup() {
         val project = e?.project ?: return emptyArray()
         val actions = super.getChildren(e)
 
-        val remoteConnectionService = project.service<RemoteConnectionService>()
+        val remoteConnectionService = RemoteConnectionService.getInstance(project)
         val activeConnection = remoteConnectionService.getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val connectionActions = remoteConnectionService.getRemoteConnections(RemoteConnectionType.Hybris)
             .map {
@@ -68,7 +67,7 @@ class HacChooseConnectionAction : DefaultActionGroup() {
         val project = e.project ?: return
         val presentation = e.presentation
 
-        val hacSettings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val hacSettings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         presentation.text = when (e.place) {
             ActionPlaces.EDITOR_TOOLBAR -> hacSettings.toString()
             HybrisActionPlaces.CONSOLE_TOOLBAR -> null
@@ -110,7 +109,7 @@ class AddHacConnectionAction : AbstractHacConnectionAction("Create new connectio
         val component = (eventSource as? Component)
             ?: return
 
-        val remoteConnectionService = project.service<RemoteConnectionService>()
+        val remoteConnectionService = RemoteConnectionService.getInstance(project)
         val settings = remoteConnectionService.createDefaultRemoteConnectionSettings(RemoteConnectionType.Hybris)
 
         if (RemoteHacConnectionDialog(project, component, settings).showAndGet()) {
@@ -128,7 +127,7 @@ class EditActiveHacConnectionAction : AbstractHacConnectionAction("Edit active c
         val component = (eventSource as? Component)
             ?: return
 
-        val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         RemoteHacConnectionDialog(project, component, settings).showAndGet()
     }
 }

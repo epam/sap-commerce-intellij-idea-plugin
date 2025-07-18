@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateSe
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.ActionDefinitionResolveResult
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference.result.EditorDefinitionResolveResult
-import com.intellij.openapi.components.service
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -51,7 +50,7 @@ class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiEle
             val element = ref.element
             val value = ref.value
             val project = element.project
-            val metaModel = project.service<CngMetaModelStateService>().get()
+            val metaModel = CngMetaModelStateService.getInstance(project).get()
 
             val result = metaModel
                 .editorDefinitions[value]
@@ -62,7 +61,7 @@ class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiEle
 
             CachedValueProvider.Result.create(
                 result,
-                project.service<CngModificationTracker>(), PsiModificationTracker.MODIFICATION_COUNT
+                CngModificationTracker.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

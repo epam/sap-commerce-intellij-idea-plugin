@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.removeUserData
@@ -45,7 +44,7 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
                     )
                 }
 
-            project.service<HybrisConsoleService>().activateToolWindow()
+            HybrisConsoleService.getInstance(project).activateToolWindow()
         }
 
         CommonIdeaService.getInstance().fixRemoteConnectionSettings(project)

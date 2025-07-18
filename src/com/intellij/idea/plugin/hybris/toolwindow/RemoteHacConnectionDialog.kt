@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.EnumComboBoxModel
@@ -55,7 +54,7 @@ class RemoteHacConnectionDialog(
         this
     }
 
-    override fun testConnection(testSettings: RemoteConnectionSettings): String = project.service<HybrisHacHttpClient>()
+    override fun testConnection(testSettings: RemoteConnectionSettings): String = HybrisHacHttpClient.getInstance(project)
         .testConnection(testSettings)
 
     override fun panel() = panel {

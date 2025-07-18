@@ -27,7 +27,6 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.KeepPopupOnPerform
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
-import com.intellij.openapi.components.service
 import com.intellij.util.asSafely
 import java.awt.Component
 
@@ -45,10 +44,13 @@ abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun isSelected(e: AnActionEvent): Boolean = e.project
-        ?.service<GroovyExecutionClient>()
-        ?.connectionContext
-        ?.replicaSelectionMode == replicaSelectionMode
+    override fun isSelected(e: AnActionEvent): Boolean {
+        val project = e.project ?: return false
+
+        return GroovyExecutionClient.getInstance(project)
+            .connectionContext
+            .replicaSelectionMode == replicaSelectionMode
+    }
 }
 
 class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(ReplicaSelectionMode.AUTO) {
@@ -56,7 +58,7 @@ class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Re
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
 
-        project.service<GroovyExecutionClient>().connectionContext = RemoteConnectionContext.auto()
+        GroovyExecutionClient.getInstance(project).connectionContext = RemoteConnectionContext.auto()
     }
 }
 
@@ -66,7 +68,7 @@ class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val replicaContexts = project.service<GroovyExecutionClient>().connectionContext
+        val replicaContexts = GroovyExecutionClient.getInstance(project).connectionContext
             .takeIf { it.replicaSelectionMode == ReplicaSelectionMode.MANUAL }
             ?.replicaContexts
             ?: emptyList()
@@ -81,7 +83,7 @@ class GroovyCCv2ReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Re
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
-        val replicaContexts = project.service<GroovyExecutionClient>().connectionContext
+        val replicaContexts = GroovyExecutionClient.getInstance(project).connectionContext
             .takeIf { it.replicaSelectionMode == ReplicaSelectionMode.CCV2 }
             ?.replicaContexts
             ?: emptyList()

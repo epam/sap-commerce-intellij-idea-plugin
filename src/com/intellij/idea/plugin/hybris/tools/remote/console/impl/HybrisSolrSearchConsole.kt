@@ -152,7 +152,7 @@ class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) 
     }
 
     private fun retrieveListOfCores() = try {
-        project.service<SolrExecutionClient>().coresData().toList()
+        SolrExecutionClient.getInstance(project).coresData().toList()
     } catch (e: Exception) {
         Notifications.create(
             NotificationType.WARNING,
@@ -178,5 +178,7 @@ class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) 
     companion object {
         @Serial
         private val serialVersionUID: Long = -2047695844446905788L
+
+        fun getInstance(project: Project): HybrisSolrSearchConsole = project.service()
     }
 }

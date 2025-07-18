@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExe
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolderBase
@@ -60,14 +59,14 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     fun logger(loggerIdentifier: String) = loggers?.get(loggerIdentifier)
 
     fun setLogger(loggerName: String, logLevel: LogLevel) {
-        val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val context = LoggingExecutionContext(
             title = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName()}]...",
             loggerName = loggerName,
             logLevel = logLevel
         )
         fetching = true
-        project.service<LoggingExecutionClient>().execute(context) { coroutineScope, result ->
+        LoggingExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
             updateCache(result.loggers)
 
             if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
@@ -87,7 +86,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     }
 
     fun fetch() {
-        val server = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val context = GroovyExecutionContext(
             content = FETCH_LOGGERS_STATE_GROOVY_SCRIPT,
             transactionMode = TransactionMode.ROLLBACK,
@@ -96,7 +95,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
         fetching = true
 
-        project.service<GroovyExecutionClient>().execute(context) { coroutineScope, result ->
+        GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
             val loggers = result.result
                 ?.split("\n")
                 ?.map { it -> it.split(" | ") }

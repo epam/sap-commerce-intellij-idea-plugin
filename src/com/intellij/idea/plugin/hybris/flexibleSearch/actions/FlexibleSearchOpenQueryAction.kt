@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleS
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.components.service
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 
@@ -44,7 +43,7 @@ class FlexibleSearchOpenQueryAction : AnAction(
             ?.text
             ?: return
 
-        project.service<OpenInHybrisConsoleService>()
+        OpenInHybrisConsoleService.getInstance(project)
             .openInConsole(HybrisFlexibleSearchConsole::class, content)
     }
 

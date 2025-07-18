@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.lang.Language
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import java.util.*
 
@@ -72,5 +73,9 @@ class GridXSVFormatService(project: Project) {
         val format = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, HybrisConstants.FXS_TABLE_RESULT_SEPARATOR, "\n", true)
 
         return CsvFormat("FlexibleSearch - Results", format, format, "FlexibleSearch_results", false)
+    }
+
+    companion object {
+        fun getInstance(project: Project): GridXSVFormatService = project.service()
     }
 }

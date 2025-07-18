@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.deployments
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
@@ -55,7 +54,7 @@ abstract class AbstractTSDeploymentTypeCodeInspection : AbstractCustomOnlyTSInsp
     ) {
         if (!applicable(project, dom)) return
 
-        val deployment = project.service<TSMetaModelStateService>().get()
+        val deployment = TSMetaModelStateService.state(project)
             .getDeploymentForTypeCode(dom.typeCode.stringValue)
         deployment ?: return
 

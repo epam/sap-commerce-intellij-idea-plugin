@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.deployments
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
@@ -49,7 +48,7 @@ class TSDeploymentTableMustBeUnique : AbstractTSInspection() {
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity
     ) {
-        val deployment = project.service<TSMetaModelStateService>().get().getDeploymentForTable(dom.table.value)
+        val deployment = TSMetaModelStateService.state(project).getDeploymentForTable(dom.table.value)
         deployment ?: return
 
         if (StringUtils.equals(dom.typeCode.stringValue, deployment.typeCode)) return

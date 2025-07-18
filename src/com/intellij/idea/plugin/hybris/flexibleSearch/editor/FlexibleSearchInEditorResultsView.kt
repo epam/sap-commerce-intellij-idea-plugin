@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
 import com.intellij.testFramework.LightVirtualFile
@@ -78,14 +77,15 @@ object FlexibleSearchInEditorResultsView {
     private fun renderInEditorResults(project: Project, fileEditor: FlexibleSearchSplitEditor, result: DefaultExecutionResult) {
         CoroutineScope(Dispatchers.Default).launch {
             if (project.isDisposed) return@launch
+            val output = result.output ?: return@launch
 
             val lvf = LightVirtualFile(
                 fileEditor.file?.name + ".fxs.result.csv",
                 PlainTextFileType.INSTANCE,
-                result.output
+                output
             )
 
-            val format = project.service<GridXSVFormatService>().getFormat(FlexibleSearchLanguage)
+            val format = GridXSVFormatService.getInstance(project).getFormat(FlexibleSearchLanguage)
 
             edtWriteAction {
                 val editor = CsvTableFileEditor(project, lvf, format);

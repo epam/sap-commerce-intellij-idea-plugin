@@ -32,11 +32,11 @@ import com.intellij.util.xml.DomElement
 @Service(Service.Level.PROJECT)
 class CngMetaModelAggregatedProcessor(project: Project) : MetaModelProcessor<DomElement, CngMeta<DomElement>>(project) {
 
-    private val metaConfigProcessor by lazy { project.service<CngMetaModelConfigProcessor>() }
-    private val metaWidgetsProcessor by lazy { project.service<CngMetaModelWidgetsProcessor>() }
-    private val metaActionDefinitionProcessor by lazy { project.service<CngMetaModelActionDefinitionProcessor>() }
-    private val metaWidgetDefinitionProcessor by lazy { project.service<CngMetaModelWidgetDefinitionProcessor>() }
-    private val metaEditorDefinitionProcessor by lazy { project.service<CngMetaModelEditorDefinitionProcessor>() }
+    private val metaConfigProcessor by lazy { CngMetaModelConfigProcessor.getInstance(project) }
+    private val metaWidgetsProcessor by lazy { CngMetaModelWidgetsProcessor.getInstance(project) }
+    private val metaActionDefinitionProcessor by lazy { CngMetaModelActionDefinitionProcessor.getInstance(project) }
+    private val metaWidgetDefinitionProcessor by lazy { CngMetaModelWidgetDefinitionProcessor.getInstance(project) }
+    private val metaEditorDefinitionProcessor by lazy { CngMetaModelEditorDefinitionProcessor.getInstance(project) }
 
     override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: DomElement): CngMeta<DomElement> = when (dom) {
         is Config -> metaConfigProcessor.process(container, yContainer, fileName, custom, dom)
@@ -48,6 +48,10 @@ class CngMetaModelAggregatedProcessor(project: Project) : MetaModelProcessor<Dom
     }
         ?.asSafely<CngMeta<DomElement>>()
         ?: error("Unknown dom type - ${dom::class.java.simpleName}")
+
+    companion object {
+        fun getInstance(project: Project): CngMetaModelAggregatedProcessor = project.service()
+    }
 }
 
 @Service(Service.Level.PROJECT)
@@ -62,6 +66,10 @@ class CngMetaModelConfigProcessor(project: Project) : MetaModelProcessor<Config,
             }
 
         return CngMetaConfig(dom, fileName, custom, contexts)
+    }
+
+    companion object {
+        fun getInstance(project: Project): CngMetaModelConfigProcessor = project.service()
     }
 }
 
@@ -94,6 +102,10 @@ class CngMetaModelWidgetsProcessor(project: Project) : MetaModelProcessor<Widget
             else emptyList()
             CngMetaWidget(dom, fileName, id, custom, subWidgets)
         }
+
+    companion object {
+        fun getInstance(project: Project): CngMetaModelWidgetsProcessor = project.service()
+    }
 }
 
 @Service(Service.Level.PROJECT)
@@ -102,6 +114,10 @@ class CngMetaModelActionDefinitionProcessor(project: Project) : MetaModelProcess
     override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: ActionDefinition) = CngMetaModelNameProvider
         .extract(dom)
         ?.let { id -> CngMetaActionDefinition(dom, fileName, id, custom) }
+
+    companion object {
+        fun getInstance(project: Project): CngMetaModelActionDefinitionProcessor = project.service()
+    }
 }
 
 @Service(Service.Level.PROJECT)
@@ -110,6 +126,10 @@ class CngMetaModelEditorDefinitionProcessor(project: Project) : MetaModelProcess
     override fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: EditorDefinition) = CngMetaModelNameProvider
         .extract(dom)
         ?.let { id -> CngMetaEditorDefinition(dom, fileName, id, custom) }
+
+    companion object {
+        fun getInstance(project: Project): CngMetaModelEditorDefinitionProcessor = project.service()
+    }
 }
 
 @Service(Service.Level.PROJECT)
@@ -125,4 +145,8 @@ class CngMetaModelWidgetDefinitionProcessor(project: Project) : MetaModelProcess
 
             CngMetaWidgetDefinition(dom, fileName, id, custom, settings)
         }
+
+    companion object {
+        fun getInstance(project: Project): CngMetaModelWidgetDefinitionProcessor = project.service()
+    }
 }

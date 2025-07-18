@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTrac
 import com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
-import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiTreeChangeEvent
@@ -44,9 +43,9 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
     }
 
     private val domManager by lazy { DomManager.getDomManager(project) }
-    private val tsModificationTracker by lazy { project.service<TSModificationTracker>() }
-    private val bsModificationTracker by lazy { project.service<BSModificationTracker>() }
-    private val cngModificationTracker by lazy { project.service<CngModificationTracker>() }
+    private val tsModificationTracker by lazy { TSModificationTracker.getInstance(project) }
+    private val bsModificationTracker by lazy { BSModificationTracker.getInstance(project) }
+    private val cngModificationTracker by lazy { CngModificationTracker.getInstance(project) }
 
     override fun beforeChildAddition(event: PsiTreeChangeEvent) = doChange(event)
     override fun beforeChildRemoval(event: PsiTreeChangeEvent) = doChange(event)

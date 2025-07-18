@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
@@ -55,7 +54,7 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
         fun getInstance(project: Project): TSMetaModelAccess = project.getService(TSMetaModelAccess::class.java)
     }
 
-    private val metaModelStateService by lazy { project.service<TSMetaModelStateService>() }
+    private val metaModelStateService by lazy { TSMetaModelStateService.getInstance(project) }
     private val myReservedTypeCodes by lazy {
         ModuleManager.getInstance(project)
             .modules

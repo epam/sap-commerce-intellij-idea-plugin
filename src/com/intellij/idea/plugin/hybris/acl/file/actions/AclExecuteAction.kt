@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexCons
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
@@ -43,7 +42,7 @@ class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
             content = content,
         )
 
-        project.service<ImpExExecutionClient>().execute(context) { coroutineScope, result ->
+        ImpExExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
             console.print(result)
         }
     }

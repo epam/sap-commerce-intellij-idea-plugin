@@ -52,12 +52,12 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         }
 
     override suspend fun execute(context: GroovyExecutionContext): DefaultExecutionResult {
-        val settings = project.service<RemoteConnectionService>().getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val actionUrl = "${settings.generatedURL}/console/scripting/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
-        val response = project.service<HybrisHacHttpClient>()
+        val response = HybrisHacHttpClient.getInstance(project)
             .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
@@ -86,9 +86,9 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
             else DefaultExecutionResult(
                 replicaContext = context.replicaContext,
                 output = json.jsonObject["outputText"]
-                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() } ?: "",
+                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() },
                 result = json.jsonObject["executionResult"]
-                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() } ?: ""
+                    ?.jsonPrimitive?.content?.takeIf { it.isNotBlank() }
             )
         } catch (e: SerializationException) {
             thisLogger().error("Cannot parse response", e)
@@ -111,6 +111,8 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         @Serial
         private const val serialVersionUID: Long = 3297887080603991051L
         val KEY_REMOTE_CONNECTION_CONTEXT = Key.create<RemoteConnectionContext>("hybris.http.remote.connection.context")
+
+        fun getInstance(project: Project): GroovyExecutionClient = project.service()
     }
 
 }

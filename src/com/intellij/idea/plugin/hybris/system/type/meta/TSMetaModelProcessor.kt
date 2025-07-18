@@ -21,6 +21,7 @@ import com.intellij.idea.plugin.hybris.system.meta.MetaModelProcessor
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelBuilder
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
@@ -37,4 +38,8 @@ class TSMetaModelProcessor(project: Project) : MetaModelProcessor<Items, TSMetaM
             withMapTypes(dom.mapTypes.mapTypes)
             build()
         }
+
+    companion object {
+        fun getInstance(project: Project): TSMetaModelProcessor = project.service()
+    }
 }

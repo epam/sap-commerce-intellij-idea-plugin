@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecu
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.EditorNotificationPanel
@@ -95,6 +94,6 @@ class ManualReplicaSelectionDialog(
 
         val replicaContext = ReplicaContext(manualReplicaId.text, manualCookieName.text)
 
-        project.service<GroovyExecutionClient>().connectionContext = RemoteConnectionContext.manual(listOf(replicaContext))
+        GroovyExecutionClient.getInstance(project).connectionContext = RemoteConnectionContext.manual(listOf(replicaContext))
     }
 }

@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.all
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
@@ -49,7 +48,7 @@ class TSCatalogAwareUniqueKeyAttributeQualifier : AbstractTSInspection() {
         severity: HighlightSeverity,
         project: Project
     ) {
-        val meta = project.service<TSMetaModelStateService>().get().getMetaItem(dom.code.stringValue)
+        val meta = TSMetaModelStateService.state(project).getMetaItem(dom.code.stringValue)
             ?: return
         val domCustomProperty = TSMetaHelper.getProperty(dom.customProperties, HybrisConstants.TS_UNIQUE_KEY_ATTRIBUTE_QUALIFIER)
             ?: return

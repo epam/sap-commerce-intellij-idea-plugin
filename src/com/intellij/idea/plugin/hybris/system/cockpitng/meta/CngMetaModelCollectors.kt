@@ -37,11 +37,11 @@ import kotlinx.coroutines.coroutineScope
 @Service(Service.Level.PROJECT)
 class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, DomElement::class.java, nameProvider = CngModificationTracker.KEY_PROVIDER) {
 
-    private val metaConfigCollector by lazy { project.service<CngMetaConfigCollector>() }
-    private val metaWidgetsCollector by lazy { project.service<CngMetaWidgetsCollector>() }
-    private val metaActionDefinitionCollector by lazy { project.service<CngMetaActionDefinitionCollector>() }
-    private val metaWidgetDefinitionCollector by lazy { project.service<CngMetaWidgetDefinitionCollector>() }
-    private val metaEditorDefinitionCollector by lazy { project.service<CngMetaEditorDefinitionCollector>() }
+    private val metaConfigCollector by lazy { CngMetaConfigCollector.getInstance(project) }
+    private val metaWidgetsCollector by lazy { CngMetaWidgetsCollector.getInstance(project) }
+    private val metaActionDefinitionCollector by lazy { CngMetaActionDefinitionCollector.getInstance(project) }
+    private val metaWidgetDefinitionCollector by lazy { CngMetaWidgetDefinitionCollector.getInstance(project) }
+    private val metaEditorDefinitionCollector by lazy { CngMetaEditorDefinitionCollector.getInstance(project) }
 
     override suspend fun collectDependencies(): Set<Meta<DomElement>> = coroutineScope {
         listOf(
@@ -57,6 +57,10 @@ class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, Do
             ?.toImmutableSet()
             ?: emptySet()
     }
+
+    companion object {
+        fun getInstance(project: Project): CngMetaCollector = project.service()
+    }
 }
 
 @Service(Service.Level.PROJECT)
@@ -64,14 +68,22 @@ class CngMetaConfigCollector(project: Project) : MetaCollector<Config>(
     project,
     Config::class.java,
     nameProvider = CngModificationTracker.KEY_PROVIDER
-)
+) {
+    companion object {
+        fun getInstance(project: Project): CngMetaConfigCollector = project.service()
+    }
+}
 
 @Service(Service.Level.PROJECT)
 class CngMetaWidgetsCollector(project: Project) : MetaCollector<Widgets>(
     project,
     Widgets::class.java,
     nameProvider = CngModificationTracker.KEY_PROVIDER
-)
+) {
+    companion object {
+        fun getInstance(project: Project): CngMetaWidgetsCollector = project.service()
+    }
+}
 
 @Service(Service.Level.PROJECT)
 class CngMetaActionDefinitionCollector(project: Project) : MetaCollector<ActionDefinition>(
@@ -80,7 +92,11 @@ class CngMetaActionDefinitionCollector(project: Project) : MetaCollector<ActionD
     { it.id.exists() },
     CngModificationTracker.KEY_PROVIDER,
     { vf, dom -> dom.id.value ?: vf.name }
-)
+) {
+    companion object {
+        fun getInstance(project: Project): CngMetaActionDefinitionCollector = project.service()
+    }
+}
 
 @Service(Service.Level.PROJECT)
 class CngMetaWidgetDefinitionCollector(project: Project) : MetaCollector<WidgetDefinition>(
@@ -89,7 +105,11 @@ class CngMetaWidgetDefinitionCollector(project: Project) : MetaCollector<WidgetD
     { it.id.exists() },
     CngModificationTracker.KEY_PROVIDER,
     { vf, dom -> dom.id.value ?: vf.name }
-)
+) {
+    companion object {
+        fun getInstance(project: Project): CngMetaWidgetDefinitionCollector = project.service()
+    }
+}
 
 @Service(Service.Level.PROJECT)
 class CngMetaEditorDefinitionCollector(project: Project) : MetaCollector<EditorDefinition>(
@@ -98,4 +118,8 @@ class CngMetaEditorDefinitionCollector(project: Project) : MetaCollector<EditorD
     { it.id.exists() },
     CngModificationTracker.KEY_PROVIDER,
     { vf, dom -> dom.id.value ?: vf.name }
-)
+) {
+    companion object {
+        fun getInstance(project: Project): CngMetaEditorDefinitionCollector = project.service()
+    }
+}

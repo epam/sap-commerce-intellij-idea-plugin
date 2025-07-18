@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.acl.psi.AclFile
 import com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLineType
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
@@ -38,7 +37,7 @@ class AclLineEditorFactoryListener : EditorFactoryListener {
         val editor = event.editor
         val project = editor.project ?: return
 
-        project.service<AclLineHighlighterService>().highlight(editor)
+        AclLineHighlighterService.getInstance(project).highlight(editor)
     }
 }
 
@@ -55,5 +54,9 @@ private class AclLineHighlighterService(private val project: Project, private va
             }
                 ?.forEach { AclEditorMarkupModelHelper.highlightValueLineType(editor, it.textOffset) }
         }
+    }
+
+    companion object {
+        fun getInstance(project: Project): AclLineHighlighterService = project.getService(AclLineHighlighterService::class.java)
     }
 }

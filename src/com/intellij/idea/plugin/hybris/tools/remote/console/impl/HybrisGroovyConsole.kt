@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -61,7 +62,7 @@ class HybrisGroovyConsole(project: Project, coroutineScope: CoroutineScope) : Hy
     }
 
     override fun currentExecutionContext(content: String) = GroovyExecutionContext(
-        content= content,
+        content = content,
         transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         timeout = timeoutSpinner.value.toString().toInt() * 1000,
     )
@@ -72,5 +73,7 @@ class HybrisGroovyConsole(project: Project, coroutineScope: CoroutineScope) : Hy
     companion object {
         @Serial
         private val serialVersionUID: Long = -3858827004057439840L
+
+        fun getInstance(project: Project): HybrisGroovyConsole = project.service()
     }
 }

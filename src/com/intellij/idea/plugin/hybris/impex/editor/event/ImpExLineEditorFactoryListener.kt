@@ -38,7 +38,7 @@ class ImpExLineEditorFactoryListener : EditorFactoryListener {
         val editor = event.editor
         val project = editor.project ?: return
 
-        project.service<ImpExLineHighlighterService>().highlight(editor)
+        ImpExLineHighlighterService.getInstance(project).highlight(editor)
     }
 }
 
@@ -62,5 +62,9 @@ private class ImpExLineHighlighterService(private val project: Project, private 
                 }
             }
         }
+    }
+
+    companion object {
+        fun getInstance(project: Project): ImpExLineHighlighterService = project.service()
     }
 }

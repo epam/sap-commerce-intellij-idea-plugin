@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.monitor
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
@@ -52,7 +53,7 @@ class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineSco
 
         return DefaultExecutionResult(
             statusCode = HttpStatus.SC_OK,
-            output = out.toString()
+            output = out.toString().takeIf { it.isNotBlank() }
         )
     }
 
@@ -63,6 +64,8 @@ class ImpExMonitorExecutionClient(project: Project, coroutineScope: CoroutineSco
     companion object {
         @Serial
         private const val serialVersionUID: Long = -6318486147370249181L
+
+        fun getInstance(project: Project): ImpExMonitorExecutionClient = project.service()
     }
 
 }
