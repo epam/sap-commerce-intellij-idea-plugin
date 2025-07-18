@@ -24,7 +24,6 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgress
-import com.intellij.util.messages.Topic
 import com.intellij.util.xml.DomElement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -46,10 +45,6 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
     private val metaCollector: MetaCollector<D>,
     private val metaModelProcessor: MetaModelProcessor<D, M>
 ) : Disposable {
-
-    companion object {
-        val TOPIC = Topic("HYBRIS_META_SYSTEM_LISTENER", MetaModelChangeListener::class.java)
-    }
 
     protected val _metaModelsState = MutableStateFlow<Map<String, M>>(emptyMap())
     protected val _metaModelState = MutableStateFlow(CachedState<G>(null, computed = false, computing = false))

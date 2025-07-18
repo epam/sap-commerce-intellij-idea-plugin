@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
@@ -34,7 +35,7 @@ class BSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) 
 ) {
 
     override fun onCompletion(newState: BSGlobalMetaModel) {
-        project.messageBus.syncPublisher(TOPIC).beanSystemChanged(newState)
+        project.messageBus.syncPublisher(MetaModelChangeListener.TOPIC).beanSystemChanged(newState)
     }
 
     override suspend fun create(metaModelsToMerge: Collection<BSMetaModel>): BSGlobalMetaModel = BSGlobalMetaModel().also {

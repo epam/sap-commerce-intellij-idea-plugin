@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
-import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.components.BSTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -84,12 +83,12 @@ class BSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
 
     private fun installSettingsListener() {
         with(project.messageBus.connect(this)) {
-            subscribe(BSViewSettings.TOPIC, object : BSViewSettings.Listener {
+            subscribe(BSViewSettings.BSViewListener.TOPIC, object : BSViewSettings.BSViewListener {
                 override fun settingsChanged(changeType: BSViewSettings.ChangeType) {
                     refreshContent(changeType)
                 }
             })
-            subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
+            subscribe(MetaModelChangeListener.TOPIC, object : MetaModelChangeListener {
                 override fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) {
                     refreshContent(globalMetaModel, BSViewSettings.ChangeType.FULL)
                 }

@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
@@ -107,7 +107,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
                             }
 
                             project.messageBus
-                                .syncPublisher(CCv2Service.TOPIC_CCV2_SETTINGS)
+                                .syncPublisher(CCv2SettingsListener.TOPIC)
                                 .onActiveSubscriptionChanged(activeSubscription)
                         }
                         .onIsModified { activeCCv2SubscriptionComboBox.selectedItem != devSettingsComponent.getActiveCCv2Subscription() }

@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
-import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.openapi.Disposable
@@ -139,7 +138,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
 
     init {
         with(project.messageBus.connect(this)) {
-            subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
+            subscribe(MetaModelChangeListener.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
                     refreshParameters()
                     reparseTextEditor()

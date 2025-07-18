@@ -30,7 +30,7 @@ class CCv2EventsSubscriberStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
         with(project.messageBus.connect()) {
-            subscribe(CCv2Service.TOPIC_BUILDS, object : CCv2BuildsListener {
+            subscribe(CCv2BuildsListener.TOPIC, object : CCv2BuildsListener {
                 override fun onBuildCompleted(subscription: CCv2Subscription, buildCode: String, deploymentRequests: Collection<CCv2DeploymentRequest>) {
                     val ccv2Service = CCv2Service.getInstance(project)
 

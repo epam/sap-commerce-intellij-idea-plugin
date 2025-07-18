@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.type.meta
 
+import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.openapi.application.readAction
@@ -34,7 +35,7 @@ class TSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) 
 ) {
 
     override fun onCompletion(newState: TSGlobalMetaModel) {
-        project.messageBus.syncPublisher(TOPIC).typeSystemChanged(newState)
+        project.messageBus.syncPublisher(MetaModelChangeListener.TOPIC).typeSystemChanged(newState)
     }
 
     override suspend fun create(metaModelsToMerge: Collection<TSMetaModel>): TSGlobalMetaModel = TSGlobalMetaModel().also {

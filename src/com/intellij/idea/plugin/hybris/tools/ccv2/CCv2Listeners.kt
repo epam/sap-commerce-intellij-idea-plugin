@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
+import com.intellij.util.messages.Topic
 
 sealed interface CCv2Listener<T : CCv2DTO> {
     fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = Unit
@@ -32,10 +33,23 @@ sealed interface CCv2Listener<T : CCv2DTO> {
 interface CCv2SettingsListener {
     fun onSubscriptionsChanged(subscriptions: List<CCv2Subscription>) = Unit
     fun onActiveSubscriptionChanged(subscription: CCv2Subscription?) = Unit
+
+    companion object {
+        val TOPIC = Topic("HYBRIS_CCV2_SETTINGS", CCv2SettingsListener::class.java)
+    }
 }
 
-interface CCv2EnvironmentsListener : CCv2Listener<CCv2EnvironmentDto>
-interface CCv2DeploymentsListener : CCv2Listener<CCv2DeploymentDto>
+interface CCv2EnvironmentsListener : CCv2Listener<CCv2EnvironmentDto> {
+    companion object {
+        val TOPIC = Topic("HYBRIS_CCV2_ENVIRONMENTS_LISTENER", CCv2EnvironmentsListener::class.java)
+    }
+}
+
+interface CCv2DeploymentsListener : CCv2Listener<CCv2DeploymentDto> {
+    companion object {
+        val TOPIC = Topic("HYBRIS_CCV2_DEPLOYMENTS_LISTENER", CCv2DeploymentsListener::class.java)
+    }
+}
 
 interface CCv2BuildsListener : CCv2Listener<CCv2BuildDto> {
     fun onBuildStarted() = Unit
@@ -45,4 +59,8 @@ interface CCv2BuildsListener : CCv2Listener<CCv2BuildDto> {
 
     fun onBuildDeploymentStarted(subscription: CCv2Subscription, build: CCv2BuildDto) = Unit
     fun onBuildDeploymentRequested(subscription: CCv2Subscription, build: CCv2BuildDto) = Unit
+
+    companion object {
+        val TOPIC = Topic("HYBRIS_CCV2_BUILDS_LISTENER", CCv2BuildsListener::class.java)
+    }
 }

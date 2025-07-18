@@ -16,20 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.meta
+package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
-import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngGlobalMetaModel
-import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
-import com.intellij.util.messages.Topic
-
-interface MetaModelChangeListener {
-
-    fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) = Unit
-    fun beanSystemChanged(globalMetaModel: BSGlobalMetaModel) = Unit
-    fun cngSystemChanged(globalMetaModel: CngGlobalMetaModel) = Unit
-
-    companion object {
-        val TOPIC = Topic("HYBRIS_META_SYSTEM_LISTENER", MetaModelChangeListener::class.java)
-    }
+interface RemoteConnectionListener {
+    fun onActiveConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
 }

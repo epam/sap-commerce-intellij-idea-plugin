@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.CCv2SubscriptionDto
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -91,7 +91,7 @@ class ApplicationSettingsComponent : PersistentStateComponent<ApplicationSetting
 
         state.ccv2Subscriptions = subscriptions
         application.messageBus
-            .syncPublisher(CCv2Service.TOPIC_CCV2_SETTINGS)
+            .syncPublisher(CCv2SettingsListener.TOPIC)
             .onSubscriptionsChanged(subscriptions)
     }
 

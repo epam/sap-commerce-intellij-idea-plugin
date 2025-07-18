@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -65,7 +64,7 @@ object CCv2SubscriptionsComboBoxModelFactory {
 
             if (disposable != null) {
                 with(project.messageBus.connect(disposable)) {
-                    subscribe(CCv2Service.TOPIC_CCV2_SETTINGS, object : CCv2SettingsListener {
+                    subscribe(CCv2SettingsListener.TOPIC, object : CCv2SettingsListener {
                         override fun onSubscriptionsChanged(subscriptions: List<CCv2Subscription>) {
                             initModel(project, it, selectedSubscription, subscriptions, allowBlank)
                         }

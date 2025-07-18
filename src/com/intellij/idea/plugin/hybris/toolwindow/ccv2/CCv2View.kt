@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -124,7 +124,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
     private fun installDataListeners() {
         with(project.messageBus.connect(this)) {
             // Environments data listeners
-            subscribe(CCv2Service.TOPIC_ENVIRONMENT, object : CCv2EnvironmentsListener {
+            subscribe(CCv2EnvironmentsListener.TOPIC, object : CCv2EnvironmentsListener {
                 override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.ENVIRONMENTS)
                 { CCv2EnvironmentsDataView.fetchingInProgressPanel(subscriptions) }
 
@@ -146,7 +146,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
             })
 
             // Builds data listeners
-            subscribe(CCv2Service.TOPIC_BUILDS, object : CCv2BuildsListener {
+            subscribe(CCv2BuildsListener.TOPIC, object : CCv2BuildsListener {
                 override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.BUILDS)
                 { CCv2BuildsDataView.fetchingInProgressPanel(subscriptions) }
 
@@ -155,7 +155,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
             })
 
             // Deployments data listeners
-            subscribe(CCv2Service.TOPIC_DEPLOYMENTS, object : CCv2DeploymentsListener {
+            subscribe(CCv2DeploymentsListener.TOPIC, object : CCv2DeploymentsListener {
                 override fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = onFetchingStarted(CCv2Tab.DEPLOYMENTS)
                 { CCv2DeploymentsDataView.fetchingInProgressPanel(subscriptions) }
 
@@ -163,7 +163,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 { CCv2DeploymentsDataView.dataPanel(project, data) }
             })
 
-            subscribe(CCv2Service.TOPIC_CCV2_SETTINGS, object : CCv2SettingsListener {
+            subscribe(CCv2SettingsListener.TOPIC, object : CCv2SettingsListener {
                 override fun onActiveSubscriptionChanged(subscription: CCv2Subscription?) {
                     ccv2SubscriptionsModel.selectedItem = subscription
                 }

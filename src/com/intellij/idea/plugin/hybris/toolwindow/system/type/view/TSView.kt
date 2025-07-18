@@ -24,10 +24,10 @@ import com.intellij.idea.ActionsBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
-import com.intellij.idea.plugin.hybris.system.meta.MetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.components.TSTreePanel
+import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings.TSViewListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -84,12 +84,12 @@ class TSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
 
     private fun installSettingsListener() {
         with(project.messageBus.connect(this)) {
-            subscribe(TSViewSettings.TOPIC, object : TSViewSettings.Listener {
+            subscribe(TSViewListener.TOPIC, object : TSViewSettings.TSViewListener {
                 override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
                     refreshContent(changeType)
                 }
             })
-            subscribe(MetaModelStateService.TOPIC, object : MetaModelChangeListener {
+            subscribe(MetaModelChangeListener.TOPIC, object : MetaModelChangeListener {
                 override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
                     refreshContent(globalMetaModel, TSViewSettings.ChangeType.FULL)
                 }

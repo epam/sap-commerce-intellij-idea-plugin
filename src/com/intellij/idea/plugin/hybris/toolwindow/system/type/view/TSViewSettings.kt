@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -38,7 +38,7 @@ class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettin
         myMessageBus = myProject.messageBus
     }
 
-    fun fireSettingsChanged(changeType: ChangeType) = changeType.also { myMessageBus.syncPublisher(TOPIC).settingsChanged(changeType) }
+    fun fireSettingsChanged(changeType: ChangeType) = changeType.also { myMessageBus.syncPublisher(TSViewListener.TOPIC).settingsChanged(changeType) }
 
     fun isShowOnlyCustom(): Boolean = mySettings.showOnlyCustom
     fun setShowOnlyCustom(state: Boolean) = state.also { mySettings.showOnlyCustom = state }
@@ -98,13 +98,15 @@ class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettin
         FULL,UPDATE
     }
 
-    interface Listener {
+    interface TSViewListener {
         fun settingsChanged(changeType: ChangeType)
+
+        companion object {
+            val TOPIC = Topic("Hybris Type System View settings", TSViewListener::class.java)
+        }
     }
 
     companion object {
-        val TOPIC: Topic<Listener> = Topic("Hybris Type System View settings", Listener::class.java)
-
         fun getInstance(project: Project): TSViewSettings = project.getService(TSViewSettings::class.java)
     }
 }
