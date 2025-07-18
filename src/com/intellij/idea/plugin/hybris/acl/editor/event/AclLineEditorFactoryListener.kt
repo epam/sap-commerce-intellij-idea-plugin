@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.acl.psi.AclFile
 import com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLineType
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
@@ -57,6 +58,6 @@ private class AclLineHighlighterService(private val project: Project, private va
     }
 
     companion object {
-        fun getInstance(project: Project): AclLineHighlighterService = project.getService(AclLineHighlighterService::class.java)
+        fun getInstance(project: Project): AclLineHighlighterService = project.service()
     }
 }

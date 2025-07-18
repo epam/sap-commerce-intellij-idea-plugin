@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,10 +19,7 @@
 package com.intellij.idea.plugin.hybris.system.type.searcheverywhere
 
 import com.intellij.ide.util.gotoByName.ChooseByNameFilterConfiguration
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
-import com.intellij.openapi.components.StoragePathMacros
+import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
@@ -32,6 +29,6 @@ class GotoTypeConfiguration(private val project: Project) : ChooseByNameFilterCo
     override fun nameForElement(type: SystemRef) = type.id
 
     companion object {
-        fun getInstance(project: Project): GotoTypeConfiguration = project.getService(GotoTypeConfiguration::class.java)
+        fun getInstance(project: Project): GotoTypeConfiguration = project.service()
     }
 }

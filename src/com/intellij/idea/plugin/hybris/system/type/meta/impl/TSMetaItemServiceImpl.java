@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Deprecated(forRemoval = true, since = "Move to TSMetaAccess")
 public class TSMetaItemServiceImpl implements TSMetaItemService {
 
     private final Project myProject;
@@ -54,7 +55,7 @@ public class TSMetaItemServiceImpl implements TSMetaItemService {
     public Collection<? extends TSMetaRelation.TSMetaRelationElement> getRelationEnds(final TSGlobalMetaItem meta, final boolean includeInherited) {
         return includeInherited
             ? meta.getAllRelationEnds()
-            : myProject.getService(TSMetaModelStateService.class).get().getRelations(meta.getName());
+            : TSMetaModelStateService.Companion.state(myProject).getRelations(meta.getName());
     }
 
     @Override

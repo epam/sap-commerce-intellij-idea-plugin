@@ -26,6 +26,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.concurrency.AppExecutorUtil
 
@@ -95,6 +96,6 @@ class PostImportConfigurator(val project: Project) {
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): PostImportConfigurator = project.getService(PostImportConfigurator::class.java)
+        fun getInstance(project: Project): PostImportConfigurator = project.service()
     }
 }

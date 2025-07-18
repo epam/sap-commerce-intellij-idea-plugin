@@ -56,7 +56,7 @@ object CngUtils {
 
     fun isConfigFile(file: XmlFile) = DomManager.getDomManager(file.project).getFileElement(file, Config::class.java) != null
 
-    fun getValidMergeByValues(project: Project) = CngMetaModelStateService.getInstance(project).get()
+    fun getValidMergeByValues(project: Project) = CngMetaModelStateService.state(project)
         .contextAttributes
         .keys
         // exclude itself

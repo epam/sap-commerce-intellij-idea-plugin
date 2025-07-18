@@ -36,7 +36,7 @@ class CngWidgetConnectionWidgetIdCompletionProvider : CompletionProvider<Complet
 
         val resultCaseInsensitive = result.caseInsensitive()
 
-        with(CngMetaModelStateService.getInstance(project).get()) {
+        with(CngMetaModelStateService.state(project)) {
             widgets
                 .values
                 .map { CngLookupElementFactory.build(it) }

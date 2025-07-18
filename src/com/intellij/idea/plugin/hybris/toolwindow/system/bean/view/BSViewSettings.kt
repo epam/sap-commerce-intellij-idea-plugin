@@ -75,6 +75,6 @@ class BSViewSettings(myProject: Project) : PersistentStateComponent<BSViewSettin
     }
 
     companion object {
-        fun getInstance(project: Project): BSViewSettings = project.getService(BSViewSettings::class.java)
+        fun getInstance(project: Project): BSViewSettings = project.service()
     }
 }

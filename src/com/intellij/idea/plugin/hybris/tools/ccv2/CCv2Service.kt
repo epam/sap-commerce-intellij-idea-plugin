@@ -31,6 +31,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
@@ -895,6 +896,6 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
         private val KEY_ENVIRONMENTS = Key<MutableMap<String, Collection<CCv2EnvironmentDto>>>("CCV2_ENVIRONMENTS")
         private val KEY_SERVICES = Key<MutableMap<String, Collection<CCv2ServiceDto>>>("CCV2_SERVICES")
 
-        fun getInstance(project: Project): CCv2Service = project.getService(CCv2Service::class.java)
+        fun getInstance(project: Project): CCv2Service = project.service()
     }
 }

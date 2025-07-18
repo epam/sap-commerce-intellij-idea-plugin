@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
@@ -49,12 +50,6 @@ import kotlin.io.path.inputStream
 @Service(Service.Level.PROJECT)
 class TSMetaModelAccess(private val project: Project) : Disposable {
 
-    companion object {
-        @JvmStatic
-        fun getInstance(project: Project): TSMetaModelAccess = project.getService(TSMetaModelAccess::class.java)
-    }
-
-    private val metaModelStateService by lazy { TSMetaModelStateService.getInstance(project) }
     private val myReservedTypeCodes by lazy {
         ModuleManager.getInstance(project)
             .modules
@@ -76,7 +71,7 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
             ?: emptyMap()
     }
 
-    fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType) = metaModelStateService.get().getMetaType<T>(metaType).values
+    fun <T : TSGlobalMetaClassifier<*>> getAll(metaType: TSMetaType) = TSMetaModelStateService.state(project).getMetaType<T>(metaType).values
     fun getAllOf(vararg metaTypes: TSMetaType): Collection<TSGlobalMetaClassifier<*>> = (metaTypes
         .takeIf { it.isNotEmpty() }
         ?: TSMetaType.entries.toTypedArray()
@@ -96,7 +91,7 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
     fun findMetaMapByName(name: String?) = findMetaByName<TSGlobalMetaMap>(TSMetaType.META_MAP, name)
     fun findMetaRelationByName(name: String?) = findMetaByName<TSGlobalMetaRelation>(TSMetaType.META_RELATION, name)
 
-    fun findRelationByName(name: String?) = CollectionUtils.emptyIfNull(metaModelStateService.get().getAllRelations().values())
+    fun findRelationByName(name: String?) = CollectionUtils.emptyIfNull(TSMetaModelStateService.state(project).getAllRelations().values())
         .mapNotNull { metaRelationElement -> metaRelationElement.owner }
         .filter { ref: TSMetaRelation -> name == ref.name }
 
@@ -108,7 +103,7 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
         ?: findMetaAtomicByName(name)
 
     fun getNextAvailableTypeCode(): Int? {
-        val projectTypeCodes = metaModelStateService.get().getDeploymentTypeCodes().keys
+        val projectTypeCodes = TSMetaModelStateService.state(project).getDeploymentTypeCodes().keys
         val reservedTypesCodes = getReservedTypeCodes().keys
         val keys = projectTypeCodes + reservedTypesCodes
 
@@ -123,9 +118,14 @@ class TSMetaModelAccess(private val project: Project) : Disposable {
 
     fun getReservedTypeCodes() = myReservedTypeCodes
 
-    private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? = metaModelStateService.get()
+    private fun <T : TSGlobalMetaClassifier<*>> findMetaByName(metaType: TSMetaType, name: String?): T? = TSMetaModelStateService.state(project)
         .getMetaType<T>(metaType)[name]
 
     override fun dispose() {
+    }
+
+    companion object {
+        @JvmStatic
+        fun getInstance(project: Project): TSMetaModelAccess = project.service()
     }
 }

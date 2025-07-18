@@ -86,8 +86,8 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(targetElement)
 
                 val text = RichText("[y] log level")
-                project.getService(CxLoggerAccess::class.java)
-                    ?.logger(loggerIdentifier)
+                CxLoggerAccess.getInstance(project)
+                    .logger(loggerIdentifier)
                     ?.effectiveLevel
                     ?.let { text.append(" [$it]", SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue)) }
 

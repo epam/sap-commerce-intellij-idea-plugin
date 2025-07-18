@@ -29,6 +29,7 @@ import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
@@ -331,6 +332,6 @@ class PropertyService(val project: Project) {
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): PropertyService? = project.getService(PropertyService::class.java)
+        fun getInstance(project: Project): PropertyService? = project.service()
     }
 }

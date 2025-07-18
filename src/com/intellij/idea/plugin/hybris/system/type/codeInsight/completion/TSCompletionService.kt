@@ -34,6 +34,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem.TSGlobalMetaItemAttribute
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.StringUtils
 import java.util.*
@@ -205,7 +206,7 @@ class TSCompletionService(private val project: Project) {
 
 
     companion object {
-        fun getInstance(project: Project): TSCompletionService = project.getService(TSCompletionService::class.java)
+        fun getInstance(project: Project): TSCompletionService = project.service()
     }
 
 }

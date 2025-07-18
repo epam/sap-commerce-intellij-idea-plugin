@@ -49,6 +49,6 @@ class DeveloperSettingsComponent : PersistentStateComponent<DeveloperSettings> {
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): DeveloperSettingsComponent = project.getService(DeveloperSettingsComponent::class.java)
+        fun getInstance(project: Project): DeveloperSettingsComponent = project.service()
     }
 }

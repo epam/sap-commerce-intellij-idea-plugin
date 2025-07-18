@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.jetbrains.jsonSchema.extension.JsonSchemaFileProvider
@@ -39,6 +40,6 @@ class ManifestCommerceJsonSchemaFileProvider(val project: Project) : JsonSchemaF
     override fun getSchemaType() = SchemaType.embeddedSchema
 
     companion object {
-        fun instance(project: Project): JsonSchemaFileProvider = project.getService(ManifestCommerceJsonSchemaFileProvider::class.java)
+        fun instance(project: Project): ManifestCommerceJsonSchemaFileProvider = project.service()
     }
 }

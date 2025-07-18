@@ -35,7 +35,7 @@ class CngEditorDefinitionCodeCompletionProvider : CompletionProvider<CompletionP
 
         val resultCaseInsensitive = result.caseInsensitive()
 
-        CngMetaModelStateService.getInstance(project).get()
+        CngMetaModelStateService.state(project)
             .editorDefinitions
             .values
             .map { CngLookupElementFactory.build(it, it.id) }

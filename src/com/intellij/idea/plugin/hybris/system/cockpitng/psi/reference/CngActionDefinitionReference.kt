@@ -45,7 +45,7 @@ class CngActionDefinitionReference(element: PsiElement) : PsiReferenceBase.Poly<
             val value = ref.value
             val project = element.project
 
-            val result = CngMetaModelStateService.getInstance(project).get()
+            val result = CngMetaModelStateService.state(project)
                 .actionDefinitions[value]
                 ?.let { PsiUtils.getValidResults(arrayOf(ActionDefinitionResolveResult(it))) }
                 ?: emptyArray()

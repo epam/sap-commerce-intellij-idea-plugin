@@ -30,6 +30,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExe
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolderBase
@@ -142,7 +143,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         .notify(project)
 
     companion object {
-        fun getInstance(project: Project): CxLoggerAccess = project.getService(CxLoggerAccess::class.java)
+        fun getInstance(project: Project): CxLoggerAccess = project.service()
         private val KEY_LOGGERS_STATE = Key.create<Map<String, CxLoggerModel>>("flexibleSearch.parameters.key")
     }
 }

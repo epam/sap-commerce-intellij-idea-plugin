@@ -39,12 +39,11 @@ import com.intellij.ui.components.JBPanel
 import java.awt.GridBagLayout
 import java.io.Serial
 
-class BSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
+class BSView(private val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
     private val mySettings = BSViewSettings.getInstance(project)
     private val myTreePane = BSTreePanel(project)
-    private val metaModelStateService by lazy { BSMetaModelStateService.getInstance(project) }
 
     override fun dispose() {
         //NOP
@@ -59,7 +58,7 @@ class BSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
                 setContent(this)
             }
 
-            !metaModelStateService.initialized() -> setContentInitializing()
+            !BSMetaModelStateService.getInstance(project).initialized() -> setContentInitializing()
 
             else -> refreshContent(BSViewSettings.ChangeType.FULL)
         }
@@ -98,7 +97,7 @@ class BSView(val project: Project) : SimpleToolWindowPanel(false, true), Disposa
 
     private fun refreshContent(changeType: BSViewSettings.ChangeType) {
         try {
-            refreshContent(metaModelStateService.get(), changeType)
+            refreshContent(BSMetaModelStateService.state(project), changeType)
         } catch (_: Throwable) {
             setContentInitializing()
         }

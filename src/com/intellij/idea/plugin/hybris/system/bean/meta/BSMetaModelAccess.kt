@@ -25,16 +25,11 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
-class BSMetaModelAccess(project: Project) {
-
-    companion object {
-        fun getInstance(project: Project): BSMetaModelAccess = project.getService(BSMetaModelAccess::class.java)
-    }
-
-    private val metaModelStateService by lazy { BSMetaModelStateService.getInstance(project) }
+class BSMetaModelAccess(private val project: Project) {
 
     fun getAllBeans() = getAll<BSGlobalMetaBean>(BSMetaType.META_BEAN) +
         getAll(BSMetaType.META_WS_BEAN) +
@@ -42,7 +37,7 @@ class BSMetaModelAccess(project: Project) {
 
     fun getAllEnums() = getAll<BSGlobalMetaEnum>(BSMetaType.META_ENUM)
 
-    fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType): Collection<T> = metaModelStateService.get().getMetaType<T>(metaType).values
+    fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType): Collection<T> = BSMetaModelStateService.state(project).getMetaType<T>(metaType).values
 
     fun findMetaForDom(dom: Enum) = findMetaEnumByName(BSMetaModelNameProvider.extract(dom))
     fun findMetasForDom(dom: Bean): List<BSGlobalMetaBean> = BSMetaModelNameProvider.extract(dom)
@@ -72,7 +67,11 @@ class BSMetaModelAccess(project: Project) {
 
     fun findMetaEnumByName(name: String?) = findMetaByName<BSGlobalMetaEnum>(BSMetaType.META_ENUM, name)
 
-    private fun <T : BSGlobalMetaClassifier<*>> findMetaByName(metaType: BSMetaType, name: String?): T? = metaModelStateService.get()
+    private fun <T : BSGlobalMetaClassifier<*>> findMetaByName(metaType: BSMetaType, name: String?): T? = BSMetaModelStateService.state(project)
         .getMetaType<T>(metaType)[name]
+
+    companion object {
+        fun getInstance(project: Project): BSMetaModelAccess = project.service()
+    }
 
 }

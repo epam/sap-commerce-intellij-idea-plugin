@@ -43,6 +43,7 @@ class BSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) 
     }
 
     companion object {
+        fun state(project: Project) = getInstance(project).get()
         fun getInstance(project: Project): BSMetaModelStateService = project.service()
     }
 

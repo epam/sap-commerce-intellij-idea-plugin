@@ -41,7 +41,7 @@ class CngContextParentNonItemTypeCompletionProvider : CompletionProvider<Complet
             .firstOrNull { it.localName == "context" }
             ?.getAttributeValue(Context.MERGE_BY)
             ?: return
-        CngMetaModelStateService.getInstance(project).get().contextAttributes[mergeBy]
+        CngMetaModelStateService.state(project).contextAttributes[mergeBy]
             ?.map { LookupElementBuilder.create(it) }
             ?.forEach { resultCaseInsensitive.addElement(it) }
     }

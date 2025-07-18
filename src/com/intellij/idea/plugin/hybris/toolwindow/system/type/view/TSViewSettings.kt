@@ -107,6 +107,6 @@ class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettin
     }
 
     companion object {
-        fun getInstance(project: Project): TSViewSettings = project.getService(TSViewSettings::class.java)
+        fun getInstance(project: Project): TSViewSettings = project.service()
     }
 }

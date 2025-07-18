@@ -50,7 +50,7 @@ class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiEle
             val element = ref.element
             val value = ref.value
             val project = element.project
-            val metaModel = CngMetaModelStateService.getInstance(project).get()
+            val metaModel = CngMetaModelStateService.state(project)
 
             val result = metaModel
                 .editorDefinitions[value]

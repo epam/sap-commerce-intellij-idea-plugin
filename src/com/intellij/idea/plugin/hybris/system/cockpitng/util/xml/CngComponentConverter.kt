@@ -29,6 +29,6 @@ class CngComponentConverter : ResolvingConverter<String>() {
 
     override fun fromString(s: String?, context: ConvertContext) = s
 
-    override fun getVariants(context: ConvertContext) = CngMetaModelStateService.getInstance(context.project).get().contextAttributes[Context.COMPONENT]
+    override fun getVariants(context: ConvertContext) = CngMetaModelStateService.state(context.project).contextAttributes[Context.COMPONENT]
         ?: emptySet()
 }

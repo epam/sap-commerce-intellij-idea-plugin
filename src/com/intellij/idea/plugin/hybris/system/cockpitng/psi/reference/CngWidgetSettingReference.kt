@@ -52,7 +52,7 @@ class CngWidgetSettingReference(element: PsiElement) : PsiReferenceBase.Poly<Psi
                 ?.getAttributeValue("widgetDefinitionId")
 
             val result = if (widgetDefinitionId == null) emptyArray()
-            else CngMetaModelStateService.getInstance(project).get().widgetDefinitions[widgetDefinitionId]
+            else CngMetaModelStateService.state(project).widgetDefinitions[widgetDefinitionId]
                 ?.settings
                 ?.get(lookingForName)
                 ?.let { PsiUtils.getValidResults(arrayOf(WidgetSettingResolveResult(it))) }

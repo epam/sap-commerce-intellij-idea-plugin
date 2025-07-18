@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 
@@ -35,6 +36,6 @@ class HybrisStandalonePluginUpdateChecker : StandalonePluginUpdateChecker(
 ) {
 
     companion object {
-        fun getInstance(project: Project): HybrisStandalonePluginUpdateChecker = project.getService(HybrisStandalonePluginUpdateChecker::class.java)
+        fun getInstance(project: Project): HybrisStandalonePluginUpdateChecker = project.service()
     }
 }

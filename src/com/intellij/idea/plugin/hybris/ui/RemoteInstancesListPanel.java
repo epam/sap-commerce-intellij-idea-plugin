@@ -99,7 +99,7 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Re
     protected void addElement(@Nullable final RemoteConnectionSettings itemToAdd) {
         super.addElement(itemToAdd);
 
-        if (itemToAdd != null) myProject.getService(RemoteConnectionService.class).addRemoteConnection(itemToAdd);
+        if (itemToAdd != null) RemoteConnectionService.Companion.getInstance(myProject).addRemoteConnection(itemToAdd);
     }
 
     @Override

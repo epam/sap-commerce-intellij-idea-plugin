@@ -50,7 +50,7 @@ class CngWidgetSettingCompletionProvider : CompletionProvider<CompletionParamete
             }
             .forEach { resultCaseInsensitive.addElement(it) }
 
-        CngMetaModelStateService.getInstance(project).get()
+        CngMetaModelStateService.state(project)
             .widgetDefinitions[widgetDefinitionId]
             ?.settings
             ?.values

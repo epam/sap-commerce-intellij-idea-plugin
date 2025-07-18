@@ -35,7 +35,7 @@ class CngActionDefinitionCompletionProvider : CompletionProvider<CompletionParam
 
         val resultCaseInsensitive = result.caseInsensitive()
 
-        with(CngMetaModelStateService.getInstance(project).get()) {
+        with(CngMetaModelStateService.state(project)) {
             actionDefinitions
                 .values
                 .map { CngLookupElementFactory.build(it) }
