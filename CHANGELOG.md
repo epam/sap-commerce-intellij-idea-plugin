@@ -26,6 +26,7 @@
 - Introduced `In-Editor Results` view [#1462](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1462)
 - Introduced `In-Editor Parameters` view [#1463](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1463)
 - Display an Inlay Hint for a bind parameters [#1464](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1464)
+- Retrieve and show all data for found Items [#1465](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1465)
 
 ### `Groovy` enhancements
 - Introduced `batch` execution mode for Groovy files [#1450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1450)

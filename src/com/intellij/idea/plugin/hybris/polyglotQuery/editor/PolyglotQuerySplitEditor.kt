@@ -56,6 +56,7 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
         internal val KEY_PARAMETERS: Key<Map<String, PolyglotQueryParameter>> = Key.create("pgq.parameters.key")
+        internal val KEY_TYPE_CODE: Key<String> = Key.create("pgq.parameters.typeCode.key")
         private val KEY_IN_EDITOR_RESULTS: Key<Boolean> = Key.create("pgq.in_editor_results.key")
     }
 
