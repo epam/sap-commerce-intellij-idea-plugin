@@ -63,7 +63,6 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
 
         if (fileEditor.inEditorParameters) executeParametrizedQuery(e, project, fileEditor, content)
         else executeDirectQuery(e, project, fileEditor, content)
-
     }
 
     private fun executeParametrizedQuery(e: AnActionEvent, project: Project, fileEditor: PolyglotQuerySplitEditor, content: String) {
