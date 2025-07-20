@@ -87,29 +87,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             return
         }
 
-        val context = getGroovyContext(fileEditor, content)
-
-        if (fileEditor.inEditorResults) {
-            fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
-            fileEditor.showLoader()
-
-            GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-                fileEditor.renderExecutionResult(result)
-                fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
-
-                coroutineScope.launch {
-                    readAction { this@PolyglotQueryExecuteAction.update(e) }
-                }
-            }
-        } else {
-            val console = openConsole(project, content) ?: return
-
-            GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-                console.print(fileEditor.queryParameters?.values)
-
-                console.print(result)
-            }
-        }
+        executeParametrizedGroovyQuery(e, project, fileEditor, content)
     }
 
     private fun executeDirectQuery(e: AnActionEvent, project: Project, fileEditor: PolyglotQuerySplitEditor, content: String) {
@@ -139,15 +117,14 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         }
     }
 
-    private fun getGroovyContext(fileEditor: PolyglotQuerySplitEditor, content: String): GroovyExecutionContext {
+    private fun executeParametrizedGroovyQuery(e: AnActionEvent, project: Project, fileEditor: PolyglotQuerySplitEditor, content: String) {
         val queryParameters = fileEditor.queryParameters?.values
             ?.filter { it.sqlValue.isNotBlank() }
             ?.joinToString(",\n", "[\n", "\n]") { "${it.name} : ${it.sqlValue}" }
             ?.takeIf { it.isNotEmpty() }
             ?: "[:]"
         val textBlock = "\"\"\""
-
-        return GroovyExecutionContext(
+        val context = GroovyExecutionContext(
             content = """
                             import de.hybris.platform.core.model.ItemModel
                             import de.hybris.platform.servicelayer.search.FlexibleSearchService
@@ -161,6 +138,28 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
                                 .result.forEach { println it.pk }
                         """.trimIndent()
         )
+
+        if (fileEditor.inEditorResults) {
+            fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
+            fileEditor.showLoader()
+
+            GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+                fileEditor.renderExecutionResult(result)
+                fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
+
+                coroutineScope.launch {
+                    readAction { this@PolyglotQueryExecuteAction.update(e) }
+                }
+            }
+        } else {
+            val console = openConsole(project, content) ?: return
+
+            GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+                console.print(fileEditor.queryParameters?.values)
+
+                console.print(result)
+            }
+        }
     }
 
     companion object {
