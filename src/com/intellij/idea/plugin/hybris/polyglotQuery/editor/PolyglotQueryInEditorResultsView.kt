@@ -44,6 +44,7 @@ import java.awt.Dimension
 import java.lang.Boolean
 import javax.swing.JEditorPane
 import javax.swing.ScrollPaneConstants
+import kotlin.String
 import kotlin.apply
 import kotlin.let
 import kotlin.plus
@@ -73,23 +74,20 @@ class PolyglotQueryInEditorResultsView(private val project: Project, private val
         }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
     }
 
-    fun renderExecutionResult(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) {
-        if (result.hasError) {
-            fileEditor.inEditorResultsView = renderInEditorError(result)
-        } else {
-            renderInEditorResults(fileEditor, result)
-        }
+    fun renderExecutionResult(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) = when {
+        result.hasError -> fileEditor.inEditorResultsView = renderInEditorError(result)
+        result.output != null -> renderInEditorResults(fileEditor, result.output)
+        else -> fileEditor.inEditorResultsView = renderInEditorNoResults()
     }
 
-    private fun renderInEditorResults(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) {
+    private fun renderInEditorResults(fileEditor: PolyglotQuerySplitEditor, result: String) {
         coroutineScope.launch {
             if (project.isDisposed) return@launch
-            val output = result.output ?: return@launch
 
             val lvf = LightVirtualFile(
                 fileEditor.file?.name + ".${PolyglotQueryFileType.defaultExtension}.result.csv",
                 PlainTextFileType.INSTANCE,
-                output
+                result
             )
 
             val format = GridXSVFormatService.getInstance(project).getFormat(PolyglotQueryLanguage)
@@ -100,6 +98,27 @@ class PolyglotQueryInEditorResultsView(private val project: Project, private val
             }
         }
     }
+
+    private fun renderInEditorNoResults() = panel {
+        panel {
+            row {
+                cell(
+                    InlineBanner(
+                        "No results found for given query",
+                        EditorNotificationPanel.Status.Info,
+                    ).showCloseButton(false)
+                )
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }.topGap(TopGap.SMALL)
+        }
+            .customize(UnscaledGaps(16, 16, 16, 16))
+    }
+        .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
+        .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
+        .apply {
+            minimumSize = Dimension(minimumSize.width, 150)
+        }
 
     private fun renderInEditorError(result: DefaultExecutionResult) = panel {
         panel {

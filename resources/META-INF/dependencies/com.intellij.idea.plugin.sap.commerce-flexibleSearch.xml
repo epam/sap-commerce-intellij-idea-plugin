@@ -108,8 +108,8 @@
             <reference ref="hybris.fxs.openQuery"/>
             <reference ref="hybris.fxs.copyToClipboard"/>
             <separator/>
-            <reference ref="hybris.fxs.toggleParameters"/>
             <reference ref="hybris.fxs.toggleInEditorResults"/>
+            <reference ref="hybris.fxs.toggleParameters"/>
             <separator/>
             <reference ref="hybris.fxs.openSettings"/>
         </group>

@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.editor
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryBindParameter
-import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypeKeyName
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
@@ -60,13 +59,6 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
 
             val panel = if (!isTypeSystemInitialized(project)) renderTypeSystemInitializationPanel()
             else {
-                val typeName = readAction {
-                    PsiDocumentManager.getInstance(project).getPsiFile(fileEditor.editor.document)
-                        ?.let { PsiTreeUtil.findChildOfType(it, PolyglotQueryTypeKeyName::class.java) }
-                        ?.typeName
-                }
-                fileEditor.putUserData(PolyglotQuerySplitEditor.KEY_TYPE_CODE, typeName)
-
                 val queryParameters = collectQueryParameters(fileEditor)
                 renderParametersPanel(queryParameters, fileEditor)
             }
