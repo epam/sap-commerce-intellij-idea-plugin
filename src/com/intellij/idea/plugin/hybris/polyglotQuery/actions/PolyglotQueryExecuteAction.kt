@@ -114,10 +114,10 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
                 getPKsFromDirectQuery(result)
                     ?.let {
                         executeFlexibleSearchForPKs(project, typeCode, it) { c, r ->
-                            renderInEditorExecutionResult(e, fileEditor, r, c)
+                            renderInEditorExecutionResult(e, fileEditor, c, r)
                         }
                     }
-                    ?: renderInEditorExecutionResult(e, fileEditor, result, coroutineScope)
+                    ?: renderInEditorExecutionResult(e, fileEditor, coroutineScope, result)
             }
         } else {
             val console = openConsole(project, content) ?: return
@@ -173,10 +173,10 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
                     ?.takeIf { it.isNotEmpty() }
                     ?.let { pks ->
                         executeFlexibleSearchForPKs(project, typeCode, pks) { c, r ->
-                            renderInEditorExecutionResult(e, fileEditor, r, c)
+                            renderInEditorExecutionResult(e, fileEditor, c, r)
                         }
                     }
-                    ?: renderInEditorExecutionResult(e, fileEditor, result, coroutineScope)
+                    ?: renderInEditorExecutionResult(e, fileEditor, coroutineScope, result)
             }
         } else {
             val console = openConsole(project, content) ?: return
@@ -201,8 +201,8 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
     private fun renderInEditorExecutionResult(
         e: AnActionEvent,
         fileEditor: PolyglotQuerySplitEditor,
-        result: DefaultExecutionResult,
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
+        result: DefaultExecutionResult
     ) {
         fileEditor.renderExecutionResult(result)
         fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
