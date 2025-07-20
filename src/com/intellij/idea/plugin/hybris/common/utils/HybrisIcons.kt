@@ -175,8 +175,6 @@ object HybrisIcons {
         val Y_COLUMN_ALL = getIcon("/icons/flexibleSearch/star.svg")
         val TABLE_SUFFIX = AllIcons.General.Filter
         val TABLE_ALIAS_SEPARATOR = getIcon("/icons/flexibleSearch/separator.svg")
-        val TOGGLE_PARAMETERS_EDITOR = AllIcons.General.LayoutEditorPreview
-        val TOGGLE_IN_EDITOR_RESULTS = AllIcons.General.EditorPreviewVertical
         val COPY_TO_CLIPBOARD = AllIcons.Actions.Copy
 
         object Actions {
@@ -460,6 +458,8 @@ object HybrisIcons {
         val FORWARD = AllIcons.Actions.Forward
         val GO_TO_DECLARATION = getIcon("/icons/actions/declaration.svg")
         val SHOW_DIAGRAM = AllIcons.FileTypes.Diagram
+        val TOGGLE_PARAMETERS_EDITOR = AllIcons.General.LayoutEditorPreview
+        val TOGGLE_IN_EDITOR_RESULTS = AllIcons.General.EditorPreviewVertical
     }
 
     object Log {

@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor.Companion.KEY_FLEXIBLE_SEARCH_PARAMETERS
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor.Companion.KEY_PARAMETERS
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
@@ -251,7 +251,7 @@ object FlexibleSearchInEditorParametersView {
                 ?: emptyMap()
         }
             .also {
-                fileEditor.putUserData(KEY_FLEXIBLE_SEARCH_PARAMETERS, it)
+                fileEditor.putUserData(KEY_PARAMETERS, it)
             }
     }
 

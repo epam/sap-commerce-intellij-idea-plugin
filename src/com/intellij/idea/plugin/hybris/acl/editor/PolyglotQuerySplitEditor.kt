@@ -16,8 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.editor
+package com.intellij.idea.plugin.hybris.acl.editor
 
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchInEditorParametersView
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchInEditorResultsView
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchQueryParameter
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
@@ -47,16 +50,16 @@ import javax.swing.JPanel
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
-    ?.asSafely<FlexibleSearchSplitEditor>()
+fun AnActionEvent.polyglotQuerySplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
+    ?.asSafely<PolyglotQuerySplitEditor>()
 
-class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
+class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
-        internal val KEY_PARAMETERS = Key.create<Map<String, FlexibleSearchQueryParameter>>("flexibleSearch.parameters.key")
-        private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("flexibleSearch.in_editor_results.key")
+        internal val KEY_PARAMETERS: Key<Map<String, FlexibleSearchQueryParameter>> = Key.create("pgq.parameters.key")
+        private val KEY_IN_EDITOR_RESULTS: Key<Boolean> = Key.create("pgq.in_editor_results.key")
     }
 
     var inEditorParameters: Boolean

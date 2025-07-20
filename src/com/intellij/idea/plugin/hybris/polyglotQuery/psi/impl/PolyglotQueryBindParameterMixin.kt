@@ -16,27 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * ----------------------------------------------------------------
- * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * ----------------------------------------------------------------
- */
-package com.intellij.idea.plugin.hybris.polyglotQuery.psi;
+package com.intellij.idea.plugin.hybris.polyglotQuery.psi.impl
 
-import java.util.List;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryBindParameter
+import com.intellij.lang.ASTNode
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchExpression;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-
-public interface PolyglotQueryBindParameter extends PsiElement {
-
-    @Nullable
-    PolyglotQueryCmpOperator getOperator();
-
-    @Nullable
-    String getItemType();
-
-    @NotNull
-    String getValue();
+abstract class PolyglotQueryBindParameterMixin(node: ASTNode) : ASTWrapperPsiElement(node), PolyglotQueryBindParameter {
 }

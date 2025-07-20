@@ -33,7 +33,7 @@ import static com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTyp
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.*;
 
-public class PolyglotQueryBindParameterImpl extends ASTWrapperPsiElement implements PolyglotQueryBindParameter {
+public class PolyglotQueryBindParameterImpl extends PolyglotQueryBindParameterMixin implements PolyglotQueryBindParameter {
 
   public PolyglotQueryBindParameterImpl(@NotNull ASTNode node) {
     super(node);

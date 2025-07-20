@@ -27,7 +27,7 @@ import com.intellij.openapi.actionSystem.ToggleAction
 class FlexibleSearchToggleInEditorResultsAction : ToggleAction(
     message("hybris.fxs.actions.in_editor_results"),
     message("hybris.fxs.actions.in_editor_results.description"),
-    HybrisIcons.FlexibleSearch.TOGGLE_IN_EDITOR_RESULTS
+    HybrisIcons.Actions.TOGGLE_IN_EDITOR_RESULTS
 ) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
