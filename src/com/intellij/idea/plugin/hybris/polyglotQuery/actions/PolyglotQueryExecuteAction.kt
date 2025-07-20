@@ -125,7 +125,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             FlexibleSearchExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
                 getPKsFromDirectQuery(result)
                     ?.let {
-                        executeFlexibleSearchForPKs(project, typeCode, it) { c, r ->
+                        executeFlexibleSearchForPKs(project, typeCode, it) { _, r ->
                             console.print(r)
                         }
                     }
@@ -185,7 +185,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
                 result.output
                     ?.takeIf { it.isNotEmpty() }
                     ?.let { pks ->
-                        executeFlexibleSearchForPKs(project, typeCode, pks) { c, r ->
+                        executeFlexibleSearchForPKs(project, typeCode, pks) { _, r ->
                             printConsoleExecutionResult(console, fileEditor, r)
                         }
                     } ?: printConsoleExecutionResult(console, fileEditor, result)
@@ -215,15 +215,12 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
     private fun executeFlexibleSearchForPKs(
         project: Project, typeCode: String, pks: String,
         exec: (CoroutineScope, DefaultExecutionResult) -> Unit
-    ) {
-        val fxsContext = FlexibleSearchExecutionContext(
-            content = "SELECT * FROM {$typeCode} WHERE {pk} in ($pks)",
-        )
-
-        FlexibleSearchExecutionClient.getInstance(project).execute(fxsContext) { co, r ->
-            exec.invoke(co, r)
+    ) = FlexibleSearchExecutionClient.getInstance(project)
+        .execute(
+            FlexibleSearchExecutionContext("SELECT * FROM {$typeCode} WHERE {pk} in ($pks)")
+        ) { coroutineScope, result ->
+            exec.invoke(coroutineScope, result)
         }
-    }
 
     companion object {
         private val KEY_QUERY_EXECUTING = Key.create<Boolean>("pgq.query.execution.state")
