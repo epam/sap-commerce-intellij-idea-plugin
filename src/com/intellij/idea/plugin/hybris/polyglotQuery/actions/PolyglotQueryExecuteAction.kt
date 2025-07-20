@@ -146,8 +146,8 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
     private fun executeParametrizedGroovyQuery(e: AnActionEvent, project: Project, fileEditor: PolyglotQuerySplitEditor, typeCode: String, content: String) {
         val queryParameters = fileEditor.queryParameters?.values
             ?.filter { it.sqlValue.isNotBlank() }
-            ?.joinToString(",\n", "[", "]") { "${it.name} : ${it.sqlValue}" }
             ?.takeIf { it.isNotEmpty() }
+            ?.joinToString(",\n", "[", "]") { "${it.name} : ${it.sqlValue}" }
             ?: "[:]"
         val textBlock = "\"\"\""
         val context = GroovyExecutionContext(
