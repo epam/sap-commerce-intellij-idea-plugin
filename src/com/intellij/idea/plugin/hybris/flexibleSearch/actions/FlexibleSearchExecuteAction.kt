@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
@@ -43,10 +42,6 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    companion object {
-        private val KEY_QUERY_EXECUTING = Key.create<Boolean>("fxs.query.execution.state")
-    }
-
     override fun update(e: AnActionEvent) {
         super.update(e)
 
@@ -54,7 +49,7 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
             ?.getUserData(KEY_QUERY_EXECUTING)
             ?: false
 
-        e.presentation.isEnabledAndVisible = e.presentation.isEnabledAndVisible && Plugin.GRID.isActive()
+        e.presentation.isEnabledAndVisible = e.presentation.isEnabledAndVisible
         e.presentation.isEnabled = e.presentation.isEnabledAndVisible && !queryExecuting
         e.presentation.disabledIcon = if (queryExecuting) AnimatedIcon.Default.INSTANCE
         else HybrisIcons.Console.Actions.EXECUTE
@@ -89,5 +84,9 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
                 console.print(result)
             }
         }
+    }
+
+    companion object {
+        private val KEY_QUERY_EXECUTING = Key.create<Boolean>("fxs.query.execution.state")
     }
 }

@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.polyglotQuerySplitEditor
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
@@ -36,6 +37,11 @@ class PolyglotQueryToggleInEditorResultsAction : ToggleAction(
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         e.polyglotQuerySplitEditor()?.inEditorResults = state
+    }
+
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+        e.presentation.isVisible = e.presentation.isVisible && Plugin.GRID.isActive()
     }
 
 }

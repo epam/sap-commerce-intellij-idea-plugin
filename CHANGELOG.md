@@ -24,7 +24,7 @@
 
 ### `Polyglot Query` enhancements
 
-- Introduced `In-Editor Parameters` view [#1462](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1462)
+- Introduced `In-Editor Result` view [#1462](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1462)
 
 ### `Groovy` enhancements
 - Introduced `batch` execution mode for Groovy files [#1450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1450)
