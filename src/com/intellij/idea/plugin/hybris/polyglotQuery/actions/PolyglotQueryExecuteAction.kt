@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.polyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisPolyglotQueryConsole
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
@@ -35,6 +36,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.ui.AnimatedIcon
 import kotlinx.coroutines.launch
+import org.apache.http.HttpStatus
 
 class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryConsole>(
     PolyglotQueryLanguage,
@@ -65,21 +67,28 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
     }
 
     private fun executeParametrizedQuery(e: AnActionEvent, project: Project, fileEditor: PolyglotQuerySplitEditor, content: String) {
-        val queryParameters = fileEditor.queryParameters?.values
-            ?.joinToString(",", "[", "]") { "${it.name} : ${it.sqlValue}" }
-            ?: "Map.of()"
+        val missingParameters = fileEditor.queryParameters?.values
+            ?.filter { it.sqlValue.isBlank() }
+            ?.takeIf { it.isNotEmpty() }
+            ?.joinToString(", ", "missing values for [", "]") { it.name }
 
-        val context = GroovyExecutionContext(
-            content = """
-                        import de.hybris.platform.core.model.ItemModel
-                        import de.hybris.platform.servicelayer.search.FlexibleSearchService
-    
-                        "PK\n" + flexibleSearchService
-                            .<ItemModel>search($content, $queryParameters)
-                            .result.collect { it.pk }
-                            .join("\n")
-                    """.trimIndent()
-        )
+        if (missingParameters != null) {
+            val result = DefaultExecutionResult(
+                statusCode = HttpStatus.SC_BAD_REQUEST,
+                errorMessage = missingParameters
+            )
+
+            if (fileEditor.inEditorResults) {
+                fileEditor.renderExecutionResult(result)
+            } else {
+                val console = openConsole(project, content) ?: return
+                console.print(fileEditor.queryParameters?.values)
+                console.print(result)
+            }
+            return
+        }
+
+        val context = getGroovyContext(fileEditor, content)
 
         if (fileEditor.inEditorResults) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
@@ -97,6 +106,8 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             val console = openConsole(project, content) ?: return
 
             GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+                console.print(fileEditor.queryParameters?.values)
+
                 console.print(result)
             }
         }
@@ -127,6 +138,30 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
                 console.print(result)
             }
         }
+    }
+
+    private fun getGroovyContext(fileEditor: PolyglotQuerySplitEditor, content: String): GroovyExecutionContext {
+        val queryParameters = fileEditor.queryParameters?.values
+            ?.filter { it.sqlValue.isNotBlank() }
+            ?.joinToString(",\n", "[\n", "\n]") { "${it.name} : ${it.sqlValue}" }
+            ?.takeIf { it.isNotEmpty() }
+            ?: "[:]"
+        val textBlock = "\"\"\""
+
+        return GroovyExecutionContext(
+            content = """
+                            import de.hybris.platform.core.model.ItemModel
+                            import de.hybris.platform.servicelayer.search.FlexibleSearchService
+        
+                            def query = $textBlock$content$textBlock
+                            def params = $queryParameters
+    
+                            println "PK"
+                            flexibleSearchService
+                                .<ItemModel>search(query, params)
+                                .result.forEach { println it.pk }
+                        """.trimIndent()
+        )
     }
 
     companion object {

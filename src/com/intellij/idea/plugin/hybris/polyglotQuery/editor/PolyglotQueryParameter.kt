@@ -19,12 +19,15 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.editor
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryBindParameter
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
+import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.reflect.KClass
@@ -32,6 +35,7 @@ import kotlin.reflect.KClass
 data class PolyglotQueryParameter(
     val name: String,
     val operand: IElementType? = null,
+    private val project: WeakReference<Project>,
     private val rawType: String? = null,
     val displayName: String = StringUtil.shortenPathWithEllipsis(name, 20),
 ) {
@@ -64,27 +68,31 @@ data class PolyglotQueryParameter(
     val presentationValue: String get() = lazyPresentationValue.get()
 
     private fun evaluateSqlValue(): String = when (type) {
-        Boolean::class -> rawValue?.asSafely<Boolean>()?.takeIf { it }
-            ?.let { "1" }
-            ?: "0"
+        Boolean::class -> rawValue?.asSafely<Boolean>()
+            ?.let { BooleanUtils.toStringTrueFalse(it) }
+            ?: "false"
 
-        Date::class -> rawValue?.asSafely<Date>()?.time?.toString()
+        Date::class -> rawValue?.asSafely<Date>()?.time
+            ?.let { "new java.util.Date($it)" }
             ?: ""
 
         String::class -> rawValue?.asSafely<String>()
-            ?.replace("'", "''")
-            ?.let { "'$it'" }
-            ?: "''"
+            ?.replace("\"", "\\\"")
+            ?.let { "\"$it\"" }
+            ?: "\"\""
 
         else -> rawValue?.asSafely<String>()
+            ?.let {
+                project.get()?.takeUnless { it.isDisposed }
+                    ?.let { TSMetaModelAccess.getInstance(it) }
+                    ?.findMetaItemByName(rawType)
+                    ?.let { "de.hybris.platform.core.PK.parse(\"$rawValue\")" }
+            }
             ?: ""
     }
 
     private fun evaluatePresentationValue(): String = when (type) {
-        Boolean::class -> BooleanUtils.toStringTrueFalse(sqlValue == "1")
-
-        Date::class -> rawValue
-            ?.asSafely<Date>()
+        Date::class -> rawValue?.asSafely<Date>()
             ?.let { SimpleDateFormat(DATE_FORMAT).format(it) }
             ?: ""
 
@@ -99,6 +107,7 @@ data class PolyglotQueryParameter(
             name = bindParameter.value,
             operand = bindParameter.operator?.elementType,
             rawType = bindParameter.itemType,
+            project = WeakReference(bindParameter.project),
         ).apply {
             rawValue = currentParameters[name]?.rawValue
         }

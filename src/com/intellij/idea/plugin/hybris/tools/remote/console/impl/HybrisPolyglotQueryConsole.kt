@@ -18,16 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
+import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
+import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQueryParameter
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import kotlinx.coroutines.CoroutineScope
@@ -45,10 +45,6 @@ class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScop
     coroutineScope
 ) {
 
-    private val commitCheckbox = JBCheckBox("Commit mode")
-        .also { it.border = borders10 }
-    private val plainSqlCheckbox = JBCheckBox("Plain SQL")
-        .also { it.border = borders10 }
     private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
         .also { it.border = borders5 }
 
@@ -56,8 +52,6 @@ class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScop
         isEditable = true
 
         val panel = JPanel(WrappedFlowLayout(0, 0))
-        panel.add(commitCheckbox)
-        panel.add(plainSqlCheckbox)
         panel.add(JBLabel("Rows:").also { it.border = bordersLabel })
         panel.add(maxRowsSpinner)
 
@@ -67,9 +61,23 @@ class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScop
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
         content = content,
         maxCount = maxRowsSpinner.value.toString().toInt(),
-        transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         queryMode = QueryMode.PolyglotQuery
     )
+
+    fun print(values: Collection<PolyglotQueryParameter>?) {
+        if (values == null) return
+
+        print(" Parameters:\n", SYSTEM_OUTPUT)
+
+        values.forEachIndexed { index, param ->
+            print("  | ", LOG_VERBOSE_OUTPUT)
+            print(param.name, NORMAL_OUTPUT)
+            print(" : ", LOG_VERBOSE_OUTPUT)
+            print(param.presentationValue, USER_INPUT)
+
+            if (index < values.size) print("\n", SYSTEM_OUTPUT)
+        }
+    }
 
     override fun title() = "Polyglot Query"
     override fun tip() = "Polyglot Persistence Query Language Console (available only for 1905+)"

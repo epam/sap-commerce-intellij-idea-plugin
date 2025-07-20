@@ -34,5 +34,4 @@ data class DefaultExecutionResult(
 
     val hasError
         get() = errorMessage != null
-
 }
