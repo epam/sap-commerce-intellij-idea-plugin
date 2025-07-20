@@ -17,8 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.polyglotQuery.actions
 
-import com.intellij.idea.plugin.hybris.acl.editor.polyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.polyglotQuery.editor.polyglotQuerySplitEditor
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction

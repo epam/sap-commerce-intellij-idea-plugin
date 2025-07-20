@@ -16,11 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.acl.editor
+package com.intellij.idea.plugin.hybris.polyglotQuery.editor
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchInEditorParametersView
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchInEditorResultsView
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchQueryParameter
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
@@ -58,7 +55,7 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
-        internal val KEY_PARAMETERS: Key<Map<String, FlexibleSearchQueryParameter>> = Key.create("pgq.parameters.key")
+        internal val KEY_PARAMETERS: Key<Map<String, PolyglotQueryParameter>> = Key.create("pgq.parameters.key")
         private val KEY_IN_EDITOR_RESULTS: Key<Boolean> = Key.create("pgq.in_editor_results.key")
     }
 
@@ -66,7 +63,7 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
         get() = inEditorParametersView != null
         set(state) {
             if (state) {
-                FlexibleSearchInEditorParametersView.renderParameters(project, this)
+                PolyglotQueryInEditorParametersView.renderParameters(project, this)
             } else {
                 queryParametersDisposable?.apply { Disposer.dispose(this) }
                 queryParametersDisposable = null
@@ -79,7 +76,7 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
             reparseTextEditor()
         }
 
-    val queryParameters: Map<String, FlexibleSearchQueryParameter>?
+    val queryParameters: Map<String, PolyglotQueryParameter>?
         get() = getUserData(KEY_PARAMETERS)
 
     val query: String
@@ -150,10 +147,10 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
         }
     }
 
-    fun renderExecutionResult(result: DefaultExecutionResult) = FlexibleSearchInEditorResultsView
+    fun renderExecutionResult(result: DefaultExecutionResult) = PolyglotQueryInEditorResultsView
         .renderExecutionResult(project, this, result)
 
-    fun showLoader() = FlexibleSearchInEditorResultsView
+    fun showLoader() = PolyglotQueryInEditorResultsView
         .renderRunningExecution(this)
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {
@@ -163,7 +160,7 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
 
             if (project.isDisposed || !inEditorParameters) return@launch
 
-            FlexibleSearchInEditorParametersView.renderParameters(project, this@FlexibleSearchSplitEditor)
+            PolyglotQueryInEditorParametersView.renderParameters(project, this@PolyglotQuerySplitEditor)
         }
     }
 
@@ -196,7 +193,7 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
     override fun getPreferredFocusedComponent(): JComponent? = verticalSplitter.firstComponent
 
     override fun getComponent() = rootPanel
-    override fun getName() = "FlexibleSearch Split Editor"
+    override fun getName() = "Polyglot Query Split Editor"
     override fun setState(state: FileEditorState) = textEditor.setState(state)
     override fun isModified() = textEditor.isModified
     override fun isValid() = textEditor.isValid && component.isValid

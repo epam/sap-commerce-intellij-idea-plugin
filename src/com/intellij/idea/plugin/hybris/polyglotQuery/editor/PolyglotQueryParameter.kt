@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.acl.editor
+package com.intellij.idea.plugin.hybris.polyglotQuery.editor
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryBindParameter
 import com.intellij.openapi.util.ClearableLazyValue
@@ -97,7 +97,7 @@ data class PolyglotQueryParameter(
 
         fun of(bindParameter: PolyglotQueryBindParameter, currentParameters: Map<String, PolyglotQueryParameter>) = PolyglotQueryParameter(
             name = bindParameter.value,
-            operand = bindParameter.expression?.elementType,
+            operand = bindParameter.operator?.elementType,
             rawType = bindParameter.itemType,
         ).apply {
             rawValue = currentParameters[name]?.rawValue

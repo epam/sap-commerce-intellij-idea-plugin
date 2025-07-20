@@ -56,17 +56,15 @@
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <action id="hybris.pgq.openFileInConsole" class="com.intellij.idea.plugin.hybris.polyglotQuery.file.actions.PolyglotQueryOpenInConsoleAction"/>
-        <action id="hybris.pgq.execute" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryExecuteAction">
-            <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
-        </action>
-        <action id="hybris.pgq.toggleInEditorResults" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryToggleInEditorResultsAction"/>
-        <action id="hybris.pgq.openQuery" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenQueryAction"/>
         <action id="hybris.pgq.openSettings" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenSettingsAction"/>
 
         <group id="hybris.pgq.toolbar.left">
-            <reference ref="hybris.pgq.execute"/>
-            <reference ref="hybris.pgq.openQuery"/>
+            <action id="hybris.pgq.execute" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryExecuteAction">
+                <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
+            </action>
+            <action class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenQueryAction"/>
+            <separator/>
+            <action class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryToggleInEditorResultsAction"/>
             <separator/>
             <reference ref="hybris.pgq.openSettings"/>
         </group>

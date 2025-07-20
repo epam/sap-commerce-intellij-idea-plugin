@@ -23,6 +23,7 @@ import com.intellij.database.csv.CsvRecordFormat
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
+import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.lang.Language
 import com.intellij.openapi.components.service
@@ -40,6 +41,7 @@ class GridXSVFormatService(project: Project) {
     fun getFormat(language: Language): CsvFormat = when (language) {
         is ImpexLanguage -> getImpExFormat()
         is FlexibleSearchLanguage -> getFlexibleSearchFormat()
+        is PolyglotQueryLanguage -> getFlexibleSearchFormat()
         else -> throw IllegalArgumentException("Unsupported language $language")
     }
 

@@ -16,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.editor
+package com.intellij.idea.plugin.hybris.polyglotQuery.editor
 
 import com.intellij.database.editor.CsvTableFileEditor
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
+import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
+import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.application.edtWriteAction
@@ -40,12 +40,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.Dimension
+import java.lang.Boolean
 import javax.swing.JEditorPane
 import javax.swing.ScrollPaneConstants
+import kotlin.apply
+import kotlin.let
+import kotlin.plus
 
-object FlexibleSearchInEditorResultsView {
+object PolyglotQueryInEditorResultsView {
 
-    fun renderRunningExecution(fileEditor: FlexibleSearchSplitEditor) {
+    fun renderRunningExecution(fileEditor: PolyglotQuerySplitEditor) {
         if (fileEditor.inEditorResultsView == null) return
 
         fileEditor.inEditorResultsView = panel {
@@ -67,7 +71,7 @@ object FlexibleSearchInEditorResultsView {
         }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
     }
 
-    fun renderExecutionResult(project: Project, fileEditor: FlexibleSearchSplitEditor, result: DefaultExecutionResult) {
+    fun renderExecutionResult(project: Project, fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) {
         if (result.hasError) {
             fileEditor.inEditorResultsView = renderInEditorError(result)
         } else {
@@ -75,18 +79,18 @@ object FlexibleSearchInEditorResultsView {
         }
     }
 
-    private fun renderInEditorResults(project: Project, fileEditor: FlexibleSearchSplitEditor, result: DefaultExecutionResult) {
+    private fun renderInEditorResults(project: Project, fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) {
         CoroutineScope(Dispatchers.Default).launch {
             if (project.isDisposed) return@launch
             val output = result.output ?: return@launch
 
             val lvf = LightVirtualFile(
-                fileEditor.file?.name + ".${FlexibleSearchFileType.defaultExtension}.result.csv",
+                fileEditor.file?.name + ".${PolyglotQueryFileType.defaultExtension}.result.csv",
                 PlainTextFileType.INSTANCE,
                 output
             )
 
-            val format = GridXSVFormatService.getInstance(project).getFormat(FlexibleSearchLanguage)
+            val format = GridXSVFormatService.getInstance(project).getFormat(PolyglotQueryLanguage)
 
             edtWriteAction {
                 val editor = CsvTableFileEditor(project, lvf, format);
@@ -100,7 +104,7 @@ object FlexibleSearchInEditorResultsView {
             row {
                 cell(
                     InlineBanner(
-                        "An error was encountered while processing the FlexibleSearch query.",
+                        "An error was encountered while processing the Polyglot Query.",
                         EditorNotificationPanel.Status.Error,
                     ).showCloseButton(false)
                 )
@@ -119,7 +123,7 @@ object FlexibleSearchInEditorResultsView {
                             isEditable = false
                             isOpaque = false
                             background = null
-                            putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, java.lang.Boolean.TRUE)
+                            putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE)
                         }
                     )
                         .align(Align.FILL)
