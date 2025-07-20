@@ -66,14 +66,13 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
 
     private fun doChange(event: PsiTreeChangeEvent) {
         val file = event.file ?: return
-        val project = file.project
 
         when (file) {
-            is FlexibleSearchFile -> FileEditorManager.getInstance(project).getAllEditors(file.virtualFile)
+            is FlexibleSearchFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
                 .filterIsInstance<FlexibleSearchSplitEditor>()
                 .forEach { it.refreshParameters() }
 
-            is PolyglotQueryFile -> FileEditorManager.getInstance(project).getAllEditors(file.virtualFile)
+            is PolyglotQueryFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
                 .filterIsInstance<PolyglotQuerySplitEditor>()
                 .forEach { it.refreshParameters() }
 
