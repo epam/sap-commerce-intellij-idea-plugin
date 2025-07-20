@@ -458,7 +458,7 @@ object HybrisIcons {
         val FORWARD = AllIcons.Actions.Forward
         val GO_TO_DECLARATION = getIcon("/icons/actions/declaration.svg")
         val SHOW_DIAGRAM = AllIcons.FileTypes.Diagram
-        val TOGGLE_PARAMETERS_EDITOR = AllIcons.General.LayoutEditorPreview
+        val TOGGLE_IN_EDITOR_PARAMETERS = AllIcons.General.LayoutEditorPreview
         val TOGGLE_IN_EDITOR_RESULTS = AllIcons.General.EditorPreviewVertical
     }
 

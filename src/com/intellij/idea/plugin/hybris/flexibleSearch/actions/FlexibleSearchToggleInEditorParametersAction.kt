@@ -16,28 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.polyglotQuery.actions
+package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.polyglotQuery.editor.polyglotQuerySplitEditor
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.DumbAware
 
-class PolyglotQueryToggleParametersEditorAction : ToggleAction(
+class FlexibleSearchToggleInEditorParametersAction : ToggleAction(
     message("hybris.actions.query_parameters"),
     message("hybris.actions.query_parameters.description"),
-    HybrisIcons.Actions.TOGGLE_PARAMETERS_EDITOR
+    HybrisIcons.Actions.TOGGLE_IN_EDITOR_PARAMETERS
 ), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun isSelected(e: AnActionEvent): Boolean = e.polyglotQuerySplitEditor()?.inEditorParameters
+    override fun isSelected(e: AnActionEvent): Boolean = e.flexibleSearchSplitEditor()?.inEditorParameters
         ?: false
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        e.polyglotQuerySplitEditor()?.inEditorParameters = state
+        e.flexibleSearchSplitEditor()?.inEditorParameters = state
     }
 }
