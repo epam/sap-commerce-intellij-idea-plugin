@@ -23,7 +23,6 @@
 - Automatically Escape `'` in the _text_ editors in the `In-Editor Parameters` view [#1454](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1454)
 
 ### `Polyglot Query` enhancements
-
 - Introduced `In-Editor Result` view [#1462](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1462)
 
 ### `Groovy` enhancements

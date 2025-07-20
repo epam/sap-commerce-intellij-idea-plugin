@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.polyglotQuery.actions
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.polyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
@@ -25,8 +26,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 
 class PolyglotQueryToggleInEditorResultsAction : ToggleAction(
-    "In-Editor Results",
-    "Show Query results in the In-Editor table",
+    message("hybris.actions.in_editor_results"),
+    message("hybris.actions.in_editor_results.description"),
     HybrisIcons.Actions.TOGGLE_IN_EDITOR_RESULTS
 ) {
 
