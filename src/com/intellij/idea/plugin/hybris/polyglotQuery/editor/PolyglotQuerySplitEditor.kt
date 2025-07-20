@@ -63,7 +63,7 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
         get() = inEditorParametersView != null
         set(state) {
             if (state) {
-                PolyglotQueryInEditorParametersView.renderParameters(project, this)
+                PolyglotQueryInEditorParametersView.getInstance(project).renderParameters(this)
             } else {
                 queryParametersDisposable?.apply { Disposer.dispose(this) }
                 queryParametersDisposable = null
@@ -147,10 +147,10 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
         }
     }
 
-    fun renderExecutionResult(result: DefaultExecutionResult) = PolyglotQueryInEditorResultsView
-        .renderExecutionResult(project, this, result)
+    fun renderExecutionResult(result: DefaultExecutionResult) = PolyglotQueryInEditorResultsView.getInstance(project)
+        .renderExecutionResult(this, result)
 
-    fun showLoader() = PolyglotQueryInEditorResultsView
+    fun showLoader() = PolyglotQueryInEditorResultsView.getInstance(project)
         .renderRunningExecution(this)
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {
@@ -160,7 +160,7 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
 
             if (project.isDisposed || !inEditorParameters) return@launch
 
-            PolyglotQueryInEditorParametersView.renderParameters(project, this@PolyglotQuerySplitEditor)
+            PolyglotQueryInEditorParametersView.getInstance(project).renderParameters(this@PolyglotQuerySplitEditor)
         }
     }
 

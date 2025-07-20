@@ -63,7 +63,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         get() = inEditorParametersView != null
         set(state) {
             if (state) {
-                FlexibleSearchInEditorParametersView.renderParameters(project, this)
+                FlexibleSearchInEditorParametersView.getInstance(project).renderParameters(this)
             } else {
                 queryParametersDisposable?.apply { Disposer.dispose(this) }
                 queryParametersDisposable = null
@@ -147,10 +147,10 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         }
     }
 
-    fun renderExecutionResult(result: DefaultExecutionResult) = FlexibleSearchInEditorResultsView
-        .renderExecutionResult(project, this, result)
+    fun renderExecutionResult(result: DefaultExecutionResult) = FlexibleSearchInEditorResultsView.getInstance(project)
+        .renderExecutionResult(this, result)
 
-    fun showLoader() = FlexibleSearchInEditorResultsView
+    fun showLoader() = FlexibleSearchInEditorResultsView.getInstance(project)
         .renderRunningExecution(this)
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {
@@ -160,7 +160,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
 
             if (project.isDisposed || !inEditorParameters) return@launch
 
-            FlexibleSearchInEditorParametersView.renderParameters(project, this@FlexibleSearchSplitEditor)
+            FlexibleSearchInEditorParametersView.getInstance(project).renderParameters(this@FlexibleSearchSplitEditor)
         }
     }
 

@@ -26,6 +26,8 @@ import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -42,7 +44,6 @@ import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import com.michaelbaranov.microba.calendar.DatePicker
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
@@ -50,17 +51,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.swing.LayoutFocusTraversalPolicy
 
-object FlexibleSearchInEditorParametersView {
+@Service(Service.Level.PROJECT)
+class FlexibleSearchInEditorParametersView(private val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun renderParameters(project: Project, fileEditor: FlexibleSearchSplitEditor) {
-        CoroutineScope(Dispatchers.Default).launch {
+    fun renderParameters(fileEditor: FlexibleSearchSplitEditor) {
+        coroutineScope.launch {
             if (project.isDisposed) return@launch
 
             fileEditor.queryParametersDisposable?.let { Disposer.dispose(it) }
 
-            val panel = if (!isTypeSystemInitialized(project)) renderTypeSystemInitializationPanel()
+            val panel = if (!isTypeSystemInitialized()) renderTypeSystemInitializationPanel()
             else {
-                val queryParameters = collectQueryParameters(project, fileEditor)
+                val queryParameters = collectQueryParameters(fileEditor)
                 renderParametersPanel(queryParameters, fileEditor)
             }
 
@@ -238,7 +240,7 @@ object FlexibleSearchInEditorParametersView {
         .rows(3)
         .comment("Use new line as a value separator.")
 
-    private suspend fun collectQueryParameters(project: Project, fileEditor: FlexibleSearchSplitEditor): Map<String, FlexibleSearchQueryParameter> {
+    private suspend fun collectQueryParameters(fileEditor: FlexibleSearchSplitEditor): Map<String, FlexibleSearchQueryParameter> {
         val currentQueryParameters = fileEditor.queryParameters
             ?: emptyMap()
 
@@ -265,7 +267,11 @@ object FlexibleSearchInEditorParametersView {
         }
     }
 
-    private fun isTypeSystemInitialized(project: Project): Boolean = !project.isDisposed
+    private fun isTypeSystemInitialized(): Boolean = !project.isDisposed
         && !DumbService.isDumb(project)
         && TSMetaModelStateService.getInstance(project).initialized()
+
+    companion object {
+        fun getInstance(project: Project): FlexibleSearchInEditorParametersView = project.service()
+    }
 }

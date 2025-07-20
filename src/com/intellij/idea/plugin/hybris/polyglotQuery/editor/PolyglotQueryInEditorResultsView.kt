@@ -25,6 +25,8 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
 import com.intellij.testFramework.LightVirtualFile
@@ -37,7 +39,6 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.Dimension
 import java.lang.Boolean
@@ -47,7 +48,8 @@ import kotlin.apply
 import kotlin.let
 import kotlin.plus
 
-object PolyglotQueryInEditorResultsView {
+@Service(Service.Level.PROJECT)
+class PolyglotQueryInEditorResultsView(private val project: Project, private val coroutineScope: CoroutineScope) {
 
     fun renderRunningExecution(fileEditor: PolyglotQuerySplitEditor) {
         if (fileEditor.inEditorResultsView == null) return
@@ -71,16 +73,16 @@ object PolyglotQueryInEditorResultsView {
         }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
     }
 
-    fun renderExecutionResult(project: Project, fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) {
+    fun renderExecutionResult(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) {
         if (result.hasError) {
             fileEditor.inEditorResultsView = renderInEditorError(result)
         } else {
-            renderInEditorResults(project, fileEditor, result)
+            renderInEditorResults(fileEditor, result)
         }
     }
 
-    private fun renderInEditorResults(project: Project, fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) {
-        CoroutineScope(Dispatchers.Default).launch {
+    private fun renderInEditorResults(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) {
+        coroutineScope.launch {
             if (project.isDisposed) return@launch
             val output = result.output ?: return@launch
 
@@ -137,4 +139,8 @@ object PolyglotQueryInEditorResultsView {
         .apply {
             minimumSize = Dimension(minimumSize.width, 150)
         }
+
+    companion object {
+        fun getInstance(project: Project): PolyglotQueryInEditorResultsView = project.service()
+    }
 }

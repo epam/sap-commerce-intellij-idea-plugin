@@ -24,6 +24,8 @@ import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -39,7 +41,6 @@ import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import com.michaelbaranov.microba.calendar.DatePicker
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
@@ -47,17 +48,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.swing.LayoutFocusTraversalPolicy
 
-object PolyglotQueryInEditorParametersView {
+@Service(Service.Level.PROJECT)
+class PolyglotQueryInEditorParametersView(private val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun renderParameters(project: Project, fileEditor: PolyglotQuerySplitEditor) {
-        CoroutineScope(Dispatchers.Default).launch {
+    fun renderParameters(fileEditor: PolyglotQuerySplitEditor) {
+        coroutineScope.launch {
             if (project.isDisposed) return@launch
 
             fileEditor.queryParametersDisposable?.let { Disposer.dispose(it) }
 
             val panel = if (!isTypeSystemInitialized(project)) renderTypeSystemInitializationPanel()
             else {
-                val queryParameters = collectQueryParameters(project, fileEditor)
+                val queryParameters = collectQueryParameters(fileEditor)
                 renderParametersPanel(queryParameters, fileEditor)
             }
 
@@ -223,7 +225,7 @@ object PolyglotQueryInEditorParametersView {
         .text(parameter.rawValue?.asSafely<String>() ?: "")
         .onChanged { applyValue(fileEditor, parameter, it.text) }
 
-    private suspend fun collectQueryParameters(project: Project, fileEditor: PolyglotQuerySplitEditor): Map<String, PolyglotQueryParameter> {
+    private suspend fun collectQueryParameters(fileEditor: PolyglotQuerySplitEditor): Map<String, PolyglotQueryParameter> {
         val currentQueryParameters = fileEditor.queryParameters
             ?: emptyMap()
 
@@ -253,4 +255,8 @@ object PolyglotQueryInEditorParametersView {
     private fun isTypeSystemInitialized(project: Project): Boolean = !project.isDisposed
         && !DumbService.isDumb(project)
         && TSMetaModelStateService.getInstance(project).initialized()
+
+    companion object {
+        fun getInstance(project: Project): PolyglotQueryInEditorParametersView = project.service()
+    }
 }
