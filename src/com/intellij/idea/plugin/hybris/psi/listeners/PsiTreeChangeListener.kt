@@ -17,6 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.psi.listeners
 
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
+import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
+import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQuerySplitEditor
+import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFile
 import com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSModificationTracker
 import com.intellij.idea.plugin.hybris.system.cockpitng.*
@@ -25,11 +29,11 @@ import com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiTreeChangeEvent
 import com.intellij.psi.PsiTreeChangeListener
 import com.intellij.psi.xml.XmlFile
-import com.intellij.util.asSafely
 import com.intellij.util.xml.DomManager
 
 /**
@@ -61,23 +65,33 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
     override fun propertyChanged(event: PsiTreeChangeEvent) = doChange(event)
 
     private fun doChange(event: PsiTreeChangeEvent) {
-        val fileName = event.file
-            ?.asSafely<XmlFile>()
-            ?.let { xmlFile -> domManager.getDomFileDescription(xmlFile)?.let { it to xmlFile } }
-            ?: return
+        val file = event.file ?: return
+        val project = file.project
 
-        val domFileDescription = fileName.first
-        val xmlFile = fileName.second
+        when (file) {
+            is FlexibleSearchFile -> FileEditorManager.getInstance(project).getAllEditors(file.virtualFile)
+                .filterIsInstance<FlexibleSearchSplitEditor>()
+                .forEach { it.refreshParameters() }
 
-        when (domFileDescription) {
-            is CngConfigDomFileDescription,
-            is CngWidgetsDomFileDescription,
-            is CngActionDefinitionDomFileDescription,
-            is CngEditorDefinitionDomFileDescription,
-            is CngWidgetDefinitionDomFileDescription -> cngModificationTracker.resetCache(xmlFile)
+            is PolyglotQueryFile -> FileEditorManager.getInstance(project).getAllEditors(file.virtualFile)
+                .filterIsInstance<PolyglotQuerySplitEditor>()
+                .forEach { it.refreshParameters() }
 
-            is BSDomFileDescription -> bsModificationTracker.resetCache(xmlFile)
-            is TSDomFileDescription -> tsModificationTracker.resetCache(xmlFile)
+            is XmlFile -> {
+                val domFileDescription = domManager.getDomFileDescription(file) ?: return
+
+                when (domFileDescription) {
+                    is CngConfigDomFileDescription,
+                    is CngWidgetsDomFileDescription,
+                    is CngActionDefinitionDomFileDescription,
+                    is CngEditorDefinitionDomFileDescription,
+                    is CngWidgetDefinitionDomFileDescription -> cngModificationTracker.resetCache(file)
+
+                    is BSDomFileDescription -> bsModificationTracker.resetCache(file)
+                    is TSDomFileDescription -> tsModificationTracker.resetCache(file)
+                }
+            }
         }
+
     }
 }
