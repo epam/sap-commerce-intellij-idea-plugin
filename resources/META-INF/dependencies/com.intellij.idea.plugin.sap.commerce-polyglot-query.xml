@@ -21,6 +21,15 @@
 
         <internalFileTemplate name="Polyglot Query File"/>
 
+        <codeInsight.declarativeInlayProvider language="Polyglot Query"
+                                              implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.codeInsight.hints.PolyglotQueryParameterInlayHintProvider"
+                                              isEnabledByDefault="true"
+                                              group="VALUES_GROUP"
+                                              providerId="hybris.PolyglotQuery.parameter"
+                                              bundle="i18n/HybrisBundle"
+                                              nameKey="hybris.pgq.editor.parameter.name"
+                                              descriptionKey="hybris.pgq.editor.parameter.description"/>
+
         <additionalTextAttributes scheme="Default" file="colorSchemes/PolyglotQueryDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/PolyglotQueryDarcula.xml"/>
 

@@ -87,6 +87,7 @@ data class PolyglotQueryParameter(
                     ?.let { TSMetaModelAccess.getInstance(it) }
                     ?.findMetaItemByName(rawType)
                     ?.let { "de.hybris.platform.core.PK.parse(\"$rawValue\")" }
+                    ?: it
             }
             ?: ""
     }

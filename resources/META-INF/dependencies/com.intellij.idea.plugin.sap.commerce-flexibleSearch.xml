@@ -27,8 +27,8 @@
                                               group="VALUES_GROUP"
                                               providerId="hybris.FlexibleSearch.parameter"
                                               bundle="i18n/HybrisBundle"
-                                              nameKey="hybris.editor.fxs.parameter.name"
-                                              descriptionKey="hybris.editor.fxs.parameter.description"/>
+                                              nameKey="hybris.fxs.editor.parameter.name"
+                                              descriptionKey="hybris.fxs.editor.parameter.description"/>
 
         <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="INSTANCE"
                   implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType"/>
