@@ -16,19 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.psi.listeners
+package com.intellij.idea.plugin.hybris.psi.listeners
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
+import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQuerySplitEditor
+import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFile
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiTreeChangeEvent
 import com.intellij.psi.PsiTreeChangeListener
-import com.intellij.util.asSafely
 
-class FlexibleSearchPsiTreeChangeListener(project: Project) : PsiTreeChangeListener {
+class HybrisSplitFileEditorPsiTreeChangeListener(project: Project) : PsiTreeChangeListener {
 
     init {
         if (project.isNotHybrisProject) throw ExtensionNotApplicableException.create()
@@ -47,14 +48,18 @@ class FlexibleSearchPsiTreeChangeListener(project: Project) : PsiTreeChangeListe
     override fun childMoved(event: PsiTreeChangeEvent) = doChange(event)
     override fun propertyChanged(event: PsiTreeChangeEvent) = doChange(event)
 
-    private fun doChange(event: PsiTreeChangeEvent) = event.file
-        ?.asSafely<FlexibleSearchFile>()
-        ?.let { FileEditorManager.getInstance(it.project).getAllEditors(it.virtualFile) }
-        ?.filterIsInstance<FlexibleSearchSplitEditor>()
-        ?.let { editors ->
-            editors.forEach {
-                it.refreshParameters()
-            }
+    private fun doChange(event: PsiTreeChangeEvent) {
+        val file = event.file ?: return
+        val project = file.project
+
+        when (file) {
+            is FlexibleSearchFile -> FileEditorManager.getInstance(project).getAllEditors(file.virtualFile)
+                .filterIsInstance<FlexibleSearchSplitEditor>()
+                .forEach { it.refreshParameters() }
+
+            is PolyglotQueryFile -> FileEditorManager.getInstance(project).getAllEditors(file.virtualFile)
+                .filterIsInstance<PolyglotQuerySplitEditor>()
+                .forEach { it.refreshParameters() }
         }
-        ?: Unit
+    }
 }

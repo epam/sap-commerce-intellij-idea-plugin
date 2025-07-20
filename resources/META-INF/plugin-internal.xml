@@ -69,6 +69,7 @@
         <webHelpProvider implementation="com.intellij.idea.plugin.hybris.help.HybrisWebHelpProvider"/>
 
         <fileEditorProvider implementation="com.intellij.idea.plugin.hybris.editor.HybrisSplitFileEditorProvider"/>
+        <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.psi.listeners.HybrisSplitFileEditorPsiTreeChangeListener"/>
     </extensions>
 
     <actions>

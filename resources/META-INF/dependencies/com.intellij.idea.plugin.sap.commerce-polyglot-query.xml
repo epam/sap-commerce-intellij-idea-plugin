@@ -65,6 +65,7 @@
             <action class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenQueryAction"/>
             <separator/>
             <action class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryToggleInEditorResultsAction"/>
+            <action class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryToggleParametersEditorAction"/>
             <separator/>
             <reference ref="hybris.pgq.openSettings"/>
         </group>
