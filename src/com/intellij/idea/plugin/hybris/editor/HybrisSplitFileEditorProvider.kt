@@ -20,6 +20,8 @@ package com.intellij.idea.plugin.hybris.editor
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
+import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.openapi.fileEditor.FileEditor
@@ -40,6 +42,7 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
                 when (file.fileType) {
                     is FlexibleSearchFileType -> FlexibleSearchSplitEditor(it, project)
                     is PolyglotQueryFileType -> PolyglotQuerySplitEditor(it, project)
+                    is ImpexFileType -> ImpExSplitEditor(it, project)
                     else -> null
                 }
             }
@@ -50,4 +53,5 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
     override fun getPolicy(): FileEditorPolicy = FileEditorPolicy.HIDE_DEFAULT_EDITOR
     override fun accept(project: Project, file: VirtualFile): Boolean = file.fileType is FlexibleSearchFileType
         || file.fileType is PolyglotQueryFileType
+        || file.fileType is ImpexFileType
 }

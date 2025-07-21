@@ -147,6 +147,8 @@
             <separator/>
             <reference ref="hybris.impex.table.actions"/>
             <separator/>
+            <action class="com.intellij.idea.plugin.hybris.impex.actions.ImpExToggleInEditorResultsAction"/>
+            <separator/>
             <reference ref="hybris.impex.openSettings"/>
         </group>
         <group id="hybris.impex.toolbar.right">

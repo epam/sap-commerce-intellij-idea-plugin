@@ -65,13 +65,13 @@ class ImpExValueTSClassifierReference(
 
             val results: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaClassifierByName(lookingForName)
                 ?.let {
-                    when {
-                        it is TSGlobalMetaItem && allowedTypes.contains(TSMetaType.META_ITEM) -> it.declarations.map { meta -> ItemResolveResult(meta) }
-                        it is TSGlobalMetaEnum && allowedTypes.contains(TSMetaType.META_ENUM) -> it.declarations.map { meta -> EnumResolveResult(meta) }
-                        it is TSGlobalMetaRelation && allowedTypes.contains(TSMetaType.META_RELATION) -> it.declarations.map { meta -> RelationResolveResult(meta) }
-                        it is TSGlobalMetaMap && allowedTypes.contains(TSMetaType.META_MAP) -> it.declarations.map { meta -> MapResolveResult(meta) }
-                        it is TSGlobalMetaAtomic && allowedTypes.contains(TSMetaType.META_ATOMIC) -> it.declarations.map { meta -> AtomicResolveResult(meta) }
-                        it is TSGlobalMetaCollection && allowedTypes.contains(TSMetaType.META_COLLECTION) -> it.declarations.map { meta -> CollectionResolveResult(meta) }
+                    when (it) {
+                        is TSGlobalMetaItem if allowedTypes.contains(TSMetaType.META_ITEM) -> it.declarations.map { meta -> ItemResolveResult(meta) }
+                        is TSGlobalMetaEnum if allowedTypes.contains(TSMetaType.META_ENUM) -> it.declarations.map { meta -> EnumResolveResult(meta) }
+                        is TSGlobalMetaRelation if allowedTypes.contains(TSMetaType.META_RELATION) -> it.declarations.map { meta -> RelationResolveResult(meta) }
+                        is TSGlobalMetaMap if allowedTypes.contains(TSMetaType.META_MAP) -> it.declarations.map { meta -> MapResolveResult(meta) }
+                        is TSGlobalMetaAtomic if allowedTypes.contains(TSMetaType.META_ATOMIC) -> it.declarations.map { meta -> AtomicResolveResult(meta) }
+                        is TSGlobalMetaCollection if allowedTypes.contains(TSMetaType.META_COLLECTION) -> it.declarations.map { meta -> CollectionResolveResult(meta) }
                         else -> null
                     }
                 }
