@@ -186,7 +186,7 @@ object HybrisIcons {
         val FILE = getIcon("icons/fileTypes/polyglotQueryFile.svg")
 
         object Actions {
-            val TOGGLE_ALL_DATA = AllIcons.Toolbar.Filterdups
+            val TOGGLE_RETRIEVE_ALL_DATA = AllIcons.Toolbar.Filterdups
         }
     }
 

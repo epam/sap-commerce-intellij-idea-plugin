@@ -28,7 +28,7 @@ import com.intellij.openapi.project.DumbAware
 class PolyglotQueryToggleRetrieveAllDataAction : ToggleAction(
     "Retrieve All Data",
     "Retrieve all data for found items.",
-    HybrisIcons.PolyglotQuery.Actions.TOGGLE_ALL_DATA
+    HybrisIcons.PolyglotQuery.Actions.TOGGLE_RETRIEVE_ALL_DATA
 ), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

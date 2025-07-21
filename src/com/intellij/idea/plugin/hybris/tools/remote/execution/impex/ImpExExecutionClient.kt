@@ -67,7 +67,8 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
                     if (element.attr("data-level") == "error") DefaultExecutionResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
                         errorMessage = element.attr("data-result").takeIf { it.isNotBlank() },
-                        detailMessage = element.first().children().first()?.text()
+                        detailMessage = document.getElementsByClass("impexResult")
+                            .first()?.children()?.first()?.text()
                             ?: "No data in response"
                     )
                     else DefaultExecutionResult(
