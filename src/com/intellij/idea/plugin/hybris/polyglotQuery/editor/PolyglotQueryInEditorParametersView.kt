@@ -238,7 +238,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
                 ?: emptyMap()
         }
             .also {
-                fileEditor.putUserData(PolyglotQuerySplitEditor.KEY_PARAMETERS, it)
+                fileEditor.queryParameters = it
             }
     }
 

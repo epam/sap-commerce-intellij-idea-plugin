@@ -111,26 +111,23 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             fileEditor.showLoader()
 
             FlexibleSearchExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-                getPKsFromDirectQuery(result)
-                    ?.let {
-                        executeFlexibleSearchForPKs(project, typeCode, it) { c, r ->
-                            renderInEditorExecutionResult(e, fileEditor, c, r)
-                        }
-                    }
-                    ?: renderInEditorExecutionResult(e, fileEditor, coroutineScope, result)
+                val pks = getPKsFromDirectQuery(result)
+
+                if (fileEditor.retrieveAllData && pks != null) executeFlexibleSearchForPKs(project, typeCode, pks) { c, r ->
+                    renderInEditorExecutionResult(e, fileEditor, c, r)
+                }
+                else renderInEditorExecutionResult(e, fileEditor, coroutineScope, result)
             }
         } else {
             val console = openConsole(project, content) ?: return
 
             FlexibleSearchExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-                getPKsFromDirectQuery(result)
-                    ?.let {
-                        executeFlexibleSearchForPKs(project, typeCode, it) { _, r ->
-                            console.print(r)
-                        }
-                    }
-                    ?: console.print(result)
+                val pks = getPKsFromDirectQuery(result)
 
+                if (fileEditor.retrieveAllData && pks != null) executeFlexibleSearchForPKs(project, typeCode, pks) { _, r ->
+                    console.print(r)
+                }
+                else console.print(result)
             }
         }
     }
@@ -150,6 +147,17 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             ?.joinToString(",\n", "[", "]") { "${it.name} : ${it.sqlValue}" }
             ?: "[:]"
         val textBlock = "\"\"\""
+        val scriptOutputLogic = if (fileEditor.retrieveAllData) """
+            println flexibleSearchService
+                        .<ItemModel>search(query, params)
+                        .result.collect { it.pk }.join(",")
+        """.trimIndent()
+        else """
+            println "PK"
+            flexibleSearchService
+                .<ItemModel>search(query, params)
+                .result.forEach { println it.pk }
+        """.trimIndent()
         val context = GroovyExecutionContext(
             content = """
                             import de.hybris.platform.core.model.ItemModel
@@ -158,9 +166,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
                             def query = $textBlock$content$textBlock
                             def params = $queryParameters
     
-                            println flexibleSearchService
-                                .<ItemModel>search(query, params)
-                                .result.collect { it.pk }.join(",")
+                            $scriptOutputLogic
                         """.trimIndent()
         )
 
@@ -169,26 +175,23 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             fileEditor.showLoader()
 
             GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-                result.output
-                    ?.takeIf { it.isNotEmpty() }
-                    ?.let { pks ->
-                        executeFlexibleSearchForPKs(project, typeCode, pks) { c, r ->
-                            renderInEditorExecutionResult(e, fileEditor, c, r)
-                        }
-                    }
-                    ?: renderInEditorExecutionResult(e, fileEditor, coroutineScope, result)
+                val pks = result.output?.takeIf { it.isNotEmpty() }
+
+                if (fileEditor.retrieveAllData && pks != null) executeFlexibleSearchForPKs(project, typeCode, pks) { c, r ->
+                    renderInEditorExecutionResult(e, fileEditor, c, r)
+                }
+                else renderInEditorExecutionResult(e, fileEditor, coroutineScope, result)
             }
         } else {
             val console = openConsole(project, content) ?: return
 
             GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-                result.output
-                    ?.takeIf { it.isNotEmpty() }
-                    ?.let { pks ->
-                        executeFlexibleSearchForPKs(project, typeCode, pks) { _, r ->
-                            printConsoleExecutionResult(console, fileEditor, r)
-                        }
-                    } ?: printConsoleExecutionResult(console, fileEditor, result)
+                val pks = result.output?.takeIf { it.isNotEmpty() }
+
+                if (fileEditor.retrieveAllData && pks != null) executeFlexibleSearchForPKs(project, typeCode, pks) { _, r ->
+                    printConsoleExecutionResult(console, fileEditor, r)
+                }
+                else printConsoleExecutionResult(console, fileEditor, result)
             }
         }
     }

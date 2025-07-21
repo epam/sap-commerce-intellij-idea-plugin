@@ -55,9 +55,15 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
-        internal val KEY_PARAMETERS: Key<Map<String, PolyglotQueryParameter>> = Key.create("pgq.parameters.key")
-        private val KEY_IN_EDITOR_RESULTS: Key<Boolean> = Key.create("pgq.in_editor_results.key")
+
+        private val KEY_PARAMETERS = Key.create<Map<String, PolyglotQueryParameter>>("pgq.parameters.key")
+        private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("pgq.in_editor_results.key")
+        private val KEY_RETRIEVE_ALL_DATA = Key.create<Boolean>("pgq.retrieve.all.data.key")
     }
+
+    var retrieveAllData: Boolean
+        get() = getOrCreateUserData(KEY_RETRIEVE_ALL_DATA) { false }
+        set(value) = putUserData(KEY_RETRIEVE_ALL_DATA, value)
 
     var inEditorParameters: Boolean
         get() = inEditorParametersView != null
@@ -76,8 +82,9 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
             reparseTextEditor()
         }
 
-    val queryParameters: Map<String, PolyglotQueryParameter>?
+    var queryParameters: Map<String, PolyglotQueryParameter>?
         get() = getUserData(KEY_PARAMETERS)
+        set(value) = putUserData(KEY_PARAMETERS, value)
 
     val query: String
         get() = queryParameters

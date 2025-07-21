@@ -55,7 +55,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
     companion object {
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
-        internal val KEY_PARAMETERS = Key.create<Map<String, FlexibleSearchQueryParameter>>("flexibleSearch.parameters.key")
+        private val KEY_PARAMETERS = Key.create<Map<String, FlexibleSearchQueryParameter>>("flexibleSearch.parameters.key")
         private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("flexibleSearch.in_editor_results.key")
     }
 
@@ -76,8 +76,9 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
             reparseTextEditor()
         }
 
-    val queryParameters: Map<String, FlexibleSearchQueryParameter>?
+    var queryParameters: Map<String, FlexibleSearchQueryParameter>?
         get() = getUserData(KEY_PARAMETERS)
+        set(value) = putUserData(KEY_PARAMETERS, value)
 
     val query: String
         get() = queryParameters

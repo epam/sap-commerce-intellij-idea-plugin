@@ -184,6 +184,10 @@ object HybrisIcons {
 
     object PolyglotQuery {
         val FILE = getIcon("icons/fileTypes/polyglotQueryFile.svg")
+
+        object Actions {
+            val TOGGLE_ALL_DATA = AllIcons.Toolbar.Filterdups
+        }
     }
 
     object CockpitNG {
