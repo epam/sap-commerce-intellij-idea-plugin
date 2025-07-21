@@ -21,6 +21,15 @@
 
         <internalFileTemplate name="ImpEx File"/>
 
+        <codeInsight.declarativeInlayProvider language="ImpEx"
+                                              implementationClass="com.intellij.idea.plugin.hybris.impex.codeInsight.hints.ImpExParameterInlayHintProvider"
+                                              isEnabledByDefault="true"
+                                              group="VALUES_GROUP"
+                                              providerId="hybris.ImpEx.parameter"
+                                              bundle="i18n/HybrisBundle"
+                                              nameKey="hybris.impex.editor.parameter.name"
+                                              descriptionKey="hybris.impex.editor.parameter.description"/>
+
         <fileType name="ImpEx" language="ImpEx" extensions="impex" fieldName="INSTANCE"
                   implementationClass="com.intellij.idea.plugin.hybris.impex.file.ImpexFileType"/>
 

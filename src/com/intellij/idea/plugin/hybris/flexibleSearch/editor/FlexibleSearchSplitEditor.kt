@@ -84,9 +84,9 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         get() = queryParameters
             ?.values
             ?.sortedByDescending { it.name.length }
-            ?.let { properties ->
+            ?.let { parameters ->
                 var updatedContent = getText()
-                properties.forEach {
+                parameters.forEach {
                     updatedContent = updatedContent.replace("?${it.name}", it.sqlValue)
                 }
                 return@let updatedContent

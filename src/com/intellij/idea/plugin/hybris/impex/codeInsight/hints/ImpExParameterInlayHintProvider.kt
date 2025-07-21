@@ -16,47 +16,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.hints
+package com.intellij.idea.plugin.hybris.impex.codeInsight.hints
 
 import com.intellij.codeInsight.hints.declarative.*
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
-import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
+import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
+import com.intellij.idea.plugin.hybris.impex.editor.ImpExVirtualParameter
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 
-class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
+class ImpExParameterInlayHintProvider : InlayHintsProvider {
 
     override fun createCollector(file: PsiFile, editor: Editor): InlayHintsCollector? {
         if (file.isNotHybrisProject) return null
 
         return FileEditorManager.getInstance(file.project).allEditors
-            .filterIsInstance<FlexibleSearchSplitEditor>()
+            .filterIsInstance<ImpExSplitEditor>()
             .find { it.editor == editor }
-            ?.let { FlexibleSearchInlayHintsCollector(it) }
+            ?.let { ImpExInlayHintsCollector(it) }
     }
 
-    private class FlexibleSearchInlayHintsCollector(private val splitEditor: FlexibleSearchSplitEditor) : SharedBypassCollector {
+    private class ImpExInlayHintsCollector(private val splitEditor: ImpExSplitEditor) : SharedBypassCollector {
         override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
             if (!element.isValid || element.project.isDefault) return
-            if (element !is FlexibleSearchBindParameter) return
+            if (!splitEditor.inEditorParameters) return
+            if (element !is ImpexMacroDeclaration) return
+            val virtualParameter = element.getUserData(ImpExVirtualParameter.KEY_VIRTUAL_PARAMETER) ?: return
 
-            splitEditor.takeIf { it.inEditorParameters }
-                ?.queryParameters
-                ?.get(element.value)
-                ?.takeIf { it.presentationValue.isNotBlank() }
-                ?.let {
-                    sink.addPresentation(
-                        position = InlineInlayPosition(element.textRange.endOffset, true),
-                        payloads = null,
-                        tooltip = "SQL value: ${it.sqlValue}",
-                        hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
-                    ) {
-                        text("= ${it.presentationValue}")
-                    }
-                }
+            sink.addPresentation(
+                position = InlineInlayPosition(element.textRange.endOffset, true),
+                payloads = null,
+                hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
+            ) {
+                text("= ${virtualParameter.value}")
+            }
         }
     }
 }

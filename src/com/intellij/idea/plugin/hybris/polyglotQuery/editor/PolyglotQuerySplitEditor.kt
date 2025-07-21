@@ -90,9 +90,9 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
         get() = queryParameters
             ?.values
             ?.sortedByDescending { it.name.length }
-            ?.let { properties ->
+            ?.let { oarameters ->
                 var updatedContent = getText()
-                properties.forEach {
+                oarameters.forEach {
                     updatedContent = updatedContent.replace("?${it.name}", it.sqlValue)
                 }
                 return@let updatedContent
