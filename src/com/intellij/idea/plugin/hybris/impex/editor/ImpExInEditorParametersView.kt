@@ -96,7 +96,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
                 InlineBanner(
                     """
                             <html><body style='width: 100%'>
-                            <p>This feature may be unstable. Use with caution.</p>
+                            <p>This feature is experimental and may be unstable. Use with caution.</p>
                             <p>Submit issues or suggestions to project's GitHub <a href="https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/new">repository</a>.</p>
                             </body></html>
                         """.trimIndent(),

@@ -18,17 +18,18 @@
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.util.getKey
 import com.intellij.idea.plugin.hybris.impex.psi.util.setName
 import com.intellij.lang.ASTNode
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
-import com.intellij.psi.util.siblings
+import com.intellij.psi.util.*
+import com.intellij.util.asSafely
 import java.io.Serial
 
 abstract class ImpexMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node), ImpexMacroNameDec {
@@ -43,28 +44,29 @@ abstract class ImpexMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node
         this,
         Key.create("SAP_CX_IMPEX_RESOLVED_VALUE_" + evaluatedMacroUsages.size),
         {
-            val resolvedValue = siblings(forward = true, withSelf = false)
-                .map {
-                    when (it) {
-                        is ImpexMacroUsageDec -> {
-                            if (evaluatedMacroUsages.contains(it)) return@map it.text
+            val resolvedValue = resolveVirtualParameter()
+                ?: siblings(forward = true, withSelf = false)
+                    .map {
+                        when (it) {
+                            is ImpexMacroUsageDec -> {
+                                if (evaluatedMacroUsages.contains(it)) return@map it.text
 
-                            evaluatedMacroUsages.add(it)
-                            it.resolveValue(evaluatedMacroUsages)
-                                .let { value ->
-                                    val ref = it.reference ?: return@let null
-                                    value + ref.element.text.substringAfter(ref.canonicalText, "")
-                                }
-                                ?: it.text
+                                evaluatedMacroUsages.add(it)
+                                it.resolveValue(evaluatedMacroUsages)
+                                    .let { value ->
+                                        val ref = it.reference ?: return@let null
+                                        value + ref.element.text.substringAfter(ref.canonicalText, "")
+                                    }
+                                    ?: it.text
+                            }
+
+                            else -> it.text
                         }
-
-                        else -> it.text
                     }
-                }
-                .joinToString("")
-                .trim()
-                .trimStart('=')
-                .trimStart()
+                    .joinToString("")
+                    .trim()
+                    .trimStart('=')
+                    .trimStart()
 
             CachedValueProvider.Result.createSingleDependency(
                 resolvedValue,
@@ -72,6 +74,15 @@ abstract class ImpexMacroNameDecMixin(node: ASTNode) : ASTWrapperPsiElement(node
             )
         }, false
     )
+
+    private fun resolveVirtualParameter(): String? {
+        val macroDeclaration = parentOfType<ImpexMacroDeclaration>()
+            ?: return null
+        return FileEditorManager.getInstance(project).getSelectedEditor(containingFile.virtualFile)
+            ?.asSafely<ImpExSplitEditor>()
+            ?.virtualParameter(macroDeclaration)
+            ?.rawValue
+    }
 
     companion object {
         @Serial
