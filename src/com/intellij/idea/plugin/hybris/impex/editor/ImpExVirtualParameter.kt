@@ -46,7 +46,9 @@ data class ImpExVirtualParameter(
         fun of(macroDeclaration: ImpexMacroDeclaration) = ImpExVirtualParameter(
             name = macroDeclaration.macroNameDec.text,
         ).apply {
-            rawValue = macroDeclaration.macroNameDec.resolveValue(mutableSetOf())
+            rawValue = getInitialValue(macroDeclaration)
         }
+
+        fun getInitialValue(macroDeclaration: ImpexMacroDeclaration) = macroDeclaration.macroNameDec.resolveValue(mutableSetOf())
     }
 }

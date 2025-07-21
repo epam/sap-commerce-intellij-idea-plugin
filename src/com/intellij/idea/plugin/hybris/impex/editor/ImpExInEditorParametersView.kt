@@ -18,12 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.impex.editor
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
@@ -126,14 +129,24 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
         fileEditor: ImpExSplitEditor
     ) = panel {
         group("Macro Declarations") {
-            queryParameters.values
-                .forEach { parameter ->
+            queryParameters
+                .forEach { (pointer, parameter) ->
                     row {
-                        textField()
+                        expandableTextField(
+                            { text -> text.split("\n").toMutableList() },
+                            { strings -> strings.joinToString(" ")}
+                        )
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
                             .text(parameter.rawValue ?: "")
+                            .resizableColumn()
                             .onChanged { applyValue(fileEditor, parameter, it.text) }
+
+                        actionButton(object : DumbAwareAction("Reset Macro Declaration", "", HybrisIcons.Actions.REFRESH) {
+                            override fun actionPerformed(e: AnActionEvent) {
+                                fileEditor.resetVirtualParameter(pointer)
+                            }
+                        })
                     }.layout(RowLayout.PARENT_GRID)
                 }
         }

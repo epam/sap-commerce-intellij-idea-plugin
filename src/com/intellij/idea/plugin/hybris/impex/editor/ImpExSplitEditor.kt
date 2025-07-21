@@ -86,20 +86,6 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
             ?.let { getParametrizedText(it) }
             ?: getText()
 
-    private fun getParametrizedText(virtualParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>): String {
-        var text = editor.document.text
-        virtualParameters
-            .toSortedMap(compareByDescending { it.element?.textRange?.startOffset ?: 0 })
-            .forEach { (pointer, virtualParameter) ->
-                val element = pointer.element
-                if (element != null) {
-                    val textRange = element.textRange
-                    text = text.replaceRange(textRange.startOffset, textRange.endOffset, virtualParameter.finalText)
-                }
-            }
-        return text;
-    }
-
     var inEditorResults: Boolean
         get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { true }
         set(state) {
@@ -150,6 +136,17 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
         }
         ?.map { (_, value) -> value }
         ?.firstOrNull()
+
+    fun resetVirtualParameter(pointer: SmartPsiElementPointer<ImpexMacroDeclaration>) {
+        virtualParameters ?: return
+
+        val newVirtualParameters = HashMap(virtualParameters)
+        newVirtualParameters.remove(pointer)
+
+        virtualParameters = newVirtualParameters
+
+        ImpExInEditorParametersView.getInstance(project).renderParameters(this)
+    }
 
     fun renderExecutionResult(result: DefaultExecutionResult) = ImpExInEditorResultsView.getInstance(project)
         .renderExecutionResult(this, result)
@@ -210,4 +207,18 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
     private fun getText(): String = editor.selectionModel.selectedText
         .takeIf { selectedText -> selectedText != null && selectedText.trim { it <= ' ' }.isNotEmpty() }
         ?: editor.document.text
+
+    private fun getParametrizedText(virtualParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>): String {
+        var text = editor.document.text
+        virtualParameters
+            .toSortedMap(compareByDescending { it.element?.textRange?.startOffset ?: 0 })
+            .forEach { (pointer, virtualParameter) ->
+                val element = pointer.element
+                if (element != null) {
+                    val textRange = element.textRange
+                    text = text.replaceRange(textRange.startOffset, textRange.endOffset, virtualParameter.finalText)
+                }
+            }
+        return text;
+    }
 }
