@@ -31,6 +31,7 @@
 
 ### `ImpEx` enhancements
 - Introduced `In-Editor Results` view [#1467](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1467)
+- Use `In-Editor Results` view for Validate Action [#1468](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1468)
 
 ### `Groovy` enhancements
 - Introduced `batch` execution mode for Groovy files [#1450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1450)
