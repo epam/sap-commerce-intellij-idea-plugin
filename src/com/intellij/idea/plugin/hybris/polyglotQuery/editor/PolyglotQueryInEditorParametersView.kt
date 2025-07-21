@@ -78,7 +78,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
     }
 
     private fun renderParametersPanel(
-        queryParameters: Map<String, PolyglotQueryParameter>,
+        queryParameters: Map<String, PolyglotQueryVirtualParameter>,
         fileEditor: PolyglotQuerySplitEditor,
     ): DialogPanel {
         val parentDisposable = Disposer.newDisposable().apply {
@@ -139,7 +139,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
     }.customize(UnscaledGaps(16, 16, 16, 16))
 
     private fun Panel.parametersPanel(
-        queryParameters: Map<String, PolyglotQueryParameter>,
+        queryParameters: Map<String, PolyglotQueryVirtualParameter>,
         fileEditor: PolyglotQuerySplitEditor,
         parentDisposable: Disposable
     ) = panel {
@@ -173,7 +173,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
                         Date::class -> cell(
                             DatePicker(
                                 parameter.rawValue?.asSafely<Date>(),
-                                SimpleDateFormat(PolyglotQueryParameter.Companion.DATE_FORMAT)
+                                SimpleDateFormat(PolyglotQueryVirtualParameter.Companion.DATE_FORMAT)
                             )
                         )
                             .label("${parameter.displayName}:")
@@ -210,7 +210,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
     }
 
     private fun Row.numberTextField(
-        parameter: PolyglotQueryParameter,
+        parameter: PolyglotQueryVirtualParameter,
         fileEditor: PolyglotQuerySplitEditor,
         from: String, to: String,
         numberType: String,
@@ -225,14 +225,14 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
         .text(parameter.rawValue?.asSafely<String>() ?: "")
         .onChanged { applyValue(fileEditor, parameter, it.text) }
 
-    private suspend fun collectQueryParameters(fileEditor: PolyglotQuerySplitEditor): Map<String, PolyglotQueryParameter> {
+    private suspend fun collectQueryParameters(fileEditor: PolyglotQuerySplitEditor): Map<String, PolyglotQueryVirtualParameter> {
         val currentQueryParameters = fileEditor.queryParameters
             ?: emptyMap()
 
         return readAction {
             PsiDocumentManager.getInstance(project).getPsiFile(fileEditor.editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, PolyglotQueryBindParameter::class.java) }
-                ?.map { PolyglotQueryParameter.of(it, currentQueryParameters) }
+                ?.map { PolyglotQueryVirtualParameter.of(it, currentQueryParameters) }
                 ?.distinctBy { it.name }
                 ?.associateBy { it.name }
                 ?: emptyMap()
@@ -242,7 +242,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
             }
     }
 
-    private fun applyValue(fileEditor: PolyglotQuerySplitEditor, parameter: PolyglotQueryParameter, newRawValue: Any?) {
+    private fun applyValue(fileEditor: PolyglotQuerySplitEditor, parameter: PolyglotQueryVirtualParameter, newRawValue: Any?) {
         val originalRawValue = parameter.rawValue
 
         parameter.rawValue = newRawValue

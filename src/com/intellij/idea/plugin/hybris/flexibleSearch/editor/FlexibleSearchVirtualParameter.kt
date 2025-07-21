@@ -16,26 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.polyglotQuery.editor
+package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
-import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryBindParameter
-import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
-import com.intellij.openapi.project.Project
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
+import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
-import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.reflect.KClass
 
-data class PolyglotQueryParameter(
+data class FlexibleSearchVirtualParameter(
     val name: String,
     val operand: IElementType? = null,
-    private val project: WeakReference<Project>,
     private val rawType: String? = null,
     val displayName: String = StringUtil.shortenPathWithEllipsis(name, 20),
 ) {
@@ -68,32 +65,42 @@ data class PolyglotQueryParameter(
     val presentationValue: String get() = lazyPresentationValue.get()
 
     private fun evaluateSqlValue(): String = when (type) {
-        Boolean::class -> rawValue?.asSafely<Boolean>()
-            ?.let { BooleanUtils.toStringTrueFalse(it) }
-            ?: "false"
+        Boolean::class -> rawValue?.asSafely<Boolean>()?.takeIf { it }
+            ?.let { "1" }
+            ?: "0"
 
-        Date::class -> rawValue?.asSafely<Date>()?.time
-            ?.let { "new java.util.Date($it)" }
+        Date::class -> rawValue?.asSafely<Date>()?.time?.toString()
             ?: ""
 
         String::class -> rawValue?.asSafely<String>()
-            ?.replace("\"", "\\\"")
-            ?.let { "\"$it\"" }
-            ?: "\"\""
+            ?.replace("'", "''")
+            ?.let { stringValue ->
+                if (operand == FlexibleSearchTypes.IN_EXPRESSION) stringValue
+                    .split("\n")
+                    .filter { it.isNotBlank() }
+                    .takeIf { it.isNotEmpty() }
+                    ?.joinToString(",") { "'$it'" }
+                else "'$stringValue'"
+            }
+            ?: "''"
 
         else -> rawValue?.asSafely<String>()
-            ?.let {
-                project.get()?.takeUnless { it.isDisposed }
-                    ?.let { TSMetaModelAccess.getInstance(it) }
-                    ?.findMetaItemByName(rawType)
-                    ?.let { "de.hybris.platform.core.PK.parse(\"$rawValue\")" }
-                    ?: it
+            ?.let { plainValue ->
+                if (operand == FlexibleSearchTypes.IN_EXPRESSION) plainValue
+                    .split("\n")
+                    .map { it.trim() }
+                    .filter { it.isNotBlank() }
+                    .joinToString(",")
+                else plainValue
             }
             ?: ""
     }
 
     private fun evaluatePresentationValue(): String = when (type) {
-        Date::class -> rawValue?.asSafely<Date>()
+        Boolean::class -> BooleanUtils.toStringTrueFalse(sqlValue == "1")
+
+        Date::class -> rawValue
+            ?.asSafely<Date>()
             ?.let { SimpleDateFormat(DATE_FORMAT).format(it) }
             ?: ""
 
@@ -104,11 +111,10 @@ data class PolyglotQueryParameter(
 
         const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"
 
-        fun of(bindParameter: PolyglotQueryBindParameter, currentParameters: Map<String, PolyglotQueryParameter>) = PolyglotQueryParameter(
+        fun of(bindParameter: FlexibleSearchBindParameter, currentParameters: Map<String, FlexibleSearchVirtualParameter>) = FlexibleSearchVirtualParameter(
             name = bindParameter.value,
-            operand = bindParameter.operator?.elementType,
+            operand = bindParameter.expression?.elementType,
             rawType = bindParameter.itemType,
-            project = WeakReference(bindParameter.project),
         ).apply {
             rawValue = currentParameters[name]?.rawValue
         }

@@ -51,7 +51,7 @@ class ImpExParameterInlayHintProvider : InlayHintsProvider {
                 payloads = null,
                 hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
             ) {
-                text("= ${virtualParameter.value}")
+                text("= ${virtualParameter.rawValue}")
             }
         }
     }

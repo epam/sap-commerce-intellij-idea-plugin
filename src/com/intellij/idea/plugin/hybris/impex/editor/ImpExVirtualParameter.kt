@@ -20,29 +20,27 @@ package com.intellij.idea.plugin.hybris.impex.editor
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.openapi.util.text.StringUtil
-import kotlin.reflect.KClass
 
 data class ImpExVirtualParameter(
     val name: String,
     val completeText: String,
     val originalValue: String?,
-    var value: String? = null,
+    var rawValue: String = "",
     val displayName: String = StringUtil.shortenPathWithEllipsis(name, 20),
 ) {
 
     val finalText: String
-        get() = name + " = " + (value ?: "")
-
-    val type: KClass<*> = String::class
+        get() = "$name = $rawValue"
 
     companion object {
-        fun of(macroDeclaration: ImpexMacroDeclaration, currentParameters: Map<String, ImpExVirtualParameter>) = ImpExVirtualParameter(
-            name = macroDeclaration.macroNameDec.text,
-            completeText = macroDeclaration.text,
-            originalValue = macroDeclaration.macroNameDec.resolveValue(mutableSetOf()),
-        ).apply {
-            value = currentParameters[name]?.value
+        fun of(macroDeclaration: ImpexMacroDeclaration): ImpExVirtualParameter = macroDeclaration.getOrCreateUserDataUnsafe(KEY_VIRTUAL_PARAMETER) {
+            ImpExVirtualParameter(
+                name = macroDeclaration.macroNameDec.text,
+                completeText = macroDeclaration.text,
+                originalValue = macroDeclaration.macroNameDec.resolveValue(mutableSetOf()),
+            )
         }
 
         val KEY_VIRTUAL_PARAMETER = Key.create<ImpExVirtualParameter>("impex.virtualParameter.key")

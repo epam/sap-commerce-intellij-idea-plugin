@@ -19,10 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.editor
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
-import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQueryParameter
-import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.ui.Dsl
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
@@ -34,18 +31,12 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
-import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
-import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
-import com.michaelbaranov.microba.calendar.DatePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.awt.Dimension
-import java.beans.PropertyChangeListener
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.swing.LayoutFocusTraversalPolicy
 
 @Service(Service.Level.PROJECT)
@@ -81,7 +72,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
             if (queryParameters.isEmpty()) {
                 notResultsPanel()
             } else {
-                parametersPanel(queryParameters, fileEditor, parentDisposable)
+                parametersPanel(queryParameters, fileEditor)
             }
         }
             .apply {
@@ -128,100 +119,27 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
     }.customize(UnscaledGaps(16, 16, 16, 16))
 
     private fun Panel.parametersPanel(
-        queryParameters: Map<String, PolyglotQueryParameter>,
-        fileEditor: PolyglotQuerySplitEditor,
-        parentDisposable: Disposable
+        queryParameters: Collection<ImpExVirtualParameter>,
+        fileEditor: ImpExSplitEditor
     ) = panel {
-        group("Parameters") {
-            queryParameters.forEach { name, parameter ->
+        group("Macro Declarations") {
+            queryParameters.forEach { parameter ->
                 row {
-                    when (parameter.type) {
-                        Byte::class -> numberTextField(parameter, fileEditor, "-128", "127", "byte")
-                        { it.toByteOrNull() == null }
-
-                        Short::class -> numberTextField(parameter, fileEditor, "-32,768", "32,767", "short")
-                        { it.toShortOrNull() == null }
-
-                        Int::class -> numberTextField(parameter, fileEditor, "-2,147,483,648", "2,147,483,647", "int")
-                        { it.toIntOrNull() == null }
-
-                        Long::class -> numberTextField(parameter, fileEditor, "-9,223,372,036,854,775,808", "9,223,372,036,854,775,807", "long")
-                        { it.toLongOrNull() == null }
-
-                        Float::class -> numberTextField(parameter, fileEditor, "1.4E-45F", "3.4E+38F", "float")
-                        { it.toFloatOrNull() == null }
-
-                        Double::class -> numberTextField(parameter, fileEditor, "4.9E-324", "1.8E+308", "double")
-                        { it.toDoubleOrNull() == null }
-
-                        Boolean::class -> checkBox(parameter.displayName)
-                            .align(AlignX.FILL)
-                            .selected(parameter.sqlValue == "1")
-                            .onChanged { applyValue(fileEditor, parameter, it.isSelected) }
-
-                        Date::class -> cell(
-                            DatePicker(
-                                parameter.rawValue?.asSafely<Date>(),
-                                SimpleDateFormat(PolyglotQueryParameter.Companion.DATE_FORMAT)
-                            )
-                        )
-                            .label("${parameter.displayName}:")
-                            .align(Align.FILL).apply {
-                                component.also { datePicker ->
-                                    val listener = PropertyChangeListener { event ->
-                                        if (event.propertyName == "date") {
-                                            applyValue(fileEditor, parameter, event.newValue?.asSafely<Date>())
-                                        }
-                                    }
-                                    datePicker.addPropertyChangeListener(listener)
-                                    Disposer.register(parentDisposable) {
-                                        datePicker.removePropertyChangeListener(listener)
-                                    }
-                                }
-                            }
-
-                        String::class -> textField()
-                            .label("${parameter.displayName}:")
-                            .align(AlignX.FILL)
-                            .text(parameter.rawValue?.asSafely<String>() ?: "")
-                            .onChanged { applyValue(fileEditor, parameter, it.text) }
-
-                        else -> textField()
-                            .label("${parameter.displayName}:")
-                            .align(AlignX.FILL)
-                            .text(parameter.sqlValue)
-                            .onChanged { applyValue(fileEditor, parameter, it.text) }
-                    }
-
+                    textField()
+                        .label("${parameter.displayName}:")
+                        .align(AlignX.FILL)
+                        .text(parameter.rawValue)
+                        .onChanged { applyValue(fileEditor, parameter, it.text) }
                 }.layout(RowLayout.PARENT_GRID)
             }
         }
     }
 
-    private fun Row.numberTextField(
-        parameter: PolyglotQueryParameter,
-        fileEditor: PolyglotQuerySplitEditor,
-        from: String, to: String,
-        numberType: String,
-        validation: (String) -> Boolean
-    ) = textField()
-        .label("${parameter.displayName}:")
-        .validationOnInput {
-            if (validation.invoke(it.text)) error(UIBundle.message("please.enter.a.number.from.0.to.1", from, "$to ($numberType)"))
-            else null
-        }
-        .align(AlignX.FILL)
-        .text(parameter.rawValue?.asSafely<String>() ?: "")
-        .onChanged { applyValue(fileEditor, parameter, it.text) }
-
     private suspend fun collectQueryParameters(fileEditor: ImpExSplitEditor): Collection<ImpExVirtualParameter> {
-        val currentQueryParameters = fileEditor.queryParameters
-            ?: emptyMap()
-
         return readAction {
             PsiDocumentManager.getInstance(project).getPsiFile(fileEditor.editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, ImpexMacroDeclaration::class.java) }
-                ?.map { ImpExVirtualParameter.of(it, currentQueryParameters) }
+                ?.map { ImpExVirtualParameter.of(it) }
                 ?: emptyList()
         }
             .also {
@@ -229,7 +147,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
             }
     }
 
-    private fun applyValue(fileEditor: PolyglotQuerySplitEditor, parameter: PolyglotQueryParameter, newRawValue: Any?) {
+    private fun applyValue(fileEditor: ImpExSplitEditor, parameter: ImpExVirtualParameter, newRawValue: String) {
         val originalRawValue = parameter.rawValue
 
         parameter.rawValue = newRawValue

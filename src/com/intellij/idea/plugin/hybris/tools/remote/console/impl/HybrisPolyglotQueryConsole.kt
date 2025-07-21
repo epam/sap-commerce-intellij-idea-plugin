@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
-import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQueryParameter
+import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
@@ -64,7 +64,7 @@ class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScop
         queryMode = QueryMode.PolyglotQuery
     )
 
-    fun print(values: Collection<PolyglotQueryParameter>?) {
+    fun print(values: Collection<PolyglotQueryVirtualParameter>?) {
         if (values == null) return
 
         print(" Parameters:\n", SYSTEM_OUTPUT)
