@@ -44,7 +44,7 @@ class FlexibleSearchParameterInlayHintProvider : InlayHintsProvider {
             if (element !is FlexibleSearchBindParameter) return
 
             splitEditor.takeIf { it.inEditorParameters }
-                ?.queryParameters
+                ?.virtualParameters
                 ?.get(element.value)
                 ?.takeIf { it.presentationValue.isNotBlank() }
                 ?.let {

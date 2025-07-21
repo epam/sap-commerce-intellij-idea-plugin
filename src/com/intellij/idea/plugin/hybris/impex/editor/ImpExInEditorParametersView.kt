@@ -28,6 +28,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.SmartPointerManager
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
@@ -46,7 +48,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
-            fileEditor.queryParametersDisposable?.let { Disposer.dispose(it) }
+            fileEditor.virtualParametersDisposable?.let { Disposer.dispose(it) }
 
             val queryParameters = collectQueryParameters(fileEditor)
             val panel = renderParametersPanel(queryParameters, fileEditor)
@@ -58,11 +60,11 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
     }
 
     private fun renderParametersPanel(
-        queryParameters: Collection<ImpExVirtualParameter>,
+        queryParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>,
         fileEditor: ImpExSplitEditor,
     ): DialogPanel {
         val parentDisposable = Disposer.newDisposable().apply {
-            fileEditor.queryParametersDisposable = this
+            fileEditor.virtualParametersDisposable = this
             Disposer.register(fileEditor.textEditor, this)
         }
 
@@ -119,31 +121,41 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
     }.customize(UnscaledGaps(16, 16, 16, 16))
 
     private fun Panel.parametersPanel(
-        queryParameters: Collection<ImpExVirtualParameter>,
+        queryParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>,
         fileEditor: ImpExSplitEditor
     ) = panel {
         group("Macro Declarations") {
-            queryParameters.forEach { parameter ->
-                row {
-                    textField()
-                        .label("${parameter.displayName}:")
-                        .align(AlignX.FILL)
-                        .text(parameter.rawValue)
-                        .onChanged { applyValue(fileEditor, parameter, it.text) }
-                }.layout(RowLayout.PARENT_GRID)
-            }
+            queryParameters.values
+                .forEach { parameter ->
+                    row {
+                        textField()
+                            .label("${parameter.displayName}:")
+                            .align(AlignX.FILL)
+                            .text(parameter.rawValue)
+                            .onChanged { applyValue(fileEditor, parameter, it.text) }
+                    }.layout(RowLayout.PARENT_GRID)
+                }
         }
     }
 
-    private suspend fun collectQueryParameters(fileEditor: ImpExSplitEditor): Collection<ImpExVirtualParameter> {
+    private suspend fun collectQueryParameters(fileEditor: ImpExSplitEditor): Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter> {
+        val currentParameters = fileEditor.virtualParameters
+            ?: emptyMap()
+
         return readAction {
             PsiDocumentManager.getInstance(project).getPsiFile(fileEditor.editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, ImpexMacroDeclaration::class.java) }
-                ?.map { ImpExVirtualParameter.of(it) }
-                ?: emptyList()
+                ?.associate {
+                    val pointer = SmartPointerManager.createPointer(it)
+                    val virtualParameter = currentParameters[pointer]
+                        ?: ImpExVirtualParameter.of(it)
+
+                    pointer to virtualParameter
+                }
+                ?: emptyMap()
         }
             .also {
-                fileEditor.queryParameters = it
+                fileEditor.virtualParameters = it
             }
     }
 

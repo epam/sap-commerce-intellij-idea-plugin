@@ -19,6 +19,8 @@ package com.intellij.idea.plugin.hybris.psi.listeners
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
+import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFile
 import com.intellij.idea.plugin.hybris.system.bean.BSDomFileDescription
@@ -74,6 +76,10 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
 
             is PolyglotQueryFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
                 .filterIsInstance<PolyglotQuerySplitEditor>()
+                .forEach { it.refreshParameters() }
+
+            is ImpexFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
+                .filterIsInstance<ImpExSplitEditor>()
                 .forEach { it.refreshParameters() }
 
             is XmlFile -> {

@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.impex.codeInsight.hints
 
 import com.intellij.codeInsight.hints.declarative.*
 import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
-import com.intellij.idea.plugin.hybris.impex.editor.ImpExVirtualParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.editor.Editor
@@ -45,17 +44,18 @@ class ImpExParameterInlayHintProvider : InlayHintsProvider {
             if (!element.isValid || element.project.isDefault) return
             if (!splitEditor.inEditorParameters) return
 
-            val virtualParameter = element
+            element
                 .asSafely<ImpexMacroDeclaration>()
-                ?.getUserData(ImpExVirtualParameter.KEY_VIRTUAL_PARAMETER) ?: return
-
-            sink.addPresentation(
-                position = InlineInlayPosition(element.textRange.endOffset, true),
-                payloads = null,
-                hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
-            ) {
-                text("= ${virtualParameter.rawValue}")
-            }
+                ?.let { splitEditor.virtualParameter(it) }
+                ?.let {
+                    sink.addPresentation(
+                        position = InlineInlayPosition(element.textRange.endOffset, true),
+                        payloads = null,
+                        hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
+                    ) {
+                        text("= ${it.rawValue}")
+                    }
+                }
         }
     }
 }

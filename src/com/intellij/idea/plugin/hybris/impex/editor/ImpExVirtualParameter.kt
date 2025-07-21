@@ -19,8 +19,6 @@
 package com.intellij.idea.plugin.hybris.impex.editor
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
-import com.intellij.openapi.util.Key
-import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.openapi.util.text.StringUtil
 
 data class ImpExVirtualParameter(
@@ -35,14 +33,10 @@ data class ImpExVirtualParameter(
         get() = "$name = $rawValue"
 
     companion object {
-        fun of(macroDeclaration: ImpexMacroDeclaration): ImpExVirtualParameter = macroDeclaration.getOrCreateUserDataUnsafe(KEY_VIRTUAL_PARAMETER) {
-            ImpExVirtualParameter(
-                name = macroDeclaration.macroNameDec.text,
-                completeText = macroDeclaration.text,
-                originalValue = macroDeclaration.macroNameDec.resolveValue(mutableSetOf()),
-            )
-        }
-
-        val KEY_VIRTUAL_PARAMETER = Key.create<ImpExVirtualParameter>("impex.virtualParameter.key")
+        fun of(macroDeclaration: ImpexMacroDeclaration) = ImpExVirtualParameter(
+            name = macroDeclaration.macroNameDec.text,
+            completeText = macroDeclaration.text,
+            originalValue = macroDeclaration.macroNameDec.resolveValue(mutableSetOf()),
+        )
     }
 }

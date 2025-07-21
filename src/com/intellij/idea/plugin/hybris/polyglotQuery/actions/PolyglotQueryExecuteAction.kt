@@ -77,7 +77,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
     }
 
     private fun executeParametrizedQuery(project: Project, fileEditor: PolyglotQuerySplitEditor, e: AnActionEvent, typeCode: String, content: String) {
-        val missingParameters = fileEditor.queryParameters?.values
+        val missingParameters = fileEditor.virtualParameters?.values
             ?.filter { it.sqlValue.isBlank() }
             ?.takeIf { it.isNotEmpty() }
             ?.joinToString(", ", "missing values for [", "]") { it.name }
@@ -141,7 +141,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         ?.removeSuffix(",")
 
     private fun executeParametrizedGroovyQuery(e: AnActionEvent, project: Project, fileEditor: PolyglotQuerySplitEditor, typeCode: String, content: String) {
-        val queryParameters = fileEditor.queryParameters?.values
+        val queryParameters = fileEditor.virtualParameters?.values
             ?.filter { it.sqlValue.isNotBlank() }
             ?.takeIf { it.isNotEmpty() }
             ?.joinToString(",\n", "[", "]") { "${it.name} : ${it.sqlValue}" }
@@ -197,7 +197,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
     }
 
     private fun printConsoleExecutionResult(console: HybrisPolyglotQueryConsole, fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) {
-        console.print(fileEditor.queryParameters?.values)
+        console.print(fileEditor.virtualParameters?.values)
         console.print(result)
     }
 

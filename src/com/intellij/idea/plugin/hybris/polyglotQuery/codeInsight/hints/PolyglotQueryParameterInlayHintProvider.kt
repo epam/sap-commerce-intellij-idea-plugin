@@ -44,7 +44,7 @@ class PolyglotQueryParameterInlayHintProvider : InlayHintsProvider {
             if (element !is PolyglotQueryBindParameter) return
 
             splitEditor.takeIf { it.inEditorParameters }
-                ?.queryParameters
+                ?.virtualParameters
                 ?.get(element.value)
                 ?.takeIf { it.presentationValue.isNotBlank() }
                 ?.let {

@@ -71,8 +71,8 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
             if (state) {
                 PolyglotQueryInEditorParametersView.getInstance(project).renderParameters(this)
             } else {
-                queryParametersDisposable?.apply { Disposer.dispose(this) }
-                queryParametersDisposable = null
+                virtualParametersDisposable?.apply { Disposer.dispose(this) }
+                virtualParametersDisposable = null
                 inEditorParametersView = null
             }
 
@@ -82,12 +82,12 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
             reparseTextEditor()
         }
 
-    var queryParameters: Map<String, PolyglotQueryVirtualParameter>?
+    var virtualParameters: Map<String, PolyglotQueryVirtualParameter>?
         get() = getUserData(KEY_PARAMETERS)
         set(value) = putUserData(KEY_PARAMETERS, value)
 
     val query: String
-        get() = queryParameters
+        get() = virtualParameters
             ?.values
             ?.sortedByDescending { it.name.length }
             ?.let { oarameters ->
@@ -118,7 +118,7 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
             horizontalSplitter.secondComponent = view
         }
 
-    internal var queryParametersDisposable: Disposable? = null
+    internal var virtualParametersDisposable: Disposable? = null
 
     private var renderParametersJob: Job? = null
     private var reparseTextEditorJob: Job? = null

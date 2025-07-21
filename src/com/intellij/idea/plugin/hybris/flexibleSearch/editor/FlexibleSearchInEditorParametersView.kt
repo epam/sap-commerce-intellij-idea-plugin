@@ -57,7 +57,7 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
-            fileEditor.queryParametersDisposable?.let { Disposer.dispose(it) }
+            fileEditor.virtualParametersDisposable?.let { Disposer.dispose(it) }
 
             val panel = if (!isTypeSystemInitialized()) renderTypeSystemInitializationPanel()
             else {
@@ -84,7 +84,7 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
         fileEditor: FlexibleSearchSplitEditor,
     ): DialogPanel {
         val parentDisposable = Disposer.newDisposable().apply {
-            fileEditor.queryParametersDisposable = this
+            fileEditor.virtualParametersDisposable = this
             Disposer.register(fileEditor.textEditor, this)
         }
 
@@ -240,7 +240,7 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
         .comment("Use new line as a value separator.")
 
     private suspend fun collectQueryParameters(fileEditor: FlexibleSearchSplitEditor): Map<String, FlexibleSearchVirtualParameter> {
-        val currentQueryParameters = fileEditor.queryParameters
+        val currentQueryParameters = fileEditor.virtualParameters
             ?: emptyMap()
 
         return readAction {
@@ -252,7 +252,7 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
                 ?: emptyMap()
         }
             .also {
-                fileEditor.queryParameters = it
+                fileEditor.virtualParameters = it
             }
     }
 

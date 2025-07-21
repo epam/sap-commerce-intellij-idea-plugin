@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.editor
 
+import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -34,6 +35,8 @@ import com.intellij.openapi.util.getOrCreateUserData
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.SmartPointerManager
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
@@ -54,7 +57,7 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
         @Serial
         private const val serialVersionUID: Long = -3770395176190649196L
 
-        private val KEY_PARAMETERS = Key.create<Collection<ImpExVirtualParameter>>("impex.parameters.key")
+        private val KEY_PARAMETERS = Key.create<Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>>("impex.parameters.key")
         private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("impex.in_editor_results.key")
     }
 
@@ -64,8 +67,8 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
             if (state) {
                 ImpExInEditorParametersView.getInstance(project).renderParameters(this)
             } else {
-                queryParametersDisposable?.apply { Disposer.dispose(this) }
-                queryParametersDisposable = null
+                virtualParametersDisposable?.apply { Disposer.dispose(this) }
+                virtualParametersDisposable = null
                 inEditorParametersView = null
             }
 
@@ -75,12 +78,13 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
             reparseTextEditor()
         }
 
-    var queryParameters: Collection<ImpExVirtualParameter>?
+    var virtualParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>?
         get() = getUserData(KEY_PARAMETERS)
         set(value) = putUserData(KEY_PARAMETERS, value)
 
     val query: String
-        get() = queryParameters
+        get() = virtualParameters
+            ?.values
             ?.reversed()
             ?.let { parameters ->
                 // TODO: this is wrong
@@ -111,7 +115,7 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
             horizontalSplitter.secondComponent = view
         }
 
-    internal var queryParametersDisposable: Disposable? = null
+    internal var virtualParametersDisposable: Disposable? = null
 
     private var renderParametersJob: Job? = null
     private var reparseTextEditorJob: Job? = null
@@ -136,6 +140,9 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
         add(verticalSplitter, BorderLayout.CENTER)
     }
 
+    fun virtualParameter(element: ImpexMacroDeclaration): ImpExVirtualParameter? = virtualParameters
+        ?.get(SmartPointerManager.createPointer(element))
+
     fun renderExecutionResult(result: DefaultExecutionResult) = ImpExInEditorResultsView.getInstance(project)
         .renderExecutionResult(this, result)
 
@@ -152,6 +159,7 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
             ImpExInEditorParametersView.getInstance(project).renderParameters(this@ImpExSplitEditor)
         }
     }
+
     /**
      * Reparse PsiFile in the related TextEditor to retrigger inline hints computation
      */
