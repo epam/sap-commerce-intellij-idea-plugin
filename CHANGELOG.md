@@ -30,7 +30,6 @@
 - Added toggle to retrieve all data for found Items [#1466](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1466)
 
 ### `ImpEx` enhancements
-
 - Introduced `In-Editor Results` view [#1467](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1467)
 
 ### `Groovy` enhancements
