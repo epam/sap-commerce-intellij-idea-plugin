@@ -127,22 +127,24 @@ class ImpExInEditorResultsView {
         }
             .customize(UnscaledGaps(16, 16, 16, 16))
 
-        panel {
-            group("Response Details") {
-                row {
-                    cell(
-                        JEditorPane().apply {
-                            text = result.detailMessage
-                            isEditable = false
-                            isOpaque = false
-                            background = null
-                            putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE)
-                        }
-                    )
-                        .align(Align.FILL)
-                        .resizableColumn()
-                }
-            }.topGap(TopGap.SMALL)
+        if (result.detailMessage != null) {
+            panel {
+                group("Response Details") {
+                    row {
+                        cell(
+                            JEditorPane().apply {
+                                text = result.detailMessage
+                                isEditable = false
+                                isOpaque = false
+                                background = null
+                                putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE)
+                            }
+                        )
+                            .align(Align.FILL)
+                            .resizableColumn()
+                    }
+                }.topGap(TopGap.SMALL)
+            }
         }
     }
 
