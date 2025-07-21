@@ -27,6 +27,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.util.asSafely
 
 class ImpExParameterInlayHintProvider : InlayHintsProvider {
 
@@ -43,8 +44,10 @@ class ImpExParameterInlayHintProvider : InlayHintsProvider {
         override fun collectFromElement(element: PsiElement, sink: InlayTreeSink) {
             if (!element.isValid || element.project.isDefault) return
             if (!splitEditor.inEditorParameters) return
-            if (element !is ImpexMacroDeclaration) return
-            val virtualParameter = element.getUserData(ImpExVirtualParameter.KEY_VIRTUAL_PARAMETER) ?: return
+
+            val virtualParameter = element
+                .asSafely<ImpexMacroDeclaration>()
+                ?.getUserData(ImpExVirtualParameter.KEY_VIRTUAL_PARAMETER) ?: return
 
             sink.addPresentation(
                 position = InlineInlayPosition(element.textRange.endOffset, true),
