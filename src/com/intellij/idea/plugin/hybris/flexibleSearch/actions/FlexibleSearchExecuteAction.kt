@@ -56,7 +56,7 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
     }
 
     override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.flexibleSearchSplitEditor()
-        ?.query
+        ?.virtualText
         ?: content
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {

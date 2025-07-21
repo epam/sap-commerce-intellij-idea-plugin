@@ -86,19 +86,6 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
         get() = getUserData(KEY_PARAMETERS)
         set(value) = putUserData(KEY_PARAMETERS, value)
 
-    val query: String
-        get() = virtualParameters
-            ?.values
-            ?.sortedByDescending { it.name.length }
-            ?.let { oarameters ->
-                var updatedContent = getText()
-                oarameters.forEach {
-                    updatedContent = updatedContent.replace("?${it.name}", it.sqlValue)
-                }
-                return@let updatedContent
-            }
-            ?: getText()
-
     var inEditorResults: Boolean
         get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { true }
         set(state) {

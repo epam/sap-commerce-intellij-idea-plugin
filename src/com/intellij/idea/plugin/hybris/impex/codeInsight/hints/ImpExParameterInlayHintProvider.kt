@@ -53,7 +53,7 @@ class ImpExParameterInlayHintProvider : InlayHintsProvider {
                         payloads = null,
                         hintFormat = HintFormat(HintColorKind.TextWithoutBackground, HintFontSize.ABitSmallerThanInEditor, HintMarginPadding.MarginAndSmallerPadding),
                     ) {
-                        text("= ${it.rawValue}")
+                        text("= ${it.presentationValue}")
                     }
                 }
         }

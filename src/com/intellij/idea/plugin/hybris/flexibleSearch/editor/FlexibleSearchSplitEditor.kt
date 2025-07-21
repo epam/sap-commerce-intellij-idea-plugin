@@ -80,7 +80,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         get() = getUserData(KEY_PARAMETERS)
         set(value) = putUserData(KEY_PARAMETERS, value)
 
-    val query: String
+    val virtualText: String
         get() = virtualParameters
             ?.values
             ?.sortedByDescending { it.name.length }

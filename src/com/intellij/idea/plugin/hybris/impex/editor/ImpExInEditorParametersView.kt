@@ -51,6 +51,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
             fileEditor.virtualParametersDisposable?.let { Disposer.dispose(it) }
 
             val queryParameters = collectQueryParameters(fileEditor)
+            fileEditor.virtualParameters = collectQueryParameters(fileEditor)
             val panel = renderParametersPanel(queryParameters, fileEditor)
 
             edtWriteAction {
@@ -131,7 +132,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
                         textField()
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
-                            .text(parameter.rawValue)
+                            .text(parameter.rawValue ?: "")
                             .onChanged { applyValue(fileEditor, parameter, it.text) }
                     }.layout(RowLayout.PARENT_GRID)
                 }

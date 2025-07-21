@@ -35,7 +35,6 @@ import com.intellij.openapi.util.getOrCreateUserData
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.SmartPointerManager
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
@@ -82,19 +81,24 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
         get() = getUserData(KEY_PARAMETERS)
         set(value) = putUserData(KEY_PARAMETERS, value)
 
-    val query: String
+    val virtualText: String
         get() = virtualParameters
-            ?.values
-            ?.reversed()
-            ?.let { parameters ->
-                // TODO: this is wrong
-                var updatedContent = getText()
-                parameters.forEach {
-                    updatedContent = updatedContent.replace(it.completeText, it.finalText)
-                }
-                return@let updatedContent
-            }
+            ?.let { getParametrizedText(it) }
             ?: getText()
+
+    private fun getParametrizedText(virtualParameters: Map<SmartPsiElementPointer<ImpexMacroDeclaration>, ImpExVirtualParameter>): String {
+        var text = editor.document.text
+        virtualParameters
+            .toSortedMap(compareByDescending { it.element?.textRange?.startOffset ?: 0 })
+            .forEach { (pointer, virtualParameter) ->
+                val element = pointer.element
+                if (element != null) {
+                    val textRange = element.textRange
+                    text = text.replaceRange(textRange.startOffset, textRange.endOffset, virtualParameter.finalText)
+                }
+            }
+        return text;
+    }
 
     var inEditorResults: Boolean
         get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { true }
@@ -141,7 +145,11 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
     }
 
     fun virtualParameter(element: ImpexMacroDeclaration): ImpExVirtualParameter? = virtualParameters
-        ?.get(SmartPointerManager.createPointer(element))
+        ?.filter { (key, _) ->
+            key.element?.isEquivalentTo(element) ?: false
+        }
+        ?.map { (_, value) -> value }
+        ?.firstOrNull()
 
     fun renderExecutionResult(result: DefaultExecutionResult) = ImpExInEditorResultsView.getInstance(project)
         .renderExecutionResult(this, result)

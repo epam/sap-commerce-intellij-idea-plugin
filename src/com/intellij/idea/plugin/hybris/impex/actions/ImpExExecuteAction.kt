@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecuti
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.ui.AnimatedIcon
@@ -51,6 +52,10 @@ class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
         e.presentation.disabledIcon = if (queryExecuting) AnimatedIcon.Default.INSTANCE
         else HybrisIcons.Console.Actions.EXECUTE
     }
+
+    override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.impexSplitEditor()
+        ?.virtualText
+        ?: content
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = e.impexSplitEditor()

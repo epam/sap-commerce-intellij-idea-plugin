@@ -19,24 +19,34 @@
 package com.intellij.idea.plugin.hybris.impex.editor
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
+import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.util.text.StringUtil
 
 data class ImpExVirtualParameter(
     val name: String,
-    val completeText: String,
-    val originalValue: String?,
-    var rawValue: String = "",
-    val displayName: String = StringUtil.shortenPathWithEllipsis(name, 20),
+    val displayName: String = StringUtil.shortenPathWithEllipsis(name.removePrefix("$"), 20),
 ) {
+
+    private val lazyPresentationValue = ClearableLazyValue.create<String> { this.evaluatePresentationValue() }
 
     val finalText: String
         get() = "$name = $rawValue"
 
+    val presentationValue: String get() = lazyPresentationValue.get()
+
+    var rawValue: String? = null
+        set(value) {
+            field = value
+            lazyPresentationValue.drop()
+        }
+
+    private fun evaluatePresentationValue(): String = rawValue ?: ""
+
     companion object {
         fun of(macroDeclaration: ImpexMacroDeclaration) = ImpExVirtualParameter(
             name = macroDeclaration.macroNameDec.text,
-            completeText = macroDeclaration.text,
-            originalValue = macroDeclaration.macroNameDec.resolveValue(mutableSetOf()),
-        )
+        ).apply {
+            rawValue = macroDeclaration.macroNameDec.resolveValue(mutableSetOf())
+        }
     }
 }
