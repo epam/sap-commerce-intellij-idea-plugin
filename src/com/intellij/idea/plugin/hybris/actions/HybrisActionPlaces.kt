@@ -20,5 +20,4 @@ package com.intellij.idea.plugin.hybris.actions
 
 object HybrisActionPlaces {
     const val CONSOLE_TOOLBAR = "Hybris.Consoles.ContextMenu"
-    const val PARAMETERS_VIEW = "hybris.parameters.view"
 }
