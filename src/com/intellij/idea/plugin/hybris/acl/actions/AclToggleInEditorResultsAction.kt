@@ -15,16 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.impex.actions
+package com.intellij.idea.plugin.hybris.acl.actions
 
+import com.intellij.idea.plugin.hybris.acl.editor.aclSplitEditor
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.impex.editor.impexSplitEditor
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 
-class ImpExToggleInEditorResultsAction : ToggleAction(
+class AclToggleInEditorResultsAction : ToggleAction(
     message("hybris.actions.in_editor_results"),
     message("hybris.actions.in_editor_results.description"),
     HybrisIcons.Actions.TOGGLE_IN_EDITOR_RESULTS
@@ -32,11 +32,11 @@ class ImpExToggleInEditorResultsAction : ToggleAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun isSelected(e: AnActionEvent): Boolean = e.impexSplitEditor()?.inEditorResults
+    override fun isSelected(e: AnActionEvent): Boolean = e.aclSplitEditor()?.inEditorResults
         ?: false
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        e.impexSplitEditor()?.inEditorResults = state
+        e.aclSplitEditor()?.inEditorResults = state
     }
 
 }

@@ -61,6 +61,8 @@
             <action id="hybris.acl.validate" class="com.intellij.idea.plugin.hybris.acl.file.actions.AclValidateAction">
                 <keyboard-shortcut first-keystroke="control alt V" keymap="$default"/>
             </action>
+            <separator/>
+            <action class="com.intellij.idea.plugin.hybris.acl.actions.AclToggleInEditorResultsAction"/>
         </group>
         <group id="hybris.acl.toolbar.right">
             <reference ref="hybris.hac.chooseConnection"/>

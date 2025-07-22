@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.editor
 
+import com.intellij.idea.plugin.hybris.acl.editor.AclSplitEditor
 import com.intellij.idea.plugin.hybris.acl.file.AclFileType
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
@@ -44,7 +45,7 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
                     is FlexibleSearchFileType -> FlexibleSearchSplitEditor(it, project)
                     is PolyglotQueryFileType -> PolyglotQuerySplitEditor(it, project)
                     is ImpexFileType -> ImpExSplitEditor(it, project)
-                    is AclFileType -> ImpExSplitEditor(it, project)
+                    is AclFileType -> AclSplitEditor(it, project)
                     else -> null
                 }
             }
