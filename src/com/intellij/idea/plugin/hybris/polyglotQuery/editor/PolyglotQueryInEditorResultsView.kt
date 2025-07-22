@@ -30,7 +30,6 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.DialogPanel
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
@@ -45,14 +44,11 @@ class PolyglotQueryInEditorResultsView(
     coroutineScope: CoroutineScope
 ) : InEditorResultsView<PolyglotQuerySplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun prepareView(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult): DialogPanel {
-        val view = result.output
-            ?.let { resultsView(fileEditor, it) }
-
-        return panel {
+    override suspend fun prepareView(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) = result.output
+        ?.let { resultsView(fileEditor, it) }
+        ?: panel {
             when {
                 result.hasError -> errorView(result, "An error was encountered while processing the Polyglot Query.")
-                result.output != null -> view
                 else -> noResultsView()
             }
         }
@@ -61,7 +57,6 @@ class PolyglotQueryInEditorResultsView(
             .apply {
                 minimumSize = Dimension(minimumSize.width, 150)
             }
-    }
 
     suspend fun resultsView(fileEditor: PolyglotQuerySplitEditor, content: String): JComponent {
         val lvf = LightVirtualFile(
