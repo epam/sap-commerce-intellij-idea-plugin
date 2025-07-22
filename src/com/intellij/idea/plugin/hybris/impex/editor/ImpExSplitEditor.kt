@@ -152,8 +152,12 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
     fun renderExecutionResult(result: DefaultExecutionResult) = ImpExInEditorResultsView.getInstance(project)
         .renderExecutionResult(this, result)
 
-    fun showLoader() = ImpExInEditorResultsView.getInstance(project)
-        .renderRunningExecution(this)
+    fun showLoader() {
+        if (inEditorResultsView == null) return
+
+        inEditorResultsView = ImpExInEditorResultsView.getInstance(project)
+            .renderRunningExecution()
+    }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {
         renderParametersJob?.cancel()

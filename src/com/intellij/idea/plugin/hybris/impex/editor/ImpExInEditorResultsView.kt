@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.impex.editor
 
+import com.intellij.idea.plugin.hybris.editor.InEditorResultsView
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.Align
@@ -41,29 +41,7 @@ import kotlin.apply
 import kotlin.let
 
 @Service(Service.Level.PROJECT)
-class ImpExInEditorResultsView {
-
-    fun renderRunningExecution(fileEditor: ImpExSplitEditor) {
-        if (fileEditor.inEditorResultsView == null) return
-
-        fileEditor.inEditorResultsView = panel {
-            panel {
-                row {
-                    cell(
-                        InlineBanner(
-                            "Executing HTTP Call to SAP Commerce...",
-                            EditorNotificationPanel.Status.Info
-                        )
-                            .showCloseButton(false)
-                            .setIcon(AnimatedIcon.Default.INSTANCE)
-                    )
-                        .align(Align.FILL)
-                        .resizableColumn()
-                }.topGap(TopGap.SMALL)
-            }
-                .customize(UnscaledGaps(16, 16, 16, 16))
-        }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-    }
+class ImpExInEditorResultsView : InEditorResultsView() {
 
     fun renderExecutionResult(fileEditor: ImpExSplitEditor, result: DefaultExecutionResult) {
         fileEditor.inEditorResultsView = panel {

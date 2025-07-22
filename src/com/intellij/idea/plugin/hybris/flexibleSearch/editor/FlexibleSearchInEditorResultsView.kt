@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.database.editor.CsvTableFileEditor
+import com.intellij.idea.plugin.hybris.editor.InEditorResultsView
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
@@ -30,7 +31,6 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
 import com.intellij.testFramework.LightVirtualFile
-import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.Align
@@ -45,29 +45,7 @@ import javax.swing.JEditorPane
 import javax.swing.ScrollPaneConstants
 
 @Service(Service.Level.PROJECT)
-class FlexibleSearchInEditorResultsView(private val project: Project, private val coroutineScope: CoroutineScope) {
-
-    fun renderRunningExecution(fileEditor: FlexibleSearchSplitEditor) {
-        if (fileEditor.inEditorResultsView == null) return
-
-        fileEditor.inEditorResultsView = panel {
-            panel {
-                row {
-                    cell(
-                        InlineBanner(
-                            "Executing HTTP Call to SAP Commerce...",
-                            EditorNotificationPanel.Status.Info
-                        )
-                            .showCloseButton(false)
-                            .setIcon(AnimatedIcon.Default.INSTANCE)
-                    )
-                        .align(Align.FILL)
-                        .resizableColumn()
-                }.topGap(TopGap.SMALL)
-            }
-                .customize(UnscaledGaps(16, 16, 16, 16))
-        }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-    }
+class FlexibleSearchInEditorResultsView(private val project: Project, private val coroutineScope: CoroutineScope) : InEditorResultsView() {
 
     fun renderExecutionResult(fileEditor: FlexibleSearchSplitEditor, result: DefaultExecutionResult) {
         if (result.hasError) {

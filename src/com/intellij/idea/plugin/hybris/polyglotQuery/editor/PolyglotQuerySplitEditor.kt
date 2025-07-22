@@ -144,8 +144,12 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
     fun renderExecutionResult(result: DefaultExecutionResult) = PolyglotQueryInEditorResultsView.getInstance(project)
         .renderExecutionResult(this, result)
 
-    fun showLoader() = PolyglotQueryInEditorResultsView.getInstance(project)
-        .renderRunningExecution(this)
+    fun showLoader() {
+        if (inEditorResultsView == null) return
+
+        inEditorResultsView = PolyglotQueryInEditorResultsView.getInstance(project)
+            .renderRunningExecution()
+    }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {
         renderParametersJob?.cancel()

@@ -151,8 +151,11 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
     fun renderExecutionResult(result: DefaultExecutionResult) = FlexibleSearchInEditorResultsView.getInstance(project)
         .renderExecutionResult(this, result)
 
-    fun showLoader() = FlexibleSearchInEditorResultsView.getInstance(project)
-        .renderRunningExecution(this)
+    fun showLoader() {
+        if (inEditorResultsView == null) return
+
+        inEditorResultsView = FlexibleSearchInEditorResultsView.getInstance(project).renderRunningExecution()
+    }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {
         renderParametersJob?.cancel()
