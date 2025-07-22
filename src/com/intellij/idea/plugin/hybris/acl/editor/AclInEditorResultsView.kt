@@ -34,16 +34,12 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import java.awt.Dimension
-import javax.swing.JComponent
 import javax.swing.ScrollPaneConstants
 
 @Service(Service.Level.PROJECT)
 class AclInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<AclSplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun render(
-        fileEditor: AclSplitEditor,
-        result: DefaultExecutionResult
-    ): JComponent = panel {
+    override suspend fun render(fileEditor: AclSplitEditor, result: DefaultExecutionResult) = panel {
         when {
             result.hasError -> errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
             result.output != null -> resultsView(result.output)
