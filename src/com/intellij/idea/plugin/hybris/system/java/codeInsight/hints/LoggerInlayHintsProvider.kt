@@ -44,6 +44,7 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.ui.SimpleTextAttributes.*
 import com.intellij.ui.awt.RelativePoint
 import java.awt.Point
 import java.awt.event.MouseEvent
@@ -87,27 +88,26 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
                 val logger = CxLoggerAccess.getInstance(project)
                     .logger(loggerIdentifier)
-                val text = RichText("[y] log level")
-                logger
-                    ?.let {
-                        if (it.inherited)
-                            text.append(
-                                " [${it.effectiveLevel}]", SimpleTextAttributes(
-                                    SimpleTextAttributes.STYLE_UNDERLINE or
-                                        SimpleTextAttributes.STYLE_BOLD or
-                                        SimpleTextAttributes.STYLE_ITALIC, JBColor.GRAY
-                                )
-                            )
-                        else text.append(
-                            " [${it.effectiveLevel}]",
-                            SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue)
-                        )
-                    }
-                val tooltip = logger
-                    ?.let { return@let if (logger.inherited) "Inherited from: ${logger.parentName}" else "Setup the logger for SAP Commerce Cloud" }
-                    ?: "Fetch or Setup the logger for SAP Commerce Cloud"
+
+                val text = if (logger == null) RichText("[y] log level")
+                else {
+                    val style = if (logger.inherited) SimpleTextAttributes(STYLE_UNDERLINE or STYLE_BOLD or STYLE_ITALIC, JBColor.GRAY)
+                    else SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue)
+
+                    RichText("[")
+                        .apply {
+                            append(logger.effectiveLevel, style)
+                            append("] log level", SimpleTextAttributes.REGULAR_ATTRIBUTES)
+                        }
+                }
 
                 val handler = ClickHandler(targetElement, loggerIdentifier, text)
+
+                val tooltip = when {
+                    logger == null -> "Fetch or Define the logger for SAP Commerce"
+                    logger.inherited -> "Inherited from: ${logger.parentName}"
+                    else -> "Setup the logger for SAP Commerce"
+                }
 
                 val clickableRichTextCodeVisionEntry = ClickableRichTextCodeVisionEntry(id, text, handler, HybrisIcons.Y.REMOTE, "", tooltip)
                 entries.add(range to clickableRichTextCodeVisionEntry)
@@ -119,6 +119,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     fun extractIdentifierForLogger(element: PsiElement, file: PsiFile): String? = when (element) {
         is PsiClass -> file.packageName()
             ?.let { "$it.${element.name}" }
+            ?: element.name
 
         is PsiPackageStatement -> element.packageName
         else -> null

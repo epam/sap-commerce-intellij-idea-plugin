@@ -21,43 +21,45 @@ package com.intellij.idea.plugin.hybris.tools.logging
 data class CxLoggerModel(
     val name: String,
     val effectiveLevel: String,
-    val parentName: String? = null,
-    val inherited: Boolean = false,
-    private val rootParent: String? = null
+    val parentName: String?,
+    val inherited: Boolean
 ) {
-    val root: String
-        get() = rootParent ?: parentName ?: "root"
+    companion object {
 
-    override fun toString(): String {
-        return "CxLoggerModel(name='$name', effectiveLevel='$effectiveLevel', parentName=$parentName, inherited=$inherited, root=${root})"
+        const val ROOT_LOGGER_NAME = "root"
+
+        fun of(name: String, effectiveLevel: String, parentName: String? = null, inherited: Boolean = false): CxLoggerModel = CxLoggerModel(
+            name = name,
+            effectiveLevel = effectiveLevel,
+            parentName = if (name == ROOT_LOGGER_NAME) null else parentName,
+            inherited = inherited
+        )
+
+        fun inherited(name: String, parentLogger: CxLoggerModel): CxLoggerModel = of(
+            name = name,
+            effectiveLevel = parentLogger.effectiveLevel,
+            parentName = parentLogger.name,
+            inherited = true
+        )
+
+        fun root() = of(name = ROOT_LOGGER_NAME, effectiveLevel = "undefined")
     }
 }
 
 data class CxLoggersStorage(private val loggers: MutableMap<String, CxLoggerModel>) {
 
-    fun get(loggerIdentifier: String): CxLoggerModel {
-        return loggers[loggerIdentifier] ?: createLoggerModel(loggerIdentifier)
-    }
-
-    private fun _get(loggerIdentifier: String): CxLoggerModel {
-        return loggers[loggerIdentifier] ?: createLoggerModel(loggerIdentifier)
-    }
+    fun get(loggerIdentifier: String): CxLoggerModel = loggers[loggerIdentifier]
+        ?: createLoggerModel(loggerIdentifier)
 
     private fun createLoggerModel(loggerIdentifier: String): CxLoggerModel {
         val parentLogger = loggerIdentifier.substringBeforeLast('.', "")
-            .takeIf(String::isNotEmpty)
-            ?.let { _get(it) }
-            ?: loggers["root"]
-            ?: CxLoggerModel(name = "root", effectiveLevel = "undefined")
+            .takeIf { it.isNotBlank() }
+            ?.let { get(it) }
+            ?: loggers[CxLoggerModel.ROOT_LOGGER_NAME]
+            ?: CxLoggerModel.root()
 
         return loggers.getOrPut(loggerIdentifier) {
-            CxLoggerModel(
-                loggerIdentifier,
-                parentLogger.effectiveLevel,
-                if (parentLogger.inherited) parentLogger.root else parentLogger.name,
-                true,
-                parentLogger.root
-            )
+            CxLoggerModel.inherited(loggerIdentifier, parentLogger)
         }
     }
 }
