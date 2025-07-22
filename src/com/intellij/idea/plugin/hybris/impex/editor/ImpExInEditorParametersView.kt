@@ -162,8 +162,9 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
                 ?.associate {
                     currentVirtualParameters
                         .filter { (key, _) -> key.element?.isEquivalentTo(it) ?: false }
-                        .map { (key, value) -> key to value }
+                        .map { (pointer, virtualParameter) -> pointer to virtualParameter }
                         .firstOrNull()
+                        ?.takeIf { (_, virtualParameter) -> it.text == virtualParameter.name}
                         ?: (SmartPointerManager.createPointer(it) to ImpExVirtualParameter.of(it))
                 }
                 ?: emptyMap()
