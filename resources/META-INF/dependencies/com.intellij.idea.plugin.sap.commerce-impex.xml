@@ -49,7 +49,7 @@
         <lang.commenter language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.ImpexCommenter"/>
         <lang.formatter language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpExFoldingBuilder"/>
-        <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexFoldingLinesBuilder"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpExFoldingLinesBuilder"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroFoldingBuilder"/>
         <lang.psiStructureViewFactory language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
         <lang.refactoringSupport language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpexRefactoringSupportProvider"/>
