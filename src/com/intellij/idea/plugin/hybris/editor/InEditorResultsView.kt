@@ -42,7 +42,7 @@ import kotlin.apply
 
 abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protected val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun renderRunningExecution(message: String = "Executing HTTP Call to SAP Commerce...") = panel {
+    fun progressView(message: String = "Executing HTTP Call to SAP Commerce...") = panel {
         panel {
             row {
                 cell(
@@ -60,17 +60,17 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
             .customize(UnscaledGaps(16, 16, 16, 16))
     }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
 
-    fun renderExecutionResult(fileEditor: E, result: R, applyView: (JComponent) -> Unit) {
+    fun resultView(fileEditor: E, result: R, applyView: (CoroutineScope, JComponent) -> Unit) {
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
-            val view = prepareView(fileEditor, result)
+            val view = render(fileEditor, result)
 
-            applyView(view)
+            applyView(this, view)
         }
     }
 
-    protected abstract suspend fun prepareView(fileEditor: E, result: R): JComponent
+    protected abstract suspend fun render(fileEditor: E, result: R): JComponent
 
     protected fun Panel.noResultsView() {
         panel {

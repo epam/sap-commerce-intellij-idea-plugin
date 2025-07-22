@@ -44,7 +44,7 @@ class PolyglotQueryInEditorResultsView(
     coroutineScope: CoroutineScope
 ) : InEditorResultsView<PolyglotQuerySplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun prepareView(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) = result.output
+    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) = result.output
         ?.let { resultsView(fileEditor, it) }
         ?: panel {
             when {

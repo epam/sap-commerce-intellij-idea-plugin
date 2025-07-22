@@ -44,7 +44,7 @@ class FlexibleSearchInEditorResultsView(
     coroutineScope: CoroutineScope
 ) : InEditorResultsView<FlexibleSearchSplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun prepareView(fileEditor: FlexibleSearchSplitEditor, result: DefaultExecutionResult) = result.output
+    override suspend fun render(fileEditor: FlexibleSearchSplitEditor, result: DefaultExecutionResult) = result.output
         ?.let { resultsView(fileEditor, it) }
         ?: panel {
             when {

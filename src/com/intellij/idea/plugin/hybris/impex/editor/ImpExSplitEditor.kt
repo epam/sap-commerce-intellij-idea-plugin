@@ -149,15 +149,19 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
         ImpExInEditorParametersView.getInstance(project).renderParameters(this)
     }
 
-    fun renderExecutionResult(result: DefaultExecutionResult) = ImpExInEditorResultsView.getInstance(project).renderExecutionResult(this, result) {
-        inEditorResultsView = it
+    fun renderExecutionResult(result: DefaultExecutionResult) = ImpExInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+        coroutineScope.launch {
+            edtWriteAction {
+                inEditorResultsView = view
+            }
+        }
     }
 
     fun showLoader() {
         if (inEditorResultsView == null) return
 
         inEditorResultsView = ImpExInEditorResultsView.getInstance(project)
-            .renderRunningExecution()
+            .progressView()
     }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {

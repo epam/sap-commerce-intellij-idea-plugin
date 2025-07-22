@@ -40,7 +40,7 @@ import javax.swing.ScrollPaneConstants
 @Service(Service.Level.PROJECT)
 class ImpExInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<ImpExSplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun prepareView(
+    override suspend fun render(
         fileEditor: ImpExSplitEditor,
         result: DefaultExecutionResult
     ): JComponent = panel {

@@ -141,15 +141,19 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
         }
     }
 
-    fun renderExecutionResult(result: DefaultExecutionResult) = PolyglotQueryInEditorResultsView.getInstance(project).renderExecutionResult(this, result) {
-        inEditorResultsView = it
+    fun renderExecutionResult(result: DefaultExecutionResult) = PolyglotQueryInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+        coroutineScope.launch {
+            edtWriteAction {
+                inEditorResultsView = view
+            }
+        }
     }
 
     fun showLoader() {
         if (inEditorResultsView == null) return
 
         inEditorResultsView = PolyglotQueryInEditorResultsView.getInstance(project)
-            .renderRunningExecution()
+            .progressView()
     }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {

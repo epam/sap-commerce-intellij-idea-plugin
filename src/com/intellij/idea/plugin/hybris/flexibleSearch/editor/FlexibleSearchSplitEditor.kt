@@ -148,14 +148,18 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         }
     }
 
-    fun renderExecutionResult(result: DefaultExecutionResult) = FlexibleSearchInEditorResultsView.getInstance(project).renderExecutionResult(this, result) {
-        inEditorResultsView = it
+    fun renderExecutionResult(result: DefaultExecutionResult) = FlexibleSearchInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+        coroutineScope.launch {
+            edtWriteAction {
+                inEditorResultsView = view
+            }
+        }
     }
 
     fun showLoader() {
         if (inEditorResultsView == null) return
 
-        inEditorResultsView = FlexibleSearchInEditorResultsView.getInstance(project).renderRunningExecution()
+        inEditorResultsView = FlexibleSearchInEditorResultsView.getInstance(project).progressView()
     }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {
