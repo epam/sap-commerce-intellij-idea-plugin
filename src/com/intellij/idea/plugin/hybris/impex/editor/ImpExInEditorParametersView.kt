@@ -54,7 +54,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
             fileEditor.virtualParametersDisposable?.let { Disposer.dispose(it) }
 
             val virtualParameters = collectVirtualParameters(fileEditor)
-            fileEditor.virtualParameters = collectVirtualParameters(fileEditor)
+            fileEditor.virtualParameters = virtualParameters
             val panel = renderParametersPanel(virtualParameters, fileEditor)
 
             edtWriteAction {

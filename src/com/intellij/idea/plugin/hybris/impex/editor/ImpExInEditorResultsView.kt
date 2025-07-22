@@ -32,33 +32,31 @@ import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
+import kotlinx.coroutines.CoroutineScope
 import java.awt.Dimension
-import java.lang.Boolean
-import javax.swing.JEditorPane
+import javax.swing.JComponent
 import javax.swing.ScrollPaneConstants
-import kotlin.String
-import kotlin.apply
-import kotlin.let
 
 @Service(Service.Level.PROJECT)
-class ImpExInEditorResultsView : InEditorResultsView() {
+class ImpExInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<ImpExSplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    fun renderExecutionResult(fileEditor: ImpExSplitEditor, result: DefaultExecutionResult) {
-        fileEditor.inEditorResultsView = panel {
-            when {
-                result.hasError -> renderInEditorError(result)
-                result.output != null -> renderInEditorResults(result.output)
-                else -> renderInEditorNoResults()
-            }
+    override suspend fun prepareView(
+        fileEditor: ImpExSplitEditor,
+        result: DefaultExecutionResult
+    ): JComponent = panel {
+        when {
+            result.hasError -> errorView(result, "An error was encountered while processing the ImpEx .")
+            result.output != null -> resultsView(result.output)
+            else -> noResultsView()
         }
-            .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-            .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
-            .apply {
-                minimumSize = Dimension(minimumSize.width, 150)
-            }
     }
+        .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
+        .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
+        .apply {
+            minimumSize = Dimension(minimumSize.width, 150)
+        }
 
-    private fun Panel.renderInEditorResults(output: String) {
+    private fun Panel.resultsView(output: String) {
         panel {
             row {
                 cell(
@@ -72,58 +70,6 @@ class ImpExInEditorResultsView : InEditorResultsView() {
             }.topGap(TopGap.SMALL)
         }
             .customize(UnscaledGaps(16, 16, 16, 16))
-    }
-
-    private fun Panel.renderInEditorNoResults() {
-        panel {
-            row {
-                cell(
-                    InlineBanner(
-                        "No results found for given query",
-                        EditorNotificationPanel.Status.Info,
-                    ).showCloseButton(false)
-                )
-                    .align(Align.FILL)
-                    .resizableColumn()
-            }.topGap(TopGap.SMALL)
-        }
-            .customize(UnscaledGaps(16, 16, 16, 16))
-    }
-
-    private fun Panel.renderInEditorError(result: DefaultExecutionResult) {
-        panel {
-            row {
-                cell(
-                    InlineBanner(
-                        result.errorMessage ?: "An error was encountered while processing the ImpEx .",
-                        EditorNotificationPanel.Status.Error,
-                    ).showCloseButton(false)
-                )
-                    .align(Align.FILL)
-                    .resizableColumn()
-            }.topGap(TopGap.SMALL)
-        }
-            .customize(UnscaledGaps(16, 16, 16, 16))
-
-        if (result.detailMessage != null) {
-            panel {
-                group("Response Details") {
-                    row {
-                        cell(
-                            JEditorPane().apply {
-                                text = result.detailMessage
-                                isEditable = false
-                                isOpaque = false
-                                background = null
-                                putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE)
-                            }
-                        )
-                            .align(Align.FILL)
-                            .resizableColumn()
-                    }
-                }.topGap(TopGap.SMALL)
-            }
-        }
     }
 
     companion object {

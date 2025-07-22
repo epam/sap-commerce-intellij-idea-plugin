@@ -93,7 +93,7 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
             verticalSplitter.secondComponent?.isVisible = state
         }
 
-    internal var inEditorResultsView: JComponent?
+    private var inEditorResultsView: JComponent?
         get() = verticalSplitter.secondComponent
         set(view) {
             verticalSplitter.secondComponent = view
@@ -149,8 +149,9 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
         ImpExInEditorParametersView.getInstance(project).renderParameters(this)
     }
 
-    fun renderExecutionResult(result: DefaultExecutionResult) = ImpExInEditorResultsView.getInstance(project)
-        .renderExecutionResult(this, result)
+    fun renderExecutionResult(result: DefaultExecutionResult) = ImpExInEditorResultsView.getInstance(project).renderExecutionResult(this, result) {
+        inEditorResultsView = it
+    }
 
     fun showLoader() {
         if (inEditorResultsView == null) return

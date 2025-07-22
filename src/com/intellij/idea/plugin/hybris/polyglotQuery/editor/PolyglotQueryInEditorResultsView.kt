@@ -30,112 +30,52 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.testFramework.LightVirtualFile
-import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.InlineBanner
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.awt.Dimension
-import java.lang.Boolean
-import javax.swing.JEditorPane
+import javax.swing.JComponent
 import javax.swing.ScrollPaneConstants
-import kotlin.String
-import kotlin.apply
-import kotlin.let
-import kotlin.plus
 
 @Service(Service.Level.PROJECT)
-class PolyglotQueryInEditorResultsView(private val project: Project, private val coroutineScope: CoroutineScope) : InEditorResultsView() {
+class PolyglotQueryInEditorResultsView(
+    project: Project,
+    coroutineScope: CoroutineScope
+) : InEditorResultsView<PolyglotQuerySplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    fun renderExecutionResult(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) = when {
-        result.hasError -> fileEditor.inEditorResultsView = renderInEditorError(result)
-        result.output != null -> renderInEditorResults(fileEditor, result.output)
-        else -> fileEditor.inEditorResultsView = renderInEditorNoResults()
-    }
+    override suspend fun prepareView(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult): DialogPanel {
+        val view = result.output
+            ?.let { resultsView(fileEditor, it) }
 
-    private fun renderInEditorResults(fileEditor: PolyglotQuerySplitEditor, result: String) {
-        coroutineScope.launch {
-            if (project.isDisposed) return@launch
-
-            val lvf = LightVirtualFile(
-                fileEditor.file?.name + ".${PolyglotQueryFileType.defaultExtension}.result.csv",
-                PlainTextFileType.INSTANCE,
-                result
-            )
-
-            val format = GridXSVFormatService.getInstance(project).getFormat(PolyglotQueryLanguage)
-
-            edtWriteAction {
-                val editor = CsvTableFileEditor(project, lvf, format);
-                fileEditor.inEditorResultsView = editor.component
+        return panel {
+            when {
+                result.hasError -> errorView(result, "An error was encountered while processing the Polyglot Query.")
+                result.output != null -> view
+                else -> noResultsView()
             }
         }
+            .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
+            .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
+            .apply {
+                minimumSize = Dimension(minimumSize.width, 150)
+            }
     }
 
-    private fun renderInEditorNoResults() = panel {
-        panel {
-            row {
-                cell(
-                    InlineBanner(
-                        "No results found for given query",
-                        EditorNotificationPanel.Status.Info,
-                    ).showCloseButton(false)
-                )
-                    .align(Align.FILL)
-                    .resizableColumn()
-            }.topGap(TopGap.SMALL)
-        }
-            .customize(UnscaledGaps(16, 16, 16, 16))
-    }
-        .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-        .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
-        .apply {
-            minimumSize = Dimension(minimumSize.width, 150)
-        }
+    suspend fun resultsView(fileEditor: PolyglotQuerySplitEditor, content: String): JComponent {
+        val lvf = LightVirtualFile(
+            fileEditor.file?.name + "_temp.${PolyglotQueryFileType.defaultExtension}.result.csv",
+            PlainTextFileType.INSTANCE,
+            content
+        )
 
-    private fun renderInEditorError(result: DefaultExecutionResult) = panel {
-        panel {
-            row {
-                cell(
-                    InlineBanner(
-                        "An error was encountered while processing the Polyglot Query.",
-                        EditorNotificationPanel.Status.Error,
-                    ).showCloseButton(false)
-                )
-                    .align(Align.FILL)
-                    .resizableColumn()
-            }.topGap(TopGap.SMALL)
-        }
-            .customize(UnscaledGaps(16, 16, 16, 16))
+        val format = GridXSVFormatService.getInstance(project).getFormat(PolyglotQueryLanguage)
 
-        panel {
-            group("Response Details") {
-                row {
-                    cell(
-                        JEditorPane().apply {
-                            text = result.errorMessage
-                            isEditable = false
-                            isOpaque = false
-                            background = null
-                            putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE)
-                        }
-                    )
-                        .align(Align.FILL)
-                        .resizableColumn()
-                }
-            }.topGap(TopGap.SMALL)
+        return edtWriteAction {
+            CsvTableFileEditor(project, lvf, format).component
         }
     }
-        .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-        .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
-        .apply {
-            minimumSize = Dimension(minimumSize.width, 150)
-        }
 
     companion object {
         fun getInstance(project: Project): PolyglotQueryInEditorResultsView = project.service()

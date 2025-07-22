@@ -18,16 +18,29 @@
 
 package com.intellij.idea.plugin.hybris.editor
 
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.openapi.fileEditor.FileEditor
+import com.intellij.openapi.project.Project
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import java.lang.Boolean
+import javax.swing.JComponent
+import javax.swing.JEditorPane
+import kotlin.String
+import kotlin.Unit
+import kotlin.apply
 
-abstract class InEditorResultsView {
+abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protected val project: Project, private val coroutineScope: CoroutineScope) {
 
     fun renderRunningExecution(message: String = "Executing HTTP Call to SAP Commerce...") = panel {
         panel {
@@ -46,4 +59,68 @@ abstract class InEditorResultsView {
         }
             .customize(UnscaledGaps(16, 16, 16, 16))
     }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
+
+    fun renderExecutionResult(fileEditor: E, result: R, applyView: (JComponent) -> Unit) {
+        coroutineScope.launch {
+            if (project.isDisposed) return@launch
+
+            val view = prepareView(fileEditor, result)
+
+            applyView(view)
+        }
+    }
+
+    protected abstract suspend fun prepareView(fileEditor: E, result: R): JComponent
+
+    protected fun Panel.noResultsView() {
+        panel {
+            row {
+                cell(
+                    InlineBanner(
+                        "No results found for given query",
+                        EditorNotificationPanel.Status.Info,
+                    ).showCloseButton(false)
+                )
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }.topGap(TopGap.SMALL)
+        }
+            .customize(UnscaledGaps(16, 16, 16, 16))
+    }
+
+    protected fun Panel.errorView(result: DefaultExecutionResult, customMessage: String) {
+        panel {
+            row {
+                cell(
+                    InlineBanner(
+                        result.errorMessage ?: customMessage,
+                        EditorNotificationPanel.Status.Error,
+                    ).showCloseButton(false)
+                )
+                    .align(Align.FILL)
+                    .resizableColumn()
+            }.topGap(TopGap.SMALL)
+        }
+            .customize(UnscaledGaps(16, 16, 16, 16))
+
+        if (result.detailMessage != null) {
+            panel {
+                group("Response Details") {
+                    row {
+                        cell(
+                            JEditorPane().apply {
+                                text = result.detailMessage
+                                isEditable = false
+                                isOpaque = false
+                                background = null
+                                putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE)
+                            }
+                        )
+                            .align(Align.FILL)
+                            .resizableColumn()
+                    }
+                }.topGap(TopGap.SMALL)
+            }
+        }
+    }
 }
