@@ -136,7 +136,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     private fun printPlainText(result: DefaultExecutionResult) {
         if (result.hasError) {
             print("[ERROR]\n", SYSTEM_OUTPUT)
-            listOfNotNull(result.errorMessage, result.detailMessage)
+            listOfNotNull(result.errorMessage, result.errorDetailMessage)
                 .forEach { print("$it\n", ERROR_OUTPUT) }
 
             return

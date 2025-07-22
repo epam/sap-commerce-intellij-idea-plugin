@@ -46,7 +46,7 @@ class FlexibleSearchInEditorResultsView(
 ) : InEditorResultsView<FlexibleSearchSplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
     override suspend fun render(fileEditor: FlexibleSearchSplitEditor, result: DefaultExecutionResult) = when {
-        result.hasError -> panelView { it.errorView(result, "An error was encountered while processing the FlexibleSearch query.") }
+        result.hasError -> panelView { it.errorView("An error was encountered while processing the FlexibleSearch query.", result.errorMessage) }
         result.output?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
         else -> panelView { it.noResultsView() }
     }

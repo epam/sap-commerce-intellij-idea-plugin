@@ -28,7 +28,7 @@ data class DefaultExecutionResult(
     val result: String? = null,
     val output: String? = null,
     val errorMessage: String? = null,
-    val detailMessage: String? = null,
+    val errorDetailMessage: String? = null,
     val replicaContext: ReplicaContext? = null,
 ) : ExecutionResult {
 

@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.editor
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.Project
@@ -88,12 +87,12 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
             .customize(UnscaledGaps(16, 16, 16, 16))
     }
 
-    protected fun Panel.errorView(result: DefaultExecutionResult, customMessage: String) {
+    protected fun Panel.errorView(errorMessage: String, errorDetailMessage: String?) {
         panel {
             row {
                 cell(
                     InlineBanner(
-                        result.errorMessage ?: customMessage,
+                        errorMessage,
                         EditorNotificationPanel.Status.Error,
                     ).showCloseButton(false)
                 )
@@ -103,13 +102,13 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
         }
             .customize(UnscaledGaps(16, 16, 16, 16))
 
-        if (result.detailMessage != null) {
+        if (errorDetailMessage != null) {
             panel {
                 group("Response Details") {
                     row {
                         cell(
                             JEditorPane().apply {
-                                text = result.detailMessage
+                                text = errorDetailMessage
                                 isEditable = false
                                 isOpaque = false
                                 background = null

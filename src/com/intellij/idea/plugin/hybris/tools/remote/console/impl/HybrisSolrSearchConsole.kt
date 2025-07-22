@@ -116,10 +116,12 @@ class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) 
 
         printHost(RemoteConnectionType.SOLR, result.replicaContext)
 
-        if (result.hasError) {
-            ConsoleViewUtil.printAsFileType(this, result.errorMessage!!, PlainTextFileType.INSTANCE)
+        if (result.errorMessage != null) {
+            ConsoleViewUtil.printAsFileType(this, result.errorMessage, PlainTextFileType.INSTANCE)
+        } else if (result.output != null) {
+            ConsoleViewUtil.printAsFileType(this, result.output, JsonFileType.INSTANCE)
         } else {
-            ConsoleViewUtil.printAsFileType(this, result.output!!, JsonFileType.INSTANCE)
+            ConsoleViewUtil.printAsFileType(this, "No Data", PlainTextFileType.INSTANCE)
         }
     }
 

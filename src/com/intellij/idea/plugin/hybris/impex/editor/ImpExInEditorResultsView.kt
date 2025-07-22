@@ -45,7 +45,7 @@ class ImpExInEditorResultsView(project: Project, coroutineScope: CoroutineScope)
         result: DefaultExecutionResult
     ): JComponent = panel {
         when {
-            result.hasError -> errorView(result, "An error was encountered while processing the ImpEx .")
+            result.hasError -> errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
             result.output != null -> resultsView(result.output)
             else -> noResultsView()
         }

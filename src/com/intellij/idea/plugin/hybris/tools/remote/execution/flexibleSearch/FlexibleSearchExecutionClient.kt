@@ -50,7 +50,7 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
 
         if (statusCode != HttpStatus.SC_OK || response.entity == null) return DefaultExecutionResult(
             statusCode = HttpStatus.SC_BAD_REQUEST,
-            errorMessage = "[$statusCode] ${statusLine.reasonPhrase}"
+            errorMessage = "[$statusCode] ${statusLine.reasonPhrase}",
         )
 
         try {
