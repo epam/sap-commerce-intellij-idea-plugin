@@ -107,7 +107,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
             updateCache(loggers)
 
-            if (result.errorMessage != null) notify(NotificationType.ERROR, "Failed to fetch logger states") {
+            if (result.hasError) notify(NotificationType.ERROR, "Failed to fetch logger states") {
                 "<p>${result.errorMessage}</p>"
                 "<p>Server: ${server.shortenConnectionName()}</p>"
             }
