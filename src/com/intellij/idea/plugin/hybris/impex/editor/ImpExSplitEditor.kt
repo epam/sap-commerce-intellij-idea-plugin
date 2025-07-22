@@ -131,6 +131,7 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
     }
 
     fun virtualParameter(element: ImpexMacroDeclaration): ImpExVirtualParameter? = virtualParameters
+        ?.takeIf { inEditorParameters }
         ?.filter { (key, _) ->
             key.element?.isEquivalentTo(element) ?: false
         }

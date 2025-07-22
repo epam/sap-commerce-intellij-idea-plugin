@@ -59,8 +59,8 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
 
             val panel = if (!isTypeSystemInitialized(project)) renderTypeSystemInitializationPanel()
             else {
-                val queryParameters = collectQueryParameters(fileEditor)
-                renderParametersPanel(queryParameters, fileEditor)
+                val virtualParameters = collectVirtualParameters(fileEditor)
+                renderParametersPanel(virtualParameters, fileEditor)
             }
 
             edtWriteAction {
@@ -78,7 +78,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
     }
 
     private fun renderParametersPanel(
-        queryParameters: Map<String, PolyglotQueryVirtualParameter>,
+        virtualParameters: Map<String, PolyglotQueryVirtualParameter>,
         fileEditor: PolyglotQuerySplitEditor,
     ): DialogPanel {
         val parentDisposable = Disposer.newDisposable().apply {
@@ -89,10 +89,10 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
         return panel {
             notificationPanel()
 
-            if (queryParameters.isEmpty()) {
+            if (virtualParameters.isEmpty()) {
                 notResultsPanel()
             } else {
-                parametersPanel(queryParameters, fileEditor, parentDisposable)
+                parametersPanel(virtualParameters, fileEditor, parentDisposable)
             }
         }
             .apply {
@@ -139,12 +139,12 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
     }.customize(UnscaledGaps(16, 16, 16, 16))
 
     private fun Panel.parametersPanel(
-        queryParameters: Map<String, PolyglotQueryVirtualParameter>,
+        virtualParameters: Map<String, PolyglotQueryVirtualParameter>,
         fileEditor: PolyglotQuerySplitEditor,
         parentDisposable: Disposable
     ) = panel {
         group("Parameters") {
-            queryParameters.forEach { name, parameter ->
+            virtualParameters.forEach { name, parameter ->
                 row {
                     when (parameter.type) {
                         Byte::class -> numberTextField(parameter, fileEditor, "-128", "127", "byte")
@@ -225,14 +225,14 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
         .text(parameter.rawValue?.asSafely<String>() ?: "")
         .onChanged { applyValue(fileEditor, parameter, it.text) }
 
-    private suspend fun collectQueryParameters(fileEditor: PolyglotQuerySplitEditor): Map<String, PolyglotQueryVirtualParameter> {
-        val currentQueryParameters = fileEditor.virtualParameters
+    private suspend fun collectVirtualParameters(fileEditor: PolyglotQuerySplitEditor): Map<String, PolyglotQueryVirtualParameter> {
+        val currentVirtualParameters = fileEditor.virtualParameters
             ?: emptyMap()
 
         return readAction {
             PsiDocumentManager.getInstance(project).getPsiFile(fileEditor.editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, PolyglotQueryBindParameter::class.java) }
-                ?.map { PolyglotQueryVirtualParameter.of(it, currentQueryParameters) }
+                ?.map { PolyglotQueryVirtualParameter.of(it, currentVirtualParameters) }
                 ?.distinctBy { it.name }
                 ?.associateBy { it.name }
                 ?: emptyMap()

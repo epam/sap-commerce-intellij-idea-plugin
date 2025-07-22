@@ -61,8 +61,8 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
 
             val panel = if (!isTypeSystemInitialized()) renderTypeSystemInitializationPanel()
             else {
-                val queryParameters = collectQueryParameters(fileEditor)
-                renderParametersPanel(queryParameters, fileEditor)
+                val virtualParameters = collectVirtualParameters(fileEditor)
+                renderParametersPanel(virtualParameters, fileEditor)
             }
 
             edtWriteAction {
@@ -80,7 +80,7 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
     }
 
     private fun renderParametersPanel(
-        queryParameters: Map<String, FlexibleSearchVirtualParameter>,
+        virtualParameters: Map<String, FlexibleSearchVirtualParameter>,
         fileEditor: FlexibleSearchSplitEditor,
     ): DialogPanel {
         val parentDisposable = Disposer.newDisposable().apply {
@@ -91,10 +91,10 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
         return panel {
             notificationPanel()
 
-            if (queryParameters.isEmpty()) {
+            if (virtualParameters.isEmpty()) {
                 notResultsPanel()
             } else {
-                parametersPanel(queryParameters, fileEditor, parentDisposable)
+                parametersPanel(virtualParameters, fileEditor, parentDisposable)
             }
         }
             .apply {
@@ -141,12 +141,12 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
     }.customize(UnscaledGaps(16, 16, 16, 16))
 
     private fun Panel.parametersPanel(
-        queryParameters: Map<String, FlexibleSearchVirtualParameter>,
+        virtualParameters: Map<String, FlexibleSearchVirtualParameter>,
         fileEditor: FlexibleSearchSplitEditor,
         parentDisposable: Disposable
     ) = panel {
         group("Parameters") {
-            queryParameters.forEach { name, parameter ->
+            virtualParameters.forEach { name, parameter ->
                 row {
                     when (parameter.type) {
                         Byte::class -> numberTextField(parameter, fileEditor, "-128", "127", "byte")
@@ -239,14 +239,14 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
         .rows(3)
         .comment("Use new line as a value separator.")
 
-    private suspend fun collectQueryParameters(fileEditor: FlexibleSearchSplitEditor): Map<String, FlexibleSearchVirtualParameter> {
-        val currentQueryParameters = fileEditor.virtualParameters
+    private suspend fun collectVirtualParameters(fileEditor: FlexibleSearchSplitEditor): Map<String, FlexibleSearchVirtualParameter> {
+        val currentVirtualParameters = fileEditor.virtualParameters
             ?: emptyMap()
 
         return readAction {
             PsiDocumentManager.getInstance(project).getPsiFile(fileEditor.editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, FlexibleSearchBindParameter::class.java) }
-                ?.map { FlexibleSearchVirtualParameter.of(it, currentQueryParameters) }
+                ?.map { FlexibleSearchVirtualParameter.of(it, currentVirtualParameters) }
                 ?.distinctBy { it.name }
                 ?.associateBy { it.name }
                 ?: emptyMap()

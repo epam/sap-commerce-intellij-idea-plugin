@@ -34,6 +34,7 @@
 - Introduced `In-Editor Parameters` view [#1469](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1469)
 - Use `In-Editor Results` view for Validate Action [#1468](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1468)
 - Added possibility to reset value of the Macro Declaration Parameter [#1470](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1470)
+- Respect virtual parameters in the folded values [#1471](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1471)
 
 ### `Groovy` enhancements
 - Introduced `batch` execution mode for Groovy files [#1450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1450)

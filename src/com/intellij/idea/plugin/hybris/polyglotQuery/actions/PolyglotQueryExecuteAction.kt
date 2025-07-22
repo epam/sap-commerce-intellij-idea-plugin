@@ -141,7 +141,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         ?.removeSuffix(",")
 
     private fun executeParametrizedGroovyQuery(e: AnActionEvent, project: Project, fileEditor: PolyglotQuerySplitEditor, typeCode: String, content: String) {
-        val queryParameters = fileEditor.virtualParameters?.values
+        val virtualParameters = fileEditor.virtualParameters?.values
             ?.filter { it.sqlValue.isNotBlank() }
             ?.takeIf { it.isNotEmpty() }
             ?.joinToString(",\n", "[", "]") { "${it.name} : ${it.sqlValue}" }
@@ -164,7 +164,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
                             import de.hybris.platform.servicelayer.search.FlexibleSearchService
         
                             def query = $textBlock$content$textBlock
-                            def params = $queryParameters
+                            def params = $virtualParameters
     
                             $scriptOutputLogic
                         """.trimIndent()
