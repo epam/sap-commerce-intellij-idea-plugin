@@ -31,6 +31,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
 import com.intellij.testFramework.LightVirtualFile
+import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
@@ -44,19 +45,11 @@ class PolyglotQueryInEditorResultsView(
     coroutineScope: CoroutineScope
 ) : InEditorResultsView<PolyglotQuerySplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) = result.output
-        ?.let { resultsView(fileEditor, it) }
-        ?: panel {
-            when {
-                result.hasError -> errorView(result, "An error was encountered while processing the Polyglot Query.")
-                else -> noResultsView()
-            }
-        }
-            .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-            .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
-            .apply {
-                minimumSize = Dimension(minimumSize.width, 150)
-            }
+    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) = when {
+        result.hasError -> panelView { it.errorView(result, "An error was encountered while processing the Polyglot Query.") }
+        result.output?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
+        else -> panelView { it.noResultsView() }
+    }
 
     suspend fun resultsView(fileEditor: PolyglotQuerySplitEditor, content: String): JComponent {
         val lvf = LightVirtualFile(
@@ -71,6 +64,15 @@ class PolyglotQueryInEditorResultsView(
             CsvTableFileEditor(project, lvf, format).component
         }
     }
+
+    private fun panelView(panelProvider: (Panel) -> Unit) = panel {
+        panelProvider.invoke(this)
+    }
+        .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
+        .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
+        .apply {
+            minimumSize = Dimension(minimumSize.width, 150)
+        }
 
     companion object {
         fun getInstance(project: Project): PolyglotQueryInEditorResultsView = project.service()
