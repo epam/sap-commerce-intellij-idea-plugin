@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -74,6 +74,7 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
                     || ImpexPsiUtils.nextElementIsUserRightsMacros(element)
                     || nextIdx == size) {
                     if (countLinesOnGroup > 1) {
+                        final int finalCountLinesOnGroup = countLinesOnGroup;
                         descriptors.add(new ImpexFoldingDescriptor(
                             startGroupElement,
                             startGroupElement.getStartOffsetInParent(),
@@ -82,7 +83,7 @@ public class ImpexFoldingLinesBuilder extends AbstractImpExFoldingBuilder {
                             (elm) -> {
                                 final PsiElement prevSibling = ImpexPsiUtils.getPrevNonWhitespaceElement(elm);
                                 if ((ImpexPsiUtils.isHeaderLine(prevSibling) || ImpexPsiUtils.isUserRightsMacros(prevSibling))) {
-                                    return ";....;....";
+                                    return ";..;.. %s data rows".formatted(finalCountLinesOnGroup);
                                 }
                                 return "";
                             }

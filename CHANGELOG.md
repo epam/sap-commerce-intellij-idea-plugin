@@ -36,6 +36,7 @@
 - Added possibility to reset value of the Macro Declaration Parameter [#1470](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1470)
 - Respect virtual parameters in the folded values [#1471](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1471)
 - Reset virtual parameters on file changes [#1472](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1472)
+- Show count of the folded data rows [#1473](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1473)
 
 ### `Groovy` enhancements
 - Introduced `batch` execution mode for Groovy files [#1450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1450)
