@@ -134,7 +134,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
                     row {
                         expandableTextField(
                             { text -> text.split("\n").toMutableList() },
-                            { strings -> strings.joinToString(" ")}
+                            { strings -> strings.joinToString(" ") }
                         )
                             .label("${parameter.displayName}:")
                             .align(AlignX.FILL)
@@ -160,11 +160,11 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
             PsiDocumentManager.getInstance(project).getPsiFile(fileEditor.editor.document)
                 ?.let { PsiTreeUtil.findChildrenOfType(it, ImpexMacroDeclaration::class.java) }
                 ?.associate {
-                    val pointer = SmartPointerManager.createPointer(it)
-                    val virtualParameter = currentVirtualParameters[pointer]
-                        ?: ImpExVirtualParameter.of(it)
-
-                    pointer to virtualParameter
+                    currentVirtualParameters
+                        .filter { (key, _) -> key.element?.isEquivalentTo(it) ?: false }
+                        .map { (key, value) -> key to value }
+                        .firstOrNull()
+                        ?: (SmartPointerManager.createPointer(it) to ImpExVirtualParameter.of(it))
                 }
                 ?: emptyMap()
         }
