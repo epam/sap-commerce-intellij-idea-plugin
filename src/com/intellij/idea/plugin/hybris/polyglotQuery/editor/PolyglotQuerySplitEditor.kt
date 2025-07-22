@@ -153,7 +153,7 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
         if (inEditorResultsView == null) return
 
         inEditorResultsView = PolyglotQueryInEditorResultsView.getInstance(project)
-            .progressView()
+            .executingView()
     }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {

@@ -159,7 +159,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
     fun showLoader() {
         if (inEditorResultsView == null) return
 
-        inEditorResultsView = FlexibleSearchInEditorResultsView.getInstance(project).progressView()
+        inEditorResultsView = FlexibleSearchInEditorResultsView.getInstance(project).executingView()
     }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {

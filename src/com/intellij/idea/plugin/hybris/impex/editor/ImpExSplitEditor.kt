@@ -161,7 +161,7 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
         if (inEditorResultsView == null) return
 
         inEditorResultsView = ImpExInEditorResultsView.getInstance(project)
-            .progressView()
+            .executingView()
     }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {
