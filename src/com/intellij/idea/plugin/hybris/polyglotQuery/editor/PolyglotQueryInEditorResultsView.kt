@@ -47,7 +47,7 @@ class PolyglotQueryInEditorResultsView(
 
     override suspend fun render(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) = when {
         result.hasError -> panelView { it.errorView("An error was encountered while processing the Polyglot Query.", result.errorMessage) }
-        result.output?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
+        result.output?.trim()?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
         else -> panelView { it.noResultsView() }
     }
 
