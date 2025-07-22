@@ -18,4 +18,46 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
-data class CxLoggerModel(val name: String, val effectiveLevel: String, val parentName: String?)
+data class CxLoggerModel(
+    val name: String,
+    val effectiveLevel: String,
+    val parentName: String? = null,
+    val inherited: Boolean = false,
+    private val rootParent: String? = null
+) {
+    val root: String
+        get() = rootParent ?: parentName ?: "root"
+
+    override fun toString(): String {
+        return "CxLoggerModel(name='$name', effectiveLevel='$effectiveLevel', parentName=$parentName, inherited=$inherited, root=${root})"
+    }
+}
+
+data class CxLoggersStorage(private val loggers: MutableMap<String, CxLoggerModel>) {
+
+    fun get(loggerIdentifier: String): CxLoggerModel {
+        return loggers[loggerIdentifier] ?: createLoggerModel(loggerIdentifier)
+    }
+
+    private fun _get(loggerIdentifier: String): CxLoggerModel {
+        return loggers[loggerIdentifier] ?: createLoggerModel(loggerIdentifier)
+    }
+
+    private fun createLoggerModel(loggerIdentifier: String): CxLoggerModel {
+        val parentLogger = loggerIdentifier.substringBeforeLast('.', "")
+            .takeIf(String::isNotEmpty)
+            ?.let { _get(it) }
+            ?: loggers["root"]
+            ?: CxLoggerModel(name = "root", effectiveLevel = "undefined")
+
+        return loggers.getOrPut(loggerIdentifier) {
+            CxLoggerModel(
+                loggerIdentifier,
+                parentLogger.effectiveLevel,
+                if (parentLogger.inherited) parentLogger.root else parentLogger.name,
+                true,
+                parentLogger.root
+            )
+        }
+    }
+}

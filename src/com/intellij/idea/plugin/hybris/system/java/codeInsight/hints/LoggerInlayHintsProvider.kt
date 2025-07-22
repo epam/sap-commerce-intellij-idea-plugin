@@ -85,19 +85,34 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(targetElement)
 
-                val text = RichText("[y] log level")
-                CxLoggerAccess.getInstance(project)
+                val logger = CxLoggerAccess.getInstance(project)
                     .logger(loggerIdentifier)
-                    ?.effectiveLevel
-                    ?.let { text.append(" [$it]", SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue)) }
+                val text = RichText("[y] log level")
+                logger
+                    ?.let {
+                        if (it.inherited)
+                            text.append(
+                                " [${it.effectiveLevel}]", SimpleTextAttributes(
+                                    SimpleTextAttributes.STYLE_UNDERLINE or
+                                        SimpleTextAttributes.STYLE_BOLD or
+                                        SimpleTextAttributes.STYLE_ITALIC, JBColor.GRAY
+                                )
+                            )
+                        else text.append(
+                            " [${it.effectiveLevel}]",
+                            SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue)
+                        )
+                    }
+                val tooltip = logger
+                    ?.let { return@let if (logger.inherited) "Inherited from: ${logger.parentName}" else "Setup the logger for SAP Commerce Cloud" }
+                    ?: "Fetch or Setup the logger for SAP Commerce Cloud"
 
                 val handler = ClickHandler(targetElement, loggerIdentifier, text)
 
-                val clickableRichTextCodeVisionEntry = ClickableRichTextCodeVisionEntry(id, text, handler, HybrisIcons.Y.REMOTE, "", "Setup the logger for SAP Commerce Cloud")
+                val clickableRichTextCodeVisionEntry = ClickableRichTextCodeVisionEntry(id, text, handler, HybrisIcons.Y.REMOTE, "", tooltip)
                 entries.add(range to clickableRichTextCodeVisionEntry)
             }
         })
-
         return entries
     }
 
