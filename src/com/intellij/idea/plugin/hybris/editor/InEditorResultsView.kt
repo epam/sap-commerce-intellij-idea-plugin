@@ -92,7 +92,7 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
             row {
                 cell(
                     InlineBanner(
-                        "No results found for given query",
+                        "No results found for the given query",
                         EditorNotificationPanel.Status.Info,
                     ).showCloseButton(false)
                 )
