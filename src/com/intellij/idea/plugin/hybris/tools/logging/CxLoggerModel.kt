@@ -46,20 +46,3 @@ data class CxLoggerModel(
     }
 }
 
-data class CxLoggersStorage(private val loggers: MutableMap<String, CxLoggerModel>) {
-
-    fun get(loggerIdentifier: String): CxLoggerModel = loggers[loggerIdentifier]
-        ?: createLoggerModel(loggerIdentifier)
-
-    private fun createLoggerModel(loggerIdentifier: String): CxLoggerModel {
-        val parentLogger = loggerIdentifier.substringBeforeLast('.', "")
-            .takeIf { it.isNotBlank() }
-            ?.let { get(it) }
-            ?: loggers[CxLoggerModel.ROOT_LOGGER_NAME]
-            ?: CxLoggerModel.root()
-
-        return loggers.getOrPut(loggerIdentifier) {
-            CxLoggerModel.inherited(loggerIdentifier, parentLogger)
-        }
-    }
-}

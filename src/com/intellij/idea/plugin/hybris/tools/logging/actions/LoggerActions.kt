@@ -23,14 +23,11 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(logLevel.name, "", logLevel.icon) {
+abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction(logLevel.name, "", logLevel.icon) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -44,13 +41,6 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(l
                 .notify(project)
             return
         }
-
-        val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-        val context = LoggingExecutionContext(
-            title = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]",
-            loggerName = logIdentifier,
-            logLevel = logLevel
-        )
 
         CxLoggerAccess.getInstance(project).setLogger(logIdentifier, logLevel)
     }
@@ -66,15 +56,15 @@ abstract class AbstractLoggerAction(private val logLevel: LogLevel) : AnAction(l
 
 }
 
-class AllLoggerAction : AbstractLoggerAction(LogLevel.ALL)
-class OffLoggerAction : AbstractLoggerAction(LogLevel.OFF)
-class TraceLoggerAction : AbstractLoggerAction(LogLevel.TRACE)
-class DebugLoggerAction : AbstractLoggerAction(LogLevel.DEBUG)
-class InfoLoggerAction : AbstractLoggerAction(LogLevel.INFO)
-class WarnLoggerAction : AbstractLoggerAction(LogLevel.WARN)
-class ErrorLoggerAction : AbstractLoggerAction(LogLevel.ERROR)
-class FatalLoggerAction : AbstractLoggerAction(LogLevel.FATAL)
-class SevereLoggerAction : AbstractLoggerAction(LogLevel.SEVERE)
+class AllLoggerAction : CxLoggerAction(LogLevel.ALL)
+class OffLoggerAction : CxLoggerAction(LogLevel.OFF)
+class TraceLoggerAction : CxLoggerAction(LogLevel.TRACE)
+class DebugLoggerAction : CxLoggerAction(LogLevel.DEBUG)
+class InfoLoggerAction : CxLoggerAction(LogLevel.INFO)
+class WarnLoggerAction : CxLoggerAction(LogLevel.WARN)
+class ErrorLoggerAction : CxLoggerAction(LogLevel.ERROR)
+class FatalLoggerAction : CxLoggerAction(LogLevel.FATAL)
+class SevereLoggerAction : CxLoggerAction(LogLevel.SEVERE)
 
 class FetchLoggerStateAction : AnAction("Fetch Logger State", "", HybrisIcons.Log.Action.FETCH) {
 
@@ -91,5 +81,13 @@ class FetchLoggerStateAction : AnAction("Fetch Logger State", "", HybrisIcons.Lo
 
         e.presentation.isEnabled = isRightPlace && CxLoggerAccess.getInstance(project).canRefresh
         e.presentation.isVisible = isRightPlace
+
+        if (CxLoggerAccess.getInstance(project).cacheInitialized) {
+            e.presentation.text = "Refresh Logger State"
+            e.presentation.icon = HybrisIcons.Log.Action.REFRESH
+        } else {
+            e.presentation.text = "Fetch Logger State"
+            e.presentation.icon = HybrisIcons.Log.Action.FETCH
+        }
     }
 }

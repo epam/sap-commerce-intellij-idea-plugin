@@ -31,8 +31,6 @@ import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
-import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -48,15 +46,17 @@ private const val FETCH_LOGGERS_STATE_GROOVY_SCRIPT = """
 """
 
 @Service(Service.Level.PROJECT)
-class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : UserDataHolderBase() {
+class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) {
     private var fetching: Boolean = false
-    val loggers
-        get() = getUserData(KEY_LOGGERS_STATE)
+    val loggersCache = CxLoggersStorage()
 
     val canRefresh: Boolean
         get() = !fetching
 
-    fun logger(loggerIdentifier: String) = loggers?.get(loggerIdentifier)
+    val cacheInitialized: Boolean
+        get() = loggersCache.initialized
+
+    fun logger(loggerIdentifier: String): CxLoggerModel? = if (!cacheInitialized) null else loggersCache.get(loggerIdentifier)
 
     fun setLogger(loggerName: String, logLevel: LogLevel) {
         val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
@@ -114,12 +114,12 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 "<p>Server: ${server.shortenConnectionName()}</p>"
             }
         }
-
     }
 
     private fun updateCache(loggers: Map<String, CxLoggerModel>?) {
         coroutineScope.launch {
-            putUserData(KEY_LOGGERS_STATE, CxLoggersStorage(loggers?.toMutableMap() ?: mutableMapOf()))
+
+            loggersCache.update(loggers ?: emptyMap())
 
             edtWriteAction {
                 PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
@@ -136,6 +136,5 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
     companion object {
         fun getInstance(project: Project): CxLoggerAccess = project.service()
-        private val KEY_LOGGERS_STATE = Key.create<CxLoggersStorage>("flexibleSearch.parameters.key")
     }
 }
