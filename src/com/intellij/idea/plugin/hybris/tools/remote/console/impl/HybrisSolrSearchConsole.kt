@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ConsoleAwareExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrCoreData
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrQueryExecutionContext
@@ -111,14 +111,14 @@ class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) 
         reloadCores(selectedCore)
     }
 
-    override fun printResult(result: DefaultExecutionResult) {
+    override fun printResult(result: ConsoleAwareExecutionResult) {
         clear()
 
         printHost(RemoteConnectionType.SOLR, result.replicaContext)
 
         when {
-            result.hasError && result.errorMessage != null -> ConsoleViewUtil.printAsFileType(this, result.errorMessage, PlainTextFileType.INSTANCE)
-            result.output != null -> ConsoleViewUtil.printAsFileType(this, result.output, JsonFileType.INSTANCE)
+            result.hasError -> ConsoleViewUtil.printAsFileType(this, result.errorMessage!!, PlainTextFileType.INSTANCE)
+            result.output != null -> ConsoleViewUtil.printAsFileType(this, result.output!!, JsonFileType.INSTANCE)
             else -> ConsoleViewUtil.printAsFileType(this, "No Data", PlainTextFileType.INSTANCE)
         }
     }

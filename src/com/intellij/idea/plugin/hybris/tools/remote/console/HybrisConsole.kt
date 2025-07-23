@@ -24,7 +24,7 @@ import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ConsoleAwareExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.lang.Language
@@ -92,7 +92,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         isEditable = true
     }
 
-    fun print(result: DefaultExecutionResult, isEditable: Boolean = true) {
+    fun print(result: ConsoleAwareExecutionResult, isEditable: Boolean = true) {
         coroutineScope.launch {
             edtWriteAction {
                 printResult(result)
@@ -116,7 +116,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         }
     }
 
-    protected open fun printResult(result: DefaultExecutionResult) {
+    protected open fun printResult(result: ConsoleAwareExecutionResult) {
         printHost(result.remoteConnectionType, result.replicaContext)
         printPlainText(result)
     }
@@ -133,7 +133,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
         print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
     }
 
-    private fun printPlainText(result: DefaultExecutionResult) {
+    private fun printPlainText(result: ConsoleAwareExecutionResult) {
         if (result.hasError) {
             print("[ERROR]\n", SYSTEM_OUTPUT)
             listOfNotNull(result.errorMessage, result.errorDetailMessage)

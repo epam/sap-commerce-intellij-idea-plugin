@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ConsoleAwareExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.TimeOption
 import com.intellij.openapi.components.Service
@@ -94,7 +94,7 @@ class HybrisImpexMonitorConsole(project: Project, coroutineScope: CoroutineScope
         return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
     }
 
-    override fun printResult(result: DefaultExecutionResult) {
+    override fun printResult(result: ConsoleAwareExecutionResult) {
         clear()
         val text = result.output ?: return
         ConsoleViewUtil.printAsFileType(this, text, ImpexFileType)

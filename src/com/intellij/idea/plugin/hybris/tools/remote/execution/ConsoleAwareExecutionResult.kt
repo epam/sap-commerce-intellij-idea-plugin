@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,18 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.tools.remote.execution
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
-import org.apache.http.HttpStatus
 
-data class DefaultExecutionResult(
-    override val remoteConnectionType: RemoteConnectionType = RemoteConnectionType.Hybris,
-    val statusCode: Int = HttpStatus.SC_OK,
-    override val result: String? = null,
-    override val output: String? = null,
-    override val replicaContext: ReplicaContext? = null,
-    override val errorMessage: String? = null,
-    override val errorDetailMessage: String? = null,
-) : ConsoleAwareExecutionResult
+interface ConsoleAwareExecutionResult : ExecutionResult {
+    val remoteConnectionType: RemoteConnectionType
+    val result: String?
+    val output: String?
+    val replicaContext: ReplicaContext?
+
+    val hasError
+        get() = errorMessage != null
+}
