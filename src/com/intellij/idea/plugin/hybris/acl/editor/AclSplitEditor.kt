@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.acl.editor
 
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
@@ -86,8 +87,8 @@ class AclSplitEditor(internal val textEditor: TextEditor, private val project: P
         }
     }
 
-    fun showLoader() {
-        inEditorResultsView = AclInEditorResultsView.getInstance(project).executingView()
+    fun showLoader(context: ImpExExecutionContext) {
+        inEditorResultsView = AclInEditorResultsView.getInstance(project).executingView(context.executionTitle)
     }
 
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {

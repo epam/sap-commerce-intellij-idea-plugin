@@ -55,7 +55,7 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
 
         if (fileEditor?.inEditorResults ?: false) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
-            fileEditor.showLoader()
+            fileEditor.showLoader(context)
 
             FlexibleSearchExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
                 fileEditor.renderExecutionResult(result)

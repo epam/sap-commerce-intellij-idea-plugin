@@ -38,7 +38,7 @@ data class ImpExExecutionContext(
     val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
 ) : ExecutionContext {
 
-    override val title: String
+    override val executionTitle: String
         get() = when (executionMode) {
             ExecutionMode.IMPORT -> "Importing ${mode.title} on the remote SAP Commerce instance…"
             ExecutionMode.VALIDATE -> "Validating ${mode.title} on the remote SAP Commerce instance…"

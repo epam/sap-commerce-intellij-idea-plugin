@@ -22,7 +22,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.solr
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 
 data class SolrQueryExecutionContext(
-    override val title: String = "Execute HTTP Call to SOLR...",
+    override val executionTitle: String = "Execute HTTP Call to SOLR...",
     val content: String,
     val core: String,
     val rows: Int

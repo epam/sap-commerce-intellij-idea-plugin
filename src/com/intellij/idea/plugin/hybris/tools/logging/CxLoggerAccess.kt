@@ -74,7 +74,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     fun setLogger(loggerName: String, logLevel: LogLevel) {
         val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val context = LoggingExecutionContext(
-            title = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName()}]...",
+            executionTitle = "Update Log Level Status for SAP Commerce [${server.shortenConnectionName()}]...",
             loggerName = loggerName,
             logLevel = logLevel
         )
@@ -103,7 +103,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         val context = GroovyExecutionContext(
             content = FETCH_LOGGERS_STATE_GROOVY_SCRIPT,
             transactionMode = TransactionMode.ROLLBACK,
-            title = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]..."
+            executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]..."
         )
 
         fetching = true

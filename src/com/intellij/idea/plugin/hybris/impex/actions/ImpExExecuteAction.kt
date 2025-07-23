@@ -54,7 +54,7 @@ class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole, ImpExSplit
 
         if (fileEditor?.inEditorResults ?: false) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
-            fileEditor.showLoader()
+            fileEditor.showLoader(context)
 
             ImpExExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
                 fileEditor.renderExecutionResult(result)

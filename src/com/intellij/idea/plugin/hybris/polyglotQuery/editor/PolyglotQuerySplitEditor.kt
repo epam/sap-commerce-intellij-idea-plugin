@@ -149,8 +149,8 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
         }
     }
 
-    fun showLoader() {
-        inEditorResultsView = PolyglotQueryInEditorResultsView.getInstance(project).executingView()
+    fun showLoader(richMessage: String) {
+        inEditorResultsView = PolyglotQueryInEditorResultsView.getInstance(project).executingView(richMessage)
     }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {

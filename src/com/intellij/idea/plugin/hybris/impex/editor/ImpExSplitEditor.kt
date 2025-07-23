@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.editor
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
@@ -157,8 +158,8 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
         }
     }
 
-    fun showLoader() {
-        inEditorResultsView = ImpExInEditorResultsView.getInstance(project).executingView()
+    fun showLoader(context: ImpExExecutionContext) {
+        inEditorResultsView = ImpExInEditorResultsView.getInstance(project).executingView(context.executionTitle)
     }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {

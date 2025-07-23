@@ -35,7 +35,7 @@ data class FlexibleSearchExecutionContext(
     val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,
 ) : ExecutionContext {
 
-    override val title: String
+    override val executionTitle: String
         get() = "Executing ${queryMode.title} on the remote SAP Commerce instance…"
 
     fun params(settings: RemoteConnectionSettings): Map<String, String> = buildMap {

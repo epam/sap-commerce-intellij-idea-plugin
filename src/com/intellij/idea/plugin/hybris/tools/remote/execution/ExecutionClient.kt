@@ -94,7 +94,7 @@ abstract class ExecutionClient<E : ExecutionContext, R : ExecutionResult>(
     private suspend fun process(
         context: E,
         resultCallback: (CoroutineScope, R) -> Unit
-    ) = withBackgroundProgress(project, context.title, true) {
+    ) = withBackgroundProgress(project, context.executionTitle, true) {
         val result = reportProgress { progressReporter ->
             try {
                 execute(context)

@@ -55,7 +55,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val contexts = executionClient.connectionContext.replicaContexts
             .map {
                 GroovyExecutionContext(
-                    title = "$prefix | ${it.replicaId} | ${GroovyExecutionContext.DEFAULT_TITLE}",
+                    executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecutionContext.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = transactionMode,
                     replicaContext = it
@@ -64,7 +64,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
             .takeIf { it.isNotEmpty() }
             ?: listOf(
                 GroovyExecutionContext(
-                    title = "$prefix | ${GroovyExecutionContext.DEFAULT_TITLE}",
+                    executionTitle = "$prefix | ${GroovyExecutionContext.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = transactionMode
                 )

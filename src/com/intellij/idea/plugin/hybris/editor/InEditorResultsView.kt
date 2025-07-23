@@ -46,7 +46,7 @@ import kotlin.let
 
 abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protected val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun executingView(richMessage: String = "Executing HTTP Call to SAP Commerce...") = panel {
+    fun executingView(richMessage: String) = panel {
         panel {
             row {
                 cell(

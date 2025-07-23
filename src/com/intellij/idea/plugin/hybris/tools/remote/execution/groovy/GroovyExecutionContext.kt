@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import org.apache.commons.lang3.BooleanUtils
 
 data class GroovyExecutionContext(
-    override val title: String = DEFAULT_TITLE,
+    override val executionTitle: String = DEFAULT_TITLE,
     private val content: String,
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,

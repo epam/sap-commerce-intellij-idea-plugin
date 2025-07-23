@@ -29,6 +29,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.testFramework.LightVirtualFile
 import kotlinx.coroutines.CoroutineScope
 import javax.swing.JComponent
@@ -66,7 +67,9 @@ class PolyglotQueryInEditorResultsView(
         val format = GridXSVFormatService.getInstance(project).getFormat(PolyglotQueryLanguage)
 
         return edtWriteAction {
-            CsvTableFileEditor(project, lvf, format).component
+            CsvTableFileEditor(project, lvf, format).apply {
+                Disposer.register(fileEditor.textEditor, this)
+            }.component
         }
     }
 

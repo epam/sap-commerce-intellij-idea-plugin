@@ -96,7 +96,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
 
         if (fileEditor.inEditorResults) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
-            fileEditor.showLoader()
+            fileEditor.showLoader(context.executionTitle)
 
             FlexibleSearchExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
                 val pks = getPKsFromDirectQuery(result)
@@ -160,7 +160,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
 
         if (fileEditor.inEditorResults) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
-            fileEditor.showLoader()
+            fileEditor.showLoader(context.executionTitle)
 
             GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
                 val pks = result.output?.takeIf { it.isNotEmpty() }

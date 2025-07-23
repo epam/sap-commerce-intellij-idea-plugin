@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionResult
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -156,8 +157,8 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         }
     }
 
-    fun showLoader() {
-        inEditorResultsView = FlexibleSearchInEditorResultsView.getInstance(project).executingView()
+    fun showLoader(context: FlexibleSearchExecutionContext) {
+        inEditorResultsView = FlexibleSearchInEditorResultsView.getInstance(project).executingView(context.executionTitle)
     }
 
     fun refreshParameters(delayMs: Duration = 500.milliseconds) {
