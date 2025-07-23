@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import org.apache.commons.lang3.BooleanUtils
 
 data class GroovyExecutionContext(
-    override val title: String = "Execute HTTP Call to SAP Commerce...",
+    override val title: String = DEFAULT_TITLE,
     private val content: String,
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,
@@ -35,5 +35,9 @@ data class GroovyExecutionContext(
         put("scriptType", "groovy")
         put("commit", BooleanUtils.toStringTrueFalse(transactionMode == TransactionMode.COMMIT))
         put("script", content)
+    }
+
+    companion object {
+        const val DEFAULT_TITLE = "Executing Groovy script on the remote SAP Commerce..."
     }
 }

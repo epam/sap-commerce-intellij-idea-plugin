@@ -133,6 +133,8 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
             }
         }
         cookies = cookiesPerSettings.get(cookiesKey);
+        if (cookies == null) return createErrorResponse("Unable to authenticate request.");
+
         final var sessionId = cookies.get(cookieName);
         final var csrfToken = getCsrfToken(settings.getGeneratedURL(), settings, cookiesKey);
         if (csrfToken == null) {

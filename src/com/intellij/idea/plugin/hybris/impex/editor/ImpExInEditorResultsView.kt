@@ -35,20 +35,18 @@ import javax.swing.JComponent
 @Service(Service.Level.PROJECT)
 class ImpExInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<ImpExSplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: ImpExSplitEditor, results: Collection<DefaultExecutionResult>): JComponent {
-        return results.firstOrNull()
-            .takeIf { results.size == 1 }
-            ?.let { result ->
-                panelView {
-                    when {
-                        result.hasError -> it.errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
-                        result.output != null -> it.resultsView(result.output)
-                        else -> it.noResultsView()
-                    }
+    override suspend fun render(fileEditor: ImpExSplitEditor, results: Collection<DefaultExecutionResult>): JComponent = results.firstOrNull()
+        .takeIf { results.size == 1 }
+        ?.let { result ->
+            panelView {
+                when {
+                    result.hasError -> it.errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
+                    result.output != null -> it.resultsView(result.output)
+                    else -> it.noResultsView()
                 }
             }
-            ?: multiResultsNotSupportedView()
-    }
+        }
+        ?: multiResultsNotSupportedView()
 
     private fun Panel.resultsView(output: String) {
         panel {

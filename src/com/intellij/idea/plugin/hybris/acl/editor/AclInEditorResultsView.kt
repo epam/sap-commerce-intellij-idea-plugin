@@ -35,21 +35,19 @@ import kotlinx.coroutines.CoroutineScope
 @Service(Service.Level.PROJECT)
 class AclInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<AclSplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: AclSplitEditor, results: Collection<DefaultExecutionResult>): DialogPanel {
-        return results.firstOrNull()
-            .takeIf { results.size == 1 }
-            ?.let { result ->
+    override suspend fun render(fileEditor: AclSplitEditor, results: Collection<DefaultExecutionResult>): DialogPanel = results.firstOrNull()
+        .takeIf { results.size == 1 }
+        ?.let { result ->
 
-                panelView {
-                    when {
-                        result.hasError -> it.errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
-                        result.output != null -> it.resultsView(result.output)
-                        else -> it.noResultsView()
-                    }
+            panelView {
+                when {
+                    result.hasError -> it.errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
+                    result.output != null -> it.resultsView(result.output)
+                    else -> it.noResultsView()
                 }
             }
-            ?: multiResultsNotSupportedView()
-    }
+        }
+        ?: multiResultsNotSupportedView()
 
     private fun Panel.resultsView(output: String) {
         panel {

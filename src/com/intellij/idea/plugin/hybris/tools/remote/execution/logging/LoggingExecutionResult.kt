@@ -24,7 +24,8 @@ import org.apache.http.HttpStatus
 
 data class LoggingExecutionResult(
     val statusCode: Int = HttpStatus.SC_OK,
-    val errorMessage: String? = null,
+    override val errorMessage: String? = null,
+    override val errorDetailMessage: String? = null,
     private val result: List<CxLoggerModel>? = null,
 ) : ExecutionResult {
 

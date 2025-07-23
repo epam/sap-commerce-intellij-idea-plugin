@@ -27,9 +27,9 @@ data class DefaultExecutionResult(
     val statusCode: Int = HttpStatus.SC_OK,
     val result: String? = null,
     val output: String? = null,
-    val errorMessage: String? = null,
-    val errorDetailMessage: String? = null,
     val replicaContext: ReplicaContext? = null,
+    override val errorMessage: String? = null,
+    override val errorDetailMessage: String? = null,
 ) : ExecutionResult {
 
     val hasError

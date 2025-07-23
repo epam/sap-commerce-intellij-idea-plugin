@@ -97,6 +97,11 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
         }
     }
 
+    override suspend fun onError(context: LoggingExecutionContext, exception: Throwable) = LoggingExecutionResult(
+        errorMessage = exception.message,
+        errorDetailMessage = exception.stackTraceToString(),
+    )
+
     companion object {
         @Serial
         private const val serialVersionUID: Long = 576041226131571722L

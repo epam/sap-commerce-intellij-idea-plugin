@@ -39,18 +39,16 @@ class PolyglotQueryInEditorResultsView(
     coroutineScope: CoroutineScope
 ) : InEditorResultsView<PolyglotQuerySplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, results: Collection<DefaultExecutionResult>): JComponent {
-        return results.firstOrNull()
-            .takeIf { results.size == 1 }
-            ?.let { result ->
-                when {
-                    result.hasError -> panelView { it.errorView("An error was encountered while processing the Polyglot Query.", result.errorMessage) }
-                    result.output?.trim()?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
-                    else -> panelView { it.noResultsView() }
-                }
+    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, results: Collection<DefaultExecutionResult>): JComponent = results.firstOrNull()
+        .takeIf { results.size == 1 }
+        ?.let { result ->
+            when {
+                result.hasError -> panelView { it.errorView("An error was encountered while processing the Polyglot Query.", result.errorMessage) }
+                result.output?.trim()?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
+                else -> panelView { it.noResultsView() }
             }
-            ?: multiResultsNotSupportedView()
-    }
+        }
+        ?: multiResultsNotSupportedView()
 
     suspend fun resultsView(fileEditor: PolyglotQuerySplitEditor, content: String): JComponent {
         val lvf = LightVirtualFile(

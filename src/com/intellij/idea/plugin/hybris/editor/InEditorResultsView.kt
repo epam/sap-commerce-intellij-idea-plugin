@@ -46,12 +46,12 @@ import kotlin.let
 
 abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protected val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun executingView(message: String = "Executing HTTP Call to SAP Commerce...") = panel {
+    fun executingView(richMessage: String = "Executing HTTP Call to SAP Commerce...") = panel {
         panel {
             row {
                 cell(
                     InlineBanner(
-                        message,
+                        richMessage,
                         EditorNotificationPanel.Status.Info
                     )
                         .showCloseButton(false)

@@ -86,11 +86,8 @@ class GroovySplitEditor(internal val textEditor: TextEditor, private val project
         }
     }
 
-    fun showLoader() {
-        if (inEditorResultsView == null) return
-
-        inEditorResultsView = GroovyInEditorResultsView.getInstance(project)
-            .executingView()
+    fun showLoader(richMessage: String) {
+        inEditorResultsView = GroovyInEditorResultsView.getInstance(project).executingView(richMessage)
     }
 
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {

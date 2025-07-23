@@ -53,7 +53,21 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
                     }
                 }
             }
-            ?: multiResultsNotSupportedView()
+            ?: panelView {
+                results.forEach { result ->
+                    it.collapsibleGroup("Replica: ${result.replicaContext?.replicaId ?: ""}") {
+                        when {
+                            result.hasError -> errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
+                            result.result != null || result.output != null -> {
+                                if (result.result != null) group("Result", result.result)
+                                if (result.output != null) group("Output", result.output)
+                            }
+
+                            else -> noResultsView()
+                        }
+                    }
+                }
+            }
     }
 
     private fun Panel.group(title: String, text: String) {

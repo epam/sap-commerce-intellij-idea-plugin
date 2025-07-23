@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.groovy.editor.GroovySplitEditor
 import com.intellij.idea.plugin.hybris.groovy.editor.groovySplitEditor
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
@@ -46,28 +47,51 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e)
+        val fileName = e.getData(CommonDataKeys.PSI_FILE)?.name
+        val prefix = fileName ?: "script"
+
         val transactionMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode
         val executionClient = GroovyExecutionClient.getInstance(project)
         val contexts = executionClient.connectionContext.replicaContexts
             .map {
                 GroovyExecutionContext(
+                    title = "$prefix | ${it.replicaId} | ${GroovyExecutionContext.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = transactionMode,
                     replicaContext = it
                 )
             }
             .takeIf { it.isNotEmpty() }
-            ?: listOf(GroovyExecutionContext(content = content, transactionMode = transactionMode))
+            ?: listOf(
+                GroovyExecutionContext(
+                    title = "$prefix | ${GroovyExecutionContext.DEFAULT_TITLE}",
+                    content = content,
+                    transactionMode = transactionMode
+                )
+            )
 
         if (fileEditor?.inEditorResults ?: false) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
-            fileEditor.showLoader()
+            fileEditor.showLoader("$prefix | 1 of ${contexts.size} | ${GroovyExecutionContext.DEFAULT_TITLE}")
+            var completed = 1
 
             executionClient.execute(
                 contexts = contexts,
-                resultCallback = { _, result -> },
+                resultCallback = { _, result ->
+                    completed++
+                    fileEditor.showLoader("$prefix | $completed of ${contexts.size} | ${GroovyExecutionContext.DEFAULT_TITLE}")
+                },
                 resultsCallback = { coroutineScope, results ->
                     fileEditor.renderExecutionResults(results)
+                    fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
+                },
+                onError = { _, e ->
+                    fileEditor.renderExecutionResults(listOf(
+                        DefaultExecutionResult(
+                            errorMessage = e.message,
+                            errorDetailMessage = e.stackTraceToString()
+                        )
+                    ))
                     fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
                 }
             )
@@ -77,7 +101,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
             executionClient.execute(
                 contexts = contexts,
                 resultCallback = { coroutineScope, result -> console.print(result, false) },
-                resultsCallback = { coroutineScope, results -> console.afterExecution() }
+                resultsCallback = { coroutineScope, results -> console.afterExecution() },
             )
         }
     }
