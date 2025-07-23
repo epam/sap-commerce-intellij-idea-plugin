@@ -27,6 +27,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.KeepPopupOnPerform
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
+import com.intellij.openapi.util.Disposer
 import com.intellij.util.asSafely
 import java.awt.Component
 
@@ -88,6 +89,8 @@ class GroovyCCv2ReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(Re
             ?.replicaContexts
             ?: emptyList()
 
-        CCv2ReplicaSelectionDialog(project, replicaContexts, component).showAndGet()
+        val dialog = CCv2ReplicaSelectionDialog(project, replicaContexts, component)
+        dialog.showAndGet()
+        Disposer.dispose(dialog)
     }
 }
