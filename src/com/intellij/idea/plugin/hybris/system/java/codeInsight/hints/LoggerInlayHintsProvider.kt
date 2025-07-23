@@ -41,7 +41,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.impl.java.stubs.JavaStubElementTypes
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.endOffset
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
@@ -49,7 +48,6 @@ import com.intellij.ui.SimpleTextAttributes.*
 import com.intellij.ui.awt.RelativePoint
 import java.awt.Point
 import java.awt.event.MouseEvent
-
 
 class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
     override val defaultAnchor: CodeVisionAnchorKind = CodeVisionAnchorKind.Default
@@ -59,9 +57,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
 
     override fun computeLenses(editor: Editor, psiFile: PsiFile): List<Pair<TextRange, CodeVisionEntry>> {
         if (psiFile.isNotHybrisProject) return emptyList()
-
         val project = psiFile.project
-        val entries = mutableListOf<Pair<TextRange, CodeVisionEntry>>()
 
         return PsiTreeUtil.findChildrenOfAnyType(psiFile, PsiClass::class.java, PsiPackageStatement::class.java)
             .mapNotNull {
@@ -144,7 +140,3 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         popup.show(relativePoint)
     }
 }
-
-private fun PsiFile.packageName() = childrenOfType<PsiPackageStatement>()
-    .firstOrNull()
-    ?.packageName
