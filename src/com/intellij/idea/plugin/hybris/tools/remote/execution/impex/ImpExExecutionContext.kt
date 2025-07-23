@@ -33,15 +33,15 @@ data class ImpExExecutionContext(
     private val enableCodeExecution: Toggle = Toggle.ON,
     private val sldEnabled: Toggle = Toggle.ON,
     private val distributedMode: Toggle = Toggle.ON,
-    val mode: Mode = Mode.IMPEX,
+    val dialect: ImpExDialect = ImpExDialect.IMPEX,
     val executionMode: ExecutionMode = ExecutionMode.IMPORT,
     val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
 ) : ExecutionContext {
 
     override val executionTitle: String
         get() = when (executionMode) {
-            ExecutionMode.IMPORT -> "Importing ${mode.title} on the remote SAP Commerce instance…"
-            ExecutionMode.VALIDATE -> "Validating ${mode.title} on the remote SAP Commerce instance…"
+            ExecutionMode.IMPORT -> "Importing ${dialect.title} on the remote SAP Commerce instance…"
+            ExecutionMode.VALIDATE -> "Validating ${dialect.title} on the remote SAP Commerce instance…"
         }
 
     fun params(): Map<String, String> = buildMap {
@@ -59,7 +59,7 @@ data class ImpExExecutionContext(
     }
 }
 
-enum class Mode(val title: String) {
+enum class ImpExDialect(val title: String) {
     IMPEX("ImpEx"),
     ACL("ACL")
 }
