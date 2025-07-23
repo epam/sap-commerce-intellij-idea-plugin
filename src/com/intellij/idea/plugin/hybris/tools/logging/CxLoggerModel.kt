@@ -45,4 +45,3 @@ data class CxLoggerModel(
         fun root() = of(name = ROOT_LOGGER_NAME, effectiveLevel = "undefined")
     }
 }
-
