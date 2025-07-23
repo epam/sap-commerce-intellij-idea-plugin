@@ -40,22 +40,26 @@ class FlexibleSearchInEditorResultsView(
     coroutineScope: CoroutineScope
 ) : InEditorResultsView<FlexibleSearchSplitEditor, FlexibleSearchExecutionResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: FlexibleSearchSplitEditor, results: Collection<FlexibleSearchExecutionResult>): JComponent = results.firstOrNull()
-        .takeIf { results.size == 1 }
-        ?.let { result ->
-            when {
-                result.hasError -> panelView {
-                    it.errorView(
-                        "An error was encountered while processing the FlexibleSearch query.",
-                        result.errorMessage
-                    )
-                }
+    override suspend fun render(fileEditor: FlexibleSearchSplitEditor, results: Collection<FlexibleSearchExecutionResult>): JComponent {
+        fileEditor.csvResultsDisposable?.dispose()
 
-                result.hasDataRows -> resultsView(fileEditor, result.output!!)
-                else -> panelView { it.noResultsView() }
+        return results.firstOrNull()
+            .takeIf { results.size == 1 }
+            ?.let { result ->
+                when {
+                    result.hasError -> panelView {
+                        it.errorView(
+                            "An error was encountered while processing the FlexibleSearch query.",
+                            result.errorMessage
+                        )
+                    }
+
+                    result.hasDataRows -> resultsView(fileEditor, result.output!!)
+                    else -> panelView { it.noResultsView() }
+                }
             }
-        }
-        ?: multiResultsNotSupportedView()
+            ?: multiResultsNotSupportedView()
+    }
 
     suspend fun resultsView(fileEditor: FlexibleSearchSplitEditor, content: String): JComponent {
         val lvf = LightVirtualFile(
@@ -67,8 +71,13 @@ class FlexibleSearchInEditorResultsView(
         val format = GridXSVFormatService.getInstance(project).getFormat(FlexibleSearchLanguage)
 
         return edtWriteAction {
+            val newDisposable = Disposer.newDisposable().apply {
+                Disposer.register(fileEditor, this)
+                fileEditor.csvResultsDisposable = this
+            }
+
             CsvTableFileEditor(project, lvf, format).apply {
-                Disposer.register(fileEditor.textEditor, this)
+                Disposer.register(newDisposable, this)
             }.component
         }
     }

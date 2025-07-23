@@ -114,6 +114,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         }
 
     internal var virtualParametersDisposable: Disposable? = null
+    internal var csvResultsDisposable: Disposable? = null
 
     private var renderParametersJob: Job? = null
     private var reparseTextEditorJob: Job? = null
