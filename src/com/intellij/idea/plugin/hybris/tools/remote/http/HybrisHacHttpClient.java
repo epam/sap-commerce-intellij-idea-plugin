@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaCont
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.UserDataHolderBase;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -70,7 +69,11 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
@@ -103,7 +106,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         }
     };
 
-    private final Map<Pair<RemoteConnectionSettings, ReplicaContext>, Map<String, String>> cookiesPerSettings = new WeakHashMap<>();
+    private final Map<String, Map<String, String>> cookiesPerSettings = new ConcurrentHashMap<>();
 
     public static HybrisHacHttpClient getInstance(final Project project) {
         return project.getService(HybrisHacHttpClient.class);
@@ -111,7 +114,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
 
     @NotNull
     public String testConnection(@NotNull final RemoteConnectionSettings settings) {
-        return login(settings, null, Pair.pair(settings, null));
+        return login(settings, null, getCookiesKey(settings, null));
     }
 
     @NotNull
@@ -123,7 +126,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         final RemoteConnectionSettings settings,
         @Nullable final ReplicaContext replicaContext
     ) {
-        final var cookiesKey = Pair.pair(settings, replicaContext);
+        final var cookiesKey = getCookiesKey(settings, replicaContext);
         final String cookieName = getCookieName(settings);
         var cookies = cookiesPerSettings.get(cookiesKey);
         if (cookies == null || !cookies.containsKey(cookieName)) {
@@ -194,7 +197,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
     private String login(
         @NotNull final RemoteConnectionSettings settings,
         @Nullable final ReplicaContext replicaContext,
-        final Pair<RemoteConnectionSettings, ReplicaContext> cookiesKey
+        final String cookiesKey
     ) {
         final var hostHacURL = settings.getGeneratedURL();
 
@@ -275,7 +278,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         final String hacURL,
         final @NotNull RemoteConnectionSettings settings,
         final @Nullable ReplicaContext replicaContext,
-        final Pair<RemoteConnectionSettings, ReplicaContext> cookiesKey
+        final String cookiesKey
     ) {
         final var cookies = cookiesPerSettings.computeIfAbsent(cookiesKey, _settings -> new HashMap<>());
         cookies.clear();
@@ -324,7 +327,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
     private String getCsrfToken(
         final @NotNull String hacURL,
         final @NotNull RemoteConnectionSettings settings,
-        final Pair<RemoteConnectionSettings, ReplicaContext> cookiesKey
+        final String cookiesKey
     ) {
         try {
             final var sslProtocol = settings.getSslProtocol();
@@ -348,5 +351,12 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         HttpsURLConnection.setDefaultHostnameVerifier(new NoopHostnameVerifier());
         return Jsoup.connect(url);
+    }
+
+    private String getCookiesKey(final RemoteConnectionSettings settings, @Nullable final ReplicaContext context) {
+        return "%s_%s".formatted(
+            settings.getUuid(),
+            context == null ? "auto" : context.getReplicaId()
+        );
     }
 }

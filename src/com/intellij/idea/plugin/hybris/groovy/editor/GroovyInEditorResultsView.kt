@@ -23,8 +23,12 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionRe
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.Panel
+import com.intellij.ui.dsl.builder.TopGap
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import kotlinx.coroutines.CoroutineScope
 import java.lang.Boolean
 import javax.swing.JComponent
@@ -54,6 +58,27 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
                 }
             }
             ?: panelView {
+                val resultsWithErrors = results.count { result -> result.hasError }
+
+                if (resultsWithErrors > 0) {
+                    it.panel {
+                        row {
+                            cell(
+                                InlineBanner(
+                                    """
+                                        Groovy script execution resulted to an error on $resultsWithErrors of ${results.size} replicas.<br>
+                                        Details of each individual execution result can be found below.
+                                        """.trimIndent(),
+                                    EditorNotificationPanel.Status.Warning,
+                                ).showCloseButton(false)
+                            )
+                                .align(Align.FILL)
+                                .resizableColumn()
+                        }.topGap(TopGap.SMALL)
+                    }
+                        .customize(UnscaledGaps(16, 16, 16, 16))
+                }
+
                 results
                     .sortedBy { result -> result.replicaContext?.replicaId }
                     .forEach { result ->
