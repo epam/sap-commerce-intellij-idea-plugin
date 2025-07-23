@@ -38,6 +38,8 @@
             </action>
             <action id="hybris.groovy.openQuery" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenQueryAction"/>
             <separator/>
+            <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyToggleInEditorResultsAction"/>
+            <separator/>
             <action id="hybris.groovy.openSettings" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenSettingsAction"/>
             <separator/>
 
