@@ -78,7 +78,7 @@ class GroovySplitEditor(internal val textEditor: TextEditor, private val project
         add(verticalSplitter, BorderLayout.CENTER)
     }
 
-    fun renderExecutionResult(result: DefaultExecutionResult) = GroovyInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+    fun renderExecutionResults(results: Collection<DefaultExecutionResult>) = GroovyInEditorResultsView.getInstance(project).resultView(this, results) { coroutineScope, view ->
         coroutineScope.launch {
             edtWriteAction {
                 inEditorResultsView = view

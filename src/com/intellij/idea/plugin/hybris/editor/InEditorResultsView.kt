@@ -19,8 +19,10 @@
 package com.intellij.idea.plugin.hybris.editor
 
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
+import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.InlineBanner
@@ -32,12 +34,15 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.awt.Dimension
 import java.lang.Boolean
 import javax.swing.JComponent
 import javax.swing.JEditorPane
+import javax.swing.ScrollPaneConstants
 import kotlin.String
 import kotlin.Unit
 import kotlin.apply
+import kotlin.let
 
 abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protected val project: Project, private val coroutineScope: CoroutineScope) {
 
@@ -59,17 +64,28 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
             .customize(UnscaledGaps(16, 16, 16, 16))
     }.apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
 
-    fun resultView(fileEditor: E, result: R, applyView: (CoroutineScope, JComponent) -> Unit) {
+    fun resultView(fileEditor: E, result: R, applyView: (CoroutineScope, JComponent) -> Unit) = resultView(fileEditor, listOf(result), applyView)
+
+    fun resultView(fileEditor: E, results: Collection<R>, applyView: (CoroutineScope, JComponent) -> Unit) {
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
-            val view = render(fileEditor, result)
+            val view = render(fileEditor, results)
 
             applyView(this, view)
         }
     }
 
-    protected abstract suspend fun render(fileEditor: E, result: R): JComponent
+    protected abstract suspend fun render(fileEditor: E, results: Collection<R>): JComponent
+
+    protected fun panelView(panelProvider: (Panel) -> Unit) = panel {
+        panelProvider.invoke(this)
+    }
+        .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
+        .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
+        .apply {
+            minimumSize = Dimension(minimumSize.width, 150)
+        }
 
     protected fun Panel.noResultsView() {
         panel {
@@ -121,5 +137,12 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
                 }.topGap(TopGap.SMALL)
             }
         }
+    }
+
+    protected fun multiResultsNotSupportedView(): DialogPanel = panelView {
+        it.errorView(
+            "Multiple results are not yet supported in the 'In-Editor Results' mode.",
+            "Please use console output in case of multiple results."
+        )
     }
 }

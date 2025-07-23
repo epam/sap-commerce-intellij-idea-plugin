@@ -24,20 +24,14 @@ import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
-import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
 import com.intellij.testFramework.LightVirtualFile
-import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.dsl.builder.panel
-import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
-import java.awt.Dimension
 import javax.swing.JComponent
-import javax.swing.ScrollPaneConstants
 
 @Service(Service.Level.PROJECT)
 class PolyglotQueryInEditorResultsView(
@@ -45,10 +39,17 @@ class PolyglotQueryInEditorResultsView(
     coroutineScope: CoroutineScope
 ) : InEditorResultsView<PolyglotQuerySplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, result: DefaultExecutionResult) = when {
-        result.hasError -> panelView { it.errorView("An error was encountered while processing the Polyglot Query.", result.errorMessage) }
-        result.output?.trim()?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
-        else -> panelView { it.noResultsView() }
+    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, results: Collection<DefaultExecutionResult>): JComponent {
+        return results.firstOrNull()
+            .takeIf { results.size == 1 }
+            ?.let { result ->
+                when {
+                    result.hasError -> panelView { it.errorView("An error was encountered while processing the Polyglot Query.", result.errorMessage) }
+                    result.output?.trim()?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
+                    else -> panelView { it.noResultsView() }
+                }
+            }
+            ?: multiResultsNotSupportedView()
     }
 
     suspend fun resultsView(fileEditor: PolyglotQuerySplitEditor, content: String): JComponent {
@@ -64,15 +65,6 @@ class PolyglotQueryInEditorResultsView(
             CsvTableFileEditor(project, lvf, format).component
         }
     }
-
-    private fun panelView(panelProvider: (Panel) -> Unit) = panel {
-        panelProvider.invoke(this)
-    }
-        .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-        .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
-        .apply {
-            minimumSize = Dimension(minimumSize.width, 150)
-        }
 
     companion object {
         fun getInstance(project: Project): PolyglotQueryInEditorResultsView = project.service()

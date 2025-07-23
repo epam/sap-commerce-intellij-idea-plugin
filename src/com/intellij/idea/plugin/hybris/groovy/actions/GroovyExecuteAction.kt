@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.groovy.editor.GroovySplitEditor
 import com.intellij.idea.plugin.hybris.groovy.editor.groovySplitEditor
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
@@ -66,16 +65,9 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
             executionClient.execute(
                 contexts = contexts,
-                resultCallback = { _, result ->
-                    if (contexts.size == 1) fileEditor.renderExecutionResult(result)
-                },
+                resultCallback = { _, result -> },
                 resultsCallback = { coroutineScope, results ->
-                    if (contexts.size > 1) fileEditor.renderExecutionResult(
-                        DefaultExecutionResult(
-                            errorMessage = "Multiple results are not yet supported in the 'In-Editor Results' mode.",
-                            errorDetailMessage = "Please use console output in case of multiple results."
-                        )
-                    )
+                    fileEditor.renderExecutionResults(results)
                     fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
                 }
             )

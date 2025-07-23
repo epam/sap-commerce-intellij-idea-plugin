@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.impex.editor
 
 import com.intellij.idea.plugin.hybris.editor.InEditorResultsView
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
-import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -29,32 +28,27 @@ import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.TopGap
-import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
-import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
-import java.awt.Dimension
 import javax.swing.JComponent
-import javax.swing.ScrollPaneConstants
 
 @Service(Service.Level.PROJECT)
 class ImpExInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<ImpExSplitEditor, DefaultExecutionResult>(project, coroutineScope) {
 
-    override suspend fun render(
-        fileEditor: ImpExSplitEditor,
-        result: DefaultExecutionResult
-    ): JComponent = panel {
-        when {
-            result.hasError -> errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
-            result.output != null -> resultsView(result.output)
-            else -> noResultsView()
-        }
+    override suspend fun render(fileEditor: ImpExSplitEditor, results: Collection<DefaultExecutionResult>): JComponent {
+        return results.firstOrNull()
+            .takeIf { results.size == 1 }
+            ?.let { result ->
+                panelView {
+                    when {
+                        result.hasError -> it.errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
+                        result.output != null -> it.resultsView(result.output)
+                        else -> it.noResultsView()
+                    }
+                }
+            }
+            ?: multiResultsNotSupportedView()
     }
-        .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-        .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
-        .apply {
-            minimumSize = Dimension(minimumSize.width, 150)
-        }
 
     private fun Panel.resultsView(output: String) {
         panel {
