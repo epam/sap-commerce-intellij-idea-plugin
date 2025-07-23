@@ -24,17 +24,18 @@ import com.intellij.idea.plugin.hybris.ui.Dsl
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.ui.EditorNotificationPanel
-import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import java.awt.Dimension
+import java.lang.Boolean
+import javax.swing.JEditorPane
 import javax.swing.ScrollPaneConstants
+import kotlin.String
+import kotlin.apply
+import kotlin.let
 
 @Service(Service.Level.PROJECT)
 class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<GroovySplitEditor, DefaultExecutionResult>(project, coroutineScope) {
@@ -42,7 +43,11 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
     override suspend fun render(fileEditor: GroovySplitEditor, result: DefaultExecutionResult) = panel {
         when {
             result.hasError -> errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
-            result.output != null -> resultsView(result.output)
+            result.result != null || result.output != null -> {
+                if (result.result != null) group("Result", result.result)
+                if (result.output != null) group("Output", result.output)
+            }
+
             else -> noResultsView()
         }
     }
@@ -52,20 +57,22 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
             minimumSize = Dimension(minimumSize.width, 150)
         }
 
-    private fun Panel.resultsView(output: String) {
-        panel {
+    private fun Panel.group(title: String, text: String) {
+        collapsibleGroup(title) {
             row {
                 cell(
-                    InlineBanner(
-                        output,
-                        EditorNotificationPanel.Status.Success,
-                    ).showCloseButton(false)
+                    JEditorPane().apply {
+                        this.text = text
+                        isEditable = false
+                        isOpaque = false
+                        background = null
+                        putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE)
+                    }
                 )
                     .align(Align.FILL)
                     .resizableColumn()
-            }.topGap(TopGap.SMALL)
-        }
-            .customize(UnscaledGaps(16, 16, 16, 16))
+            }
+        }.expanded = true
     }
 
     companion object {
