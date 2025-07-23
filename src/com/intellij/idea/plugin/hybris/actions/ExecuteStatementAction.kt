@@ -27,12 +27,15 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
+import com.intellij.ui.AnimatedIcon
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
-abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
+abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>, F : FileEditor>(
     internal val language: Language,
     internal val consoleClass: KClass<C>,
     internal val name: String,
@@ -64,8 +67,19 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
 
     open fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project) = content
 
+    abstract fun fileEditor(e: AnActionEvent): F?
+
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = this.language == e.dataContext.getData(CommonDataKeys.LANGUAGE)
+
+        val queryExecuting = fileEditor(e)
+            ?.getUserData(KEY_QUERY_EXECUTING)
+            ?: false
+
+        e.presentation.isEnabledAndVisible = e.presentation.isEnabledAndVisible
+        e.presentation.isEnabled = e.presentation.isEnabledAndVisible && !queryExecuting
+        e.presentation.disabledIcon = if (queryExecuting) AnimatedIcon.Default.INSTANCE
+        else icon
     }
 
     private fun getExecutableContent(
@@ -80,6 +94,10 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>>(
         }
 
         return processContent(e, content, editor, project)
+    }
+
+    companion object {
+        val KEY_QUERY_EXECUTING = Key.create<Boolean>("query.execution.state")
     }
 
 }

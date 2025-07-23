@@ -20,8 +20,11 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.groovy.editor.GroovySplitEditor
+import com.intellij.idea.plugin.hybris.groovy.editor.groovySplitEditor
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
@@ -32,7 +35,7 @@ import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 
-class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
+class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySplitEditor>(
     GroovyLanguage,
     HybrisGroovyConsole::class,
     "Execute Groovy Script",
@@ -40,8 +43,10 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
+    override fun fileEditor(e: AnActionEvent): GroovySplitEditor? = e.groovySplitEditor()
+
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
-        val console = openConsole(project, content) ?: return
+        val fileEditor = fileEditor(e)
         val transactionMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode
         val executionClient = GroovyExecutionClient.getInstance(project)
         val contexts = executionClient.connectionContext.replicaContexts
@@ -55,11 +60,34 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole>(
             .takeIf { it.isNotEmpty() }
             ?: listOf(GroovyExecutionContext(content = content, transactionMode = transactionMode))
 
-        executionClient.execute(
-            contexts = contexts,
-            resultCallback = { coroutineScope, result -> console.print(result, false) },
-            resultsCallback = { coroutineScope, results -> console.afterExecution() }
-        )
+        if (fileEditor?.inEditorResults ?: false) {
+            fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
+            fileEditor.showLoader()
+
+            executionClient.execute(
+                contexts = contexts,
+                resultCallback = { _, result ->
+                    if (contexts.size == 1) fileEditor.renderExecutionResult(result)
+                },
+                resultsCallback = { coroutineScope, results ->
+                    if (contexts.size > 1) fileEditor.renderExecutionResult(
+                        DefaultExecutionResult(
+                            errorMessage = "Multiple results are not yet supported in the 'In-Editor Results' mode.",
+                            errorDetailMessage = "Please use console output in case of multiple results."
+                        )
+                    )
+                    fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
+                }
+            )
+        } else {
+            val console = openConsole(project, content) ?: return
+
+            executionClient.execute(
+                contexts = contexts,
+                resultCallback = { coroutineScope, result -> console.print(result, false) },
+                resultsCallback = { coroutineScope, results -> console.afterExecution() }
+            )
+        }
     }
 
     override fun update(e: AnActionEvent) {

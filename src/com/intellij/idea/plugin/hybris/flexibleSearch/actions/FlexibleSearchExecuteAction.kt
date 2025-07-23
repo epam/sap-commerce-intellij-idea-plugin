@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionClient
@@ -30,11 +31,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
-import com.intellij.ui.AnimatedIcon
 import kotlinx.coroutines.launch
 
-class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchConsole>(
+class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchConsole, FlexibleSearchSplitEditor>(
     FlexibleSearchLanguage,
     HybrisFlexibleSearchConsole::class,
     message("hybris.fxs.actions.execute_query"),
@@ -42,25 +41,14 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    override fun update(e: AnActionEvent) {
-        super.update(e)
+    override fun fileEditor(e: AnActionEvent): FlexibleSearchSplitEditor? = e.flexibleSearchSplitEditor()
 
-        val queryExecuting = e.flexibleSearchSplitEditor()
-            ?.getUserData(KEY_QUERY_EXECUTING)
-            ?: false
-
-        e.presentation.isEnabledAndVisible = e.presentation.isEnabledAndVisible
-        e.presentation.isEnabled = e.presentation.isEnabledAndVisible && !queryExecuting
-        e.presentation.disabledIcon = if (queryExecuting) AnimatedIcon.Default.INSTANCE
-        else HybrisIcons.Console.Actions.EXECUTE
-    }
-
-    override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = e.flexibleSearchSplitEditor()
+    override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = fileEditor(e)
         ?.virtualText
         ?: content
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
-        val fileEditor = e.flexibleSearchSplitEditor()
+        val fileEditor = fileEditor(e)
         val context = FlexibleSearchExecutionContext(
             content = content,
         )
@@ -84,9 +72,5 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
                 console.print(result)
             }
         }
-    }
-
-    companion object {
-        private val KEY_QUERY_EXECUTING = Key.create<Boolean>("fxs.query.execution.state")
     }
 }

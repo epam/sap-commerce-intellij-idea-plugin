@@ -19,6 +19,8 @@
 package com.intellij.idea.plugin.hybris.acl.file.actions
 
 import com.intellij.idea.plugin.hybris.acl.AclLanguage
+import com.intellij.idea.plugin.hybris.acl.editor.AclSplitEditor
+import com.intellij.idea.plugin.hybris.acl.editor.aclSplitEditor
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
@@ -26,9 +28,11 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ExecutionMod
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.launch
 
-class AclValidateAction : ExecuteStatementAction<HybrisImpexConsole>(
+class AclValidateAction : ExecuteStatementAction<HybrisImpexConsole, AclSplitEditor>(
     AclLanguage,
     HybrisImpexConsole::class,
     "Validate Access Control Lists",
@@ -36,15 +40,33 @@ class AclValidateAction : ExecuteStatementAction<HybrisImpexConsole>(
     HybrisIcons.Acl.Actions.VALIDATE
 ) {
 
+    override fun fileEditor(e: AnActionEvent): AclSplitEditor? = e.aclSplitEditor()
+
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
-        val console = openConsole(project, content) ?: return
+        val fileEditor = fileEditor(e)
         val context = ImpExExecutionContext(
             content = content,
-            executionMode = ExecutionMode.VALIDATE
+            executionMode = ExecutionMode.VALIDATE,
         )
 
-        ImpExExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-            console.print(result)
+        if (fileEditor?.inEditorResults ?: false) {
+            fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
+            fileEditor.showLoader()
+
+            ImpExExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+                fileEditor.renderExecutionResult(result)
+                fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
+
+                coroutineScope.launch {
+                    readAction { this@AclValidateAction.update(e) }
+                }
+            }
+        } else {
+            val console = openConsole(project, content) ?: return
+
+            ImpExExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+                console.print(result)
+            }
         }
     }
 }

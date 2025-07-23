@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.acl.file.actions
 
 import com.intellij.idea.plugin.hybris.acl.AclLanguage
+import com.intellij.idea.plugin.hybris.acl.editor.AclSplitEditor
 import com.intellij.idea.plugin.hybris.acl.editor.aclSplitEditor
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
@@ -29,11 +30,9 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecuti
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
-import com.intellij.ui.AnimatedIcon
 import kotlinx.coroutines.launch
 
-class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
+class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole, AclSplitEditor>(
     AclLanguage,
     HybrisImpexConsole::class,
     message("hybris.acl.actions.execute_query"),
@@ -41,21 +40,10 @@ class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    override fun update(e: AnActionEvent) {
-        super.update(e)
-
-        val queryExecuting = e.aclSplitEditor()
-            ?.getUserData(KEY_QUERY_EXECUTING)
-            ?: false
-
-        e.presentation.isEnabledAndVisible = e.presentation.isEnabledAndVisible
-        e.presentation.isEnabled = e.presentation.isEnabledAndVisible && !queryExecuting
-        e.presentation.disabledIcon = if (queryExecuting) AnimatedIcon.Default.INSTANCE
-        else HybrisIcons.Console.Actions.EXECUTE
-    }
+    override fun fileEditor(e: AnActionEvent): AclSplitEditor? = e.aclSplitEditor()
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
-        val fileEditor = e.aclSplitEditor()
+        val fileEditor = fileEditor(e)
         val context = ImpExExecutionContext(
             content = content
         )
@@ -79,9 +67,5 @@ class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole>(
                 console.print(result)
             }
         }
-    }
-
-    companion object {
-        private val KEY_QUERY_EXECUTING = Key.create<Boolean>("impex.query.execution.state")
     }
 }
