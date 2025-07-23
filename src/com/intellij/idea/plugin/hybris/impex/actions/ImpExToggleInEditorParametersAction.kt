@@ -27,8 +27,8 @@ import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.DumbAware
 
 class ImpExToggleInEditorParametersAction : ToggleAction(
-    HybrisI18NBundleUtils.message("hybris.actions.query_parameters"),
-    HybrisI18NBundleUtils.message("hybris.actions.query_parameters.description"),
+    HybrisI18NBundleUtils.message("hybris.actions.in_editor.virtual_parameters"),
+    HybrisI18NBundleUtils.message("hybris.actions.in_editor.virtual_parameters.description"),
     HybrisIcons.Actions.TOGGLE_IN_EDITOR_PARAMETERS
 ), DumbAware {
 

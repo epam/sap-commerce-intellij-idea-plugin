@@ -52,9 +52,9 @@ class HybrisConsolesView(val project: Project) : SimpleToolWindowPanel(true), Di
         HybrisGroovyConsole.getInstance(project),
         HybrisFlexibleSearchConsole.getInstance(project),
         HybrisPolyglotQueryConsole.getInstance(project),
+        HybrisSQLConsole.getInstance(project),
         HybrisSolrSearchConsole.getInstance(project),
-        HybrisImpexMonitorConsole.getInstance(project),
-        HybrisSQLConsole.getInstance(project)
+        HybrisImpexMonitorConsole.getInstance(project)
     )
 
     init {

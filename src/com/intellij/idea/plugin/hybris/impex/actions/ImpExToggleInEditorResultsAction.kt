@@ -25,8 +25,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 
 class ImpExToggleInEditorResultsAction : ToggleAction(
-    message("hybris.actions.in_editor_results"),
-    message("hybris.actions.in_editor_results.description"),
+    message("hybris.actions.in_editor.results"),
+    message("hybris.actions.in_editor.results.description"),
     HybrisIcons.Actions.TOGGLE_IN_EDITOR_RESULTS
 ) {
 

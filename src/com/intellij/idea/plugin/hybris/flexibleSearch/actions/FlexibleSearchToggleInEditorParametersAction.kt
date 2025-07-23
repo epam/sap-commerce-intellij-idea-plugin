@@ -27,8 +27,8 @@ import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.DumbAware
 
 class FlexibleSearchToggleInEditorParametersAction : ToggleAction(
-    message("hybris.actions.query_parameters"),
-    message("hybris.actions.query_parameters.description"),
+    message("hybris.actions.in_editor.virtual_parameters"),
+    message("hybris.actions.in_editor.virtual_parameters.description"),
     HybrisIcons.Actions.TOGGLE_IN_EDITOR_PARAMETERS
 ), DumbAware {
 

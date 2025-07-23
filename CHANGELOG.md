@@ -43,6 +43,7 @@
 - Improved data rows folding API [#1474](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1474)
 
 ### `Groovy` enhancements
+- Introduced `In-Editor Results` view [#1477](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1477)
 - Introduced `batch` execution mode for Groovy files [#1450](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1450)
 
 ### `Remote Connection` enhancements
