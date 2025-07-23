@@ -43,7 +43,13 @@ class FlexibleSearchInEditorResultsView(
         .takeIf { results.size == 1 }
         ?.let { result ->
             when {
-                result.hasError -> panelView { it.errorView("An error was encountered while processing the FlexibleSearch query.", result.errorMessage) }
+                result.hasError -> panelView {
+                    it.errorView(
+                        "An error was encountered while processing the FlexibleSearch query.",
+                        result.errorMessage
+                    )
+                }
+
                 result.output?.trim()?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
                 else -> panelView { it.noResultsView() }
             }
