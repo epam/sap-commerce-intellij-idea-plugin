@@ -22,10 +22,12 @@ import com.intellij.idea.plugin.hybris.acl.editor.AclSplitEditor
 import com.intellij.idea.plugin.hybris.acl.file.AclFileType
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
+import com.intellij.idea.plugin.hybris.groovy.editor.GroovySplitEditor
 import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
 import com.intellij.openapi.fileEditor.FileEditorProvider
@@ -35,6 +37,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.asSafely
+import org.jetbrains.plugins.groovy.GroovyFileType
 
 class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
 
@@ -46,7 +49,8 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
                     is PolyglotQueryFileType -> PolyglotQuerySplitEditor(it, project)
                     is ImpexFileType -> ImpExSplitEditor(it, project)
                     is AclFileType -> AclSplitEditor(it, project)
-                    else -> null
+                    else -> if (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType) GroovySplitEditor(it, project)
+                    else null
                 }
             }
             ?: this
@@ -58,4 +62,5 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
         || file.fileType is PolyglotQueryFileType
         || file.fileType is ImpexFileType
         || file.fileType is AclFileType
+        || (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType)
 }
