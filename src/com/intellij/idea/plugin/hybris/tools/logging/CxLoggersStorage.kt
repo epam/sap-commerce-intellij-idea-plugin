@@ -44,6 +44,13 @@ class CxLoggersStorage {
         }
     }
 
+    fun clear() {
+        synchronized(loggers) {
+            this.loggers.clear()
+            _initialized = false
+        }
+    }
+
     private fun createLoggerModel(loggerIdentifier: String): CxLoggerModel {
         val parentLogger = loggerIdentifier.substringBeforeLast('.', "")
             .takeIf { it.isNotBlank() }

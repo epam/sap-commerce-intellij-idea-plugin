@@ -19,6 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.logging
 
 import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
@@ -27,6 +29,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecu
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -46,7 +49,7 @@ private const val FETCH_LOGGERS_STATE_GROOVY_SCRIPT = """
 """
 
 @Service(Service.Level.PROJECT)
-class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) {
+class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
     private var fetching: Boolean = false
     val loggersCache = CxLoggersStorage()
 
@@ -55,6 +58,34 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
     val cacheInitialized: Boolean
         get() = loggersCache.initialized
+
+    init {
+        with(project.messageBus.connect(this)) {
+            subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
+                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) {
+                    refresh()
+                }
+
+                override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) {
+                    refresh()
+                }
+
+                private fun refresh() {
+                    loggersCache.clear()
+
+                    coroutineScope.launch {
+                        fetching = true
+
+                        edtWriteAction {
+                            PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
+                        }
+
+                        fetching = false
+                    }
+                }
+            })
+        }
+    }
 
     fun logger(loggerIdentifier: String): CxLoggerModel? = if (!cacheInitialized) null else loggersCache.get(loggerIdentifier)
 
@@ -133,6 +164,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         .create(type, title, contentProvider.invoke())
         .hideAfter(5)
         .notify(project)
+
+    override fun dispose() {
+        loggersCache.clear()
+    }
 
     companion object {
         fun getInstance(project: Project): CxLoggerAccess = project.service()
