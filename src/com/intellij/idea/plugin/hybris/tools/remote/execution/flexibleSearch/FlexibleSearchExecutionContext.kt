@@ -32,8 +32,11 @@ data class FlexibleSearchExecutionContext(
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     private val queryMode: QueryMode = QueryMode.FlexibleSearch,
     private val user: String? = null,
-    val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
+    val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,
 ) : ExecutionContext {
+
+    override val title: String
+        get() = "Executing ${queryMode.title} on the remote SAP Commerce instance…"
 
     fun params(settings: RemoteConnectionSettings): Map<String, String> = buildMap {
         put("scriptType", "flexibleSearch")
@@ -53,6 +56,8 @@ data class FlexibleSearchExecutionContext(
     }
 }
 
-enum class QueryMode {
-    SQL, FlexibleSearch, PolyglotQuery
+enum class QueryMode(val title: String) {
+    SQL("SQL"),
+    FlexibleSearch("FlexibleSearch"),
+    PolyglotQuery("Polyglot Query")
 }

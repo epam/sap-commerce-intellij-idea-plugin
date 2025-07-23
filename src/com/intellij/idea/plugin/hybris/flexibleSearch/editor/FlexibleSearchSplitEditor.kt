@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionResult
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
@@ -148,7 +148,7 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
         }
     }
 
-    fun renderExecutionResult(result: DefaultExecutionResult) = FlexibleSearchInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
+    fun renderExecutionResult(result: FlexibleSearchExecutionResult) = FlexibleSearchInEditorResultsView.getInstance(project).resultView(this, result) { coroutineScope, view ->
         coroutineScope.launch {
             edtWriteAction {
                 inEditorResultsView = view
@@ -157,8 +157,6 @@ class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val
     }
 
     fun showLoader() {
-        if (inEditorResultsView == null) return
-
         inEditorResultsView = FlexibleSearchInEditorResultsView.getInstance(project).executingView()
     }
 

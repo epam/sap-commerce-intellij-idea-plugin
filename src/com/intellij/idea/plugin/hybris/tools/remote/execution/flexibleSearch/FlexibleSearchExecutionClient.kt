@@ -21,8 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 import com.google.gson.Gson
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -35,9 +34,15 @@ import java.io.Serial
 import java.nio.charset.StandardCharsets
 
 @Service(Service.Level.PROJECT)
-class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<FlexibleSearchExecutionContext>(project, coroutineScope) {
+class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineScope) :
+    ExecutionClient<FlexibleSearchExecutionContext, FlexibleSearchExecutionResult>(project, coroutineScope) {
 
-    override suspend fun execute(context: FlexibleSearchExecutionContext): DefaultExecutionResult {
+    override suspend fun onError(context: FlexibleSearchExecutionContext, exception: Throwable) = FlexibleSearchExecutionResult(
+        errorMessage = exception.message,
+        errorDetailMessage = exception.stackTraceToString()
+    )
+
+    override suspend fun execute(context: FlexibleSearchExecutionContext): FlexibleSearchExecutionResult {
         val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
         val params = context.params(settings)
@@ -48,7 +53,7 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 
-        if (statusCode != HttpStatus.SC_OK || response.entity == null) return DefaultExecutionResult(
+        if (statusCode != HttpStatus.SC_OK || response.entity == null) return FlexibleSearchExecutionResult(
             statusCode = HttpStatus.SC_BAD_REQUEST,
             errorMessage = "[$statusCode] ${statusLine.reasonPhrase}",
         )
@@ -64,16 +69,16 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
                 ?.let { it["message"] }
                 ?.toString()
                 ?.let {
-                    DefaultExecutionResult(
+                    FlexibleSearchExecutionResult(
                         statusCode = HttpStatus.SC_BAD_REQUEST,
                         errorMessage = it
                     )
                 }
-                ?: DefaultExecutionResult(
+                ?: FlexibleSearchExecutionResult(
                     output = buildTableResult(json)
                 )
         } catch (e: Exception) {
-            return DefaultExecutionResult(
+            return FlexibleSearchExecutionResult(
                 statusCode = HttpStatus.SC_BAD_REQUEST,
                 errorMessage = "Cannot parse response from the server: ${e.message} $actionUrl"
             )

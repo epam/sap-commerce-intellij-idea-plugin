@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.editor.InEditorResultsView
 import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionResult
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -37,9 +37,9 @@ import javax.swing.JComponent
 class PolyglotQueryInEditorResultsView(
     project: Project,
     coroutineScope: CoroutineScope
-) : InEditorResultsView<PolyglotQuerySplitEditor, DefaultExecutionResult>(project, coroutineScope) {
+) : InEditorResultsView<PolyglotQuerySplitEditor, FlexibleSearchExecutionResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, results: Collection<DefaultExecutionResult>): JComponent = results.firstOrNull()
+    override suspend fun render(fileEditor: PolyglotQuerySplitEditor, results: Collection<FlexibleSearchExecutionResult>): JComponent = results.firstOrNull()
         .takeIf { results.size == 1 }
         ?.let { result ->
             when {
@@ -50,7 +50,7 @@ class PolyglotQueryInEditorResultsView(
                     )
                 }
 
-                result.output?.trim()?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
+                result.hasDataRows -> resultsView(fileEditor, result.output!!)
                 else -> panelView { it.noResultsView() }
             }
         }

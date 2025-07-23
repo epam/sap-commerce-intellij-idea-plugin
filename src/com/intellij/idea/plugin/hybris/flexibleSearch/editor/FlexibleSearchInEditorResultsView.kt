@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.editor.InEditorResultsView
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionResult
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -37,9 +37,9 @@ import javax.swing.JComponent
 class FlexibleSearchInEditorResultsView(
     project: Project,
     coroutineScope: CoroutineScope
-) : InEditorResultsView<FlexibleSearchSplitEditor, DefaultExecutionResult>(project, coroutineScope) {
+) : InEditorResultsView<FlexibleSearchSplitEditor, FlexibleSearchExecutionResult>(project, coroutineScope) {
 
-    override suspend fun render(fileEditor: FlexibleSearchSplitEditor, results: Collection<DefaultExecutionResult>): JComponent = results.firstOrNull()
+    override suspend fun render(fileEditor: FlexibleSearchSplitEditor, results: Collection<FlexibleSearchExecutionResult>): JComponent = results.firstOrNull()
         .takeIf { results.size == 1 }
         ?.let { result ->
             when {
@@ -50,7 +50,7 @@ class FlexibleSearchInEditorResultsView(
                     )
                 }
 
-                result.output?.trim()?.contains("\n") ?: false -> resultsView(fileEditor, result.output)
+                result.hasDataRows -> resultsView(fileEditor, result.output!!)
                 else -> panelView { it.noResultsView() }
             }
         }

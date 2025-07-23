@@ -38,6 +38,6 @@ data class GroovyExecutionContext(
     }
 
     companion object {
-        const val DEFAULT_TITLE = "Executing Groovy script on the remote SAP Commerce..."
+        const val DEFAULT_TITLE = "Executing Groovy script on the remote SAP Commerce instance..."
     }
 }

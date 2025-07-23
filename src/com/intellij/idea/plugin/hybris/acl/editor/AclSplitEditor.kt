@@ -87,10 +87,7 @@ class AclSplitEditor(internal val textEditor: TextEditor, private val project: P
     }
 
     fun showLoader() {
-        if (inEditorResultsView == null) return
-
-        inEditorResultsView = AclInEditorResultsView.getInstance(project)
-            .executingView()
+        inEditorResultsView = AclInEditorResultsView.getInstance(project).executingView()
     }
 
     override fun addPropertyChangeListener(listener: PropertyChangeListener) {
