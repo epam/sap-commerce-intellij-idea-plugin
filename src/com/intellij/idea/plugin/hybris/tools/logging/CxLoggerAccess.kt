@@ -65,20 +65,6 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = refresh()
 
                 override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = refresh()
-
-                private fun refresh() {
-                    loggersCache.clear()
-
-                    coroutineScope.launch {
-                        fetching = true
-
-                        edtWriteAction {
-                            PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
-                        }
-
-                        fetching = false
-                    }
-                }
             })
         }
     }
@@ -147,6 +133,20 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         coroutineScope.launch {
 
             loggersCache.update(loggers ?: emptyMap())
+
+            edtWriteAction {
+                PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
+            }
+
+            fetching = false
+        }
+    }
+
+    private fun refresh() {
+        loggersCache.clear()
+
+        coroutineScope.launch {
+            fetching = true
 
             edtWriteAction {
                 PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
