@@ -65,7 +65,7 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
 
                             else -> noResultsView()
                         }
-                    }
+                    }.expanded = true
                 }
             }
     }
