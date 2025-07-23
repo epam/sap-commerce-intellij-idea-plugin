@@ -84,7 +84,11 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
                     .forEach { result ->
                         it.collapsibleGroup("Replica: ${result.replicaContext?.replicaId ?: ""}") {
                             when {
-                                result.hasError -> errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
+                                result.hasError -> errorView(
+                                    result.errorMessage ?: "An error was encountered while processing the request.",
+                                    result.errorDetailMessage
+                                )
+
                                 result.result != null || result.output != null -> {
                                     group("Result", result.result)
                                     group("Output", result.output)
