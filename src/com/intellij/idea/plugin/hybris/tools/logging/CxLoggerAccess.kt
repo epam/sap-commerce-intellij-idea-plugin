@@ -98,9 +98,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
             val loggers = result.result
                 ?.split("\n")
-                ?.map { it -> it.split(" | ") }
+                ?.map { it.split(" | ") }
                 ?.filter { it.size == 3 }
-                ?.map { it: List<String> -> CxLoggerModel.of(it[0], it[2], if (it.size == 3) it[1] else null) }
+                ?.map { CxLoggerModel.of(it[0], it[2], if (it.size == 3) it[1] else null) }
                 ?.distinctBy { it.name }
                 ?.associateBy { it.name }
 

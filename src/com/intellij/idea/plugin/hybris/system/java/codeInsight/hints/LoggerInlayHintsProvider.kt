@@ -80,11 +80,10 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
                     val style = if (logger.inherited) SimpleTextAttributes(STYLE_UNDERLINE or STYLE_BOLD or STYLE_ITALIC, JBColor.GRAY)
                     else SimpleTextAttributes(STYLE_PLAIN, JBColor.blue)
 
-                    RichText("[")
-                        .apply {
-                            append(logger.effectiveLevel, style)
-                            append("] log level", REGULAR_ATTRIBUTES)
-                        }
+                    RichText("[").apply {
+                        append(logger.effectiveLevel, style)
+                        append("] log level", REGULAR_ATTRIBUTES)
+                    }
                 }
 
                 val handler = ClickHandler(psiElement, loggerIdentifier, text)
