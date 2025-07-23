@@ -86,8 +86,8 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
                             when {
                                 result.hasError -> errorView(result.errorMessage ?: "An error was encountered while processing the request.", result.errorDetailMessage)
                                 result.result != null || result.output != null -> {
-                                    if (result.result != null) group("Result", result.result)
-                                    if (result.output != null) group("Output", result.output)
+                                    group("Result", result.result)
+                                    group("Output", result.output)
                                 }
 
                                 else -> noResultsView()
@@ -97,7 +97,9 @@ class GroovyInEditorResultsView(project: Project, coroutineScope: CoroutineScope
             }
     }
 
-    private fun Panel.group(title: String, text: String) {
+    private fun Panel.group(title: String, text: String?) {
+        if (text == null) return
+
         collapsibleGroup(title) {
             row {
                 cell(
