@@ -38,7 +38,6 @@ class AclInEditorResultsView(project: Project, coroutineScope: CoroutineScope) :
     override suspend fun render(fileEditor: AclSplitEditor, results: Collection<DefaultExecutionResult>): DialogPanel = results.firstOrNull()
         .takeIf { results.size == 1 }
         ?.let { result ->
-
             panelView {
                 when {
                     result.hasError -> it.errorView(
