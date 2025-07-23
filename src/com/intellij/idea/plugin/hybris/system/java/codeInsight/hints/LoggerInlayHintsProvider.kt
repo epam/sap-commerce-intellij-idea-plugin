@@ -26,6 +26,7 @@ import com.intellij.codeInsight.codeVision.ui.model.richText.RichText
 import com.intellij.codeInsight.daemon.impl.JavaCodeVisionProviderBase
 import com.intellij.codeInsight.hints.InlayHintsUtils
 import com.intellij.codeInsight.hints.settings.language.isInlaySettingsEditor
+import com.intellij.ide.actions.FqnUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
@@ -62,67 +63,39 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         val project = psiFile.project
         val entries = mutableListOf<Pair<TextRange, CodeVisionEntry>>()
 
-        psiFile.accept(object : PsiRecursiveElementVisitor() {
-            override fun visitElement(element: PsiElement) {
-                super.visitElement(element)
-                val targetElement = when (element) {
-                    is PsiClass -> PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)
-                        ?.first()
-                        ?.text
-                        ?.takeIf { it == "class" || it == "enum" || it == "interface" || it == "record" }
-                        ?.let { element.nameIdentifier }
-
-                    is PsiPackageStatement -> PsiTreeUtil.getChildrenOfType(element, PsiKeyword::class.java)
-                        ?.first()
-                        ?.text
-                        ?.takeIf { it == "package" }
-                        ?.let { element.packageReference }
-
+        return PsiTreeUtil.findChildrenOfAnyType(psiFile, PsiClass::class.java, PsiPackageStatement::class.java)
+            .mapNotNull {
+                val fqn = when (it) {
+                    is PsiClass -> FqnUtil.elementToFqn(it, editor)
+                    is PsiPackageStatement -> it.packageName
                     else -> null
-                }
-                if (targetElement == null) return
-
-                val loggerIdentifier = extractIdentifierForLogger(element, psiFile) ?: return
-
-                val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(targetElement)
-
-                val logger = CxLoggerAccess.getInstance(project)
-                    .logger(loggerIdentifier)
-
+                } ?: return@mapNotNull null
+                it to fqn
+            }
+            .map { (psiElement, loggerIdentifier) ->
+                val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(psiElement)
+                val logger = CxLoggerAccess.getInstance(project).logger(loggerIdentifier)
                 val text = if (logger == null) RichText("[y] log level")
                 else {
                     val style = if (logger.inherited) SimpleTextAttributes(STYLE_UNDERLINE or STYLE_BOLD or STYLE_ITALIC, JBColor.GRAY)
-                    else SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, JBColor.blue)
+                    else SimpleTextAttributes(STYLE_PLAIN, JBColor.blue)
 
                     RichText("[")
                         .apply {
                             append(logger.effectiveLevel, style)
-                            append("] log level", SimpleTextAttributes.REGULAR_ATTRIBUTES)
+                            append("] log level", REGULAR_ATTRIBUTES)
                         }
                 }
 
-                val handler = ClickHandler(targetElement, loggerIdentifier, text)
-
+                val handler = ClickHandler(psiElement, loggerIdentifier, text)
                 val tooltip = when {
                     logger == null -> "Fetch or Define the logger for SAP Commerce"
                     logger.inherited -> "Inherited from: ${logger.parentName}"
                     else -> "Setup the logger for SAP Commerce"
                 }
 
-                val clickableRichTextCodeVisionEntry = ClickableRichTextCodeVisionEntry(id, text, handler, HybrisIcons.Y.REMOTE, "", tooltip)
-                entries.add(range to clickableRichTextCodeVisionEntry)
+                return@map range to ClickableRichTextCodeVisionEntry(id, text, handler, HybrisIcons.Y.REMOTE, "", tooltip)
             }
-        })
-        return entries
-    }
-
-    fun extractIdentifierForLogger(element: PsiElement, file: PsiFile): String? = when (element) {
-        is PsiClass -> file.packageName()
-            ?.let { "$it.${element.name}" }
-            ?: element.name
-
-        is PsiPackageStatement -> element.packageName
-        else -> null
     }
 
     private inner class ClickHandler(
