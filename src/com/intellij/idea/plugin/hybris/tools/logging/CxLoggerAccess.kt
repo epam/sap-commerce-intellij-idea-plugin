@@ -62,13 +62,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     init {
         with(project.messageBus.connect(this)) {
             subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
-                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) {
-                    refresh()
-                }
+                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = refresh()
 
-                override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) {
-                    refresh()
-                }
+                override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = refresh()
 
                 private fun refresh() {
                     loggersCache.clear()
