@@ -57,8 +57,9 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
     ): @Unmodifiable Collection<AbstractTreeNode<*>> {
         if (!DeveloperSettingsComponent.getInstance(parent.project).state.impexSettings.groupLocalizedFiles) return children
         if (parent is LocalizedImpExNode) return children
+        if (children.isEmpty()) return children
 
-        val localizedImpExNodes = mutableMapOf<String, MutableCollection<AbstractTreeNode<*>>>()
+        val localizedImpExNodes by lazy { mutableMapOf<String, MutableCollection<AbstractTreeNode<*>>>() }
         val newChildren = mutableListOf<AbstractTreeNode<*>>()
 
         children.forEach { childNode ->
