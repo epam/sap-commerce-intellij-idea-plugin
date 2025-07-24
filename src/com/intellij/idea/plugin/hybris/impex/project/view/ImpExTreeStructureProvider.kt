@@ -22,7 +22,6 @@ import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValueProvider
@@ -57,20 +56,25 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
     ): @Unmodifiable Collection<AbstractTreeNode<*>> {
         if (parent is LocalizedImpExNode) return children
 
-        val impexFiles = mutableListOf<ImpexFile>()
-        val localizedImpExNodes = mutableMapOf<String, LocalizedImpExNode>()
+        val localizedImpExNodes = mutableMapOf<String, MutableCollection<AbstractTreeNode<*>>>()
         val newChildren = mutableListOf<AbstractTreeNode<*>>()
 
         children.forEach { childNode ->
             val nodeValue = childNode.value
 
             if (nodeValue is ImpexFile && childNode is PsiFileNode) {
-                thisLogger().info(baseName(nodeValue))
-                impexFiles.add(nodeValue)
-                newChildren.add(childNode)
+                val baseName = baseName(nodeValue)
+
+                localizedImpExNodes.getOrPut(baseName) { mutableListOf() }
+                    .add(childNode)
             } else {
                 newChildren.add(childNode)
             }
+        }
+
+        localizedImpExNodes.forEach { (baseName, localizedNodes) ->
+            if (localizedNodes.size == 1) newChildren.add(localizedNodes.first())
+            else newChildren.addFirst(LocalizedImpExNode(baseName, parent.project, localizedNodes, settings))
         }
 
         return newChildren

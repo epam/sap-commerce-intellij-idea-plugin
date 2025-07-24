@@ -29,10 +29,11 @@ import com.intellij.ui.SimpleTextAttributes
 import org.jetbrains.annotations.Unmodifiable
 
 class LocalizedImpExNode(
-    private val name: String,
+    name: String,
     project: Project,
     children: Collection<AbstractTreeNode<*>>,
-    viewSettings: ViewSettings
+    viewSettings: ViewSettings,
+    private val presentableName: String = "ImpEx Bundle '$name'",
 ) : ProjectViewNode<Collection<AbstractTreeNode<*>>>(project, children, viewSettings) {
 
     override fun contains(file: VirtualFile) = ProjectViewPane.canBeSelectedInProjectView(myProject, file)
@@ -40,7 +41,7 @@ class LocalizedImpExNode(
     override fun getChildren(): @Unmodifiable Collection<AbstractTreeNode<*>?> = this.value
 
     override fun update(presentation: PresentationData) = with(presentation) {
-        setIcon(HybrisIcons.ImpEx.FILE)
-        addText(ColoredFragment(name, SimpleTextAttributes.SYNTHETIC_ATTRIBUTES))
+        setIcon(HybrisIcons.ImpEx.BUNDLE)
+        addText(ColoredFragment(presentableName, SimpleTextAttributes.REGULAR_ITALIC_ATTRIBUTES))
     }
 }

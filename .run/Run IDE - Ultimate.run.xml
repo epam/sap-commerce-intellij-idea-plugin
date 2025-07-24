@@ -1,6 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
-  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -17,26 +17,27 @@
   -->
 
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="Run IDE - Ultimate" type="GradleRunConfiguration" factoryName="Gradle">
-        <log_file alias="idea.log" path="$PROJECT_DIR$/build/idea-sandbox/system/log/idea.log" />
-        <ExternalSystemSettings>
-            <option name="executionName" />
-            <option name="externalProjectPath" value="$PROJECT_DIR$" />
-            <option name="externalSystemIdString" value="GRADLE" />
-            <option name="scriptParameters" value="" />
-            <option name="taskDescriptions">
-                <list />
-            </option>
-            <option name="taskNames">
-                <list>
-                    <option value="runIde" />
-                </list>
-            </option>
-            <option name="vmOptions" value="" />
-        </ExternalSystemSettings>
-        <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-        <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-        <DebugAllEnabled>false</DebugAllEnabled>
-        <method v="2" />
-    </configuration>
+  <configuration default="false" name="Run IDE - Ultimate" type="GradleRunConfiguration" factoryName="Gradle">
+    <log_file alias="idea.log" path="$PROJECT_DIRECTORY$/build/$TARGET_IDE$/idea-sandbox" />
+    <ExternalSystemSettings>
+      <option name="executionName" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$" />
+      <option name="externalSystemIdString" value="GRADLE" />
+      <option name="scriptParameters" value="" />
+      <option name="taskDescriptions">
+        <list />
+      </option>
+      <option name="taskNames">
+        <list>
+          <option value="runIde" />
+        </list>
+      </option>
+      <option name="vmOptions" value="" />
+    </ExternalSystemSettings>
+    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+    <DebugAllEnabled>false</DebugAllEnabled>
+    <RunAsTest>false</RunAsTest>
+    <method v="2" />
+  </configuration>
 </component>
