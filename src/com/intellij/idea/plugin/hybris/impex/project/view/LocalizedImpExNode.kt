@@ -23,6 +23,7 @@ import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.ProjectViewPane
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
@@ -33,7 +34,7 @@ class LocalizedImpExNode(
     project: Project,
     children: Collection<AbstractTreeNode<*>>,
     viewSettings: ViewSettings,
-    private val presentableName: String = "ImpEx Bundle '$name'",
+    private val presentableName: String = "$name.${ImpexFileType.defaultExtension}",
 ) : ProjectViewNode<Collection<AbstractTreeNode<*>>>(project, children, viewSettings) {
 
     override fun contains(file: VirtualFile) = ProjectViewPane.canBeSelectedInProjectView(myProject, file)
@@ -43,9 +44,10 @@ class LocalizedImpExNode(
     override fun update(presentation: PresentationData) = with(presentation) {
         setIcon(HybrisIcons.ImpEx.BUNDLE)
         addText(ColoredFragment(presentableName, SimpleTextAttributes.REGULAR_ITALIC_ATTRIBUTES))
+        addText(ColoredFragment(" bundle", SimpleTextAttributes.GRAY_ATTRIBUTES))
         addText(ColoredFragment(" ${children.size} files", SimpleTextAttributes.GRAY_ATTRIBUTES))
     }
 
     // PsiFileNode = 20
-    override fun getWeight() = 19
+    override fun getWeight() = 20
 }
