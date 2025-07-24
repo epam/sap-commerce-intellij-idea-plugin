@@ -35,6 +35,7 @@
 - Introduced `In-Editor Results` view [#1476](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1476)
 
 ### `ImpEx` enhancements
+- Introduced grouping for localized ImpEx files [#1480](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1480)
 - Introduced `In-Editor Results` view [#1467](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1467)
 - Introduced `In-Editor Parameters` view [#1469](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1469)
 - Use `In-Editor Results` view for Validate Action [#1468](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1468)

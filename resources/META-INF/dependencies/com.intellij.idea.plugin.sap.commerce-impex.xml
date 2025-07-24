@@ -21,6 +21,9 @@
 
         <internalFileTemplate name="ImpEx File"/>
 
+        <treeStructureProvider order="after hybris.project.root.tree.structure.provider"
+                               implementation="com.intellij.idea.plugin.hybris.impex.project.view.ImpExTreeStructureProvider"/>
+
         <codeInsight.declarativeInlayProvider language="ImpEx"
                                               implementationClass="com.intellij.idea.plugin.hybris.impex.codeInsight.hints.ImpExParameterInlayHintProvider"
                                               isEnabledByDefault="true"
