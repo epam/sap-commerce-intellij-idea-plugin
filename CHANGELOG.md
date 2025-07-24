@@ -7,6 +7,7 @@
 - Display a log level status from a remote server [1457](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1457)
 - Display an inherited log level status from a remote server [1475](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1475)
 - Reset Loggers cache on connection change [1479](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1479)
+- Improve popup location by leveraging MouseEvent [1482](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1482)
 
 ### `items.xml` enhancements
 - Show attribute non-property persistence for contribution results [#1448](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1448)

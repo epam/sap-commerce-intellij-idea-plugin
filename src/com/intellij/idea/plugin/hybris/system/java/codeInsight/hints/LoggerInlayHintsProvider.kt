@@ -39,14 +39,11 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
-import com.intellij.psi.impl.java.stubs.JavaStubElementTypes
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.endOffset
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.SimpleTextAttributes.*
 import com.intellij.ui.awt.RelativePoint
-import java.awt.Point
 import java.awt.event.MouseEvent
 
 class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
@@ -103,11 +100,12 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         override fun invoke(event: MouseEvent?, editor: Editor) {
             if (isInlaySettingsEditor(editor)) return
             val element = elementPointer.element ?: return
-            handleClick(editor, element, loggerIdentifier, text)
+
+            handleClick(editor, element, loggerIdentifier, event)
         }
     }
 
-    fun handleClick(editor: Editor, element: PsiElement, loggerIdentifier: String, text: RichText) {
+    fun handleClick(editor: Editor, element: PsiElement, loggerIdentifier: String, event: MouseEvent?) {
         val actionGroup = ActionManager.getInstance().getAction("sap.cx.logging.actions") as ActionGroup
         val project = editor.project ?: return
         val dataContext = SimpleDataContext.builder()
@@ -125,16 +123,9 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
                 true
             )
 
-        // Calculate the position for the popup
-        val implementsPsiElement = PsiTreeUtil.findSiblingForward(element, JavaStubElementTypes.IMPLEMENTS_LIST, null) ?: element
-
-        val offset = implementsPsiElement.endOffset
-        val logicalPosition = editor.offsetToLogicalPosition(offset)
-        val visualPosition = editor.logicalToVisualPosition(logicalPosition)
-        val point = editor.visualPositionToXY(visualPosition)
-
         // Convert the point to a RelativePoint
-        val relativePoint = RelativePoint(editor.contentComponent, Point(point))
+        val relativePoint = if (event != null) RelativePoint(event)
+        else JBPopupFactory.getInstance().guessBestPopupLocation(editor)
 
         // Show the popup at the calculated relative point
         popup.show(relativePoint)
