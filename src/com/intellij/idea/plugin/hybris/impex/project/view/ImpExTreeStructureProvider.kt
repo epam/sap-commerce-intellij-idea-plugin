@@ -83,38 +83,36 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
         return newChildren
     }
 
-    private fun baseName(file: PsiFile): String {
-        return CachedValuesManager.getCachedValue(file) {
-            fun compute(file: PsiFile): String {
-                val name = file.name
+    private fun baseName(file: PsiFile): String = CachedValuesManager.getCachedValue(file) {
+        fun compute(file: PsiFile): String {
+            val name = file.name
 
-                if (!name.contains('_')) return FileUtilRt.getNameWithoutExtension(name)
+            if (!name.contains('_')) return FileUtilRt.getNameWithoutExtension(name)
 
-                val matcher = localePattern.matcher(name)
-                val baseNameWithExtension: String
+            val matcher = localePattern.matcher(name)
+            val baseNameWithExtension: String
 
-                var matchIndex = 0
-                while (matcher.find(matchIndex)) {
-                    val matchResult = matcher.toMatchResult()
-                    val splitted = matchResult.group(1)
-                        .split(separatorRegex)
-                        .dropLastWhile { it.isEmpty() }
-                        .toTypedArray()
-                    if (splitted.size > 1) {
-                        val langCode: String? = splitted[1]
-                        if (!localesLanguageCodes.contains(langCode)) {
-                            matchIndex = matchResult.start(1) + 1
-                            continue
-                        }
-                        baseNameWithExtension = name.substring(0, matchResult.start(1)) + name.substring(matchResult.end(1))
-                        return FileUtilRt.getNameWithoutExtension(baseNameWithExtension)
+            var matchIndex = 0
+            while (matcher.find(matchIndex)) {
+                val matchResult = matcher.toMatchResult()
+                val splitted = matchResult.group(1)
+                    .split(separatorRegex)
+                    .dropLastWhile { it.isEmpty() }
+                    .toTypedArray()
+                if (splitted.size > 1) {
+                    val langCode: String? = splitted[1]
+                    if (!localesLanguageCodes.contains(langCode)) {
+                        matchIndex = matchResult.start(1) + 1
+                        continue
                     }
+                    baseNameWithExtension = name.substring(0, matchResult.start(1)) + name.substring(matchResult.end(1))
+                    return FileUtilRt.getNameWithoutExtension(baseNameWithExtension)
                 }
-                baseNameWithExtension = name
-                return FileUtilRt.getNameWithoutExtension(baseNameWithExtension)
             }
-
-            CachedValueProvider.Result.create(compute(file), file)
+            baseNameWithExtension = name
+            return FileUtilRt.getNameWithoutExtension(baseNameWithExtension)
         }
+
+        CachedValueProvider.Result.create(compute(file), file)
     }
 }
