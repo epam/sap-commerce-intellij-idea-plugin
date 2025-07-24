@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Actions.FET
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
 import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildRequest
@@ -51,9 +52,10 @@ class CCv2CreateBuildAction : AbstractCCv2Action(
     icon = HybrisIcons.CCv2.Build.Actions.CREATE
 ) {
     override fun actionPerformed(e: AnActionEvent) {
-        val subscription = e.dataContext.getData(subscriptionKey)
-        val build = e.dataContext.getData(buildKey)
         val project = e.project ?: return
+        val subscription = e.dataContext.getData(subscriptionKey)
+            ?: DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
+        val build = e.dataContext.getData(buildKey)
 
         CCv2CreateBuildDialog(project, subscription, build).showAndGet()
     }

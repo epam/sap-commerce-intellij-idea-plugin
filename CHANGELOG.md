@@ -1,5 +1,8 @@
 ## [2025.1.6]
 
+### `CCv2` enhancements
+- Auto-retrieve environments on scheduling new build in case of selected Subscription [1481](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1481)
+
 ### `SAP CX Logging` enhancements
 - Display a log level status from a remote server [1457](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1457)
 - Display an inherited log level status from a remote server [1475](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1475)
