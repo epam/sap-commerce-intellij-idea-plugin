@@ -21,6 +21,7 @@ package com.intellij.idea.plugin.hybris.settings
 import com.intellij.openapi.components.BaseState
 
 data class ImpexSettings(
+    var groupLocalizedFiles: Boolean = true,
     var editMode: ImpExEditModeSettings = ImpExEditModeSettings(),
     var folding: ImpexFoldingSettings = ImpexFoldingSettings(),
     var completion: ImpexCompletionSettings = ImpexCompletionSettings(),

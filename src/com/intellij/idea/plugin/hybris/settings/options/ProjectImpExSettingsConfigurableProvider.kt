@@ -44,6 +44,11 @@ class ProjectImpExSettingsConfigurableProvider(val project: Project) : Configura
         private lateinit var documentationEnableCheckBox: JCheckBox
 
         override fun createPanel() = panel {
+            row {
+                checkBox("Group localized ImpEx files")
+                    .bindSelected(projectSettings::groupLocalizedFiles)
+            }
+
             group("Data Edit Mode") {
                 row {
                     checkBox("First row is header")
@@ -54,6 +59,7 @@ class ProjectImpExSettingsConfigurableProvider(val project: Project) : Configura
                         .bindSelected(projectSettings.editMode::trimWhitespace)
                 }
             }.rowComment("This functionality relies and expects that 'intellij.grid.plugin' is available and enabled.")
+
             group("Code Folding") {
                 row {
                     foldingEnableCheckBox = checkBox("Enable code folding")
@@ -71,6 +77,7 @@ class ProjectImpExSettingsConfigurableProvider(val project: Project) : Configura
                         .enabledIf(foldingEnableCheckBox.selected)
                 }
             }
+
             group("Code Completion") {
                 row {
                     checkBox("Show inline type for reference header parameter")
