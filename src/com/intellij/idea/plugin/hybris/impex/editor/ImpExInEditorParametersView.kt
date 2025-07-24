@@ -115,7 +115,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
         row {
             cell(
                 InlineBanner(
-                    "<p style='width: 100%'>Polyglot Query doesn't have parameters</p>",
+                    "<p style='width: 100%'>ImpEx doesn't have parameters</p>",
                     EditorNotificationPanel.Status.Warning
                 ).showCloseButton(false)
             )

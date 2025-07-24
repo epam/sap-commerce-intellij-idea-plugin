@@ -43,5 +43,9 @@ class LocalizedImpExNode(
     override fun update(presentation: PresentationData) = with(presentation) {
         setIcon(HybrisIcons.ImpEx.BUNDLE)
         addText(ColoredFragment(presentableName, SimpleTextAttributes.REGULAR_ITALIC_ATTRIBUTES))
+        addText(ColoredFragment(" ${children.size} files", SimpleTextAttributes.GRAY_ATTRIBUTES))
     }
+
+    // PsiFileNode = 20
+    override fun getWeight() = 19
 }

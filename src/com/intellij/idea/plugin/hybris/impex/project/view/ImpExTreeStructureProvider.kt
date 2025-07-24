@@ -74,7 +74,7 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
 
         localizedImpExNodes.forEach { (baseName, localizedNodes) ->
             if (localizedNodes.size == 1) newChildren.add(localizedNodes.first())
-            else newChildren.addFirst(LocalizedImpExNode(baseName, parent.project, localizedNodes, settings))
+            else newChildren.add(LocalizedImpExNode(baseName, parent.project, localizedNodes, settings))
         }
 
         return newChildren
