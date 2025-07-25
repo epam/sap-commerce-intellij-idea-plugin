@@ -91,7 +91,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                         val devSettings = DeveloperSettingsComponent.getInstance(project).state
 
                         when (val element = it.selectedItem) {
-                            is CCv2Subscription -> devSettings.activeCCv2SubscriptionID = element.id
+                            is CCv2Subscription -> devSettings.activeCCv2SubscriptionID = element.uuid
                             else -> devSettings.activeCCv2SubscriptionID = null
                         }
                     }

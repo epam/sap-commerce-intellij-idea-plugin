@@ -83,8 +83,8 @@ class ApplicationSettingsComponent : PersistentStateComponent<ApplicationSetting
         })
     }
 
-    fun getCCv2Subscription(id: String) = state.ccv2Subscriptions
-        .find { it.id == id }
+    fun getCCv2Subscription(uuid: String) = state.ccv2Subscriptions
+        .find { it.uuid == uuid }
 
     fun setCCv2Subscriptions(subscriptionDtos: List<CCv2SubscriptionDto>) {
         val subscriptions = subscriptionDtos.map { it.toModel() }

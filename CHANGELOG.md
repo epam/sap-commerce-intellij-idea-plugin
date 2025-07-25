@@ -2,6 +2,7 @@
 
 ### `CCv2` enhancements
 - Auto-retrieve environments on scheduling new build in case of selected Subscription [1481](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1481)
+- Use `uuid` as a unique identifier for active subscription [1483](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1483)
 
 ### `SAP CX Logging` enhancements
 - Display a log level status from a remote server [1457](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1457)

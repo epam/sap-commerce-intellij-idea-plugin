@@ -102,7 +102,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
                         .onApply {
                             val activeSubscription = activeCCv2SubscriptionComboBox.selectedItem as? CCv2Subscription
                             when (activeSubscription) {
-                                is CCv2Subscription -> devSettings.activeCCv2SubscriptionID = activeSubscription.id
+                                is CCv2Subscription -> devSettings.activeCCv2SubscriptionID = activeSubscription.uuid
                                 else -> devSettings.activeCCv2SubscriptionID = null
                             }
 

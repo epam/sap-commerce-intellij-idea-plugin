@@ -38,9 +38,8 @@
 /.idea/hybrisProjectSettings.xml
 
 /ccv2
+/src_idea
 
 jflex-*.jar
 
 resources/CHANGELOG.md
-
-src/com/intellij/idea/plugin/hybris/polyglotQuery/_PolyglotQueryLexer.java~
