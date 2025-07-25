@@ -31,18 +31,21 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.util.NlsContexts
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.ui.ColoredTableCellRenderer
+import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.render.RenderingUtil
 import com.intellij.ui.table.TableView
 import com.intellij.util.asSafely
 import com.intellij.util.ui.ColumnInfo
+import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListTableModel
 import kotlinx.coroutines.CoroutineScope
 import java.awt.Dimension
+import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JTable
 
@@ -79,19 +82,34 @@ class FlexibleSearchInEditorResultsView(
     }
 
     private fun simpleTableView(fileEditor: FlexibleSearchSplitEditor, content: String): JComponent {
-        val rows = content.split("\n")
-
         val defaultCellRenderer = object : ColoredTableCellRenderer() {
-            override fun setToolTipText(text: @NlsContexts.Tooltip String?) = Unit
+            @Serial
+            private val serialVersionUID: Long = -2610838431719623644L
+
+            override fun setToolTipText(text: String?) = Unit
 
             override fun customizeCellRenderer(table: JTable, value: Any?, selected: Boolean, hasFocus: Boolean, row: Int, column: Int) {
                 val stringValue = value?.asSafely<String>() ?: return
 
-                if (column == 0) append(stringValue, SimpleTextAttributes.GRAY_ATTRIBUTES)
-                else append(stringValue, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+                if (column == 0) {
+                    append(stringValue, SimpleTextAttributes.GRAY_ATTRIBUTES)
+                    foreground = RenderingUtil.getForeground(table, selected)
+                    background = RenderingUtil.getBackground(table, selected)
+                    alignmentX = RIGHT_ALIGNMENT
+                } else {
+                    append(stringValue, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+                    foreground = JBColor.lazy { JBUI.CurrentTheme.Table.foreground(selected, hasFocus) }
+                    background = JBColor(0xFFFFFF, 0x3C3F41)
+                }
+
+                border = JBUI.Borders.compound(
+                    JBUI.Borders.customLine(if (hasFocus) JBColor.blue else JBColor.border(), if (hasFocus && selected) 1 else 0, if (hasFocus && selected) 1 else 0, 1, 1),
+                    JBUI.Borders.empty(3)
+                )
             }
         }
 
+        val rows = content.trim().split("\n")
         val headerRows = rows.first()
             .split("|")
             .toMutableList()
@@ -138,10 +156,11 @@ class FlexibleSearchInEditorResultsView(
             val column = columnModel.getColumn(i)
             val headerValue = column.headerValue
             val component = renderer.getTableCellRendererComponent(this, headerValue, false, false, -1, i)
-            val preferredWidth = component.preferredSize.width + 16 // add padding
+            val preferredWidth = component.preferredSize.width + 32
             column.preferredWidth = preferredWidth
             column.minWidth = preferredWidth
             column.maxWidth = preferredWidth
+            column.resizable = i > 0
         }
     }
 
