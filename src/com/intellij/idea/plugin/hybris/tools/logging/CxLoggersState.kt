@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
-class CxLoggersStorage {
+class CxLoggersState {
 
     private val loggers: MutableMap<String, CxLoggerModel>
     private var _initialized: Boolean = false
@@ -37,6 +37,11 @@ class CxLoggersStorage {
         ?: createLoggerModel(loggerIdentifier)
 
     fun update(loggers: Map<String, CxLoggerModel>) {
+        if (loggers.isEmpty()) {
+            clear()
+            return
+        }
+
         synchronized(loggers) {
             this.loggers.clear()
             this.loggers.putAll(loggers)

@@ -82,7 +82,7 @@ class FetchLoggerStateAction : AnAction("Fetch Logger State", "", HybrisIcons.Lo
         e.presentation.isEnabled = isRightPlace && CxLoggerAccess.getInstance(project).canRefresh
         e.presentation.isVisible = isRightPlace
 
-        if (CxLoggerAccess.getInstance(project).cacheInitialized) {
+        if (CxLoggerAccess.getInstance(project).stateInitialized) {
             e.presentation.text = "Refresh Logger State"
             e.presentation.icon = HybrisIcons.Log.Action.REFRESH
         } else {

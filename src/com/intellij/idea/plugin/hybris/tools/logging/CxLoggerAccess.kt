@@ -42,13 +42,13 @@ import kotlinx.coroutines.launch
 @Service(Service.Level.PROJECT)
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
     private var fetching: Boolean = false
-    val loggersCache = CxLoggersStorage()
+    val loggersState = CxLoggersState()
 
     val canRefresh: Boolean
         get() = !fetching
 
-    val cacheInitialized: Boolean
-        get() = loggersCache.initialized
+    val stateInitialized: Boolean
+        get() = loggersState.initialized
 
     init {
         with(project.messageBus.connect(this)) {
@@ -60,7 +60,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun logger(loggerIdentifier: String): CxLoggerModel? = if (!cacheInitialized) null else loggersCache.get(loggerIdentifier)
+    fun logger(loggerIdentifier: String): CxLoggerModel? = if (!stateInitialized) null else loggersState.get(loggerIdentifier)
 
     fun setLogger(loggerName: String, logLevel: LogLevel) {
         val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
@@ -71,7 +71,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         )
         fetching = true
         LoggingExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-            updateCache(result.loggers)
+            updateState(result.loggers)
 
             if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
                 """
@@ -107,23 +107,35 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 ?.map { CxLoggerModel.of(it[0], it[2], if (it.size == 3) it[1] else null) }
                 ?.distinctBy { it.name }
                 ?.associateBy { it.name }
+                ?.takeIf { it.isNotEmpty() }
 
-            updateCache(loggers)
+            updateState(loggers)
 
-            if (result.hasError) notify(NotificationType.ERROR, "Failed to fetch logger states") {
-                "<p>${result.errorMessage}</p>"
-                "<p>Server: ${server.shortenConnectionName()}</p>"
-            }
-            else notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
-                "<p>Server: ${server.shortenConnectionName()}</p>"
+            when {
+                result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
+                    "<p>${result.errorMessage}</p>"
+                    "<p>Server: ${server.shortenConnectionName()}</p>"
+                }
+
+                loggers == null -> notify(NotificationType.ERROR, "Unable to retrieve loggers state") {
+                    "<p>No Loggers information returned from the remote server or is in the incorrect format.</p>"
+                    "<p>Server: ${server.shortenConnectionName()}</p>"
+                }
+
+                else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
+                    """
+                    <p>Declared loggers: ${loggers.size}</p>
+                    <p>Server: ${server.shortenConnectionName()}</p>
+                """.trimIndent()
+                }
             }
         }
     }
 
-    private fun updateCache(loggers: Map<String, CxLoggerModel>?) {
+    private fun updateState(loggers: Map<String, CxLoggerModel>?) {
         coroutineScope.launch {
 
-            loggersCache.update(loggers ?: emptyMap())
+            loggersState.update(loggers ?: emptyMap())
 
             edtWriteAction {
                 PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
@@ -134,7 +146,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     }
 
     private fun refresh() {
-        loggersCache.clear()
+        loggersState.clear()
 
         coroutineScope.launch {
             fetching = true
@@ -153,7 +165,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         .notify(project)
 
     override fun dispose() {
-        loggersCache.clear()
+        loggersState.clear()
     }
 
     companion object {
