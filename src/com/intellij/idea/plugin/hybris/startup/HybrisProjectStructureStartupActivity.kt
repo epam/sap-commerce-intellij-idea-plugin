@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,17 +18,15 @@
 
 package com.intellij.idea.plugin.hybris.startup
 
-import com.intellij.ide.plugins.PluginManagerCore
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 
@@ -79,7 +77,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         val settings = ProjectSettingsComponent.getInstance(project).state
         val importedBy = settings.importedByVersion
         val hybrisVersion = settings.hybrisVersion
-        val plugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID)) ?: return
+        val plugin = Plugin.HYBRIS_PLUGIN_DESCRIPTOR ?: return
         val pluginVersion = plugin.version
         logger.info("Opening hybris version $hybrisVersion which was imported by $importedBy. Current plugin is $pluginVersion")
     }

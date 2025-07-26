@@ -18,7 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.project.utils
 
+import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.extensions.PluginId
 
 enum class Plugin(val id: String, val url: String? = null) {
@@ -52,4 +54,10 @@ enum class Plugin(val id: String, val url: String? = null) {
     fun <T> ifDisabled(operation: () -> T): T? = if (isDisabled()) operation() else null
 
     fun isDisabled() = !isActive()
+
+    companion object {
+        val HYBRIS_PLUGIN_ID = PluginId.getId(HybrisConstants.PLUGIN_ID)
+        val HYBRIS_PLUGIN_DESCRIPTOR: IdeaPluginDescriptor?
+            get() = PluginManagerCore.getPlugin(HYBRIS_PLUGIN_ID)
+    }
 }

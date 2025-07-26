@@ -72,6 +72,7 @@
 - New API for parallel executions of the requests [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
 - Simplified console API [#1459](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1459)
 - Simplified ExecutionClient API [#1460](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1460)
+- Added support of the IDEA Extensions API to expose customizable resources used by the Plugin [#1485](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1485)
 
 ### Fixes
 - Fixed [#1205](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1205) JSoap's inability to parse response with the `&quot;` sequence [#1439](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1439)

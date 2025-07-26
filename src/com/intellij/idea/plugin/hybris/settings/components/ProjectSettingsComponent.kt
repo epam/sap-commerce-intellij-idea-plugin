@@ -18,7 +18,6 @@
  */
 package com.intellij.idea.plugin.hybris.settings.components
 
-import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_PROJECT_SETTINGS
 import com.intellij.idea.plugin.hybris.common.yExtensionName
@@ -26,9 +25,9 @@ import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.components.*
-import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.util.text.VersionComparatorUtil
@@ -47,7 +46,7 @@ class ProjectSettingsComponent : PersistentStateComponent<ProjectSettings> {
 
     fun isOutdatedHybrisProject(): Boolean {
         val lastImportVersion = hybrisProjectSettings.importedByVersion ?: return true
-        val currentVersion = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))
+        val currentVersion = Plugin.HYBRIS_PLUGIN_DESCRIPTOR
             ?.version
             ?: return true
 

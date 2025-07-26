@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
+import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
@@ -37,16 +38,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
-private const val FETCH_LOGGERS_STATE_GROOVY_SCRIPT = """
-    import de.hybris.platform.core.Registry
-    import de.hybris.platform.hac.facade.HacLog4JFacade
-    import java.util.stream.Collectors
-    
-    Registry.applicationContext.getBean("hacLog4JFacade", HacLog4JFacade.class).getLoggers().stream()
-            .map { it -> it.name + " | " + it.parentName + " | " + it.effectiveLevel }
-            .collect(Collectors.joining("\n"))
-"""
 
 @Service(Service.Level.PROJECT)
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
@@ -101,9 +92,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     fun fetch() {
         val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val context = GroovyExecutionContext(
-            content = FETCH_LOGGERS_STATE_GROOVY_SCRIPT,
-            transactionMode = TransactionMode.ROLLBACK,
-            executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]..."
+            executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]...",
+            content = ExtensionResource.CX_LOGGERS_STATE.content,
+            transactionMode = TransactionMode.ROLLBACK
         )
 
         fetching = true

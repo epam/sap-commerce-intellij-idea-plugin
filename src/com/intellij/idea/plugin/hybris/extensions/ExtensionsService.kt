@@ -16,26 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.startup
+package com.intellij.idea.plugin.hybris.extensions
 
-import com.intellij.ide.plugins.StandalonePluginUpdateChecker
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.ide.extensionResources.ExtensionsRootType
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
-import com.intellij.notification.NotificationGroupManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.util.application
+import java.nio.file.Files
+import java.nio.file.Path
 
-@Service(Service.Level.PROJECT)
-class HybrisStandalonePluginUpdateChecker : StandalonePluginUpdateChecker(
-    Plugin.HYBRIS_PLUGIN_ID,
-    HybrisConstants.UPDATE_TIMESTAMP_PROPERTY,
-    NotificationGroupManager.getInstance().getNotificationGroup(HybrisConstants.NOTIFICATION_GROUP_HYBRIS),
-    HybrisIcons.Y.LOGO_BLUE
-) {
+@Service
+class ExtensionsService {
+
+    fun findResource(resource: ExtensionResource): Path? {
+        val extensionsRootType = ExtensionsRootType.getInstance()
+        val pluginId = Plugin.HYBRIS_PLUGIN_ID
+        var path = extensionsRootType.findResource(pluginId, resource.fqn)
+
+        if (path == null || !Files.exists(path)) {
+            extensionsRootType.extractBundledResources(pluginId, "")
+            path = extensionsRootType.findResource(pluginId, resource.fqn)
+
+            if (path != null) {
+                LocalFileSystem.getInstance().refreshAndFindFileByNioFile(path)
+            }
+        }
+
+        return path?.takeIf { Files.exists(it) }
+    }
 
     companion object {
-        fun getInstance(project: Project): HybrisStandalonePluginUpdateChecker = project.service()
+        fun getInstance(): ExtensionsService = application.service()
     }
 }

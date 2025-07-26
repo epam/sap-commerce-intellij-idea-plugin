@@ -25,8 +25,6 @@ import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.ide.passwordSafe.PasswordSafe;
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
@@ -47,7 +45,7 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.extensions.PluginDescriptor;
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl;
@@ -452,7 +450,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
     private void initializeHybrisProjectSettings(@NotNull final Project project, final @NotNull ProjectSettings projectSettings) {
         projectSettings.setHybrisProject(true);
-        final IdeaPluginDescriptor plugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID));
+        final PluginDescriptor plugin = Plugin.Companion.getHYBRIS_PLUGIN_DESCRIPTOR();
 
         if (plugin == null) return;
 

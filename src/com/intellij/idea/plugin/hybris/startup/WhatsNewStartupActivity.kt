@@ -19,10 +19,9 @@ package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.util.RunOnceUtil
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.fileEditor.TextEditorWithPreview
 import com.intellij.openapi.fileEditor.impl.HTMLEditorProvider
 import com.intellij.openapi.fileTypes.ex.FileTypeManagerEx
@@ -39,7 +38,7 @@ class WhatsNewStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isNotHybrisProject) return
 
-        val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))
+        val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(Plugin.HYBRIS_PLUGIN_ID)
             ?: return
         val version = pluginDescriptor.version
 
