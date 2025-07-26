@@ -44,7 +44,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     private var fetching: Boolean = false
     val loggersState = CxLoggersState()
 
-    val canRefresh: Boolean
+    val ready: Boolean
         get() = !fetching
 
     val stateInitialized: Boolean

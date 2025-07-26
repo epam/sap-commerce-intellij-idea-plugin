@@ -52,7 +52,7 @@ abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
 
         e.presentation.text = logLevel.name
         e.presentation.icon = logLevel.icon
-        e.presentation.isEnabled = isRightPlace && CxLoggerAccess.getInstance(project).canRefresh
+        e.presentation.isEnabled = isRightPlace && CxLoggerAccess.getInstance(project).ready
         e.presentation.isVisible = isRightPlace
     }
 }
@@ -81,8 +81,9 @@ class FetchLoggerStateAction : AnAction() {
     override fun update(e: AnActionEvent) {
         val isRightPlace = "GoToAction" != e.place
         val project = e.project ?: return
+        val loggerAccess = CxLoggerAccess.getInstance(project)
 
-        e.presentation.isEnabled = isRightPlace && CxLoggerAccess.getInstance(project).canRefresh
+        e.presentation.isEnabled = isRightPlace && loggerAccess.ready
         e.presentation.isVisible = isRightPlace
 
         if (CxLoggerAccess.getInstance(project).stateInitialized) {
