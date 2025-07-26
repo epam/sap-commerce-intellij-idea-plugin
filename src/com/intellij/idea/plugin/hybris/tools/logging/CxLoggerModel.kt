@@ -42,6 +42,6 @@ data class CxLoggerModel(
             inherited = true
         )
 
-        fun root() = of(name = ROOT_LOGGER_NAME, effectiveLevel = "undefined")
+        fun rootFallback() = of(name = ROOT_LOGGER_NAME, effectiveLevel = "undefined")
     }
 }

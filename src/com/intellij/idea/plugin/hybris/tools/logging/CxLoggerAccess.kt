@@ -104,7 +104,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 ?.split("\n")
                 ?.map { it.split(" | ") }
                 ?.filter { it.size == 3 }
-                ?.map { CxLoggerModel.of(it[0], it[2], if (it.size == 3) it[1] else null) }
+                ?.map { CxLoggerModel.of(it[0], it[1], it[2]) }
                 ?.distinctBy { it.name }
                 ?.associateBy { it.name }
                 ?.takeIf { it.isNotEmpty() }

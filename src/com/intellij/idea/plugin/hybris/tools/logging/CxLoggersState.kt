@@ -37,11 +37,6 @@ class CxLoggersState {
         ?: createLoggerModel(loggerIdentifier)
 
     fun update(loggers: Map<String, CxLoggerModel>) {
-        if (loggers.isEmpty()) {
-            clear()
-            return
-        }
-
         synchronized(loggers) {
             this.loggers.clear()
             this.loggers.putAll(loggers)
@@ -61,7 +56,7 @@ class CxLoggersState {
             .takeIf { it.isNotBlank() }
             ?.let { get(it) }
             ?: loggers[CxLoggerModel.ROOT_LOGGER_NAME]
-            ?: CxLoggerModel.root()
+            ?: CxLoggerModel.rootFallback()
 
         return loggers.getOrPut(loggerIdentifier) {
             CxLoggerModel.inherited(loggerIdentifier, parentLogger)

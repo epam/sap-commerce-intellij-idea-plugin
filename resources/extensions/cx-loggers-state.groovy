@@ -19,17 +19,28 @@
 import de.hybris.platform.hac.facade.HacLog4JFacade
 
 /*
+======= Version: 2025.1.6 =======
+
 This script is being used by the Plugin to retrieve current Loggers details from the remote server via hAC API.
 
 The following contract is expected:
  - script must print the results as a return value of the script
  - each logger details must be defined on a new line
  - each logger details must consist of three values separated with the " | "
-    - 1st: fqn logger name
-    - 2nd: parent logger name. Root logger must return "null" as a string
-    - 3rd: any log level as a string
+    - 1: fqn logger name
+    - 2: any log level as a string
+    - 3: parent logger name. Root logger must return "null" as a string
+
+======= Example =======
+    INFO | solrStatisticLogger | root
+    INFO | root | null
+    ERROR | org.springframework.aop.framework.CglibAopProxy | org.springframework
+    ERROR | org.springframework.aop.framework.Cglib2AopProxy | org.springframework
+    WARN | org.springframework | root
  */
 
 (hacLog4JFacade as HacLog4JFacade).getLoggers()
-        .collect { "${it.name} | ${it.parentName} | ${it.effectiveLevel}" }
+        .sort { it.name }
+        .reverse()
+        .collect { "${it.name} | ${it.effectiveLevel} | ${it.parentName}" }
         .join("\n")
