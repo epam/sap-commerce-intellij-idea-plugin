@@ -27,7 +27,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction(logLevel.name, "", logLevel.icon) {
+abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -50,10 +50,11 @@ abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction(logLeve
         val isRightPlace = "GoToAction" != e.place
         val project = e.project ?: return
 
+        e.presentation.text = logLevel.name
+        e.presentation.icon = logLevel.icon
         e.presentation.isEnabled = isRightPlace && CxLoggerAccess.getInstance(project).canRefresh
         e.presentation.isVisible = isRightPlace
     }
-
 }
 
 class AllLoggerAction : CxLoggerAction(LogLevel.ALL)
