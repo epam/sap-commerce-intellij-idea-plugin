@@ -74,6 +74,9 @@ class FetchLoggerStateAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
         val project = e.project ?: return
         val loggerAccessService = CxLoggerAccess.getInstance(project)
 

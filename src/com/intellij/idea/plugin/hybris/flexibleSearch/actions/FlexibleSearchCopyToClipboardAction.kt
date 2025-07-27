@@ -23,22 +23,24 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ide.CopyPasteManager
-import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.DumbAwareAction
 import java.awt.datatransfer.StringSelection
 
-class FlexibleSearchCopyToClipboardAction : AnAction(
-    message("hybris.fxs.actions.copy_query_to_clipboard"),
-    message("hybris.fxs.actions.copy_query_to_clipboard.description"),
-    HybrisIcons.FlexibleSearch.COPY_TO_CLIPBOARD
-), DumbAware {
+class FlexibleSearchCopyToClipboardAction : DumbAwareAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        e.presentation.text = message("hybris.fxs.actions.copy_query_to_clipboard")
+        e.presentation.description = message("hybris.fxs.actions.copy_query_to_clipboard.description")
+        e.presentation.icon = HybrisIcons.FlexibleSearch.COPY_TO_CLIPBOARD
         e.presentation.isEnabled = e.flexibleSearchSplitEditor()?.inEditorParameters
             ?: false
     }

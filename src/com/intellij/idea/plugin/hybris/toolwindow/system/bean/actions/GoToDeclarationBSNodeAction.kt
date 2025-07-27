@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.bean.model.Property
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.TreeNode
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSMetaNode
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.BSNode
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
@@ -40,6 +41,9 @@ class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
     }
 
     override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
         val node = getSelectedNode(e)
 
         if (node == null || node !is BSMetaNode<*>) {

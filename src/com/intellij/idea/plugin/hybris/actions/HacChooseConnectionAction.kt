@@ -90,13 +90,13 @@ abstract class AbstractHacConnectionAction(private val actionName: String, val i
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        super.update(e)
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
 
         val presentation = e.presentation
 
         presentation.text = actionName
         presentation.icon = icon
-        presentation.isEnabledAndVisible = true
     }
 }
 

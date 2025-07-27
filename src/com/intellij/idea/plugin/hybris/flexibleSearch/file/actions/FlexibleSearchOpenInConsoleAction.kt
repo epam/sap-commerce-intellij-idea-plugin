@@ -25,15 +25,10 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleS
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.DumbAwareAction
 
-class FlexibleSearchOpenInConsoleAction : AnAction(
-    "Copy to FlexibleSearch Console",
-    "Copy FlexibleSearch file to SAP Commerce console",
-    HybrisIcons.Console.Actions.OPEN
-), DumbAware {
+class FlexibleSearchOpenInConsoleAction : DumbAwareAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -42,6 +37,10 @@ class FlexibleSearchOpenInConsoleAction : AnAction(
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
+
+        e.presentation.text = "Copy to FlexibleSearch Console"
+        e.presentation.description = "Copy FlexibleSearch file to SAP Commerce console"
+        e.presentation.icon = HybrisIcons.Console.Actions.OPEN
         e.presentation.isEnabledAndVisible = project.isHybrisProject && OpenInHybrisConsoleService.getInstance(project)
             .isRequiredSingleFileExtension(FLEXIBLE_SEARCH_FILE_EXTENSION)
     }

@@ -22,20 +22,21 @@ import com.intellij.idea.plugin.hybris.actions.OpenInHybrisConsoleService
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 
 class AclOpenQueryAction : AnAction() {
 
-    init {
-        with (templatePresentation) {
-            text = message("hybris.acl.actions.open_query")
-            description = message("hybris.acl.actions.open_query.description")
-            icon = HybrisIcons.Console.Actions.OPEN
-        }
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        e.presentation.text = message("hybris.acl.actions.open_query")
+        e.presentation.description = message("hybris.acl.actions.open_query.description")
+        e.presentation.icon = HybrisIcons.Console.Actions.OPEN
     }
 
     override fun actionPerformed(e: AnActionEvent) {

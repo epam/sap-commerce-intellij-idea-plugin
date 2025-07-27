@@ -32,11 +32,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 
-class ConsoleExecuteStatementAction : AnAction(
-    "Execute Current Statement",
-    "",
-    HybrisIcons.Console.Actions.EXECUTE
-) {
+class ConsoleExecuteStatementAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -86,6 +82,9 @@ class ConsoleExecuteStatementAction : AnAction(
     }
 
     override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
         val project = e.project ?: return
         val consoleService = HybrisConsoleService.getInstance(project)
         val console = consoleService.getActiveConsole() ?: return
@@ -94,5 +93,8 @@ class ConsoleExecuteStatementAction : AnAction(
 
         e.presentation.isEnabled = console.canExecute() && (lookup == null || !lookup.isCompletion)
         e.presentation.disabledIcon = console.disabledIcon()
+
+        e.presentation.text = "Execute Current Statement"
+        e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE
     }
 }

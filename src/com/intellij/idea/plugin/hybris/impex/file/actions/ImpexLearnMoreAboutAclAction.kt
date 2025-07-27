@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.impex.file.actions
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -26,6 +27,11 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 class ImpexLearnMoreAboutAclAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+    }
 
     override fun actionPerformed(e: AnActionEvent) {
         BrowserUtil.browse(HybrisConstants.Documentation.WIKI_ACL)

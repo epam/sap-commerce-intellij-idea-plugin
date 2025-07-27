@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,18 +21,22 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.options.ProjectGroovySettingsConfigurableProvider
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.options.ShowSettingsUtil
 
 class GroovyOpenSettingsAction : AnAction() {
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    init {
-        with (templatePresentation) {
-            text = message("hybris.groovy.actions.open_settings")
-            description = message("hybris.groovy.actions.open_settings.description")
-            icon = HybrisIcons.SETTINGS
-        }
+    override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        e.presentation.text = message("hybris.groovy.actions.open_settings")
+        e.presentation.description = message("hybris.groovy.actions.open_settings.description")
+        e.presentation.icon = HybrisIcons.SETTINGS
     }
 
     override fun actionPerformed(e: AnActionEvent) {

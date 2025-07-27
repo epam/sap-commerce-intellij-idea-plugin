@@ -31,18 +31,11 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
 
-class ConsoleImpExValidateAction : AnAction(
-    "Validate ImpEx",
-    "Validate ImpEx file via remote SAP Commerce instance",
-    HybrisIcons.ImpEx.Actions.VALIDATE
-) {
+class ConsoleImpExValidateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
         val project = e.project ?: return
         val console = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?: return
@@ -60,6 +53,9 @@ class ConsoleImpExValidateAction : AnAction(
     }
 
     override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
         val project = e.project ?: return
         val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?: return
@@ -69,5 +65,8 @@ class ConsoleImpExValidateAction : AnAction(
         e.presentation.isVisible = activeConsole is HybrisImpexConsole
         e.presentation.isEnabled = activeConsole.canExecute() && (lookup == null || !lookup.isCompletion)
         e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
+        e.presentation.text = "Validate ImpEx"
+        e.presentation.description = "Validate ImpEx file via remote SAP Commerce instance"
+        e.presentation.icon = HybrisIcons.ImpEx.Actions.VALIDATE
     }
 }

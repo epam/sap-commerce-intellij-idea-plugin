@@ -25,15 +25,10 @@ import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexCons
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.DumbAwareAction
 
-class ImpExOpenInConsoleAction : AnAction(
-    "Copy to ImpEx Console",
-    "Copy ImpEx file to SAP Commerce console",
-    HybrisIcons.Console.Actions.OPEN
-), DumbAware {
+class ImpExOpenInConsoleAction : DumbAwareAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -45,6 +40,10 @@ class ImpExOpenInConsoleAction : AnAction(
 
         e.presentation.isEnabledAndVisible = project.isHybrisProject
             && OpenInHybrisConsoleService.getInstance(project).isRequiredMultipleFileExtension(IMPEX_FILE_EXTENSION)
+
+        e.presentation.text = "Copy to ImpEx Console"
+        e.presentation.description = "Copy ImpEx file to SAP Commerce console"
+        e.presentation.icon = HybrisIcons.Console.Actions.OPEN
     }
 
     override fun actionPerformed(event: AnActionEvent) {
