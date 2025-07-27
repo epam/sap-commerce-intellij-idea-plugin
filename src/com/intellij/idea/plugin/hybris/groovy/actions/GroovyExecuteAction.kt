@@ -46,7 +46,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
     override fun fileEditor(e: AnActionEvent): GroovySplitEditor? = e.groovySplitEditor()
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
-        val fileEditor = fileEditor(e)
+        val fileEditor = fileEditor(e) ?: return
         val fileName = e.getData(CommonDataKeys.PSI_FILE)?.name
         val prefix = fileName ?: "script"
 
@@ -70,7 +70,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
                 )
             )
 
-        if (fileEditor?.inEditorResults ?: false) {
+        if (fileEditor.inEditorResults) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader("$prefix | 1 of ${contexts.size} | ${GroovyExecutionContext.DEFAULT_TITLE}")
             var completed = 1

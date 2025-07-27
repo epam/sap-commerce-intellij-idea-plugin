@@ -44,14 +44,14 @@ class AclValidateAction : ExecuteStatementAction<HybrisImpexConsole, AclSplitEdi
     override fun fileEditor(e: AnActionEvent): AclSplitEditor? = e.aclSplitEditor()
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
-        val fileEditor = fileEditor(e)
+        val fileEditor = fileEditor(e) ?: return
         val context = ImpExExecutionContext(
             content = content,
             executionMode = ExecutionMode.VALIDATE,
             dialect = ImpExDialect.ACL
         )
 
-        if (fileEditor?.inEditorResults ?: false) {
+        if (fileEditor.inEditorResults) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader(context)
 
