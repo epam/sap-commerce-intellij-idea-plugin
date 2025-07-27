@@ -36,7 +36,7 @@ abstract class ExecutionContextSettingsAction<M : ExecutionContext.ModifiableSet
 
     protected abstract fun previewSettings(e: AnActionEvent, project: Project): String
     protected abstract fun settings(e: AnActionEvent, project: Project): M
-    protected abstract fun settingsPanel(e: AnActionEvent, settings: M): DialogPanel?
+    protected abstract fun settingsPanel(e: AnActionEvent, project: Project, settings: M): DialogPanel
     protected abstract fun applySettings(editor: Editor, settings: M)
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -52,10 +52,10 @@ abstract class ExecutionContextSettingsAction<M : ExecutionContext.ModifiableSet
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val inputEvent = e.inputEvent ?: return
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val inputEvent = e.inputEvent ?: return
         val settings = settings(e, project)
-        val settingsPanel = settingsPanel(e, settings) ?: return
+        val settingsPanel = settingsPanel(e, project, settings)
 
         var isFormValid = true
 

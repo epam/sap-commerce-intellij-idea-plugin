@@ -63,8 +63,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
         editor.putUserData(HybrisConstants.KEY_FXS_EXECUTION_SETTINGS, settings.immutable())
     }
 
-    override fun settingsPanel(e: AnActionEvent, settings: FlexibleSearchExecutionContext.ModifiableSettings): DialogPanel? {
-        val project = e.project ?: return null
+    override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecutionContext.ModifiableSettings): DialogPanel {
         val dataSources = application.runReadAction<List<String>> {
             PropertyService.getInstance(project)
                 ?.findProperty("installed.tenants")
