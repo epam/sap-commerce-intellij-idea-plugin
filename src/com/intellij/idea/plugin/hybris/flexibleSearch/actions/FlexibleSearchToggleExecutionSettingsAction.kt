@@ -69,7 +69,7 @@ class FlexibleSearchToggleExecutionSettingsAction : AnAction() {
             row {
                 spinner(0..1000000)
                     .align(AlignX.FILL)
-                    .label("Row:")
+                    .label("Rows:")
                     .bindIntValue({ executionSettings.maxCount }, { value -> executionSettings.maxCount = value })
             }.layout(RowLayout.PARENT_GRID)
 
