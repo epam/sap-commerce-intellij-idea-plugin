@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionSettings
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionClient
@@ -48,12 +49,17 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
         ?: content
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
-        val fileEditor = fileEditor(e)
+        val fileEditor = fileEditor(e) ?: return
+        val settings = e.flexibleSearchExecutionSettings() ?: return
         val context = FlexibleSearchExecutionContext(
             content = content,
+            user = settings.user,
+            locale = settings.locale,
+            maxCount = settings.maxCount,
+            dataSource = settings.dataSource,
         )
 
-        if (fileEditor?.inEditorResults ?: false) {
+        if (fileEditor.inEditorResults) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader(context)
 

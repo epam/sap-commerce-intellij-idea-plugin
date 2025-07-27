@@ -35,10 +35,10 @@ import kotlin.reflect.KClass
 abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>, F : FileEditor>(
     internal val language: Language,
     internal val consoleClass: KClass<C>,
-    internal val name: String,
-    internal val description: String,
-    internal val icon: Icon
-) : AnAction(name, description, icon), DumbAware {
+    private val name: String,
+    private val description: String,
+    private val icon: Icon
+) : AnAction(), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -76,6 +76,9 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>, F
             ?.getUserData(KEY_QUERY_EXECUTING)
             ?: false
 
+        e.presentation.text = name
+        e.presentation.description = description
+        e.presentation.icon = icon
         e.presentation.isEnabledAndVisible = e.presentation.isEnabledAndVisible
         e.presentation.isEnabled = e.presentation.isEnabledAndVisible && !queryExecuting
         e.presentation.disabledIcon = if (queryExecuting) AnimatedIcon.Default.INSTANCE
