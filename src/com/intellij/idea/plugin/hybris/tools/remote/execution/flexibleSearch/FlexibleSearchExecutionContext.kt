@@ -82,6 +82,7 @@ data class FlexibleSearchExecutionContext(
             )
         }
 
+        // Slow operation, do not invoke on EDT
         fun defaultSettings(project: Project) = DEFAULT_SETTINGS.modifiable()
             .apply {
                 user = RemoteConnectionService.getInstance(project)
