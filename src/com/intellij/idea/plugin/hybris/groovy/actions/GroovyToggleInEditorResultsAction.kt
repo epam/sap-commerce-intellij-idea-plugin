@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.groovy.editor.groovySplitEditor
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
@@ -31,6 +32,13 @@ class GroovyToggleInEditorResultsAction : ToggleAction(
 ) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        super.update(e)
+    }
 
     override fun isSelected(e: AnActionEvent): Boolean = e.groovySplitEditor()?.inEditorResults
         ?: false

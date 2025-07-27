@@ -809,7 +809,7 @@ object HybrisConstants {
     object Locales {
         val LOCALIZED_FILE_NAME: Pattern = Pattern.compile("(_[a-zA-Z]{2,8}(_[a-zA-Z]{2}|[0-9]{3})?(_[\\w\\-]+)?)\\.[^_]+$")
         val LOCALES_CODES by lazy {
-            Locale.getISOLanguages() + Locale.getAvailableLocales()
+            val locales = Locale.getAvailableLocales()
                 .flatMap {
                     try {
                         listOf(it.language, it.isO3Language)
@@ -817,6 +817,9 @@ object HybrisConstants {
                         listOf(it.language)
                     }
                 }
+            (Locale.getISOLanguages() + locales)
+                .filter { it.isNotBlank() }
+                .toSortedSet()
         }
     }
 }

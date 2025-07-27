@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_FILE_EXTENSI
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -36,10 +37,13 @@ class ImpExOpenInConsoleAction : AnAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(event: AnActionEvent) {
-        val project = event.project ?: return
+    override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
 
-        event.presentation.isEnabledAndVisible = project.isHybrisProject
+        val project = e.project ?: return
+
+        e.presentation.isEnabledAndVisible = project.isHybrisProject
             && OpenInHybrisConsoleService.getInstance(project).isRequiredMultipleFileExtension(IMPEX_FILE_EXTENSION)
     }
 

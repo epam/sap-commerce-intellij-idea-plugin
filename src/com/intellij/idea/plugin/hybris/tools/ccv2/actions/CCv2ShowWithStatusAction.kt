@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
@@ -51,10 +52,12 @@ abstract class CCv2ShowWithStatusAction<T : Enum<T>>(
     }
 
     override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
         super.update(e)
-        val isRightPlace = "GoToAction" != e.place
-        e.presentation.isEnabled = isRightPlace
-        e.presentation.isVisible = isRightPlace && e.project
+
+        e.presentation.isVisible = e.project
             ?.let { CCv2View.getActiveTab(it) == tab }
             ?: false
     }

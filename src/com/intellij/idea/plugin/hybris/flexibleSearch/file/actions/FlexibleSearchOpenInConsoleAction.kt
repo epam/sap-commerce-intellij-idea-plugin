@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants.FLEXIBLE_SEARCH_FI
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -36,9 +37,12 @@ class FlexibleSearchOpenInConsoleAction : AnAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun update(event: AnActionEvent) {
-        val project = event.project ?: return
-        event.presentation.isEnabledAndVisible = project.isHybrisProject && OpenInHybrisConsoleService.getInstance(project)
+    override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        val project = e.project ?: return
+        e.presentation.isEnabledAndVisible = project.isHybrisProject && OpenInHybrisConsoleService.getInstance(project)
             .isRequiredSingleFileExtension(FLEXIBLE_SEARCH_FILE_EXTENSION)
     }
 

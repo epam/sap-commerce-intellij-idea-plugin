@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecu
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -40,6 +41,9 @@ class ConsoleExecuteStatementAction : AnAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
         val project = e.project ?: return
         val console = HybrisConsoleService.getInstance(project).getActiveConsole()
             ?: return

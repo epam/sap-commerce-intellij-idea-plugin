@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
@@ -32,6 +33,13 @@ class FlexibleSearchToggleInEditorResultsAction : ToggleAction(
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
+    override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        super.update(e)
+    }
+
     override fun isSelected(e: AnActionEvent): Boolean = e.flexibleSearchSplitEditor()?.inEditorResults
         ?: false
 
@@ -39,8 +47,4 @@ class FlexibleSearchToggleInEditorResultsAction : ToggleAction(
         e.flexibleSearchSplitEditor()?.inEditorResults = state
     }
 
-    override fun update(e: AnActionEvent) {
-        super.update(e)
-        e.presentation.isVisible = e.presentation.isVisible
-    }
 }

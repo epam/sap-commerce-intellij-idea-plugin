@@ -22,10 +22,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 import com.intellij.execution.ExecutionBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.LangDataKeys
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.DumbAwareAction
 
 class ConsoleClearAllAction : DumbAwareAction(
@@ -37,6 +34,9 @@ class ConsoleClearAllAction : DumbAwareAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
         val project = e.project ?: return
         val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole() ?: return
 

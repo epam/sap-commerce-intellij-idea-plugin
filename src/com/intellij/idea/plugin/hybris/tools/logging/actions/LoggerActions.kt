@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
+import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -46,14 +47,15 @@ abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
         super.update(e)
-        val isRightPlace = "GoToAction" != e.place
         val project = e.project ?: return
 
         e.presentation.text = logLevel.name
         e.presentation.icon = logLevel.icon
-        e.presentation.isEnabled = isRightPlace && CxLoggerAccess.getInstance(project).ready
-        e.presentation.isVisible = isRightPlace
+        e.presentation.isEnabled = CxLoggerAccess.getInstance(project).ready
     }
 }
 
@@ -79,12 +81,13 @@ class FetchLoggerStateAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
-        val isRightPlace = "GoToAction" != e.place
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
         val project = e.project ?: return
         val loggerAccess = CxLoggerAccess.getInstance(project)
 
-        e.presentation.isEnabled = isRightPlace && loggerAccess.ready
-        e.presentation.isVisible = isRightPlace
+        e.presentation.isEnabled = loggerAccess.ready
 
         if (CxLoggerAccess.getInstance(project).stateInitialized) {
             e.presentation.text = "Refresh Loggers State"

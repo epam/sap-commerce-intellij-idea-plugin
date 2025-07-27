@@ -28,12 +28,11 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.JBPopupListener
+import com.intellij.openapi.ui.popup.LightweightWindowEvent
 import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.bindIntValue
-import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.dsl.builder.text
+import com.intellij.ui.dsl.builder.*
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 
@@ -69,27 +68,28 @@ class FlexibleSearchToggleExecutionSettingsAction : AnAction() {
         val settingsPanel = panel {
             row {
                 spinner(0..1000000)
+                    .align(AlignX.FILL)
+                    .label("Row:")
                     .bindIntValue({ executionSettings.maxCount }, { value -> executionSettings.maxCount = value })
-                    .label("Max. count")
             }.layout(RowLayout.PARENT_GRID)
 
             row {
                 textField()
-                    .text(executionSettings.user)
-                    .label("User")
+                    .align(AlignX.FILL)
+                    .label("User:")
+                    .bindText({ executionSettings.user }, { value -> executionSettings.user = value })
             }.layout(RowLayout.PARENT_GRID)
 
             row {
                 comboBox(
-                    HybrisConstants.Locales.LOCALES_CODES.toList(),
+                    HybrisConstants.Locales.LOCALES_CODES,
                     renderer = SimpleListCellRenderer.create("?") {
                         it
                     }
                 )
-                    .label("Locale")
-                    .apply {
-                        component.selectedItem = executionSettings.locale
-                    }
+                    .label("Locale:")
+                    .align(AlignX.FILL)
+                    .bindItem({ executionSettings.locale }, { value -> executionSettings.locale = value ?: "en" })
             }.layout(RowLayout.PARENT_GRID)
 
             row {
@@ -97,19 +97,21 @@ class FlexibleSearchToggleExecutionSettingsAction : AnAction() {
                     tenants,
                     renderer = SimpleListCellRenderer.create("?") { it }
                 )
-                    .label("Tenant")
-                    .apply {
-                        component.selectedItem = executionSettings.dataSource
-                    }
+                    .label("Tenant:")
+                    .align(AlignX.FILL)
+                    .bindItem({ executionSettings.dataSource }, { value -> executionSettings.dataSource = value ?: "master" })
             }.layout(RowLayout.PARENT_GRID)
         }
             .apply {
-                border = JBUI.Borders.empty(16)
+                border = JBUI.Borders.empty(8, 16)
             }
 
         JBPopupFactory.getInstance().createComponentPopupBuilder(settingsPanel, null)
             .createPopup()
             .also {
+                it.addListener(object : JBPopupListener {
+                    override fun onClosed(event: LightweightWindowEvent) = settingsPanel.apply()
+                })
                 it.showUnderneathOf(inputEvent.component)
             }
     }
