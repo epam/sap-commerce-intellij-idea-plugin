@@ -18,22 +18,24 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.util.Key
-import com.intellij.openapi.util.UserDataHolderBase
-import com.intellij.openapi.util.getOrCreateUserData
+import com.intellij.openapi.util.*
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiDocumentManager
@@ -50,6 +52,19 @@ import kotlin.time.Duration.Companion.milliseconds
 
 fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<FlexibleSearchSplitEditor>()
+fun AnActionEvent.flexibleSearchExecutionSettings(): FlexibleSearchExecutionSettings? {
+    val project = this.project ?: return null
+    val editor = this.getData(CommonDataKeys.EDITOR) ?: return null
+
+    val user = RemoteConnectionService.getInstance(project)
+        .getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        .username
+    return editor.getOrCreateUserDataUnsafe(HybrisConstants.KEY_FXS_EXECUTION_SETTINGS) {
+        FlexibleSearchExecutionSettings(
+            user = user,
+        )
+    }
+}
 
 class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 

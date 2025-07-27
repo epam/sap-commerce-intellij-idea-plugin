@@ -19,16 +19,16 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionSettings
 import com.intellij.idea.plugin.hybris.properties.PropertyService
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContextSettings
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.ui.DialogPanel
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionSettings
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.JBPopupListener
 import com.intellij.openapi.ui.popup.LightweightWindowEvent
-import com.intellij.openapi.util.getOrCreateUserDataUnsafe
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.application
@@ -42,45 +42,42 @@ class FlexibleSearchExecutionSettingsAction : AnAction() {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
 
-        e.presentation.text = "Execution Context Settings"
+        val settings = e.flexibleSearchExecutionSettings() ?: return
+
+        e.presentation.text = """
+            Execution Context Settings<br>
+              rows:   ${settings.maxCount}<br>
+              user:   ${settings.user}<br>
+              locale: ${settings.locale}<br>
+              tenant: ${settings.dataSource}<br>
+        """.trimIndent()
         e.presentation.icon = HybrisIcons.Connection.CONTEXT
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val inputEvent = e.inputEvent ?: return
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-        val user = RemoteConnectionService.getInstance(project)
-            .getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-            .username
+        val settings = e.flexibleSearchExecutionSettings() ?: return
         val dataSources = application.runReadAction<List<String>> {
             PropertyService.getInstance(project)
                 ?.findProperty("installed.tenants")
                 ?.split(",")
                 ?: listOf()
-        }.toSortedSet().apply { add("admin") }
+        }.toSortedSet().apply { add(FlexibleSearchExecutionSettings.DEFAULT_DATA_SOURCE) }
 
-        val executionSettings = editor.getOrCreateUserDataUnsafe(HybrisConstants.KEY_FXS_EXECUTION_SETTINGS) {
-            FlexibleSearchExecutionContextSettings(
-                user = user,
-            )
-        }
-
-        val settingsPanel: DialogPanel
-
-        settingsPanel = panel {
+        val settingsPanel = panel {
             row {
                 spinner(0..1000000)
                     .align(AlignX.FILL)
                     .label("Rows:")
-                    .bindIntValue({ executionSettings.maxCount }, { value -> executionSettings.maxCount = value })
+                    .bindIntValue({ settings.maxCount }, { value -> settings.maxCount = value })
             }.layout(RowLayout.PARENT_GRID)
 
             row {
                 textField()
                     .align(AlignX.FILL)
                     .label("User:")
-                    .bindText({ executionSettings.user }, { value -> executionSettings.user = value })
+                    .bindText({ settings.user }, { value -> settings.user = value })
             }.layout(RowLayout.PARENT_GRID)
 
             row {
@@ -92,7 +89,7 @@ class FlexibleSearchExecutionSettingsAction : AnAction() {
                 )
                     .label("Locale:")
                     .align(AlignX.FILL)
-                    .bindItem({ executionSettings.locale }, { value -> executionSettings.locale = value ?: "en" })
+                    .bindItem({ settings.locale }, { value -> settings.locale = value ?: "en" })
             }.layout(RowLayout.PARENT_GRID)
 
             row {
@@ -102,7 +99,7 @@ class FlexibleSearchExecutionSettingsAction : AnAction() {
                 )
                     .label("Tenant:")
                     .align(AlignX.FILL)
-                    .bindItem({ executionSettings.dataSource }, { value -> executionSettings.dataSource = value ?: "master" })
+                    .bindItem({ settings.dataSource }, { value -> settings.dataSource = value ?: "master" })
             }.layout(RowLayout.PARENT_GRID)
         }
             .apply {

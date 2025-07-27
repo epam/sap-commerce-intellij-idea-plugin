@@ -56,12 +56,16 @@ data class FlexibleSearchExecutionContext(
     }
 }
 
-data class FlexibleSearchExecutionContextSettings(
+data class FlexibleSearchExecutionSettings(
     var maxCount: Int = 200,
     var locale: String = "en",
-    var dataSource: String = "master",
+    var dataSource: String = DEFAULT_DATA_SOURCE,
     var user: String,
-)
+) {
+    companion object {
+        const val DEFAULT_DATA_SOURCE = "master"
+    }
+}
 
 enum class QueryMode(val title: String) {
     SQL("SQL"),
