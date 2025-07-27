@@ -102,10 +102,10 @@
         <action id="hybris.fxs.toggleParameters" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchToggleInEditorParametersAction"/>
         <action id="hybris.fxs.toggleInEditorResults" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchToggleInEditorResultsAction"/>
         <action id="hybris.fxs.copyToClipboard" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchCopyToClipboardAction"/>
-        <action id="hybris.fxs.executionSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchExecutionSettingsAction"/>
+        <action id="hybris.fxs.executionContextSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchExecutionContextSettingsAction"/>
 
         <group id="hybris.fxs.toolbar.left">
-            <reference ref="hybris.fxs.executionSettings"/>
+            <reference ref="hybris.fxs.executionContextSettings"/>
             <separator/>
             <reference ref="hybris.fxs.execute"/>
             <reference ref="hybris.fxs.openQuery"/>

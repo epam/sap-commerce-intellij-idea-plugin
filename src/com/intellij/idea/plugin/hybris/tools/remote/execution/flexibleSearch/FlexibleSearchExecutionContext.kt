@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContextSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import org.apache.commons.lang3.BooleanUtils
@@ -56,13 +57,15 @@ data class FlexibleSearchExecutionContext(
     }
 }
 
-data class FlexibleSearchExecutionSettings(
-    var maxCount: Int = 200,
-    var locale: String = "en",
+data class FlexibleSearchExecutionContextSettings(
+    var maxCount: Int = DEFAULT_MAX_COUNT,
+    var locale: String = DEFAULT_LOCALE,
     var dataSource: String = DEFAULT_DATA_SOURCE,
     var user: String,
-) {
+) : ExecutionContextSettings {
     companion object {
+        const val DEFAULT_MAX_COUNT = 200
+        const val DEFAULT_LOCALE = "en"
         const val DEFAULT_DATA_SOURCE = "master"
     }
 }
