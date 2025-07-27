@@ -19,10 +19,12 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
+import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContextSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.BooleanUtils
 
 data class FlexibleSearchExecutionContext(
@@ -55,18 +57,42 @@ data class FlexibleSearchExecutionContext(
             put("sqlQuery", "")
         }
     }
-}
 
-data class FlexibleSearchExecutionContextSettings(
-    var maxCount: Int = DEFAULT_MAX_COUNT,
-    var locale: String = DEFAULT_LOCALE,
-    var dataSource: String = DEFAULT_DATA_SOURCE,
-    var user: String,
-) : ExecutionContextSettings {
+    data class Settings(val maxCount: Int, val locale: String, val dataSource: String, val user: String) : ExecutionContext.Settings {
+        override fun modifiable() = ModifiableSettings(
+            maxCount = maxCount,
+            locale = locale,
+            dataSource = dataSource,
+            user = user
+        )
+    }
+
+    data class ModifiableSettings(var maxCount: Int, var locale: String, var dataSource: String, var user: String) : ExecutionContext.ModifiableSettings {
+        override fun immutable() = Settings(
+            maxCount = maxCount,
+            locale = locale,
+            dataSource = dataSource,
+            user = user
+        )
+    }
+
     companion object {
-        const val DEFAULT_MAX_COUNT = 200
-        const val DEFAULT_LOCALE = "en"
-        const val DEFAULT_DATA_SOURCE = "master"
+        val DEFAULT_SETTINGS by lazy {
+            Settings(
+                maxCount = 200,
+                locale = "en",
+                dataSource = "master",
+                user = ""
+            )
+        }
+
+        fun defaultSettings(project: Project) = DEFAULT_SETTINGS.modifiable()
+            .apply {
+                user = RemoteConnectionService.getInstance(project)
+                    .getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+                    .username
+            }
+            .immutable()
     }
 }
 

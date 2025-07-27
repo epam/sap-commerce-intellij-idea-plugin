@@ -18,53 +18,55 @@
 package com.intellij.idea.plugin.hybris.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContextSettings
+import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.popup.ActiveIcon
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.JBPopupListener
 import com.intellij.openapi.ui.popup.LightweightWindowEvent
-import java.awt.Component
 
-abstract class ExecutionContextSettingsAction<S : ExecutionContextSettings> : DumbAwareAction() {
+abstract class ExecutionContextSettingsAction<M : ExecutionContext.ModifiableSettings> : DumbAwareAction() {
 
-    protected abstract fun previewSettings(e: AnActionEvent): String
-    protected abstract fun settingsPanel(e: AnActionEvent): DialogPanel?
+    protected abstract fun previewSettings(e: AnActionEvent, project: Project): String
+    protected abstract fun settings(e: AnActionEvent, project: Project): M
+    protected abstract fun settingsPanel(e: AnActionEvent, settings: M): DialogPanel?
+    protected abstract fun applySettings(editor: Editor, settings: M)
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
+        val project = e.project ?: return
 
         e.presentation.icon = HybrisIcons.Connection.CONTEXT
-        e.presentation.text = "Execution Context Settings<br>" + previewSettings(e)
+        e.presentation.text = "Execution Context Settings<br>" + previewSettings(e, project)
     }
 
     override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
         val inputEvent = e.inputEvent ?: return
-        val settingsPanel = settingsPanel(e) ?: return
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+        val settings = settings(e, project)
+        val settingsPanel = settingsPanel(e, settings) ?: return
 
-        showPopup(settingsPanel, inputEvent.component)
-    }
-
-    private fun showPopup(settingsPanel: DialogPanel, parentComponent: Component) {
         var isFormValid = true
 
         JBPopupFactory.getInstance().createComponentPopupBuilder(settingsPanel, null)
             .setMovable(false)
             .setResizable(false)
             .setRequestFocus(true)
-            .setAdText("*applicable only to current editor")
             .setTitle("Execution Settings")
             .setTitleIcon(ActiveIcon(HybrisIcons.Connection.CONTEXT))
-            .setCancelCallback {
-                isFormValid
-            }
+            .setAdText("*applicable only to current editor")
+            .setCancelCallback { isFormValid }
             .createPopup()
             .also { popup ->
                 settingsPanel.registerValidators(popup) { validations ->
@@ -75,10 +77,11 @@ abstract class ExecutionContextSettingsAction<S : ExecutionContextSettings> : Du
                     override fun onClosed(event: LightweightWindowEvent) {
                         if (isFormValid) {
                             settingsPanel.apply()
+                            applySettings(editor, settings)
                         }
                     }
                 })
-                popup.showUnderneathOf(parentComponent)
+                popup.showUnderneathOf(inputEvent.component)
             }
     }
 

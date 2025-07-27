@@ -21,8 +21,10 @@ import com.intellij.idea.plugin.hybris.actions.ExecutionContextSettingsAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionSettings
 import com.intellij.idea.plugin.hybris.properties.PropertyService
-import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContextSettings
+import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
@@ -31,10 +33,16 @@ import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 import javax.swing.LayoutFocusTraversalPolicy
 
-class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecutionContextSettings>() {
+class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecutionContext.ModifiableSettings>() {
 
-    override fun previewSettings(e: AnActionEvent): String = e.flexibleSearchExecutionSettings(false)
-        ?.let {
+    private val defaultPreviewSettings by lazy {
+        FlexibleSearchExecutionContext.DEFAULT_SETTINGS.modifiable()
+            .apply { user = "from active connection" }
+            .immutable()
+    }
+
+    override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionSettings() { defaultPreviewSettings }
+        .let {
             """
                 rows:   ${it.maxCount}<br>
                 user:   ${it.user}<br>
@@ -42,23 +50,30 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
                 tenant: ${it.dataSource}
                 """.trimIndent()
         }
-        ?: """
-                rows:   ${FlexibleSearchExecutionContextSettings.DEFAULT_MAX_COUNT}<br>
-                user:   from active connection<br>
-                locale: ${FlexibleSearchExecutionContextSettings.DEFAULT_LOCALE}<br>
-                tenant: ${FlexibleSearchExecutionContextSettings.DEFAULT_DATA_SOURCE}
-                """.trimIndent()
 
-    override fun settingsPanel(e: AnActionEvent): DialogPanel? {
+    override fun settings(e: AnActionEvent, project: Project): FlexibleSearchExecutionContext.ModifiableSettings {
+        val settings = e.flexibleSearchExecutionSettings() {
+            FlexibleSearchExecutionContext.defaultSettings(project)
+        }
+
+        return settings.modifiable()
+    }
+
+    override fun applySettings(editor: Editor, settings: FlexibleSearchExecutionContext.ModifiableSettings) {
+        editor.putUserData(HybrisConstants.KEY_FXS_EXECUTION_SETTINGS, settings.immutable())
+    }
+
+    override fun settingsPanel(e: AnActionEvent, settings: FlexibleSearchExecutionContext.ModifiableSettings): DialogPanel? {
         val project = e.project ?: return null
-        val settings = e.flexibleSearchExecutionSettings() ?: return null
-
         val dataSources = application.runReadAction<List<String>> {
             PropertyService.getInstance(project)
                 ?.findProperty("installed.tenants")
                 ?.split(",")
                 ?: listOf()
-        }.toSortedSet().apply { add(FlexibleSearchExecutionContextSettings.DEFAULT_DATA_SOURCE) }
+        }
+            .toSortedSet()
+            .apply { add(FlexibleSearchExecutionContext.DEFAULT_SETTINGS.dataSource) }
+
         return panel {
             row {
                 textField()
