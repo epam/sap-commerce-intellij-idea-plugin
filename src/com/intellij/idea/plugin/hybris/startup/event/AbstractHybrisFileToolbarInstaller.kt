@@ -38,7 +38,7 @@ abstract class AbstractHybrisFileToolbarInstaller(
     internal val fileType: FileType
 ) {
 
-    abstract fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean
+    protected open fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean = true
 
     private fun install(project: Project, editor: EditorEx) {
         val actionManager = ActionManager.getInstance()
@@ -47,12 +47,17 @@ abstract class AbstractHybrisFileToolbarInstaller(
         val rightGroup = actionManager.getAction(rightGroupId) as ActionGroup
         val leftToolbar = actionManager.createActionToolbar(ActionPlaces.EDITOR_TOOLBAR, leftGroup, true)
         val rightToolbar = actionManager.createActionToolbar(ActionPlaces.EDITOR_TOOLBAR, rightGroup, true)
-        rightToolbar.setReservePlaceAutoPopupIcon(false)
+
+        rightToolbar.isReservePlaceAutoPopupIcon = false
+
         leftToolbar.targetComponent = editor.contentComponent
         rightToolbar.targetComponent = editor.contentComponent
+
         headerComponent.add(leftToolbar.component, "Center")
         headerComponent.add(rightToolbar.component, "East")
+
         leftToolbar.updateActionsAsync()
+
         editor.permanentHeaderComponent = headerComponent
         editor.headerComponent = headerComponent
 

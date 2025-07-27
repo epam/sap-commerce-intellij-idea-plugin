@@ -56,6 +56,13 @@ data class FlexibleSearchExecutionContext(
     }
 }
 
+data class FlexibleSearchExecutionContextSettings(
+    var maxCount: Int = 200,
+    var locale: String = "en",
+    var dataSource: String = "master",
+    var user: String,
+)
+
 enum class QueryMode(val title: String) {
     SQL("SQL"),
     FlexibleSearch("FlexibleSearch"),

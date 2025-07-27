@@ -440,6 +440,7 @@ object HybrisIcons {
     object Connection {
         val ADD = AllIcons.General.Add
         val EDIT = AllIcons.Actions.Edit
+        val CONTEXT = AllIcons.FileTypes.Contexts
     }
 
     object Scope {

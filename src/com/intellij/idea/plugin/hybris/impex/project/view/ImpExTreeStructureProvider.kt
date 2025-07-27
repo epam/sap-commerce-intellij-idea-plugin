@@ -21,6 +21,7 @@ import com.intellij.ide.projectView.TreeStructureProvider
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode
 import com.intellij.ide.util.treeView.AbstractTreeNode
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.openapi.util.io.FileUtilRt
@@ -28,8 +29,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import org.jetbrains.annotations.Unmodifiable
-import java.util.*
-import java.util.regex.Pattern
 
 /**
  * This provider enables:
@@ -38,17 +37,6 @@ import java.util.regex.Pattern
 class ImpExTreeStructureProvider : TreeStructureProvider {
 
     private val separatorRegex = "_".toRegex()
-    private val localePattern: Pattern = Pattern.compile("(_[a-zA-Z]{2,8}(_[a-zA-Z]{2}|[0-9]{3})?(_[\\w\\-]+)?)\\.[^_]+$")
-    private val localesLanguageCodes by lazy {
-        Locale.getISOLanguages() + Locale.getAvailableLocales()
-            .flatMap {
-                try {
-                    listOf(it.language, it.isO3Language)
-                } catch (_: MissingResourceException) {
-                    listOf(it.language)
-                }
-            }
-    }
 
     override fun modify(
         parent: AbstractTreeNode<*>,
@@ -89,7 +77,7 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
 
             if (!name.contains('_')) return FileUtilRt.getNameWithoutExtension(name)
 
-            val matcher = localePattern.matcher(name)
+            val matcher = HybrisConstants.Locales.LOCALIZED_FILE_NAME.matcher(name)
             val baseNameWithExtension: String
 
             var matchIndex = 0
@@ -101,7 +89,7 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
                     .toTypedArray()
                 if (splitted.size > 1) {
                     val langCode: String? = splitted[1]
-                    if (!localesLanguageCodes.contains(langCode)) {
+                    if (!HybrisConstants.Locales.LOCALES_CODES.contains(langCode)) {
                         matchIndex = matchResult.start(1) + 1
                         continue
                     }

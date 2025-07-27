@@ -29,6 +29,7 @@
 - Use text area editor for any _in_ expressions in the `In-Editor Parameters` view [#1455](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1455)
 - Improved _numbers_ editors in the `In-Editor Parameters` view [#1453](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1453)
 - Automatically Escape `'` in the _text_ editors in the `In-Editor Parameters` view [#1454](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1454)
+- Introduced possibility to specify execution context parameters [#1487](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1487)
 
 ### `Polyglot Query` enhancements
 - Introduced `In-Editor Results` view [#1462](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1462)

@@ -21,8 +21,6 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.file
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.ex.EditorEx
-import com.intellij.openapi.project.Project
 import com.intellij.util.application
 
 @Service
@@ -37,5 +35,4 @@ class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
         fun getInstance(): PolyglotQueryFileToolbarInstaller = application.service()
     }
 
-    override fun isToolbarEnabled(project: Project, editor: EditorEx) = true
 }
