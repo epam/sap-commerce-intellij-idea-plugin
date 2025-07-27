@@ -33,7 +33,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.application
 import com.intellij.util.ui.JBUI
 
-class FlexibleSearchToggleExecutionSettingsAction : AnAction() {
+class FlexibleSearchExecutionSettingsAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
