@@ -22,6 +22,9 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
+import com.intellij.idea.plugin.hybris.ui.ComboItem
+import com.intellij.idea.plugin.hybris.ui.GroupedComboBoxModel
+import com.intellij.idea.plugin.hybris.ui.GroupedRenderer
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -30,6 +33,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.application
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import javax.swing.LayoutFocusTraversalPolicy
 
@@ -64,14 +68,15 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
     }
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecutionContext.ModifiableSettings): DialogPanel {
-        val dataSources = application.runReadAction<List<String>> {
+        val dataSources = application.runReadAction<Collection<String>> {
             PropertyService.getInstance(project)
-                ?.findProperty("installed.tenants")
+                ?.findProperty(HybrisConstants.PROPERTY_INSTALLED_TENANTS)
                 ?.split(",")
-                ?: listOf()
+                ?: emptyList()
         }
             .toSortedSet()
             .apply { add(FlexibleSearchExecutionContext.DEFAULT_SETTINGS.dataSource) }
+
 
         return panel {
             row {
@@ -102,14 +107,12 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
 
             row {
                 comboBox(
-                    HybrisConstants.Locales.LOCALES_CODES,
-                    renderer = SimpleListCellRenderer.create("?") {
-                        it
-                    }
+                    model = GroupedComboBoxModel(computeLocales(project)),
+                    renderer = GroupedRenderer()
                 )
                     .label("Locale:")
                     .align(AlignX.FILL)
-                    .bindItem({ settings.locale }, { value -> settings.locale = value ?: "en" })
+                    .bindItem({ ComboItem.Option(settings.locale) }, { value -> settings.locale = value.asSafely<ComboItem.Option>()?.value ?: "en" })
             }.layout(RowLayout.PARENT_GRID)
 
             row {
@@ -129,4 +132,22 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
             }
     }
 
+    private fun computeLocales(project: Project): List<ComboItem> {
+        val langPacks = application.runReadAction<Collection<String>> {
+            PropertyService.getInstance(project)
+                ?.getLanguages()
+                ?: emptyList()
+        }
+            .map { ComboItem.Option(it) }
+        val locales = HybrisConstants.Locales.LOCALES_CODES
+            .map { ComboItem.Option(it) }
+
+        return listOf(
+            listOf(ComboItem.Group("Language Packs")),
+            langPacks,
+            listOf(ComboItem.Group("All Locales")),
+            locales
+        )
+            .flatten()
+    }
 }

@@ -222,6 +222,7 @@ object HybrisConstants {
     const val PROPERTY_BUILD_COMPILER = "build.compiler"
     const val PROPERTY_OPTIONAL_CONFIG_DIR = "hybris.optional.config.dir"
     const val PROPERTY_LANG_PACKS = "lang.packs"
+    const val PROPERTY_INSTALLED_TENANTS = "installed.tenants"
     const val PROPERTY_IMPEX_HEADER_REPLACEMENT = "impex.header.replacement"
     const val PROPERTY_ENV_PROPERTY_PREFIX = "env.properties.prefix"
 
