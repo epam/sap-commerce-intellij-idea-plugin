@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.actions.ExecutionContextSettingsAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionSettings
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -41,7 +41,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
             .immutable()
     }
 
-    override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionSettings() { defaultPreviewSettings }
+    override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionContextSettings() { defaultPreviewSettings }
         .let {
             """
                 rows:   ${it.maxCount}<br>
@@ -52,7 +52,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
         }
 
     override fun settings(e: AnActionEvent, project: Project): FlexibleSearchExecutionContext.ModifiableSettings {
-        val settings = e.flexibleSearchExecutionSettings() {
+        val settings = e.flexibleSearchExecutionContextSettings() {
             FlexibleSearchExecutionContext.defaultSettings(project)
         }
 

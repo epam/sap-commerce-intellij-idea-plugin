@@ -53,7 +53,7 @@ import kotlin.time.Duration.Companion.milliseconds
 fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<FlexibleSearchSplitEditor>()
 
-fun AnActionEvent.flexibleSearchExecutionSettings(fallback: () -> FlexibleSearchExecutionContext.Settings) = this.getData(CommonDataKeys.EDITOR)
+fun AnActionEvent.flexibleSearchExecutionContextSettings(fallback: () -> FlexibleSearchExecutionContext.Settings) = this.getData(CommonDataKeys.EDITOR)
     ?.getUserData(HybrisConstants.KEY_FXS_EXECUTION_SETTINGS)
     ?: fallback()
 
