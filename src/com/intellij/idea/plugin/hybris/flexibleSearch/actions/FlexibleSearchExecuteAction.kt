@@ -53,10 +53,7 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
         val settings = e.flexibleSearchExecutionSettings() { FlexibleSearchExecutionContext.defaultSettings(project) }
         val context = FlexibleSearchExecutionContext(
             content = content,
-            user = settings.user,
-            locale = settings.locale,
-            maxCount = settings.maxCount,
-            dataSource = settings.dataSource,
+            settings = settings
         )
 
         if (fileEditor.inEditorResults) {

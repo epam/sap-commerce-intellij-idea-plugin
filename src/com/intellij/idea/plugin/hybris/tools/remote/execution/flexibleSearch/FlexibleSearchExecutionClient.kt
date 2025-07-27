@@ -45,7 +45,7 @@ class FlexibleSearchExecutionClient(project: Project, coroutineScope: CoroutineS
     override suspend fun execute(context: FlexibleSearchExecutionContext): FlexibleSearchExecutionResult {
         val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
-        val params = context.params(settings)
+        val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
         val response = HybrisHacHttpClient.getInstance(project)

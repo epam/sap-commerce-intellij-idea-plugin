@@ -60,8 +60,12 @@ class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScop
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
         content = content,
-        maxCount = maxRowsSpinner.value.toString().toInt(),
-        queryMode = QueryMode.PolyglotQuery
+        queryMode = QueryMode.PolyglotQuery,
+        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
+            .apply {
+                maxCount = maxRowsSpinner.value.toString().toInt()
+            }
+            .immutable()
     )
 
     fun print(values: Collection<PolyglotQueryVirtualParameter>?) {

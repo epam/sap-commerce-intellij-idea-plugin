@@ -60,9 +60,13 @@ class HybrisFlexibleSearchConsole(project: Project, coroutineScope: CoroutineSco
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
         content = content,
-        maxCount = maxRowsSpinner.value.toString().toInt(),
         transactionMode = TransactionMode.ROLLBACK,
-        queryMode = QueryMode.FlexibleSearch
+        queryMode = QueryMode.FlexibleSearch,
+        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
+            .apply {
+                maxCount = maxRowsSpinner.value.toString().toInt()
+            }
+            .immutable()
     )
 
     override fun title(): String = "FlexibleSearch"

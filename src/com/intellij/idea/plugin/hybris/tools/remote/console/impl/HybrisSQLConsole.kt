@@ -68,9 +68,13 @@ class HybrisSQLConsole(project: Project, coroutineScope: CoroutineScope) : Hybri
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
         content = content,
-        maxCount = maxRowsSpinner.value.toString().toInt(),
         transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
-        queryMode = QueryMode.SQL
+        queryMode = QueryMode.SQL,
+        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
+            .apply {
+                maxCount = maxRowsSpinner.value.toString().toInt()
+            }
+            .immutable()
     )
 
     override fun title(): String = "SQL"
