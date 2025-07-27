@@ -52,12 +52,12 @@ class FlexibleSearchExecutionSettingsAction : AnAction() {
         val user = RemoteConnectionService.getInstance(project)
             .getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
             .username
-        val tenants = application.runReadAction<List<String>> {
+        val dataSources = application.runReadAction<List<String>> {
             PropertyService.getInstance(project)
                 ?.findProperty("installed.tenants")
                 ?.split(",")
                 ?: listOf()
-        }.toMutableSet().apply { add("admin") }
+        }.toSortedSet().apply { add("admin") }
 
         val executionSettings = editor.getOrCreateUserDataUnsafe(HybrisConstants.KEY_FXS_EXECUTION_SETTINGS) {
             FlexibleSearchExecutionContextSettings(
@@ -94,7 +94,7 @@ class FlexibleSearchExecutionSettingsAction : AnAction() {
 
             row {
                 comboBox(
-                    tenants,
+                    dataSources,
                     renderer = SimpleListCellRenderer.create("?") { it }
                 )
                     .label("Tenant:")
