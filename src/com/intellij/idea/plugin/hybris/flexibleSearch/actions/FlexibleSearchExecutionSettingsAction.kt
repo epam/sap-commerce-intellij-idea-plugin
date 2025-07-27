@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContextSettings
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.ui.popup.JBPopupListener
 import com.intellij.openapi.ui.popup.LightweightWindowEvent
@@ -65,7 +66,9 @@ class FlexibleSearchExecutionSettingsAction : AnAction() {
             )
         }
 
-        val settingsPanel = panel {
+        val settingsPanel: DialogPanel
+
+        settingsPanel = panel {
             row {
                 spinner(0..1000000)
                     .align(AlignX.FILL)
@@ -107,6 +110,9 @@ class FlexibleSearchExecutionSettingsAction : AnAction() {
             }
 
         JBPopupFactory.getInstance().createComponentPopupBuilder(settingsPanel, null)
+            .setMovable(false)
+            .setResizable(false)
+            .setRequestFocus(true)
             .createPopup()
             .also {
                 it.addListener(object : JBPopupListener {
