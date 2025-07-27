@@ -100,7 +100,7 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>, F
     }
 
     companion object {
-        val KEY_QUERY_EXECUTING = Key.create<Boolean>("query.execution.state")
+        protected val KEY_QUERY_EXECUTING = Key.create<Boolean>("query.execution.state")
     }
 
 }
