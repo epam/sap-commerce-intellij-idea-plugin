@@ -43,6 +43,7 @@ class ConsoleImpExValidateAction : AnAction() {
         val context = ImpExExecutionContext(
             content = console.content,
             executionMode = ExecutionMode.VALIDATE,
+            settings = ImpExExecutionContext.DEFAULT_SETTINGS
         )
 
         ImpExExecutionClient.getInstance(project).execute(

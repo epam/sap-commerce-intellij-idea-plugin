@@ -48,7 +48,8 @@ class AclValidateAction : ExecuteStatementAction<HybrisImpexConsole, AclSplitEdi
         val context = ImpExExecutionContext(
             content = content,
             executionMode = ExecutionMode.VALIDATE,
-            dialect = ImpExDialect.ACL
+            dialect = ImpExDialect.ACL,
+            settings = ImpExExecutionContext.DEFAULT_SETTINGS
         )
 
         if (fileEditor.inEditorResults) {

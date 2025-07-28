@@ -41,7 +41,7 @@
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpExDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpExDarcula.xml"/>
 
-        <platform.backend.documentation.psiTargetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexPsiDocumentationTargetProvider" />
+        <platform.backend.documentation.psiTargetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexPsiDocumentationTargetProvider"/>
         <platform.backend.documentation.targetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexDocumentationTargetProvider"/>
 
         <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.impex.editor.event.ImpExLineEditorFactoryListener"/>
@@ -127,6 +127,7 @@
         <action id="hybris.impex.table.select" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSelectAction">
             <keyboard-shortcut first-keystroke="control shift s" keymap="$default"/>
         </action>
+        <action id="hybris.impex.executionContextSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecutionContextSettingsAction"/>
 
         <group id="hybris.impex.table.actions">
             <reference ref="hybris.impex.table.select"/>
@@ -153,6 +154,8 @@
         </group>
 
         <group id="hybris.impex.toolbar.left">
+            <reference ref="hybris.impex.executionContextSettings"/>
+            <separator/>
             <reference ref="hybris.impex.import"/>
             <reference ref="hybris.impex.openQuery"/>
             <reference ref="hybris.impex.validate"/>

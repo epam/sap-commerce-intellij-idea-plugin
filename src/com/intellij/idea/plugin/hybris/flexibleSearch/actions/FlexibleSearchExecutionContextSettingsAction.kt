@@ -98,10 +98,6 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
                         if (it.text.isBlank()) error("Please enter a user name")
                         else null
                     }
-                    .validationOnApply {
-                        if (it.text.isBlank()) error("Please enter a user name")
-                        else null
-                    }
                     .bindText({ settings.user }, { value -> settings.user = value })
             }.layout(RowLayout.PARENT_GRID)
 

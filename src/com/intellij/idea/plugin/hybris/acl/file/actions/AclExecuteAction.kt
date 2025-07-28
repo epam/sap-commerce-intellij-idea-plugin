@@ -47,7 +47,8 @@ class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole, AclSplitEdit
         val fileEditor = fileEditor(e) ?: return
         val context = ImpExExecutionContext(
             content = content,
-            dialect = ImpExDialect.ACL
+            dialect = ImpExDialect.ACL,
+            settings = ImpExExecutionContext.DEFAULT_SETTINGS
         )
 
         if (fileEditor.inEditorResults) {

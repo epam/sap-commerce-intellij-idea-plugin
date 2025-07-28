@@ -21,21 +21,13 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.impex
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import org.apache.commons.lang3.BooleanUtils
-import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
 data class ImpExExecutionContext(
     private val content: String = "",
-    private val validationMode: ValidationMode = ValidationMode.IMPORT_STRICT,
-    private val encoding: Charset = StandardCharsets.UTF_8,
-    private val maxThreads: Int = 20,
-    private val legacyMode: Toggle = Toggle.OFF,
-    private val enableCodeExecution: Toggle = Toggle.ON,
-    private val sldEnabled: Toggle = Toggle.ON,
-    private val distributedMode: Toggle = Toggle.ON,
     val dialect: ImpExDialect = ImpExDialect.IMPEX,
     val executionMode: ExecutionMode = ExecutionMode.IMPORT,
-    val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT
+    val settings: Settings
 ) : ExecutionContext {
 
     override val executionTitle: String
@@ -46,16 +38,75 @@ data class ImpExExecutionContext(
 
     fun params(): Map<String, String> = buildMap {
         put("scriptContent", content)
-        put("validationEnum", validationMode.name)
-        put("encoding", encoding.name())
-        put("maxThreads", maxThreads.toString())
-        put("legacyMode", BooleanUtils.toStringTrueFalse(legacyMode == Toggle.ON))
-        put("enableCodeExecution", BooleanUtils.toStringTrueFalse(enableCodeExecution == Toggle.ON))
-        put("sldEnabled", BooleanUtils.toStringTrueFalse(sldEnabled == Toggle.ON))
-        put("_sldEnabled", sldEnabled.value)
-        put("_enableCodeExecution", enableCodeExecution.value)
-        put("_legacyMode", legacyMode.value)
-        put("_distributedMode", distributedMode.value)
+        put("validationEnum", settings.validationMode.name)
+        put("encoding", settings.encoding)
+        put("maxThreads", settings.maxThreads.toString())
+        put("legacyMode", BooleanUtils.toStringTrueFalse(settings.legacyMode.booleanValue))
+        put("enableCodeExecution", BooleanUtils.toStringTrueFalse(settings.enableCodeExecution.booleanValue))
+        put("sldEnabled", BooleanUtils.toStringTrueFalse(settings.sldEnabled.booleanValue))
+        put("_sldEnabled", settings.sldEnabled.value)
+        put("_enableCodeExecution", settings.enableCodeExecution.value)
+        put("_legacyMode", settings.legacyMode.value)
+        put("_distributedMode", settings.distributedMode.value)
+    }
+
+    data class Settings(
+        val validationMode: ValidationMode,
+        val maxThreads: Int,
+        val timeout: Int,
+        val encoding: String,
+        val legacyMode: Toggle,
+        val enableCodeExecution: Toggle,
+        val sldEnabled: Toggle,
+        val distributedMode: Toggle,
+    ) : ExecutionContext.Settings {
+        override fun modifiable() = ModifiableSettings(
+            validationMode = validationMode,
+            maxThreads = maxThreads,
+            timeout = timeout,
+            encoding = encoding,
+            legacyMode = legacyMode,
+            enableCodeExecution = enableCodeExecution,
+            sldEnabled = sldEnabled,
+            distributedMode = distributedMode,
+        )
+    }
+
+    data class ModifiableSettings(
+        var validationMode: ValidationMode,
+        var maxThreads: Int,
+        var timeout: Int,
+        var encoding: String,
+        var legacyMode: Toggle,
+        var enableCodeExecution: Toggle,
+        var sldEnabled: Toggle,
+        var distributedMode: Toggle,
+    ) : ExecutionContext.ModifiableSettings {
+        override fun immutable() = Settings(
+            validationMode = validationMode,
+            maxThreads = maxThreads,
+            timeout = timeout,
+            encoding = encoding,
+            legacyMode = legacyMode,
+            enableCodeExecution = enableCodeExecution,
+            sldEnabled = sldEnabled,
+            distributedMode = distributedMode,
+        )
+    }
+
+    companion object {
+        val DEFAULT_SETTINGS by lazy {
+            Settings(
+                validationMode = ValidationMode.IMPORT_STRICT,
+                maxThreads = 20,
+                timeout = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,
+                encoding = StandardCharsets.UTF_8.name(),
+                legacyMode = Toggle.OFF,
+                enableCodeExecution = Toggle.ON,
+                sldEnabled = Toggle.OFF,
+                distributedMode = Toggle.OFF,
+            )
+        }
     }
 }
 
@@ -68,10 +119,15 @@ enum class ExecutionMode {
     IMPORT, VALIDATE
 }
 
-enum class ValidationMode {
-    IMPORT_STRICT, IMPORT_RELAXED
+enum class ValidationMode(val title: String) {
+    IMPORT_STRICT("Strict"),
+    IMPORT_RELAXED("Relaxed"),
 }
 
-enum class Toggle(val value: String) {
-    ON("on"), OFF("off")
+enum class Toggle(val value: String, val booleanValue: Boolean) {
+    ON("on", true), OFF("off", false);
+
+    companion object {
+        fun of(value: Boolean) = if (value) ON else OFF
+    }
 }

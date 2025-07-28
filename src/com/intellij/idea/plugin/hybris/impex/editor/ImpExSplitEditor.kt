@@ -18,11 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.impex.editor
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.fileEditor.FileEditor
@@ -50,6 +52,10 @@ import kotlin.time.Duration.Companion.milliseconds
 
 fun AnActionEvent.impexSplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
     ?.asSafely<ImpExSplitEditor>()
+
+fun AnActionEvent.impexExecutionContextSettings(fallback: () -> ImpExExecutionContext.Settings) = this.getData(CommonDataKeys.EDITOR)
+    ?.getUserData(HybrisConstants.KEY_IMPEX_EXECUTION_SETTINGS)
+    ?: fallback()
 
 class ImpExSplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
 

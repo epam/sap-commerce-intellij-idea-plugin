@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
+import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
 import com.intellij.idea.plugin.hybris.impex.editor.impexSplitEditor
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
@@ -48,8 +49,10 @@ class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole, ImpExSplit
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
+        val settings = e.impexExecutionContextSettings { ImpExExecutionContext.DEFAULT_SETTINGS }
         val context = ImpExExecutionContext(
-            content = content
+            content = content,
+            settings = settings
         )
 
         if (fileEditor.inEditorResults) {

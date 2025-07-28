@@ -78,12 +78,15 @@ class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : Hyb
 
     override fun currentExecutionContext(content: String) = ImpExExecutionContext(
         content = content,
-        validationMode = importModeComboBox.selectedItem as ValidationMode,
-        maxThreads = maxThreadsSpinner.value.toString().toInt(),
-        legacyMode = if (legacyModeCheckbox.isSelected) Toggle.ON else Toggle.OFF,
-        enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) Toggle.ON else Toggle.OFF,
-        sldEnabled = if (directPersistenceCheckbox.isSelected) Toggle.ON else Toggle.OFF,
-        distributedMode = Toggle.ON,
+        settings = ImpExExecutionContext.DEFAULT_SETTINGS.modifiable()
+            .apply {
+                validationMode = importModeComboBox.selectedItem as ValidationMode
+                maxThreads = maxThreadsSpinner.value.toString().toInt()
+                legacyMode = if (legacyModeCheckbox.isSelected) Toggle.ON else Toggle.OFF
+                enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) Toggle.ON else Toggle.OFF
+                sldEnabled = if (directPersistenceCheckbox.isSelected) Toggle.ON else Toggle.OFF
+                distributedMode = Toggle.ON
+            }.immutable()
     )
 
     override fun title(): String = HybrisConstants.IMPEX
