@@ -34,14 +34,14 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
 
     override fun previewSettings(e: AnActionEvent, project: Project): String = e.impexExecutionContextSettings { ImpExExecutionContext.DEFAULT_SETTINGS }
         .let {
-            """
-                · validation mode:   ${it.validationMode.title}<br>
-                · max threads:   ${it.maxThreads}<br>
-                · encoding: ${it.encoding}<br>
-                · legacy mode: ${it.legacyMode.value}<br>
-                · enable code execution: ${it.enableCodeExecution.value}<br>
-                · direct persistence: ${it.sldEnabled.value}<br>
-                · distributed mode: ${it.distributedMode.value}
+            """<pre>
+ · validation mode:       ${it.validationMode.title}
+ · max threads:           ${it.maxThreads}
+ · encoding:              ${it.encoding}
+ · legacy mode:           ${it.legacyMode.value}
+ · enable code execution: ${it.enableCodeExecution.value}
+ · direct persistence:    ${it.sldEnabled.value}
+ · distributed mode:      ${it.distributedMode.value}</pre>
                 """.trimIndent()
         }
 

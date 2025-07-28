@@ -47,11 +47,11 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
 
     override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionContextSettings() { defaultPreviewSettings }
         .let {
-            """
-                · rows:   ${it.maxCount}<br>
-                · user:   ${it.user}<br>
-                · locale: ${it.locale}<br>
-                · tenant: ${it.dataSource}
+            """<pre>
+ · rows:   ${it.maxCount}
+ · user:   ${it.user}
+ · locale: ${it.locale}
+ · tenant: ${it.dataSource}</pre>
                 """.trimIndent()
         }
 
