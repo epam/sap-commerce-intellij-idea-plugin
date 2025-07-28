@@ -50,7 +50,7 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
             .map { BasicNameValuePair(it.key, it.value) }
 
         val response = HybrisHacHttpClient.getInstance(project)
-            .post(actionUrl, params, false, context.timeout, settings, null)
+            .post(actionUrl, params, false, context.settings.timeout, settings, null)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
 
