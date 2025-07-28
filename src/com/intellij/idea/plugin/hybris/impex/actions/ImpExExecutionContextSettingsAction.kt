@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
+import com.intellij.ide.BrowserUtil
 import com.intellij.idea.plugin.hybris.actions.ExecutionContextSettingsAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
@@ -25,6 +26,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
@@ -55,9 +57,15 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: ImpExExecutionContext.ModifiableSettings) = panel {
         row {
-            comboBox(EnumComboBoxModel(ImpExExecutionContext.ValidationMode::class.java))
+            comboBox(
+                EnumComboBoxModel(ImpExExecutionContext.ValidationMode::class.java),
+                renderer = SimpleListCellRenderer.create { label, value, _ ->
+                    label.text = value.title
+                })
                 .align(AlignX.FILL)
                 .label("Validation mode:")
+                .comment("Read more about ImpEx validation modes <a href='link'>here</a>.")
+                { BrowserUtil.browse("https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/c703c0bd88bd4281a09163658c66fac8.html?locale=en-US") }
                 .bindItem({ settings.validationMode }, { value -> settings.validationMode = value ?: ImpExExecutionContext.ValidationMode.IMPORT_STRICT })
         }.layout(RowLayout.PARENT_GRID)
 
@@ -90,21 +98,25 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         }.layout(RowLayout.PARENT_GRID)
 
         row {
+            checkBox("Legacy mode")
+                .align(AlignX.FILL)
+                .bindSelected({ settings.legacyMode.booleanValue }, { value -> settings.legacyMode = ImpExExecutionContext.Toggle.of(value) })
+        }.layout(RowLayout.PARENT_GRID)
+
+        row {
             checkBox("Direct persistence")
                 .align(AlignX.FILL)
+                .comment("Enables the <a href='link'>Service Layer Direct</a> mode.")
+                { BrowserUtil.browse("https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/ccf4dd14636b4f7eac2416846ffd5a70.html?locale=en-US") }
                 .bindSelected({ settings.sldEnabled.booleanValue }, { value -> settings.sldEnabled = ImpExExecutionContext.Toggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
             checkBox("Distributed mode")
                 .align(AlignX.FILL)
+                .comment("Read more about distributed ImpEx <a href='link'>here</a>.")
+                { BrowserUtil.browse("https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/aa417173fe4a4ba5a473c93eb730a417/f849db85d68740ed870e729a3688a19d.html?locale=en-US") }
                 .bindSelected({ settings.distributedMode.booleanValue }, { value -> settings.distributedMode = ImpExExecutionContext.Toggle.of(value) })
-        }.layout(RowLayout.PARENT_GRID)
-
-        row {
-            checkBox("Legacy mode")
-                .align(AlignX.FILL)
-                .bindSelected({ settings.legacyMode.booleanValue }, { value -> settings.legacyMode = ImpExExecutionContext.Toggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
     }
         .apply {
