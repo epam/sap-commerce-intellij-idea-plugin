@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.actions
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.polyglotQuerySplitEditor
@@ -59,7 +60,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
             ?.let { PsiTreeUtil.findChildOfType(it, PolyglotQueryTypeKeyName::class.java) }
             ?.typeName
             ?: "Item"
-        val executionContextSettings = FlexibleSearchExecutionContext.defaultSettings(project)
+        val executionContextSettings = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecutionContext.defaultSettings(project) }
 
         if (fileEditor.inEditorParameters) executeParametrizedQuery(project, fileEditor, e, itemType, content, executionContextSettings)
         else executeDirectQuery(project, fileEditor, e, itemType, content, executionContextSettings)

@@ -68,6 +68,8 @@
         <action id="hybris.pgq.openSettings" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenSettingsAction"/>
 
         <group id="hybris.pgq.toolbar.left">
+            <reference ref="hybris.fxs.executionContextSettings"/>
+            <separator/>
             <action id="hybris.pgq.execute" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryExecuteAction">
                 <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
             </action>
