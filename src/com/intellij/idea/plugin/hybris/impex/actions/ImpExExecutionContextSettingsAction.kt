@@ -21,7 +21,6 @@ import com.intellij.idea.plugin.hybris.actions.ExecutionContextSettingsAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.Toggle
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -87,25 +86,25 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         row {
             checkBox("Enable code execution")
                 .align(AlignX.FILL)
-                .bindSelected({ settings.enableCodeExecution.booleanValue }, { value -> settings.enableCodeExecution = Toggle.of(value) })
+                .bindSelected({ settings.enableCodeExecution.booleanValue }, { value -> settings.enableCodeExecution = ImpExExecutionContext.Toggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
             checkBox("Direct persistence")
                 .align(AlignX.FILL)
-                .bindSelected({ settings.sldEnabled.booleanValue }, { value -> settings.sldEnabled = Toggle.of(value) })
+                .bindSelected({ settings.sldEnabled.booleanValue }, { value -> settings.sldEnabled = ImpExExecutionContext.Toggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
             checkBox("Distributed mode")
                 .align(AlignX.FILL)
-                .bindSelected({ settings.distributedMode.booleanValue }, { value -> settings.distributedMode = Toggle.of(value) })
+                .bindSelected({ settings.distributedMode.booleanValue }, { value -> settings.distributedMode = ImpExExecutionContext.Toggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
 
         row {
             checkBox("Legacy mode")
                 .align(AlignX.FILL)
-                .bindSelected({ settings.legacyMode.booleanValue }, { value -> settings.legacyMode = Toggle.of(value) })
+                .bindSelected({ settings.legacyMode.booleanValue }, { value -> settings.legacyMode = ImpExExecutionContext.Toggle.of(value) })
         }.layout(RowLayout.PARENT_GRID)
     }
         .apply {
