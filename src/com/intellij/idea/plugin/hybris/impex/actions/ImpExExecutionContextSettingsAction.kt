@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.Toggle
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ValidationMode
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -57,10 +56,10 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: ImpExExecutionContext.ModifiableSettings) = panel {
         row {
-            comboBox(EnumComboBoxModel(ValidationMode::class.java))
+            comboBox(EnumComboBoxModel(ImpExExecutionContext.ValidationMode::class.java))
                 .align(AlignX.FILL)
                 .label("Validation mode:")
-                .bindItem({ settings.validationMode }, { value -> settings.validationMode = value ?: ValidationMode.IMPORT_STRICT })
+                .bindItem({ settings.validationMode }, { value -> settings.validationMode = value ?: ImpExExecutionContext.ValidationMode.IMPORT_STRICT })
         }.layout(RowLayout.PARENT_GRID)
 
         row {

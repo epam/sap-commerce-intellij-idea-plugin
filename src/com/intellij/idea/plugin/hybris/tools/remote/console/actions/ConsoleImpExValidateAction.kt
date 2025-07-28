@@ -22,7 +22,6 @@ import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ExecutionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -42,7 +41,7 @@ class ConsoleImpExValidateAction : AnAction() {
 
         val context = ImpExExecutionContext(
             content = console.content,
-            executionMode = ExecutionMode.VALIDATE,
+            executionMode = ImpExExecutionContext.ExecutionMode.VALIDATE,
             settings = ImpExExecutionContext.DEFAULT_SETTINGS
         )
 

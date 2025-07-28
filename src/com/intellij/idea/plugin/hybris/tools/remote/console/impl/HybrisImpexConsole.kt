@@ -22,8 +22,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.Toggle
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ValidationMode
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -55,10 +53,10 @@ class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : Hyb
         .also { it.border = borders10 }
     private val maxThreadsSpinner = JSpinner(SpinnerNumberModel(1, 1, 100, 1))
         .also { it.border = borders5 }
-    private val importModeComboBox = ComboBox(ValidationMode.entries.toTypedArray(), 175)
+    private val importModeComboBox = ComboBox(ImpExExecutionContext.ValidationMode.entries.toTypedArray(), 175)
         .also {
             it.border = borders5
-            it.selectedItem = ValidationMode.IMPORT_STRICT
+            it.selectedItem = ImpExExecutionContext.ValidationMode.IMPORT_STRICT
             it.renderer = SimpleListCellRenderer.create("...") { value -> value.name }
         }
 
@@ -80,12 +78,12 @@ class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : Hyb
         content = content,
         settings = ImpExExecutionContext.DEFAULT_SETTINGS.modifiable()
             .apply {
-                validationMode = importModeComboBox.selectedItem as ValidationMode
+                validationMode = importModeComboBox.selectedItem as ImpExExecutionContext.ValidationMode
                 maxThreads = maxThreadsSpinner.value.toString().toInt()
-                legacyMode = if (legacyModeCheckbox.isSelected) Toggle.ON else Toggle.OFF
-                enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) Toggle.ON else Toggle.OFF
-                sldEnabled = if (directPersistenceCheckbox.isSelected) Toggle.ON else Toggle.OFF
-                distributedMode = Toggle.ON
+                legacyMode = if (legacyModeCheckbox.isSelected) ImpExExecutionContext.Toggle.ON else ImpExExecutionContext.Toggle.OFF
+                enableCodeExecution = if (enableCodeExecutionCheckbox.isSelected) ImpExExecutionContext.Toggle.ON else ImpExExecutionContext.Toggle.OFF
+                sldEnabled = if (directPersistenceCheckbox.isSelected) ImpExExecutionContext.Toggle.ON else ImpExExecutionContext.Toggle.OFF
+                distributedMode = ImpExExecutionContext.Toggle.ON
             }.immutable()
     )
 

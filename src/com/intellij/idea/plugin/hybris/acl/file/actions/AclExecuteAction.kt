@@ -25,7 +25,6 @@ import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExDialect
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -47,7 +46,7 @@ class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole, AclSplitEdit
         val fileEditor = fileEditor(e) ?: return
         val context = ImpExExecutionContext(
             content = content,
-            dialect = ImpExDialect.ACL,
+            dialect = ImpExExecutionContext.Dialect.ACL,
             settings = ImpExExecutionContext.DEFAULT_SETTINGS
         )
 

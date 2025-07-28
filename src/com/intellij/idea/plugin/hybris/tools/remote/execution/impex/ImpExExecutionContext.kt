@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets
 
 data class ImpExExecutionContext(
     private val content: String = "",
-    val dialect: ImpExDialect = ImpExDialect.IMPEX,
+    val dialect: Dialect = Dialect.IMPEX,
     val executionMode: ExecutionMode = ExecutionMode.IMPORT,
     val settings: Settings
 ) : ExecutionContext {
@@ -94,6 +94,28 @@ data class ImpExExecutionContext(
         )
     }
 
+    enum class Dialect(val title: String) {
+        IMPEX("ImpEx"),
+        ACL("ACL")
+    }
+
+    enum class ExecutionMode {
+        IMPORT, VALIDATE
+    }
+
+    enum class ValidationMode(val title: String) {
+        IMPORT_STRICT("Strict"),
+        IMPORT_RELAXED("Relaxed"),
+    }
+
+    enum class Toggle(val value: String, val booleanValue: Boolean) {
+        ON("on", true), OFF("off", false);
+
+        companion object {
+            fun of(value: Boolean) = if (value) ON else OFF
+        }
+    }
+
     companion object {
         val DEFAULT_SETTINGS by lazy {
             Settings(
@@ -107,27 +129,5 @@ data class ImpExExecutionContext(
                 distributedMode = Toggle.OFF,
             )
         }
-    }
-}
-
-enum class ImpExDialect(val title: String) {
-    IMPEX("ImpEx"),
-    ACL("ACL")
-}
-
-enum class ExecutionMode {
-    IMPORT, VALIDATE
-}
-
-enum class ValidationMode(val title: String) {
-    IMPORT_STRICT("Strict"),
-    IMPORT_RELAXED("Relaxed"),
-}
-
-enum class Toggle(val value: String, val booleanValue: Boolean) {
-    ON("on", true), OFF("off", false);
-
-    companion object {
-        fun of(value: Boolean) = if (value) ON else OFF
     }
 }
