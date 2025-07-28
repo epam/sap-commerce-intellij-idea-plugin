@@ -53,6 +53,7 @@
 - Reset virtual parameters on file changes [#1472](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1472)
 - Show count of the folded data rows [#1473](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1473)
 - Improved data rows folding API [#1474](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1474)
+- Introduced possibility to specify execution context parameters [#1489](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1489)
 
 ### `Groovy` enhancements
 - Introduced `In-Editor Results` view [#1477](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1477)
