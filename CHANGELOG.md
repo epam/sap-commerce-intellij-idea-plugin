@@ -38,6 +38,7 @@
 - Display an Inlay Hint for a bind parameters [#1464](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1464)
 - Retrieve and show all data for found Items [#1465](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1465)
 - Added toggle to retrieve all data for found Items [#1466](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1466)
+- Introduced possibility to specify execution context parameters [#1488](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1488)
 
 ### `Access Control Lists` enhancements
 - Introduced `In-Editor Results` view [#1476](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1476)
