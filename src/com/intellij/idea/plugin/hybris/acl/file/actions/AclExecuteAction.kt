@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.acl.editor.aclSplitEditor
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
@@ -44,10 +45,11 @@ class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole, AclSplitEdit
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
+        val settings = e.impexExecutionContextSettings { ImpExExecutionContext.DEFAULT_SETTINGS }
         val context = ImpExExecutionContext(
             content = content,
             dialect = ImpExExecutionContext.Dialect.ACL,
-            settings = ImpExExecutionContext.DEFAULT_SETTINGS
+            settings = settings
         )
 
         if (fileEditor.inEditorResults) {
