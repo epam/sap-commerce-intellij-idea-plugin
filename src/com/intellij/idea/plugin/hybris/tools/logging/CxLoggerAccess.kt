@@ -109,7 +109,11 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 ?.associateBy { it.name }
                 ?.takeIf { it.isNotEmpty() }
 
-            updateState(loggers)
+            if (loggers == null || result.hasError) {
+                clearState()
+            } else {
+                updateState(loggers)
+            }
 
             when {
                 result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
@@ -166,6 +170,11 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
     override fun dispose() {
         loggersState.clear()
+    }
+
+    private fun clearState() {
+        loggersState.clear()
+        fetching = false
     }
 
     companion object {
