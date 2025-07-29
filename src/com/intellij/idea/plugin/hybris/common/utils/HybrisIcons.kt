@@ -440,7 +440,7 @@ object HybrisIcons {
     object Connection {
         val ADD = AllIcons.General.Add
         val EDIT = AllIcons.Actions.Edit
-        val CONTEXT = AllIcons.FileTypes.Contexts
+        val CONTEXT = getIcon("/icons/actions/contextConfiguration.svg")
     }
 
     object Scope {
