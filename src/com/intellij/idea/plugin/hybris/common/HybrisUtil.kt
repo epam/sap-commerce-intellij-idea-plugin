@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,6 +18,7 @@
  */
 package com.intellij.idea.plugin.hybris.common
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
@@ -26,26 +27,59 @@ import java.io.File
 
 object HybrisUtil {
 
+    private val SKIP_DIRS = setOf(
+        HybrisConstants.NODE_MODULES_DIRECTORY,
+        ".idea",
+        "classes",
+        "temp",
+        "log",
+        "data",
+        "resources",
+        "installer",
+        "build-tools",
+        "src",
+        "groovysrc",
+        "kotlinsrc",
+        "testsrc",
+        "groovytestsrc",
+        "kotlintestsrc",
+        "licenses",
+        "js-storefront",
+    )
+
     @JvmStatic
     fun isHybrisModuleRoot(file: File) = File(file, HybrisConstants.EXTENSION_INFO_XML).isFile
     fun isHybrisModuleRoot(file: VirtualFile) = file.findChild(HybrisConstants.EXTENSION_INFO_XML) != null
 
-    fun isPotentialHybrisProject(file: VirtualFile): Boolean {
-        val key = Key.create<Boolean>("IS_HYBRIS_FILE")
-        file.putUserData(key, false)
+    fun isPotentialHybrisProject(root: VirtualFile): Boolean = ProgressManager.getInstance()
+        .runProcessWithProgressSynchronously<Boolean, RuntimeException>(
+            {
+                ProgressManager.getInstance().progressIndicator.text = "Scanning for SAP Commerce project structure..."
+                val key = Key.create<Boolean>("IS_HYBRIS_FILE")
+                root.putUserData(key, false)
 
-        VfsUtilCore.iterateChildrenRecursively(file, null, { fileOrDir: VirtualFile ->
-            val hybrisFile = fileOrDir.name == HybrisConstants.LOCAL_EXTENSIONS_XML
-                || fileOrDir.name == HybrisConstants.EXTENSIONS_XML
-                || fileOrDir.name == HybrisConstants.EXTENSION_INFO_XML
+                VfsUtilCore.iterateChildrenRecursively(
+                    root,
+                    { !SKIP_DIRS.contains(it.name) },
+                    { fileOrDir: VirtualFile ->
+                        val hybrisFile = fileOrDir.name == HybrisConstants.LOCAL_EXTENSIONS_XML
+                            || fileOrDir.name == HybrisConstants.EXTENSIONS_XML
+                            || fileOrDir.name == HybrisConstants.EXTENSION_INFO_XML
 
-            if (hybrisFile) {
-                file.putUserData(key, true)
-            }
+                        if (hybrisFile) {
+                            root.putUserData(key, true)
+                        }
 
-            !hybrisFile
-        }, VirtualFileVisitor.NO_FOLLOW_SYMLINKS, VirtualFileVisitor.limit(6))
+                        println(fileOrDir)
 
-        return java.lang.Boolean.TRUE == file.getUserData(key)
-    }
+                        !hybrisFile
+                    }, VirtualFileVisitor.NO_FOLLOW_SYMLINKS, VirtualFileVisitor.limit(6)
+                )
+
+                java.lang.Boolean.TRUE == root.getUserData(key)
+            },
+            "Detecting SAP Commerce Project",
+            true,
+            null  // project, null is OK outside project context
+        )
 }

@@ -9,6 +9,7 @@
 - NPE: BSDuplicateBeanDefinition.inspect [#1495](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1495)
 - AIOOBE: TSGlobalMetaItemImpl.mergeInternally [#1496](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1496)
 - F: RunSuspend.await [#1497](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1497)
+- F: DelegatingFileSystemProvider$0.<init> [#1499](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1499)
 - CNFE: PluginClassLoader.loadClass `org/jetbrains/plugins/groovy/lang/psi/util/PsiTreeUtilKt` [#1498](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1498)
 
 ## [2025.1.6]
