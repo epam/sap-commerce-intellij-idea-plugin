@@ -29,7 +29,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
-import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 import java.io.Serial
 import java.util.function.Function
 import java.util.function.Predicate
@@ -52,8 +51,8 @@ abstract class FlexibleSearchBindParameterMixin(node: ASTNode) : ASTWrapperPsiEl
         ?.asSafely<FlexibleSearchExpression>()
 
     override fun getItemType(): String? = expression
-        ?.getChildOfType<FlexibleSearchColumnRefYExpression>()
-        ?.getChildOfType<FlexibleSearchYColumnName>()
+        ?.let { PsiTreeUtil.getChildOfType(this, FlexibleSearchColumnRefYExpression::class.java) }
+        ?.let { PsiTreeUtil.getChildOfType(this, FlexibleSearchYColumnName::class.java) }
         ?.reference
         ?.asSafely<FxSYColumnReference>()
         ?.multiResolve(false)

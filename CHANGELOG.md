@@ -3,6 +3,9 @@
 ### Other
 - Apply context parameters with Enter key within the Popup [#1492](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1492)
 
+### Fixes
+- Fixed Kotlin Plugin API unintended usages [#1493](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1493)
+
 ## [2025.1.6]
 
 ### `CCv2` enhancements

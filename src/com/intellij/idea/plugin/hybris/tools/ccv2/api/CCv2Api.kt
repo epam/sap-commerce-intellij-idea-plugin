@@ -37,7 +37,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import org.jetbrains.kotlin.utils.flatMapToNullableSet
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -89,8 +88,9 @@ class CCv2Api {
                     }
                 }
                 .awaitAll()
-                .flatMapToNullableSet { it.value }
-                ?.map { env ->
+                .mapNotNull { it.value }
+                .flatten()
+                .map { env ->
                     val canAccess = subscriptionPermissions.environments?.contains(env.code) ?: true
                     async {
                         val v1Env = if (requestV1Details) getV1Environment(canAccess, ccv1Api, ccv2Token, env) else null
@@ -99,11 +99,10 @@ class CCv2Api {
                         env to Triple(canAccess, v1Env, v1EnvHealth)
                     }
                 }
-                ?.awaitAll()
-                ?.map { (environment, details) ->
+                .awaitAll()
+                .map { (environment, details) ->
                     CCv2EnvironmentDto.map(environment, details.first, details.second, details.third)
                 }
-                ?: emptyList()
         }
     }
 
