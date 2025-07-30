@@ -11,6 +11,7 @@
 - F: RunSuspend.await [#1497](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1497)
 - F: `DelegatingFileSystemProvider$0.<init>` [#1499](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1499)
 - CNFE: PluginClassLoader.loadClass `org/jetbrains/plugins/groovy/lang/psi/util/PsiTreeUtilKt` [#1498](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1498)
+- NCDFE: HybrisFileEditorManagerListener.fileOpened [#1500](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1500)
 
 ## [2025.1.6]
 

@@ -27,6 +27,7 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpExFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
@@ -45,12 +46,12 @@ class HybrisEditorFactoryListener : EditorFactoryListener {
         val projectSettings = ProjectSettingsComponent.getInstance(project)
         if (!projectSettings.isHybrisProject()) return
 
-        val toolbarInstaller = when (file.fileType) {
-            is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.getInstance()
-            is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.getInstance()
-            is ImpexFileType -> ImpExFileToolbarInstaller.getInstance()
-            is AclFileType -> AclFileToolbarInstaller.getInstance()
-            is GroovyFileType -> GroovyFileToolbarInstaller.getInstance()
+        val toolbarInstaller = when {
+            file.fileType is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.getInstance()
+            file.fileType is PolyglotQueryFileType -> PolyglotQueryFileToolbarInstaller.getInstance()
+            file.fileType is ImpexFileType -> ImpExFileToolbarInstaller.getInstance()
+            file.fileType is AclFileType -> AclFileToolbarInstaller.getInstance()
+            Plugin.GROOVY.isActive() && file.fileType is GroovyFileType -> GroovyFileToolbarInstaller.getInstance()
             else -> null
         } ?: return
 

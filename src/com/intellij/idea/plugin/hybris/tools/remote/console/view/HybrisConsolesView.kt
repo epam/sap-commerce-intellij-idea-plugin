@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
+import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
@@ -50,9 +51,9 @@ class HybrisConsolesView(project: Project) : SimpleToolWindowPanel(true), Dispos
 
     private val actionToolbar: ActionToolbar
     private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
-    private val consoles = arrayOf(
+    private val consoles = listOfNotNull(
         HybrisImpexConsole.getInstance(project),
-        HybrisGroovyConsole.getInstance(project),
+        Plugin.GROOVY.ifActive { HybrisGroovyConsole.getInstance(project) },
         HybrisFlexibleSearchConsole.getInstance(project),
         HybrisPolyglotQueryConsole.getInstance(project),
         HybrisSQLConsole.getInstance(project),
