@@ -5,19 +5,20 @@
 
 ### Fixes
 - Fixed Kotlin Plugin API unintended usages [#1493](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1493)
+- Project Build `REWA: ThreadingAssertions.createThreadAccessException` [#1494](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1494)
 
 ## [2025.1.6]
 
 ### `CCv2` enhancements
-- Auto-retrieve environments on scheduling new build in case of selected Subscription [1481](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1481)
-- Use `uuid` as a unique identifier for active subscription [1483](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1483)
+- Auto-retrieve environments on scheduling new build in case of selected Subscription [#1481](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1481)
+- Use `uuid` as a unique identifier for active subscription [#1483](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1483)
 
 ### `SAP CX Logging` enhancements
-- Display a log level status from a remote server [1457](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1457)
-- Display an inherited log level status from a remote server [1475](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1475)
-- Reset Loggers cache on connection change [1479](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1479)
-- Improve popup location by leveraging MouseEvent [1482](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1482)
-- Reset loggers state if it's not possible to fetch a loggers state from a remote server [1491](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1491)
+- Display a log level status from a remote server [#1457](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1457)
+- Display an inherited log level status from a remote server [#1475](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1475)
+- Reset Loggers cache on connection change [#1479](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1479)
+- Improve popup location by leveraging MouseEvent [#1482](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1482)
+- Reset loggers state if it's not possible to fetch a loggers state from a remote server [#1491](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1491)
 
 ### `items.xml` enhancements
 - Show attribute non-property persistence for contribution results [#1448](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1448)
@@ -681,8 +682,8 @@
 - Parse and style field value prefix `model://` [#1077](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1077)
 
 ### Fixes
-- Configure SAP CX JavaDoc for OOTB Modules [#1027](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1026)
-- Removed dependency on Kotlin PSI utils methods [#1053](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1053) for Issue [1052](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1052)
+- Configure SAP CX JavaDoc for OOTB Modules [#1027](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [#1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1026)
+- Removed dependency on Kotlin PSI utils methods [#1053](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1053) for Issue [#1052](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1052)
 - Fix Path separator to enable Model Item Declaration icons and navigation on Windows [#1054](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1054)
 - Adjusted FlexibleSearch language injection [#1081](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1081)
 - Fix import with custom extension directory override [#1084](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1084)
@@ -690,7 +691,7 @@
 - Fix navigation to Enum values declared in the `beans.xml` [#1092](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1092)
 
 ### Other
-- Added JetBrains Marketplace error reporting [#1039](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1039)
+- Added JetBrains Marketplace error reporting [#1039](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1027) for Issue [#1026](https://github.com/epam/sap-commerce-intellij-idea-plugin/issues/1039)
 - Retrieve SOLR Cores view background process [#1082](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1082)
 
 ## [2024.1.0]

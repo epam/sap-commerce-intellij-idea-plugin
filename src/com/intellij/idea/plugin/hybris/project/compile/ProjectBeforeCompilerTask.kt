@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -36,6 +36,7 @@ import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
+import com.intellij.util.application
 import com.intellij.util.io.ZipUtil
 import com.intellij.util.lang.JavaVersion
 import org.jetbrains.jps.model.java.compiler.AnnotationProcessingConfiguration
@@ -55,7 +56,8 @@ import kotlin.io.path.name
 class ProjectBeforeCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext): Boolean {
-        val settings = ProjectSettingsComponent.getInstance(context.project)
+        val project = context.project
+        val settings = ProjectSettingsComponent.getInstance(project)
         if (!settings.isHybrisProject()) return true
         if (!settings.state.generateCodeOnRebuild) {
             context.addMessage(CompilerMessageCategory.WARNING, "[y] Code generation is disabled, to enable it adjust SAP Commerce Project specific settings.", null, -1, -1)
@@ -67,7 +69,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         // see JUnitConfigurationType
         if ("JUnit" == typeId && !settings.state.generateCodeOnJUnitRunConfiguration) return true
 
-        val modules = context.compileScope.affectedModules
+        val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
         val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
             ?: return true
 
@@ -88,15 +90,15 @@ class ProjectBeforeCompilerTask : CompileTask {
 
         val bootstrapDirectory = platformModuleRoot.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
         if (!invokeCodeGeneration(context, platformModuleRoot, bootstrapDirectory, coreModuleRoot, vmExecutablePath, settings.state)) {
-            ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
+            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)
             return false
         }
         if (!invokeCodeCompilation(context, platformModule, bootstrapDirectory, sdkVersion)) {
-            ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
+            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)
             return false
         }
         if (!invokeModelsJarCreation(context, bootstrapDirectory)) {
-            ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
+            ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)
             return false
         }
 

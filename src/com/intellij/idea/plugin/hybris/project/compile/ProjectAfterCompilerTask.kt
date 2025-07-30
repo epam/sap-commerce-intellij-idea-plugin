@@ -29,7 +29,8 @@ import com.intellij.util.application
 class ProjectAfterCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext) = application.runReadAction<Boolean> {
-        val settings = ProjectSettingsComponent.getInstance(context.project)
+        val project = context.project
+        val settings = ProjectSettingsComponent.getInstance(project)
         if (!settings.isHybrisProject()) return@runReadAction true
         if (!settings.state.generateCodeOnRebuild) return@runReadAction true
 
@@ -47,7 +48,7 @@ class ProjectAfterCompilerTask : CompileTask {
             ?.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
             ?: return@runReadAction true
 
-        ProjectCompileUtil.triggerRefreshGeneratedFiles(bootstrapDirectory)
+        ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)
 
         return@runReadAction true
     }
