@@ -26,7 +26,6 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionToolbar
-import com.intellij.openapi.application.writeAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -35,8 +34,6 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel
@@ -45,7 +42,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
 @Service(Service.Level.PROJECT)
-class HybrisConsolesView(private val project: Project, private val coroutineScope: CoroutineScope) : SimpleToolWindowPanel(true), Disposable {
+class HybrisConsolesView(project: Project) : SimpleToolWindowPanel(true), Disposable {
 
     override fun dispose() {
         //NOP
@@ -75,12 +72,6 @@ class HybrisConsolesView(private val project: Project, private val coroutineScop
         consoles.forEachIndexed { index, console ->
             Disposer.register(this, console)
             tabsPanel.insertTab(console.title(), console.icon(), console.component, console.tip(), index)
-        }
-
-        coroutineScope.launch {
-            writeAction {
-
-            }
         }
 
         tabsPanel.addChangeListener { event ->
