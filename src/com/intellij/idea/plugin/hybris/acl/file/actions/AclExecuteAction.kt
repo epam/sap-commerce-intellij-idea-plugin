@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.acl.file.actions
 
+import com.intellij.ide.ActivityTracker
 import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.idea.plugin.hybris.acl.editor.AclSplitEditor
 import com.intellij.idea.plugin.hybris.acl.editor.aclSplitEditor
@@ -61,7 +62,7 @@ class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole, AclSplitEdit
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
                 coroutineScope.launch {
-                    readAction { this@AclExecuteAction.update(e) }
+                    readAction { ActivityTracker.getInstance().inc() }
                 }
             }
         } else {

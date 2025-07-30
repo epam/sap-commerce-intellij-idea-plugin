@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.polyglotQuery.actions
 
+import com.intellij.ide.ActivityTracker
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -225,7 +226,7 @@ class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryCon
         fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
         coroutineScope.launch {
-            readAction { this@PolyglotQueryExecuteAction.update(e) }
+            readAction { ActivityTracker.getInstance().inc() }
         }
     }
 

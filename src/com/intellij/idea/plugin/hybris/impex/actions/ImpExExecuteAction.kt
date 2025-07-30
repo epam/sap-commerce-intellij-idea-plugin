@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
+import com.intellij.ide.ActivityTracker
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -64,7 +65,7 @@ class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole, ImpExSplit
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
                 coroutineScope.launch {
-                    readAction { this@ImpExExecuteAction.update(e) }
+                    readAction { ActivityTracker.getInstance().inc() }
                 }
             }
         } else {

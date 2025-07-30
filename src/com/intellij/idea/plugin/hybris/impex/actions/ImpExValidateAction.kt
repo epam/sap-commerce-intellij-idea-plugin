@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
+import com.intellij.ide.ActivityTracker
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
@@ -59,7 +60,7 @@ class ImpExValidateAction : ExecuteStatementAction<HybrisImpexConsole, ImpExSpli
                 fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
 
                 coroutineScope.launch {
-                    readAction { this@ImpExValidateAction.update(e) }
+                    readAction { ActivityTracker.getInstance().inc() }
                 }
             }
         } else {
