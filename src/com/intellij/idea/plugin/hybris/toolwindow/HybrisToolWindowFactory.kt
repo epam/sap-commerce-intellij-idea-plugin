@@ -38,7 +38,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
         arrayOf(
             createTSContent(toolWindow, TSView(project)),
             createBSContent(toolWindow, BSView(project)),
-            createConsolesContent(toolWindow, project, HybrisConsolesView(project)),
+            createConsolesContent(toolWindow, project, HybrisConsolesView.getInstance(project)),
             createCCv2CLIContent(toolWindow, project, CCv2View(project)),
         ).forEach { toolWindow.contentManager.addContent(it) }
     }

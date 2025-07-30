@@ -54,9 +54,14 @@ abstract class HybrisConsole<E : ExecutionContext>(
 
     init {
         isEditable = true
-        printDefaultText()
 
         consoleHistoryController.install()
+
+        coroutineScope.launch {
+            edtWriteAction {
+                printDefaultText()
+            }
+        }
     }
 
     val content: String

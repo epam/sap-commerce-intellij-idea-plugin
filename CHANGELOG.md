@@ -8,6 +8,7 @@
 - Project Build `REWA: ThreadingAssertions.createThreadAccessException` [#1494](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1494)
 - NPE: BSDuplicateBeanDefinition.inspect [#1495](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1495)
 - AIOOBE: TSGlobalMetaItemImpl.mergeInternally [#1496](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1496)
+- F: RunSuspend.await [#1497](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1497)
 
 ## [2025.1.6]
 
