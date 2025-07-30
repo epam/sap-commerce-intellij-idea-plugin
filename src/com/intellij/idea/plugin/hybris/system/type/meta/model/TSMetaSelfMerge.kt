@@ -24,8 +24,8 @@ abstract class TSMetaSelfMerge<DOM : DomElement, T : TSMetaClassifier<DOM>>(loca
 
     override val name = localMeta.name
     override var isCustom = localMeta.isCustom
-    override val declarations: MutableSet<T> = HashSet()
-    var mergeConflicts: MutableList<String> = ArrayList()
+    override val declarations: MutableSet<T> = mutableSetOf()
+    var mergeConflicts: MutableSet<String> = linkedSetOf()
 
     fun merge(localMeta: T) {
         declarations.add(localMeta)
