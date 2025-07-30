@@ -35,7 +35,7 @@ interface BSMetaClassifier<DOM : DomElement> {
 interface BSGlobalMetaClassifier<DOM : DomElement> : BSMetaClassifier<DOM> {
     val declarations: MutableSet<out BSMetaClassifier<DOM>>
     fun retrieveAllDoms(): List<DOM> = declarations
-        .map { it.domAnchor }
+        .mapNotNull { it?.domAnchor }
         .mapNotNull { it.retrieveDomElement() }
 }
 

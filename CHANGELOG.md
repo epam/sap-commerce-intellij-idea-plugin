@@ -6,6 +6,7 @@
 ### Fixes
 - Fixed Kotlin Plugin API unintended usages [#1493](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1493)
 - Project Build `REWA: ThreadingAssertions.createThreadAccessException` [#1494](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1494)
+- NPE: BSDuplicateBeanDefinition.inspect [#1495](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1495)
 
 ## [2025.1.6]
 
