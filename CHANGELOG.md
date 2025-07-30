@@ -7,6 +7,7 @@
 - Fixed Kotlin Plugin API unintended usages [#1493](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1493)
 - Project Build `REWA: ThreadingAssertions.createThreadAccessException` [#1494](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1494)
 - NPE: BSDuplicateBeanDefinition.inspect [#1495](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1495)
+- NPE: TSDeploymentTableMustNotBeRedeclaredInChildTypes.check [#1501](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1501)
 - AIOOBE: TSGlobalMetaItemImpl.mergeInternally [#1496](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1496)
 - F: RunSuspend.await [#1497](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1497)
 - F: `DelegatingFileSystemProvider$0.<init>` [#1499](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1499)

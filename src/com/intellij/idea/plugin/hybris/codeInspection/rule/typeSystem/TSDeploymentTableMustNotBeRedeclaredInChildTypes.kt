@@ -56,7 +56,7 @@ class TSDeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTSInspection() 
 
         val metaItemParent = metaItem.allExtends
             .flatMap { it.declarations }
-            .firstOrNull { it.deployment?.typeCode?.isNotBlank() ?: false }
+            .firstOrNull { it?.deployment?.typeCode?.isNotBlank() ?: false }
             ?: return
 
         val message = message(
