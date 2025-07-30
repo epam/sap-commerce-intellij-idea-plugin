@@ -27,10 +27,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
-import com.intellij.openapi.ui.popup.ActiveIcon
-import com.intellij.openapi.ui.popup.JBPopupFactory
-import com.intellij.openapi.ui.popup.JBPopupListener
-import com.intellij.openapi.ui.popup.LightweightWindowEvent
+import com.intellij.openapi.ui.popup.*
+import java.awt.event.KeyEvent
 
 abstract class ExecutionContextSettingsAction<M : ExecutionContext.ModifiableSettings> : DumbAwareAction() {
 
@@ -59,6 +57,8 @@ abstract class ExecutionContextSettingsAction<M : ExecutionContext.ModifiableSet
 
         var isFormValid = true
 
+        lateinit var myPopup: JBPopup
+
         JBPopupFactory.getInstance().createComponentPopupBuilder(settingsPanel, null)
             .setMovable(false)
             .setResizable(false)
@@ -66,9 +66,17 @@ abstract class ExecutionContextSettingsAction<M : ExecutionContext.ModifiableSet
             .setTitle("Execution Settings")
             .setTitleIcon(ActiveIcon(HybrisIcons.Connection.CONTEXT))
             .setAdText("*applicable only to current editor")
+            .setKeyEventHandler {
+                val enterKey = it.keyCode == KeyEvent.VK_ENTER
+                if (enterKey) myPopup.closeOk(it)
+
+                enterKey
+            }
             .setCancelCallback { isFormValid }
             .createPopup()
             .also { popup ->
+                myPopup = popup
+
                 settingsPanel.registerValidators(popup) { validations ->
                     isFormValid = validations.values.all { it.okEnabled }
                 }

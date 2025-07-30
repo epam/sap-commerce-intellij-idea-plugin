@@ -1,3 +1,8 @@
+## [2025.1.7]
+
+### Other
+- Apply context parameters with Enter key within the Popup [#1492](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1492)
+
 ## [2025.1.6]
 
 ### `CCv2` enhancements
