@@ -1,5 +1,8 @@
 ## [2025.1.7]
 
+### `Project Import` enhancements
+- Return to Welcome Screen on project import cancel [#1501](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1501)
+
 ### Other
 - Apply context parameters with Enter key within the Popup [#1492](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1492)
 

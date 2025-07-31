@@ -18,19 +18,15 @@
  */
 package com.intellij.idea.plugin.hybris.project
 
+import com.intellij.ide.actions.ImportModuleAction
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisUtil
-import com.intellij.idea.plugin.hybris.project.actions.ProjectOpenAction
-import com.intellij.openapi.actionSystem.ActionManager
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.ActionUiKind
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame
 import com.intellij.projectImport.ProjectImportBuilder
 import com.intellij.projectImport.ProjectOpenProcessorBase
+import com.intellij.util.application
 
 class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImportBuilder>() {
 
@@ -39,20 +35,24 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
             wizardContext.setProjectFileDirectory(file.path)
         }
 
-        val action = ActionManager.getInstance().getAction("hybris.project.open")
+        val providers = ImportModuleAction.getProviders(null)
+        var cancel = false
 
-        ActionUtil.performActionDumbAwareWithCallbacks(
-            action = action,
-            event = AnActionEvent.createEvent(
-                SimpleDataContext.builder()
-                    .add(ProjectOpenAction.DATA_KEY_PROJECT_FILE, file)
-                    .build(),
-                null,
-                ActionPlaces.UNKNOWN,
-                ActionUiKind.NONE,
-                null
-            )
-        )
+        application.invokeAndWait {
+            ImportModuleAction.doImport(null) {
+                val createImportWizard = ImportModuleAction.createImportWizard(null, null, file, *providers.toTypedArray())
+                createImportWizard?.cancelButton?.addActionListener {
+                    cancel = true
+                }
+                createImportWizard
+            }
+        }
+
+        if (cancel) {
+            application.invokeLater {
+                WelcomeFrame.showIfNoProjectOpened()
+            }
+        }
 
         return false
     }
