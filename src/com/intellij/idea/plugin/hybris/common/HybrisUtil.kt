@@ -70,8 +70,6 @@ object HybrisUtil {
                             root.putUserData(key, true)
                         }
 
-                        println(fileOrDir)
-
                         !hybrisFile
                     }, VirtualFileVisitor.NO_FOLLOW_SYMLINKS, VirtualFileVisitor.limit(6)
                 )

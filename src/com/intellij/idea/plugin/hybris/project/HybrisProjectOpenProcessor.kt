@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,10 +18,16 @@
  */
 package com.intellij.idea.plugin.hybris.project
 
-import com.intellij.ide.actions.ImportModuleAction
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisUtil
+import com.intellij.idea.plugin.hybris.project.actions.ProjectOpenAction
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUiKind
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.ex.ActionUtil
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.projectImport.ProjectImportBuilder
 import com.intellij.projectImport.ProjectOpenProcessorBase
@@ -32,10 +39,20 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
             wizardContext.setProjectFileDirectory(file.path)
         }
 
-        val providers = ImportModuleAction.getProviders(null)
-        ImportModuleAction.doImport(null) {
-            ImportModuleAction.createImportWizard(null, null, file, *providers.toTypedArray())
-        }
+        val action = ActionManager.getInstance().getAction("hybris.project.open")
+
+        ActionUtil.performActionDumbAwareWithCallbacks(
+            action = action,
+            event = AnActionEvent.createEvent(
+                SimpleDataContext.builder()
+                    .add(ProjectOpenAction.DATA_KEY_PROJECT_FILE, file)
+                    .build(),
+                null,
+                ActionPlaces.UNKNOWN,
+                ActionUiKind.NONE,
+                null
+            )
+        )
 
         return false
     }
