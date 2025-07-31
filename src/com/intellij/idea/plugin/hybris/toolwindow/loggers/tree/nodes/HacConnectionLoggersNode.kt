@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
+import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.openapi.project.Project
@@ -38,6 +39,7 @@ class HacConnectionLoggersNode(
         val connectionIcon = if (activeConnection) HybrisIcons.Y.REMOTE else HybrisIcons.Y.REMOTE_GREEN
 
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        presentation.addText(PresentableNodeDescriptor.ColoredFragment(" (active)", SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
         presentation.setIcon(connectionIcon)
     }
 }
