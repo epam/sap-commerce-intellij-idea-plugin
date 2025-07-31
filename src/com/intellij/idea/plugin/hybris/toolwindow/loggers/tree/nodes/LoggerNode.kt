@@ -27,7 +27,8 @@ import com.intellij.ui.tree.LeafState
 
 abstract class LoggerNode : PresentableNodeDescriptor<LoggerNode>, LeafState.Supplier, Disposable {
 
-    private val myChildren = mutableMapOf<LoggerNode, MutableSet<LoggerNode>>()
+    private val myChildren = mutableMapOf<String, LoggerNode>()
+    private var parameters: LoggerNodeParameters? = null
 
     protected constructor(project: Project) : super(project, null)
     protected constructor(parent: LoggerNode) : super(parent.project, parent)
@@ -44,7 +45,31 @@ abstract class LoggerNode : PresentableNodeDescriptor<LoggerNode>, LeafState.Sup
 
     override fun toString() = name
 
-    open fun getChildren(parameters: LoggerNodeParameters): Collection<LoggerNode> = emptyList()
+    open fun getChildren(parameters: LoggerNodeParameters): Collection<LoggerNode> {
+        val newChildren = getNewChildren(parameters)
+
+        myChildren.keys
+            .filterNot { newChildren.containsKey(it) }
+            .forEach {
+                myChildren[it]?.dispose()
+                myChildren.remove(it)
+            }
+
+        newChildren.forEach { (newName, newNode) ->
+            if (myChildren[newName] == null) {
+                myChildren[newName] = newNode
+            } else {
+                update(myChildren[newName]!!, newNode)
+            }
+        }
+
+        return myChildren.values
+            .onEach { it.parameters = parameters }
+    }
+
+    open fun getNewChildren(parameters: LoggerNodeParameters): Map<String, LoggerNode> = emptyMap()
+    open fun update(existingNode: LoggerNode, newNode: LoggerNode) = Unit
+
 }
 
 data class LoggerNodeParameters(val connections: Map<Boolean, RemoteConnectionSettings>)

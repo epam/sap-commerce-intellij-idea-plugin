@@ -33,18 +33,20 @@ import javax.swing.tree.TreePath
 class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val project: Project) : BaseTreeModel<DefaultMutableTreeNode>(), Disposable, InvokerSupplier {
 
     private var connections: Map<Boolean, RemoteConnectionSettings>? = null
-
+    private val nodes = mutableMapOf<LoggerNode, LoggersOptionsTreeNode>()
     private val myInvoker = Invoker.forBackgroundThreadWithReadAction(this)
 
     override fun getRoot() = rootTreeNode
 
     override fun getChildren(parent: Any?): List<LoggersOptionsTreeNode?>? {
         val loggerNode = (parent as DefaultMutableTreeNode).userObject
+        val parameters = LoggerNodeParameters(connections ?: emptyMap())
+
         return if (loggerNode is LoggerNode) {
-            loggerNode.getChildren(LoggerNodeParameters(connections ?: emptyMap()))
+            loggerNode.getChildren(parameters)
                 .onEach { it.update() }
                 .map {
-                    LoggersOptionsTreeNode(it)
+                    nodes.computeIfAbsent(it) { loggerNode -> LoggersOptionsTreeNode(it) }
                 }
         } else {
             emptyList()

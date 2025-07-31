@@ -31,8 +31,8 @@ class LoggerRootNode(tree: LoggersOptionsTree) : LoggerNode(tree.myProject) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
-    override fun getChildren(parameters: LoggerNodeParameters) = listOf(
+    override fun getNewChildren(parameters: LoggerNodeParameters) = listOf(
         RemoteHacInstancesLoggersOptionsNode(project),
         LoggersTemplateLoggersOptionsNode(project)
-    )
+    ).associateBy { it.name }
 }
