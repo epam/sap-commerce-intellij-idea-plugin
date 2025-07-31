@@ -16,9 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.actions
+package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options
 
-object HybrisActionPlaces {
-    const val CONSOLE_TOOLBAR = "Hybris.Consoles.ContextMenu"
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
+import com.intellij.openapi.project.Project
+import com.intellij.ui.SimpleTextAttributes
+
+abstract class LoggersOptionsNode(private val text: String, project: Project) : LoggerNode(project) {
+
+    override fun getName() = text
+
+    override fun update(presentation: PresentationData) {
+        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+    }
+
 }
+

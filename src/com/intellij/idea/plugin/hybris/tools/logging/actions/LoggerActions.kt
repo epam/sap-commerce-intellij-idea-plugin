@@ -69,7 +69,7 @@ class ErrorLoggerAction : CxLoggerAction(LogLevel.ERROR)
 class FatalLoggerAction : CxLoggerAction(LogLevel.FATAL)
 class SevereLoggerAction : CxLoggerAction(LogLevel.SEVERE)
 
-class FetchLoggerStateAction : AnAction() {
+open class FetchLoggerStateAction : AnAction(HybrisIcons.Log.Action.FETCH) {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -92,12 +92,12 @@ class FetchLoggerStateAction : AnAction() {
 
         e.presentation.isEnabled = loggerAccess.ready
 
-        if (CxLoggerAccess.getInstance(project).stateInitialized) {
-            e.presentation.text = "Refresh Loggers State"
-            e.presentation.icon = HybrisIcons.Log.Action.REFRESH
-        } else {
-            e.presentation.text = "Fetch Loggers State"
-            e.presentation.icon = HybrisIcons.Log.Action.FETCH
-        }
+        val state = CxLoggerAccess.getInstance(project).stateInitialized
+
+        e.presentation.text = getText(state)
+        e.presentation.icon = getIcon(state)
     }
+
+    fun getText(initializedState: Boolean) = if (initializedState) "Refresh Loggers State" else "Fetch Loggers State"
+    fun getIcon(initializedState: Boolean) = if (initializedState) HybrisIcons.Log.Action.REFRESH else HybrisIcons.Log.Action.FETCH
 }

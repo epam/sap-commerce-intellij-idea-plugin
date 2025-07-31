@@ -16,9 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.actions
+package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.remote
 
-object HybrisActionPlaces {
-    const val CONSOLE_TOOLBAR = "Hybris.Consoles.ContextMenu"
-    const val LOGGERS_TOOLBAR = "SAP.Loggers.View"
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.HacConnectionLoggersNode
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNodeParameters
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.LoggersOptionsNode
+import com.intellij.openapi.project.Project
+
+class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNode("Remote HAC Instances", project) {
+
+    override fun getChildren(parameters: LoggerNodeParameters): Collection<LoggerNode> {
+        return parameters.connections
+            .map { HacConnectionLoggersNode(it, project) }
+    }
 }

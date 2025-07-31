@@ -71,9 +71,10 @@ class HacChooseConnectionAction : DefaultActionGroup() {
         presentation.text = when (e.place) {
             ActionPlaces.EDITOR_TOOLBAR -> hacSettings.toString()
             HybrisActionPlaces.CONSOLE_TOOLBAR -> null
+            HybrisActionPlaces.LOGGERS_TOOLBAR -> null
             else -> hacSettings.shortenConnectionName()
         }
-        if (e.place == HybrisActionPlaces.CONSOLE_TOOLBAR) {
+        if (e.place == HybrisActionPlaces.CONSOLE_TOOLBAR || e.place == HybrisActionPlaces.LOGGERS_TOOLBAR) {
             presentation.putClientProperty(ActionUtil.HIDE_DROPDOWN_ICON, true)
         }
         presentation.isEnabledAndVisible = true
