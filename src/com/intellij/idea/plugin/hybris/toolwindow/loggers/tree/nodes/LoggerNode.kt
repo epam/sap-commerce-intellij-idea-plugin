@@ -47,4 +47,4 @@ abstract class LoggerNode : PresentableNodeDescriptor<LoggerNode>, LeafState.Sup
     open fun getChildren(parameters: LoggerNodeParameters): Collection<LoggerNode> = emptyList()
 }
 
-data class LoggerNodeParameters(val connections: List<RemoteConnectionSettings>)
+data class LoggerNodeParameters(val connections: Map<Boolean, RemoteConnectionSettings>)

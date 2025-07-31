@@ -24,14 +24,20 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class HacConnectionLoggersNode(private val connectionSettings: RemoteConnectionSettings, project: Project) : LoggerNode(project) {
+class HacConnectionLoggersNode(
+    private val connectionSettings: RemoteConnectionSettings,
+    private val activeConnection: Boolean,
+    project: Project
+) : LoggerNode(project) {
 
     override fun getName() = connectionSettings.connectionName()
 
     override fun update(presentation: PresentationData) {
         if (myProject == null || myProject.isDisposed) return
 
+        val connectionIcon = if (activeConnection) HybrisIcons.Y.REMOTE else HybrisIcons.Y.REMOTE_GREEN
+
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(HybrisIcons.Y.REMOTE)
+        presentation.setIcon(connectionIcon)
     }
 }

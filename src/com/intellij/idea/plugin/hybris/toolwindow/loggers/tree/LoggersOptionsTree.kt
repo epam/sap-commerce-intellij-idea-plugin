@@ -53,7 +53,7 @@ class LoggersOptionsTree(val myProject: Project) : Tree(), Disposable {
 
     override fun dispose() = Unit
 
-    fun update(connections: List<RemoteConnectionSettings>) {
+    fun update(connections: Map<Boolean, RemoteConnectionSettings>) {
         myTreeModel.reload(connections)
     }
 

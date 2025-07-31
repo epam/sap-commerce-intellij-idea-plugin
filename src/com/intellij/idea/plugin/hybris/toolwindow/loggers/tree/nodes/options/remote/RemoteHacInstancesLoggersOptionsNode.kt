@@ -18,16 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.remote
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.HacConnectionLoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNodeParameters
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.LoggersOptionsNode
 import com.intellij.openapi.project.Project
 
-class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNode("Remote HAC Instances", project) {
+class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNode("Remote HAC Instances", HybrisIcons.Y.REMOTES, project) {
 
     override fun getChildren(parameters: LoggerNodeParameters): Collection<LoggerNode> {
         return parameters.connections
-            .map { HacConnectionLoggersNode(it, project) }
+            .map { (active, connection) -> HacConnectionLoggersNode(connection, active, project) }
     }
 }

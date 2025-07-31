@@ -22,13 +22,18 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
+import javax.swing.Icon
 
-abstract class LoggersOptionsNode(private val text: String, project: Project) : LoggerNode(project) {
+abstract class LoggersOptionsNode(
+    private val text: String,
+    private val icon: Icon,
+    project: Project) : LoggerNode(project) {
 
     override fun getName() = text
 
     override fun update(presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        presentation.setIcon(icon)
     }
 
 }

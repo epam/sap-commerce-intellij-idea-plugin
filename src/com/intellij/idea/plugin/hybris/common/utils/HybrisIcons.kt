@@ -49,6 +49,7 @@ object HybrisIcons {
         val LOGO_ORANGE = getIcon("/icons/hybrisIconOrange.svg")
         val LOGO_GREEN = getIcon("/icons/hybrisIconGreen.svg")
         val REMOTE = getIcon("/icons/hybrisRemote.svg")
+        val REMOTES = getIcon("/icons/remotes.svg")
         val REMOTE_GREEN = getIcon("/icons/hybrisRemoteGreen.svg")
         val FACET = LOGO_GREEN
     }
@@ -489,6 +490,12 @@ object HybrisIcons {
         object Action {
             val FETCH = AllIcons.Vcs.Fetch
             val REFRESH = Actions.REFRESH
+        }
+
+        object Template {
+            val TEMPLATES = getIcon("/icons/logging/template/logTemplates.svg")
+            val BUNDLED = getIcon("/icons/logging/template/bundledLogTemplate.svg")
+            val CUSTOM = getIcon("/icons/logging/template/customLogTemplate.svg")
         }
     }
 

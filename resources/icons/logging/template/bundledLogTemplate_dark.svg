@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0.177 1.147 15.6 13.544" width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1" height="12" x="1" y="2" fill="#AFB1B3"/>
+    <rect width="2" height="1" x="2" y="2" fill="#AFB1B3"/>
+    <rect width="2" height="1" x="2" y="13" fill="#AFB1B3"/>
+    <rect width="1" height="12" x="14" y="2" fill="#AFB1B3"/>
+    <rect width="3" height="1" x="12" y="2" fill="#AFB1B3"/>
+    <rect width="2" height="1" x="12" y="13" fill="#AFB1B3"/>
+    <path class="v" d="M 4.236 10.514 L 4.229 4.753" style="stroke: #40B6E0; stroke-linecap: round; stroke-width: 1; transform-origin: 4.2325px 7.6335px;" transform="matrix(-1, 0, 0, -1, 0, 0)"/>
+    <path class="l1" d="M 6.602 10.532 L 9.356 10.532" style="stroke: #40B6E0; stroke-linecap: round; stroke-width: 1;"/>
+    <path class="l2" d="M 6.602 8.621 L 10.376 8.621" style="stroke: #40B6E0; stroke-linecap: round; stroke-width: 1;"/>
+    <path class="l3" d="M 6.602 6.71 L 11.192 6.71" style="stroke: #40B6E0; stroke-linecap: round; stroke-width: 1;"/>
+    <path class="l4" d="M 6.602 4.799 L 12.008 4.799" style="stroke: #40B6E0; stroke-linecap: round; stroke-width: 1;"/>
+</svg>

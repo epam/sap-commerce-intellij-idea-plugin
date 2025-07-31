@@ -21,8 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTree
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.remote.RemoteHacInstancesLoggersOptionsNode
-import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode
-import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.CustomLoggersTemplateLoggersOptionsNode
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.LoggersTemplateLoggersOptionsNode
 import com.intellij.ui.SimpleTextAttributes
 
 //BSRootNode
@@ -34,7 +33,6 @@ class LoggerRootNode(tree: LoggersOptionsTree) : LoggerNode(tree.myProject) {
 
     override fun getChildren(parameters: LoggerNodeParameters) = listOf(
         RemoteHacInstancesLoggersOptionsNode(project),
-        BundledLoggersTemplateLoggersOptionsNode(project),
-        CustomLoggersTemplateLoggersOptionsNode(project)
+        LoggersTemplateLoggersOptionsNode(project)
     )
 }

@@ -91,6 +91,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
 
     private fun createLoggersContent(toolWindow: ToolWindow, project: Project, panel: LoggersView) = with(toolWindow.contentManager.factory.createContent(panel, LOGGERS, true)) {
         Disposer.register(toolWindow.disposable, panel)
+
         isCloseable = false
         icon = HybrisIcons.Log.Level.ALL
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)

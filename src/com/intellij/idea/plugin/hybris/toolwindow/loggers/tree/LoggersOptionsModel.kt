@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNodeParameters
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.TreeNode
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.tree.BaseTreeModel
@@ -33,9 +32,8 @@ import javax.swing.tree.TreePath
 //BSTreeModel
 class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val project: Project) : BaseTreeModel<DefaultMutableTreeNode>(), Disposable, InvokerSupplier {
 
-    private var connections: List<RemoteConnectionSettings>? = null
+    private var connections: Map<Boolean, RemoteConnectionSettings>? = null
 
-    private val nodes = mutableMapOf<LoggerNode, TreeNode>()
     private val myInvoker = Invoker.forBackgroundThreadWithReadAction(this)
 
     override fun getRoot() = rootTreeNode
@@ -43,7 +41,8 @@ class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val 
     override fun getChildren(parent: Any?): List<LoggersOptionsTreeNode?>? {
         val loggerNode = (parent as DefaultMutableTreeNode).userObject
         return if (loggerNode is LoggerNode) {
-            loggerNode.getChildren(LoggerNodeParameters(connections ?: emptyList()))
+            loggerNode.getChildren(LoggerNodeParameters(connections ?: emptyMap()))
+                .onEach { it.update() }
                 .map {
                     LoggersOptionsTreeNode(it)
                 }
@@ -54,7 +53,7 @@ class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val 
 
     override fun getInvoker() = myInvoker
 
-    fun reload(connections: List<RemoteConnectionSettings>) {
+    fun reload(connections: Map<Boolean, RemoteConnectionSettings>) {
         this.connections = connections
 
         treeStructureChanged(TreePath(root), null, null)

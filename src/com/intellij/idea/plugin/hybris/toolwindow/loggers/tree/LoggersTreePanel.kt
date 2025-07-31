@@ -29,31 +29,36 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
+import java.io.Serial
 
 class LoggersTreePanel(
-    private val project: Project,
+    project: Project,
 ) : OnePixelSplitter(false, 0.25f), Disposable {
 
-    val tree: LoggersOptionsTree
+    val tree: LoggersOptionsTree = LoggersOptionsTree(project)
 
     init {
-        tree = LoggersOptionsTree(project)
         firstComponent = JBScrollPane(tree)
         secondComponent = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
 
         //PopupHandler.installPopupMenu(tree, "action.group.id", "place")
         Disposer.register(this, tree)
 
-        val hacSettings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-        tree.update(listOf(hacSettings))
+        val activeConnection = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        tree.update(mapOf(true to activeConnection))
 
 
         with(project.messageBus.connect(this)) {
             subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
-                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = tree.update(listOf(remoteConnection))
+                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = tree.update(mapOf(true to remoteConnection))
 
                 override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
             })
         }
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 933155170958799595L
     }
 }
