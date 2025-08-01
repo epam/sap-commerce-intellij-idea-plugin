@@ -44,7 +44,6 @@ import java.util.*
 @Service(Service.Level.PROJECT)
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
     private var fetching: Boolean = false
-    private val loggersState = CxLoggersState()
     private val loggersStates = WeakHashMap<RemoteConnectionSettings, CxLoggersState>()
 
 
@@ -52,7 +51,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         get() = !fetching
 
     val stateInitialized: Boolean
-        get() = loggersState.initialized
+        get() {
+            val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+            return loggers(server).initialized
+        }
 
     init {
         with(project.messageBus.connect(this)) {
@@ -64,7 +66,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun logger(loggerIdentifier: String): CxLoggerModel? = if (!stateInitialized) null else loggersState.get(loggerIdentifier)
+    fun logger(loggerIdentifier: String): CxLoggerModel? {
+        val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        return if (!stateInitialized) null else loggers(server).get(loggerIdentifier)
+    }
 
     fun setLogger(loggerName: String, logLevel: LogLevel) {
         val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
@@ -75,7 +80,6 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         )
         fetching = true
         LoggingExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-            updateState(result.loggers)
             updateState(result.loggers, server)
             project.messageBus.syncPublisher(LoggersStateListener.TOPIC).onLoggersStateChanged(server)
 
@@ -117,10 +121,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 ?.takeIf { it.isNotEmpty() }
 
             if (loggers == null || result.hasError) {
-                clearState()
                 clearState(server)
             } else {
-                updateState(loggers)
                 updateState(loggers, server)
             }
 
@@ -147,25 +149,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun loggers(): CxLoggersState {
-        return loggersState
-    }
-
     fun loggers(settings: RemoteConnectionSettings): CxLoggersState {
         return loggersStates.computeIfAbsent(settings) { CxLoggersState() }
-    }
-
-    private fun updateState(loggers: Map<String, CxLoggerModel>?) {
-        coroutineScope.launch {
-
-            loggersState.update(loggers ?: emptyMap())
-
-            edtWriteAction {
-                PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
-            }
-
-            fetching = false
-        }
     }
 
     private fun updateState(loggers: Map<String, CxLoggerModel>?, settings: RemoteConnectionSettings) {
@@ -205,14 +190,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         .notify(project)
 
     override fun dispose() {
-        loggersState.clear()
         loggersStates.forEach { it.value.clear() }
-        loggersState.clear()
-    }
-
-    private fun clearState() {
-        loggersState.clear()
-        fetching = false
+        loggersStates.clear()
     }
 
     private fun clearState(settings: RemoteConnectionSettings) {

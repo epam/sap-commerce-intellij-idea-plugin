@@ -129,13 +129,8 @@ class LoggersTreePanel(
 
             when (node) {
                 is HacConnectionLoggersNode -> {
-                    val loggers = if (node.activeConnection) {
-                        val loggersAccess = CxLoggerAccess.getInstance(project)
-                        val loggers = loggersAccess.loggers(node.connectionSettings)
-                        loggers.all()
-                    } else {
-                        emptyMap()
-                    }
+                    val loggersAccess = CxLoggerAccess.getInstance(project)
+                    val loggers = loggersAccess.loggers(node.connectionSettings).all()
                     if (loggers.isNotEmpty()) {
                         loggersStateView.renderView(loggers) { coroutineScope, view ->
                             secondComponent = view

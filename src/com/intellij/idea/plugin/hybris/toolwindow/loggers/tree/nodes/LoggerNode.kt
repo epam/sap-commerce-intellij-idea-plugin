@@ -27,8 +27,8 @@ import com.intellij.ui.tree.LeafState
 
 abstract class LoggerNode : PresentableNodeDescriptor<LoggerNode>, LeafState.Supplier, Disposable {
 
-    private val myChildren = mutableMapOf<String, LoggerNode>()
-    private var parameters: LoggerNodeParameters? = null
+    internal val myChildren = mutableMapOf<String, LoggerNode>()
+    internal var parameters: LoggerNodeParameters? = null
 
     protected constructor(project: Project) : super(project, null)
 

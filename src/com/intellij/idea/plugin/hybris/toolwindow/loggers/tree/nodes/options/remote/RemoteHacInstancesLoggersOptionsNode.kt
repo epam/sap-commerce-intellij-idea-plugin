@@ -28,5 +28,5 @@ class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNod
 
     override fun getNewChildren(parameters: LoggerNodeParameters) = parameters.connections
         .map { (connection, active) -> HacConnectionLoggersNode(connection, active, project) }
-        .associateBy { it.name }
+        .associateBy { it.name + it.activeConnection}
 }
