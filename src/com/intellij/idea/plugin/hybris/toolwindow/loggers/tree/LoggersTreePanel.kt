@@ -22,9 +22,9 @@ import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
-import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.LoggersStateListener
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.forms.LoggersStateView
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.HacConnectionLoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
@@ -74,12 +74,23 @@ class LoggersTreePanel(
             })
         }
 
+        with(project.messageBus.connect(this)) {
+            subscribe(LoggersStateListener.TOPIC, object : LoggersStateListener {
+                override fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettings) {
+                    tree.lastSelectedPathComponent
+                        ?.asSafely<LoggersOptionsTreeNode>()
+                        ?.userObject
+                        ?.asSafely<HacConnectionLoggersNode>()
+                        ?.takeIf { it.connectionSettings == remoteConnection }
+                        ?.let {
+                            updateSecondComponent(it)
+                        }
+                }
+            })
+        }
+
         tree.addTreeSelectionListener(treeSelectionListener())
         tree.addTreeModelListener(treeModelListener())
-    }
-
-    fun renderLoggersState(loggers: MutableMap<String, CxLoggerModel>) {
-
     }
 
     private fun treeSelectionListener() = TreeSelectionListener { tls ->
@@ -116,7 +127,7 @@ class LoggersTreePanel(
                 is HacConnectionLoggersNode -> {
                     val loggers = if (node.activeConnection) {
                         val loggersAccess = CxLoggerAccess.getInstance(project)
-                        val loggers = loggersAccess.loggers()
+                        val loggers = loggersAccess.loggers(node.connectionSettings)
                         loggers.all()
                     } else {
                         emptyMap()

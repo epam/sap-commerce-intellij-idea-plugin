@@ -29,6 +29,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecu
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.LoggersStateListener
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
@@ -38,11 +39,14 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 @Service(Service.Level.PROJECT)
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
     private var fetching: Boolean = false
     private val loggersState = CxLoggersState()
+    private val loggersStates = WeakHashMap<RemoteConnectionSettings, CxLoggersState>()
+
 
     val ready: Boolean
         get() = !fetching
@@ -53,9 +57,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     init {
         with(project.messageBus.connect(this)) {
             subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
-                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = refresh()
+                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = refresh(remoteConnection)
 
-                override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = refresh()
+                override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
             })
         }
     }
@@ -72,6 +76,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         fetching = true
         LoggingExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
             updateState(result.loggers)
+            updateState(result.loggers, server)
+            project.messageBus.syncPublisher(LoggersStateListener.TOPIC).onLoggersStateChanged(server)
 
             if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
                 """
@@ -89,8 +95,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun fetch() {
-        val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+    fun fetch() = fetch(RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris))
+
+    fun fetch(server: RemoteConnectionSettings) {
         val context = GroovyExecutionContext(
             executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]...",
             content = ExtensionResource.CX_LOGGERS_STATE.content,
@@ -111,9 +118,13 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
             if (loggers == null || result.hasError) {
                 clearState()
+                clearState(server)
             } else {
                 updateState(loggers)
+                updateState(loggers, server)
             }
+
+            project.messageBus.syncPublisher(LoggersStateListener.TOPIC).onLoggersStateChanged(server)
 
             when {
                 result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
@@ -136,8 +147,12 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun loggers() : CxLoggersState {
+    fun loggers(): CxLoggersState {
         return loggersState
+    }
+
+    fun loggers(settings: RemoteConnectionSettings): CxLoggersState {
+        return loggersStates.computeIfAbsent(settings) { CxLoggersState() }
     }
 
     private fun updateState(loggers: Map<String, CxLoggerModel>?) {
@@ -153,8 +168,25 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    private fun refresh() {
-        loggersState.clear()
+    private fun updateState(loggers: Map<String, CxLoggerModel>?, settings: RemoteConnectionSettings) {
+        coroutineScope.launch {
+
+            loggers(settings).update(loggers ?: emptyMap())
+
+            edtWriteAction {
+                PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
+            }
+
+            fetching = false
+        }
+    }
+
+    private fun refresh(settings: RemoteConnectionSettings) {
+        loggersStates[settings]
+            ?.let {
+                //re-fetch loggers state if it has been initialized
+                fetch(settings)
+            }
 
         coroutineScope.launch {
             fetching = true
@@ -174,10 +206,18 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
     override fun dispose() {
         loggersState.clear()
+        loggersStates.forEach { it.value.clear() }
+        loggersState.clear()
     }
 
     private fun clearState() {
         loggersState.clear()
+        fetching = false
+    }
+
+    private fun clearState(settings: RemoteConnectionSettings) {
+        val logState = loggersStates[settings]
+        logState?.clear()
         fetching = false
     }
 
