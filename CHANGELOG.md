@@ -1,3 +1,8 @@
+## [2025.1.8]
+
+### Other
+- Updated versions of the project dependencies [#1502](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1502)
+
 ## [2025.1.7]
 
 ### `Project Import` enhancements
@@ -22,6 +27,7 @@
 ### `CCv2` enhancements
 - Auto-retrieve environments on scheduling new build in case of selected Subscription [#1481](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1481)
 - Use `uuid` as a unique identifier for active subscription [#1483](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1483)
+- Show progress icon during fetching action [#1461](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1461)
 
 ### `SAP CX Logging` enhancements
 - Display a log level status from a remote server [#1457](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1457)
@@ -85,9 +91,6 @@
 
 ### `Remote Connection` enhancements
 - Shorten CCv2 url without custom name [#1449](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1449)
-
-### `CCv2` enhancements
-- Show progress icon during fetching action [#1461](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1461)
 
 ### Other
 - Re-implemented consoles related API [#1456](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1456)
