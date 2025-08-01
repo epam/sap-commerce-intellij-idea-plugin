@@ -39,6 +39,10 @@ import java.awt.Dimension
 import java.io.Serial
 import javax.swing.JComponent
 import javax.swing.JTable
+import javax.swing.table.TableCellRenderer
+
+private const val COLUMN_LOGGER = 1
+private const val COLUMN_LEVEL = 0
 
 @Service(Service.Level.PROJECT)
 class LoggersStateView(
@@ -66,61 +70,57 @@ class LoggersStateView(
 
     fun table(loggers: Map<String, CxLoggerModel>): TableView<List<String>> {
         val customCellRenderer = CustomCellRenderer()
-        val rows = loggers.values
-            .sortedBy { it.name }
-            .map { listOf(it.name, it.effectiveLevel) }
-            .toMutableList()
-
         val loggerNameHeader = object : ColumnInfo<List<String>, Any>("Logger") {
-            override fun valueOf(item: List<String>?) = item?.firstOrNull()
+            override fun valueOf(item: List<String>?) = item?.get(COLUMN_LOGGER)
             override fun isCellEditable(item: List<String>?) = false
             override fun getRenderer(item: List<String>?) = customCellRenderer
         }
-
         val levelHeader = object : ColumnInfo<List<String>, Any>("Effective Level") {
-            override fun valueOf(item: List<String>?) = item?.getOrNull(1)
+            override fun valueOf(item: List<String>?) = item?.get(COLUMN_LEVEL)
             override fun isCellEditable(item: List<String>?) = false
             override fun getRenderer(item: List<String>?) = customCellRenderer
         }
 
-        val headers = arrayOf(loggerNameHeader, levelHeader)
-
+        val headers = arrayOf(levelHeader, loggerNameHeader)
         val listTableModel = ListTableModel<List<String>>(*headers)
 
+        val rows = loggers.values
+            .sortedBy { it.name }
+            .map { listOf(it.effectiveLevel, it.name) }
+            .toList()
         listTableModel.addRows(rows)
-        val longestString = rows.map { it.first() }
-            .withIndex()
-            .maxBy { it.value.length }
-        val longestStringRowNumber = longestString.index
-        val longestStringValue = longestString.value
 
         return TableView(listTableModel).apply {
             autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
             intercellSpacing = Dimension(0, 0)
 
-            val header = tableHeader
-            val renderer = header.defaultRenderer
+            val renderer = tableHeader.defaultRenderer
 
-            //Logger Name Column
-            val column = columnModel.getColumn(0)
-            val headerValue = column.headerValue
-            val component = renderer.getTableCellRendererComponent(this, longestStringValue, false, false, longestStringRowNumber, 0)
-            val preferredWidth = component.preferredSize.width + 32
-            column.preferredWidth = preferredWidth
-            column.minWidth = preferredWidth
-            column.maxWidth = preferredWidth
-            column.resizable = true
+            //set size for Level Column
+            setSize(renderer, columnModel.getColumn(COLUMN_LEVEL).headerValue, COLUMN_LEVEL, -1)
 
-            //Effective Level Column
-            val column2 = columnModel.getColumn(1)
-            val headerValue2 = column2.headerValue
-            val component2 = renderer.getTableCellRendererComponent(this, headerValue2, false, false, -1, 1)
-            val preferredWidth2 = component2.preferredSize.width + 32
-            column2.preferredWidth = preferredWidth2
-            column2.minWidth = preferredWidth2
-            column2.maxWidth = preferredWidth2
-            column2.resizable = false
+            //set size for Logger Column
+            val longestLogger = rows.map { it.last() }
+                .withIndex()
+                .maxBy { it.value.length }
+
+            setSize(renderer, longestLogger.value, COLUMN_LOGGER, longestLogger.index)
         }
+    }
+
+    private fun TableView<List<String>>.setSize(
+        renderer: TableCellRenderer,
+        cellValue: Any,
+        columnIndex: Int,
+        rowIndex: Int
+    ) {
+        val column = columnModel.getColumn(columnIndex)
+        val component = renderer.getTableCellRendererComponent(this, cellValue, false, false, rowIndex, columnIndex)
+        val preferredWidth = component.preferredSize.width + 32
+        column.preferredWidth = preferredWidth
+        column.minWidth = preferredWidth
+        column.maxWidth = preferredWidth
+        column.resizable = true
     }
 
     companion object {
@@ -138,7 +138,7 @@ private class CustomCellRenderer : ColoredTableCellRenderer() {
     override fun customizeCellRenderer(table: JTable, value: Any?, selected: Boolean, hasFocus: Boolean, row: Int, column: Int) {
         val stringValue = value?.asSafely<String>() ?: return
 
-        if (column == 0) {
+        if (column == COLUMN_LOGGER) {
             append(stringValue, SimpleTextAttributes.GRAY_ATTRIBUTES)
             foreground = RenderingUtil.getForeground(table, selected)
             background = RenderingUtil.getBackground(table, selected)
@@ -150,7 +150,13 @@ private class CustomCellRenderer : ColoredTableCellRenderer() {
         }
 
         border = JBUI.Borders.compound(
-            JBUI.Borders.customLine(if (hasFocus) JBColor.blue else JBColor.border(), if (hasFocus && selected) 1 else 0, if (hasFocus && selected) 1 else 0, 1, 1),
+            JBUI.Borders.customLine(
+                if (hasFocus) JBColor.blue else JBColor.border(),
+                if (hasFocus && selected) 1 else 0,
+                if (hasFocus && selected) 1 else 0,
+                1,
+                1
+            ),
             JBUI.Borders.empty(3)
         )
     }

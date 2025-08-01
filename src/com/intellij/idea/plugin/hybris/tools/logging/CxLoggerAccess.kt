@@ -167,12 +167,6 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     }
 
     private fun refresh(settings: RemoteConnectionSettings) {
-        loggersStates[settings]
-            ?.let {
-                //re-fetch loggers state if it has been initialized
-                fetch(settings)
-            }
-
         coroutineScope.launch {
             fetching = true
 
