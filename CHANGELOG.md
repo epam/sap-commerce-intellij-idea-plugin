@@ -1,12 +1,12 @@
 ## [2025.1.8]
 
 ### Other
-- Updated versions of the project dependencies [#1502](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1502)
+- Updated versions of the project dependencies [#1503](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1503)
 
 ## [2025.1.7]
 
 ### `Project Import` enhancements
-- Display Welcome Screen on project import cancel [#1501](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1501)
+- Display Welcome Screen on project import cancel [#1502](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1502)
 
 ### Other
 - Apply context parameters with Enter key within the Popup [#1492](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1492)
