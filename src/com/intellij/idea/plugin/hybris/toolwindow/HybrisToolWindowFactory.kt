@@ -30,8 +30,9 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
+import kotlinx.coroutines.CoroutineScope
 
-class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
+class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : ToolWindowFactory, DumbAware {
 
     override fun createToolWindowContent(
         project: Project, toolWindow: ToolWindow
@@ -41,7 +42,7 @@ class HybrisToolWindowFactory : ToolWindowFactory, DumbAware {
             createBSContent(toolWindow, BSView(project)),
             createConsolesContent(toolWindow, project, HybrisConsolesView.getInstance(project)),
             createCCv2CLIContent(toolWindow, project, CCv2View(project)),
-            createLoggersContent(toolWindow, project, LoggersView(project))
+            createLoggersContent(toolWindow, project, LoggersView(project, coroutineScope))
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 

@@ -44,6 +44,8 @@ class CxLoggersState {
         }
     }
 
+    fun all() : Map<String, CxLoggerModel> = if (_initialized) loggers else emptyMap()
+
     fun clear() {
         synchronized(loggers) {
             this.loggers.clear()

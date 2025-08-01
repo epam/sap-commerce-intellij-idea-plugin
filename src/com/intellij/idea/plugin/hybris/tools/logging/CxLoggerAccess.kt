@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 @Service(Service.Level.PROJECT)
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
     private var fetching: Boolean = false
-    val loggersState = CxLoggersState()
+    private val loggersState = CxLoggersState()
 
     val ready: Boolean
         get() = !fetching
@@ -134,6 +134,10 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 }
             }
         }
+    }
+
+    fun loggers() : CxLoggersState {
+        return loggersState
     }
 
     private fun updateState(loggers: Map<String, CxLoggerModel>?) {

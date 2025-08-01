@@ -26,8 +26,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
 class HacConnectionLoggersNode(
-    private val connectionSettings: RemoteConnectionSettings,
-    private val activeConnection: Boolean,
+    val connectionSettings: RemoteConnectionSettings,
+    val activeConnection: Boolean,
     project: Project
 ) : LoggerNode(project) {
 

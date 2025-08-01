@@ -26,9 +26,13 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
+import kotlinx.coroutines.CoroutineScope
 import java.io.Serial
 
-class LoggersView(val project: Project) : SimpleToolWindowPanel(false), Disposable {
+class LoggersView(
+    val project: Project,
+    coroutineScope: CoroutineScope
+) : SimpleToolWindowPanel(false), Disposable {
 
     val treePane: LoggersTreePanel
 
@@ -36,7 +40,7 @@ class LoggersView(val project: Project) : SimpleToolWindowPanel(false), Disposab
 
     init {
         installToolbar()
-        treePane = LoggersTreePanel(project)
+        treePane = LoggersTreePanel(project, coroutineScope)
         setContent(treePane)
 
         Disposer.register(this, treePane)

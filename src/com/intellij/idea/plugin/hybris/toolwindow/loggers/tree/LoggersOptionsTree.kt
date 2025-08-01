@@ -28,6 +28,7 @@ import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
 import java.io.Serial
+import javax.swing.event.TreeModelListener
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 
@@ -56,6 +57,8 @@ class LoggersOptionsTree(val myProject: Project) : Tree(), Disposable {
     fun update(connections: Map<Boolean, RemoteConnectionSettings>) {
         myTreeModel.reload(connections)
     }
+
+    fun addTreeModelListener(listener: TreeModelListener) = model.addTreeModelListener(listener)
 
     companion object {
         @Serial
