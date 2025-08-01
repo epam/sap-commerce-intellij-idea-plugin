@@ -27,7 +27,8 @@ import javax.swing.Icon
 abstract class LoggersOptionsNode(
     private val text: String,
     private val icon: Icon,
-    project: Project) : LoggerNode(project) {
+    project: Project
+) : LoggerNode(project) {
 
     override fun getName() = text
 

@@ -64,11 +64,17 @@ class LoggersTreePanel(
         Disposer.register(this, tree)
 
         val activeConnection = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-        tree.update(mapOf(true to activeConnection))
+        val connections = RemoteConnectionService.getInstance(project).getRemoteConnections(RemoteConnectionType.Hybris)
+            .associateWith { (it == activeConnection) }
+        tree.update(connections)
 
         with(project.messageBus.connect(this)) {
             subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
-                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = tree.update(mapOf(true to remoteConnection))
+                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) {
+                    val connections = RemoteConnectionService.getInstance(project).getRemoteConnections(RemoteConnectionType.Hybris)
+                        .associateWith { (it == remoteConnection) }
+                    tree.update(connections)
+                }
 
                 override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
             })
@@ -82,9 +88,7 @@ class LoggersTreePanel(
                         ?.userObject
                         ?.asSafely<HacConnectionLoggersNode>()
                         ?.takeIf { it.connectionSettings == remoteConnection }
-                        ?.let {
-                            updateSecondComponent(it)
-                        }
+                        ?.let { updateSecondComponent(it) }
                 }
             })
         }

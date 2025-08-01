@@ -31,7 +31,6 @@ abstract class LoggerNode : PresentableNodeDescriptor<LoggerNode>, LeafState.Sup
     private var parameters: LoggerNodeParameters? = null
 
     protected constructor(project: Project) : super(project, null)
-    protected constructor(parent: LoggerNode) : super(parent.project, parent)
 
     abstract override fun update(presentation: PresentationData)
 
@@ -72,4 +71,4 @@ abstract class LoggerNode : PresentableNodeDescriptor<LoggerNode>, LeafState.Sup
 
 }
 
-data class LoggerNodeParameters(val connections: Map<Boolean, RemoteConnectionSettings>)
+data class LoggerNodeParameters(val connections: Map<RemoteConnectionSettings, Boolean>)

@@ -32,7 +32,7 @@ import javax.swing.tree.TreePath
 //BSTreeModel
 class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val project: Project) : BaseTreeModel<DefaultMutableTreeNode>(), Disposable, InvokerSupplier {
 
-    private var connections: Map<Boolean, RemoteConnectionSettings>? = null
+    private var connections: Map<RemoteConnectionSettings, Boolean>? = null
     private val nodes = mutableMapOf<LoggerNode, LoggersOptionsTreeNode>()
     private val myInvoker = Invoker.forBackgroundThreadWithReadAction(this)
 
@@ -55,11 +55,9 @@ class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val 
 
     override fun getInvoker() = myInvoker
 
-    fun reload(connections: Map<Boolean, RemoteConnectionSettings>) {
+    fun reload(connections: Map<RemoteConnectionSettings, Boolean>) {
         this.connections = connections
 
         treeStructureChanged(TreePath(root), null, null)
     }
-
-
 }

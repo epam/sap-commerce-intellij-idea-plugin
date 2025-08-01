@@ -66,7 +66,10 @@ class LoggersStateView(
 
     fun table(loggers: Map<String, CxLoggerModel>): TableView<List<String>> {
         val customCellRenderer = CustomCellRenderer()
-        val rows = loggers.values.map { listOf(it.name, it.effectiveLevel) }.toMutableList()
+        val rows = loggers.values
+            .sortedBy { it.name }
+            .map { listOf(it.name, it.effectiveLevel) }
+            .toMutableList()
 
         val loggerNameHeader = object : ColumnInfo<List<String>, Any>("Logger") {
             override fun valueOf(item: List<String>?) = item?.firstOrNull()
@@ -117,7 +120,6 @@ class LoggersStateView(
             column2.minWidth = preferredWidth2
             column2.maxWidth = preferredWidth2
             column2.resizable = false
-
         }
     }
 

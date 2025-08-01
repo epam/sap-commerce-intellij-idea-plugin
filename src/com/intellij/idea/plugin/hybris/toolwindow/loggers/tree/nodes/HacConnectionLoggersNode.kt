@@ -39,7 +39,9 @@ class HacConnectionLoggersNode(
         val connectionIcon = if (activeConnection) HybrisIcons.Y.REMOTE else HybrisIcons.Y.REMOTE_GREEN
 
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.addText(PresentableNodeDescriptor.ColoredFragment(" (active)", SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
+        if (activeConnection) {
+            presentation.addText(PresentableNodeDescriptor.ColoredFragment(" (active)", SimpleTextAttributes.GRAYED_ITALIC_ATTRIBUTES))
+        }
         presentation.setIcon(connectionIcon)
     }
 }
