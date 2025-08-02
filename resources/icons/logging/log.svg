@@ -3,13 +3,13 @@
     <defs>
         <style type="text/css">
             .l1{stroke: #898989; stroke-linecap: round;}
-            .l2{stroke: #037FA1; stroke-linecap: round;}
-            .l3{stroke: #008910; stroke-linecap: round;}
-            .l4{stroke: #CF6300; stroke-linecap: round;}
-            .l5{stroke: #FF0000; stroke-linecap: round;}
-            .l6{stroke: #CD0000; stroke-linecap: round;}
-            .l7{stroke: #9f11FF; stroke-linecap: round;}
-            .v{stroke: #6E6E6E; stroke-linecap: round;}
+            .l2{stroke: #898989; stroke-linecap: round;}
+            .l3{stroke: #898989; stroke-linecap: round;}
+            .l4{stroke: #898989; stroke-linecap: round;}
+            .l5{stroke: #898989; stroke-linecap: round;}
+            .l6{stroke: #898989; stroke-linecap: round;}
+            .l7{stroke: #898989; stroke-linecap: round;}
+            .v{stroke: #389FD6; stroke-linecap: round;}
         </style>
     </defs>
     <path class="v" d="M 2.55 2.205 L 2.55 13.818"/>
