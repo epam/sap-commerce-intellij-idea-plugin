@@ -1,7 +1,7 @@
 ## [2025.1.8]
 
 ### `Project Import` enhancements
-- Pre-cache JVM SDKs before creating a Project Import Wizard [#1503](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1503)
+- Pre-cache JVM SDKs before creating a Project Import Wizard [#1504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1504)
 
 ### Other
 - Updated versions of the project dependencies [#1503](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1503)
