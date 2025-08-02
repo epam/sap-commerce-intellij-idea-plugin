@@ -21,52 +21,59 @@ package com.intellij.idea.plugin.hybris.project
 import com.intellij.ide.actions.ImportModuleAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisUtil
-import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.application.readAction
+import com.intellij.openapi.application.runInEdt
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable
+import com.intellij.openapi.projectRoots.ProjectJdkTable
+import com.intellij.openapi.projectRoots.SdkType
+import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame
-import com.intellij.platform.ide.progress.ModalTaskOwner
-import com.intellij.platform.ide.progress.TaskCancellation
-import com.intellij.platform.ide.progress.withModalProgress
 import com.intellij.projectImport.ProjectImportBuilder
 import com.intellij.projectImport.ProjectOpenProcessorBase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.intellij.util.asSafely
 
 class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImportBuilder>() {
 
     override fun doOpenProject(virtualFile: VirtualFile, projectToClose: Project?, forceOpenInNewFrame: Boolean): Project? {
-        CoroutineScope(Dispatchers.Default).launch {
-            withModalProgress(ModalTaskOwner.guess(), "Preparing Project Import Wizard...", TaskCancellation.cancellable()) {
+        val jdkTable = ProjectJdkTable.getInstance()
+        val orderRootTypes = OrderRootType.getAllTypes()
 
-                readAction {
-                    ProjectStructureConfigurable.getInstance(ProjectManager.getInstance().defaultProject)
-                        .projectJdksModel
-                        .projectSdks
-                        .keys
-                        // magic hack to omit Slow operation & cache SDK directories before creating a wizard in EDT
-                        .forEach { it.homeDirectory }
-                }
+        runInEdt { jdkTable.preconfigure() }
 
-                val providers = ImportModuleAction.getProviders(null).toTypedArray()
+        ProgressManager.getInstance().runProcessWithProgressSynchronously<Unit, RuntimeException>(
+            {
+                jdkTable.allJdks.forEach { sdk ->
+                    sdk.homeDirectory
 
-                edtWriteAction {
-                    val wizard = ImportModuleAction
-                        .createImportWizard(null, null, virtualFile, *providers)
-                        ?.also { wizard ->
-                            wizard.cancelButton.addActionListener {
-                                WelcomeFrame.showIfNoProjectOpened()
-                            }
+                    sdk.sdkType.asSafely<SdkType>()
+                        ?.let { sdkType ->
+                            orderRootTypes
+                                .filter { sdkType.isRootTypeApplicable(it) }
+                                .forEach { orderRootType ->
+                                    sdk.sdkModificator.getRoots(orderRootType)
+                                }
                         }
+                }
+            },
+            "Detecting SDKs...",
+            true,
+            null
+        )
 
-                    ImportModuleAction.doImport(null) {
-                        wizard
+        val providers = ImportModuleAction.getProviders(null).toTypedArray()
+
+        runInEdt {
+            val wizard = ImportModuleAction
+                .createImportWizard(null, null, virtualFile, *providers)
+                ?.also { wizard ->
+                    wizard.cancelButton.addActionListener {
+                        WelcomeFrame.showIfNoProjectOpened()
                     }
                 }
+
+            ImportModuleAction.doImport(null) {
+                wizard
             }
         }
 
