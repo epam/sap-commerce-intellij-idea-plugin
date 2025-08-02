@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -147,14 +147,15 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         final ContentEntry contentEntry,
         final ModuleDescriptor moduleDescriptor
     ) {
-        excludeSubDirectories(contentEntry, moduleDescriptor.getModuleRootDirectory(), Arrays.asList(
+        excludeSubDirectories(contentEntry, moduleDescriptor.getModuleRootDirectory(), List.of(
             EXTERNAL_TOOL_BUILDERS_DIRECTORY,
             SETTINGS_DIRECTORY,
             TEST_CLASSES_DIRECTORY,
             ECLIPSE_BIN_DIRECTORY,
             NODE_MODULES_DIRECTORY,
             BOWER_COMPONENTS_DIRECTORY,
-            JS_TARGET_DIRECTORY
+            JS_TARGET_DIRECTORY,
+            SPOCK_META_INF_SERVICES_DIRECTORY
         ));
 
         if (isCustomModuleDescriptor(moduleDescriptor)

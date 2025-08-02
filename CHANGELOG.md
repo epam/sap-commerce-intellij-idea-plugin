@@ -2,6 +2,7 @@
 
 ### `Project Import` enhancements
 - Pre-cache JVM SDKs before creating a Project Import Wizard [#1504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1504)
+- Exclude Spock specific `resources/META-INF/services` directory [#1505](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1505)
 
 ### Other
 - Updated versions of the project dependencies [#1503](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1503)
