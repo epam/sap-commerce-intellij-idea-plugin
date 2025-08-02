@@ -64,16 +64,13 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
         val providers = ImportModuleAction.getProviders(null).toTypedArray()
 
         runInEdt {
-            val wizard = ImportModuleAction
-                .createImportWizard(null, null, virtualFile, *providers)
-                ?.also { wizard ->
-                    wizard.cancelButton.addActionListener {
-                        WelcomeFrame.showIfNoProjectOpened()
-                    }
-                }
-
             ImportModuleAction.doImport(null) {
-                wizard
+                ImportModuleAction.createImportWizard(null, null, virtualFile, *providers)
+                    ?.apply {
+                        cancelButton.addActionListener {
+                            WelcomeFrame.showIfNoProjectOpened()
+                        }
+                    }
             }
         }
 
