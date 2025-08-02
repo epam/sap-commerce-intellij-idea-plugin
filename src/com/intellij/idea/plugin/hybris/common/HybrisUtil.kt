@@ -51,12 +51,13 @@ object HybrisUtil {
     fun isHybrisModuleRoot(file: File) = File(file, HybrisConstants.EXTENSION_INFO_XML).isFile
     fun isHybrisModuleRoot(file: VirtualFile) = file.findChild(HybrisConstants.EXTENSION_INFO_XML) != null
 
-    fun isPotentialHybrisProject(root: VirtualFile): Boolean = ProgressManager.getInstance()
-        .runProcessWithProgressSynchronously<Boolean, RuntimeException>(
+    fun isPotentialHybrisProject(root: VirtualFile): Boolean {
+        if (root.getUserData(KEY_HYBRIS_PROJECT_DIRECTORY) == true) return true
+
+        return ProgressManager.getInstance().runProcessWithProgressSynchronously<Boolean, RuntimeException>(
             {
                 ProgressManager.getInstance().progressIndicator.text = "Scanning for SAP Commerce project structure..."
-                val key = Key.create<Boolean>("IS_HYBRIS_FILE")
-                root.putUserData(key, false)
+                root.putUserData(KEY_HYBRIS_PROJECT_DIRECTORY, false)
 
                 VfsUtilCore.iterateChildrenRecursively(
                     root,
@@ -67,17 +68,20 @@ object HybrisUtil {
                             || fileOrDir.name == HybrisConstants.EXTENSION_INFO_XML
 
                         if (hybrisFile) {
-                            root.putUserData(key, true)
+                            root.putUserData(KEY_HYBRIS_PROJECT_DIRECTORY, true)
                         }
 
                         !hybrisFile
                     }, VirtualFileVisitor.NO_FOLLOW_SYMLINKS, VirtualFileVisitor.limit(6)
                 )
 
-                java.lang.Boolean.TRUE == root.getUserData(key)
+                java.lang.Boolean.TRUE == root.getUserData(KEY_HYBRIS_PROJECT_DIRECTORY)
             },
             "Detecting SAP Commerce Project",
             true,
             null  // project, null is OK outside project context
         )
+    }
+
+    private val KEY_HYBRIS_PROJECT_DIRECTORY = Key.create<Boolean>("IS_HYBRIS_FILE")
 }

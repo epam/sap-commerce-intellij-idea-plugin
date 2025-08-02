@@ -19,50 +19,62 @@
 package com.intellij.idea.plugin.hybris.project
 
 import com.intellij.ide.actions.ImportModuleAction
-import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisUtil
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.openapi.roots.ui.configuration.ProjectStructureConfigurable
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame
+import com.intellij.platform.ide.progress.ModalTaskOwner
+import com.intellij.platform.ide.progress.TaskCancellation
+import com.intellij.platform.ide.progress.withModalProgress
 import com.intellij.projectImport.ProjectImportBuilder
 import com.intellij.projectImport.ProjectOpenProcessorBase
-import com.intellij.util.application
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImportBuilder>() {
 
-    public override fun doQuickImport(file: VirtualFile, wizardContext: WizardContext): Boolean {
-        if (file.isDirectory) {
-            wizardContext.setProjectFileDirectory(file.path)
-        }
+    override fun doOpenProject(virtualFile: VirtualFile, projectToClose: Project?, forceOpenInNewFrame: Boolean): Project? {
+        CoroutineScope(Dispatchers.Default).launch {
+            withModalProgress(ModalTaskOwner.guess(), "Preparing Project Import Wizard...", TaskCancellation.cancellable()) {
 
-        val providers = ImportModuleAction.getProviders(null)
-        var cancel = false
-
-        application.invokeAndWait {
-            ImportModuleAction.doImport(null) {
-                val createImportWizard = ImportModuleAction.createImportWizard(null, null, file, *providers.toTypedArray())
-                createImportWizard?.cancelButton?.addActionListener {
-                    cancel = true
+                readAction {
+                    ProjectStructureConfigurable.getInstance(ProjectManager.getInstance().defaultProject)
+                        .projectJdksModel
+                        .projectSdks
+                        .keys
+                        // magic hack to omit Slow operation & cache SDK directories before creating a wizard in EDT
+                        .forEach { it.homeDirectory }
                 }
-                createImportWizard
+
+                val providers = ImportModuleAction.getProviders(null).toTypedArray()
+
+                edtWriteAction {
+                    val wizard = ImportModuleAction
+                        .createImportWizard(null, null, virtualFile, *providers)
+                        ?.also { wizard ->
+                            wizard.cancelButton.addActionListener {
+                                WelcomeFrame.showIfNoProjectOpened()
+                            }
+                        }
+
+                    ImportModuleAction.doImport(null) {
+                        wizard
+                    }
+                }
             }
         }
 
-        if (cancel) {
-            application.invokeLater {
-                WelcomeFrame.showIfNoProjectOpened()
-            }
-        }
-
-        return false
+        return null
     }
 
-    override fun canOpenProject(file: VirtualFile): Boolean {
-        val canOpenSimpleVerification = super.canOpenProject(file)
-        return if (canOpenSimpleVerification) {
-            true
-        } else HybrisUtil.isPotentialHybrisProject(file)
-    }
+    override fun canOpenProject(file: VirtualFile) = if (super.canOpenProject(file)) true
+    else HybrisUtil.isPotentialHybrisProject(file)
 
     override val supportedExtensions = arrayOf(
         HybrisConstants.EXTENSION_INFO_XML,
