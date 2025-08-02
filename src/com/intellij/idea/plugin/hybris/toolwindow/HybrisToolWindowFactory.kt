@@ -94,7 +94,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false
-        icon = HybrisIcons.Log.Level.ALL
+        icon = HybrisIcons.Log.LOG
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
 
         this

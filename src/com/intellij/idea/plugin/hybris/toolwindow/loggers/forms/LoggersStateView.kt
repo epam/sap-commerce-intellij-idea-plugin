@@ -140,6 +140,7 @@ private class CustomCellRenderer : ColoredTableCellRenderer() {
 
         if (column == COLUMN_LOGGER) {
             append(stringValue, SimpleTextAttributes.GRAY_ATTRIBUTES)
+            icon
             foreground = RenderingUtil.getForeground(table, selected)
             background = RenderingUtil.getBackground(table, selected)
             alignmentX = RIGHT_ALIGNMENT

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0.177 1.147 15.6 13.544" width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style type="text/css">
+            .l1{stroke: #898989; stroke-linecap: round;}
+            .l2{stroke: #037FA1; stroke-linecap: round;}
+            .l3{stroke: #008910; stroke-linecap: round;}
+            .l4{stroke: #CF6300; stroke-linecap: round;}
+            .l5{stroke: #FF0000; stroke-linecap: round;}
+            .l6{stroke: #CD0000; stroke-linecap: round;}
+            .l7{stroke: #9f11FF; stroke-linecap: round;}
+            .v{stroke: #6E6E6E; stroke-linecap: round;}
+        </style>
+    </defs>
+    <path class="v" d="M 2.55 2.205 L 2.55 13.818"/>
+    <path class="l1" d="M 5.406 13.818 L 8.16 13.818"/>
+    <path class="l2" d="M 5.406 11.907 L 9.18 11.907"/>
+    <path class="l3" d="M 5.406 9.996 L 9.996 9.996"/>
+    <path class="l4" d="M 5.406 8.085 L 10.812 8.085"/>
+    <path class="l5" d="M 5.406 6.174 L 11.832 6.174"/>
+    <path class="l6" d="M 5.406 4.263 L 13.056 4.263"/>
+    <path class="l7" d="M 5.406 2.205 L 13.974 2.205"/>
+</svg>
