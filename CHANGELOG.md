@@ -6,6 +6,7 @@
 
 ### Other
 - Updated versions of the project dependencies [#1503](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1503)
+- Use custom icons for `SOLR`, `Tomcat` and `installedSaplicenses.properties` in the Project Tree [#1506](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1506)
 
 ## [2025.1.7]
 

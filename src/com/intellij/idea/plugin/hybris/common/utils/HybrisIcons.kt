@@ -53,6 +53,11 @@ object HybrisIcons {
         val FACET = LOGO_GREEN
     }
 
+    object Tools {
+        val SOLR = getIcon("/icons/console/solr.svg")
+        val TOMCAT = AllIcons.RunConfigurations.Tomcat
+    }
+
     object UnmanagedDependencies {
         val FILE = getIcon("/icons/unmanagedDependencies.svg")
     }
@@ -320,7 +325,7 @@ object HybrisIcons {
 
     object Console {
         val DESCRIPTOR = AllIcons.Debugger.Console
-        val SOLR = getIcon("/icons/console/solr.svg")
+        val SOLR = Tools.SOLR
 
         object Actions {
             val OPEN = getIcon("/icons/console/open.svg")
