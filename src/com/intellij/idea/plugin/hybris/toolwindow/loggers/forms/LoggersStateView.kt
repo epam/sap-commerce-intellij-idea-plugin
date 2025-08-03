@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.forms
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -37,6 +38,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.awt.Dimension
 import java.io.Serial
+import javax.swing.Icon
 import javax.swing.JComponent
 import javax.swing.JTable
 import javax.swing.table.TableCellRenderer
@@ -69,7 +71,7 @@ class LoggersStateView(
 
 
     fun table(loggers: Map<String, CxLoggerModel>): TableView<List<String>> {
-        val customCellRenderer = CustomCellRenderer()
+        val customCellRenderer = CustomCellRenderer(project)
         val loggerNameHeader = object : ColumnInfo<List<String>, Any>("Logger") {
             override fun valueOf(item: List<String>?) = item?.get(COLUMN_LOGGER)
             override fun isCellEditable(item: List<String>?) = false
@@ -129,7 +131,7 @@ class LoggersStateView(
 
 }
 
-private class CustomCellRenderer : ColoredTableCellRenderer() {
+private class CustomCellRenderer(val project: Project) : ColoredTableCellRenderer() {
     @Serial
     private val serialVersionUID: Long = -2610838431719623644L
 
@@ -140,7 +142,7 @@ private class CustomCellRenderer : ColoredTableCellRenderer() {
 
         if (column == COLUMN_LOGGER) {
             append(stringValue, SimpleTextAttributes.GRAY_ATTRIBUTES)
-            icon
+            icon = getIcon(stringValue)
             foreground = RenderingUtil.getForeground(table, selected)
             background = RenderingUtil.getBackground(table, selected)
             alignmentX = RIGHT_ALIGNMENT
@@ -160,5 +162,26 @@ private class CustomCellRenderer : ColoredTableCellRenderer() {
             ),
             JBUI.Borders.empty(3)
         )
+    }
+
+    private fun getIcon(loggerIdentifier: String): Icon {
+        if (loggerIdentifier == "root") return HybrisIcons.Log.Identifier.NA
+        if (loggerIdentifier == "solrStatisticLogger") return HybrisIcons.Log.Identifier.NA
+
+        val loggerType = detectNameType(loggerIdentifier)
+        return when (loggerType) {
+            NameType.CLASS -> HybrisIcons.Log.Identifier.CLASS
+            NameType.PACKAGE -> HybrisIcons.Log.Identifier.PACKAGE
+        }
+    }
+
+    enum class NameType {
+        PACKAGE,
+        CLASS
+    }
+
+    fun detectNameType(name: String): NameType {
+        val hasCapital = name.split('.').any { it.isNotEmpty() && it[0].isUpperCase() }
+        return if (hasCapital) NameType.CLASS else NameType.PACKAGE
     }
 }
