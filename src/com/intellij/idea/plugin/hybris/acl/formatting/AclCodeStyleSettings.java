@@ -15,18 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.acl.formatting
 
-import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.codeStyle.CustomCodeStyleSettings
+package com.intellij.idea.plugin.hybris.acl.formatting;
 
-class AclCodeStyleSettings(container: CodeStyleSettings) : CustomCodeStyleSettings("AclCodeStyleSettings", container) {
-    var SPACE_AFTER_FIELD_VALUE_SEPARATOR: Boolean = true
-    var SPACE_BEFORE_FIELD_VALUE_SEPARATOR: Boolean = true
+import com.intellij.psi.codeStyle.CodeStyleSettings;
+import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 
-    var SPACE_AFTER_PARAMETERS_SEPARATOR: Boolean = true
-    var SPACE_BEFORE_PARAMETERS_SEPARATOR: Boolean = false
+public class AclCodeStyleSettings extends CustomCodeStyleSettings {
 
-    var SPACE_AFTER_COMMA: Boolean = true
-    var SPACE_BEFORE_COMMA: Boolean = false
+    public boolean SPACE_AFTER_FIELD_VALUE_SEPARATOR = true;
+    public boolean SPACE_BEFORE_FIELD_VALUE_SEPARATOR = true;
+
+    public boolean SPACE_AFTER_PARAMETERS_SEPARATOR = true;
+    public boolean SPACE_BEFORE_PARAMETERS_SEPARATOR = false;
+
+    public boolean SPACE_AFTER_COMMA = true;
+    public boolean SPACE_BEFORE_COMMA = false;
+
+    public AclCodeStyleSettings(final CodeStyleSettings container) {
+        super("AclCodeStyleSettings", container);
+    }
 }
