@@ -39,8 +39,8 @@ class PolyglotQueryFileCreateAction : CreateFileFromTemplateAction(
 
     override fun getActionName(directory: PsiDirectory?, newName: String, templateName: String?) = NEW_FILE
 
-    override fun isAvailable(dataContext: DataContext?) = super.isAvailable(dataContext)
-        && dataContext?.isHybrisProject ?: false
+    override fun isAvailable(dataContext: DataContext) = super.isAvailable(dataContext)
+        && dataContext.isHybrisProject
 
     companion object {
         const val FILE_TEMPLATE = "Polyglot Query File"

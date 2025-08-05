@@ -1,10 +1,11 @@
-## [2025.1.8]
+## [2025.2.0]
 
 ### `Project Import` enhancements
 - Pre-cache JVM SDKs before creating a Project Import Wizard [#1504](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1504)
 - Exclude Spock specific `resources/META-INF/services` directory [#1505](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1505) for [#1458](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1458)
 
 ### Other
+- Compatibility release [#1507](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1507)
 - Updated versions of the project dependencies [#1503](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1503)
 - Use custom icons for `SOLR`, `Tomcat` and `installedSaplicenses.properties` in the Project Tree [#1506](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1506)
 

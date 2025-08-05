@@ -314,7 +314,9 @@ dependencies {
     testRuntimeOnly("junit:junit:4.13.2")
 
     intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version"), useInstaller = false)
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
 
         pluginVerifier()
 
@@ -342,8 +344,6 @@ dependencies {
             "com.intellij.platform.images",
             "com.intellij.modules.json",
             "org.jetbrains.idea.maven",
-            "org.jetbrains.idea.maven.model",
-            "org.jetbrains.idea.maven.server.api",
             "org.jetbrains.idea.eclipse",
             "org.jetbrains.kotlin",
             "org.jetbrains.plugins.terminal",
