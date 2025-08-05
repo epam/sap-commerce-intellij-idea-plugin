@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
@@ -33,13 +34,18 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.LoggersStateListener
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Iconable
+import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.search.GlobalSearchScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.swing.Icon
 
 @Service(Service.Level.PROJECT)
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
@@ -111,40 +117,59 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         fetching = true
 
         GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-            val loggers = result.result
-                ?.split("\n")
-                ?.map { it.split(" | ") }
-                ?.filter { it.size == 3 }
-                ?.map { CxLoggerModel.of(it[0], it[1], it[2]) }
-                ?.distinctBy { it.name }
-                ?.associateBy { it.name }
-                ?.takeIf { it.isNotEmpty() }
+            coroutineScope.launch {
+                val loggers = result.result
+                    ?.split("\n")
+                    ?.map { it.split(" | ") }
+                    ?.filter { it.size == 3 }
+                    ?.map { CxLoggerModel.of(it[0], it[1], it[2], false, getIcon(it[0])) }
+                    ?.distinctBy { it.name }
+                    ?.associateBy { it.name }
+                    ?.takeIf { it.isNotEmpty() }
 
-            if (loggers == null || result.hasError) {
-                clearState(server)
-            } else {
-                updateState(loggers, server)
-            }
-
-            project.messageBus.syncPublisher(LoggersStateListener.TOPIC).onLoggersStateChanged(server)
-
-            when {
-                result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
-                    "<p>${result.errorMessage}</p>"
-                    "<p>Server: ${server.shortenConnectionName()}</p>"
+                if (loggers == null || result.hasError) {
+                    clearState(server)
+                } else {
+                    updateState(loggers, server)
                 }
 
-                loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
-                    "<p>No Loggers information returned from the remote server or is in the incorrect format.</p>"
-                    "<p>Server: ${server.shortenConnectionName()}</p>"
-                }
+                project.messageBus.syncPublisher(LoggersStateListener.TOPIC).onLoggersStateChanged(server)
 
-                else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
-                    """
+                when {
+                    result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {
+                        "<p>${result.errorMessage}</p>"
+                        "<p>Server: ${server.shortenConnectionName()}</p>"
+                    }
+
+                    loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
+                        "<p>No Loggers information returned from the remote server or is in the incorrect format.</p>"
+                        "<p>Server: ${server.shortenConnectionName()}</p>"
+                    }
+
+                    else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
+                        """
                     <p>Declared loggers: ${loggers.size}</p>
                     <p>Server: ${server.shortenConnectionName()}</p>
                 """.trimIndent()
+                    }
                 }
+            }
+        }
+    }
+
+    private suspend fun getIcon(loggerIdentifier: String): Icon {
+        val packageLevelLogger = readAction {
+            JavaPsiFacade.getInstance(project)
+                .findPackage(loggerIdentifier)
+        }
+        return if (packageLevelLogger != null) {
+            return HybrisIcons.Log.Identifier.PACKAGE
+        } else {
+            readAction {
+                JavaPsiFacade.getInstance(project)
+                    .findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
+                    ?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
+                    ?: HybrisIcons.Log.Identifier.NA
             }
         }
     }

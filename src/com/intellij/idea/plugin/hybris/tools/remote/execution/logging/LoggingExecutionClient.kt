@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
@@ -27,6 +28,8 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
+import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.search.GlobalSearchScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -39,6 +42,7 @@ import org.jsoup.Jsoup
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
+import javax.swing.Icon
 
 @Service(Service.Level.PROJECT)
 class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<LoggingExecutionContext, LoggingExecutionResult>(project, coroutineScope) {
@@ -74,8 +78,9 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
                     val name = it.jsonObject["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val effectiveLevel = it.jsonObject["effectiveLevel"]?.jsonObject["standardLevel"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val parentName = it.jsonObject["parentName"]?.jsonPrimitive?.content
+                    val icon = getIcon(name)
 
-                    CxLoggerModel.of(name, effectiveLevel, parentName)
+                    CxLoggerModel.of(name, effectiveLevel, parentName, false, icon)
                 }
 
             return LoggingExecutionResult(
@@ -101,6 +106,19 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
         errorMessage = exception.message,
         errorDetailMessage = exception.stackTraceToString(),
     )
+
+    private fun getIcon(loggerIdentifier: String): Icon {
+        val packageLevelLogger = JavaPsiFacade.getInstance(project)
+            .findPackage(loggerIdentifier)
+        return if (packageLevelLogger != null) {
+            return HybrisIcons.Log.Identifier.PACKAGE
+        } else {
+            JavaPsiFacade.getInstance(project)
+                .findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
+                ?.getIcon(2)
+                ?: HybrisIcons.Log.Identifier.NA
+        }
+    }
 
     companion object {
         @Serial

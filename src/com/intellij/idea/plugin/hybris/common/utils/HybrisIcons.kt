@@ -496,6 +496,7 @@ object HybrisIcons {
             val ENUM = AllIcons.Nodes.Enum
             val RECORD = AllIcons.Nodes.Record
             val NA = AllIcons.Actions.Colors
+            val ROOT = AllIcons.Actions.Colors
 
         }
 

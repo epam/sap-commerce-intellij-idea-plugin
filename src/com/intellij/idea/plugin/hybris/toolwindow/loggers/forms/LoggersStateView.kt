@@ -18,13 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.forms
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.ColoredTableCellRenderer
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
@@ -40,7 +39,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.awt.Dimension
 import java.io.Serial
-import javax.swing.Icon
 import javax.swing.JComponent
 import javax.swing.JTable
 import javax.swing.table.TableCellRenderer
@@ -54,26 +52,26 @@ class LoggersStateView(
     val coroutineScope: CoroutineScope
 ) {
 
-    fun renderView(loggers: Map<String, CxLoggerModel>, applyView: (CoroutineScope, JComponent) -> Unit) {
+    fun renderView(loggers: Map<String, CxLoggerModel>, connectionSettings: RemoteConnectionSettings, applyView: (CoroutineScope, JComponent) -> Unit) {
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
-            val view = render(loggers)
+            val view = render(loggers, connectionSettings)
 
             applyView(this, view)
         }
     }
 
-    fun render(loggers: Map<String, CxLoggerModel>) = panel {
+    fun render(loggers: Map<String, CxLoggerModel>, connectionSettings: RemoteConnectionSettings) = panel {
         row {
-            scrollCell(table(loggers))
+            scrollCell(table(loggers, connectionSettings))
                 .align(Align.FILL)
         }.resizableRow()
     }
 
 
-    fun table(loggers: Map<String, CxLoggerModel>): TableView<List<String>> {
-        val customCellRenderer = CustomCellRenderer(project)
+    fun table(loggers: Map<String, CxLoggerModel>, connectionSettings: RemoteConnectionSettings): TableView<List<String>> {
+        val customCellRenderer = CustomCellRenderer(project, connectionSettings)
         val loggerNameHeader = object : ColumnInfo<List<String>, Any>("Logger") {
             override fun valueOf(item: List<String>?) = item?.get(COLUMN_LOGGER)
             override fun isCellEditable(item: List<String>?) = false
@@ -133,7 +131,7 @@ class LoggersStateView(
 
 }
 
-private class CustomCellRenderer(val project: Project) : ColoredTableCellRenderer() {
+private class CustomCellRenderer(val project: Project, val connectionSettings: RemoteConnectionSettings) : ColoredTableCellRenderer() {
     @Serial
     private val serialVersionUID: Long = -2610838431719623644L
 
@@ -144,7 +142,7 @@ private class CustomCellRenderer(val project: Project) : ColoredTableCellRendere
 
         if (column == COLUMN_LOGGER) {
             append(stringValue, SimpleTextAttributes.GRAY_ATTRIBUTES)
-            icon = getIcon(stringValue)
+            icon = CxLoggerAccess.getInstance(project).loggers(connectionSettings).get(stringValue).icon
             foreground = RenderingUtil.getForeground(table, selected)
             background = RenderingUtil.getBackground(table, selected)
             alignmentX = RIGHT_ALIGNMENT
@@ -166,35 +164,5 @@ private class CustomCellRenderer(val project: Project) : ColoredTableCellRendere
         )
     }
 
-    private fun getIcon(loggerIdentifier: String): Icon {
-        val packageLevelLogger = JavaPsiFacade.getInstance(project)
-            .findPackage(loggerIdentifier)
-        if (packageLevelLogger != null) {
-            return HybrisIcons.Log.Identifier.PACKAGE
-        }
-        val classLevelLogger = JavaPsiFacade.getInstance(project)
-            .findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
-        if (classLevelLogger != null) {
-            return when {
-                classLevelLogger.isEnum -> HybrisIcons.Log.Identifier.ENUM
-                classLevelLogger.isRecord -> HybrisIcons.Log.Identifier.RECORD
-                classLevelLogger.isInterface -> HybrisIcons.Log.Identifier.INTERFACE
-                classLevelLogger.isValueClass -> HybrisIcons.Log.Identifier.CLASS
 
-                else -> HybrisIcons.Log.Identifier.NA
-            }
-        }
-
-        return HybrisIcons.Log.Identifier.NA
-    }
-
-    enum class NameType {
-        PACKAGE,
-        CLASS
-    }
-
-    fun detectNameType(name: String): NameType {
-        val hasCapital = name.split('.').any { it.isNotEmpty() && it[0].isUpperCase() }
-        return if (hasCapital) NameType.CLASS else NameType.PACKAGE
-    }
 }

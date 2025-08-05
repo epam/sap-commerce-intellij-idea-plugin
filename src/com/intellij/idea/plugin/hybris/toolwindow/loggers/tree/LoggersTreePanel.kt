@@ -132,7 +132,7 @@ class LoggersTreePanel(
                     val loggersAccess = CxLoggerAccess.getInstance(project)
                     val loggers = loggersAccess.loggers(node.connectionSettings).all()
                     if (loggers.isNotEmpty()) {
-                        loggersStateView.renderView(loggers) { coroutineScope, view ->
+                        loggersStateView.renderView(loggers, node.connectionSettings) { coroutineScope, view ->
                             secondComponent = view
                         }
                     } else {
