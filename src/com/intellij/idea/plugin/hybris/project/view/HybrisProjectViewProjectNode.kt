@@ -31,6 +31,7 @@ import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiManager
 
+// TODO: remove this class and migrate to new Workspace Model API
 class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings) : ProjectViewProjectNode(project, viewSettings) {
 
     override fun getChildren(): MutableCollection<AbstractTreeNode<*>> {
@@ -43,28 +44,28 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
             .mapNotNull { ModuleUtilCore.findModuleForFile(it, project) }
             .map { LoadedModuleDescriptionImpl(it) }
 
-        val nodes = ArrayList(modulesAndGroups(modules))
+        val nodes = modulesAndGroups(modules).toMutableList()
 
         val baseDirPath = project.basePath
-        val baseDir = if (baseDirPath == null) null else LocalFileSystem.getInstance().findFileByPath(baseDirPath)
-        if (baseDir != null) {
-            val psiManager = PsiManager.getInstance(project)
-            val files = baseDir.children
-            var projectFileIndex: ProjectFileIndex? = null
-            for (file in files) {
-                if (!file.isDirectory) {
-                    if (projectFileIndex == null) {
-                        projectFileIndex = ProjectFileIndex.getInstance(getProject())
-                    }
-                    if (projectFileIndex.getModuleForFile(file, false) == null) {
-                        val psiFile = psiManager.findFile(file)
-                        if (psiFile != null) {
-                            nodes.add(PsiFileNode(getProject(), psiFile, settings))
+            ?.let { LocalFileSystem.getInstance().findFileByPath(it) }
+            ?.let { baseDir ->
+                val psiManager = PsiManager.getInstance(project)
+                val files = baseDir.children
+                var projectFileIndex: ProjectFileIndex? = null
+                for (file in files) {
+                    if (!file.isDirectory) {
+                        if (projectFileIndex == null) {
+                            projectFileIndex = ProjectFileIndex.getInstance(getProject())
+                        }
+                        if (projectFileIndex.getModuleForFile(file, false) == null) {
+                            val psiFile = psiManager.findFile(file)
+                            if (psiFile != null) {
+                                nodes.add(PsiFileNode(getProject(), psiFile, settings))
+                            }
                         }
                     }
                 }
             }
-        }
 
         if (settings.isShowLibraryContents) {
             nodes.add(ExternalLibrariesNode(project, settings))
