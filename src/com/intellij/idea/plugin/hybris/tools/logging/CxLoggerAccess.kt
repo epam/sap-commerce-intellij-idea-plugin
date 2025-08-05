@@ -157,7 +157,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    private suspend fun getIcon(loggerIdentifier: String): Icon {
+    private suspend fun getIcon(loggerIdentifier: String): Icon? {
         val packageLevelLogger = readAction {
             JavaPsiFacade.getInstance(project)
                 .findPackage(loggerIdentifier)
@@ -169,7 +169,6 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                 JavaPsiFacade.getInstance(project)
                     .findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
                     ?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
-                    ?: HybrisIcons.Log.Identifier.NA
             }
         }
     }

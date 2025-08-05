@@ -18,6 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.ui.DeferredIcon
+import com.intellij.util.asSafely
 import javax.swing.Icon
 
 data class CxLoggerModel(
@@ -25,7 +28,7 @@ data class CxLoggerModel(
     val effectiveLevel: String,
     val parentName: String?,
     val inherited: Boolean,
-    val icon: Icon? = null
+    val icon: Icon
 ) {
     companion object {
 
@@ -36,7 +39,7 @@ data class CxLoggerModel(
             effectiveLevel = effectiveLevel,
             parentName = if (name == ROOT_LOGGER_NAME) null else parentName,
             inherited = inherited,
-            icon = icon
+            icon = icon?.asSafely<DeferredIcon>()?.baseIcon ?: icon ?: HybrisIcons.Log.Identifier.NA
         )
 
         fun inherited(name: String, parentLogger: CxLoggerModel): CxLoggerModel = of(
@@ -44,7 +47,7 @@ data class CxLoggerModel(
             effectiveLevel = parentLogger.effectiveLevel,
             parentName = parentLogger.name,
             inherited = true,
-            icon = null //inherited loggers don't have icons
+            icon = null
         )
 
         fun rootFallback() = of(name = ROOT_LOGGER_NAME, effectiveLevel = "undefined")
