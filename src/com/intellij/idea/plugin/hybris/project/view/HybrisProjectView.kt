@@ -79,6 +79,12 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
     ): Collection<AbstractTreeNode<*>> {
         if (!hybrisProject) return children
 
+        if (parent is ProjectViewProjectNode) {
+            children.clear()
+            // dirty, ugly, nasty, fancy, working hack, to not migrate to Workspace Model
+            children.addAll(HybrisProjectViewProjectNode(project, settings).children)
+        }
+
         replaceModuleGroupNodes(children)
 
         val newChildren = children
