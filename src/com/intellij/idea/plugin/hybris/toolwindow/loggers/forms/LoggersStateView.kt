@@ -23,6 +23,8 @@ import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.ui.ColoredTableCellRenderer
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
@@ -165,14 +167,25 @@ private class CustomCellRenderer(val project: Project) : ColoredTableCellRendere
     }
 
     private fun getIcon(loggerIdentifier: String): Icon {
-        if (loggerIdentifier == "root") return HybrisIcons.Log.Identifier.NA
-        if (loggerIdentifier == "solrStatisticLogger") return HybrisIcons.Log.Identifier.NA
-
-        val loggerType = detectNameType(loggerIdentifier)
-        return when (loggerType) {
-            NameType.CLASS -> HybrisIcons.Log.Identifier.CLASS
-            NameType.PACKAGE -> HybrisIcons.Log.Identifier.PACKAGE
+        val packageLevelLogger = JavaPsiFacade.getInstance(project)
+            .findPackage(loggerIdentifier)
+        if (packageLevelLogger != null) {
+            return HybrisIcons.Log.Identifier.PACKAGE
         }
+        val classLevelLogger = JavaPsiFacade.getInstance(project)
+            .findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
+        if (classLevelLogger != null) {
+            return when {
+                classLevelLogger.isEnum -> HybrisIcons.Log.Identifier.ENUM
+                classLevelLogger.isRecord -> HybrisIcons.Log.Identifier.RECORD
+                classLevelLogger.isInterface -> HybrisIcons.Log.Identifier.INTERFACE
+                classLevelLogger.isValueClass -> HybrisIcons.Log.Identifier.CLASS
+
+                else -> HybrisIcons.Log.Identifier.NA
+            }
+        }
+
+        return HybrisIcons.Log.Identifier.NA
     }
 
     enum class NameType {
