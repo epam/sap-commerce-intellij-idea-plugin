@@ -1,4 +1,5 @@
 ## [2025.2.1]
+
 ### `SAP CX Logging` enhancements
 - Added Cx Loggers tab in SAP CX panel [1508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1508)
 
