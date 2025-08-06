@@ -91,7 +91,10 @@ object BpGraphFactory {
                 BpDiagramEdgeType.PARAMETERS
             )
 
-            source == target -> BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.CYCLE)
+            source == target -> BpDiagramEdge(
+                source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.CYCLE
+            )
+
             "Start".equals(transitionName, true) -> BpDiagramEdge(
                 source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.START
             )
