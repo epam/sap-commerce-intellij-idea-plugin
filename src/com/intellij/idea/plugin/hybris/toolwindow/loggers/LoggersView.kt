@@ -51,7 +51,7 @@ class LoggersView(
         val toolbar = with(DefaultActionGroup()) {
             val actionManager = ActionManager.getInstance()
 
-            add(actionManager.getAction("loggers.toolbar.actions"))
+            add(actionManager.getAction("sap.cx.loggers.toolbar.actions"))
 
             actionManager.createActionToolbar(LOGGERS_TOOLBAR, this, false)
         }

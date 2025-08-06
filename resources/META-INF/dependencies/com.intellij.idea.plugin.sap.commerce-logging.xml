@@ -18,15 +18,15 @@
 
 <idea-plugin>
     <actions>
-        <action id="fetch.loggers.action" class="com.intellij.idea.plugin.hybris.tools.logging.actions.FetchLoggerStateAction"/>
+        <action id="sap.cx.fetch.loggers.action" class="com.intellij.idea.plugin.hybris.tools.logging.actions.FetchLoggerStateAction"/>
 
-        <group id="loggers.toolbar.actions" searchable="false">
+        <group id="sap.cx.loggers.toolbar.actions" searchable="false">
             <reference ref="hybris.hac.chooseConnection"/>
-            <reference ref="fetch.loggers.action"/>
+            <reference ref="sap.cx.fetch.loggers.action"/>
         </group>
 
         <group id="sap.cx.logging.actions" popup="true" searchable="false">
-            <reference ref="fetch.loggers.action"/>
+            <reference ref="sap.cx.fetch.loggers.action"/>
 
             <separator text="Active Connection"/>
             <reference ref="hybris.hac.chooseConnection"/>
