@@ -2,6 +2,7 @@
 
 ### `SAP CX Logging` enhancements
 - Added Cx Loggers toolwindow in SAP CX panel [1508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1508)
+- Display an icon for a logger in Cx Loggers toolwindow [1511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1511)
 
 ### Other
 - Properties API adjustments [#1510](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1510)
