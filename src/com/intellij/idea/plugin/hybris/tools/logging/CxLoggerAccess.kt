@@ -62,6 +62,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         with(project.messageBus.connect(this)) {
             subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
 
+                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = refresh()
+
                 override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettings) = clearState(remoteConnection)
             })
         }
@@ -190,6 +192,18 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
 
         fetching = false
+    }
+
+    private fun refresh() {
+        coroutineScope.launch {
+            fetching = true
+
+            edtWriteAction {
+                PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
+            }
+
+            fetching = false
+        }
     }
 
     companion object {
