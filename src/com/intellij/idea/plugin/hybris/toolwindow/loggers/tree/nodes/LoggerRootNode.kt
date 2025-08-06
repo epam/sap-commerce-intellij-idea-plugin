@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTre
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.remote.RemoteHacInstancesLoggersOptionsNode
 import com.intellij.ui.SimpleTextAttributes
 
-//BSRootNode
 class LoggerRootNode(tree: LoggersOptionsTree) : LoggerNode(tree.myProject) {
 
     override fun update(presentation: PresentationData) {
