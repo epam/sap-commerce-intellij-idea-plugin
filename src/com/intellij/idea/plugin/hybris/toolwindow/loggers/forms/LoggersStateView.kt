@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.forms
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
-import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -143,7 +142,7 @@ private class CustomCellRenderer(val project: Project, val connectionSettings: R
 
         if (column == COLUMN_LOGGER) {
             append(stringValue, SimpleTextAttributes.GRAY_ATTRIBUTES)
-            icon = CxLoggerAccess.getInstance(project).loggers(connectionSettings).get(stringValue).icon
+            //icon = CxLoggerAccess.getInstance(project).loggers(connectionSettings).get(stringValue).icon
             foreground = RenderingUtil.getForeground(table, selected)
             background = RenderingUtil.getBackground(table, selected)
             alignmentX = RIGHT_ALIGNMENT
