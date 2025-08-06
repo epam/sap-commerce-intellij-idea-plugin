@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.loggers
+package com.intellij.idea.plugin.hybris.tools.logging
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.util.messages.Topic
