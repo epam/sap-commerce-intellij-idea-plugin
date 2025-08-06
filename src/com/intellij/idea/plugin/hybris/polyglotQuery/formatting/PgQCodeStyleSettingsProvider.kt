@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,11 +21,13 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.formatting
 import com.intellij.application.options.CodeStyleAbstractConfigurable
 import com.intellij.application.options.TabbedLanguageCodeStylePanel
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
+import com.intellij.lang.Language
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
 
 class PgQCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
 
+    override fun getLanguage(): Language = PolyglotQueryLanguage
     override fun getConfigurableDisplayName() = "Polyglot Query"
     override fun createCustomSettings(settings: CodeStyleSettings) = PgQCodeStyleSettings(settings)
 

@@ -25,8 +25,9 @@ import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
 
 class AclCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
-    override fun createCustomSettings(settings: CodeStyleSettings) = AclCodeStyleSettings(settings)
 
+    override fun getLanguage() = AclLanguage
+    override fun createCustomSettings(settings: CodeStyleSettings) = AclCodeStyleSettings(settings)
     override fun getConfigurableDisplayName() = HybrisConstants.ACL
 
     override fun createConfigurable(settings: CodeStyleSettings, originalSettings: CodeStyleSettings) = object : CodeStyleAbstractConfigurable(
