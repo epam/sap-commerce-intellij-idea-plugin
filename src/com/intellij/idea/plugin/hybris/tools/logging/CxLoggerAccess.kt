@@ -71,7 +71,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
     fun logger(loggerIdentifier: String): CxLoggerModel? {
         val server = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-        return if (!stateInitialized) null else loggers(server).get(loggerIdentifier)
+        return if (stateInitialized) loggers(server).get(loggerIdentifier) else null
     }
 
     fun setLogger(loggerName: String, logLevel: LogLevel) {
