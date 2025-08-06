@@ -28,7 +28,6 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import org.apache.commons.lang3.StringUtils
 
 class TSDeploymentTableMustBeUnique : AbstractTSInspection() {
 
@@ -51,7 +50,7 @@ class TSDeploymentTableMustBeUnique : AbstractTSInspection() {
         val deployment = TSMetaModelStateService.state(project).getDeploymentForTable(dom.table.value)
         deployment ?: return
 
-        if (StringUtils.equals(dom.typeCode.stringValue, deployment.typeCode)) return
+        if (deployment.typeCode?.equals(dom.typeCode.stringValue) ?: false) return
 
         holder.createProblem(
             dom.table,

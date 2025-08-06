@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -32,7 +32,6 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomManager
-import org.apache.commons.lang3.StringUtils
 
 object BpGraphFactory {
 
@@ -79,31 +78,48 @@ object BpGraphFactory {
         else -> build(nodeName, element, rootGraphNode)
     }
 
-    fun buildEdge(transitionName: String, source: BpDiagramNode, target: BpDiagramNode): BpDiagramEdge = if (source.graphNode is Process || target.graphNode is BpGraphNodeContextParameters) {
-        BpDiagramEdge(source, target, BpDiagramRelationship(
-            upperCenterLabel = transitionName,
-            lineType = DiagramLineType.DOTTED,
-            width = 2,
-            sourceArrow = DiagramRelationshipInfo.CROWS_FOOT_ONE,
-            targetArrow = DiagramRelationshipInfo.CROWS_FOOT_MANY_OPTIONAL
-        ), type = BpDiagramEdgeType.PARAMETERS)
-    } else if (source == target) {
-        BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.CYCLE)
-    } else if ("Start".equals(transitionName, true)) {
-        BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.START)
-    } else if ("Cancel".equals(transitionName, true)) {
-        BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.CANCEL)
-    } else if ("Partial".equals(transitionName, true)) {
-        BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.PARTIAL)
-    } else if (transitionName.isBlank() || "OK".equals(transitionName, ignoreCase = true)) {
-        BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.OK)
-    } else if (StringUtils.startsWith(transitionName, message("hybris.diagram.bp.provider.edge.timeout"))) {
-        BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.TIMEOUT)
-    } else if (badEdges.contains(transitionName.uppercase())) {
-        BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.NOK)
-    } else {
-        BpDiagramEdge(source, target, buildRelationship(transitionName, source, target))
-    }
+    fun buildEdge(transitionName: String, source: BpDiagramNode, target: BpDiagramNode): BpDiagramEdge =
+        when {
+            source.graphNode is Process || target.graphNode is BpGraphNodeContextParameters -> BpDiagramEdge(
+                source, target, BpDiagramRelationship(
+                    upperCenterLabel = transitionName,
+                    lineType = DiagramLineType.DOTTED,
+                    width = 2,
+                    sourceArrow = DiagramRelationshipInfo.CROWS_FOOT_ONE,
+                    targetArrow = DiagramRelationshipInfo.CROWS_FOOT_MANY_OPTIONAL
+                ),
+                BpDiagramEdgeType.PARAMETERS
+            )
+
+            source == target -> BpDiagramEdge(source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.CYCLE)
+            "Start".equals(transitionName, true) -> BpDiagramEdge(
+                source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.START
+            )
+
+            "Cancel".equals(transitionName, true) -> BpDiagramEdge(
+                source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.CANCEL
+            )
+
+            "Partial".equals(transitionName, true) -> BpDiagramEdge(
+                source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.PARTIAL
+            )
+
+            transitionName.isBlank() || "OK".equals(transitionName, ignoreCase = true) -> BpDiagramEdge(
+                source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.OK
+            )
+
+            transitionName.startsWith(message("hybris.diagram.bp.provider.edge.timeout")) -> BpDiagramEdge(
+                source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.TIMEOUT
+            )
+
+            badEdges.contains(transitionName.uppercase()) -> BpDiagramEdge(
+                source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.NOK
+            )
+
+            else -> BpDiagramEdge(
+                source, target, buildRelationship(transitionName, source, target)
+            )
+        }
 
     private fun buildRelationship(transitionName: String, source: BpDiagramNode, target: BpDiagramNode): BpDiagramRelationship {
         val sourceGraphNode = source.graphNode as BpGraphNodeNavigable
@@ -128,8 +144,9 @@ object BpGraphFactory {
 
     private fun build(nodeName: String, element: Action, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
         val properties = mutableListOf(
-            BpGraphFieldParameter(Action.CAN_JOIN_PREVIOUS_NODE, (element.canJoinPreviousNode.stringValue
-                ?: "false"))
+            BpGraphFieldParameter(
+                Action.CAN_JOIN_PREVIOUS_NODE, (element.canJoinPreviousNode.stringValue ?: "false")
+            )
         )
         element.node.stringValue
             ?.let { properties.add(BpGraphFieldParameter(Action.NODE, it)) }
@@ -154,8 +171,9 @@ object BpGraphFactory {
 
     private fun build(nodeName: String, element: Wait, rootGraphNode: BpGraphNodeRoot): BpGraphNodeNavigable {
         val properties = mutableListOf(
-            BpGraphFieldParameter(Wait.PREPEND_PROCESS_CODE, (element.prependProcessCode.stringValue
-                ?: "true"))
+            BpGraphFieldParameter(
+                Wait.PREPEND_PROCESS_CODE, (element.prependProcessCode.stringValue ?: "true")
+            )
         )
         return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFileUrl, rootGraphNode.virtualFileName, rootGraphNode.process, properties.toTypedArray())
     }
@@ -175,6 +193,8 @@ object BpGraphFactory {
         return BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFileUrl, rootGraphNode.virtualFileName, rootGraphNode.process, properties)
     }
 
-    private fun build(nodeName: String, element: DomElement, rootGraphNode: BpGraphNodeRoot) = BpGraphNodeDefault(nodeName, element, rootGraphNode.virtualFileUrl, rootGraphNode.virtualFileName, rootGraphNode.process)
+    private fun build(nodeName: String, element: DomElement, rootGraphNode: BpGraphNodeRoot) = BpGraphNodeDefault(
+        nodeName, element, rootGraphNode.virtualFileUrl, rootGraphNode.virtualFileName, rootGraphNode.process
+    )
 
 }
