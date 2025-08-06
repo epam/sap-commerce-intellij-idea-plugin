@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px"
      y="0px"
-     viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
+     viewBox="0 0 16 16" width="16" height="16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
   <rect width="1" height="12" x="1" y="2" fill="#6E6E6E" transform="matrix(0.9999999999999999, 0, 0, 0.9999999999999999, -1.7763568394002505e-15, 0)"/>
     <rect width="2" height="1" x="2" y="2" fill="#6E6E6E" transform="matrix(0.9999999999999999, 0, 0, 0.9999999999999999, -1.7763568394002505e-15, 0)"/>
     <rect width="2" height="1" x="2" y="13" fill="#6E6E6E" transform="matrix(0.9999999999999999, 0, 0, 0.9999999999999999, -1.7763568394002505e-15, 0)"/>
