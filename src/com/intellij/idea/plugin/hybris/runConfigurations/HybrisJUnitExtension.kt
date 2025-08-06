@@ -70,7 +70,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
 
     private fun updateSapCXJVMProperties(project: Project, params: JavaParameters, executor: Executor) {
         PropertyService.getInstance(project)
-            ?.let { propertyService ->
+            .let { propertyService ->
 
                 val vmParameters = params.vmParametersList
 

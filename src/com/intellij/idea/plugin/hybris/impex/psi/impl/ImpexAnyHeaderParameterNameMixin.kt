@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -81,19 +81,18 @@ abstract class ImpexAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
     }
 
     private fun isHeaderAbbreviation() = PropertyService.getInstance(project)
-        ?.findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
-        ?.asSequence()
-        ?.mapNotNull { it.value }
-        ?.mapNotNull { abbreviation ->
+        .findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
+        .asSequence()
+        .mapNotNull { it.value }
+        .mapNotNull { abbreviation ->
             abbreviation
                 .split("...")
                 .takeIf { it.size == 2 }
                 ?.map { it.trim() }
         }
-        ?.mapNotNull { it.firstOrNull() }
-        ?.map { it.replace("\\\\", "\\") }
-        ?.any { text.removeSuffix(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED).matches(it.toRegex()) }
-        ?: false
+        .mapNotNull { it.firstOrNull() }
+        .map { it.replace("\\\\", "\\") }
+        .any { text.removeSuffix(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED).matches(it.toRegex()) }
 
     companion object {
         @Serial

@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -45,15 +45,10 @@ class ImpexPropertyReference(owner: ImpexMacroUsageDec) : PsiReferenceBase.Poly<
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val propertyService = PropertyService.getInstance(element.project)
-            ?: return emptyArray()
-
-        return getPropertyKey()
-            ?.let { propertyService.findMacroProperty(it) }
-            ?.let { PsiElementResolveResult.createResults(it.psiElement) }
-            ?: ResolveResult.EMPTY_ARRAY
-    }
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = getPropertyKey()
+        ?.let { PropertyService.getInstance(element.project).findMacroProperty(it) }
+        ?.let { PsiElementResolveResult.createResults(it.psiElement) }
+        ?: ResolveResult.EMPTY_ARRAY
 
     private fun getPropertyKey() = element.text
         .replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -40,17 +40,16 @@ class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(o
         .let { PsiUtils.getValidResults(it) }
 
     override fun getVariants() = PropertyService.getInstance(element.project)
-        ?.getLanguages()
-        ?.map { LookupElementFactory.buildLanguage(it) }
-        ?.toTypedArray()
-        ?: emptyArray()
+        .getLanguages()
+        .map { LookupElementFactory.buildLanguage(it) }
+        .toTypedArray()
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, LanguageReference>>("HYBRIS_LANGUAGE_CACHED_REFERENCE")
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, LanguageReference> { ref ->
             val result: Array<ResolveResult> = PropertyService.getInstance(ref.element.project)
-                ?.findMacroProperty(HybrisConstants.PROPERTY_LANG_PACKS)
+                .findMacroProperty(HybrisConstants.PROPERTY_LANG_PACKS)
                 ?.let {
                     val property = it as? PsiElement
                         ?: PomService.convertToPsi(it as PsiTarget)

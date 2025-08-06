@@ -123,17 +123,16 @@ class TSCompletionService(private val project: Project) {
      * See: https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/2fb5a2a780c94325b4a48ff62b36ab23.html#using-header-abbreviations
      */
     fun getHeaderAbbreviationCompletions(project: Project) = PropertyService.getInstance(project)
-        ?.findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
-        ?.mapNotNull { it.value }
-        ?.mapNotNull { abbreviation ->
+        .findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
+        .mapNotNull { it.value }
+        .mapNotNull { abbreviation ->
             abbreviation
                 .split("...")
                 .takeIf { it.size == 2 }
                 ?.map { it.trim() }
         }
-        ?.mapNotNull { it.firstOrNull() }
-        ?.map { TSLookupElementFactory.buildHeaderAbbreviation(it) }
-        ?: emptyList()
+        .mapNotNull { it.firstOrNull() }
+        .map { TSLookupElementFactory.buildHeaderAbbreviation(it) }
 
     private fun getCompletions(typeCode: String, recursionLevel: Int, vararg types: TSMetaType): List<LookupElementBuilder> {
         if (recursionLevel > HybrisConstants.TS_MAX_RECURSION_LEVEL) return emptyList()

@@ -246,7 +246,7 @@ tasks {
     }
 
     printProductsReleases {
-        channels = listOf(ProductRelease.Channel.EAP)
+        channels = listOf(ProductRelease.Channel.EAP, ProductRelease.Channel.RELEASE)
         types = listOf(IntelliJPlatformType.IntellijIdeaCommunity)
         untilBuild = provider { null }
 

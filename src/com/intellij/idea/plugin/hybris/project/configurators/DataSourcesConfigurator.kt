@@ -41,9 +41,7 @@ import com.intellij.util.ui.classpath.SingleRootClasspathElement
 class DataSourcesConfigurator {
 
     fun configureAfterImport(project: Project): List<() -> Unit> {
-        val propertyService = PropertyService.getInstance(project) ?: return emptyList()
-
-        val projectProperties = propertyService.findAllProperties()
+        val projectProperties = PropertyService.getInstance(project).findAllProperties()
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
 

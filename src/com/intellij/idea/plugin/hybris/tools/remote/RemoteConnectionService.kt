@@ -162,7 +162,7 @@ class RemoteConnectionService(private val project: Project) {
         .onEach { it.scope = scope }
 
     private fun getPropertyOrDefault(project: Project, key: String, fallback: String) = PropertyService.getInstance(project)
-        ?.findProperty(key)
+        .findProperty(key)
         ?: fallback
 
     companion object {

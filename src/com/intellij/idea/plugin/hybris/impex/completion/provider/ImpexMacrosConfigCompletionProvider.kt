@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,7 +35,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
         val psiElementUnderCaret = parameters.position
         val project = psiElementUnderCaret.project
         val prevLeaf = PsiTreeUtil.prevLeaf(psiElementUnderCaret)
-        val propertyService = PropertyService.getInstance(project) ?: return
+        val propertyService = PropertyService.getInstance(project)
 
         if (prevLeaf != null && prevLeaf.text.contains(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
             val position = parameters.position

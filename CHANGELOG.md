@@ -1,3 +1,8 @@
+## [2025.2.1]
+
+### Other
+- Properties API adjustments [#1510](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1510)
+
 ## [2025.2.0]
 
 ### `Project Import` enhancements

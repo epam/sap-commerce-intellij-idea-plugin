@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -51,8 +51,8 @@ class ImpExHeaderAbbreviationReference(owner: ImpexAnyHeaderParameterName) : Psi
             val currentText = value.removeSuffix(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED)
 
             val result = PropertyService.getInstance(element.project)
-                ?.findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
-                ?.firstOrNull { property ->
+                .findAutoCompleteProperties(HybrisConstants.PROPERTY_IMPEX_HEADER_REPLACEMENT)
+                .firstOrNull { property ->
                     property.value
                         ?.split("...")
                         ?.takeIf { it.size == 2 }

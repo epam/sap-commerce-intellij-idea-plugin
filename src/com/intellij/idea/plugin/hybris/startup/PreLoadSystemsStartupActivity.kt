@@ -39,7 +39,7 @@ class PreLoadSystemsStartupActivity : ProjectActivity {
         SimpleSpringService.getService(project)
             ?.let { service -> refreshSystem(project) { service.initCache() } }
         PropertyService.getInstance(project)
-            ?.let { service -> refreshSystem(project) { service.initCache() } }
+            .let { service -> refreshSystem(project) { service.initCache() } }
     }
 
     private fun refreshSystem(project: Project, refresher: (Project) -> Unit) {

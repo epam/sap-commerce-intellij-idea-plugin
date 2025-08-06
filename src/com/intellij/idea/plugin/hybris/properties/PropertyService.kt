@@ -332,6 +332,6 @@ class PropertyService(val project: Project) {
 
     companion object {
         @JvmStatic
-        fun getInstance(project: Project): PropertyService? = project.service()
+        fun getInstance(project: Project): PropertyService = project.service()
     }
 }

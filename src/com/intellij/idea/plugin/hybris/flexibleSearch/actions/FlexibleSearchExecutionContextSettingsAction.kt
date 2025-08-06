@@ -70,7 +70,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecutionContext.ModifiableSettings): DialogPanel {
         val dataSources = application.runReadAction<Collection<String>> {
             PropertyService.getInstance(project)
-                ?.findProperty(HybrisConstants.PROPERTY_INSTALLED_TENANTS)
+                .findProperty(HybrisConstants.PROPERTY_INSTALLED_TENANTS)
                 ?.split(",")
                 ?: emptyList()
         }
@@ -130,9 +130,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
 
     private fun computeLocales(project: Project): List<ComboItem> {
         val langPacks = application.runReadAction<Collection<String>> {
-            PropertyService.getInstance(project)
-                ?.getLanguages()
-                ?: emptyList()
+            PropertyService.getInstance(project).getLanguages()
         }
             .map { ComboItem.Option(it) }
         val locales = HybrisConstants.Locales.LOCALES_CODES
