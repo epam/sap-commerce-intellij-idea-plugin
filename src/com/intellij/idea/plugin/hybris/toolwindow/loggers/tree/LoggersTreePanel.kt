@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.LoggersStateListener
-import com.intellij.idea.plugin.hybris.toolwindow.loggers.forms.LoggersStateView
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.table.LoggersStateView
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.HacConnectionLoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode

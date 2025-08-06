@@ -16,101 +16,48 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.loggers.forms
+package com.intellij.idea.plugin.hybris.toolwindow.loggers.table
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.ColoredTableCellRenderer
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.render.RenderingUtil
 import com.intellij.ui.table.TableView
 import com.intellij.util.asSafely
 import com.intellij.util.ui.ColumnInfo
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.ListTableModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import java.awt.Dimension
 import java.io.Serial
-import javax.swing.JComponent
 import javax.swing.JTable
 import javax.swing.table.TableCellRenderer
 
 private const val COLUMN_LOGGER = 1
 private const val COLUMN_LEVEL = 0
 
-@Service(Service.Level.PROJECT)
-class LoggersStateView(
-    val project: Project,
-    val coroutineScope: CoroutineScope
-) {
+class LoggersTable : TableView<List<String>> {
 
-    fun renderView(loggers: Map<String, CxLoggerModel>, connectionSettings: RemoteConnectionSettings, applyView: (CoroutineScope, JComponent) -> Unit) {
-        coroutineScope.launch {
-            if (project.isDisposed) return@launch
+    constructor(listTableModel: ListTableModel<List<String>>) : super(listTableModel) {
+        autoResizeMode = AUTO_RESIZE_ALL_COLUMNS
+        intercellSpacing = Dimension(0, 0)
 
-            val view = render(loggers, connectionSettings)
+        val renderer = tableHeader.defaultRenderer
+        val rows = listTableModel.items
 
-            applyView(this, view)
-        }
+        //set size for Level Column
+        setSize(renderer, columnModel.getColumn(COLUMN_LEVEL).headerValue, COLUMN_LEVEL, -1)
+
+        //set size for Logger Column
+        val longestLogger = rows.map { it.last() }
+            .withIndex()
+            .maxBy { it.value.length }
+        setSize(renderer, longestLogger.value, COLUMN_LOGGER, longestLogger.index)
     }
 
-    fun render(loggers: Map<String, CxLoggerModel>, connectionSettings: RemoteConnectionSettings) = panel {
-        row {
-            scrollCell(table(loggers, connectionSettings))
-                .align(Align.FILL)
-        }.resizableRow()
-    }
-
-
-    fun table(loggers: Map<String, CxLoggerModel>, connectionSettings: RemoteConnectionSettings): TableView<List<String>> {
-        val customCellRenderer = CustomCellRenderer(project, connectionSettings)
-        val loggerNameHeader = object : ColumnInfo<List<String>, Any>("Logger") {
-            override fun valueOf(item: List<String>?) = item?.get(COLUMN_LOGGER)
-            override fun isCellEditable(item: List<String>?) = false
-            override fun getRenderer(item: List<String>?) = customCellRenderer
-        }
-        val levelHeader = object : ColumnInfo<List<String>, Any>("Effective Level") {
-            override fun valueOf(item: List<String>?) = item?.get(COLUMN_LEVEL)
-            override fun isCellEditable(item: List<String>?) = false
-            override fun getRenderer(item: List<String>?) = customCellRenderer
-        }
-
-        val headers = arrayOf(levelHeader, loggerNameHeader)
-        val listTableModel = ListTableModel<List<String>>(*headers)
-
-        val rows = loggers.values
-            .filter { !it.inherited }
-            .sortedBy { it.name }
-            .map { listOf(it.effectiveLevel, it.name) }
-            .toList()
-        listTableModel.addRows(rows)
-
-        return TableView(listTableModel).apply {
-            autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
-            intercellSpacing = Dimension(0, 0)
-
-            val renderer = tableHeader.defaultRenderer
-
-            //set size for Level Column
-            setSize(renderer, columnModel.getColumn(COLUMN_LEVEL).headerValue, COLUMN_LEVEL, -1)
-
-            //set size for Logger Column
-            val longestLogger = rows.map { it.last() }
-                .withIndex()
-                .maxBy { it.value.length }
-
-            setSize(renderer, longestLogger.value, COLUMN_LOGGER, longestLogger.index)
-        }
-    }
-
-    private fun TableView<List<String>>.setSize(
+    private fun setSize(
         renderer: TableCellRenderer,
         cellValue: Any,
         columnIndex: Int,
@@ -126,9 +73,26 @@ class LoggersStateView(
     }
 
     companion object {
-        fun getInstance(project: Project): LoggersStateView = project.service()
-    }
+        @Serial
+        private const val serialVersionUID: Long = -1210838431719623644L
 
+        fun of(project: Project, loggers: Map<String, CxLoggerModel>, connectionSettings: RemoteConnectionSettings): TableView<List<String>> {
+            val customCellRenderer = CustomCellRenderer(project, connectionSettings)
+            val listTableModel = ListTableModel<List<String>>(
+                LoggerColumnInfo("Effective Level", COLUMN_LEVEL, customCellRenderer),
+                LoggerColumnInfo("Logger", COLUMN_LOGGER, customCellRenderer)
+            )
+
+            val rows = loggers.values
+                .filter { !it.inherited }
+                .sortedBy { it.name }
+                .map { listOf(it.effectiveLevel, it.name) }
+                .toList()
+            listTableModel.addRows(rows)
+
+            return LoggersTable(listTableModel)
+        }
+    }
 }
 
 private class CustomCellRenderer(val project: Project, val connectionSettings: RemoteConnectionSettings) : ColoredTableCellRenderer() {
@@ -167,4 +131,15 @@ private class CustomCellRenderer(val project: Project, val connectionSettings: R
         private val serialVersionUID: Long = -2610838431719623644L
     }
 
+}
+
+private class LoggerColumnInfo(
+    columnName: String,
+    private val columnIndex: Int,
+    private val customCellRenderer: CustomCellRenderer
+) : ColumnInfo<List<String>, Any>(columnName) {
+
+    override fun valueOf(item: List<String>?) = item?.get(columnIndex)
+    override fun isCellEditable(item: List<String>?) = false
+    override fun getRenderer(item: List<String>?) = customCellRenderer
 }
