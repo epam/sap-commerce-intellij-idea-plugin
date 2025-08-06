@@ -77,6 +77,10 @@ class LoggersTreePanel(
                 }
 
                 override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
+
+                override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettings) {
+                    tree.update()
+                }
             })
         }
 

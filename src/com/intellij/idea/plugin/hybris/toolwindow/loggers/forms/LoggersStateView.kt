@@ -87,6 +87,7 @@ class LoggersStateView(
         val listTableModel = ListTableModel<List<String>>(*headers)
 
         val rows = loggers.values
+            .filter { !it.inherited }
             .sortedBy { it.name }
             .map { listOf(it.effectiveLevel, it.name) }
             .toList()

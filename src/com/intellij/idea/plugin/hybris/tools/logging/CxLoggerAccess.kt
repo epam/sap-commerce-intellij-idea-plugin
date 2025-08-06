@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
@@ -28,29 +27,26 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
+import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.CxLoggerUtilities
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.LoggersStateListener
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Iconable
-import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.search.GlobalSearchScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
-import javax.swing.Icon
 
 @Service(Service.Level.PROJECT)
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
     private var fetching: Boolean = false
     private val loggersStates = WeakHashMap<RemoteConnectionSettings, CxLoggersState>()
+    val cxLoggerUtilities: CxLoggerUtilities = CxLoggerUtilities.getInstance(project)
 
 
     val ready: Boolean
@@ -65,9 +61,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     init {
         with(project.messageBus.connect(this)) {
             subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
-                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = refresh(remoteConnection)
 
-                override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
+                override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettings) = clearState(remoteConnection)
             })
         }
     }
@@ -122,7 +117,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                     ?.split("\n")
                     ?.map { it.split(" | ") }
                     ?.filter { it.size == 3 }
-                    ?.map { CxLoggerModel.of(it[0], it[1], it[2], false, getIcon(it[0])) }
+                    ?.map { CxLoggerModel.of(it[0], it[1], it[2], false, cxLoggerUtilities.getIcon(it[0])) }
                     ?.distinctBy { it.name }
                     ?.associateBy { it.name }
                     ?.takeIf { it.isNotEmpty() }
@@ -157,22 +152,6 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    private suspend fun getIcon(loggerIdentifier: String): Icon? {
-        val packageLevelLogger = readAction {
-            JavaPsiFacade.getInstance(project)
-                .findPackage(loggerIdentifier)
-        }
-        return if (packageLevelLogger != null) {
-            return HybrisIcons.Log.Identifier.PACKAGE
-        } else {
-            readAction {
-                JavaPsiFacade.getInstance(project)
-                    .findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
-                    ?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
-            }
-        }
-    }
-
     fun loggers(settings: RemoteConnectionSettings): CxLoggersState {
         return loggersStates.computeIfAbsent(settings) { CxLoggersState() }
     }
@@ -181,18 +160,6 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         coroutineScope.launch {
 
             loggers(settings).update(loggers ?: emptyMap())
-
-            edtWriteAction {
-                PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
-            }
-
-            fetching = false
-        }
-    }
-
-    private fun refresh(settings: RemoteConnectionSettings) {
-        coroutineScope.launch {
-            fetching = true
 
             edtWriteAction {
                 PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
@@ -215,6 +182,13 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     private fun clearState(settings: RemoteConnectionSettings) {
         val logState = loggersStates[settings]
         logState?.clear()
+
+        coroutineScope.launch {
+            edtWriteAction {
+                PsiDocumentManager.getInstance(project).reparseFiles(emptyList(), true)
+            }
+        }
+
         fetching = false
     }
 

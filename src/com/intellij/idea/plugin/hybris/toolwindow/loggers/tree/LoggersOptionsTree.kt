@@ -35,7 +35,6 @@ import javax.swing.tree.TreePath
 private const val SHOW_LOADING_NODE = true
 private const val SEARCH_CAN_EXPAND = true
 
-//BSTree
 class LoggersOptionsTree(val myProject: Project) : Tree(), Disposable {
 
     private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggerRootNode(this)), myProject)
@@ -56,6 +55,10 @@ class LoggersOptionsTree(val myProject: Project) : Tree(), Disposable {
 
     fun update(connections: Map<RemoteConnectionSettings, Boolean>) {
         myTreeModel.reload(connections)
+    }
+
+    fun update() {
+        myTreeModel.reload()
     }
 
     fun addTreeModelListener(listener: TreeModelListener) = model.addTreeModelListener(listener)

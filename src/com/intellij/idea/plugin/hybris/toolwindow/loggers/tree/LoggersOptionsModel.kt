@@ -29,7 +29,6 @@ import com.intellij.util.concurrency.InvokerSupplier
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 
-//BSTreeModel
 class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val project: Project) : BaseTreeModel<DefaultMutableTreeNode>(), Disposable, InvokerSupplier {
 
     private var connections: Map<RemoteConnectionSettings, Boolean>? = null
@@ -58,6 +57,10 @@ class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val 
     fun reload(connections: Map<RemoteConnectionSettings, Boolean>) {
         this.connections = connections
 
+        treeStructureChanged(TreePath(root), null, null)
+    }
+
+    fun reload() {
         treeStructureChanged(TreePath(root), null, null)
     }
 }
