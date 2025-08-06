@@ -132,8 +132,6 @@ class LoggersStateView(
 }
 
 private class CustomCellRenderer(val project: Project, val connectionSettings: RemoteConnectionSettings) : ColoredTableCellRenderer() {
-    @Serial
-    private val serialVersionUID: Long = -2610838431719623644L
 
     override fun setToolTipText(text: String?) = Unit
 
@@ -164,5 +162,9 @@ private class CustomCellRenderer(val project: Project, val connectionSettings: R
         )
     }
 
+    companion object {
+        @Serial
+        private val serialVersionUID: Long = -2610838431719623644L
+    }
 
 }
