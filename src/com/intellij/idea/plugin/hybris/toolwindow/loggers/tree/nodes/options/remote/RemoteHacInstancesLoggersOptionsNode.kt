@@ -26,8 +26,8 @@ import com.intellij.openapi.project.Project
 
 class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNode("Remote HAC Instances", HybrisIcons.Y.REMOTES, project) {
 
-    override fun getNewChildren(parameters: LoggerNodeParameters) = parameters.connections
+    override fun getNewChildren(parameters: LoggerNodeParameters): Map<String, HacConnectionLoggersNode> = parameters.connections
         .filter { it.value } // only active connections
         .map { (connection, active) -> HacConnectionLoggersNode(connection, active, project) }
-        .associateBy { it.name + it.activeConnection}
+        .associateBy { "${it.connectionSettings.uuid}_|_${it.activeConnection}" }
 }

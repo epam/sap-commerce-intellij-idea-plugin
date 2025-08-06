@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.HacConnecti
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.CustomLoggersTemplateLoggersOptionsNode
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.TreeNode
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -44,6 +43,7 @@ import java.io.Serial
 import javax.swing.event.TreeModelEvent
 import javax.swing.event.TreeModelListener
 import javax.swing.event.TreeSelectionListener
+import javax.swing.tree.DefaultMutableTreeNode
 
 class LoggersTreePanel(
     val project: Project,
@@ -115,7 +115,7 @@ class LoggersTreePanel(
                 val node = tree
                     .selectionPath
                     ?.lastPathComponent
-                    ?.asSafely<TreeNode>()
+                    ?.asSafely<DefaultMutableTreeNode>()
                     ?.userObject
                     ?.asSafely<LoggerNode>()
                 updateSecondComponent(node)
@@ -136,7 +136,7 @@ class LoggersTreePanel(
                     val loggersAccess = CxLoggerAccess.getInstance(project)
                     val loggers = loggersAccess.loggers(node.connectionSettings).all()
                     if (loggers.isNotEmpty()) {
-                        loggersStateView.renderView(loggers, node.connectionSettings) { coroutineScope, view ->
+                        loggersStateView.renderView(loggers, node.connectionSettings) { _, view ->
                             secondComponent = view
                         }
                     } else {
