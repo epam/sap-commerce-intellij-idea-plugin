@@ -19,7 +19,9 @@
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.table
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggersState
 import com.intellij.openapi.project.Project
 import com.intellij.ui.ColoredTableCellRenderer
 import com.intellij.ui.JBColor
@@ -97,6 +99,8 @@ class LoggersTable : TableView<List<String>> {
 
 private class CustomCellRenderer(val project: Project, val connectionSettings: RemoteConnectionSettings) : ColoredTableCellRenderer() {
 
+    private val loggersState: CxLoggersState = CxLoggerAccess.getInstance(project).loggers(connectionSettings)
+
     override fun setToolTipText(text: String?) = Unit
 
     override fun customizeCellRenderer(table: JTable, value: Any?, selected: Boolean, hasFocus: Boolean, row: Int, column: Int) {
@@ -104,7 +108,7 @@ private class CustomCellRenderer(val project: Project, val connectionSettings: R
 
         if (column == COLUMN_LOGGER) {
             append(stringValue, SimpleTextAttributes.GRAY_ATTRIBUTES)
-            //icon = CxLoggerAccess.getInstance(project).loggers(connectionSettings).get(stringValue).icon
+            icon = loggersState.get(stringValue).icon
             foreground = RenderingUtil.getForeground(table, selected)
             background = RenderingUtil.getBackground(table, selected)
             alignmentX = RIGHT_ALIGNMENT
