@@ -24,18 +24,27 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Iconable
 import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.PsiElement
+import com.intellij.psi.SmartPointerManager
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.search.GlobalSearchScope
 import javax.swing.Icon
 
 @Service(Service.Level.PROJECT)
 class CxLoggerUtilities(val project: Project) {
 
+    suspend fun getPsiElementPointer(loggerIdentifier: String): SmartPsiElementPointer<PsiElement>? = readAction {
+        findPsiElement(loggerIdentifier)
+            ?.let { SmartPointerManager.getInstance(it.project).createSmartPsiElementPointer(it) }
+    }
+
     suspend fun getIcon(loggerIdentifier: String): Icon? = readAction {
-        with(JavaPsiFacade.getInstance(project)) {
-            findPackage(loggerIdentifier)
-                ?: findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
-        }
-            ?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
+        findPsiElement(loggerIdentifier)?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
+    }
+
+    private fun findPsiElement(loggerIdentifier: String): PsiElement? = with(JavaPsiFacade.getInstance(project)) {
+        findPackage(loggerIdentifier)
+            ?: findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
     }
 
     companion object {

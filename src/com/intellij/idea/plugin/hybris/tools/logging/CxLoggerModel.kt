@@ -19,6 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.logging
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.psi.PsiElement
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.DeferredIcon
 import com.intellij.util.asSafely
 import javax.swing.Icon
@@ -29,18 +31,30 @@ data class CxLoggerModel(
     val parentName: String?,
     val inherited: Boolean,
     val icon: Icon,
-    val level: LogLevel = LogLevel.of(effectiveLevel)
+    val level: LogLevel = LogLevel.of(effectiveLevel),
+    val psiElementPointer: SmartPsiElementPointer<PsiElement>? = null
 ) {
+    val resolved: Boolean
+        get() = icon != HybrisIcons.Log.Identifier.NA
+
     companion object {
 
         const val ROOT_LOGGER_NAME = "root"
 
-        fun of(name: String, effectiveLevel: String, parentName: String? = null, inherited: Boolean = false, icon: Icon? = null): CxLoggerModel = CxLoggerModel(
+        fun of(
+            name: String,
+            effectiveLevel: String,
+            parentName: String? = null,
+            inherited: Boolean = false,
+            icon: Icon? = null,
+            psiElementPointer: SmartPsiElementPointer<PsiElement>? = null
+        ): CxLoggerModel = CxLoggerModel(
             name = name,
             effectiveLevel = effectiveLevel,
             parentName = if (name == ROOT_LOGGER_NAME) null else parentName,
             inherited = inherited,
-            icon = icon?.asSafely<DeferredIcon>()?.baseIcon ?: icon ?: HybrisIcons.Log.Identifier.NA
+            icon = icon?.asSafely<DeferredIcon>()?.baseIcon ?: icon ?: HybrisIcons.Log.Identifier.NA,
+            psiElementPointer = psiElementPointer
         )
 
         fun inherited(name: String, parentLogger: CxLoggerModel): CxLoggerModel = of(
@@ -48,7 +62,6 @@ data class CxLoggerModel(
             effectiveLevel = parentLogger.effectiveLevel,
             parentName = parentLogger.name,
             inherited = true,
-            icon = null
         )
 
         fun rootFallback() = of(name = ROOT_LOGGER_NAME, effectiveLevel = "undefined")

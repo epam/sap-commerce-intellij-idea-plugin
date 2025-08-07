@@ -75,9 +75,10 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
                     val name = it.jsonObject["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val effectiveLevel = it.jsonObject["effectiveLevel"]?.jsonObject["standardLevel"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val parentName = it.jsonObject["parentName"]?.jsonPrimitive?.content
+                    val psiElementPointer = CxLoggerUtilities.getInstance(project).getPsiElementPointer(name)
                     val icon = CxLoggerUtilities.getInstance(project).getIcon(name)
 
-                    CxLoggerModel.of(name, effectiveLevel, parentName, false, icon)
+                    CxLoggerModel.of(name, effectiveLevel, parentName, false, icon, psiElementPointer)
                 }
 
             return LoggingExecutionResult(

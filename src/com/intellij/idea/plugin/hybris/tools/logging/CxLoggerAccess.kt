@@ -44,8 +44,6 @@ import java.util.*
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
     private var fetching: Boolean = false
     private val loggersStates = WeakHashMap<RemoteConnectionSettings, CxLoggersState>()
-    val cxLoggerUtilities: CxLoggerUtilities = CxLoggerUtilities.getInstance(project)
-
 
     val ready: Boolean
         get() = !fetching
@@ -112,12 +110,22 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         fetching = true
 
         GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            val cxLoggerUtilities = CxLoggerUtilities.getInstance(project)
             coroutineScope.launch {
                 val loggers = result.result
                     ?.split("\n")
                     ?.map { it.split(" | ") }
                     ?.filter { it.size == 3 }
-                    ?.map { CxLoggerModel.of(it[0], it[1], it[2], false, cxLoggerUtilities.getIcon(it[0])) }
+                    ?.map {
+                        val loggerIdentifier = it[0]
+                        val effectiveLevel = it[1]
+                        val parentName = it[2]
+
+                        val psiElementPointer = cxLoggerUtilities.getPsiElementPointer(loggerIdentifier)
+                        val icon = cxLoggerUtilities.getIcon(loggerIdentifier)
+
+                        CxLoggerModel.of(loggerIdentifier, effectiveLevel, parentName, false, icon, psiElementPointer)
+                    }
                     ?.distinctBy { it.name }
                     ?.associateBy { it.name }
                     ?.takeIf { it.isNotEmpty() }

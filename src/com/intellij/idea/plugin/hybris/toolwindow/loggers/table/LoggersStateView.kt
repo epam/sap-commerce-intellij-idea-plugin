@@ -18,13 +18,21 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.table
 
+import com.intellij.ide.projectView.ProjectView
+import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiPackage
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.startOffset
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
@@ -69,7 +77,8 @@ class LoggersStateView(private val project: Project, private val coroutineScope:
             .layout(RowLayout.PARENT_GRID)
 
         loggers.values
-            .sortedWith(compareBy({ it.parentName }, { it.name }))
+//            .sortedWith(compareBy({ it.parentName }, { it.name }))
+            .sortedBy { it.name }
             .forEach { cxLogger ->
                 row {
                     val model = DefaultComboBoxModel<LogLevel>().apply {
@@ -102,7 +111,33 @@ class LoggersStateView(private val project: Project, private val coroutineScope:
 
                     icon(cxLogger.icon)
                         .gap(RightGap.SMALL)
-                    label(cxLogger.name)
+
+                    if (cxLogger.resolved) {
+                        link(cxLogger.name) {
+                            cxLogger.psiElementPointer?.element?.let { psiElement ->
+                                when (psiElement) {
+                                    is PsiPackage -> {
+                                        coroutineScope.launch {
+                                            val directory = readAction {
+                                                psiElement.getDirectories(GlobalSearchScope.allScope(project))
+                                                    .firstOrNull()
+                                            } ?: return@launch
+
+                                            edtWriteAction {
+                                                ProjectView.getInstance(project).selectPsiElement(directory, true)
+                                            }
+                                        }
+                                    }
+
+                                    is PsiClass -> PsiNavigationSupport.getInstance()
+                                        .createNavigatable(project, psiElement.containingFile.virtualFile, psiElement.startOffset)
+                                        .navigate(true)
+                                }
+                            }
+                        }
+                    } else {
+                        label(cxLogger.name)
+                    }
 
                     label(cxLogger.parentName ?: "")
                 }
