@@ -23,6 +23,8 @@ import com.intellij.util.messages.Topic
 interface RemoteConnectionListener {
     fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
     fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
+    fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettings) = Unit
+    fun onSolrConnectionModified(remoteConnection: RemoteConnectionSettings) = Unit
 
     companion object {
         val TOPIC = Topic(RemoteConnectionListener::class.java)

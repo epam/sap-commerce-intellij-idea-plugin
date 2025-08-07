@@ -20,6 +20,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener;
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext;
 import com.intellij.openapi.components.Service;
@@ -110,6 +111,15 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
 
     public static HybrisHacHttpClient getInstance(final Project project) {
         return project.getService(HybrisHacHttpClient.class);
+    }
+
+    public HybrisHacHttpClient(final Project project) {
+        project.getMessageBus().connect().subscribe(RemoteConnectionListener.Companion.getTOPIC(), new RemoteConnectionListener() {
+            @Override
+            public void onHybrisConnectionModified(@NotNull final RemoteConnectionSettings remoteConnection) {
+                invalidateCookies(remoteConnection, null);
+            }
+        });
     }
 
     @NotNull
@@ -358,5 +368,10 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
             settings.getUuid(),
             context == null ? "auto" : context.getReplicaId()
         );
+    }
+
+    private void invalidateCookies(@NotNull final RemoteConnectionSettings settings, @Nullable final ReplicaContext replicaContext) {
+        final var cookiesKey = getCookiesKey(settings, replicaContext);
+        cookiesPerSettings.remove(cookiesKey);
     }
 }
