@@ -30,13 +30,13 @@ import javax.swing.Icon
 @Service(Service.Level.PROJECT)
 class CxLoggerUtilities(val project: Project) {
 
-    suspend fun getIcon(loggerIdentifier: String): Icon? = with(JavaPsiFacade.getInstance(project)) {
-        readAction {
+    suspend fun getIcon(loggerIdentifier: String): Icon? = readAction {
+        with(JavaPsiFacade.getInstance(project)) {
             findPackage(loggerIdentifier)
                 ?: findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
         }
+            ?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
     }
-        ?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
 
     companion object {
         @JvmStatic
