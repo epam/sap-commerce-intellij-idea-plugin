@@ -69,6 +69,7 @@ class ErrorLoggerAction : CxLoggerAction(LogLevel.ERROR)
 class FatalLoggerAction : CxLoggerAction(LogLevel.FATAL)
 class SevereLoggerAction : CxLoggerAction(LogLevel.SEVERE)
 
+//TODO display an animated icon for fetching state only if action is in toolbar
 class FetchLoggersStateAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
