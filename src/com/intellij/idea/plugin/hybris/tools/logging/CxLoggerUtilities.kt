@@ -16,9 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
+package com.intellij.idea.plugin.hybris.tools.logging
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -31,21 +30,13 @@ import javax.swing.Icon
 @Service(Service.Level.PROJECT)
 class CxLoggerUtilities(val project: Project) {
 
-    suspend fun getIcon(loggerIdentifier: String): Icon? {
-        val packageLevelLogger = readAction {
-            JavaPsiFacade.getInstance(project)
-                .findPackage(loggerIdentifier)
-        }
-        return if (packageLevelLogger != null) {
-            return HybrisIcons.Log.Identifier.PACKAGE
-        } else {
-            readAction {
-                JavaPsiFacade.getInstance(project)
-                    .findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
-                    ?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
-            }
+    suspend fun getIcon(loggerIdentifier: String): Icon? = with(JavaPsiFacade.getInstance(project)) {
+        readAction {
+            findPackage(loggerIdentifier)
+                ?: findClass(loggerIdentifier, GlobalSearchScope.allScope(project))
         }
     }
+        ?.getIcon(Iconable.ICON_FLAG_VISIBILITY or Iconable.ICON_FLAG_READ_STATUS)
 
     companion object {
         @JvmStatic
