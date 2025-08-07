@@ -2,6 +2,7 @@
 
 ### Other
 - Properties API adjustments [#1510](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1510)
+- Properties API adjustments [#1512](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1512)
 
 ## [2025.2.0]
 
