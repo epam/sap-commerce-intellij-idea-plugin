@@ -100,8 +100,8 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
             executionClient.execute(
                 contexts = contexts,
-                resultCallback = { coroutineScope, result -> console.print(result, false) },
-                afterCallback = { coroutineScope, results -> console.afterExecution() },
+                resultCallback = { _, result -> console.print(result, false) },
+                afterCallback = { _, _ -> console.afterExecution() }
             )
         }
     }
