@@ -67,7 +67,7 @@ abstract class ExecutionClient<E : ExecutionContext, R : ExecutionResult>(
         onError: (CoroutineContext, Throwable) -> Unit = { _, _ -> },
         beforeCallback: (CoroutineScope) -> Unit = { _ -> },
         resultCallback: (CoroutineScope, R) -> Unit = { _, _ -> },
-        resultsCallback: (CoroutineScope, Collection<R>) -> Unit = { _, _ -> },
+        afterCallback: (CoroutineScope, Collection<R>) -> Unit = { _, _ -> },
     ) {
         val exceptionHandler = CoroutineExceptionHandler { coroutineContext, exception ->
             onError.invoke(coroutineContext, exception)
@@ -83,7 +83,7 @@ abstract class ExecutionClient<E : ExecutionContext, R : ExecutionResult>(
                 }
                 .awaitAll()
 
-            resultsCallback.invoke(this, results)
+            afterCallback.invoke(this, results)
         }
     }
 

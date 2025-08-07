@@ -80,7 +80,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             logLevel = logLevel
         )
         fetching = true
-        LoggingExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+        LoggingExecutionClient.getInstance(project).execute(context) { _, result ->
             updateState(result.loggers, server)
             project.messageBus.syncPublisher(LoggersStateListener.TOPIC).onLoggersStateChanged(server)
 

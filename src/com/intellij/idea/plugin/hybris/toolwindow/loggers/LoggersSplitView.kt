@@ -87,7 +87,7 @@ class LoggersSplitView(
         }
 
         with(project.messageBus.connect(this)) {
-            subscribe(LoggersStateListener.Companion.TOPIC, object : LoggersStateListener {
+            subscribe(LoggersStateListener.TOPIC, object : LoggersStateListener {
                 override fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettings) {
                     tree.lastSelectedPathComponent
                         ?.asSafely<LoggersOptionsTreeNode>()

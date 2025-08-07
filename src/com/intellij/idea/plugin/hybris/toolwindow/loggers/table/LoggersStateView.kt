@@ -18,24 +18,24 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.table
 
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
-import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import javax.swing.DefaultComboBoxModel
 import javax.swing.JComponent
 
 @Service(Service.Level.PROJECT)
 class LoggersStateView(private val project: Project, private val coroutineScope: CoroutineScope) {
-
-    private val editable = AtomicBooleanProperty(true)
 
     fun renderView(loggers: Map<String, CxLoggerModel>, applyView: (CoroutineScope, JComponent) -> Unit) {
         coroutineScope.launch {
@@ -43,24 +43,20 @@ class LoggersStateView(private val project: Project, private val coroutineScope:
 
             val view = panel {
                 row {
-                    scrollCell(
-                        dataView(loggers)
-                    )
+                    scrollCell(dataView(loggers))
                         .resizableColumn()
                         .align(Align.FILL)
                 }
                     .resizableRow()
-                    .bottomGap(BottomGap.SMALL)
             }
-                .apply {
-                    border = JBUI.Borders.empty(0, 16, 16, 16)
-                }
 
             applyView(this, view)
         }
     }
 
     private fun dataView(loggers: Map<String, CxLoggerModel>): JComponent = panel {
+        val editable = AtomicBooleanProperty(true)
+
         row {
             label("Effective level")
 
@@ -72,34 +68,50 @@ class LoggersStateView(private val project: Project, private val coroutineScope:
             .bottomGap(BottomGap.SMALL)
             .layout(RowLayout.PARENT_GRID)
 
-        loggers.forEach { (_, cxLogger) ->
-            row {
-                comboBox(
-                    EnumComboBoxModel(LogLevel::class.java),
-                    renderer = SimpleListCellRenderer.create { label, value, _ ->
-                        if (value != null) {
-                            label.icon = value.icon
-                            label.text = value.name
-                        }
+        loggers.values
+            .sortedWith(compareBy({ it.parentName }, { it.name }))
+            .forEach { cxLogger ->
+                row {
+                    val model = DefaultComboBoxModel<LogLevel>().apply {
+                        LogLevel.entries
+                            .filter { it != LogLevel.CUSTOM || (cxLogger.level == LogLevel.CUSTOM) }
+                            .forEach { addElement(it) }
                     }
-                )
-                    .bindItem({ cxLogger.level }, { level ->
-                        level?.let {
-
+                    comboBox(
+                        model,
+                        renderer = SimpleListCellRenderer.create { label, value, _ ->
+                            if (value != null) {
+                                label.icon = value.icon
+                                label.text = value.name
+                            }
                         }
-                    })
-                    .enabledIf(editable)
-                    .comment(if (cxLogger.level == LogLevel.CUSTOM) "custom: ${cxLogger.effectiveLevel}" else null)
+                    )
+                        .align(AlignX.FILL)
+                        .bindItem({ cxLogger.level }, { _ -> })
+                        .enabledIf(editable)
+                        .component
+                        .addItemListener { event ->
+                            val currentCxLogger = loggers[cxLogger.name] ?: return@addItemListener
+                            val newLogLevel = event.item.asSafely<LogLevel>() ?: return@addItemListener
 
-                icon(cxLogger.icon)
-                    .gap(RightGap.SMALL)
-                label(cxLogger.name)
+                            if (currentCxLogger.level != newLogLevel) {
+                                editable.set(false)
+                                CxLoggerAccess.getInstance(project).setLogger(cxLogger.name, newLogLevel)
+                            }
+                        }
 
-                label(cxLogger.parentName ?: "")
+                    icon(cxLogger.icon)
+                        .gap(RightGap.SMALL)
+                    label(cxLogger.name)
+
+                    label(cxLogger.parentName ?: "")
+                }
+                    .layout(RowLayout.PARENT_GRID)
             }
-                .layout(RowLayout.PARENT_GRID)
-        }
     }
+        .apply {
+            border = JBUI.Borders.empty(0, 16, 16, 16)
+        }
 
     companion object {
         fun getInstance(project: Project): LoggersStateView = project.service()

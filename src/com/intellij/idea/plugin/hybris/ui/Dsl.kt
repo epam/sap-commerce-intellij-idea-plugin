@@ -18,16 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.ui
 
-import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBEmptyBorder
+import javax.swing.JComponent
 import javax.swing.ScrollPaneConstants
 
 object Dsl {
 
-    fun scrollPanel(content: DialogPanel, horizontalScrollBarPolicy: Int = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED) = panel {
+    fun scrollPanel(content: JComponent, horizontalScrollBarPolicy: Int = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED) = panel {
         row {
             scrollCell(content)
                 .align(Align.FILL)
