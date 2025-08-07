@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree
+package com.intellij.idea.plugin.hybris.toolwindow.loggers
 
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
@@ -26,6 +26,8 @@ import com.intellij.idea.plugin.hybris.tools.logging.LoggersStateListener
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.table.LoggersStateView
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTree
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTreeNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.HacConnectionLoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode
@@ -45,16 +47,16 @@ import javax.swing.event.TreeModelListener
 import javax.swing.event.TreeSelectionListener
 import javax.swing.tree.DefaultMutableTreeNode
 
-class LoggersTreePanel(
+class LoggersSplitView(
     val project: Project,
     private val coroutineScope: CoroutineScope
 ) : OnePixelSplitter(false, 0.25f), Disposable {
 
-    val tree: LoggersOptionsTree = LoggersOptionsTree(project)
+    private val tree: LoggersOptionsTree = LoggersOptionsTree(project)
     private val myDefaultPanel = JBPanelWithEmptyText().withEmptyText(IdeBundle.message("empty.text.nothing.selected"))
     private val fetchLoggersStatePanel = JBPanelWithEmptyText().withEmptyText("Fetch Loggers State")
     private val noLogTemplatePanel = JBPanelWithEmptyText().withEmptyText("No Logger Templates")
-    val loggersStateView: LoggersStateView = LoggersStateView.getInstance(project)
+    private val loggersStateView: LoggersStateView = LoggersStateView.Companion.getInstance(project)
 
     init {
         firstComponent = JBScrollPane(tree)
@@ -63,15 +65,15 @@ class LoggersTreePanel(
         //PopupHandler.installPopupMenu(tree, "action.group.id", "place")
         Disposer.register(this, tree)
 
-        val activeConnection = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-        val connections = RemoteConnectionService.getInstance(project).getRemoteConnections(RemoteConnectionType.Hybris)
+        val activeConnection = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val connections = RemoteConnectionService.Companion.getInstance(project).getRemoteConnections(RemoteConnectionType.Hybris)
             .associateWith { (it == activeConnection) }
         tree.update(connections)
 
         with(project.messageBus.connect(this)) {
-            subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
+            subscribe(RemoteConnectionListener.Companion.TOPIC, object : RemoteConnectionListener {
                 override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) {
-                    val connections = RemoteConnectionService.getInstance(project).getRemoteConnections(RemoteConnectionType.Hybris)
+                    val connections = RemoteConnectionService.Companion.getInstance(project).getRemoteConnections(RemoteConnectionType.Hybris)
                         .associateWith { (it == remoteConnection) }
                     tree.update(connections)
                 }
@@ -85,7 +87,7 @@ class LoggersTreePanel(
         }
 
         with(project.messageBus.connect(this)) {
-            subscribe(LoggersStateListener.TOPIC, object : LoggersStateListener {
+            subscribe(LoggersStateListener.Companion.TOPIC, object : LoggersStateListener {
                 override fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettings) {
                     tree.lastSelectedPathComponent
                         ?.asSafely<LoggersOptionsTreeNode>()
@@ -133,10 +135,9 @@ class LoggersTreePanel(
 
             when (node) {
                 is HacConnectionLoggersNode -> {
-                    val loggersAccess = CxLoggerAccess.getInstance(project)
-                    val loggers = loggersAccess.loggers(node.connectionSettings).all()
+                    val loggers = CxLoggerAccess.getInstance(project).loggers(node.connectionSettings).all()
                     if (loggers.isNotEmpty()) {
-                        loggersStateView.renderView(loggers, node.connectionSettings) { _, view ->
+                        loggersStateView.renderView(loggers) { _, view ->
                             secondComponent = view
                         }
                     } else {
@@ -144,17 +145,9 @@ class LoggersTreePanel(
                     }
                 }
 
-                is BundledLoggersTemplateLoggersOptionsNode -> {
-                    secondComponent = noLogTemplatePanel
-                }
-
-                is CustomLoggersTemplateLoggersOptionsNode -> {
-                    secondComponent = noLogTemplatePanel
-                }
-
-                else -> {
-                    secondComponent = myDefaultPanel
-                }
+                is BundledLoggersTemplateLoggersOptionsNode -> secondComponent = noLogTemplatePanel
+                is CustomLoggersTemplateLoggersOptionsNode -> secondComponent = noLogTemplatePanel
+                else -> secondComponent = myDefaultPanel
             }
         }
     }

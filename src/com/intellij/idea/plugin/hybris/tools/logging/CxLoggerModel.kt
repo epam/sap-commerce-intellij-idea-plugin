@@ -28,7 +28,8 @@ data class CxLoggerModel(
     val effectiveLevel: String,
     val parentName: String?,
     val inherited: Boolean,
-    val icon: Icon
+    val icon: Icon,
+    val level: LogLevel = LogLevel.of(effectiveLevel)
 ) {
     companion object {
 

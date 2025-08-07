@@ -18,37 +18,86 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.table
 
-import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
+import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.project.Project
-import com.intellij.ui.dsl.builder.Align
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.SimpleListCellRenderer
+import com.intellij.ui.dsl.builder.*
+import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.swing.JComponent
 
 @Service(Service.Level.PROJECT)
-class LoggersStateView(
-    val project: Project,
-    val coroutineScope: CoroutineScope
-) {
+class LoggersStateView(private val project: Project, private val coroutineScope: CoroutineScope) {
 
-    fun renderView(loggers: Map<String, CxLoggerModel>, connectionSettings: RemoteConnectionSettings, applyView: (CoroutineScope, JComponent) -> Unit) {
+    private val editable = AtomicBooleanProperty(true)
+
+    fun renderView(loggers: Map<String, CxLoggerModel>, applyView: (CoroutineScope, JComponent) -> Unit) {
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
             val view = panel {
                 row {
                     scrollCell(
-                        LoggersTable.of(project, loggers, connectionSettings)
+                        dataView(loggers)
                     )
+                        .resizableColumn()
                         .align(Align.FILL)
-                }.resizableRow()
+                }
+                    .resizableRow()
+                    .bottomGap(BottomGap.SMALL)
             }
+                .apply {
+                    border = JBUI.Borders.empty(0, 16, 16, 16)
+                }
 
             applyView(this, view)
+        }
+    }
+
+    private fun dataView(loggers: Map<String, CxLoggerModel>): JComponent = panel {
+        row {
+            label("Effective level")
+
+            label("Logger")
+            label("")
+
+            label("Parent")
+        }
+            .bottomGap(BottomGap.SMALL)
+            .layout(RowLayout.PARENT_GRID)
+
+        loggers.forEach { (_, cxLogger) ->
+            row {
+                comboBox(
+                    EnumComboBoxModel(LogLevel::class.java),
+                    renderer = SimpleListCellRenderer.create { label, value, _ ->
+                        if (value != null) {
+                            label.icon = value.icon
+                            label.text = value.name
+                        }
+                    }
+                )
+                    .bindItem({ cxLogger.level }, { level ->
+                        level?.let {
+
+                        }
+                    })
+                    .enabledIf(editable)
+                    .comment(if (cxLogger.level == LogLevel.CUSTOM) "custom: ${cxLogger.effectiveLevel}" else null)
+
+                icon(cxLogger.icon)
+                    .gap(RightGap.SMALL)
+                label(cxLogger.name)
+
+                label(cxLogger.parentName ?: "")
+            }
+                .layout(RowLayout.PARENT_GRID)
         }
     }
 

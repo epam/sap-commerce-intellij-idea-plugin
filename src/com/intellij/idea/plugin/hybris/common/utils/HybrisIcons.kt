@@ -490,14 +490,7 @@ object HybrisIcons {
         val LOG = getIcon("/icons/logging/log.svg")
 
         object Identifier {
-            val PACKAGE = AllIcons.Nodes.Package
-            val CLASS = AllIcons.Nodes.Class
-            val INTERFACE = AllIcons.Nodes.Interface
-            val ENUM = AllIcons.Nodes.Enum
-            val RECORD = AllIcons.Nodes.Record
             val NA = AllIcons.Actions.Colors
-            val ROOT = AllIcons.Actions.Colors
-
         }
 
         object Action {

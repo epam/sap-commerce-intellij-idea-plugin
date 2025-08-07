@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.toolwindow.loggers
 
 import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces.LOGGERS_TOOLBAR
-import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersTreePanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -34,13 +33,13 @@ class LoggersView(
     coroutineScope: CoroutineScope
 ) : SimpleToolWindowPanel(false), Disposable {
 
-    val treePane: LoggersTreePanel
+    val treePane: LoggersSplitView
 
     override fun dispose() = Unit
 
     init {
         installToolbar()
-        treePane = LoggersTreePanel(project, coroutineScope)
+        treePane = LoggersSplitView(project, coroutineScope)
         setContent(treePane)
 
         Disposer.register(this, treePane)
