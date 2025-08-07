@@ -79,7 +79,7 @@ class LoggersTable : TableView<List<String>> {
         private const val serialVersionUID: Long = -1210838431719623644L
 
         fun of(project: Project, loggers: Map<String, CxLoggerModel>, connectionSettings: RemoteConnectionSettings): TableView<List<String>> {
-            val customCellRenderer = CustomCellRenderer(project, connectionSettings)
+            val customCellRenderer = CustomCellRenderer(CxLoggerAccess.getInstance(project).loggers(connectionSettings))
             val listTableModel = ListTableModel<List<String>>(
                 LoggerColumnInfo("Effective Level", COLUMN_LEVEL, customCellRenderer),
                 LoggerColumnInfo("Logger", COLUMN_LOGGER, customCellRenderer)
@@ -97,9 +97,7 @@ class LoggersTable : TableView<List<String>> {
     }
 }
 
-private class CustomCellRenderer(val project: Project, val connectionSettings: RemoteConnectionSettings) : ColoredTableCellRenderer() {
-
-    private val loggersState: CxLoggersState = CxLoggerAccess.getInstance(project).loggers(connectionSettings)
+private class CustomCellRenderer(private val loggersState: CxLoggersState) : ColoredTableCellRenderer() {
 
     override fun setToolTipText(text: String?) = Unit
 
