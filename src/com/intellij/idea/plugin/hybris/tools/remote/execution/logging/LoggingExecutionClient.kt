@@ -44,8 +44,6 @@ import java.nio.charset.StandardCharsets
 @Service(Service.Level.PROJECT)
 class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) : ExecutionClient<LoggingExecutionContext, LoggingExecutionResult>(project, coroutineScope) {
 
-    val cxLoggerUtilities: CxLoggerUtilities = CxLoggerUtilities.getInstance(project)
-
     override suspend fun execute(context: LoggingExecutionContext): LoggingExecutionResult {
         val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
 
@@ -77,7 +75,7 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
                     val name = it.jsonObject["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val effectiveLevel = it.jsonObject["effectiveLevel"]?.jsonObject["standardLevel"]?.jsonPrimitive?.content ?: return@mapNotNull null
                     val parentName = it.jsonObject["parentName"]?.jsonPrimitive?.content
-                    val icon = cxLoggerUtilities.getIcon(name)
+                    val icon = CxLoggerUtilities.getInstance(project).getIcon(name)
 
                     CxLoggerModel.of(name, effectiveLevel, parentName, false, icon)
                 }
