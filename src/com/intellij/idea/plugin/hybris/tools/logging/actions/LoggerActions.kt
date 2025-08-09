@@ -27,6 +27,7 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.ui.AnimatedIcon
 
 abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
 
@@ -97,5 +98,8 @@ class FetchLoggersStateAction : AnAction() {
 
         e.presentation.text = if (state) "Refresh Loggers State" else "Fetch Loggers State"
         e.presentation.icon = if (state) HybrisIcons.Log.Action.REFRESH else HybrisIcons.Log.Action.FETCH
+        if (!loggerAccess.ready) {
+            e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
+        }
     }
 }
