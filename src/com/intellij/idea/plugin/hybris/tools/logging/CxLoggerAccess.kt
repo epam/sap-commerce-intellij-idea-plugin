@@ -36,7 +36,6 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.util.progress.sleepCancellable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -113,7 +112,6 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
             val cxLoggerUtilities = CxLoggerUtilities.getInstance(project)
             coroutineScope.launch {
-                sleepCancellable(3000)
                 val loggers = result.result
                     ?.split("\n")
                     ?.map { it.split(" | ") }
