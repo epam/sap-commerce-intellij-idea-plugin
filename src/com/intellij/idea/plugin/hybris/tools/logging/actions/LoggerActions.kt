@@ -98,8 +98,7 @@ class FetchLoggersStateAction : AnAction() {
 
         e.presentation.text = if (state) "Refresh Loggers State" else "Fetch Loggers State"
         e.presentation.icon = if (state) HybrisIcons.Log.Action.REFRESH else HybrisIcons.Log.Action.FETCH
-        if (!loggerAccess.ready) {
-            e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
-        }
+        e.presentation.disabledIcon = if (loggerAccess.ready) null else AnimatedIcon.Default.INSTANCE
+
     }
 }
