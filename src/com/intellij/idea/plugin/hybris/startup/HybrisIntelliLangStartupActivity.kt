@@ -60,9 +60,9 @@ class HybrisIntelliLangStartupActivity : ProjectActivity {
                 // TODO: replace with pattern declared in the XML file once https://youtrack.jetbrains.com/issue/IDEA-339624/ will be resolved.
                 // com.intellij.patterns.compiler.PatternCompiler cannot parse primitive booleans required by the pattern
                 Configuration.getInstance().getInjections(JavaLanguageInjectionSupport.JAVA_SUPPORT_ID)
-                    .filter { targetLanguages.contains(it.injectedLanguageId) }
-                    .forEach {
-                        val injectionPlaces = it.injectionPlaces.toMutableSet()
+                    .filter { baseInjection -> targetLanguages.contains(baseInjection.injectedLanguageId) }
+                    .forEach { baseInjection ->
+                        val injectionPlaces = baseInjection.injectionPlaces.toMutableSet()
 
                         if (injectionPlaces.any { place -> place.text.contains(HybrisConstants.CLASS_FQN_FLEXIBLE_SEARCH_QUERY) }) return@forEach
 
@@ -73,7 +73,7 @@ class HybrisIntelliLangStartupActivity : ProjectActivity {
                             true
                         )
                         injectionPlaces.add(psiParameterInjectionPlace)
-                        it.setInjectionPlaces(*injectionPlaces.toTypedArray())
+                        baseInjection.setInjectionPlaces(*injectionPlaces.toTypedArray())
                     }
             }
             .inSmartMode(project)

@@ -39,8 +39,9 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
         fileChooser.addElementsMarkListener(ElementsChooser.ElementsMarkListener { element, isMarked ->
             if (element is YModuleDescriptor) {
                 if (isMarked) {
+                    val elementMarkStates = fileChooser.elementMarkStates
                     element.getAllDependencies()
-                        .filterNot { BooleanUtils.isNotFalse(fileChooser.elementMarkStates[it]) }
+                        .filterNot { BooleanUtils.isNotFalse(elementMarkStates[it]) }
                         .forEach {
                             fileChooser.setElementMarked(it, true)
                             if (selectionMode === ModuleDescriptorImportStatus.MANDATORY) {

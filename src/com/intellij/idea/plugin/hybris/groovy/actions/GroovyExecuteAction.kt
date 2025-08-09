@@ -139,7 +139,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
             val missingImports = psiFile.importStatements.filter { import ->
                 val importLine = document.getLineNumber(import.textOffset)
-                importLine < selectionStartLine || importLine > selectionEndLine
+                importLine !in selectionStartLine..selectionEndLine
             }
 
             if (!missingImports.isEmpty()) {

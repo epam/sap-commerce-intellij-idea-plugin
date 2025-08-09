@@ -9,6 +9,7 @@
 ### Other
 - Properties API adjustments [#1510](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1510)
 - Added events and listeners for HAC and SOLR connection modifications [#1512](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1512)
+- Addressed few slow operations [#1515](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1515)
 
 ## [2025.2.0]
 

@@ -30,6 +30,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.api.CCv2Api
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.options.ShowSettingsUtil
@@ -766,7 +767,9 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 "Please, specify CCv2 API token via corresponding application settings."
             )
             .addAction("Open Settings") { _, _ ->
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+                invokeLater {
+                    ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+                }
             }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(10)
@@ -786,7 +789,9 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 """.trimIndent()
             )
             .addAction("Open Settings") { _, _ ->
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+                invokeLater {
+                    ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+                }
             }
             .hideAfter(10)
             .system(true)
@@ -804,7 +809,9 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                 """.trimIndent()
             )
             .addAction("Open Settings") { _, _ ->
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+                invokeLater {
+                    ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
+                }
             }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(15)

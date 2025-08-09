@@ -25,6 +25,7 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
 
 class GroovyOpenSettingsAction : AnAction() {
@@ -41,6 +42,8 @@ class GroovyOpenSettingsAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        ShowSettingsUtil.getInstance().showSettingsDialog(project, ProjectGroovySettingsConfigurableProvider.SettingsConfigurable::class.java)
+        invokeLater {
+            ShowSettingsUtil.getInstance().showSettingsDialog(project, ProjectGroovySettingsConfigurableProvider.SettingsConfigurable::class.java)
+        }
     }
 }
