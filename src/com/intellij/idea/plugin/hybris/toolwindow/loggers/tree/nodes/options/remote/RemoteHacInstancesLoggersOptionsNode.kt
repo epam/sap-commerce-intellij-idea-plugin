@@ -20,13 +20,13 @@ package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.re
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.HacConnectionLoggersNode
-import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNodeParameters
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNodeParameters
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.LoggersOptionsNode
 import com.intellij.openapi.project.Project
 
 class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNode("Remote HAC Instances", HybrisIcons.Y.REMOTES, project) {
 
-    override fun getNewChildren(parameters: LoggerNodeParameters): Map<String, HacConnectionLoggersNode> = parameters.connections
+    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, HacConnectionLoggersNode> = nodeParameters.connections
         .filter { it.value } // only active connections
         .map { (connection, active) -> HacConnectionLoggersNode(connection, active, project) }
         .associateBy { "${it.connectionSettings.uuid}_|_${it.activeConnection}" }

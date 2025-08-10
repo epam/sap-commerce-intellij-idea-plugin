@@ -23,13 +23,13 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTre
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.remote.RemoteHacInstancesLoggersOptionsNode
 import com.intellij.ui.SimpleTextAttributes
 
-class LoggerRootNode(tree: LoggersOptionsTree) : LoggerNode(tree.myProject) {
+class LoggersRootNode(tree: LoggersOptionsTree) : LoggersNode(tree.myProject) {
 
     override fun update(presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
-    override fun getNewChildren(parameters: LoggerNodeParameters) = listOf(
+    override fun getNewChildren(parameters: LoggersNodeParameters) = listOf(
         RemoteHacInstancesLoggersOptionsNode(project)
         //LoggersTemplateLoggersOptionsNode(project)
     ).associateBy { it.name }

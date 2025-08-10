@@ -25,26 +25,21 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.tree.LeafState
 
-abstract class LoggerNode : PresentableNodeDescriptor<LoggerNode>, LeafState.Supplier, Disposable {
+abstract class LoggersNode : PresentableNodeDescriptor<LoggersNode>, LeafState.Supplier, Disposable {
 
-    internal val myChildren = mutableMapOf<String, LoggerNode>()
-    internal var parameters: LoggerNodeParameters? = null
+    internal val myChildren = mutableMapOf<String, LoggersNode>()
+    internal var parameters: LoggersNodeParameters? = null
 
     protected constructor(project: Project) : super(project, null)
 
+    override fun getElement() = this
+    override fun getLeafState() = LeafState.ASYNC
+    override fun toString(): String = name
+    override fun dispose() = myChildren.clear()
+
     abstract override fun update(presentation: PresentationData)
 
-    override fun getElement() = this
-
-    override fun getLeafState() = LeafState.ASYNC
-
-    override fun dispose() {
-        myChildren.clear()
-    }
-
-    override fun toString() = name
-
-    open fun getChildren(parameters: LoggerNodeParameters): Collection<LoggerNode> {
+    fun getChildren(parameters: LoggersNodeParameters): Collection<LoggersNode> {
         val newChildren = getNewChildren(parameters)
 
         myChildren.keys
@@ -66,9 +61,8 @@ abstract class LoggerNode : PresentableNodeDescriptor<LoggerNode>, LeafState.Sup
             .onEach { it.parameters = parameters }
     }
 
-    open fun getNewChildren(parameters: LoggerNodeParameters): Map<String, LoggerNode> = emptyMap()
-    open fun update(existingNode: LoggerNode, newNode: LoggerNode) = Unit
-
+    open fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = emptyMap()
+    open fun update(existingNode: LoggersNode, newNode: LoggersNode) = Unit
 }
 
-data class LoggerNodeParameters(val connections: Map<RemoteConnectionSettings, Boolean>)
+data class LoggersNodeParameters(val connections: Map<RemoteConnectionSettings, Boolean>)

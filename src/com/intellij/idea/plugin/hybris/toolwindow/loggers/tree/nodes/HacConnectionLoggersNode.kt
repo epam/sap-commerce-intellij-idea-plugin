@@ -29,7 +29,7 @@ class HacConnectionLoggersNode(
     val connectionSettings: RemoteConnectionSettings,
     val activeConnection: Boolean,
     project: Project
-) : LoggerNode(project) {
+) : LoggersNode(project) {
 
     override fun getName() = connectionSettings.connectionName()
 

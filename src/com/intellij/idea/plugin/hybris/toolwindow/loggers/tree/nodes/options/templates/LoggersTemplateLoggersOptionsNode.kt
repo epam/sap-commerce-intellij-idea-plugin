@@ -19,13 +19,13 @@
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNodeParameters
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNodeParameters
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.LoggersOptionsNode
 import com.intellij.openapi.project.Project
 
 class LoggersTemplateLoggersOptionsNode(project: Project) : LoggersOptionsNode("Logger Templates", HybrisIcons.Log.Template.TEMPLATES, project) {
 
-    override fun getNewChildren(parameters: LoggerNodeParameters) = listOf(
+    override fun getNewChildren(parameters: LoggersNodeParameters) = listOf(
         BundledLoggersTemplateLoggersOptionsNode(project),
         CustomLoggersTemplateLoggersOptionsNode(project)
     ).associateBy { it.name }

@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTree
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTreeNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.HacConnectionLoggersNode
-import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.CustomLoggersTemplateLoggersOptionsNode
 import com.intellij.openapi.Disposable
@@ -102,7 +102,7 @@ class LoggersSplitView(
             ?.lastPathComponent
             ?.asSafely<LoggersOptionsTreeNode>()
             ?.userObject
-            ?.asSafely<LoggerNode>()
+            ?.asSafely<LoggersNode>()
             ?.let { node -> updateSecondComponent(node) }
     }
 
@@ -113,7 +113,7 @@ class LoggersSplitView(
                 ?.lastPathComponent
                 ?.asSafely<LoggersOptionsTreeNode>()
                 ?.userObject
-                ?.asSafely<LoggerNode>()
+                ?.asSafely<LoggersNode>()
                 ?.let { node -> updateSecondComponent(node) }
         }
 
@@ -122,7 +122,7 @@ class LoggersSplitView(
         override fun treeStructureChanged(e: TreeModelEvent) = Unit
     }
 
-    private fun updateSecondComponent(node: LoggerNode) {
+    private fun updateSecondComponent(node: LoggersNode) {
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 
