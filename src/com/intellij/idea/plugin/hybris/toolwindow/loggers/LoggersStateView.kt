@@ -129,6 +129,7 @@ class LoggersStateView(
 
     private fun loggersView(loggers: Map<String, CxLoggerModel>) = panel {
         loggers.values
+            .filterNot { it.inherited }
             .sortedBy { it.name }
             .forEach { cxLogger ->
                 row {
