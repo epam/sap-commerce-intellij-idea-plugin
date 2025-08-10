@@ -57,4 +57,9 @@ class LoggersOptionsModel(
     }
 
     fun reload() = treeStructureChanged(TreePath(root), null, null)
+
+    override fun dispose() {
+        super.dispose()
+        nodes.clear()
+    }
 }

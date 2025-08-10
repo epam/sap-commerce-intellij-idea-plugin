@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerRootNode
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
 import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
@@ -43,7 +42,6 @@ class LoggersOptionsTree(val myProject: Project) : Tree(), Disposable {
     init {
         isRootVisible = false
         model = AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
-        Disposer.register(this, myTreeModel)
 
         TreeUIHelper.getInstance().installTreeSpeedSearch(this, Convertor { treePath: TreePath ->
             when (val uObj = (treePath.lastPathComponent as DefaultMutableTreeNode).userObject) {
