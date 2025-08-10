@@ -32,6 +32,7 @@ import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.or
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiPackage
 import com.intellij.psi.search.GlobalSearchScope
@@ -61,38 +62,43 @@ class LoggersStateView(
     private val canApply = AtomicBooleanProperty(false)
 
     private lateinit var dataScrollPane: JBScrollPane
+    private val panel by lazy {
+        object : ClearableLazyValue<DialogPanel>() {
+            override fun compute() = panel {
+                row {
+                    cellNoData(showFetchLoggers, "Fetch Loggers State")
+                    cellNoData(showNoLogger, "No Logger Templates")
+                    cellNoData(showNothingSelected, IdeBundle.message("empty.text.nothing.selected"))
+                }
+                    .visibleIf(showFetchLoggers.or(showNoLogger).or(showNothingSelected))
+                    .resizableRow()
+                    .topGap(TopGap.MEDIUM)
 
-    val component: DialogPanel
-        get() = panel {
-            row {
-                cellNoData(showFetchLoggers, "Fetch Loggers State")
-                cellNoData(showNoLogger, "No Logger Templates")
-                cellNoData(showNothingSelected, IdeBundle.message("empty.text.nothing.selected"))
-            }
-                .visibleIf(showFetchLoggers.or(showNoLogger).or(showNothingSelected))
-                .resizableRow()
-                .topGap(TopGap.MEDIUM)
+                row {
+                    cell(newLoggerPanel())
+                        .visibleIf(showDataPanel)
+                        .align(AlignX.FILL)
+                }
 
-            row {
-                cell(newLoggerPanel())
+                separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
                     .visibleIf(showDataPanel)
-                    .align(AlignX.FILL)
+
+                row {
+                    dataScrollPane = JBScrollPane(JPanel())
+                        .apply { border = null }
+
+                    cell(dataScrollPane)
+                        .align(Align.FILL)
+                        .visibleIf(showDataPanel)
+                }
+                    .resizableRow()
             }
-
-            separator(JBUI.CurrentTheme.Banner.INFO_BORDER_COLOR)
-                .visibleIf(showDataPanel)
-
-            row {
-                dataScrollPane = JBScrollPane(JPanel())
-                    .apply { border = null }
-
-                cell(dataScrollPane)
-                    .align(Align.FILL)
-                    .visibleIf(showDataPanel)
-            }
-                .resizableRow()
+                .apply { renderNothingSelected() }
         }
-            .apply { renderNothingSelected() }
+    }
+
+    val view: DialogPanel
+        get() = panel.value
 
     fun renderFetchLoggers() = toggleView(showFetchLoggers)
     fun renderNoLoggerTemplates() = toggleView(showNoLogger)
@@ -100,7 +106,7 @@ class LoggersStateView(
     fun renderLoggers(loggers: Map<String, CxLoggerModel>) {
         dataScrollPane.setViewportView(loggersView(loggers))
 
-        toggleView( showDataPanel)
+        toggleView(showDataPanel)
     }
 
     private fun toggleView(vararg unhide: AtomicBooleanProperty) {
@@ -191,7 +197,6 @@ class LoggersStateView(
     }
 
     private fun newLoggerPanel(): DialogPanel {
-
         lateinit var dPanel: DialogPanel
 
         dPanel = panel {
@@ -246,6 +251,7 @@ class LoggersStateView(
                     }
                 }
             }
+                .layout(RowLayout.PARENT_GRID)
         }
             .apply {
                 registerValidators(this@LoggersStateView) { validations ->
@@ -257,6 +263,8 @@ class LoggersStateView(
         return dPanel
     }
 
-    override fun dispose() = Unit
+    override fun dispose() {
+        panel.drop()
+    }
 
 }

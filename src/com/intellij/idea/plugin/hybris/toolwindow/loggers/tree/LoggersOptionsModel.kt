@@ -22,14 +22,14 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNodeParameters
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.project.Project
 import com.intellij.ui.tree.BaseTreeModel
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
-import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 
-class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val project: Project) : BaseTreeModel<DefaultMutableTreeNode>(), Disposable, InvokerSupplier {
+class LoggersOptionsModel(
+    private val rootTreeNode: LoggersOptionsTreeNode
+) : BaseTreeModel<LoggersOptionsTreeNode>(), Disposable, InvokerSupplier {
 
     private var connections: Map<RemoteConnectionSettings, Boolean>? = null
     private val nodes = mutableMapOf<LoggerNode, LoggersOptionsTreeNode>()
@@ -38,18 +38,14 @@ class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val 
     override fun getRoot() = rootTreeNode
 
     override fun getChildren(parent: Any?): List<LoggersOptionsTreeNode?>? {
-        val loggerNode = (parent as DefaultMutableTreeNode).userObject
-        val parameters = LoggerNodeParameters(connections ?: emptyMap())
+        val loggerNode = (parent as LoggersOptionsTreeNode).userObject
 
-        return if (loggerNode is LoggerNode) {
-            loggerNode.getChildren(parameters)
-                .onEach { it.update() }
-                .map {
-                    nodes.computeIfAbsent(it) { loggerNode -> LoggersOptionsTreeNode(it) }
-                }
-        } else {
-            emptyList()
-        }
+        return if (loggerNode is LoggerNode) loggerNode.getChildren(LoggerNodeParameters(connections ?: emptyMap()))
+            .onEach { it.update() }
+            .map {
+                nodes.computeIfAbsent(it) { _ -> LoggersOptionsTreeNode(it) }
+            }
+        else emptyList()
     }
 
     override fun getInvoker() = myInvoker
@@ -60,7 +56,5 @@ class LoggersOptionsModel(private val rootTreeNode: LoggersOptionsTreeNode, val 
         treeStructureChanged(TreePath(root), null, null)
     }
 
-    fun reload() {
-        treeStructureChanged(TreePath(root), null, null)
-    }
+    fun reload() = treeStructureChanged(TreePath(root), null, null)
 }

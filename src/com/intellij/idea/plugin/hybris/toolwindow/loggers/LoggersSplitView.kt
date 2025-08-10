@@ -42,7 +42,6 @@ import java.io.Serial
 import javax.swing.event.TreeModelEvent
 import javax.swing.event.TreeModelListener
 import javax.swing.event.TreeSelectionListener
-import javax.swing.tree.DefaultMutableTreeNode
 
 class LoggersSplitView(
     private val project: Project,
@@ -53,32 +52,24 @@ class LoggersSplitView(
     private val loggersStateView = LoggersStateView(project, coroutineScope)
 
     init {
-
         firstComponent = JBScrollPane(tree)
-        secondComponent = loggersStateView.component
+        secondComponent = loggersStateView.view
 
         //PopupHandler.installPopupMenu(tree, "action.group.id", "place")
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
 
-        val activeConnection = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
-        val connections = RemoteConnectionService.Companion.getInstance(project).getRemoteConnections(RemoteConnectionType.Hybris)
-            .associateWith { (it == activeConnection) }
-        tree.update(connections)
+        val activeConnection = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        updateTree(activeConnection)
 
         with(project.messageBus.connect(this)) {
-            subscribe(RemoteConnectionListener.Companion.TOPIC, object : RemoteConnectionListener {
+            subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
                 override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) {
-                    val connections = RemoteConnectionService.Companion.getInstance(project).getRemoteConnections(RemoteConnectionType.Hybris)
-                        .associateWith { (it == remoteConnection) }
-                    tree.update(connections)
+                    updateTree(remoteConnection)
                 }
 
                 override fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
-
-                override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettings) {
-                    tree.update()
-                }
+                override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettings) = tree.update()
             })
         }
 
@@ -99,25 +90,31 @@ class LoggersSplitView(
         tree.addTreeModelListener(treeModelListener())
     }
 
-    private fun treeSelectionListener() = TreeSelectionListener { tls ->
-        val path = tls.newLeadSelectionPath
-        val component = path?.lastPathComponent
-        val node = (component as? LoggersOptionsTreeNode)?.userObject as? LoggerNode
+    private fun updateTree(settings: RemoteConnectionSettings) {
+        val connections = RemoteConnectionService.getInstance(project)
+            .getRemoteConnections(RemoteConnectionType.Hybris)
+            .associateWith { (it == settings) }
+        tree.update(connections)
+    }
 
-        updateSecondComponent(node)
+    private fun treeSelectionListener() = TreeSelectionListener {
+        it.newLeadSelectionPath
+            ?.lastPathComponent
+            ?.asSafely<LoggersOptionsTreeNode>()
+            ?.userObject
+            ?.asSafely<LoggerNode>()
+            ?.let { node -> updateSecondComponent(node) }
     }
 
     private fun treeModelListener() = object : TreeModelListener {
         override fun treeNodesChanged(e: TreeModelEvent) {
-            if (e.treePath?.lastPathComponent == tree.selectionPath?.parentPath?.lastPathComponent) {
-                val node = tree
-                    .selectionPath
-                    ?.lastPathComponent
-                    ?.asSafely<DefaultMutableTreeNode>()
-                    ?.userObject
-                    ?.asSafely<LoggerNode>()
-                updateSecondComponent(node)
-            }
+            tree.selectionPath
+                ?.takeIf { e.treePath?.lastPathComponent == it.parentPath?.lastPathComponent }
+                ?.lastPathComponent
+                ?.asSafely<LoggersOptionsTreeNode>()
+                ?.userObject
+                ?.asSafely<LoggerNode>()
+                ?.let { node -> updateSecondComponent(node) }
         }
 
         override fun treeNodesInserted(e: TreeModelEvent) = Unit
@@ -125,7 +122,7 @@ class LoggersSplitView(
         override fun treeStructureChanged(e: TreeModelEvent) = Unit
     }
 
-    private fun updateSecondComponent(node: LoggerNode?) {
+    private fun updateSecondComponent(node: LoggerNode) {
         coroutineScope.launch {
             if (project.isDisposed) return@launch
 

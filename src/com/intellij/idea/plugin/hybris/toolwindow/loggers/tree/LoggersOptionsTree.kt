@@ -23,6 +23,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggerRootNode
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
@@ -37,11 +38,12 @@ private const val SEARCH_CAN_EXPAND = true
 
 class LoggersOptionsTree(val myProject: Project) : Tree(), Disposable {
 
-    private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggerRootNode(this)), myProject)
+    private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggerRootNode(this)))
 
     init {
         isRootVisible = false
         model = AsyncTreeModel(myTreeModel, SHOW_LOADING_NODE, this)
+        Disposer.register(this, myTreeModel)
 
         TreeUIHelper.getInstance().installTreeSpeedSearch(this, Convertor { treePath: TreePath ->
             when (val uObj = (treePath.lastPathComponent as DefaultMutableTreeNode).userObject) {
@@ -53,14 +55,8 @@ class LoggersOptionsTree(val myProject: Project) : Tree(), Disposable {
 
     override fun dispose() = Unit
 
-    fun update(connections: Map<RemoteConnectionSettings, Boolean>) {
-        myTreeModel.reload(connections)
-    }
-
-    fun update() {
-        myTreeModel.reload()
-    }
-
+    fun update(connections: Map<RemoteConnectionSettings, Boolean>) = myTreeModel.reload(connections)
+    fun update() = myTreeModel.reload()
     fun addTreeModelListener(listener: TreeModelListener) = model.addTreeModelListener(listener)
 
     companion object {

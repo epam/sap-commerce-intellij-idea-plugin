@@ -24,7 +24,7 @@ import javax.swing.tree.DefaultMutableTreeNode
 
 class LoggersOptionsTreeNode(private val node: LoggerNode) : DefaultMutableTreeNode(node) {
 
-    override fun toString() = node.toString()
+    override fun toString(): String = node.toString()
 
     companion object {
         @Serial
