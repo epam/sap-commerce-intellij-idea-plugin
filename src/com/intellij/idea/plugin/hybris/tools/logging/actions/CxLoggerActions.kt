@@ -68,7 +68,6 @@ class InfoLoggerAction : CxLoggerAction(LogLevel.INFO)
 class WarnLoggerAction : CxLoggerAction(LogLevel.WARN)
 class ErrorLoggerAction : CxLoggerAction(LogLevel.ERROR)
 class FatalLoggerAction : CxLoggerAction(LogLevel.FATAL)
-class SevereLoggerAction : CxLoggerAction(LogLevel.SEVERE)
 
 class FetchLoggersStateAction : AnAction() {
 

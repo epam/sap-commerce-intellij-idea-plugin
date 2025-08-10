@@ -40,7 +40,6 @@
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.WarnLoggerAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.ErrorLoggerAction"/>
             <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.FatalLoggerAction"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.SevereLoggerAction"/>
         </group>
     </actions>
 </idea-plugin>

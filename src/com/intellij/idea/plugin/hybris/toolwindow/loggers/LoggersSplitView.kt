@@ -21,12 +21,12 @@ package com.intellij.idea.plugin.hybris.toolwindow.loggers
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
-import com.intellij.idea.plugin.hybris.tools.logging.LoggersStateListener
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggersStateListener
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTree
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTreeNode
-import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.HacConnectionLoggersNode
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersHacConnectionNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.CustomLoggersTemplateLoggersOptionsNode
@@ -74,12 +74,12 @@ class LoggersSplitView(
         }
 
         with(project.messageBus.connect(this)) {
-            subscribe(LoggersStateListener.TOPIC, object : LoggersStateListener {
+            subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {
                 override fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettings) {
                     tree.lastSelectedPathComponent
                         ?.asSafely<LoggersOptionsTreeNode>()
                         ?.userObject
-                        ?.asSafely<HacConnectionLoggersNode>()
+                        ?.asSafely<LoggersHacConnectionNode>()
                         ?.takeIf { it.connectionSettings == remoteConnection }
                         ?.let { updateSecondComponent(it) }
                 }
@@ -127,7 +127,7 @@ class LoggersSplitView(
             if (project.isDisposed) return@launch
 
             when (node) {
-                is HacConnectionLoggersNode -> CxLoggerAccess.getInstance(project).state(node.connectionSettings).get()
+                is LoggersHacConnectionNode -> CxLoggerAccess.getInstance(project).state(node.connectionSettings).get()
                     ?.let { loggersStateView.renderLoggers(it) }
                     ?: loggersStateView.renderFetchLoggers()
 

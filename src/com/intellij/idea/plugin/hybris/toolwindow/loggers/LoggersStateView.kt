@@ -151,13 +151,15 @@ class LoggersStateView(
                         .enabledIf(editable)
                         .component
                         .addItemListener { event ->
-                            val currentCxLogger = loggers[cxLogger.name] ?: return@addItemListener
-                            val newLogLevel = event.item.asSafely<LogLevel>() ?: return@addItemListener
+                            event.item.asSafely<LogLevel>()
+                                ?.takeUnless { it == cxLogger.level }
+                                ?.let { newLogLevel ->
+                                    editable.set(false)
 
-                            if (currentCxLogger.level != newLogLevel) {
-                                editable.set(false)
-                                CxLoggerAccess.getInstance(project).setLogger(cxLogger.name, newLogLevel)
-                            }
+                                    CxLoggerAccess.getInstance(project).setLogger(cxLogger.name, newLogLevel) { _, _ ->
+                                        editable.set(true)
+                                    }
+                                }
                         }
 
                     icon(cxLogger.icon)

@@ -30,7 +30,6 @@ enum class LogLevel(val icon: Icon) {
     WARN(HybrisIcons.Log.Level.WARN),
     ERROR(HybrisIcons.Log.Level.ERROR),
     FATAL(HybrisIcons.Log.Level.FATAL),
-    SEVERE(HybrisIcons.Log.Level.SEVERE),
     CUSTOM(HybrisIcons.Log.LOG);
 
     companion object {

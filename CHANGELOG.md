@@ -6,6 +6,7 @@
 - Display a dropdown with available levels [1513](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1513)
 - Show a spinner for Fetch button when loggers are being fetched from a remote server [1514](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1514)
 - Added possibility to Apply new Logger settings [1516](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1516)
+- Removed unsupported `SEVERE` logging level [1517](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1517)
 
 ### Other
 - Properties API adjustments [#1510](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1510)

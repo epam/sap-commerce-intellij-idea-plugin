@@ -83,7 +83,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
             updateState(result.loggers, server)
             callback.invoke(coroutineScope, result)
 
-            project.messageBus.syncPublisher(LoggersStateListener.TOPIC).onLoggersStateChanged(server)
+            project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
 
             if (result.hasError) notify(NotificationType.ERROR, "Failed To Update Log Level") {
                 """
@@ -139,7 +139,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                     updateState(loggers, server)
                 }
 
-                project.messageBus.syncPublisher(LoggersStateListener.TOPIC).onLoggersStateChanged(server)
+                project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
 
                 when {
                     result.hasError -> notify(NotificationType.ERROR, "Failed to retrieve loggers state") {

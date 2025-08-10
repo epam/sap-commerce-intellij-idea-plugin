@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 
-class HacConnectionLoggersNode(
+class LoggersHacConnectionNode(
     val connectionSettings: RemoteConnectionSettings,
     val activeConnection: Boolean,
     project: Project
