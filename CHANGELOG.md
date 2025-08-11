@@ -1,5 +1,8 @@
 ## [2025.2.1]
 
+### `Project Import` enhancements
+- Omit read-related deadlock during project import [#1520](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1520) for [#1519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1519)
+
 ### `SAP CX Logging` enhancements
 - Added Cx Loggers toolwindow in SAP CX panel [1508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1508)
 - Display an icon for a logger in CX Loggers toolwindow [1511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1511)

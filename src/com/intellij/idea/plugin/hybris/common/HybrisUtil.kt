@@ -18,7 +18,6 @@
  */
 package com.intellij.idea.plugin.hybris.common
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
@@ -54,33 +53,25 @@ object HybrisUtil {
     fun isPotentialHybrisProject(root: VirtualFile): Boolean {
         if (root.getUserData(KEY_HYBRIS_PROJECT_DIRECTORY) == true) return true
 
-        return ProgressManager.getInstance().runProcessWithProgressSynchronously<Boolean, RuntimeException>(
-            {
-                ProgressManager.getInstance().progressIndicator.text = "Scanning for SAP Commerce project structure..."
-                root.putUserData(KEY_HYBRIS_PROJECT_DIRECTORY, false)
+        root.putUserData(KEY_HYBRIS_PROJECT_DIRECTORY, false)
 
-                VfsUtilCore.iterateChildrenRecursively(
-                    root,
-                    { !SKIP_DIRS.contains(it.name) },
-                    { fileOrDir: VirtualFile ->
-                        val hybrisFile = fileOrDir.name == HybrisConstants.LOCAL_EXTENSIONS_XML
-                            || fileOrDir.name == HybrisConstants.EXTENSIONS_XML
-                            || fileOrDir.name == HybrisConstants.EXTENSION_INFO_XML
+        VfsUtilCore.iterateChildrenRecursively(
+            root,
+            { !SKIP_DIRS.contains(it.name) },
+            { fileOrDir: VirtualFile ->
+                val hybrisFile = fileOrDir.name == HybrisConstants.LOCAL_EXTENSIONS_XML
+                    || fileOrDir.name == HybrisConstants.EXTENSIONS_XML
+                    || fileOrDir.name == HybrisConstants.EXTENSION_INFO_XML
 
-                        if (hybrisFile) {
-                            root.putUserData(KEY_HYBRIS_PROJECT_DIRECTORY, true)
-                        }
+                if (hybrisFile) {
+                    root.putUserData(KEY_HYBRIS_PROJECT_DIRECTORY, true)
+                }
 
-                        !hybrisFile
-                    }, VirtualFileVisitor.NO_FOLLOW_SYMLINKS, VirtualFileVisitor.limit(6)
-                )
-
-                java.lang.Boolean.TRUE == root.getUserData(KEY_HYBRIS_PROJECT_DIRECTORY)
-            },
-            "Detecting SAP Commerce Project",
-            true,
-            null  // project, null is OK outside project context
+                !hybrisFile
+            }, VirtualFileVisitor.NO_FOLLOW_SYMLINKS, VirtualFileVisitor.limit(6)
         )
+
+        return java.lang.Boolean.TRUE == root.getUserData(KEY_HYBRIS_PROJECT_DIRECTORY)
     }
 
     private val KEY_HYBRIS_PROJECT_DIRECTORY = Key.create<Boolean>("IS_HYBRIS_FILE")
