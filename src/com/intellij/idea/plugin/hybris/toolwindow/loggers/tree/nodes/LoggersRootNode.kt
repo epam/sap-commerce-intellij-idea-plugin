@@ -25,11 +25,12 @@ import com.intellij.ui.SimpleTextAttributes
 
 class LoggersRootNode(tree: LoggersOptionsTree) : LoggersNode(tree.myProject) {
 
+    override fun getName() = "root"
     override fun update(presentation: PresentationData) {
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
     }
 
-    override fun getNewChildren(parameters: LoggersNodeParameters) = listOf(
+    override fun getNewChildren(nodeParameters: LoggersNodeParameters) = listOf(
         RemoteHacInstancesLoggersOptionsNode(project)
         //LoggersTemplateLoggersOptionsNode(project)
     ).associateBy { it.name }

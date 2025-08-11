@@ -179,7 +179,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         try {
             post.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
             response = client.execute(post);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOG.warn(e.getMessage(), e);
             return createErrorResponse(e.getMessage());
         }

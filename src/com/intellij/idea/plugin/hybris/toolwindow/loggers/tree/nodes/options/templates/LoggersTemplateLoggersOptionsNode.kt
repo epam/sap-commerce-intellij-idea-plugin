@@ -25,7 +25,7 @@ import com.intellij.openapi.project.Project
 
 class LoggersTemplateLoggersOptionsNode(project: Project) : LoggersOptionsNode("Logger Templates", HybrisIcons.Log.Template.TEMPLATES, project) {
 
-    override fun getNewChildren(parameters: LoggersNodeParameters) = listOf(
+    override fun getNewChildren(nodeParameters: LoggersNodeParameters) = listOf(
         BundledLoggersTemplateLoggersOptionsNode(project),
         CustomLoggersTemplateLoggersOptionsNode(project)
     ).associateBy { it.name }

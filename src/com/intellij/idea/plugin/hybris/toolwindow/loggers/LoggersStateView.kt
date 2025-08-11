@@ -24,6 +24,7 @@ import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
+import com.intellij.idea.plugin.hybris.ui.Dsl.addItemListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
@@ -37,6 +38,8 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiPackage
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
+import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.InlineBanner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.*
@@ -93,7 +96,9 @@ class LoggersStateView(
                 }
                     .resizableRow()
             }
-                .apply { renderNothingSelected() }
+                .apply {
+                    border = JBUI.Borders.empty(JBUI.insets(10, 16, 0, 16))
+                }
         }
     }
 
@@ -104,7 +109,10 @@ class LoggersStateView(
     fun renderNoLoggerTemplates() = toggleView(showNoLogger)
     fun renderNothingSelected() = toggleView(showNothingSelected)
     fun renderLoggers(loggers: Map<String, CxLoggerModel>) {
-        dataScrollPane.setViewportView(loggersView(loggers))
+        val view = if (loggers.isEmpty()) noLoggersView()
+        else loggersView(loggers)
+
+        dataScrollPane.setViewportView(view)
 
         toggleView(showDataPanel)
     }
@@ -116,16 +124,27 @@ class LoggersStateView(
             showNoLogger,
             showDataPanel
         )
-            .filter { it != unhide }
-            .forEach { it.set(false) }
-
-        unhide.forEach { it.set(true) }
+            .forEach { it.set(unhide.contains(it)) }
     }
 
     private fun Row.cellNoData(property: AtomicBooleanProperty, text: String) = text(text)
         .visibleIf(property)
         .align(Align.CENTER)
         .resizableColumn()
+
+    private fun noLoggersView() = panel {
+        row {
+            cell(
+                InlineBanner(
+                    "Unable to get list of loggers for the connection.",
+                    EditorNotificationPanel.Status.Warning
+                )
+                    .showCloseButton(false)
+            )
+                .align(Align.CENTER)
+                .resizableColumn()
+        }.resizableRow()
+    }
 
     private fun loggersView(loggers: Map<String, CxLoggerModel>) = panel {
         loggers.values
@@ -148,9 +167,8 @@ class LoggersStateView(
                         }
                     )
                         .align(AlignX.FILL)
-                        .bindItem({ cxLogger.level }, { _ -> })
                         .enabledIf(editable)
-                        .component
+                        .bindItem({ cxLogger.level }, { _ -> })
                         .addItemListener { event ->
                             event.item.asSafely<LogLevel>()
                                 ?.takeUnless { it == cxLogger.level }
@@ -240,14 +258,10 @@ class LoggersStateView(
                     if (!canApply.get()) return@button
 
                     editable.set(false)
-                    loggerNameField.isEnabled = false
-                    loggerLevelField.isEnabled = false
 
                     CxLoggerAccess.getInstance(project).setLogger(loggerNameField.text!!, loggerLevelField.selectedItem as LogLevel) { coroutineScope, _ ->
                         coroutineScope.launch {
                             withContext(Dispatchers.EDT) {
-                                loggerNameField.isEnabled = true
-                                loggerLevelField.isEnabled = true
                                 editable.set(true)
                             }
                         }
@@ -260,8 +274,6 @@ class LoggersStateView(
                 registerValidators(this@LoggersStateView) { validations ->
                     canApply.set(validations.values.all { it.okEnabled })
                 }
-
-                border = JBUI.Borders.empty(10, 16, 0, 16)
             }
         return dPanel
     }

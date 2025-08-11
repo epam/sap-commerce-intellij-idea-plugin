@@ -18,12 +18,18 @@
 
 package com.intellij.idea.plugin.hybris.ui
 
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBEmptyBorder
+import java.awt.Color
+import java.awt.Font
+import java.awt.event.ItemListener
 import javax.swing.JComponent
 import javax.swing.ScrollPaneConstants
+import javax.swing.border.Border
 
 object Dsl {
 
@@ -41,4 +47,11 @@ object Dsl {
 
         }.resizableRow()
     }
+
+    internal fun <J : JComponent> Cell<J>.border(border: Border?): Cell<J> = this.apply { component.border = border }
+    internal fun <J : JComponent> Cell<J>.background(background: Color?): Cell<J> = this.apply { component.background = background }
+    internal fun <J : JComponent> Cell<J>.opaque(opaque: Boolean): Cell<J> = this.apply { component.isOpaque = opaque }
+    internal fun <J : JComponent> Cell<J>.font(font: Font): Cell<J> = this.apply { component.font = font }
+
+    internal fun <J : Any> Cell<ComboBox<J>>.addItemListener(itemListener: ItemListener): Cell<ComboBox<J>> = this.apply { component.addItemListener(itemListener) }
 }
