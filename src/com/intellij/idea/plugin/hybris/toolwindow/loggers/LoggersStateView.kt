@@ -39,6 +39,7 @@ import com.intellij.psi.PsiPackage
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.startOffset
 import com.intellij.ui.EditorNotificationPanel
+import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
@@ -49,7 +50,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.swing.DefaultComboBoxModel
 import javax.swing.JPanel
 
 class LoggersStateView(
@@ -152,13 +152,8 @@ class LoggersStateView(
             .sortedBy { it.name }
             .forEach { cxLogger ->
                 row {
-                    val model = DefaultComboBoxModel<LogLevel>().apply {
-                        LogLevel.entries
-                            .filter { it != LogLevel.CUSTOM || (cxLogger.level == LogLevel.CUSTOM) }
-                            .forEach { addElement(it) }
-                    }
                     comboBox(
-                        model,
+                        EnumComboBoxModel(LogLevel::class.java),
                         renderer = SimpleListCellRenderer.create { label, value, _ ->
                             if (value != null) {
                                 label.icon = value.icon
@@ -223,11 +218,7 @@ class LoggersStateView(
         dPanel = panel {
             row {
                 val loggerLevelField = comboBox(
-                    model = DefaultComboBoxModel<LogLevel>().apply {
-                        LogLevel.entries
-                            .filter { it != LogLevel.CUSTOM }
-                            .forEach { addElement(it) }
-                    },
+                    model = EnumComboBoxModel(LogLevel::class.java),
                     renderer = SimpleListCellRenderer.create { label, value, _ ->
                         if (value != null) {
                             label.icon = value.icon

@@ -29,13 +29,12 @@ enum class LogLevel(val icon: Icon) {
     INFO(HybrisIcons.Log.Level.INFO),
     WARN(HybrisIcons.Log.Level.WARN),
     ERROR(HybrisIcons.Log.Level.ERROR),
-    FATAL(HybrisIcons.Log.Level.FATAL),
-    CUSTOM(HybrisIcons.Log.LOG);
+    FATAL(HybrisIcons.Log.Level.FATAL);
 
     companion object {
         private val cache by lazy { entries.associateBy { it.name } }
 
-        fun of(effectiveLevel: String) = cache.getOrElse(effectiveLevel.uppercase()) { CUSTOM }
+        fun of(effectiveLevel: String) = cache.getOrElse(effectiveLevel.uppercase()) { INFO }
     }
 
 }

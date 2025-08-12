@@ -26,8 +26,8 @@ import com.intellij.util.asSafely
 import javax.swing.Icon
 
 data class CxLoggerModel(
+    private val effectiveLevel: String,
     val name: String,
-    val effectiveLevel: String,
     val parentName: String?,
     val inherited: Boolean,
     val icon: Icon,

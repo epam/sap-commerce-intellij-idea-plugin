@@ -74,7 +74,7 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
                     else SimpleTextAttributes(STYLE_PLAIN, JBColor.blue)
 
                     RichText("[").apply {
-                        append(logger.effectiveLevel, style)
+                        append(logger.level.name, style)
                         append("] log level", REGULAR_ATTRIBUTES)
                     }
                 }
