@@ -73,19 +73,16 @@ class TSTreePanel(
                 ?.userObject
                 ?.asSafely<TSNode>()
                 ?.let { node -> updateSecondComponent(node) }
-
         }
         .addTreeModelListener(tree, object : TreeModelListener {
             override fun treeNodesChanged(e: TreeModelEvent) {
-                if (e.treePath?.lastPathComponent == tree.selectionPath?.parentPath?.lastPathComponent) {
-                    val node = tree
-                        .selectionPath
-                        ?.lastPathComponent
-                        ?.asSafely<TreeNode>()
-                        ?.userObject
-                        ?.asSafely<TSNode>()
-                    updateSecondComponent(node)
-                }
+                tree.selectionPath
+                    ?.takeIf { it.parentPath?.lastPathComponent == e.treePath?.lastPathComponent }
+                    ?.lastPathComponent
+                    ?.asSafely<TreeNode>()
+                    ?.userObject
+                    ?.asSafely<TSNode>()
+                    ?.let { updateSecondComponent(it) }
             }
         })
 

@@ -72,15 +72,13 @@ class BSTreePanel(
         }
         .addTreeModelListener(tree, object : TreeModelListener {
             override fun treeNodesChanged(e: TreeModelEvent) {
-                if (e.treePath?.lastPathComponent == tree.selectionPath?.parentPath?.lastPathComponent) {
-                    val node = tree
-                        .selectionPath
-                        ?.lastPathComponent
-                        ?.asSafely<TreeNode>()
-                        ?.userObject
-                        ?.asSafely<BSNode>()
-                    updateSecondComponent(node)
-                }
+                tree.selectionPath
+                    ?.takeIf { it.parentPath?.lastPathComponent == e.treePath?.lastPathComponent }
+                    ?.lastPathComponent
+                    ?.asSafely<TreeNode>()
+                    ?.userObject
+                    ?.asSafely<BSNode>()
+                    ?.let { updateSecondComponent(it) }
             }
         })
 
