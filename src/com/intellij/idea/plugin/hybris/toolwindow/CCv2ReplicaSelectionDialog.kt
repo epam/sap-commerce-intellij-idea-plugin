@@ -89,16 +89,17 @@ class CCv2ReplicaSelectionDialog(
                 preferredSize = JBUI.DialogSizes.large()
             }
 
-        return JBLoadingPanel(BorderLayout(), this).apply {
-            add(centerPanel, BorderLayout.CENTER)
-            jbLoadingPanel = this
-        }.also {
-
-            ccv2SubscriptionComboBox.selectedItem.asSafely<CCv2Subscription>()
-                ?.let {
-                    ccv2TreeTable.refresh(project, it)
-                }
-        }
+        return JBLoadingPanel(BorderLayout(), this)
+            .apply {
+                add(centerPanel, BorderLayout.CENTER)
+                jbLoadingPanel = this
+            }
+            .also {
+                ccv2SubscriptionComboBox.selectedItem.asSafely<CCv2Subscription>()
+                    ?.let {
+                        ccv2TreeTable.refresh(project, it)
+                    }
+            }
     }
 
     private fun Panel.ccv2Settings() {
