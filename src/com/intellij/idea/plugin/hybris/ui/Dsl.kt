@@ -64,7 +64,7 @@ object Dsl {
     internal fun <J : Any> Cell<ComboBox<J>>.addItemListener(parentDisposable: Disposable? = null, listener: ItemListener): Cell<ComboBox<J>> = this
         .apply { component.addItemListener(parentDisposable, listener) }
 
-    internal fun <J : JComponent> Cell<J>.addKeyListener(parentDisposable: Disposable? = null, listener: KeyListener): Cell<J> = this
+    internal fun <T: KeyListener, J : JComponent> Cell<J>.addKeyListener(parentDisposable: Disposable? = null, listener: T): Cell<J> = this
         .apply { component.addKeyListener(parentDisposable, listener) }
 
     internal fun JTree.addTreeSelectionListener(parentDisposable: Disposable? = null, listener: TreeSelectionListener): JTree = this

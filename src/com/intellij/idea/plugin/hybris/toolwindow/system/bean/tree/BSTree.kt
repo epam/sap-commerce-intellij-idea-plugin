@@ -29,7 +29,6 @@ import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
 import java.io.Serial
-import javax.swing.event.TreeModelListener
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreeNode
 import javax.swing.tree.TreePath
@@ -63,7 +62,6 @@ class BSTree(val myProject: Project) : Tree(), Disposable {
             myTreeModel.reload(globalMetaModel)
         }
     }
-    fun addTreeModelListener(listener: TreeModelListener) = model.addTreeModelListener(listener)
 
     companion object {
         @Serial

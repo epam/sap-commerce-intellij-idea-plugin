@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.idea.plugin.hybris.ui.Dsl.addItemListener
 import com.intellij.idea.plugin.hybris.ui.Dsl.addKeyListener
+import com.intellij.idea.plugin.hybris.ui.event.KeyListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
@@ -54,7 +55,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.awt.event.KeyEvent
-import java.awt.event.KeyListener
 import javax.swing.JPanel
 
 class LoggersStateView(
@@ -249,8 +249,6 @@ class LoggersStateView(
                     }
                     .comment("Logger (package or class name)")
                     .addKeyListener(this@LoggersStateView, object : KeyListener {
-                        override fun keyTyped(e: KeyEvent) = Unit
-                        override fun keyPressed(e: KeyEvent) = Unit
                         override fun keyReleased(e: KeyEvent) {
                             if (e.keyCode == KeyEvent.VK_ENTER) {
                                 applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
