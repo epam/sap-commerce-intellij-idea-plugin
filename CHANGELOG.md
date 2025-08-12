@@ -1,6 +1,7 @@
 ## [2025.2.2]
 
 ### `SAP CX Logging` enhancements
+- Apply new logger by Enter within the new logger name field [#1523](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1523)
 - Removed `CUSTOM` log level, use `INFO` as a fallback [#1522](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1522)
 
 ## [2025.2.1]
@@ -12,13 +13,13 @@
 - Omit read-related deadlock during project import [#1520](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1520) for [#1519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1519)
 
 ### `SAP CX Logging` enhancements
-- Added Cx Loggers toolwindow in SAP CX panel [1508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1508)
-- Display an icon for a logger in CX Loggers toolwindow [1511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1511)
-- Display a dropdown with available levels [1513](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1513)
-- Show a spinner for Fetch button when loggers are being fetched from a remote server [1514](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1514)
-- Added possibility to Apply new Logger settings [1516](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1516)
-- Removed unsupported `SEVERE` logging level [1517](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1517)
-- Show "no data" message when there are no loggers in the response [1518](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1518)
+- Added Cx Loggers toolwindow in SAP CX panel [#1508](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1508)
+- Display an icon for a logger in CX Loggers toolwindow [#1511](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1511)
+- Display a dropdown with available levels [#1513](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1513)
+- Show a spinner for Fetch button when loggers are being fetched from a remote server [#1514](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1514)
+- Added possibility to Apply new Logger settings [#1516](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1516)
+- Removed unsupported `SEVERE` logging level [#1517](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1517)
+- Show "no data" message when there are no loggers in the response [#1518](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1518)
 
 ### Other
 - Properties API adjustments [#1510](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1510)

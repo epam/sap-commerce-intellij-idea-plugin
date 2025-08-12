@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.idea.plugin.hybris.ui.Dsl.addItemListener
+import com.intellij.idea.plugin.hybris.ui.Dsl.addKeyListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
@@ -32,6 +33,7 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.observable.util.or
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.psi.PsiClass
@@ -43,6 +45,7 @@ import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.InlineBanner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
@@ -50,6 +53,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import javax.swing.JPanel
 
 class LoggersStateView(
@@ -164,7 +169,7 @@ class LoggersStateView(
                         .align(AlignX.FILL)
                         .enabledIf(editable)
                         .bindItem({ cxLogger.level }, { _ -> })
-                        .addItemListener { event ->
+                        .addItemListener(this@LoggersStateView) { event ->
                             event.item.asSafely<LogLevel>()
                                 ?.takeUnless { it == cxLogger.level }
                                 ?.let { newLogLevel ->
@@ -214,10 +219,12 @@ class LoggersStateView(
 
     private fun newLoggerPanel(): DialogPanel {
         lateinit var dPanel: DialogPanel
+        lateinit var loggerLevelField: ComboBox<LogLevel>
+        lateinit var loggerNameField: JBTextField
 
-        dPanel = panel {
+        return panel {
             row {
-                val loggerLevelField = comboBox(
+                loggerLevelField = comboBox(
                     model = EnumComboBoxModel(LogLevel::class.java),
                     renderer = SimpleListCellRenderer.create { label, value, _ ->
                         if (value != null) {
@@ -229,7 +236,7 @@ class LoggersStateView(
                     .comment("Effective level")
                     .component
 
-                val loggerNameField = textField()
+                loggerNameField = textField()
                     .resizableColumn()
                     .align(AlignX.FILL)
                     .validationOnInput {
@@ -241,22 +248,19 @@ class LoggersStateView(
                         else null
                     }
                     .comment("Logger (package or class name)")
+                    .addKeyListener(this@LoggersStateView, object : KeyListener {
+                        override fun keyTyped(e: KeyEvent) = Unit
+                        override fun keyPressed(e: KeyEvent) = Unit
+                        override fun keyReleased(e: KeyEvent) {
+                            if (e.keyCode == KeyEvent.VK_ENTER) {
+                                applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
+                            }
+                        }
+                    })
                     .component
 
                 button("Apply Logger") {
-                    canApply.set(dPanel.validateAll().all { it.okEnabled })
-
-                    if (!canApply.get()) return@button
-
-                    editable.set(false)
-
-                    CxLoggerAccess.getInstance(project).setLogger(loggerNameField.text!!, loggerLevelField.selectedItem as LogLevel) { coroutineScope, _ ->
-                        coroutineScope.launch {
-                            withContext(Dispatchers.EDT) {
-                                editable.set(true)
-                            }
-                        }
-                    }
+                    applyNewLogger(dPanel, loggerNameField.text, loggerLevelField.selectedItem as LogLevel)
                 }
             }
                 .layout(RowLayout.PARENT_GRID)
@@ -265,12 +269,26 @@ class LoggersStateView(
                 registerValidators(this@LoggersStateView) { validations ->
                     canApply.set(validations.values.all { it.okEnabled })
                 }
+                dPanel = this
             }
-        return dPanel
     }
 
-    override fun dispose() {
-        panel.drop()
+    private fun applyNewLogger(newLoggerPanel: DialogPanel, logger: String, level: LogLevel) {
+        canApply.set(newLoggerPanel.validateAll().all { it.okEnabled })
+
+        if (!canApply.get()) return
+
+        editable.set(false)
+
+        CxLoggerAccess.getInstance(project).setLogger(logger, level) { coroutineScope, _ ->
+            coroutineScope.launch {
+                withContext(Dispatchers.EDT) {
+                    editable.set(true)
+                }
+            }
+        }
     }
+
+    override fun dispose() = panel.drop()
 
 }
