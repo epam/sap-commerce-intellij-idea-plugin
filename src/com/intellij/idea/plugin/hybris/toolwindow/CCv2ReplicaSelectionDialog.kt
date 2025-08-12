@@ -41,6 +41,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBLoadingPanel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
+import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
 import java.awt.Component
@@ -79,7 +80,7 @@ class CCv2ReplicaSelectionDialog(
     private lateinit var jbLoadingPanel: JBLoadingPanel
     private lateinit var ccv2SubscriptionComboBox: ComboBox<CCv2Subscription>
 
-    override fun createCenterPanel(): JComponent? {
+    override fun createCenterPanel(): JComponent {
         val centerPanel = panel {
             ccv2Settings()
         }
@@ -91,6 +92,12 @@ class CCv2ReplicaSelectionDialog(
         return JBLoadingPanel(BorderLayout(), this).apply {
             add(centerPanel, BorderLayout.CENTER)
             jbLoadingPanel = this
+        }.also {
+
+            ccv2SubscriptionComboBox.selectedItem.asSafely<CCv2Subscription>()
+                ?.let {
+                    ccv2TreeTable.refresh(project, it)
+                }
         }
     }
 

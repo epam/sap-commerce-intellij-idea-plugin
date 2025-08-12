@@ -1,5 +1,8 @@
 ## [2025.2.1]
 
+### `Groovy` enhancements
+- Improved replica selection in case of active subscription [#1521](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1521)
+
 ### `Project Import` enhancements
 - Omit read-related deadlock during project import [#1520](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1520) for [#1519](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1519)
 
@@ -172,9 +175,7 @@
 ### `Groovy` enhancements
 - Adjusted execution mode selection `commit`/`rollback` [#1422](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1422)
 - Add Groovy imports when a block of lines is selected in the editor for execution [#1436](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1436)
-
-### `Other` enhancements
-- Added possibility to select Replica for HAC connection [#1423](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1423)
+- Added possibility to select Replica for hAC connection [#1423](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1423)
 - Improved performance to get environments during Replica selection [#1431](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1431)
 - Filter for hcs_platform when retrieving services for replica selection [#1433](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1433)
 
@@ -298,7 +299,7 @@
 
 ### Other
 - Disable failing JRebelPlugin during build of the Searchable Options [#1325](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1325)
-- Support configurable session cookie name for remote HAC connection [#1334](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1334)
+- Support configurable session cookie name for remote hAC connection [#1334](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1334)
 
 ## [2025.1.0]
 
@@ -385,11 +386,11 @@
 - Added logging support for enum, record and interface types [#1273](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1273)
 - Removed logger actions from the Actions tab in the Search Everywhere popup [#1275](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1275)
 - Added ALL and OFF modes for logging [#1277](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1277)
-- Added the active HAC connection in the logging menu [#1281](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1281)
+- Added the active hAC connection in the logging menu [#1281](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1281)
 
 ### `Other` enhancements
 - Do not check for Ultimate plugins when using the Community edition during project import [#1276](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1276)
-- Unified HAC actions API [#1282](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1282)
+- Unified hAC actions API [#1282](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1282)
 
 ### Fixes
 - Fixed running Integration Tests via IntelliJ JUnit [#1279](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1279)
@@ -547,7 +548,7 @@
 - Enum values must be all uppercase [#1159](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1159), see [Java Enum Types](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)
 
 ### Fixes
-- Improved connection with remote `HAC` instances [#1182](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1182)
+- Improved connection with remote `hAC` instances [#1182](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1182)
 - Class initialization must not depend on services [#1158](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1158), [#1160](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1160)
 - `What's New` is not shown when JCEF is not supported by the JDK [#1161](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1161)
 - Moved actions from `EDT` to `BGT` [#1166](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1166)
@@ -748,11 +749,11 @@
 
 ### `Remote Connection` enhancements
 - Introduced `Project` and `Personal` scope for remote connections [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971)
-- Redesign HAC connection settings and rely on `PasswordSafe` to store passwords [#968](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/968) | [#986](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/986) | [#987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/987)
+- Redesign hAC connection settings and rely on `PasswordSafe` to store passwords [#968](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/968) | [#986](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/986) | [#987](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/987)
 - Redesign SOLR connection settings and rely on `PasswordSafe` to store passwords [#971](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/971) | [#985](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/985)
 - Focus connection name field on dialog show [#972](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/972)
 - Store connection credentials in the [Sensitive Storage](https://plugins.jetbrains.com/docs/intellij/persisting-sensitive-data.html#storage) [#988](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/988) | [#995](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/995)
-- Show inline test HAC connection results in the dialog [#989](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/989)
+- Show inline test hAC connection results in the dialog [#989](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/989)
 - Show inline test SOLR connection results and unify both dialogs [#990](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/990)
 - Show current host details for each request in the Console [#996](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/996)
 
@@ -1337,10 +1338,10 @@
 - Adjusted DOM inspection for `Essentials` tag [#627](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/627)
 - Adjusted `CngContextParentIsNotValid` inspection to ignore `merge-by="type"` [#630](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/630)
 
-### `HAC` enhancements
+### `hAC` enhancements
 - Enhanced Cluster support, support node routing [#543](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/543)
 - Allow blank port for connection settings [#542](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/542)
-- Respect `JSESSIONID` and cookies per `HAC` connection settings
+- Respect `JSESSIONID` and cookies per `hAC` connection settings
 - Improved handling of the `Set-Cookie` header during login [#544](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/544)
 - Automatically re-login in case of `405` response code [#548](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/548)
 - Show connection URL in the tooltip for connection switcher [#588](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/588)
@@ -1404,7 +1405,7 @@
 - Hide custom module libraries in the Project View [#569](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/569)
 - Added Slack badge to README.md [#577](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/577)
 - Do not show `resources` folders in the `External Libraries` [#589](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/589)
-- Use `HAC` project properties during first project import for remote connections [#623](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/623)
+- Use `hAC` project properties during first project import for remote connections [#623](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/623)
 
 ## [2023.2.5]
 
