@@ -22,6 +22,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.observable.util.addItemListener
 import com.intellij.openapi.observable.util.addKeyListener
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.Cell
@@ -32,8 +33,11 @@ import java.awt.Font
 import java.awt.event.ItemListener
 import java.awt.event.KeyListener
 import javax.swing.JComponent
+import javax.swing.JTree
 import javax.swing.ScrollPaneConstants
 import javax.swing.border.Border
+import javax.swing.event.TreeModelListener
+import javax.swing.event.TreeSelectionListener
 
 object Dsl {
 
@@ -57,7 +61,26 @@ object Dsl {
     internal fun <J : JComponent> Cell<J>.opaque(opaque: Boolean): Cell<J> = this.apply { component.isOpaque = opaque }
     internal fun <J : JComponent> Cell<J>.font(font: Font): Cell<J> = this.apply { component.font = font }
 
-    internal fun <J : Any> Cell<ComboBox<J>>.addItemListener(parentDisposable: Disposable? = null, listener: ItemListener): Cell<ComboBox<J>> = this.apply { component.addItemListener(parentDisposable, listener) }
+    internal fun <J : Any> Cell<ComboBox<J>>.addItemListener(parentDisposable: Disposable? = null, listener: ItemListener): Cell<ComboBox<J>> = this
+        .apply { component.addItemListener(parentDisposable, listener) }
 
-    internal fun <J : JComponent> Cell<J>.addKeyListener(parentDisposable: Disposable? = null, listener: KeyListener): Cell<J> = this.apply { component.addKeyListener(parentDisposable, listener) }
+    internal fun <J : JComponent> Cell<J>.addKeyListener(parentDisposable: Disposable? = null, listener: KeyListener): Cell<J> = this
+        .apply { component.addKeyListener(parentDisposable, listener) }
+
+    internal fun JTree.addTreeSelectionListener(parentDisposable: Disposable? = null, listener: TreeSelectionListener): JTree = this
+        .apply {
+            addTreeSelectionListener(listener)
+            parentDisposable?.whenDisposed { removeTreeSelectionListener(listener) }
+        }
+
+    internal fun <T: TreeModelListener> JTree.addTreeModelListener(parentDisposable: Disposable? = null, listener: T): JTree = this
+        .apply {
+            model.addTreeModelListener(listener)
+            parentDisposable?.whenDisposed { model.removeTreeModelListener(listener) }
+        }
+
+
+    private fun Disposable.whenDisposed(onDispose: () -> Unit) {
+        Disposer.register(this) { onDispose() }
+    }
 }
