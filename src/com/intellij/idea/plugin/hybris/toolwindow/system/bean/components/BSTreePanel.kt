@@ -38,7 +38,6 @@ import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.util.asSafely
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
-import javax.swing.event.TreeSelectionListener
 
 class BSTreePanel(
     private val myProject: Project,
@@ -63,14 +62,13 @@ class BSTreePanel(
     }
 
     private fun registerListeners(tree: BSTree) = tree
-        .addTreeSelectionListener(tree) {
-            TreeSelectionListener { tls ->
-                val path = tls.newLeadSelectionPath
-                val component = path?.lastPathComponent
-                val node = (component as? TreeNode)?.userObject as? BSNode
-
-                updateSecondComponent(node)
-            }
+        .addTreeSelectionListener(tree) { event ->
+            event.newLeadSelectionPath
+                ?.lastPathComponent
+                ?.asSafely<TreeNode>()
+                ?.userObject
+                ?.asSafely<BSNode>()
+                ?.let { node -> updateSecondComponent(node) }
         }
         .addTreeModelListener(tree, object : TreeModelListener {
             override fun treeNodesChanged(e: TreeModelEvent) {
