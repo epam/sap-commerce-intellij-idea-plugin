@@ -5,6 +5,9 @@
 - Removed `CUSTOM` log level, use `INFO` as a fallback [#1522](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1522)
 - Fetch/refresh loggers on double-click [#1524](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1524)
 
+### Fixes
+- Fix for API-compatibility on lower version IDEA `2025.1.4.1` for `2025.2.1` release [#1526](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1526) for [#1525](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1525)
+
 ## [2025.2.1]
 
 ### `Groovy` enhancements

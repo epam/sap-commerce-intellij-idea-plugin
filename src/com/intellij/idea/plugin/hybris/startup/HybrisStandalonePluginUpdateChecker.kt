@@ -29,7 +29,7 @@ import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
 class HybrisStandalonePluginUpdateChecker : StandalonePluginUpdateChecker(
-    Plugin.HYBRIS_PLUGIN_ID,
+    Plugin.HYBRIS.pluginId,
     HybrisConstants.UPDATE_TIMESTAMP_PROPERTY,
     NotificationGroupManager.getInstance().getNotificationGroup(HybrisConstants.NOTIFICATION_GROUP_HYBRIS),
     HybrisIcons.Y.LOGO_BLUE

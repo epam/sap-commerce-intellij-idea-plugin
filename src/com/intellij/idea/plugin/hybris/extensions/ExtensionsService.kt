@@ -32,7 +32,7 @@ class ExtensionsService {
 
     fun findResource(resource: ExtensionResource): Path? {
         val extensionsRootType = ExtensionsRootType.getInstance()
-        val pluginId = Plugin.HYBRIS_PLUGIN_ID
+        val pluginId = Plugin.HYBRIS.pluginId
         var path = extensionsRootType.findResource(pluginId, resource.fqn)
 
         if (path == null || !Files.exists(path)) {

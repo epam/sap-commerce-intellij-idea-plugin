@@ -46,7 +46,7 @@ class ProjectSettingsComponent : PersistentStateComponent<ProjectSettings> {
 
     fun isOutdatedHybrisProject(): Boolean {
         val lastImportVersion = hybrisProjectSettings.importedByVersion ?: return true
-        val currentVersion = Plugin.HYBRIS_PLUGIN_DESCRIPTOR
+        val currentVersion = Plugin.HYBRIS.pluginDescriptor
             ?.version
             ?: return true
 

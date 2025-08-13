@@ -167,7 +167,7 @@ class CheckRequiredPluginsWizardStep(context: WizardContext) : ProjectImportWiza
         notInstalledModel.removeAll()
         notEnabledModel.removeAll()
 
-        val hybrisPlugin = PluginManagerCore.getPlugin(PluginId.getId(HybrisConstants.PLUGIN_ID))
+        val hybrisPlugin = HYBRIS.pluginDescriptor
             ?: return false
 
         hybrisPlugin.dependencies

@@ -38,7 +38,7 @@ class WhatsNewStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isNotHybrisProject) return
 
-        val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(Plugin.HYBRIS_PLUGIN_ID)
+        val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(Plugin.HYBRIS.pluginId)
             ?: return
         val version = pluginDescriptor.version
 

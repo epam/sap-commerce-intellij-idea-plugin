@@ -45,7 +45,6 @@ import com.intellij.lang.Language;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.extensions.PluginDescriptor;
 import com.intellij.openapi.externalSystem.model.ExternalSystemDataKeys;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl;
@@ -149,7 +148,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             modulesFilesDirectory.mkdirs();
         }
 
-        this.initializeHybrisProjectSettings(project, projectSettings);
+        this.initializeHybrisProjectSettings(projectSettings);
         this.updateProjectDictionary(project, hybrisProjectDescriptor.getModulesChosenForImport());
         this.selectSdk(project);
 
@@ -448,9 +447,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         hybrisDictionary.addToDictionary(moduleNames);
     }
 
-    private void initializeHybrisProjectSettings(@NotNull final Project project, final @NotNull ProjectSettings projectSettings) {
+    private void initializeHybrisProjectSettings(final @NotNull ProjectSettings projectSettings) {
         projectSettings.setHybrisProject(true);
-        final PluginDescriptor plugin = Plugin.Companion.getHYBRIS_PLUGIN_DESCRIPTOR();
+        final var plugin = Plugin.HYBRIS.getPluginDescriptor();
 
         if (plugin == null) return;
 

@@ -22,9 +22,11 @@ import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.extensions.PluginId
+import javax.annotation.Nullable
 
 enum class Plugin(val id: String, val url: String? = null) {
 
+    HYBRIS(HybrisConstants.PLUGIN_ID, "https://plugins.jetbrains.com/plugin/12867-sap-commerce-developers-toolset"),
     JREBEL("JRebelPlugin", "https://plugins.jetbrains.com/plugin/4441-jrebel-and-xrebel"),
     ANT_SUPPORT("AntSupport", "https://plugins.jetbrains.com/plugin/23025-ant"),
     MAVEN("org.jetbrains.idea.maven"),
@@ -45,7 +47,14 @@ enum class Plugin(val id: String, val url: String? = null) {
     CRON("com.intellij.cron", "https://plugins.jetbrains.com/plugin/24438-cron-expressions"),
     GRID("intellij.grid.plugin");
 
-    fun isActive() = PluginManagerCore.getPlugin(PluginId.getId(id))
+    val pluginId: PluginId
+        get() = PluginId.getId(id)
+
+    @Nullable
+    val pluginDescriptor: IdeaPluginDescriptor?
+        get() = PluginManagerCore.getPlugin(pluginId)
+
+    fun isActive() = pluginDescriptor
         ?.isEnabled
         ?: false
 
@@ -54,10 +63,4 @@ enum class Plugin(val id: String, val url: String? = null) {
     fun <T> ifDisabled(operation: () -> T): T? = if (isDisabled()) operation() else null
 
     fun isDisabled() = !isActive()
-
-    companion object {
-        val HYBRIS_PLUGIN_ID = PluginId.getId(HybrisConstants.PLUGIN_ID)
-        val HYBRIS_PLUGIN_DESCRIPTOR: IdeaPluginDescriptor?
-            get() = PluginManagerCore.getPlugin(HYBRIS_PLUGIN_ID)
-    }
 }

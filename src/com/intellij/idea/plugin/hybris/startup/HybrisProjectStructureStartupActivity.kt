@@ -77,7 +77,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         val settings = ProjectSettingsComponent.getInstance(project).state
         val importedBy = settings.importedByVersion
         val hybrisVersion = settings.hybrisVersion
-        val plugin = Plugin.HYBRIS_PLUGIN_DESCRIPTOR ?: return
+        val plugin = Plugin.HYBRIS.pluginDescriptor ?: return
         val pluginVersion = plugin.version
         logger.info("Opening hybris version $hybrisVersion which was imported by $importedBy. Current plugin is $pluginVersion")
     }

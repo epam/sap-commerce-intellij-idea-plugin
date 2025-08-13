@@ -288,13 +288,6 @@ intellijPlatformTesting {
     }
 }
 
-// does not work well, especially in the case of Maps
-//tasks.named<RunIdeTask>("runIde") {
-//    jvmArgumentProviders += CommandLineArgumentProvider {
-//        listOf("-Didea.kotlin.plugin.use.k2=true")
-//    }
-//}
-
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
     implementation(libs.bundles.openapi)
@@ -314,6 +307,8 @@ dependencies {
     testRuntimeOnly("junit:junit:4.13.2")
 
     intellijPlatform {
+        // https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html#dependenciesLocalPlatform
+        // local("/Users/<user>/Applications/IntelliJ IDEA Community Edition 2025.1.4.1.app")
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
