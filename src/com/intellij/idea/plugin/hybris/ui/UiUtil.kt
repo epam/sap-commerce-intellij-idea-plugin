@@ -45,7 +45,7 @@ import javax.swing.tree.TreePath
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
-object Dsl {
+object UiUtil {
 
     fun scrollPanel(content: JComponent, horizontalScrollBarPolicy: Int = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED) = panel {
         row {

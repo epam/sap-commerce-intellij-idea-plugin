@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.editor
 
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
-import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.idea.plugin.hybris.ui.UiUtil
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -82,7 +82,7 @@ abstract class InEditorResultsView<E : FileEditor, R : ExecutionResult>(protecte
         panelProvider.invoke(this)
     }
         .apply { border = JBUI.Borders.empty(5, 16, 10, 16) }
-        .let { Dsl.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
+        .let { UiUtil.scrollPanel(it, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER) }
         .apply {
             minimumSize = Dimension(minimumSize.width, 150)
         }

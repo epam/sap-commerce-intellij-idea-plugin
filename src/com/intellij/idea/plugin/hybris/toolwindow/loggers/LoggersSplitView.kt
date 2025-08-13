@@ -30,10 +30,10 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersHacC
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.CustomLoggersTemplateLoggersOptionsNode
-import com.intellij.idea.plugin.hybris.ui.Dsl.addMouseListener
-import com.intellij.idea.plugin.hybris.ui.Dsl.addTreeModelListener
-import com.intellij.idea.plugin.hybris.ui.Dsl.addTreeSelectionListener
-import com.intellij.idea.plugin.hybris.ui.Dsl.pathData
+import com.intellij.idea.plugin.hybris.ui.UiUtil.addMouseListener
+import com.intellij.idea.plugin.hybris.ui.UiUtil.addTreeModelListener
+import com.intellij.idea.plugin.hybris.ui.UiUtil.addTreeSelectionListener
+import com.intellij.idea.plugin.hybris.ui.UiUtil.pathData
 import com.intellij.idea.plugin.hybris.ui.event.MouseListener
 import com.intellij.idea.plugin.hybris.ui.event.TreeModelListener
 import com.intellij.openapi.Disposable

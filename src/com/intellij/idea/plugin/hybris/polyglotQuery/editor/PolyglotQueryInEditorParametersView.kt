@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.editor
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryBindParameter
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
-import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.idea.plugin.hybris.ui.UiUtil
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
@@ -99,7 +99,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
                 border = JBUI.Borders.empty(5, 16, 10, 16)
                 registerValidators(parentDisposable)
             }
-            .let { Dsl.scrollPanel(it) }
+            .let { UiUtil.scrollPanel(it) }
             .apply {
                 minimumSize = Dimension(minimumSize.width, 165)
                 focusTraversalPolicy = LayoutFocusTraversalPolicy()

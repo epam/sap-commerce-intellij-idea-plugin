@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.ui.copyLink
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.date
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.sUser
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
-import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.idea.plugin.hybris.ui.UiUtil
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -50,7 +50,7 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
                 .expanded = true
         }
     }
-        .let { Dsl.scrollPanel(it) }
+        .let { UiUtil.scrollPanel(it) }
 
     private fun Panel.build(project: Project, subscription: CCv2Subscription, build: CCv2BuildDto) {
         row {

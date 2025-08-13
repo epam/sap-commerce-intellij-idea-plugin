@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.date
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.sUser
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
-import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.idea.plugin.hybris.ui.UiUtil
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -49,7 +49,7 @@ object CCv2DeploymentsDataView : AbstractCCv2DataView<CCv2DeploymentDto>() {
                 .expanded = true
         }
     }
-        .let { Dsl.scrollPanel(it) }
+        .let { UiUtil.scrollPanel(it) }
 
     private fun Panel.deployment(project: Project, subscription: CCv2Subscription, deployment: CCv2DeploymentDto) {
         row {

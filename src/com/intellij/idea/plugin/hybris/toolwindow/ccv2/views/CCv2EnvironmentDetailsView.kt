@@ -31,7 +31,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.*
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2ViewUtil
-import com.intellij.idea.plugin.hybris.ui.Dsl
+import com.intellij.idea.plugin.hybris.ui.UiUtil
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -556,7 +556,7 @@ class CCv2EnvironmentDetailsView(
             }.expanded = true
         }
     }
-        .let { Dsl.scrollPanel(it) }
+        .let { UiUtil.scrollPanel(it) }
 
     companion object {
         @Serial
