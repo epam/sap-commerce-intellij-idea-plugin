@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
@@ -38,7 +38,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         if (project.isDisposed) return
 
         val commonIdeaService = CommonIdeaService.getInstance()
-        val settingsComponent = ProjectSettingsComponent.getInstance(project)
+        val settingsComponent = ProjectSettings.getInstance(project)
         val isHybrisProject = settingsComponent.isHybrisProject()
 
         if (isHybrisProject) {
@@ -50,7 +50,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
                     HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.title"),
                     HybrisI18NBundleUtils.message(
                         "hybris.notification.project.open.outdated.text",
-                        settingsComponent.state.importedByVersion ?: "old"
+                        settingsComponent.importedByVersion ?: "old"
                     )
                 )
                     .important(true)
@@ -74,7 +74,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     }
 
     private fun logVersion(project: Project) {
-        val settings = ProjectSettingsComponent.getInstance(project).state
+        val settings = ProjectSettings.getInstance(project)
         val importedBy = settings.importedByVersion
         val hybrisVersion = settings.hybrisVersion
         val plugin = Plugin.HYBRIS.pluginDescriptor ?: return

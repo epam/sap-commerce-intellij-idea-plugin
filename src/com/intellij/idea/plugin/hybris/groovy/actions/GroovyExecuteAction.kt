@@ -73,15 +73,15 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         if (fileEditor.inEditorResults) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
             fileEditor.showLoader("$prefix | 1 of ${contexts.size} | ${GroovyExecutionContext.DEFAULT_TITLE}")
-            var completed = 1
+            var completed = 0
 
             executionClient.execute(
                 contexts = contexts,
-                resultCallback = { _, result ->
+                resultCallback = { _, _ ->
                     completed++
                     fileEditor.showLoader("$prefix | $completed of ${contexts.size} | ${GroovyExecutionContext.DEFAULT_TITLE}")
                 },
-                afterCallback = { coroutineScope, results ->
+                afterCallback = { _, results ->
                     fileEditor.renderExecutionResults(results)
                     fileEditor.putUserData(KEY_QUERY_EXECUTING, false)
                 },

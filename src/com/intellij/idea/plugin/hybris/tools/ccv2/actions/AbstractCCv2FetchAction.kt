@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
@@ -44,7 +44,7 @@ abstract class AbstractCCv2FetchAction<T : CCv2DTO>(
 
         val subscriptions = DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
             ?.let { listOf(it) }
-            ?: ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
+            ?: ApplicationSettings.getInstance().state.ccv2Subscriptions
                 .sortedBy { it.toString() }
 
         fetching = true

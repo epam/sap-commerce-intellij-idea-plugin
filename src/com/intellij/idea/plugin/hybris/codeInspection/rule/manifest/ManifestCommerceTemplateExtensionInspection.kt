@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
 import com.intellij.json.psi.JsonElementVisitor
 import com.intellij.json.psi.JsonProperty
@@ -46,7 +46,7 @@ class ManifestCommerceTemplateExtensionInspection : LocalInspectionTool() {
 
         override fun visitStringLiteral(o: JsonStringLiteral) {
             val parent = o.parent
-            if (isApplicable(parent, o) && !ProjectSettingsComponent.getInstance(o.project).getAvailableExtensions().contains(o.value)) {
+            if (isApplicable(parent, o) && !ProjectSettings.getInstance(o.project).getAvailableExtensions().contains(o.value)) {
                 holder.registerProblem(
                     o,
                     HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownTemplateExtensionInspection.message", o.value)

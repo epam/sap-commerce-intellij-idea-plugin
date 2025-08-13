@@ -22,10 +22,10 @@ import ai.grazie.utils.toLinkedSet
 import com.intellij.credentialStore.Credentials
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.properties.PropertyService
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -97,16 +97,20 @@ class RemoteConnectionService(private val project: Project) {
             }
 
             RemoteConnectionScope.PROJECT -> {
-                val state = ProjectSettingsComponent.getInstance(project).state
-                state.remoteConnectionSettingsList.add(settings)
+                with(ProjectSettings.getInstance(project)) {
+                    remoteConnectionSettingsList = remoteConnectionSettingsList.toMutableList()
+                        .apply { add(settings) }
+                }
             }
         }
     }
 
     fun saveRemoteConnections(type: RemoteConnectionType, settings: Collection<RemoteConnectionSettings>) {
-        ProjectSettingsComponent.getInstance(project).state
-            .remoteConnectionSettingsList
-            .removeIf { it.type == type }
+        with(ProjectSettings.getInstance(project)) {
+            remoteConnectionSettingsList = remoteConnectionSettingsList.toMutableList()
+                .apply { removeIf { it.type == type } }
+        }
+
         DeveloperSettingsComponent.getInstance(project).state
             .remoteConnectionSettingsList
             .removeIf { it.type == type }
@@ -132,11 +136,21 @@ class RemoteConnectionService(private val project: Project) {
     }
 
     fun changeRemoteConnectionScope(settings: RemoteConnectionSettings, originalScope: RemoteConnectionScope) {
-        val remoteConnectionSettings = when (originalScope) {
-            RemoteConnectionScope.PROJECT_PERSONAL -> DeveloperSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
-            RemoteConnectionScope.PROJECT -> ProjectSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
+        when (originalScope) {
+            RemoteConnectionScope.PROJECT_PERSONAL -> {
+                DeveloperSettingsComponent.getInstance(project).state
+                    .remoteConnectionSettingsList
+                    .remove(settings)
+            }
+
+            RemoteConnectionScope.PROJECT -> {
+                with (ProjectSettings.getInstance(project)) {
+                    remoteConnectionSettingsList = remoteConnectionSettingsList.toMutableList()
+                        .apply { remove(settings) }
+                }
+            }
         }
-        remoteConnectionSettings.remove(settings)
+
         addRemoteConnection(settings)
     }
 
@@ -149,13 +163,13 @@ class RemoteConnectionService(private val project: Project) {
     private fun getProjectLevelSettings(type: RemoteConnectionType) = getRemoteConnectionSettings(
         type,
         RemoteConnectionScope.PROJECT,
-        ProjectSettingsComponent.getInstance(project).state.remoteConnectionSettingsList
+        ProjectSettings.getInstance(project).remoteConnectionSettingsList
     )
 
     private fun getRemoteConnectionSettings(
         type: RemoteConnectionType,
         scope: RemoteConnectionScope,
-        settings: MutableList<RemoteConnectionSettings>
+        settings: Collection<RemoteConnectionSettings>
     ) = settings
         .filter { it.type == type }
         .filter { it.uuid?.isNotBlank() ?: false }

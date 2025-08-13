@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,8 +24,8 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
@@ -311,7 +311,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         preferredSize = Dimension(preferredSize.width, JBUIScale.scale(600))
 
-        val appSettings = ApplicationSettingsComponent.getInstance()
+        val appSettings = ApplicationSettings.getInstance()
 
         appSettings.loadDefaultCCv2Token {
             ccv2TokenTextField.text = it
@@ -373,7 +373,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     }
 
     override fun updateStep() {
-        val appSettings = ApplicationSettingsComponent.getInstance().state
+        val appSettings = ApplicationSettings.getInstance().state
         storeModuleFilesInChooser.text = File(
             builder.fileToImport, HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
         ).absolutePath
@@ -468,41 +468,41 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         }
     }
 
-    override fun open(settings: ProjectSettings) {
+    override fun open(projectSettings: ProjectSettings) {
         updateStep()
         updateDataModel()
     }
 
-    override fun refresh(settings: ProjectSettings) {
+    override fun refresh(projectSettings: ProjectSettings) {
         val context = context()
         context.cleanup()
 
         with(context.getHybrisProjectDescriptor()) {
             this.hybrisVersion = project?.basePath
                 ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), false) }
-                ?: settings.hybrisVersion
+                ?: projectSettings.hybrisVersion
             this.javadocUrl = project?.basePath
                 ?.let { getHybrisVersion(FileUtilRt.toSystemDependentName("$it/hybris"), true) }
                 ?.let { getDefaultJavadocUrl(it) }
                 ?.takeIf { it.isNotBlank() }
-                ?: settings.javadocUrl
-            this.sourceCodeFile = FileUtils.toFile(settings.sourceCodeFile, true)
-            this.externalExtensionsDirectory = FileUtils.toFile(settings.externalExtensionsDirectory, true)
-            this.externalConfigDirectory = FileUtils.toFile(settings.externalConfigDirectory, true)
-            this.externalDbDriversDirectory = FileUtils.toFile(settings.externalDbDriversDirectory, true)
-            this.isImportOotbModulesInReadOnlyMode = settings.importOotbModulesInReadOnlyMode
-            this.isFollowSymlink = settings.followSymlink
-            this.isExcludeTestSources = settings.excludeTestSources
-            this.isImportCustomAntBuildFiles = settings.importCustomAntBuildFiles
-            this.isScanThroughExternalModule = settings.scanThroughExternalModule
-            this.isUseFakeOutputPathForCustomExtensions = settings.useFakeOutputPathForCustomExtensions
+                ?: projectSettings.javadocUrl
+            this.sourceCodeFile = FileUtils.toFile(projectSettings.sourceCodeFile, true)
+            this.externalExtensionsDirectory = FileUtils.toFile(projectSettings.externalExtensionsDirectory, true)
+            this.externalConfigDirectory = FileUtils.toFile(projectSettings.externalConfigDirectory, true)
+            this.externalDbDriversDirectory = FileUtils.toFile(projectSettings.externalDbDriversDirectory, true)
+            this.isImportOotbModulesInReadOnlyMode = projectSettings.importOotbModulesInReadOnlyMode
+            this.isFollowSymlink = projectSettings.followSymlink
+            this.isExcludeTestSources = projectSettings.excludeTestSources
+            this.isImportCustomAntBuildFiles = projectSettings.importCustomAntBuildFiles
+            this.isScanThroughExternalModule = projectSettings.scanThroughExternalModule
+            this.isUseFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions
 
-            val appSettings = ApplicationSettingsComponent.getInstance()
+            val appSettings = ApplicationSettings.getInstance()
             val appSettingsState = appSettings.state
             this.isIgnoreNonExistingSourceDirectories = appSettingsState.ignoreNonExistingSourceDirectories
             this.isWithStandardProvidedSources = appSettingsState.withStandardProvidedSources
 
-            this.modulesFilesDirectory = settings.ideModulesFilesDirectory
+            this.modulesFilesDirectory = projectSettings.ideModulesFilesDirectory
                 ?.let { File(it) }
                 ?: File(
                     builder.fileToImport,
@@ -511,15 +511,15 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
 
             this.cCv2Token = appSettings.getCCv2Token()
 
-            val hybrisDirectory = settings.hybrisDirectory
+            val hybrisDirectory = projectSettings.hybrisDirectory
             if (hybrisDirectory != null) {
                 this.hybrisDistributionDirectory = FileUtils.toFile(
                     builder.fileToImport,
-                    settings.hybrisDirectory
+                    projectSettings.hybrisDirectory
                 )
             }
 
-            this.setExcludedFromScanning(settings.excludedFromScanning)
+            this.setExcludedFromScanning(projectSettings.excludedFromScanning)
             val rootProjectDirectory = FileUtils.toFile(builder.fileToImport)!!
             context.setRootProjectDirectory(rootProjectDirectory)
 

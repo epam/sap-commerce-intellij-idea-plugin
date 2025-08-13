@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.lang.documentation
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.DocumentationTargetProvider
 import com.intellij.psi.PsiFile
@@ -35,7 +35,7 @@ class FlexibleSearchDocumentationTargetProvider : DocumentationTargetProvider {
         if (file !is FlexibleSearchFile) return emptyList()
 
         val element = file.findElementAt(offset) ?: return emptyList()
-        val projectSettings = ProjectSettingsComponent.getInstance(file.project)
+        val projectSettings = ProjectSettings.getInstance(file.project)
 
         if (!projectSettings.isHybrisProject()) return emptyList()
 

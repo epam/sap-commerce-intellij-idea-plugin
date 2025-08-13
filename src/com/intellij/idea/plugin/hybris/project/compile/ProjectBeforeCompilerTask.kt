@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.compiler.*
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.projectRoots.JavaSdk
@@ -57,9 +56,9 @@ class ProjectBeforeCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext): Boolean {
         val project = context.project
-        val settings = ProjectSettingsComponent.getInstance(project)
+        val settings = ProjectSettings.getInstance(project)
         if (!settings.isHybrisProject()) return true
-        if (!settings.state.generateCodeOnRebuild) {
+        if (!settings.generateCodeOnRebuild) {
             context.addMessage(CompilerMessageCategory.WARNING, "[y] Code generation is disabled, to enable it adjust SAP Commerce Project specific settings.", null, -1, -1)
             return true
         }
@@ -67,7 +66,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         val typeId = context.compileScope.getUserData(CompilerManager.RUN_CONFIGURATION_TYPE_ID_KEY)
         // do not rebuild sources in case of JUnit
         // see JUnitConfigurationType
-        if ("JUnit" == typeId && !settings.state.generateCodeOnJUnitRunConfiguration) return true
+        if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return true
 
         val modules = application.runReadAction<Array<Module>> { context.compileScope.affectedModules }
         val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
@@ -89,7 +88,7 @@ class ProjectBeforeCompilerTask : CompileTask {
             ?: return true
 
         val bootstrapDirectory = platformModuleRoot.resolve(HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY)
-        if (!invokeCodeGeneration(context, platformModuleRoot, bootstrapDirectory, coreModuleRoot, vmExecutablePath, settings.state)) {
+        if (!invokeCodeGeneration(context, platformModuleRoot, bootstrapDirectory, coreModuleRoot, vmExecutablePath, settings)) {
             ProjectCompileService.getInstance(project).triggerRefreshGeneratedFiles(bootstrapDirectory)
             return false
         }

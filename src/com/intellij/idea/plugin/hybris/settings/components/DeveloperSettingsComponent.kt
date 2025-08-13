@@ -18,6 +18,7 @@
 package com.intellij.idea.plugin.hybris.settings.components
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.SUser
 import com.intellij.openapi.components.*
@@ -37,7 +38,7 @@ class DeveloperSettingsComponent : PersistentStateComponent<DeveloperSettings> {
     override fun loadState(state: DeveloperSettings) = XmlSerializerUtil.copyBean(state, this.state)
 
     fun getActiveCCv2Subscription() = state.activeCCv2SubscriptionID
-        ?.let { ApplicationSettingsComponent.getInstance().getCCv2Subscription(it) }
+        ?.let { ApplicationSettings.getInstance().getCCv2Subscription(it) }
 
     fun getSUser(id: String) = state
         .ccv2Settings

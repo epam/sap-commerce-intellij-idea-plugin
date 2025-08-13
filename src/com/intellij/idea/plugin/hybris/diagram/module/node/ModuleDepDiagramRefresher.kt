@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.diagram.module.node
 import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramVisibilityManager
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphFactory
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.roots.ModuleRootManager
@@ -46,7 +46,7 @@ object ModuleDepDiagramRefresher {
     private fun modulesToShow(model: ModuleDepDiagramDataModel): Collection<Module> {
         val visibilityLevel = model.visibilityManager.currentVisibilityLevel
         val allModules = ModuleManager.getInstance(model.project).modules
-        val projectSettings = ProjectSettingsComponent.getInstance(model.project)
+        val projectSettings = ProjectSettings.getInstance(model.project)
 
         if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules

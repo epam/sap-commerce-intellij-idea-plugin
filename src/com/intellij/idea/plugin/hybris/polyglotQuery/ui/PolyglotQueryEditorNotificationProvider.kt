@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,9 +22,9 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.settings.PolyglotQuerySettings
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -48,7 +48,7 @@ import javax.swing.JComponent
 class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, DumbAware {
 
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        val projectSettings = ProjectSettingsComponent.getInstance(project)
+        val projectSettings = ProjectSettings.getInstance(project)
         if (!projectSettings.isHybrisProject()) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, PolyglotQueryFileType)) return null
 

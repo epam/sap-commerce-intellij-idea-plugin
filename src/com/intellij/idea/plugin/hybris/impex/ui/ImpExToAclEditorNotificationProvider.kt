@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.ui
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.project.Project
@@ -39,7 +39,7 @@ class ImpExToAclEditorNotificationProvider : EditorNotificationProvider {
         project: Project,
         file: VirtualFile
     ): Function<FileEditor, EditorNotificationPanel>? {
-        val projectSettings = ProjectSettingsComponent.getInstance(project)
+        val projectSettings = ProjectSettings.getInstance(project)
         if (!projectSettings.isHybrisProject()) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, ImpexFileType)) return null
         val psiFile = PsiManager.getInstance(project).findFile(file) ?: return null

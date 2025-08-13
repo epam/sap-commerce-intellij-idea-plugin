@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ConsoleAwareExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionContext
@@ -90,7 +90,7 @@ class HybrisImpexMonitorConsole(project: Project, coroutineScope: CoroutineScope
     override fun icon() = HybrisIcons.MONITORING
 
     private fun obtainDataFolder(project: Project): String {
-        val settings = ProjectSettingsComponent.getInstance(project).state
+        val settings = ProjectSettings.getInstance(project)
         return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
     }
 

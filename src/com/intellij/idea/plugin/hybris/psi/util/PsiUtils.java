@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.psi.util;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -60,7 +60,7 @@ public final class PsiUtils {
         if (null == module) {
             return false;
         }
-        final var settingsComponent = ProjectSettingsComponent.getInstance(project);
+        final var settingsComponent = ProjectSettings.getInstance(project);
         final var descriptorType = settingsComponent.getModuleSettings(module).getType();
 
         if (descriptorType == ModuleDescriptorType.NONE) {
@@ -75,7 +75,7 @@ public final class PsiUtils {
 
     private static boolean shouldCheckFilesWithoutHybrisSettings(@NotNull final Project project) {
         // at least it needs to have a hybris flag
-        return ProjectSettingsComponent.getInstance(project).isHybrisProject();
+        return ProjectSettings.getInstance(project).isHybrisProject();
     }
 
     private static ModuleDescriptorType estimateIsCustomExtension(@NotNull final VirtualFile file) {

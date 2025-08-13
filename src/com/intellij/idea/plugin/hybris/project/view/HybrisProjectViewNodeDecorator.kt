@@ -26,7 +26,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 
@@ -41,9 +41,9 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
     private fun decorateModule(node: PsiDirectoryNode, data: PresentationData) {
         val vf = node.virtualFile ?: return
         val module = ProjectRootManager.getInstance(node.project).fileIndex.getModuleForFile(vf) ?: return
-        val projectSettings = ProjectSettingsComponent.getInstance(module.project)
+        val projectSettings = ProjectSettings.getInstance(module.project)
 
-        if (!projectSettings.state.showFullModuleName) {
+        if (!projectSettings.showFullModuleName) {
             data.coloredText
                 .firstOrNull { it.text == "[${module.name}]" }
                 ?.let { data.coloredText.remove(it) }

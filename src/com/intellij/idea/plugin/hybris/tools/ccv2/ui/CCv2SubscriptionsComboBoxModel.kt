@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
 import com.intellij.openapi.Disposable
@@ -38,7 +38,7 @@ class CCv2SubscriptionsComboBoxModel(
 
     fun refresh() {
         removeAllElements()
-        val subscriptions = ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
+        val subscriptions = ApplicationSettings.getInstance().state.ccv2Subscriptions
         addAll(subscriptions.sortedBy { it.toString() })
     }
 
@@ -59,7 +59,7 @@ object CCv2SubscriptionsComboBoxModelFactory {
         onSelectedItem: ((Any?) -> Unit)? = null
     ) = CCv2SubscriptionsComboBoxModel(onSelectedItem)
         .also {
-            val currentSubscriptions = ApplicationSettingsComponent.getInstance().state.ccv2Subscriptions
+            val currentSubscriptions = ApplicationSettings.getInstance().state.ccv2Subscriptions
             initModel(project, it, selectedSubscription, currentSubscriptions, allowBlank)
 
             if (disposable != null) {

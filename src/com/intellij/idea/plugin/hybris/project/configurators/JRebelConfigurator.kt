@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
@@ -56,10 +56,10 @@ class JRebelConfigurator {
         .mapNotNull { configure(it) }
 
     fun fixBackOfficeJRebelSupport(project: Project) {
-        val hybrisProjectSettings = ProjectSettingsComponent.getInstance(project).state
+        val projectSettings = ProjectSettings.getInstance(project)
         val compilingXml = File(
             FileUtilRt.toSystemDependentName(
-                project.basePath + "/" + hybrisProjectSettings.hybrisDirectory
+                project.basePath + "/" + projectSettings.hybrisDirectory
                     + HybrisConstants.PLATFORM_MODULE_PREFIX + HybrisConstants.ANT_COMPILING_XML
             )
         )

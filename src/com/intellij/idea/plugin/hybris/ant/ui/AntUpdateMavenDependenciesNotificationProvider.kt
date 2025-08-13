@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.ant.ui
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.lang.ant.config.AntBuildFileBase
 import com.intellij.lang.ant.config.AntConfiguration
 import com.intellij.lang.ant.config.execution.ExecutionHandler
@@ -39,7 +39,7 @@ import javax.swing.JComponent
 class AntUpdateMavenDependenciesNotificationProvider : EditorNotificationProvider {
 
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        val settings = ProjectSettingsComponent.getInstance(project)
+        val settings = ProjectSettings.getInstance(project)
         if (!settings.isHybrisProject()) return null
         if (file.name != HybrisConstants.EXTERNAL_DEPENDENCIES_XML) return null
 

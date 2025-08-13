@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
@@ -38,7 +38,7 @@ class LoadedConfigurator {
             .toMutableSet()
 
         application.invokeAndWait {
-            ProjectSettingsComponent.getInstance(project).state.unusedExtensions = unusedModuleNames
+            ProjectSettings.getInstance(project).unusedExtensions = unusedModuleNames
         }
     }
 

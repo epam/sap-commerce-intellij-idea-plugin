@@ -28,8 +28,8 @@ import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -43,15 +43,15 @@ import java.io.File
 
 open class HybrisProjectView(val project: Project) : TreeStructureProvider, DumbAware {
 
-    private val hybrisProject = ProjectSettingsComponent.getInstance(project).state.hybrisProject
-    private val hybrisApplicationSettings = ApplicationSettingsComponent.getInstance().state
-    private val commerceGroupName = ApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupHybris)
+    private val hybrisProject = ProjectSettings.getInstance(project).hybrisProject
+    private val hybrisApplicationSettings = ApplicationSettings.getInstance()
+    private val commerceGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupHybris)
         ?.firstOrNull()
-    private val platformGroupName = ApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupPlatform)
+    private val platformGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupPlatform)
         ?.firstOrNull()
-    private val ccv2GroupName = ApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupCCv2)
+    private val ccv2GroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupCCv2)
         ?.firstOrNull()
-    private val customGroupName = ApplicationSettingsComponent.toIdeaGroup(hybrisApplicationSettings.groupCustom)
+    private val customGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupCustom)
         ?.firstOrNull()
     private val groupToIcon = mapOf(
         customGroupName to HybrisIcons.Module.CUSTOM_GROUP,
@@ -243,7 +243,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         children: Collection<AbstractTreeNode<*>>,
         settings: ViewSettings?
     ): Collection<AbstractTreeNode<*>> {
-        val junkFileNames = ApplicationSettingsComponent.getInstance().state.junkDirectoryList
+        val junkFileNames = ApplicationSettings.getInstance().state.junkDirectoryList
             .takeIf { it.isNotEmpty() }
             ?: return children
 

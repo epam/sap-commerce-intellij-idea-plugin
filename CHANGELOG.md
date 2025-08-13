@@ -1,3 +1,8 @@
+## [2025.2.3]
+
+### `Other` enhancements
+- Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
+
 ## [2025.2.2]
 
 ### `SAP CX Logging` enhancements

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.localextensions
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteTagQuickFix
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Extension
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Hybrisconfig
 import com.intellij.lang.annotation.HighlightSeverity
@@ -49,7 +49,7 @@ class LeUnknownExtensionDefinition : AbstractLeInspection() {
         project: Project
     ) {
         val extensionName = dom.name.stringValue ?: return
-        val hybrisProjectSettings = ProjectSettingsComponent.getInstance(project)
+        val hybrisProjectSettings = ProjectSettings.getInstance(project)
         val found = hybrisProjectSettings.getAvailableExtensions().keys
             .firstOrNull { extensionName.equals(it, true) }
 

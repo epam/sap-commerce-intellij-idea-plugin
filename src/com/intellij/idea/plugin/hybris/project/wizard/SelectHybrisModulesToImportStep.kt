@@ -122,13 +122,13 @@ class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectMod
         context.setHybrisModulesToImport(allElements)
     }
 
-    override fun open(settings: ProjectSettings) {
-        refresh(settings)
+    override fun open(projectSettings: ProjectSettings) {
+        refresh(projectSettings)
     }
 
-    override fun refresh(settings: ProjectSettings) {
+    override fun refresh(projectSettings: ProjectSettings) {
         try {
-            val filteredModuleToImport = context.getBestMatchingExtensionsToImport(settings)
+            val filteredModuleToImport = context.getBestMatchingExtensionsToImport(projectSettings)
             context.setList(filteredModuleToImport)
         } catch (e: ConfigurationException) {
             // no-op already validated

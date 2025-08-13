@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.Extension
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Extensions
@@ -41,7 +41,7 @@ class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
         val xmlAttributeValue = PsiTreeUtil.getParentOfType(element, XmlAttributeValue::class.java) ?: return null
         val xmlFile = element.containingFile as? XmlFile ?: return null
         if (xmlAttributeValue.value == HybrisConstants.EXTENSION_NAME_PLATFORM) return null
-        val descriptor = ProjectSettingsComponent.getInstance(xmlFile.project).getAvailableExtensions()[xmlAttributeValue.value]
+        val descriptor = ProjectSettings.getInstance(xmlFile.project).getAvailableExtensions()[xmlAttributeValue.value]
             ?: return null
         if (descriptor.type != ModuleDescriptorType.OOTB && descriptor.type != ModuleDescriptorType.CUSTOM) return null
         val parentTagName = PsiTreeUtil.getParentOfType(xmlAttributeValue, XmlTag::class.java)?.localName

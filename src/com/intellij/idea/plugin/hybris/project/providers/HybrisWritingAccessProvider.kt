@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,15 +18,15 @@
  */
 package com.intellij.idea.plugin.hybris.project.providers
 
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.WritingAccessProvider
 
 class HybrisWritingAccessProvider(myProject: Project) : WritingAccessProvider() {
 
-    private val ootbReadOnlyMode = ProjectSettingsComponent.getInstance(myProject).state.importOotbModulesInReadOnlyMode
-    private val customDirectory = ProjectSettingsComponent.getInstance(myProject).state.customDirectory
+    private val ootbReadOnlyMode = ProjectSettings.getInstance(myProject).importOotbModulesInReadOnlyMode
+    private val customDirectory = ProjectSettings.getInstance(myProject).customDirectory
 
     override fun requestWriting(files: Collection<VirtualFile>) = files
         .filter { isFileReadOnly(it) }

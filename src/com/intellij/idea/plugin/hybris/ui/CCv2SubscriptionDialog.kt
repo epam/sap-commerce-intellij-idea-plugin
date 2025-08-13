@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.ui
 
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.CCv2SubscriptionDto
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBTextField
@@ -39,7 +39,7 @@ class CCv2SubscriptionDialog(
         super.init()
 
         if (subscription.ccv2Token == null) {
-            ApplicationSettingsComponent.getInstance().loadCCv2Token(subscription.uuid) {
+            ApplicationSettings.getInstance().loadCCv2Token(subscription.uuid) {
                 subscription.ccv2Token = it
                 enableCCv2Token.set(true)
             }

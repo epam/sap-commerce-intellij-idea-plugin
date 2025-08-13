@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,7 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.extensioninfo.EiSModelAccess
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.modules
@@ -49,7 +49,7 @@ abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerPro
             .find { it.tokenType == XmlTokenType.XML_ATTRIBUTE_VALUE_TOKEN }
             ?: return emptyList()
         if (PsiTreeUtil.getParentOfType(psi, XmlTag::class.java)?.localName != getParentTagName()) return emptyList()
-        val descriptor = ProjectSettingsComponent.getInstance(psi.project).getAvailableExtensions()[psi.value]
+        val descriptor = ProjectSettings.getInstance(psi.project).getAvailableExtensions()[psi.value]
             ?: return emptyList()
         val extensionInfoName = psi.project.modules
             .find { it.yExtensionName() == psi.value }

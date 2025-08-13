@@ -28,7 +28,7 @@ import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.junit.JUnitConfiguration
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.properties.PropertyService
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
@@ -49,7 +49,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
 
     override fun isApplicableFor(configuration: RunConfigurationBase<*>) =
         if (configuration !is JUnitConfiguration) false
-        else ProjectSettingsComponent.getInstance(configuration.project)
+        else ProjectSettings.getInstance(configuration.project)
             .isHybrisProject()
 
     override fun <T : RunConfigurationBase<*>?> updateJavaParameters(

@@ -37,8 +37,6 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.utils.Plugin;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent;
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -137,10 +135,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
         final var allModuleDescriptors = allModules.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
-        final var appSettings = ApplicationSettingsComponent.getInstance().getState();
+        final var appSettings = ApplicationSettings.getInstance();
 
-        final var projectSettingsComponent = ProjectSettingsComponent.getInstance(project);
-        final var projectSettings = projectSettingsComponent.getState();
+        final var projectSettings = ProjectSettings.getInstance(project);
 
         final var groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
         final var modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
@@ -157,7 +154,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             projectSettings.setExcludedFromScanning(hybrisProjectDescriptor.getExcludedFromScanning());
         }
 
-        this.saveImportedSettings(projectSettings, appSettings, projectSettingsComponent);
+        this.saveImportedSettings(projectSettings, appSettings, projectSettings);
         this.disableWrapOnType(ImpexLanguage.INSTANCE);
 
         PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
@@ -497,7 +494,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
     private void saveImportedSettings(@NotNull final ProjectSettings projectSettings,
                                       @NotNull final ApplicationSettings appSettings,
-                                      @NotNull final ProjectSettingsComponent hybrisSettingsComponent) {
+                                      @NotNull final ProjectSettings hybrisSettingsComponent) {
         projectSettings.setImportOotbModulesInReadOnlyMode(hybrisProjectDescriptor.isImportOotbModulesInReadOnlyMode());
         final File extDir = hybrisProjectDescriptor.getExternalExtensionsDirectory();
         if (extDir != null && extDir.isDirectory()) {

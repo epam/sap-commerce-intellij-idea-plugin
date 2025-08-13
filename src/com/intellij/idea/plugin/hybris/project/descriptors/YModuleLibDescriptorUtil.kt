@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.project.descriptors
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.LibraryDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.OrderRootType
@@ -64,7 +64,7 @@ object YModuleLibDescriptorUtil {
             val libraryModel = modifiableModelsProvider.getModifiableLibraryModel(library)
             if (addJarDirectory) libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), true)
             else libraryModel.addRoot(VfsUtil.getUrlForLibraryRoot(libraryDirRoot), OrderRootType.CLASSES)
-            if (sourcesDirRoot != null && ApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) {
+            if (sourcesDirRoot != null && ApplicationSettings.getInstance().withStandardProvidedSources) {
                 libraryModel.addJarDirectory(VfsUtil.getUrlForLibraryRoot(sourcesDirRoot), true, OrderRootType.SOURCES)
             }
         }
@@ -402,7 +402,7 @@ object YModuleLibDescriptorUtil {
     private fun getDbDriversDirectory(descriptor: PlatformModuleDescriptor) = descriptor.rootProjectDescriptor.externalDbDriversDirectory
         ?: File(descriptor.moduleRootDirectory, HybrisConstants.PLATFORM_DB_DRIVER)
 
-    private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (ApplicationSettingsComponent.getInstance().state.withStandardProvidedSources) {
+    private fun getStandardSourceJarDirectory(descriptor: YModuleDescriptor) = if (ApplicationSettings.getInstance().withStandardProvidedSources) {
         val rootDescriptor = if (descriptor is YSubModuleDescriptor) descriptor.owner
         else descriptor
 

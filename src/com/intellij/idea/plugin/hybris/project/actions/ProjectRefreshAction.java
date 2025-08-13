@@ -33,7 +33,6 @@ import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.wizard.RefreshSupport;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.openapi.application.ApplicationManager;
@@ -120,7 +119,7 @@ public class ProjectRefreshAction extends AnAction {
         }
         presentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true);
         presentation.setIcon(HybrisIcons.Y.INSTANCE.getLOGO_BLUE());
-        presentation.setVisible(ProjectSettingsComponent.getInstance(project).isHybrisProject());
+        presentation.setVisible(ProjectSettings.getInstance(project).isHybrisProject());
     }
 
     @Override
@@ -130,7 +129,7 @@ public class ProjectRefreshAction extends AnAction {
 
     private static void removeOldProjectData(@NotNull final Project project) {
         final var moduleModel = ModuleManager.getInstance(project).getModifiableModel();
-        final var projectSettings = ProjectSettingsComponent.getInstance(project).getState();
+        final var projectSettings = ProjectSettings.getInstance(project);
         final var removeExternalModulesOnRefresh = projectSettings.getRemoveExternalModulesOnRefresh();
 
         for (Module module : moduleModel.getModules()) {
@@ -175,7 +174,7 @@ public class ProjectRefreshAction extends AnAction {
         final String projectName = project.getName();
         final Sdk jdk = ProjectRootManager.getInstance(project).getProjectSdk();
         final String compilerOutputUrl = CompilerProjectExtension.getInstance(project).getCompilerOutputUrl();
-        final ProjectSettings settings = ProjectSettingsComponent.getInstance(project).getState();
+        final ProjectSettings projectSettings = ProjectSettings.getInstance(project);
 
         final AddModuleWizard wizard = new AddModuleWizard(null, project.getBasePath(), provider) {
 
@@ -191,7 +190,7 @@ public class ProjectRefreshAction extends AnAction {
         final StepSequence stepSequence = wizard.getSequence();
         for (ModuleWizardStep step : stepSequence.getAllSteps()) {
             if (step instanceof RefreshSupport) {
-                ((RefreshSupport) step).refresh(settings);
+                ((RefreshSupport) step).refresh(projectSettings);
             }
         }
         return wizard;

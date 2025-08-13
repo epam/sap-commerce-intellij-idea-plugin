@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,7 @@ import com.intellij.ide.projectView.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
@@ -43,7 +43,7 @@ class ExternalProjectViewNode(
     public override fun update(presentation: PresentationData) {
         with(presentation) {
             setIcon(HybrisIcons.Module.EXTERNAL_GROUP)
-            val groupNameExternalModules = ApplicationSettingsComponent.getInstance().state.groupNameExternalModules
+            val groupNameExternalModules = ApplicationSettings.getInstance().state.groupNameExternalModules
                 .takeIf { it.isNotBlank() }
                 ?: message("hybris.project.view.external.module.directory.name")
             addText(groupNameExternalModules, SimpleTextAttributes.REGULAR_ATTRIBUTES)

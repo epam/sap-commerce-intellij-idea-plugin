@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
@@ -41,7 +41,7 @@ class RequiredExtensionsNameCompletionProvider : ExtensionNameCompletionProvider
                 ?.filter { it.isNotBlank() }
                 ?.map { it.lowercase() } ?: emptyList()
 
-        return ProjectSettingsComponent.getInstance(project)
+        return ProjectSettings.getInstance(project)
                 .getAvailableExtensions()
                 .entries
                 .filterNot { currentNames.contains(it.key) }

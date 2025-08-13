@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -39,7 +39,7 @@ class ProjectSettingsConfigurableProvider(val project: Project) : ConfigurablePr
         message("hybris.settings.project.title"), "hybris.project.settings"
     ) {
 
-        private val projectSettings = ProjectSettingsComponent.getInstance(project).state
+        private val projectSettings = ProjectSettings.getInstance(project)
         private lateinit var generateCodeOnRebuildCheckBox: JCheckBox
 
         private val excludedFromScanning = CRUDListPanel(

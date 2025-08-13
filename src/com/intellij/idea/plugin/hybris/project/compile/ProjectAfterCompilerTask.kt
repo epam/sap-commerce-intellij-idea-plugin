@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.project.compile
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
 import com.intellij.openapi.compiler.CompilerManager
@@ -30,14 +30,14 @@ class ProjectAfterCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext) = application.runReadAction<Boolean> {
         val project = context.project
-        val settings = ProjectSettingsComponent.getInstance(project)
+        val settings = ProjectSettings.getInstance(project)
         if (!settings.isHybrisProject()) return@runReadAction true
-        if (!settings.state.generateCodeOnRebuild) return@runReadAction true
+        if (!settings.generateCodeOnRebuild) return@runReadAction true
 
         val typeId = context.compileScope.getUserData(CompilerManager.RUN_CONFIGURATION_TYPE_ID_KEY)
         // do not rebuild sources in case of JUnit
         // see JUnitConfigurationType
-        if ("JUnit" == typeId && !settings.state.generateCodeOnJUnitRunConfiguration) return@runReadAction true
+        if ("JUnit" == typeId && !settings.generateCodeOnJUnitRunConfiguration) return@runReadAction true
 
         val modules = context.compileScope.affectedModules
         val platformModule = modules.firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }

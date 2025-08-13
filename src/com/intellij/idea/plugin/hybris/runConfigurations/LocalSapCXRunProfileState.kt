@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,7 +29,7 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.DEBUG_HOST
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.DEBUG_PORT
-import com.intellij.idea.plugin.hybris.settings.components.ProjectSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.SystemUtils
 import java.io.IOException
@@ -44,7 +44,7 @@ class LocalSapCXRunProfileState(
 
     private fun getScriptPath(): String {
         val basePath = project.basePath ?: ""
-        val settings = ProjectSettingsComponent.getInstance(project).state
+        val settings = ProjectSettings.getInstance(project)
         val hybrisDirectory = settings.hybrisDirectory ?: ""
         val script = if (SystemUtils.IS_OS_WINDOWS) HybrisConstants.HYBRIS_SERVER_BASH_SCRIPT_NAME else HybrisConstants.HYBRIS_SERVER_SHELL_SCRIPT_NAME
 
@@ -53,7 +53,7 @@ class LocalSapCXRunProfileState(
 
     private fun getWorkDirectory(): String {
         val basePath = project.basePath ?: ""
-        val settings = ProjectSettingsComponent.getInstance(project).state
+        val settings = ProjectSettings.getInstance(project)
         val hybrisDirectory = settings.hybrisDirectory ?: ""
 
         return Paths.get(basePath, hybrisDirectory, HybrisConstants.PLATFORM_MODULE_PREFIX).toString()

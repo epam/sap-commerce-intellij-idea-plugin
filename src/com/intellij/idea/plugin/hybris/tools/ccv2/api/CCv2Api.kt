@@ -26,8 +26,8 @@ import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentDetailDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -45,7 +45,7 @@ class CCv2Api {
 
     private val apiClient by lazy {
         ApiClient.builder
-            .readTimeout(ApplicationSettingsComponent.getInstance().state.ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
+            .readTimeout(ApplicationSettings.getInstance().state.ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
             .build()
     }
     private val environmentApi by lazy { EnvironmentApi(client = apiClient) }

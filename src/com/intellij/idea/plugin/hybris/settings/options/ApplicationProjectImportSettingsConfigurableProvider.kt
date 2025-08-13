@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.settings.options
 import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.components.ApplicationSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -36,7 +36,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
         message("hybris.settings.application.project_import.title"), "[y] SAP CX project import configuration."
     ) {
 
-        private val state = ApplicationSettingsComponent.getInstance().state
+        private val applicationSettings = ApplicationSettings.getInstance()
 
         private lateinit var groupModulesCheckBox: JCheckBox
         private lateinit var externalModulesCheckBox: JCheckBox
@@ -65,7 +65,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
             group("Modules Grouping") {
                 row {
                     groupModulesCheckBox = checkBox(message("hybris.import.settings.group.modules"))
-                        .bindSelected(state::groupModules)
+                        .bindSelected(applicationSettings::groupModules)
                         .component
                 }
                 indent {
@@ -73,39 +73,39 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                         icon(HybrisIcons.Extension.OOTB)
                         textField()
                             .label(message("hybris.import.settings.group.hybris"))
-                            .bindText(state::groupHybris)
+                            .bindText(applicationSettings::groupHybris)
                         textField()
                             .label(message("hybris.import.settings.group.unused"))
-                            .bindText(state::groupOtherHybris)
+                            .bindText(applicationSettings::groupOtherHybris)
                     }.layout(RowLayout.PARENT_GRID)
                     row {
                         icon(HybrisIcons.Extension.CUSTOM)
                         textField()
                             .label(message("hybris.import.settings.group.custom"))
-                            .bindText(state::groupCustom)
+                            .bindText(applicationSettings::groupCustom)
                         textField()
                             .label(message("hybris.import.settings.group.unused"))
-                            .bindText(state::groupOtherCustom)
+                            .bindText(applicationSettings::groupOtherCustom)
                     }.layout(RowLayout.PARENT_GRID)
                     row {
                         icon(HybrisIcons.Extension.PLATFORM)
                         textField()
                             .label(message("hybris.import.settings.group.platform"))
-                            .bindText(state::groupPlatform)
+                            .bindText(applicationSettings::groupPlatform)
                         textField()
                             .label(message("hybris.import.settings.group.nonhybris"))
-                            .bindText(state::groupNonHybris)
+                            .bindText(applicationSettings::groupNonHybris)
                     }.layout(RowLayout.PARENT_GRID)
                     row {
                         icon(HybrisIcons.Module.CCV2_GROUP)
                         textField()
                             .label(message("hybris.import.settings.group.ccv2"))
-                            .bindText(state::groupCCv2)
+                            .bindText(applicationSettings::groupCCv2)
                     }.layout(RowLayout.PARENT_GRID)
                 }.visibleIf(groupModulesCheckBox.selected)
                 row {
                     externalModulesCheckBox = checkBox("Group external modules")
-                        .bindSelected(state::groupExternalModules)
+                        .bindSelected(applicationSettings::groupExternalModules)
                         .comment(message("hybris.project.view.external.module.tooltip"))
                         .component
 
@@ -115,7 +115,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                         icon(HybrisIcons.Module.EXTERNAL_GROUP)
                         textField()
                             .label("External modules:")
-                            .bindText(state::groupNameExternalModules)
+                            .bindText(applicationSettings::groupNameExternalModules)
                             .addValidationRule("Name cannot be blank.") { it.text.isBlank() }
                             .enabledIf(externalModulesCheckBox.selected)
                     }
@@ -126,9 +126,9 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                 row {
                     cell(junkList)
                         .align(AlignX.FILL)
-                        .onApply { state.junkDirectoryList = junkList.data }
-                        .onReset { junkList.data = state.junkDirectoryList }
-                        .onIsModified { junkList.data.equalsIgnoreOrder(state.junkDirectoryList).not() }
+                        .onApply { applicationSettings.junkDirectoryList = junkList.data }
+                        .onReset { junkList.data = applicationSettings.junkDirectoryList }
+                        .onIsModified { junkList.data.equalsIgnoreOrder(applicationSettings.junkDirectoryList).not() }
                 }
             }
 
@@ -139,9 +139,9 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                 row {
                     cell(excludeResources)
                         .align(AlignX.FILL)
-                        .onApply { state.extensionsResourcesToExclude = excludeResources.data }
-                        .onReset { excludeResources.data = state.extensionsResourcesToExclude }
-                        .onIsModified { excludeResources.data.equalsIgnoreOrder(state.extensionsResourcesToExclude).not() }
+                        .onApply { applicationSettings.extensionsResourcesToExclude = excludeResources.data }
+                        .onReset { excludeResources.data = applicationSettings.extensionsResourcesToExclude }
+                        .onIsModified { excludeResources.data.equalsIgnoreOrder(applicationSettings.extensionsResourcesToExclude).not() }
                 }
             }
 
@@ -149,9 +149,9 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                 row {
                     cell(excludeFromIndex)
                         .align(AlignX.FILL)
-                        .onApply { state.excludedFromIndexList = excludeFromIndex.data }
-                        .onReset { excludeFromIndex.data = state.excludedFromIndexList }
-                        .onIsModified { excludeFromIndex.data.equalsIgnoreOrder(state.excludedFromIndexList).not() }
+                        .onApply { applicationSettings.excludedFromIndexList = excludeFromIndex.data }
+                        .onReset { excludeFromIndex.data = applicationSettings.excludedFromIndexList }
+                        .onIsModified { excludeFromIndex.data.equalsIgnoreOrder(applicationSettings.excludedFromIndexList).not() }
                 }
             }
         }
