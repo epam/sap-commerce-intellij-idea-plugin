@@ -23,11 +23,11 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms.BSMetaBeanView
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms.BSMetaEnumView
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.BSTree
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.TreeNode
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings
 import com.intellij.idea.plugin.hybris.ui.Dsl.addTreeModelListener
 import com.intellij.idea.plugin.hybris.ui.Dsl.addTreeSelectionListener
+import com.intellij.idea.plugin.hybris.ui.Dsl.pathData
 import com.intellij.idea.plugin.hybris.ui.event.TreeModelListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -36,7 +36,6 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.util.asSafely
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
 
@@ -65,20 +64,14 @@ class BSTreePanel(
     private fun registerListeners(tree: BSTree) = tree
         .addTreeSelectionListener(tree) { event ->
             event.newLeadSelectionPath
-                ?.lastPathComponent
-                ?.asSafely<TreeNode>()
-                ?.userObject
-                ?.asSafely<BSNode>()
+                ?.pathData(BSNode::class)
                 ?.let { node -> updateSecondComponent(node) }
         }
         .addTreeModelListener(tree, object : TreeModelListener {
             override fun treeNodesChanged(e: TreeModelEvent) {
                 tree.selectionPath
                     ?.takeIf { it.parentPath?.lastPathComponent == e.treePath?.lastPathComponent }
-                    ?.lastPathComponent
-                    ?.asSafely<TreeNode>()
-                    ?.userObject
-                    ?.asSafely<BSNode>()
+                    ?.pathData(BSNode::class)
                     ?.let { updateSecondComponent(it) }
             }
         })

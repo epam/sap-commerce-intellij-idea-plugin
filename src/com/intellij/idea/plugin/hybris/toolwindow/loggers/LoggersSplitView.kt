@@ -33,6 +33,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.tem
 import com.intellij.idea.plugin.hybris.ui.Dsl.addMouseListener
 import com.intellij.idea.plugin.hybris.ui.Dsl.addTreeModelListener
 import com.intellij.idea.plugin.hybris.ui.Dsl.addTreeSelectionListener
+import com.intellij.idea.plugin.hybris.ui.Dsl.pathData
 import com.intellij.idea.plugin.hybris.ui.event.MouseListener
 import com.intellij.idea.plugin.hybris.ui.event.TreeModelListener
 import com.intellij.openapi.Disposable
@@ -46,7 +47,6 @@ import kotlinx.coroutines.launch
 import java.awt.event.MouseEvent
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
-import javax.swing.tree.TreePath
 
 class LoggersSplitView(
     private val project: Project,
@@ -96,22 +96,17 @@ class LoggersSplitView(
         tree.update(connections)
     }
 
-    private fun TreePath.loggersNode(): LoggersNode? = lastPathComponent
-        .asSafely<LoggersOptionsTreeNode>()
-        ?.userObject
-        ?.asSafely<LoggersNode>()
-
     private fun registerListeners(tree: LoggersOptionsTree) = tree
         .addTreeSelectionListener(tree) {
             it.newLeadSelectionPath
-                ?.loggersNode()
+                ?.pathData(LoggersNode::class)
                 ?.let { node -> updateSecondComponent(node) }
         }
         .addTreeModelListener(tree, object : TreeModelListener {
             override fun treeNodesChanged(e: TreeModelEvent) {
                 tree.selectionPath
                     ?.takeIf { e.treePath?.lastPathComponent == it.parentPath?.lastPathComponent }
-                    ?.loggersNode()
+                    ?.pathData(LoggersNode::class)
                     ?.let { node -> updateSecondComponent(node) }
             }
         })
@@ -120,8 +115,7 @@ class LoggersSplitView(
                 tree
                     .takeIf { e.getClickCount() == 2 && !e.isConsumed }
                     ?.getPathForLocation(e.getX(), e.getY())
-                    ?.loggersNode()
-                    ?.asSafely<LoggersHacConnectionNode>()
+                    ?.pathData(LoggersHacConnectionNode::class)
                     ?.let {
                         e.consume()
                         CxLoggerAccess.getInstance(project).fetch(it.connectionSettings)
@@ -144,7 +138,6 @@ class LoggersSplitView(
             }
         }
     }
-
 
     companion object {
         @Serial
