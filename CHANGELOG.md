@@ -3,9 +3,7 @@
 ### `SAP CX Logging` enhancements
 - Apply new logger by Enter within the new logger name field [#1523](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1523)
 - Removed `CUSTOM` log level, use `INFO` as a fallback [#1522](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1522)
-
-### `Other` enhancements
-- Dispose various listeners [#1524](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1524)
+- Fetch/refresh loggers on double-click [#1524](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1524)
 
 ## [2025.2.1]
 

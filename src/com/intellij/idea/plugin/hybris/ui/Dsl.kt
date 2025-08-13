@@ -32,6 +32,7 @@ import java.awt.Color
 import java.awt.Font
 import java.awt.event.ItemListener
 import java.awt.event.KeyListener
+import java.awt.event.MouseListener
 import javax.swing.JComponent
 import javax.swing.JTree
 import javax.swing.ScrollPaneConstants
@@ -64,7 +65,7 @@ object Dsl {
     internal fun <J : Any> Cell<ComboBox<J>>.addItemListener(parentDisposable: Disposable? = null, listener: ItemListener): Cell<ComboBox<J>> = this
         .apply { component.addItemListener(parentDisposable, listener) }
 
-    internal fun <T: KeyListener, J : JComponent> Cell<J>.addKeyListener(parentDisposable: Disposable? = null, listener: T): Cell<J> = this
+    internal fun <T : KeyListener, J : JComponent> Cell<J>.addKeyListener(parentDisposable: Disposable? = null, listener: T): Cell<J> = this
         .apply { component.addKeyListener(parentDisposable, listener) }
 
     internal fun JTree.addTreeSelectionListener(parentDisposable: Disposable? = null, listener: TreeSelectionListener): JTree = this
@@ -73,12 +74,17 @@ object Dsl {
             parentDisposable?.whenDisposed { removeTreeSelectionListener(listener) }
         }
 
-    internal fun <T: TreeModelListener> JTree.addTreeModelListener(parentDisposable: Disposable? = null, listener: T): JTree = this
+    internal fun <T : TreeModelListener> JTree.addTreeModelListener(parentDisposable: Disposable? = null, listener: T): JTree = this
         .apply {
             model.addTreeModelListener(listener)
             parentDisposable?.whenDisposed { model.removeTreeModelListener(listener) }
         }
 
+    internal fun <T : MouseListener> JTree.addMouseListener(parentDisposable: Disposable? = null, listener: T): JTree = this
+        .apply {
+            addMouseListener(listener)
+            parentDisposable?.whenDisposed { removeMouseListener(listener) }
+        }
 
     private fun Disposable.whenDisposed(onDispose: () -> Unit) {
         Disposer.register(this) { onDispose() }

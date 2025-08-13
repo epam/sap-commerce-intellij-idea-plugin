@@ -30,8 +30,10 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersHacC
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.CustomLoggersTemplateLoggersOptionsNode
+import com.intellij.idea.plugin.hybris.ui.Dsl.addMouseListener
 import com.intellij.idea.plugin.hybris.ui.Dsl.addTreeModelListener
 import com.intellij.idea.plugin.hybris.ui.Dsl.addTreeSelectionListener
+import com.intellij.idea.plugin.hybris.ui.event.MouseListener
 import com.intellij.idea.plugin.hybris.ui.event.TreeModelListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -41,8 +43,10 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.awt.event.MouseEvent
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
+import javax.swing.tree.TreePath
 
 class LoggersSplitView(
     private val project: Project,
@@ -92,24 +96,36 @@ class LoggersSplitView(
         tree.update(connections)
     }
 
+    private fun TreePath.loggersNode(): LoggersNode? = lastPathComponent
+        .asSafely<LoggersOptionsTreeNode>()
+        ?.userObject
+        ?.asSafely<LoggersNode>()
+
     private fun registerListeners(tree: LoggersOptionsTree) = tree
         .addTreeSelectionListener(tree) {
             it.newLeadSelectionPath
-                ?.lastPathComponent
-                ?.asSafely<LoggersOptionsTreeNode>()
-                ?.userObject
-                ?.asSafely<LoggersNode>()
+                ?.loggersNode()
                 ?.let { node -> updateSecondComponent(node) }
         }
         .addTreeModelListener(tree, object : TreeModelListener {
             override fun treeNodesChanged(e: TreeModelEvent) {
                 tree.selectionPath
                     ?.takeIf { e.treePath?.lastPathComponent == it.parentPath?.lastPathComponent }
-                    ?.lastPathComponent
-                    ?.asSafely<LoggersOptionsTreeNode>()
-                    ?.userObject
-                    ?.asSafely<LoggersNode>()
+                    ?.loggersNode()
                     ?.let { node -> updateSecondComponent(node) }
+            }
+        })
+        .addMouseListener(tree, object : MouseListener {
+            override fun mouseClicked(e: MouseEvent) {
+                tree
+                    .takeIf { e.getClickCount() == 2 && !e.isConsumed }
+                    ?.getPathForLocation(e.getX(), e.getY())
+                    ?.loggersNode()
+                    ?.asSafely<LoggersHacConnectionNode>()
+                    ?.let {
+                        e.consume()
+                        CxLoggerAccess.getInstance(project).fetch(it.connectionSettings)
+                    }
             }
         })
 
