@@ -35,6 +35,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBPanelWithEmptyText
+import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
@@ -49,7 +50,7 @@ class BSTreePanel(
     private val myMetaBeanView: BSMetaBeanView by lazy { BSMetaBeanView(myProject) }
 
     init {
-        firstComponent = tree
+        firstComponent = JBScrollPane(tree)
         secondComponent = myDefaultPanel
 
         PopupHandler.installPopupMenu(tree, "BSView.ToolWindow.TreePopup", "BSView.ToolWindow.TreePopup")
