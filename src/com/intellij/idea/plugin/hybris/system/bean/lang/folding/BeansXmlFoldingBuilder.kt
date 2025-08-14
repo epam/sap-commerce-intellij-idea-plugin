@@ -20,10 +20,10 @@ package com.intellij.idea.plugin.hybris.system.bean.lang.folding
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.settings.state.BeanSystemFoldingSettings
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
+import com.intellij.idea.plugin.hybris.system.bean.settings.state.BeanSystemFoldingSettingsState
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -31,7 +31,7 @@ import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 
-class BeansXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<BeanSystemFoldingSettings, Beans>(Beans::class.java), DumbAware {
+class BeansXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<BeanSystemFoldingSettingsState, Beans>(Beans::class.java), DumbAware {
 
     private val foldHints = "[hints]"
 

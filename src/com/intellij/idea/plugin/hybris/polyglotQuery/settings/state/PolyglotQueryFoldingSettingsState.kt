@@ -16,40 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.state
+package com.intellij.idea.plugin.hybris.polyglotQuery.settings.state
 
+import com.intellij.idea.plugin.hybris.settings.state.FoldingSettings
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
-@Tag("PolyglotQuerySettings")
-data class PolyglotQuerySettings(
-    @JvmField @OptionTag val verifyCaseForReservedWords: Boolean = true,
-    @JvmField @OptionTag val defaultCaseForReservedWords: ReservedWordsCase = ReservedWordsCase.UPPERCASE,
-
-    @JvmField @OptionTag val folding: PolyglotQueryFoldingSettings = PolyglotQueryFoldingSettings(),
-) {
-
-    fun mutable() = Mutable(
-        verifyCaseForReservedWords = verifyCaseForReservedWords,
-        defaultCaseForReservedWords = defaultCaseForReservedWords,
-        folding = folding.mutable(),
-    )
-
-    data class Mutable(
-        var verifyCaseForReservedWords: Boolean,
-        var defaultCaseForReservedWords: ReservedWordsCase,
-        var folding: PolyglotQueryFoldingSettings.Mutable,
-    ) {
-        fun immutable() = PolyglotQuerySettings(
-            verifyCaseForReservedWords = verifyCaseForReservedWords,
-            defaultCaseForReservedWords = defaultCaseForReservedWords,
-            folding = folding.immutable(),
-        )
-    }
-}
-
 @Tag("PolyglotQueryFoldingSettings")
-data class PolyglotQueryFoldingSettings(
+data class PolyglotQueryFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val showLanguage: Boolean = true,
 ) : FoldingSettings {
@@ -63,7 +37,7 @@ data class PolyglotQueryFoldingSettings(
         override var enabled: Boolean,
         var showLanguage: Boolean,
     ) : FoldingSettings {
-        fun immutable() = PolyglotQueryFoldingSettings(
+        fun immutable() = PolyglotQueryFoldingSettingsState(
             enabled = enabled,
             showLanguage = showLanguage,
         )

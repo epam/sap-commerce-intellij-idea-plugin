@@ -16,30 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.state
+package com.intellij.idea.plugin.hybris.system.bean.settings.state
 
+import com.intellij.idea.plugin.hybris.settings.state.FoldingSettings
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
-@Tag("BeanSystemSettings")
-data class BeanSystemSettings(
-    @JvmField @OptionTag val folding: BeanSystemFoldingSettings = BeanSystemFoldingSettings(),
-) {
-    fun mutable() = Mutable(
-        folding = folding.mutable(),
-    )
-
-    data class Mutable(
-        var folding: BeanSystemFoldingSettings.Mutable,
-    ) {
-        fun immutable() = BeanSystemSettings(
-            folding = folding.immutable(),
-        )
-    }
-}
-
 @Tag("BeanSystemFoldingSettings")
-data class BeanSystemFoldingSettings(
+data class BeanSystemFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val tablifyProperties: Boolean = true,
 ) : FoldingSettings {
@@ -53,7 +37,7 @@ data class BeanSystemFoldingSettings(
         override var enabled: Boolean,
         var tablifyProperties: Boolean,
     ) : FoldingSettings {
-        fun immutable() = BeanSystemFoldingSettings(
+        fun immutable() = BeanSystemFoldingSettingsState(
             enabled = enabled,
             tablifyProperties = tablifyProperties,
         )

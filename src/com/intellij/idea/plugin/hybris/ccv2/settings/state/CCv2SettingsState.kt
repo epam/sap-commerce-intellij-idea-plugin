@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.state
+package com.intellij.idea.plugin.hybris.ccv2.settings.state
 
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
@@ -26,7 +26,7 @@ import kotlinx.collections.immutable.toImmutableSet
 import java.util.*
 
 @Tag("CCv2Settings")
-data class CCv2Settings(
+data class CCv2SettingsState(
     @JvmField val showBuildStatuses: Set<CCv2BuildStatus> = EnumSet.of(
         CCv2BuildStatus.BUILDING,
         CCv2BuildStatus.SUCCESS,
@@ -52,7 +52,7 @@ data class CCv2Settings(
         var showEnvironmentStatuses: MutableSet<CCv2EnvironmentStatus>,
         var sUsers: MutableMap<String, SUser>,
     ) {
-        fun immutable() = CCv2Settings(
+        fun immutable() = CCv2SettingsState(
             showBuildStatuses = showBuildStatuses.toImmutableSet(),
             showEnvironmentStatuses = showEnvironmentStatuses.toImmutableSet(),
             sUsers = sUsers.toImmutableMap(),

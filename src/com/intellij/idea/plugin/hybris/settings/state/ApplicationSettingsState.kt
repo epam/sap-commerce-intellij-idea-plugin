@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings.state
 
+import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag

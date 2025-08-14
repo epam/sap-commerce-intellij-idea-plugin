@@ -21,9 +21,9 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
+import com.intellij.idea.plugin.hybris.polyglotQuery.settings.state.PolyglotQuerySettingsState
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
-import com.intellij.idea.plugin.hybris.settings.state.PolyglotQuerySettings
 import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
@@ -91,14 +91,14 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
     }
 
     private fun collect(
-        pgqSettings: PolyglotQuerySettings,
+        pgqSettings: PolyglotQuerySettingsState,
         psiFile: PsiFile
     ) = with(Collector(pgqSettings)) {
         PsiTreeUtil.processElements(psiFile, LeafPsiElement::class.java, this)
         this.collection
     }
 
-    class Collector(private val pgqSettings: PolyglotQuerySettings) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
+    class Collector(private val pgqSettings: PolyglotQuerySettingsState) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
 
         override fun execute(element: LeafPsiElement): Boolean {
             if (HybrisConstants.PGQ_RESERVED_KEYWORDS.contains(element.elementType)) {

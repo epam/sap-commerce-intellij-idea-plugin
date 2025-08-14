@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchGroupByClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchOrderClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
-import com.intellij.idea.plugin.hybris.settings.state.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.*
 import com.intellij.psi.impl.JavaConstantExpressionEvaluator
@@ -43,7 +43,7 @@ object FxSUtils {
         .replace("`", "")
         .trim()
 
-    fun shouldAddCommaAfterExpression(element: PsiElement, fxsSettings: FlexibleSearchSettings): Boolean {
+    fun shouldAddCommaAfterExpression(element: PsiElement, fxsSettings: FlexibleSearchSettingsState): Boolean {
         var addComma = false
         if (fxsSettings.completion.injectCommaAfterExpression && element.text == HybrisConstants.FXS_DUMMY_IDENTIFIER) {
             addComma = PsiTreeUtil

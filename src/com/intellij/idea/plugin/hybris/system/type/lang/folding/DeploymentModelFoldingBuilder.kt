@@ -19,17 +19,17 @@ package com.intellij.idea.plugin.hybris.system.type.lang.folding
 
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.settings.state.TypeSystemFoldingSettings
 import com.intellij.idea.plugin.hybris.system.type.model.deployment.DatabaseSchema
 import com.intellij.idea.plugin.hybris.system.type.model.deployment.Model
 import com.intellij.idea.plugin.hybris.system.type.model.deployment.TypeMapping
+import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemFoldingSettingsState
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
 
-class DeploymentModelFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSettings, Model>(Model::class.java), DumbAware {
+class DeploymentModelFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSettingsState, Model>(Model::class.java), DumbAware {
 
     // it can be: EnumValue, ColumnType, but not CustomProperty
     private val valueName = "value"

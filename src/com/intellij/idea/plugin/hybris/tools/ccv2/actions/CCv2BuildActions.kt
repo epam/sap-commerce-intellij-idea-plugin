@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
+import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2SettingsState
+import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Actions.FETCH
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.settings.state.CCv2Settings
-import com.intellij.idea.plugin.hybris.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildRequest
@@ -229,7 +229,7 @@ abstract class CCv2ShowBuildWithStatusAction(status: CCv2BuildStatus) : CCv2Show
     status.icon
 ) {
 
-    override fun getStatuses(settings: CCv2Settings) = settings.showBuildStatuses
+    override fun getStatuses(settings: CCv2SettingsState) = settings.showBuildStatuses
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return

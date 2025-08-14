@@ -17,8 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.ui
 
+import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2SubscriptionDto
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.state.CCv2SubscriptionDto
 import com.intellij.ui.AddEditDeleteListPanel
 import com.intellij.ui.ListSpeedSearch
 import com.intellij.util.ui.JBEmptyBorder

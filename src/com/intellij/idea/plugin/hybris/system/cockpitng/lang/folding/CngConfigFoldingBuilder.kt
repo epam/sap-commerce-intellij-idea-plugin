@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.lang.folding
 
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.settings.state.CngFoldingSettings
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.Field
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.FieldList
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.collectionBrowser.Mold
@@ -35,6 +34,7 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.Addit
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.ComposedHandler
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.Property
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.PropertyList
+import com.intellij.idea.plugin.hybris.system.cockpitng.settings.state.CngFoldingSettingsState
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -42,7 +42,7 @@ import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
 import java.util.*
 
-class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettings, Config>(Config::class.java), DumbAware {
+class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettingsState, Config>(Config::class.java), DumbAware {
 
     override val filter = PsiElementFilter {
         when (it) {

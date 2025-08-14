@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.system.type.lang.folding
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.settings.state.TypeSystemFoldingSettings
 import com.intellij.idea.plugin.hybris.system.type.model.*
+import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemFoldingSettingsState
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -31,7 +31,7 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
 
-class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSettings, Items>(Items::class.java), DumbAware {
+class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSettingsState, Items>(Items::class.java), DumbAware {
 
     // it can be: EnumValue, ColumnType, but not CustomProperty
     private val valueName = "value"

@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTableAliasName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
-import com.intellij.idea.plugin.hybris.settings.state.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.psi.ResolveResult
 
@@ -122,7 +122,7 @@ object FxSLookupElementFactory {
         null
     }
 
-    fun buildKeywords(keywords: Collection<String>, fxsSettings: FlexibleSearchSettings) = keywords
+    fun buildKeywords(keywords: Collection<String>, fxsSettings: FlexibleSearchSettingsState) = keywords
         .map {
             LookupElementBuilder.create(if (fxsSettings.completion.injectSpaceAfterKeywords) "$it " else it)
                 .withPresentableText(it)
@@ -165,7 +165,7 @@ object FxSLookupElementFactory {
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_ALIAS_SEPARATOR)
         .withInsertHandler(AutoPopupInsertHandler.INSTANCE)
 
-    fun build(tableAlias: FlexibleSearchTableAliasName, addComma: Boolean, fxsSettings: FlexibleSearchSettings): LookupElementBuilder {
+    fun build(tableAlias: FlexibleSearchTableAliasName, addComma: Boolean, fxsSettings: FlexibleSearchSettingsState): LookupElementBuilder {
         val separator = if (fxsSettings.completion.injectTableAliasSeparator) fxsSettings.completion.defaultTableAliasSeparator
         else ""
         return build(tableAlias, addComma, separator)

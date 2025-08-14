@@ -21,7 +21,7 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.messag
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
-import com.intellij.idea.plugin.hybris.settings.state.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -41,10 +41,10 @@ import java.util.function.Function
 
 class FxSTableAliasSeparatorEditorNotificationProvider : AbstractFxSEditorNotificationProvider() {
 
-    override fun shouldCollect(fxsSettings: FlexibleSearchSettings) = fxsSettings.verifyUsedTableAliasSeparator
+    override fun shouldCollect(fxsSettings: FlexibleSearchSettingsState) = fxsSettings.verifyUsedTableAliasSeparator
 
     override fun panelFunction(
-        fxsSettings: FlexibleSearchSettings,
+        fxsSettings: FlexibleSearchSettingsState,
         project: Project,
         psiFile: PsiFile,
         file: VirtualFile
@@ -78,7 +78,7 @@ class FxSTableAliasSeparatorEditorNotificationProvider : AbstractFxSEditorNotifi
     }
 
     override fun collect(
-        fxsSettings: FlexibleSearchSettings,
+        fxsSettings: FlexibleSearchSettingsState,
         psiFile: PsiFile
     ): MutableCollection<LeafPsiElement> {
         val searchForElementType = when (fxsSettings.completion.defaultTableAliasSeparator) {

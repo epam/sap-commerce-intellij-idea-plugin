@@ -16,30 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.state
+package com.intellij.idea.plugin.hybris.system.cockpitng.settings.state
 
+import com.intellij.idea.plugin.hybris.settings.state.FoldingSettings
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
-@Tag("CngSettings")
-data class CngSettings(
-    @JvmField @OptionTag val folding: CngFoldingSettings = CngFoldingSettings(),
-) {
-    fun mutable() = Mutable(
-        folding = folding.mutable()
-    )
-
-    data class Mutable(
-        var folding: CngFoldingSettings.Mutable,
-    ) {
-        fun immutable() = CngSettings(
-            folding = folding.immutable()
-        )
-    }
-}
-
 @Tag("CngFoldingSettings")
-data class CngFoldingSettings(
+data class CngFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val tablifyWizardProperties: Boolean = true,
     @JvmField @OptionTag val tablifyNavigationNodes: Boolean = true,
@@ -68,7 +52,7 @@ data class CngFoldingSettings(
         var tablifyParameters: Boolean,
         var tablifyMolds: Boolean,
     ) : FoldingSettings {
-        fun immutable() = CngFoldingSettings(
+        fun immutable() = CngFoldingSettingsState(
             enabled = enabled,
             tablifyWizardProperties = tablifyWizardProperties,
             tablifyNavigationNodes = tablifyNavigationNodes,

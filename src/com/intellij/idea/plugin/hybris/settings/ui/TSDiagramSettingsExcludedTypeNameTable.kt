@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings.ui
 
-import com.intellij.idea.plugin.hybris.settings.state.TypeSystemDiagramSettings
+import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemDiagramSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
@@ -26,14 +26,14 @@ import java.io.Serial
 
 private const val COLUMN_NAME = "Name"
 
-class TSDiagramSettingsExcludedTypeNameTable private constructor(project: Project) : AbstractTable<TypeSystemDiagramSettings.Mutable, TSTypeNameHolder>(project) {
+class TSDiagramSettingsExcludedTypeNameTable private constructor(project: Project) : AbstractTable<TypeSystemDiagramSettingsState.Mutable, TSTypeNameHolder>(project) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME)
     override fun select(item: TSTypeNameHolder) {
 
     }
 
-    override fun getItems(owner: TypeSystemDiagramSettings.Mutable) = owner.excludedTypeNames
+    override fun getItems(owner: TypeSystemDiagramSettingsState.Mutable) = owner.excludedTypeNames
         .map { TSTypeNameHolder(it) }
         .sortedBy { it.typeName }
         .toMutableList()

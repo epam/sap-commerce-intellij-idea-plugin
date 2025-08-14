@@ -16,14 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.state
+package com.intellij.idea.plugin.hybris.groovy.settings.state
 
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
 @Tag("GroovySettings")
-data class GroovySettings(
+data class GroovySettingsState(
     @JvmField @OptionTag val enableActionsToolbar: Boolean = true,
     @JvmField @OptionTag val enableActionsToolbarForGroovyTest: Boolean = false,
     @JvmField @OptionTag val enableActionsToolbarForGroovyIdeConsole: Boolean = false,
@@ -42,7 +42,7 @@ data class GroovySettings(
         var enableActionsToolbarForGroovyIdeConsole: Boolean,
         var txMode: TransactionMode,
     ) {
-        fun immutable() = GroovySettings(
+        fun immutable() = GroovySettingsState(
             enableActionsToolbar = enableActionsToolbar,
             enableActionsToolbarForGroovyTest = enableActionsToolbarForGroovyTest,
             enableActionsToolbarForGroovyIdeConsole = enableActionsToolbarForGroovyIdeConsole,

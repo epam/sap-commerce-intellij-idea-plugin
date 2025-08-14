@@ -16,79 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.state
+package com.intellij.idea.plugin.hybris.system.type.settings.state
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 import kotlinx.collections.immutable.toImmutableSet
 
-@Tag("TypeSystemSettings")
-data class TypeSystemSettings(
-    @JvmField @OptionTag val folding: TypeSystemFoldingSettings = TypeSystemFoldingSettings(),
-) {
-
-    fun mutable() = Mutable(
-        folding = folding.mutable(),
-    )
-
-    data class Mutable(
-        var folding: TypeSystemFoldingSettings.Mutable,
-    ) {
-        fun immutable() = TypeSystemSettings(
-            folding = folding.immutable(),
-        )
-    }
-}
-
-@Tag("TypeSystemFoldingSettings")
-data class TypeSystemFoldingSettings(
-    @OptionTag override val enabled: Boolean = true,
-    @JvmField @OptionTag val tablifyAtomics: Boolean = true,
-    @JvmField @OptionTag val tablifyCollections: Boolean = true,
-    @JvmField @OptionTag val tablifyMaps: Boolean = true,
-    @JvmField @OptionTag val tablifyRelations: Boolean = true,
-    @JvmField @OptionTag val tablifyItemAttributes: Boolean = true,
-    @JvmField @OptionTag val tablifyItemIndexes: Boolean = true,
-    @JvmField @OptionTag val tablifyItemCustomProperties: Boolean = true,
-) : FoldingSettings {
-
-    fun mutable() = Mutable(
-        enabled = enabled,
-        tablifyAtomics = tablifyAtomics,
-        tablifyCollections = tablifyCollections,
-        tablifyMaps = tablifyMaps,
-        tablifyRelations = tablifyRelations,
-        tablifyItemAttributes = tablifyItemAttributes,
-        tablifyItemIndexes = tablifyItemIndexes,
-        tablifyItemCustomProperties = tablifyItemCustomProperties,
-    )
-
-    data class Mutable(
-        override var enabled: Boolean,
-        var tablifyAtomics: Boolean,
-        var tablifyCollections: Boolean,
-        var tablifyMaps: Boolean,
-        var tablifyRelations: Boolean,
-        var tablifyItemAttributes: Boolean,
-        var tablifyItemIndexes: Boolean,
-        var tablifyItemCustomProperties: Boolean,
-    ) : FoldingSettings {
-        fun immutable() = TypeSystemFoldingSettings(
-            enabled = enabled,
-            tablifyAtomics = tablifyAtomics,
-            tablifyCollections = tablifyCollections,
-            tablifyMaps = tablifyMaps,
-            tablifyRelations = tablifyRelations,
-            tablifyItemAttributes = tablifyItemAttributes,
-            tablifyItemIndexes = tablifyItemIndexes,
-            tablifyItemCustomProperties = tablifyItemCustomProperties,
-        )
-    }
-}
-
 @Tag("TSDiagramSettings")
-data class TypeSystemDiagramSettings(
+data class TypeSystemDiagramSettingsState(
     @JvmField @OptionTag val nodesCollapsedByDefault: Boolean = true,
     @JvmField @OptionTag val showOOTBMapNodes: Boolean = false,
     @JvmField @OptionTag val showCustomAtomicNodes: Boolean = false,
@@ -126,7 +62,7 @@ data class TypeSystemDiagramSettings(
         var showCustomRelationNodes: Boolean,
         var excludedTypeNames: MutableSet<String>,
     ) {
-        fun immutable() = TypeSystemDiagramSettings(
+        fun immutable() = TypeSystemDiagramSettingsState(
             nodesCollapsedByDefault = nodesCollapsedByDefault,
             showOOTBMapNodes = showOOTBMapNodes,
             showCustomAtomicNodes = showCustomAtomicNodes,

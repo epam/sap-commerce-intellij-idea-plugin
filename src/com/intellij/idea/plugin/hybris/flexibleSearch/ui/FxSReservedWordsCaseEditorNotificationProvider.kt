@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.ui
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.state.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
 import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
@@ -39,10 +39,10 @@ import java.util.function.Function
 
 class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotificationProvider() {
 
-    override fun shouldCollect(fxsSettings: FlexibleSearchSettings) = fxsSettings.verifyCaseForReservedWords
+    override fun shouldCollect(fxsSettings: FlexibleSearchSettingsState) = fxsSettings.verifyCaseForReservedWords
 
     override fun panelFunction(
-        fxsSettings: FlexibleSearchSettings,
+        fxsSettings: FlexibleSearchSettingsState,
         project: Project,
         psiFile: PsiFile,
         file: VirtualFile
@@ -74,14 +74,14 @@ class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotifica
     }
 
     override fun collect(
-        fxsSettings: FlexibleSearchSettings,
+        fxsSettings: FlexibleSearchSettingsState,
         psiFile: PsiFile
     ): Collection<LeafPsiElement> = with(Collector(fxsSettings)) {
         PsiTreeUtil.processElements(psiFile, LeafPsiElement::class.java, this)
         this.collection
     }
 
-    class Collector(private val fxsSettings: FlexibleSearchSettings) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
+    class Collector(private val fxsSettings: FlexibleSearchSettingsState) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
         override fun execute(element: LeafPsiElement): Boolean {
             if (HybrisConstants.FXS_RESERVED_KEYWORDS.contains(element.elementType)) {
                 val text = element.text.trim()

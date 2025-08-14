@@ -16,54 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.state
+package com.intellij.idea.plugin.hybris.flexibleSearch.settings.state
 
+import com.intellij.idea.plugin.hybris.settings.state.FoldingSettings
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
-@Tag("BpSettings")
-data class BpSettings(
-    @JvmField @OptionTag val folding: BpFoldingSettings = BpFoldingSettings(),
-) {
-    fun mutable() = Mutable(
-        folding = folding.mutable()
-    )
-
-    data class Mutable(
-        var folding: BpFoldingSettings.Mutable,
-    ) {
-        fun immutable() = BpSettings(
-            folding = folding.immutable()
-        )
-    }
-}
-
-@Tag("BpFoldingSettings")
-data class BpFoldingSettings(
+@Tag("FlexibleSearchFoldingSettings")
+data class FlexibleSearchFoldingSettingsState(
     @OptionTag override val enabled: Boolean = true,
-    @JvmField @OptionTag val tablifyActionTransitions: Boolean = true,
-    @JvmField @OptionTag val tablifyEnds: Boolean = true,
-    @JvmField @OptionTag val tablifyCaseChoices: Boolean = true,
+    @JvmField @OptionTag val showSelectedTableNameForYColumn: Boolean = true,
+    @JvmField @OptionTag val showLanguageForYColumn: Boolean = true,
 ) : FoldingSettings {
 
     fun mutable() = Mutable(
         enabled = enabled,
-        tablifyActionTransitions = tablifyActionTransitions,
-        tablifyEnds = tablifyEnds,
-        tablifyCaseChoices = tablifyCaseChoices,
+        showSelectedTableNameForYColumn = showSelectedTableNameForYColumn,
+        showLanguageForYColumn = showLanguageForYColumn,
     )
 
     data class Mutable(
         override var enabled: Boolean,
-        var tablifyActionTransitions: Boolean,
-        var tablifyEnds: Boolean,
-        var tablifyCaseChoices: Boolean,
+        var showSelectedTableNameForYColumn: Boolean,
+        var showLanguageForYColumn: Boolean,
     ) : FoldingSettings {
-        fun immutable() = BpFoldingSettings(
+        fun immutable() = FlexibleSearchFoldingSettingsState(
             enabled = enabled,
-            tablifyActionTransitions = tablifyActionTransitions,
-            tablifyEnds = tablifyEnds,
-            tablifyCaseChoices = tablifyCaseChoices,
+            showSelectedTableNameForYColumn = showSelectedTableNameForYColumn,
+            showLanguageForYColumn = showLanguageForYColumn,
         )
     }
 }

@@ -18,6 +18,17 @@
 
 package com.intellij.idea.plugin.hybris.settings.state
 
+import com.intellij.idea.plugin.hybris.acl.settings.state.AclSettingsState
+import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2SettingsState
+import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
+import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovySettingsState
+import com.intellij.idea.plugin.hybris.impex.settings.state.ImpExSettingsState
+import com.intellij.idea.plugin.hybris.polyglotQuery.settings.state.PolyglotQuerySettingsState
+import com.intellij.idea.plugin.hybris.system.bean.settings.state.BeanSystemSettingsState
+import com.intellij.idea.plugin.hybris.system.businessProcess.settings.state.BpSettingsState
+import com.intellij.idea.plugin.hybris.system.cockpitng.settings.state.CngSettingsState
+import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemDiagramSettingsState
+import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemSettingsState
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
@@ -29,15 +40,15 @@ data class DeveloperSettingsState(
     @JvmField @OptionTag val activeCCv2SubscriptionID: String? = null,
 
     @JvmField val remoteConnectionSettingsList: List<RemoteConnectionSettings> = emptyList(),
-    @JvmField @OptionTag val typeSystemDiagramSettings: TypeSystemDiagramSettings = TypeSystemDiagramSettings(),
-    @JvmField @OptionTag val beanSystemSettings: BeanSystemSettings = BeanSystemSettings(),
-    @JvmField @OptionTag val typeSystemSettings: TypeSystemSettings = TypeSystemSettings(),
-    @JvmField @OptionTag val cngSettings: CngSettings = CngSettings(),
-    @JvmField @OptionTag val bpSettings: BpSettings = BpSettings(),
-    @JvmField @OptionTag val flexibleSearchSettings: FlexibleSearchSettings = FlexibleSearchSettings(),
-    @JvmField @OptionTag val aclSettings: AclSettings = AclSettings(),
-    @JvmField @OptionTag val polyglotQuerySettings: PolyglotQuerySettings = PolyglotQuerySettings(),
-    @JvmField @OptionTag val impexSettings: ImpexSettings = ImpexSettings(),
-    @JvmField @OptionTag val groovySettings: GroovySettings = GroovySettings(),
-    @JvmField @OptionTag val ccv2Settings: CCv2Settings = CCv2Settings(),
+    @JvmField @OptionTag val typeSystemDiagramSettings: TypeSystemDiagramSettingsState = TypeSystemDiagramSettingsState(),
+    @JvmField @OptionTag val beanSystemSettings: BeanSystemSettingsState = BeanSystemSettingsState(),
+    @JvmField @OptionTag val typeSystemSettings: TypeSystemSettingsState = TypeSystemSettingsState(),
+    @JvmField @OptionTag val cngSettings: CngSettingsState = CngSettingsState(),
+    @JvmField @OptionTag val bpSettings: BpSettingsState = BpSettingsState(),
+    @JvmField @OptionTag val flexibleSearchSettings: FlexibleSearchSettingsState = FlexibleSearchSettingsState(),
+    @JvmField @OptionTag val aclSettings: AclSettingsState = AclSettingsState(),
+    @JvmField @OptionTag val polyglotQuerySettings: PolyglotQuerySettingsState = PolyglotQuerySettingsState(),
+    @JvmField @OptionTag val impexSettings: ImpExSettingsState = ImpExSettingsState(),
+    @JvmField @OptionTag val groovySettings: GroovySettingsState = GroovySettingsState(),
+    @JvmField @OptionTag val ccv2Settings: CCv2SettingsState = CCv2SettingsState(),
 )

@@ -16,17 +16,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.state
+package com.intellij.idea.plugin.hybris.impex.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
-@Tag("AclSettings")
-data class AclSettings(
-    @JvmField @OptionTag val folding: AclFoldingSettings = AclFoldingSettings(),
-)
+@Tag("ImpexFoldingSettings")
+data class ImpExFoldingSettingsState(
+    @JvmField @OptionTag val enabled: Boolean = true,
+    @JvmField @OptionTag val useSmartFolding: Boolean = true,
+    @JvmField @OptionTag val foldMacroInParameters: Boolean = true,
+) {
+    fun mutable() = Mutable(
+        enabled = enabled,
+        useSmartFolding = useSmartFolding,
+        foldMacroInParameters = foldMacroInParameters,
+    )
 
-@Tag("AclFoldingSettings")
-data class AclFoldingSettings(
-    @JvmField @OptionTag val enabled: Boolean = true
-)
+    data class Mutable(
+        var enabled: Boolean,
+        var useSmartFolding: Boolean,
+        var foldMacroInParameters: Boolean,
+    ) {
+        fun immutable() = ImpExFoldingSettingsState(
+            enabled = enabled,
+            useSmartFolding = useSmartFolding,
+            foldMacroInParameters = foldMacroInParameters,
+        )
+    }
+}

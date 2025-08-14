@@ -15,36 +15,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.settings.state
 
-import com.intellij.openapi.components.BaseState
+package com.intellij.idea.plugin.hybris.system.businessProcess.settings.state
 
-class SUser : BaseState(), Comparable<SUser> {
-    var id by string()
-    var alias by string(null)
+import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Tag
 
-    override fun compareTo(other: SUser) = toString().compareTo(other.toString())
-
-    override fun toString() = alias
-        ?: id
-        ?: "?"
-
-    fun toDto() = SUserDto(id, alias)
-}
-
-data class SUserDto(
-    var id: String? = null,
-    var alias: String? = null,
+@Tag("BpSettings")
+data class BpSettingsState(
+    @JvmField @OptionTag val folding: BpFoldingSettingsState = BpFoldingSettingsState(),
 ) {
-    fun toModel() = SUser()
-        .also {
-            it.id = id
-            it.alias = alias
-        }
+    fun mutable() = Mutable(
+        folding = folding.mutable()
+    )
 
-    fun copy() = SUserDto(id, alias)
-
-    override fun toString() = alias
-        ?: id
-        ?: "?"
+    data class Mutable(
+        var folding: BpFoldingSettingsState.Mutable,
+    ) {
+        fun immutable() = BpSettingsState(
+            folding = folding.immutable()
+        )
+    }
 }
+
