@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -84,6 +84,6 @@ object CCv2SubscriptionsComboBoxModelFactory {
         if (allowBlank) model.addElement(null)
         model.addAll(subscriptions.sortedBy { it.toString() })
         model.selectedItem = selectedSubscription
-            ?: DeveloperSettingsComponent.getInstance(project).getActiveCCv2Subscription()
+            ?: DeveloperSettings.getInstance(project).getActiveCCv2Subscription()
     }
 }

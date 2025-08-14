@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -36,7 +36,7 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val mode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode
+        val mode = DeveloperSettings.getInstance(project).groovySettings.txMode
             .let { message("hybris.groovy.actions.transaction.${it.name.lowercase()}") }
 
         e.presentation.text = message("hybris.groovy.actions.transaction.mode", mode)

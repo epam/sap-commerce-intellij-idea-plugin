@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.groovy.file
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.ex.EditorEx
@@ -39,7 +39,7 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean {
-        val settings = DeveloperSettingsComponent.getInstance(project).state
+        val settings = DeveloperSettings.getInstance(project)
         val file = editor.virtualFile
 
         // Checking special cases where toolbar might not be desired

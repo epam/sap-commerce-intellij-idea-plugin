@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
@@ -53,7 +53,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
 
     private val ccv2SubscriptionsModel = CCv2SubscriptionsComboBoxModelFactory.create(project, allowBlank = true, disposable = this) {
         if (it == null) {
-            DeveloperSettingsComponent.getInstance(project).state.activeCCv2SubscriptionID = null
+            DeveloperSettings.getInstance(project).activeCCv2SubscriptionID = null
         }
     }
 
@@ -88,7 +88,7 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
                 )
                     .label("Subscription:")
                     .onChanged {
-                        val devSettings = DeveloperSettingsComponent.getInstance(project).state
+                        val devSettings = DeveloperSettings.getInstance(project)
 
                         when (val element = it.selectedItem) {
                             is CCv2Subscription -> devSettings.activeCCv2SubscriptionID = element.uuid

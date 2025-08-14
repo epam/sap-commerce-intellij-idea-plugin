@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,7 +23,7 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.util.ProcessingContext
 
 class ImpexHeaderTypeModifierNameCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -34,7 +34,7 @@ class ImpexHeaderTypeModifierNameCompletionProvider : CompletionProvider<Complet
         result: CompletionResultSet
     ) {
         val element = parameters.position
-        val completionSettings = DeveloperSettingsComponent.getInstance(element.project).state
+        val completionSettings = DeveloperSettings.getInstance(element.project)
             .impexSettings
             .completion
         TypeModifier.entries

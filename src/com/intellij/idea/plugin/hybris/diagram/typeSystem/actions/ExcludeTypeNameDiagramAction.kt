@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ import com.intellij.diagram.DiagramAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramNode
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil
@@ -39,10 +39,11 @@ class ExcludeTypeNameDiagramAction : DiagramAction(
             .map { it.graphNode.name }
 
         if (excludedTypeNames.isNotEmpty()) {
-            DeveloperSettingsComponent.getInstance(project).state
-                .typeSystemDiagramSettings
-                .excludedTypeNames
-                .addAll(excludedTypeNames)
+            with(DeveloperSettings.getInstance(project)) {
+                val newExcludedTypeNames = typeSystemDiagramSettings.excludedTypeNames.toMutableSet()
+                    .apply { addAll(excludedTypeNames) }
+                typeSystemDiagramSettings = typeSystemDiagramSettings.copy(excludedTypeNames = newExcludedTypeNames)
+            }
 
             val action = ActionManager.getInstance().getAction("Diagram.RefreshDataModelManually")
             ActionUtil.performActionDumbAwareWithCallbacks(action, event)

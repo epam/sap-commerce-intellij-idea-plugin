@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -37,7 +37,7 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private val filter = PolyglotQueryFoldingBlocksFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingSetting = DeveloperSettingsComponent.getInstance(root.project).state.polyglotQuerySettings.folding
+        val foldingSetting = DeveloperSettings.getInstance(root.project).polyglotQuerySettings.folding
 
         if (!foldingSetting.enabled) return emptyArray()
 
@@ -77,7 +77,7 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 ?.trim()
                 ?: "?"
 
-            if (DeveloperSettingsComponent.getInstance(node.psi.project).state.polyglotQuerySettings.folding.showLanguage) {
+            if (DeveloperSettings.getInstance(node.psi.project).polyglotQuerySettings.folding.showLanguage) {
                 val language = node.findChildByType(PolyglotQueryTypes.LOCALIZED)
                     ?.let {
                         it.findChildByType(PolyglotQueryTypes.LOCALIZED_NAME)

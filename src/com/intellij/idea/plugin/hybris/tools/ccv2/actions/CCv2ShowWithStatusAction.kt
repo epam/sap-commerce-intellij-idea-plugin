@@ -18,20 +18,19 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
-import com.intellij.idea.plugin.hybris.settings.CCv2Settings
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
+import com.intellij.idea.plugin.hybris.settings.state.CCv2Settings
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
-import java.util.*
 import javax.swing.Icon
 
 abstract class CCv2ShowWithStatusAction<T : Enum<T>>(
     private val tab: CCv2Tab,
-    private val status: T,
+    protected val status: T,
     text: String,
     icon: Icon
 ) : ToggleAction(text, null, icon) {
@@ -41,15 +40,6 @@ abstract class CCv2ShowWithStatusAction<T : Enum<T>>(
         ?.let { getStatuses(it) }
         ?.contains(status)
         ?: false
-
-    override fun setSelected(e: AnActionEvent, state: Boolean) {
-        getCCv2Settings(e)
-            ?.let { getStatuses(it) }
-            ?.let {
-                if (state) it.add(status)
-                else it.remove(status)
-            }
-    }
 
     override fun update(e: AnActionEvent) {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
@@ -62,8 +52,8 @@ abstract class CCv2ShowWithStatusAction<T : Enum<T>>(
             ?: false
     }
 
-    protected abstract fun getStatuses(settings: CCv2Settings): EnumSet<T>?
+    protected abstract fun getStatuses(settings: CCv2Settings): Set<T>?
 
     private fun getCCv2Settings(e: AnActionEvent) = e.project
-        ?.let { DeveloperSettingsComponent.getInstance(it).state.ccv2Settings }
+        ?.let { DeveloperSettings.getInstance(it).ccv2Settings }
 }

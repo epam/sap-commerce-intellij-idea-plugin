@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -48,9 +48,9 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             return FoldingDescriptor.EMPTY_ARRAY;
         }
 
-        final var foldMacroInParameters = DeveloperSettingsComponent.getInstance(root.getProject()).getState().getImpexSettings()
-            .getFolding()
-            .getFoldMacroInParameters();
+        final var foldMacroInParameters = DeveloperSettings.getInstance(root.getProject()).getImpexSettings()
+            .folding
+            .foldMacroInParameters;
 
         final var macroUsages = PsiTreeUtil.findChildrenOfAnyType(root, ImpexMacroUsageDec.class).stream()
             .map(it -> acceptMacroUsage(it, foldMacroInParameters))

@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.settings.options
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
@@ -51,8 +51,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
         "Integrations", "hybris.project.integrations.settings"
     ) {
 
-        private val devSettingsComponent = DeveloperSettingsComponent.getInstance(project)
-        private val devSettings = devSettingsComponent.state
+        private val developerSettings = DeveloperSettings.getInstance(project)
 
         @Volatile
         private var isReset = false
@@ -102,17 +101,17 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
                         .onApply {
                             val activeSubscription = activeCCv2SubscriptionComboBox.selectedItem as? CCv2Subscription
                             when (activeSubscription) {
-                                is CCv2Subscription -> devSettings.activeCCv2SubscriptionID = activeSubscription.uuid
-                                else -> devSettings.activeCCv2SubscriptionID = null
+                                is CCv2Subscription -> developerSettings.activeCCv2SubscriptionID = activeSubscription.uuid
+                                else -> developerSettings.activeCCv2SubscriptionID = null
                             }
 
                             project.messageBus
                                 .syncPublisher(CCv2SettingsListener.TOPIC)
                                 .onActiveSubscriptionChanged(activeSubscription)
                         }
-                        .onIsModified { activeCCv2SubscriptionComboBox.selectedItem != devSettingsComponent.getActiveCCv2Subscription() }
+                        .onIsModified { activeCCv2SubscriptionComboBox.selectedItem != developerSettings.getActiveCCv2Subscription() }
                         .component
-                        .also { it.selectedItem = devSettingsComponent.getActiveCCv2Subscription() }
+                        .also { it.selectedItem = developerSettings.getActiveCCv2Subscription() }
                 }.layout(RowLayout.PARENT_GRID)
             }
 
@@ -174,7 +173,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : Co
         override fun reset() {
             isReset = true
 
-            activeCCv2SubscriptionComboBox.selectedItem = devSettingsComponent.getActiveCCv2Subscription()
+            activeCCv2SubscriptionComboBox.selectedItem = developerSettings.getActiveCCv2Subscription()
 
             hacInstances.setData(RemoteConnectionService.getInstance(project).getRemoteConnections(RemoteConnectionType.Hybris))
             solrInstances.setData(RemoteConnectionService.getInstance(project).getRemoteConnections(RemoteConnectionType.SOLR))

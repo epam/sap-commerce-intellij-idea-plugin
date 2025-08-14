@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings.ui
 
-import com.intellij.idea.plugin.hybris.settings.TypeSystemDiagramSettings
+import com.intellij.idea.plugin.hybris.settings.state.TypeSystemDiagramSettings
 import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
@@ -26,14 +26,14 @@ import java.io.Serial
 
 private const val COLUMN_NAME = "Name"
 
-class TSDiagramSettingsExcludedTypeNameTable private constructor(project: Project) : AbstractTable<TypeSystemDiagramSettings, TSTypeNameHolder>(project) {
+class TSDiagramSettingsExcludedTypeNameTable private constructor(project: Project) : AbstractTable<TypeSystemDiagramSettings.Mutable, TSTypeNameHolder>(project) {
 
     override fun getSearchableColumnNames() = listOf(COLUMN_NAME)
     override fun select(item: TSTypeNameHolder) {
 
     }
 
-    override fun getItems(owner: TypeSystemDiagramSettings) = owner.excludedTypeNames
+    override fun getItems(owner: TypeSystemDiagramSettings.Mutable) = owner.excludedTypeNames
         .map { TSTypeNameHolder(it) }
         .sortedBy { it.typeName }
         .toMutableList()

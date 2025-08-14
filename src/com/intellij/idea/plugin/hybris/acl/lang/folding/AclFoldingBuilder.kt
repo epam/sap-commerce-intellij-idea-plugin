@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.acl.psi.AclUserRights
 import com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsBody
 import com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLines
 import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -46,7 +46,7 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingSettings = DeveloperSettingsComponent.getInstance(root.project).state.aclSettings.folding
+        val foldingSettings = DeveloperSettings.getInstance(root.project).aclSettings.folding
         if (!foldingSettings.enabled) return emptyArray()
 
         return CachedValuesManager.getCachedValue(root) {

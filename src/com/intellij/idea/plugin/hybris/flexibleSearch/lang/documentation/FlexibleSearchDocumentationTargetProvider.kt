@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.lang.documentation
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.DocumentationTargetProvider
 import com.intellij.psi.PsiFile
@@ -39,7 +39,7 @@ class FlexibleSearchDocumentationTargetProvider : DocumentationTargetProvider {
 
         if (!projectSettings.isHybrisProject()) return emptyList()
 
-        val developerSettings = DeveloperSettingsComponent.getInstance(file.project).state
+        val developerSettings = DeveloperSettings.getInstance(file.project)
 
         val documentationSettings = developerSettings.flexibleSearchSettings.documentation
         if (!documentationSettings.enabled) return emptyList()

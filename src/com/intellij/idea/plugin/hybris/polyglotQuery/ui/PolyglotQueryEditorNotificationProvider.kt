@@ -21,10 +21,10 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
-import com.intellij.idea.plugin.hybris.settings.PolyglotQuerySettings
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.state.PolyglotQuerySettings
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -52,7 +52,7 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
         if (!projectSettings.isHybrisProject()) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, PolyglotQueryFileType)) return null
 
-        val developerSettings = DeveloperSettingsComponent.getInstance(project).state
+        val developerSettings = DeveloperSettings.getInstance(project)
 
         val pgqSettings = developerSettings.polyglotQuerySettings
         if (!pgqSettings.verifyCaseForReservedWords) return null

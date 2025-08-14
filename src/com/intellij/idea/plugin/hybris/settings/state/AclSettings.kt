@@ -16,15 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.settings.state
 
-import com.intellij.openapi.components.BaseState
+import com.intellij.util.xmlb.annotations.OptionTag
 
 data class AclSettings(
-    var folding: AclFoldingSettings = AclFoldingSettings(),
+    @JvmField val folding: AclFoldingSettings = AclFoldingSettings(),
 )
 
-class AclFoldingSettings : BaseState() {
-    var enabled by property(true)
-}
-
+data class AclFoldingSettings(
+    @JvmField @OptionTag val enabled: Boolean = true
+)

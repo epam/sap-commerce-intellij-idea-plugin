@@ -24,19 +24,21 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.lang.Language
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import java.util.*
 
-class GridXSVFormatService(project: Project) {
+class GridXSVFormatService(private val project: Project) : Disposable {
 
-    private val developerSettings = DeveloperSettingsComponent.Companion.getInstance(project)
     private val valueSeparator = ";"
     private val quotationPolicy = CsvRecordFormat.QuotationPolicy.NEVER
     private val impExFormats = mutableMapOf<BitSet, CsvFormat>()
     private val fxsFormat by lazy { xsvFlexibleSearchFormat() }
+
+    override fun dispose() = impExFormats.clear()
 
     fun getFormat(language: Language): CsvFormat = when (language) {
         is ImpexLanguage -> getImpExFormat()
@@ -48,7 +50,7 @@ class GridXSVFormatService(project: Project) {
     private fun getFlexibleSearchFormat() = fxsFormat
 
     private fun getImpExFormat(): CsvFormat {
-        val editModeSettings = developerSettings.state.impexSettings.editMode
+        val editModeSettings = DeveloperSettings.getInstance(project).impexSettings.editMode
 
         val key = BitSet(2).also {
             it.set(0, editModeSettings.firstRowIsHeader)

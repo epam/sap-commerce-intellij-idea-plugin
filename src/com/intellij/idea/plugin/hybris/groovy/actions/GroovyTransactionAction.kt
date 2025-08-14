@@ -18,7 +18,7 @@
 package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -32,12 +32,15 @@ open class GroovyTransactionAction(text: String, description: String, private va
 
     override fun isSelected(e: AnActionEvent): Boolean {
         val project = e.project ?: return false
-        return DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode == transactionMode
+        return DeveloperSettings.getInstance(project).groovySettings.txMode == transactionMode
     }
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
-        DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode = transactionMode
+
+        with(DeveloperSettings.getInstance(project)) {
+            groovySettings = groovySettings.copy(txMode = transactionMode)
+        }
     }
 }
 

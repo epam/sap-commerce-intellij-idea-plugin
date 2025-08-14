@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -46,7 +46,8 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(val project: Project) : C
         message("hybris.settings.project.pgq.title"), "hybris.pgq.settings"
     ) {
 
-        private val state = DeveloperSettingsComponent.getInstance(project).state.polyglotQuerySettings
+        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val mutableSettings = developerSettings.polyglotQuerySettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox
         private lateinit var foldingEnableCheckBox: JCheckBox
@@ -55,6 +56,8 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(val project: Project) : C
 
         override fun apply() {
             super.apply()
+
+            developerSettings.polyglotQuerySettings = mutableSettings.immutable()
 
             EditorNotificationProvider.EP_NAME.findExtension(PolyglotQueryEditorNotificationProvider::class.java, project)
                 ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }
@@ -65,7 +68,7 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(val project: Project) : C
                 row {
                     verifyCaseCheckBox =
                         checkBox("Verify case of the reserved words")
-                            .bindSelected(state::verifyCaseForReservedWords)
+                            .bindSelected(mutableSettings::verifyCaseForReservedWords)
                             .comment("Case will be verified when the file is being opened for the first time")
                             .component
                 }
@@ -75,19 +78,19 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(val project: Project) : C
                         renderer = SimpleListCellRenderer.create("?") { message("hybris.pgq.notification.provider.keywords.case.$it") }
                     )
                         .label("Default case for reserved words")
-                        .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
+                        .bindItem(mutableSettings::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
                 }.rowComment("Existing case-related notifications will be closed for all related editors.<br>Verification of the case will be re-triggered on the next re-opening of the file")
             }
             group("Code Folding") {
                 row {
                     foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(state.folding::enabled)
+                        .bindSelected(mutableSettings.folding::enabled)
                         .component
                 }
                 row {
                     checkBox("Show language for folded attribute")
-                        .bindSelected(state.folding::showLanguage)
+                        .bindSelected(mutableSettings.folding::showLanguage)
                         .enabledIf(foldingEnableCheckBox.selected)
                         .comment("If checked localized attribute <code>{name[en]}</code> will be represented as <code>name:en</code>")
                 }

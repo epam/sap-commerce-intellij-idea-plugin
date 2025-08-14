@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -38,7 +38,8 @@ class ProjectCngSettingsConfigurableProvider(val project: Project) : Configurabl
         message("hybris.settings.project.cng.title"), "[y] SAP CX Cockpit NG configuration."
     ) {
 
-        private val settings = DeveloperSettingsComponent.getInstance(project).state.cngSettings
+        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val mutableSettings = developerSettings.cngSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
@@ -46,34 +47,40 @@ class ProjectCngSettingsConfigurableProvider(val project: Project) : Configurabl
             group("Code Folding") {
                 row {
                     foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(settings.folding::enabled)
+                        .bindSelected(mutableSettings.folding::enabled)
                         .component
                 }
                 group("Table-Like Folding", true) {
                     row {
                         checkBox("Wizard properties")
-                            .bindSelected(settings.folding::tablifyWizardProperties)
+                            .bindSelected(mutableSettings.folding::tablifyWizardProperties)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Navigation nodes")
-                            .bindSelected(settings.folding::tablifyNavigationNodes)
+                            .bindSelected(mutableSettings.folding::tablifyNavigationNodes)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Search fields")
-                            .bindSelected(settings.folding::tablifySearchFields)
+                            .bindSelected(mutableSettings.folding::tablifySearchFields)
                             .enabledIf(foldingEnableCheckBox.selected)
                     }
                     row {
                         checkBox("List columns")
-                            .bindSelected(settings.folding::tablifyListColumns)
+                            .bindSelected(mutableSettings.folding::tablifyListColumns)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Parameters")
-                            .bindSelected(settings.folding::tablifyParameters)
+                            .bindSelected(mutableSettings.folding::tablifyParameters)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Molds")
-                            .bindSelected(settings.folding::tablifyMolds)
+                            .bindSelected(mutableSettings.folding::tablifyMolds)
                             .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }
             }
+        }
+
+        override fun apply() {
+            super.apply()
+
+            developerSettings.cngSettings = mutableSettings.immutable()
         }
     }
 }

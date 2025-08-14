@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -40,7 +40,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private val filter = FlexibleSearchFoldingBlocksFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingSettings = DeveloperSettingsComponent.getInstance(root.project).state.flexibleSearchSettings.folding
+        val foldingSettings = DeveloperSettings.getInstance(root.project).flexibleSearchSettings.folding
         if (!foldingSettings.enabled) return emptyArray()
 
         return CachedValuesManager.getCachedValue(root) {
@@ -121,7 +121,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
         ?: FALLBACK_PLACEHOLDER
 
     private fun getColumnPlaceholderText(node: ASTNode, columnNameType: IElementType, tableAliasType: IElementType): String {
-        val fxsSettings = DeveloperSettingsComponent.getInstance(node.psi.project).state.flexibleSearchSettings
+        val fxsSettings = DeveloperSettings.getInstance(node.psi.project).flexibleSearchSettings
         val columnName = node.findChildByType(columnNameType)
             ?.text
             ?.trim()

@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.ui.TSDiagramSettingsExcludedTypeNameTable
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -43,8 +43,9 @@ class ProjectTypeSystemConfigurableProvider(val project: Project) : Configurable
         message("hybris.settings.project.ts.title"), "[y] SAP CX Type System configuration."
     ) {
 
-        private val tsSettings = DeveloperSettingsComponent.getInstance(project).state.typeSystemSettings
-        private val tsDiagramSettings = DeveloperSettingsComponent.getInstance(project).state.typeSystemDiagramSettings
+        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val tsMutableSettings = developerSettings.typeSystemSettings.mutable()
+        private val tsDiagramMutableSettings = developerSettings.typeSystemDiagramSettings.mutable()
 
         private val excludedTypeNamesTable = TSDiagramSettingsExcludedTypeNameTable.getInstance(project)
         private val excludedTypeNamesPane = ToolbarDecorator.createDecorator(excludedTypeNamesTable)
@@ -58,37 +59,44 @@ class ProjectTypeSystemConfigurableProvider(val project: Project) : Configurable
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
+        override fun apply() {
+            super.apply()
+
+            developerSettings.typeSystemSettings = tsMutableSettings.immutable()
+            developerSettings.typeSystemDiagramSettings = tsDiagramMutableSettings.immutable()
+        }
+
         override fun createPanel() = panel {
             group("Code Folding - items.xml") {
                 row {
                     foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(tsSettings.folding::enabled)
+                        .bindSelected(tsMutableSettings.folding::enabled)
                         .component
                 }
                 group("Table-Like Folding", true) {
                     row {
                         checkBox("Atomics")
-                            .bindSelected(tsSettings.folding::tablifyAtomics)
+                            .bindSelected(tsMutableSettings.folding::tablifyAtomics)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Collections")
-                            .bindSelected(tsSettings.folding::tablifyCollections)
+                            .bindSelected(tsMutableSettings.folding::tablifyCollections)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Maps")
-                            .bindSelected(tsSettings.folding::tablifyMaps)
+                            .bindSelected(tsMutableSettings.folding::tablifyMaps)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Relations")
-                            .bindSelected(tsSettings.folding::tablifyRelations)
+                            .bindSelected(tsMutableSettings.folding::tablifyRelations)
                             .enabledIf(foldingEnableCheckBox.selected)
                     }
                     row {
                         checkBox("Item attributes")
-                            .bindSelected(tsSettings.folding::tablifyItemAttributes)
+                            .bindSelected(tsMutableSettings.folding::tablifyItemAttributes)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Item indexes")
-                            .bindSelected(tsSettings.folding::tablifyItemIndexes)
+                            .bindSelected(tsMutableSettings.folding::tablifyItemIndexes)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Item custom properties")
-                            .bindSelected(tsSettings.folding::tablifyItemCustomProperties)
+                            .bindSelected(tsMutableSettings.folding::tablifyItemCustomProperties)
                             .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }
@@ -97,48 +105,48 @@ class ProjectTypeSystemConfigurableProvider(val project: Project) : Configurable
             group("Diagram Settings") {
                 row {
                     checkBox("Collapse nodes by default")
-                        .bindSelected(tsDiagramSettings::nodesCollapsedByDefault)
+                        .bindSelected(tsDiagramMutableSettings::nodesCollapsedByDefault)
                 }
 
                 row {
                     checkBox("Show OOTB Map nodes")
                         .comment("One of the OOTB Map example is `localized:java.lang.String`.")
-                        .bindSelected(tsDiagramSettings::showOOTBMapNodes)
+                        .bindSelected(tsDiagramMutableSettings::showOOTBMapNodes)
                 }
 
                 row {
                     checkBox("Show custom Atomic nodes")
-                        .bindSelected(tsDiagramSettings::showCustomAtomicNodes)
+                        .bindSelected(tsDiagramMutableSettings::showCustomAtomicNodes)
                 }
 
                 row {
                     checkBox("Show custom Collection nodes")
-                        .bindSelected(tsDiagramSettings::showCustomCollectionNodes)
+                        .bindSelected(tsDiagramMutableSettings::showCustomCollectionNodes)
                 }
 
                 row {
                     checkBox("Show custom Enum nodes")
-                        .bindSelected(tsDiagramSettings::showCustomEnumNodes)
+                        .bindSelected(tsDiagramMutableSettings::showCustomEnumNodes)
                 }
 
                 row {
                     checkBox("Show custom Map nodes")
-                        .bindSelected(tsDiagramSettings::showCustomMapNodes)
+                        .bindSelected(tsDiagramMutableSettings::showCustomMapNodes)
                 }
 
                 row {
                     checkBox("Show custom Relation nodes")
                         .comment("Relations with set Deployment will be always displayed.")
-                        .bindSelected(tsDiagramSettings::showCustomRelationNodes)
+                        .bindSelected(tsDiagramMutableSettings::showCustomRelationNodes)
                 }
             }
 
             group("Diagram - Excluded Type Names", true) {
                 row {
                     cell(excludedTypeNamesPane)
-                        .onApply { tsDiagramSettings.excludedTypeNames = getNewTypeNames() }
-                        .onReset { excludedTypeNamesTable.updateModel(tsDiagramSettings) }
-                        .onIsModified { tsDiagramSettings.excludedTypeNames != getNewTypeNames()  }
+                        .onApply { tsDiagramMutableSettings.excludedTypeNames = getNewTypeNames() }
+                        .onReset { excludedTypeNamesTable.updateModel(tsDiagramMutableSettings) }
+                        .onIsModified { tsDiagramMutableSettings.excludedTypeNames != getNewTypeNames() }
                         .align(Align.FILL)
                 }
             }

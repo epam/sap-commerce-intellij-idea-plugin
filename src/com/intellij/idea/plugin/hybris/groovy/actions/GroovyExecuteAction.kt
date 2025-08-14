@@ -22,7 +22,7 @@ import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.groovy.editor.GroovySplitEditor
 import com.intellij.idea.plugin.hybris.groovy.editor.groovySplitEditor
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
@@ -50,7 +50,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val fileName = e.getData(CommonDataKeys.PSI_FILE)?.name
         val prefix = fileName ?: "script"
 
-        val transactionMode = DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode
+        val transactionMode = DeveloperSettings.getInstance(project).groovySettings.txMode
         val executionClient = GroovyExecutionClient.getInstance(project)
         val contexts = executionClient.connectionContext.replicaContexts
             .map {
@@ -111,7 +111,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
         val project = e.project ?: return
 
-        when (DeveloperSettingsComponent.getInstance(project).state.groovySettings.txMode) {
+        when (DeveloperSettings.getInstance(project).groovySettings.txMode) {
             TransactionMode.ROLLBACK -> {
                 e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE_ROLLBACK
                 e.presentation.text = "Execute Groovy Script<br/>Commit Mode <strong><font color='#C75450'>OFF</font></strong>"

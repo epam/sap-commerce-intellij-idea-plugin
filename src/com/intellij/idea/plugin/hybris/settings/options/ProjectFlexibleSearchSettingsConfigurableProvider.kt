@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -43,7 +43,8 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
         message("hybris.settings.project.fxs.title"), "hybris.fxs.settings"
     ) {
 
-        private val state = DeveloperSettingsComponent.getInstance(project).state.flexibleSearchSettings
+        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val mutableSettings = developerSettings.flexibleSearchSettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox
 
@@ -55,6 +56,8 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
         override fun apply() {
             super.apply()
 
+            developerSettings.flexibleSearchSettings = mutableSettings.immutable()
+
             EditorNotificationProvider.EP_NAME.findExtension(FxSReservedWordsCaseEditorNotificationProvider::class.java, project)
                 ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }
         }
@@ -63,18 +66,18 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
             group("Language") {
                 row {
                     checkBox("Resolve non-aliased [y] column by root aliased Type in the where clause")
-                        .bindSelected(state::fallbackToTableNameIfNoAliasProvided)
+                        .bindSelected(mutableSettings::fallbackToTableNameIfNoAliasProvided)
                         .comment("When table has alias, [y] column can be resolved without corresponding alias. Such fallback will target only first Type specified in the where clause.")
                 }
                 row {
                     checkBox("Verify used table alias separator")
-                        .bindSelected(state::verifyUsedTableAliasSeparator)
+                        .bindSelected(mutableSettings::verifyUsedTableAliasSeparator)
                         .comment("Usage of the default table alias separator will be verified when the file is being opened for the first time")
                 }
                 row {
                     verifyCaseCheckBox =
                         checkBox("Verify case of the reserved words")
-                            .bindSelected(state::verifyCaseForReservedWords)
+                            .bindSelected(mutableSettings::verifyCaseForReservedWords)
                             .comment("Case will be verified when the file is being opened for the first time")
                             .component
                 }
@@ -84,7 +87,7 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
                         renderer = SimpleListCellRenderer.create("?") { message("hybris.fxs.notification.provider.keywords.case.$it") }
                     )
                         .label("Default case for reserved words")
-                        .bindItem(state::defaultCaseForReservedWords.toNullableProperty())
+                        .bindItem(mutableSettings::defaultCaseForReservedWords.toNullableProperty())
                         .enabledIf(verifyCaseCheckBox.selected)
                 }.rowComment("Existing case-related notifications will be closed for all related editors.<br>Verification of the case will be re-triggered on the next re-opening of the file")
 
@@ -92,19 +95,19 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
             group("Code Completion") {
                 row {
                     checkBox("Automatically inject separator after table alias")
-                        .bindSelected(state.completion::injectTableAliasSeparator)
+                        .bindSelected(mutableSettings.completion::injectTableAliasSeparator)
                 }
                 row {
                     checkBox("Automatically inject comma after expression")
-                        .bindSelected(state.completion::injectCommaAfterExpression)
+                        .bindSelected(mutableSettings.completion::injectCommaAfterExpression)
                 }
                 row {
                     checkBox("Automatically inject space after keywords")
-                        .bindSelected(state.completion::injectSpaceAfterKeywords)
+                        .bindSelected(mutableSettings.completion::injectSpaceAfterKeywords)
                 }
                 row {
                     checkBox("Suggest table alias name after AS keyword")
-                        .bindSelected(state.completion::suggestTableAliasNames)
+                        .bindSelected(mutableSettings.completion::suggestTableAliasNames)
                 }
                 row {
                     comboBox(
@@ -118,24 +121,24 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
                         }
                     )
                         .label("Default [y] separator")
-                        .bindItem(state.completion::defaultTableAliasSeparator.toNullableProperty())
+                        .bindItem(mutableSettings.completion::defaultTableAliasSeparator.toNullableProperty())
                 }
             }
             group("Code Folding") {
                 row {
                     foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(state.folding::enabled)
+                        .bindSelected(mutableSettings.folding::enabled)
                         .component
                 }
                 row {
                     checkBox("Show table alias for folded [y] attributes")
                         .comment("If checked attribute <code>{alias.name[en]}</code> will be represented as <code>alias.name</code>")
-                        .bindSelected(state.folding::showSelectedTableNameForYColumn)
+                        .bindSelected(mutableSettings.folding::showSelectedTableNameForYColumn)
                         .enabledIf(foldingEnableCheckBox.selected)
                 }
                 row {
                     checkBox("Show language for folded [y] attribute")
-                        .bindSelected(state.folding::showLanguageForYColumn)
+                        .bindSelected(mutableSettings.folding::showLanguageForYColumn)
                         .enabledIf(foldingEnableCheckBox.selected)
                         .comment("If checked localized attribute <code>{name[en]}</code> will be represented as <code>name:en</code>")
                 }
@@ -143,7 +146,7 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
             group("Documentation") {
                 row {
                     documentationEnableCheckBox = checkBox("Enable documentation")
-                        .bindSelected(state.documentation::enabled)
+                        .bindSelected(mutableSettings.documentation::enabled)
                         .component
                 }
                 row {
@@ -153,7 +156,7 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
                             When enabled short description of the type will be shown on-hover as a tooltip for type used in the <code>FROM {}</code> clause.
                         """.trimIndent()
                         )
-                        .bindSelected(state.documentation::showTypeDocumentation)
+                        .bindSelected(mutableSettings.documentation::showTypeDocumentation)
                         .enabledIf(documentationEnableCheckBox.selected)
                 }
             }

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,7 +22,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.psi.PsiErrorElement
 import com.intellij.util.ProcessingContext
 
@@ -32,7 +32,7 @@ class FxSRootCompletionProvider : CompletionProvider<CompletionParameters>() {
         val psiErrorElement = parameters.position.parent as? PsiErrorElement
             ?: return
 
-        val fxsSettings = DeveloperSettingsComponent.getInstance(parameters.position.project).state.flexibleSearchSettings
+        val fxsSettings = DeveloperSettings.getInstance(parameters.position.project).flexibleSearchSettings
         // FlexibleSearchTokenType.toString()
         when (psiErrorElement.errorDescription.substringBefore(">") + ">") {
             "<statement>" -> result.addAllElements(

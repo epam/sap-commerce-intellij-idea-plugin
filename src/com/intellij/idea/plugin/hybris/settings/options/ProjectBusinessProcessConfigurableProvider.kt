@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -38,7 +38,8 @@ class ProjectBusinessProcessConfigurableProvider(val project: Project) : Configu
         message("hybris.settings.project.bp.title"), "[y] SAP CX Business Process configuration."
     ) {
 
-        private val settings = DeveloperSettingsComponent.getInstance(project).state.bpSettings
+        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val mutableSettings = developerSettings.bpSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
@@ -46,23 +47,29 @@ class ProjectBusinessProcessConfigurableProvider(val project: Project) : Configu
             group("Code Folding") {
                 row {
                     foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(settings.folding::enabled)
+                        .bindSelected(mutableSettings.folding::enabled)
                         .component
                 }
                 group("Table-Like Folding", true) {
                     row {
                         checkBox("Action transitions")
-                            .bindSelected(settings.folding::tablifyActionTransitions)
+                            .bindSelected(mutableSettings.folding::tablifyActionTransitions)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Case choices")
-                            .bindSelected(settings.folding::tablifyCaseChoices)
+                            .bindSelected(mutableSettings.folding::tablifyCaseChoices)
                             .enabledIf(foldingEnableCheckBox.selected)
                         checkBox("Ends")
-                            .bindSelected(settings.folding::tablifyEnds)
+                            .bindSelected(mutableSettings.folding::tablifyEnds)
                             .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }
             }
+        }
+
+        override fun apply() {
+            super.apply()
+
+            developerSettings.bpSettings = mutableSettings.immutable()
         }
     }
 }

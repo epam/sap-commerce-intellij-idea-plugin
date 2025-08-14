@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.folding
 
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
@@ -29,7 +29,7 @@ abstract class AbstractImpExFoldingBuilder : FoldingBuilderEx() {
     abstract fun buildFoldRegionsInternal(psi: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor>
 
     override fun buildFoldRegions(psi: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingEnabled = DeveloperSettingsComponent.getInstance(psi.project).getState()
+        val foldingEnabled = DeveloperSettings.getInstance(psi.project)
             .impexSettings
             .folding
             .enabled

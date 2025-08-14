@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSimpleFoldingBlocksFilter
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSmartFoldingBlocksFilter
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.util.application
@@ -35,7 +35,7 @@ class ImpExPsiElementFilterFactory private constructor() {
         else
             application.getService(ImpExSimpleFoldingBlocksFilter::class.java)
 
-        private fun isUseSmartFolding(project: Project) = DeveloperSettingsComponent.Companion.getInstance(project).getState()
+        private fun isUseSmartFolding(project: Project) = DeveloperSettings.getInstance(project)
             .impexSettings
             .folding
             .useSmartFolding

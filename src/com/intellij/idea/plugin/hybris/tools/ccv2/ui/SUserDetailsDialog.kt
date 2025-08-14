@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.SUser
 import com.intellij.idea.plugin.hybris.settings.SUserDto
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
@@ -68,9 +68,11 @@ class SUserDetailsDialog(
     }
 
     override fun applyFields() {
-        DeveloperSettingsComponent.getInstance(project).state
-            .ccv2Settings
-            .sUsers[sUser.id!!] = sUserDto.toModel()
+        val developerSettings = DeveloperSettings.getInstance(project)
+        val mutableSettings = developerSettings.ccv2Settings.mutable()
+        mutableSettings.sUsers[sUser.id!!] = sUserDto.toModel()
+
+        developerSettings.ccv2Settings = mutableSettings.immutable()
     }
 
     override fun getStyle() = DialogStyle.COMPACT

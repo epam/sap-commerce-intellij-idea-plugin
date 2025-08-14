@@ -23,7 +23,7 @@ import com.intellij.ide.projectView.impl.nodes.PsiFileNode
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValueProvider
@@ -43,7 +43,7 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
         children: Collection<AbstractTreeNode<*>>,
         settings: ViewSettings
     ): @Unmodifiable Collection<AbstractTreeNode<*>> {
-        if (!DeveloperSettingsComponent.getInstance(parent.project).state.impexSettings.groupLocalizedFiles) return children
+        if (!DeveloperSettings.getInstance(parent.project).impexSettings.groupLocalizedFiles) return children
         if (parent is LocalizedImpExNode) return children
         if (children.isEmpty()) return children
 

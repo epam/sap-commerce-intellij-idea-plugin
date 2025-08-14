@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.lang.folding
 
-import com.intellij.idea.plugin.hybris.settings.FoldingSettings
+import com.intellij.idea.plugin.hybris.settings.state.FoldingSettings
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor

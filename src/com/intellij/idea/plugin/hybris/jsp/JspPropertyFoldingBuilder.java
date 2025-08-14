@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.jsp;
 
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent;
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -119,10 +119,10 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
     }
 
     private boolean isFoldingEnabled(final @NotNull Project project) {
-        return DeveloperSettingsComponent.getInstance(project).getState()
+        return DeveloperSettings.getInstance(project)
             .getImpexSettings()
-            .getFolding()
-            .getEnabled();
+            .folding
+            .enabled;
     }
 
     @Nullable

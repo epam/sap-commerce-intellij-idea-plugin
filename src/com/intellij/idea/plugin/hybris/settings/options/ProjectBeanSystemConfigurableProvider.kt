@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.settings.components.DeveloperSettingsComponent
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -38,7 +38,8 @@ class ProjectBeanSystemConfigurableProvider(val project: Project) : Configurable
         message("hybris.settings.project.bs.title"), "[y] SAP CX Bean System configuration."
     ) {
 
-        private val settings = DeveloperSettingsComponent.getInstance(project).state.beanSystemSettings
+        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val mutableSettings = developerSettings.beanSystemSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
@@ -46,17 +47,23 @@ class ProjectBeanSystemConfigurableProvider(val project: Project) : Configurable
             group("Code Folding") {
                 row {
                     foldingEnableCheckBox = checkBox("Enable code folding")
-                        .bindSelected(settings.folding::enabled)
+                        .bindSelected(mutableSettings.folding::enabled)
                         .component
                 }
                 group("Table-Like Folding", true) {
                     row {
                         checkBox("Properties")
-                            .bindSelected(settings.folding::tablifyProperties)
+                            .bindSelected(mutableSettings.folding::tablifyProperties)
                             .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }
             }
+        }
+
+        override fun apply() {
+            super.apply()
+
+            developerSettings.beanSystemSettings = mutableSettings.immutable()
         }
     }
 }

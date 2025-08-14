@@ -21,8 +21,9 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
-import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
+import com.intellij.idea.plugin.hybris.settings.state.CCv2Settings
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
@@ -185,6 +186,16 @@ abstract class CCv2ShowEnvironmentWithStatusAction(status: CCv2EnvironmentStatus
     status.title,
     status.icon
 ) {
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        val project = e.project ?: return
+        val developerSettings = DeveloperSettings.getInstance(project)
+        val mutableSettings = developerSettings.ccv2Settings.mutable()
+        if (state) mutableSettings.showEnvironmentStatuses.add(status)
+        else mutableSettings.showEnvironmentStatuses.remove(status)
+
+        developerSettings.ccv2Settings = mutableSettings.immutable()
+    }
 
     override fun getStatuses(settings: CCv2Settings) = settings.showEnvironmentStatuses
 }
