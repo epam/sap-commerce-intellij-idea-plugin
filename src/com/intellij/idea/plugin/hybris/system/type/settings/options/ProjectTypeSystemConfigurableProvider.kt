@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.options
+package com.intellij.idea.plugin.hybris.system.type.settings.options
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.system.type.settings.ui.TSDiagramSettingsExcludedTypeNameTable
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
@@ -40,14 +40,14 @@ class ProjectTypeSystemConfigurableProvider(val project: Project) : Configurable
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.ts.title"), "[y] SAP CX Type System configuration."
+        HybrisI18NBundleUtils.message("hybris.settings.project.ts.title"), "[y] SAP CX Type System configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
         private val tsMutableSettings = developerSettings.typeSystemSettings.mutable()
         private val tsDiagramMutableSettings = developerSettings.typeSystemDiagramSettings.mutable()
 
-        private val excludedTypeNamesTable = TSDiagramSettingsExcludedTypeNameTable.getInstance(project)
+        private val excludedTypeNamesTable = TSDiagramSettingsExcludedTypeNameTable.Companion.getInstance(project)
         private val excludedTypeNamesPane = ToolbarDecorator.createDecorator(excludedTypeNamesTable)
             .disableUpDownActions()
             .setPanelBorder(JBUI.Borders.empty())
@@ -147,7 +147,7 @@ class ProjectTypeSystemConfigurableProvider(val project: Project) : Configurable
                         .onApply { tsDiagramMutableSettings.excludedTypeNames = getNewTypeNames() }
                         .onReset { excludedTypeNamesTable.updateModel(tsDiagramMutableSettings) }
                         .onIsModified { tsDiagramMutableSettings.excludedTypeNames != getNewTypeNames() }
-                        .align(Align.FILL)
+                        .align(Align.Companion.FILL)
                 }
             }
         }

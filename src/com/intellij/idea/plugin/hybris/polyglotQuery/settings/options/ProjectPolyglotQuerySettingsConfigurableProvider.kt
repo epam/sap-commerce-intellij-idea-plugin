@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.options
+package com.intellij.idea.plugin.hybris.polyglotQuery.settings.options
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
@@ -43,10 +43,10 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(val project: Project) : C
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.pgq.title"), "hybris.pgq.settings"
+        HybrisI18NBundleUtils.message("hybris.settings.project.pgq.title"), "hybris.pgq.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
         private val mutableSettings = developerSettings.polyglotQuerySettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox
@@ -75,7 +75,7 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(val project: Project) : C
                 row {
                     comboBox(
                         reservedWordsModel,
-                        renderer = SimpleListCellRenderer.create("?") { message("hybris.pgq.notification.provider.keywords.case.$it") }
+                        renderer = SimpleListCellRenderer.create("?") { HybrisI18NBundleUtils.message("hybris.pgq.notification.provider.keywords.case.$it") }
                     )
                         .label("Default case for reserved words")
                         .bindItem(mutableSettings::defaultCaseForReservedWords.toNullableProperty())

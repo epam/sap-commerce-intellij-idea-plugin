@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.options
+package com.intellij.idea.plugin.hybris.flexibleSearch.settings.options
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
@@ -40,10 +40,10 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.fxs.title"), "hybris.fxs.settings"
+        HybrisI18NBundleUtils.message("hybris.settings.project.fxs.title"), "hybris.fxs.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
         private val mutableSettings = developerSettings.flexibleSearchSettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox
@@ -84,7 +84,7 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
                 row {
                     comboBox(
                         reservedWordsModel,
-                        renderer = SimpleListCellRenderer.create("?") { message("hybris.fxs.notification.provider.keywords.case.$it") }
+                        renderer = SimpleListCellRenderer.create("?") { HybrisI18NBundleUtils.message("hybris.fxs.notification.provider.keywords.case.$it") }
                     )
                         .label("Default case for reserved words")
                         .bindItem(mutableSettings::defaultCaseForReservedWords.toNullableProperty())
@@ -114,8 +114,8 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
                         tableAliasSeparatorsModel,
                         renderer = SimpleListCellRenderer.create("?") {
                             when (it) {
-                                "." -> message("hybris.settings.project.fxs.code.completion.separator.dot")
-                                ":" -> message("hybris.settings.project.fxs.code.completion.separator.colon")
+                                "." -> HybrisI18NBundleUtils.message("hybris.settings.project.fxs.code.completion.separator.dot")
+                                ":" -> HybrisI18NBundleUtils.message("hybris.settings.project.fxs.code.completion.separator.colon")
                                 else -> it
                             }
                         }

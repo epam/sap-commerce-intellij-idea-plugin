@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.options
+package com.intellij.idea.plugin.hybris.system.bean.settings.options
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -29,17 +29,17 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class ProjectCngSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class ProjectBeanSystemConfigurableProvider(val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.cng.title"), "[y] SAP CX Cockpit NG configuration."
+        HybrisI18NBundleUtils.message("hybris.settings.project.bs.title"), "[y] SAP CX Bean System configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
-        private val mutableSettings = developerSettings.cngSettings.mutable()
+        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
+        private val mutableSettings = developerSettings.beanSystemSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
@@ -52,25 +52,8 @@ class ProjectCngSettingsConfigurableProvider(val project: Project) : Configurabl
                 }
                 group("Table-Like Folding", true) {
                     row {
-                        checkBox("Wizard properties")
-                            .bindSelected(mutableSettings.folding::tablifyWizardProperties)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Navigation nodes")
-                            .bindSelected(mutableSettings.folding::tablifyNavigationNodes)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Search fields")
-                            .bindSelected(mutableSettings.folding::tablifySearchFields)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                    }
-                    row {
-                        checkBox("List columns")
-                            .bindSelected(mutableSettings.folding::tablifyListColumns)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Parameters")
-                            .bindSelected(mutableSettings.folding::tablifyParameters)
-                            .enabledIf(foldingEnableCheckBox.selected)
-                        checkBox("Molds")
-                            .bindSelected(mutableSettings.folding::tablifyMolds)
+                        checkBox("Properties")
+                            .bindSelected(mutableSettings.folding::tablifyProperties)
                             .enabledIf(foldingEnableCheckBox.selected)
                     }
                 }
@@ -80,7 +63,7 @@ class ProjectCngSettingsConfigurableProvider(val project: Project) : Configurabl
         override fun apply() {
             super.apply()
 
-            developerSettings.cngSettings = mutableSettings.immutable()
+            developerSettings.beanSystemSettings = mutableSettings.immutable()
         }
     }
 }

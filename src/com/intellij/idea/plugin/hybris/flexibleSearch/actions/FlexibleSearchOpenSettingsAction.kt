@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.options.ProjectFlexibleSearchSettingsConfigurableProvider
+import com.intellij.idea.plugin.hybris.flexibleSearch.settings.options.ProjectFlexibleSearchSettingsConfigurableProvider
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction

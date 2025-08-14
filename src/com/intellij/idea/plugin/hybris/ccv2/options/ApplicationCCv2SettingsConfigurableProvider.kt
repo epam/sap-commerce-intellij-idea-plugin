@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.settings.options
+
+package com.intellij.idea.plugin.hybris.ccv2.options
 
 import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2SubscriptionDto
 import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
@@ -37,14 +38,15 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
         "CCv2", "[y] SAP Commerce Cloud CCv2 configuration."
     ) {
 
-        private val applicationSettings = ApplicationSettings.getInstance()
+        private val applicationSettings = ApplicationSettings.Companion.getInstance()
         private var originalCCv2Token: String? = ""
         private var originalCCv2Subscriptions = applicationSettings.ccv2Subscriptions
             .map { it.toDto() }
 
         private lateinit var defaultCCv2TokenTextField: JBPasswordField
-        private val ccv2SubscriptionListPanel = CCv2SubscriptionListPanel(applicationSettings.ccv2Subscriptions
-            .map { it.toDto() }
+        private val ccv2SubscriptionListPanel = CCv2SubscriptionListPanel(
+            applicationSettings.ccv2Subscriptions
+                .map { it.toDto() }
         )
 
         init {
@@ -100,7 +102,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
                     cell(ccv2SubscriptionListPanel)
                         .align(AlignX.FILL)
                         .onApply {
-                            val applicationSettings = ApplicationSettings.getInstance()
+                            val applicationSettings = ApplicationSettings.Companion.getInstance()
                             val subscriptions = ccv2SubscriptionListPanel.data
                             subscriptions.forEach {
                                 applicationSettings.saveCCv2Token(it.uuid, it.ccv2Token)
@@ -123,7 +125,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
         }
 
         private fun loadCCv2TokensForSubscriptions(subscriptions: List<CCv2SubscriptionDto>) {
-            val applicationSettings = ApplicationSettings.getInstance()
+            val applicationSettings = ApplicationSettings.Companion.getInstance()
             subscriptions.forEach { subscription ->
                 applicationSettings.loadCCv2Token(subscription.uuid) {
                     subscription.ccv2Token = it

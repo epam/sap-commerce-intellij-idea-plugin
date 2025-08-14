@@ -16,10 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.options
+package com.intellij.idea.plugin.hybris.impex.settings.options
 
 import com.intellij.ide.projectView.ProjectView
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -36,10 +36,10 @@ class ProjectImpExSettingsConfigurableProvider(val project: Project) : Configura
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.impex.title"), "hybris.impex.settings"
+        HybrisI18NBundleUtils.message("hybris.settings.project.impex.title"), "hybris.impex.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
         private val mutableSettings = developerSettings.impexSettings.mutable()
         private var originalGroupLocalizedFiles = mutableSettings.groupLocalizedFiles
 

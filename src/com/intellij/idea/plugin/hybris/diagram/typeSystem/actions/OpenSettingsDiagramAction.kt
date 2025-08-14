@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.options.ProjectTypeSystemConfigurableProvider
+import com.intellij.idea.plugin.hybris.system.type.settings.options.ProjectTypeSystemConfigurableProvider
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction

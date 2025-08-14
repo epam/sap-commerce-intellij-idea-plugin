@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.options
+package com.intellij.idea.plugin.hybris.system.businessProcess.settings.options
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -35,10 +35,10 @@ class ProjectBusinessProcessConfigurableProvider(val project: Project) : Configu
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.bp.title"), "[y] SAP CX Business Process configuration."
+        HybrisI18NBundleUtils.message("hybris.settings.project.bp.title"), "[y] SAP CX Business Process configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
         private val mutableSettings = developerSettings.bpSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox
