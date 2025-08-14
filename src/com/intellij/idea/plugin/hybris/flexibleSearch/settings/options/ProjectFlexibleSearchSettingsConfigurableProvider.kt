@@ -34,7 +34,7 @@ import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class ProjectFlexibleSearchSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)

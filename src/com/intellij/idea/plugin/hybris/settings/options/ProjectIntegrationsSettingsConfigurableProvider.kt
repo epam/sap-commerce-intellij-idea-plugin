@@ -42,7 +42,7 @@ import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import javax.swing.DefaultComboBoxModel
 
-class ProjectIntegrationsSettingsConfigurableProvider(val project: Project) : ConfigurableProvider(), Disposable {
+class ProjectIntegrationsSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)

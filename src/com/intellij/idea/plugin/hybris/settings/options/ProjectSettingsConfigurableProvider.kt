@@ -30,7 +30,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class ProjectSettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class ProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)

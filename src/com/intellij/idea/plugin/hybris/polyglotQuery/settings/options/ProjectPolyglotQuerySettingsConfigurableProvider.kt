@@ -37,7 +37,7 @@ import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
 import javax.swing.JCheckBox
 
-class ProjectPolyglotQuerySettingsConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class ProjectPolyglotQuerySettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
