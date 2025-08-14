@@ -20,10 +20,12 @@ package com.intellij.idea.plugin.hybris.settings.state
 
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
+import com.intellij.util.xmlb.annotations.Tag
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
 import java.util.*
 
+@Tag("CCv2Settings")
 data class CCv2Settings(
     @JvmField val showBuildStatuses: Set<CCv2BuildStatus> = EnumSet.of(
         CCv2BuildStatus.BUILDING,

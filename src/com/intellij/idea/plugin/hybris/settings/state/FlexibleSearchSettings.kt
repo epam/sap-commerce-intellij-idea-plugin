@@ -20,16 +20,18 @@ package com.intellij.idea.plugin.hybris.settings.state
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Tag
 
+@Tag("FlexibleSearchSettings")
 data class FlexibleSearchSettings(
     @JvmField @OptionTag val verifyCaseForReservedWords: Boolean = true,
     @JvmField @OptionTag val verifyUsedTableAliasSeparator: Boolean = true,
     @JvmField @OptionTag val fallbackToTableNameIfNoAliasProvided: Boolean = true,
     @JvmField @OptionTag val defaultCaseForReservedWords: ReservedWordsCase = ReservedWordsCase.UPPERCASE,
 
-    @JvmField val completion: FlexibleSearchCompletionSettings = FlexibleSearchCompletionSettings(),
-    @JvmField val folding: FlexibleSearchFoldingSettings = FlexibleSearchFoldingSettings(),
-    @JvmField val documentation: FlexibleSearchDocumentationSettings = FlexibleSearchDocumentationSettings(),
+    @JvmField @OptionTag val completion: FlexibleSearchCompletionSettings = FlexibleSearchCompletionSettings(),
+    @JvmField @OptionTag val folding: FlexibleSearchFoldingSettings = FlexibleSearchFoldingSettings(),
+    @JvmField @OptionTag val documentation: FlexibleSearchDocumentationSettings = FlexibleSearchDocumentationSettings(),
 ) {
 
     fun mutable() = Mutable(
@@ -63,6 +65,7 @@ data class FlexibleSearchSettings(
     }
 }
 
+@Tag("FlexibleSearchCompletionSettings")
 data class FlexibleSearchCompletionSettings(
     @JvmField @OptionTag val injectSpaceAfterKeywords: Boolean = true,
     @JvmField @OptionTag val injectTableAliasSeparator: Boolean = true,
@@ -95,6 +98,7 @@ data class FlexibleSearchCompletionSettings(
     }
 }
 
+@Tag("FlexibleSearchDocumentationSettings")
 data class FlexibleSearchDocumentationSettings(
     @JvmField @OptionTag val enabled: Boolean = true,
     @JvmField @OptionTag val showTypeDocumentation: Boolean = true,
@@ -115,6 +119,7 @@ data class FlexibleSearchDocumentationSettings(
     }
 }
 
+@Tag("FlexibleSearchFoldingSettings")
 data class FlexibleSearchFoldingSettings(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val showSelectedTableNameForYColumn: Boolean = true,

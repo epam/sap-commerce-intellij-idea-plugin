@@ -19,12 +19,14 @@
 package com.intellij.idea.plugin.hybris.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Tag
 
+@Tag("PolyglotQuerySettings")
 data class PolyglotQuerySettings(
     @JvmField @OptionTag val verifyCaseForReservedWords: Boolean = true,
     @JvmField @OptionTag val defaultCaseForReservedWords: ReservedWordsCase = ReservedWordsCase.UPPERCASE,
 
-    @JvmField val folding: PolyglotQueryFoldingSettings = PolyglotQueryFoldingSettings(),
+    @JvmField @OptionTag val folding: PolyglotQueryFoldingSettings = PolyglotQueryFoldingSettings(),
 ) {
 
     fun mutable() = Mutable(
@@ -46,6 +48,7 @@ data class PolyglotQuerySettings(
     }
 }
 
+@Tag("PolyglotQueryFoldingSettings")
 data class PolyglotQueryFoldingSettings(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val showLanguage: Boolean = true,

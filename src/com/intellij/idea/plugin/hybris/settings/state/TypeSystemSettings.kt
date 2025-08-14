@@ -23,8 +23,9 @@ import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 import kotlinx.collections.immutable.toImmutableSet
 
+@Tag("TypeSystemSettings")
 data class TypeSystemSettings(
-    @JvmField val folding: TypeSystemFoldingSettings = TypeSystemFoldingSettings(),
+    @JvmField @OptionTag val folding: TypeSystemFoldingSettings = TypeSystemFoldingSettings(),
 ) {
 
     fun mutable() = Mutable(
@@ -40,6 +41,7 @@ data class TypeSystemSettings(
     }
 }
 
+@Tag("TypeSystemFoldingSettings")
 data class TypeSystemFoldingSettings(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val tablifyAtomics: Boolean = true,

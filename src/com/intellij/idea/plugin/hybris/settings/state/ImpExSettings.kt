@@ -19,13 +19,15 @@
 package com.intellij.idea.plugin.hybris.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Tag
 
+@Tag("ImpexSettings")
 data class ImpexSettings(
     @JvmField @OptionTag val groupLocalizedFiles: Boolean = true,
-    @JvmField val editMode: ImpExEditModeSettings = ImpExEditModeSettings(),
-    @JvmField val folding: ImpexFoldingSettings = ImpexFoldingSettings(),
-    @JvmField val completion: ImpexCompletionSettings = ImpexCompletionSettings(),
-    @JvmField val documentation: ImpexDocumentationSettings = ImpexDocumentationSettings(),
+    @JvmField @OptionTag val editMode: ImpExEditModeSettings = ImpExEditModeSettings(),
+    @JvmField @OptionTag val folding: ImpexFoldingSettings = ImpexFoldingSettings(),
+    @JvmField @OptionTag val completion: ImpexCompletionSettings = ImpexCompletionSettings(),
+    @JvmField @OptionTag val documentation: ImpexDocumentationSettings = ImpexDocumentationSettings(),
 ) {
     fun mutable() = Mutable(
         groupLocalizedFiles = groupLocalizedFiles,
@@ -52,6 +54,7 @@ data class ImpexSettings(
     }
 }
 
+@Tag("ImpExEditModeSettings")
 data class ImpExEditModeSettings(
     @JvmField @OptionTag val firstRowIsHeader: Boolean = true,
     @JvmField @OptionTag val trimWhitespace: Boolean = false,
@@ -72,6 +75,7 @@ data class ImpExEditModeSettings(
     }
 }
 
+@Tag("ImpexFoldingSettings")
 data class ImpexFoldingSettings(
     @JvmField @OptionTag val enabled: Boolean = true,
     @JvmField @OptionTag val useSmartFolding: Boolean = true,
@@ -96,6 +100,7 @@ data class ImpexFoldingSettings(
     }
 }
 
+@Tag("ImpexDocumentationSettings")
 data class ImpexDocumentationSettings(
     @JvmField @OptionTag val enabled: Boolean = true,
     @JvmField @OptionTag val showTypeDocumentation: Boolean = true,
@@ -120,6 +125,7 @@ data class ImpexDocumentationSettings(
     }
 }
 
+@Tag("ImpexCompletionSettings")
 data class ImpexCompletionSettings(
     @JvmField @OptionTag val showInlineTypes: Boolean = true,
     @JvmField @OptionTag val addCommaAfterInlineType: Boolean = true,

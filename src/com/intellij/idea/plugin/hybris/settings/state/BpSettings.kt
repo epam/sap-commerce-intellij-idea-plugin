@@ -19,9 +19,11 @@
 package com.intellij.idea.plugin.hybris.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Tag
 
+@Tag("BpSettings")
 data class BpSettings(
-    @JvmField val folding: BpFoldingSettings = BpFoldingSettings(),
+    @JvmField @OptionTag val folding: BpFoldingSettings = BpFoldingSettings(),
 ) {
     fun mutable() = Mutable(
         folding = folding.mutable()
@@ -36,6 +38,7 @@ data class BpSettings(
     }
 }
 
+@Tag("BpFoldingSettings")
 data class BpFoldingSettings(
     @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val tablifyActionTransitions: Boolean = true,

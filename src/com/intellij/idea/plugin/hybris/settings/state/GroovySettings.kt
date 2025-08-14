@@ -20,7 +20,9 @@ package com.intellij.idea.plugin.hybris.settings.state
 
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Tag
 
+@Tag("GroovySettings")
 data class GroovySettings(
     @JvmField @OptionTag val enableActionsToolbar: Boolean = true,
     @JvmField @OptionTag val enableActionsToolbarForGroovyTest: Boolean = false,
