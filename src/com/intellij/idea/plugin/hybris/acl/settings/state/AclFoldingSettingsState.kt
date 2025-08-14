@@ -18,10 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.acl.settings.state
 
+import com.intellij.idea.plugin.hybris.settings.state.FoldingSettings
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
 @Tag("AclFoldingSettings")
 data class AclFoldingSettingsState(
-    @JvmField @OptionTag val enabled: Boolean = true
-)
+    @OptionTag override val enabled: Boolean = true
+): FoldingSettings

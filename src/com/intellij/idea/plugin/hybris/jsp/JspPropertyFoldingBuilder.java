@@ -122,7 +122,7 @@ public class JspPropertyFoldingBuilder extends FoldingBuilderEx {
         return DeveloperSettings.getInstance(project)
             .getImpexSettings()
             .folding
-            .enabled;
+            .getEnabled();
     }
 
     @Nullable

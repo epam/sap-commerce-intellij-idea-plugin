@@ -48,8 +48,11 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
             return FoldingDescriptor.EMPTY_ARRAY;
         }
 
-        final var foldMacroInParameters = DeveloperSettings.getInstance(root.getProject()).getImpexSettings()
-            .folding
+        final var foldingSettings = DeveloperSettings.getInstance(root.getProject()).getImpexSettings().folding;
+
+        if (!foldingSettings.getEnabled()) return FoldingDescriptor.EMPTY_ARRAY;
+
+        final var foldMacroInParameters = foldingSettings
             .foldMacroInParameters;
 
         final var macroUsages = PsiTreeUtil.findChildrenOfAnyType(root, ImpexMacroUsageDec.class).stream()

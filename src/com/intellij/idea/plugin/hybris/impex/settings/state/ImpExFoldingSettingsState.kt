@@ -18,15 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.impex.settings.state
 
+import com.intellij.idea.plugin.hybris.settings.state.FoldingSettings
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
 @Tag("ImpexFoldingSettings")
 data class ImpExFoldingSettingsState(
-    @JvmField @OptionTag val enabled: Boolean = true,
+    @OptionTag override val enabled: Boolean = true,
     @JvmField @OptionTag val useSmartFolding: Boolean = true,
     @JvmField @OptionTag val foldMacroInParameters: Boolean = true,
-) {
+) : FoldingSettings {
     fun mutable() = Mutable(
         enabled = enabled,
         useSmartFolding = useSmartFolding,

@@ -59,9 +59,7 @@ class ImpExFoldingBuilder : AbstractImpExFoldingBuilder() {
             .getPlaceholder(psi)
     }
 
-    override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return true
-    }
+    override fun isCollapsedByDefault(node: ASTNode): Boolean = true
 
     companion object {
         private const val GROUP_NAME = "ImpEx"
