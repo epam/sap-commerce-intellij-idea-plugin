@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2SettingsState
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Actions.FETCH
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
@@ -28,6 +26,8 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildRequest
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SettingsState
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2CreateBuildDialog
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2DeployBuildDialog
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab

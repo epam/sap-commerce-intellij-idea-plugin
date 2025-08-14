@@ -24,8 +24,8 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
-import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -35,7 +35,7 @@ import java.util.*
 @Service(Service.Level.PROJECT)
 class RemoteConnectionService(private val project: Project) {
 
-    fun getActiveRemoteConnectionSettings(type: RemoteConnectionType): RemoteConnectionSettings {
+    fun getActiveRemoteConnectionSettings(type: RemoteConnectionType): RemoteConnectionSettingsState {
         val instances = getRemoteConnections(type)
         if (instances.isEmpty()) return createDefaultRemoteConnectionSettings(type)
 
@@ -54,7 +54,7 @@ class RemoteConnectionService(private val project: Project) {
             }
         }
 
-    fun createDefaultRemoteConnectionSettings(type: RemoteConnectionType) = RemoteConnectionSettings()
+    fun createDefaultRemoteConnectionSettings(type: RemoteConnectionType) = RemoteConnectionSettingsState()
         .also {
             it.type = type
             when (type) {
@@ -78,7 +78,7 @@ class RemoteConnectionService(private val project: Project) {
             }
         }
 
-    fun getRemoteConnections(type: RemoteConnectionType): Collection<RemoteConnectionSettings> {
+    fun getRemoteConnections(type: RemoteConnectionType): Collection<RemoteConnectionSettingsState> {
         val projectLevelSettings = getProjectLevelSettings(type)
         val projectPersonalLevelSettings = getProjectPersonalLevelSettings(type)
 
@@ -86,7 +86,7 @@ class RemoteConnectionService(private val project: Project) {
             .toLinkedSet()
     }
 
-    fun addRemoteConnection(settings: RemoteConnectionSettings) {
+    fun addRemoteConnection(settings: RemoteConnectionSettingsState) {
         if (settings.uuid == null) {
             settings.uuid = UUID.randomUUID().toString()
         }
@@ -108,7 +108,7 @@ class RemoteConnectionService(private val project: Project) {
         }
     }
 
-    fun saveRemoteConnections(type: RemoteConnectionType, settings: Collection<RemoteConnectionSettings>) {
+    fun saveRemoteConnections(type: RemoteConnectionType, settings: Collection<RemoteConnectionSettingsState>) {
         with(ProjectSettings.getInstance(project)) {
             remoteConnectionSettingsList = remoteConnectionSettingsList.toMutableList()
                 .apply { removeIf { it.type == type } }
@@ -123,7 +123,7 @@ class RemoteConnectionService(private val project: Project) {
         else settings.forEach { addRemoteConnection(it) }
     }
 
-    fun setActiveRemoteConnectionSettings(settings: RemoteConnectionSettings) {
+    fun setActiveRemoteConnectionSettings(settings: RemoteConnectionSettingsState) {
         val developerSettings = DeveloperSettings.getInstance(project)
 
         when (settings.type) {
@@ -139,7 +139,7 @@ class RemoteConnectionService(private val project: Project) {
         }
     }
 
-    fun changeRemoteConnectionScope(settings: RemoteConnectionSettings, originalScope: RemoteConnectionScope) {
+    fun changeRemoteConnectionScope(settings: RemoteConnectionSettingsState, originalScope: RemoteConnectionScope) {
         when (originalScope) {
             RemoteConnectionScope.PROJECT_PERSONAL -> {
                 val developerSettings = DeveloperSettings.getInstance(project)
@@ -174,7 +174,7 @@ class RemoteConnectionService(private val project: Project) {
     private fun getRemoteConnectionSettings(
         type: RemoteConnectionType,
         scope: RemoteConnectionScope,
-        settings: Collection<RemoteConnectionSettings>
+        settings: Collection<RemoteConnectionSettingsState>
     ) = settings
         .filter { it.type == type }
         .filter { it.uuid?.isNotBlank() ?: false }

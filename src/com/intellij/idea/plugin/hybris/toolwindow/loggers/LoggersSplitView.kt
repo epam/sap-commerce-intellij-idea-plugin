@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers
 
-import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggersStateListener
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTree
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTreeNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersHacConnectionNode
@@ -69,15 +69,15 @@ class LoggersSplitView(
 
         with(project.messageBus.connect(this)) {
             subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
-                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) {
+                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettingsState) {
                     updateTree(remoteConnection)
                 }
 
-                override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettings) = tree.update()
+                override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettingsState) = tree.update()
             })
 
             subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {
-                override fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettings) {
+                override fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettingsState) {
                     tree.lastSelectedPathComponent
                         ?.asSafely<LoggersOptionsTreeNode>()
                         ?.userObject
@@ -89,7 +89,7 @@ class LoggersSplitView(
         }
     }
 
-    private fun updateTree(settings: RemoteConnectionSettings) {
+    private fun updateTree(settings: RemoteConnectionSettingsState) {
         val connections = RemoteConnectionService.getInstance(project)
             .getRemoteConnections(RemoteConnectionType.Hybris)
             .associateWith { (it == settings) }

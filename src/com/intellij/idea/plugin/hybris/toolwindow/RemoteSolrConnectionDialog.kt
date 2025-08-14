@@ -20,10 +20,10 @@ package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.credentialStore.Credentials
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
+import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
@@ -33,7 +33,7 @@ import java.awt.Component
 class RemoteSolrConnectionDialog(
     project: Project,
     parentComponent: Component,
-    settings: RemoteConnectionSettings
+    settings: RemoteConnectionSettingsState
 ) : AbstractRemoteConnectionDialog(project, parentComponent, settings, "Remote SOLR Instance") {
 
     override fun applyFields() {
@@ -147,7 +147,7 @@ class RemoteSolrConnectionDialog(
         }
     }
 
-    override fun createTestSettings() = with(RemoteConnectionSettings()) {
+    override fun createTestSettings() = with(RemoteConnectionSettingsState()) {
         type = settings.type
         hostIP = hostTextField.text
         port = portTextField.text
@@ -158,7 +158,7 @@ class RemoteSolrConnectionDialog(
         this
     }
 
-    override fun testConnection(testSettings: RemoteConnectionSettings): String? = try {
+    override fun testConnection(testSettings: RemoteConnectionSettingsState): String? = try {
         SolrExecutionClient.getInstance(project).listOfCores(testSettings)
 
         null

@@ -16,16 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.logging
+package com.intellij.idea.plugin.hybris.tools.remote.settings
 
 import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.util.messages.Topic
 
-interface CxLoggersStateListener {
-
-    fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettingsState) = Unit
+interface RemoteConnectionListener {
+    fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettingsState) = Unit
+    fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettingsState) = Unit
+    fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettingsState) = Unit
+    fun onSolrConnectionModified(remoteConnection: RemoteConnectionSettingsState) = Unit
 
     companion object {
-        val TOPIC = Topic(CxLoggersStateListener::class.java)
+        val TOPIC = Topic(RemoteConnectionListener::class.java)
     }
 }

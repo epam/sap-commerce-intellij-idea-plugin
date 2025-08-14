@@ -20,9 +20,9 @@
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener;
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext;
+import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener;
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -116,14 +116,14 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
     public HybrisHacHttpClient(final Project project) {
         project.getMessageBus().connect().subscribe(RemoteConnectionListener.Companion.getTOPIC(), new RemoteConnectionListener() {
             @Override
-            public void onHybrisConnectionModified(@NotNull final RemoteConnectionSettings remoteConnection) {
+            public void onHybrisConnectionModified(@NotNull final RemoteConnectionSettingsState remoteConnection) {
                 invalidateCookies(remoteConnection, null);
             }
         });
     }
 
     @NotNull
-    public String testConnection(@NotNull final RemoteConnectionSettings settings) {
+    public String testConnection(@NotNull final RemoteConnectionSettingsState settings) {
         return login(settings, null, getCookiesKey(settings, null));
     }
 
@@ -133,7 +133,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         @NotNull final List<BasicNameValuePair> params,
         final boolean canReLoginIfNeeded,
         final int timeout,
-        final RemoteConnectionSettings settings,
+        final RemoteConnectionSettingsState settings,
         @Nullable final ReplicaContext replicaContext
     ) {
         final var cookiesKey = getCookiesKey(settings, replicaContext);
@@ -205,7 +205,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
     }
 
     private String login(
-        @NotNull final RemoteConnectionSettings settings,
+        @NotNull final RemoteConnectionSettingsState settings,
         @Nullable final ReplicaContext replicaContext,
         final String cookiesKey
     ) {
@@ -286,7 +286,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
 
     private void retrieveCookies(
         final String hacURL,
-        final @NotNull RemoteConnectionSettings settings,
+        final @NotNull RemoteConnectionSettingsState settings,
         final @Nullable ReplicaContext replicaContext,
         final String cookiesKey
     ) {
@@ -304,7 +304,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         }
     }
 
-    private String getCookieName(@NotNull final RemoteConnectionSettings settings) {
+    private String getCookieName(@NotNull final RemoteConnectionSettingsState settings) {
         final var sessionCookieName = settings.getSessionCookieName();
         return StringUtils.isNotBlank(sessionCookieName) ? sessionCookieName : HybrisConstants.DEFAULT_SESSION_COOKIE_NAME;
     }
@@ -312,7 +312,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
     @Nullable
     private Connection.Response getResponseForUrl(
         final String hacURL,
-        final @NotNull RemoteConnectionSettings settings,
+        final @NotNull RemoteConnectionSettingsState settings,
         final @Nullable ReplicaContext replicaContext
     ) {
         try {
@@ -336,7 +336,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
 
     private String getCsrfToken(
         final @NotNull String hacURL,
-        final @NotNull RemoteConnectionSettings settings,
+        final @NotNull RemoteConnectionSettingsState settings,
         final String cookiesKey
     ) {
         try {
@@ -363,14 +363,14 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         return Jsoup.connect(url);
     }
 
-    private String getCookiesKey(final RemoteConnectionSettings settings, @Nullable final ReplicaContext context) {
+    private String getCookiesKey(final RemoteConnectionSettingsState settings, @Nullable final ReplicaContext context) {
         return "%s_%s".formatted(
             settings.getUuid(),
             context == null ? "auto" : context.getReplicaId()
         );
     }
 
-    private void invalidateCookies(@NotNull final RemoteConnectionSettings settings, @Nullable final ReplicaContext replicaContext) {
+    private void invalidateCookies(@NotNull final RemoteConnectionSettingsState settings, @Nullable final ReplicaContext replicaContext) {
         final var cookiesKey = getCookiesKey(settings, replicaContext);
         cookiesPerSettings.remove(cookiesKey);
     }

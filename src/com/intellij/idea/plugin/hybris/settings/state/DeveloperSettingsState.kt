@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.settings.state
 
 import com.intellij.idea.plugin.hybris.acl.settings.state.AclSettingsState
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2SettingsState
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
 import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovySettingsState
 import com.intellij.idea.plugin.hybris.impex.settings.state.ImpExSettingsState
@@ -29,6 +28,8 @@ import com.intellij.idea.plugin.hybris.system.businessProcess.settings.state.BpS
 import com.intellij.idea.plugin.hybris.system.cockpitng.settings.state.CngSettingsState
 import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemDiagramSettingsState
 import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemSettingsState
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SettingsState
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
@@ -39,7 +40,7 @@ data class DeveloperSettingsState(
     @JvmField @OptionTag val activeSolrConnectionID: String? = null,
     @JvmField @OptionTag val activeCCv2SubscriptionID: String? = null,
 
-    @JvmField val remoteConnectionSettingsList: List<RemoteConnectionSettings> = emptyList(),
+    @JvmField val remoteConnectionSettingsList: List<RemoteConnectionSettingsState> = emptyList(),
     @JvmField @OptionTag val typeSystemDiagramSettings: TypeSystemDiagramSettingsState = TypeSystemDiagramSettingsState(),
     @JvmField @OptionTag val beanSystemSettings: BeanSystemSettingsState = BeanSystemSettingsState(),
     @JvmField @OptionTag val typeSystemSettings: TypeSystemSettingsState = TypeSystemSettingsState(),

@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.ui;
 
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService;
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.AddEditDeleteListPanel;
 import com.intellij.ui.ToolbarDecorator;
@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<RemoteConnectionSettings> {
+abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<RemoteConnectionSettingsState> {
 
     @Serial
     private static final long serialVersionUID = -1932103943790251488L;
@@ -74,29 +74,29 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Re
         });
     }
 
-    public void setData(final Collection<RemoteConnectionSettings> remoteConnectionSettingsList) {
+    public void setData(final Collection<RemoteConnectionSettingsState> remoteConnectionSettingsList) {
         myListModel.clear();
         myListModel.addAll(remoteConnectionSettingsList);
     }
 
-    public Set<RemoteConnectionSettings> getData() {
-        final var remoteConnectionSettingsList = new LinkedHashSet<RemoteConnectionSettings>();
+    public Set<RemoteConnectionSettingsState> getData() {
+        final var remoteConnectionSettingsList = new LinkedHashSet<RemoteConnectionSettingsState>();
         for (int index = 0; index < myList.getModel().getSize(); index++) {
             remoteConnectionSettingsList.add(myList.getModel().getElementAt(index));
         }
         return remoteConnectionSettingsList;
     }
 
-    abstract protected void onDataChanged(EventType eventType, final Set<RemoteConnectionSettings> data);
+    abstract protected void onDataChanged(EventType eventType, final Set<RemoteConnectionSettingsState> data);
 
     @Nullable
     @Override
-    protected RemoteConnectionSettings findItemToAdd() {
+    protected RemoteConnectionSettingsState findItemToAdd() {
         return null;
     }
 
     @Override
-    protected void addElement(@Nullable final RemoteConnectionSettings itemToAdd) {
+    protected void addElement(@Nullable final RemoteConnectionSettingsState itemToAdd) {
         super.addElement(itemToAdd);
 
         if (itemToAdd != null) RemoteConnectionService.Companion.getInstance(myProject).addRemoteConnection(itemToAdd);

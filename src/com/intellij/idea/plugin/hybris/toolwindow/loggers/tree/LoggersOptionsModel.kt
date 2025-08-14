@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree
 
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNodeParameters
 import com.intellij.openapi.Disposable
@@ -32,7 +32,7 @@ class LoggersOptionsModel(
     private val rootTreeNode: LoggersOptionsTreeNode
 ) : BaseTreeModel<LoggersOptionsTreeNode>(), Disposable, InvokerSupplier {
 
-    private var connections: Map<RemoteConnectionSettings, Boolean>? = null
+    private var connections: Map<RemoteConnectionSettingsState, Boolean>? = null
     private val nodes = mutableMapOf<LoggersNode, LoggersOptionsTreeNode>()
     private val myInvoker = Invoker.forBackgroundThreadWithReadAction(this)
 
@@ -50,7 +50,7 @@ class LoggersOptionsModel(
 
     override fun getInvoker() = myInvoker
 
-    fun reload(connections: Map<RemoteConnectionSettings, Boolean>) {
+    fun reload(connections: Map<RemoteConnectionSettingsState, Boolean>) {
         this.connections = connections
 
         treeStructureChanged(TreePath(root), null, null)

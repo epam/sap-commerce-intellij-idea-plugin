@@ -20,8 +20,6 @@ package com.intellij.idea.plugin.hybris.tools.logging
 
 import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
@@ -30,6 +28,8 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecu
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
@@ -44,7 +44,7 @@ import java.util.*
 @Service(Service.Level.PROJECT)
 class CxLoggerAccess(private val project: Project, private val coroutineScope: CoroutineScope) : Disposable {
     private var fetching: Boolean = false
-    private val loggersStates = WeakHashMap<RemoteConnectionSettings, CxLoggersState>()
+    private val loggersStates = WeakHashMap<RemoteConnectionSettingsState, CxLoggersState>()
 
     val ready: Boolean
         get() = !fetching
@@ -59,9 +59,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         with(project.messageBus.connect(this)) {
             subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
 
-                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = refresh()
+                override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettingsState) = refresh()
 
-                override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettings) = clearState(remoteConnection)
+                override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettingsState) = clearState(remoteConnection)
             })
         }
     }
@@ -103,7 +103,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
     fun fetch() = fetch(RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris))
 
-    fun fetch(server: RemoteConnectionSettings) {
+    fun fetch(server: RemoteConnectionSettingsState) {
         val context = GroovyExecutionContext(
             executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]...",
             content = ExtensionResource.CX_LOGGERS_STATE.content,
@@ -163,11 +163,11 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun state(settings: RemoteConnectionSettings): CxLoggersState {
+    fun state(settings: RemoteConnectionSettingsState): CxLoggersState {
         return loggersStates.computeIfAbsent(settings) { CxLoggersState() }
     }
 
-    private fun updateState(loggers: Map<String, CxLoggerModel>?, settings: RemoteConnectionSettings) {
+    private fun updateState(loggers: Map<String, CxLoggerModel>?, settings: RemoteConnectionSettingsState) {
         coroutineScope.launch {
 
             state(settings).update(loggers ?: emptyMap())
@@ -190,7 +190,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         loggersStates.clear()
     }
 
-    private fun clearState(settings: RemoteConnectionSettings) {
+    private fun clearState(settings: RemoteConnectionSettingsState) {
         val logState = loggersStates[settings]
         logState?.clear()
 

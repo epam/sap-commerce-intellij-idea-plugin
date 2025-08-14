@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.state
+package com.intellij.idea.plugin.hybris.tools.remote.settings.state
 
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
@@ -33,7 +33,7 @@ import com.intellij.util.xmlb.annotations.Transient
 
 // TODO: split to hAC and SOLR settings
 @Tag("HybrisRemoteConnectionSettings")
-class RemoteConnectionSettings : BaseState(), Comparable<RemoteConnectionSettings> {
+class RemoteConnectionSettingsState : BaseState(), Comparable<RemoteConnectionSettingsState> {
 
     var uuid by string(null)
 
@@ -54,13 +54,13 @@ class RemoteConnectionSettings : BaseState(), Comparable<RemoteConnectionSetting
 
     val username: String
         get() = credentials?.userName
-            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+            ?: PasswordSafe.Companion.instance.get(CredentialAttributes("SAP CX - $uuid"))
                 ?.userName
             ?: if (type == RemoteConnectionType.Hybris) "admin"
             else "solrserver"
     val password: String
         get() = credentials?.getPasswordAsString()
-            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
+            ?: PasswordSafe.Companion.instance.get(CredentialAttributes("SAP CX - $uuid"))
                 ?.getPasswordAsString()
             ?: if (type == RemoteConnectionType.Hybris) "nimda"
             else "server123"
@@ -68,8 +68,8 @@ class RemoteConnectionSettings : BaseState(), Comparable<RemoteConnectionSetting
     val generatedURL: String
         get() {
             return when (type) {
-                RemoteConnectionType.Hybris -> RemoteConnectionService.generateUrl(isSsl, hostIP, port, hacWebroot)
-                RemoteConnectionType.SOLR -> RemoteConnectionService.generateUrl(isSsl, hostIP, port, solrWebroot)
+                RemoteConnectionType.Hybris -> RemoteConnectionService.Companion.generateUrl(isSsl, hostIP, port, hacWebroot)
+                RemoteConnectionType.SOLR -> RemoteConnectionService.Companion.generateUrl(isSsl, hostIP, port, solrWebroot)
             }
         }
 
@@ -92,13 +92,13 @@ class RemoteConnectionSettings : BaseState(), Comparable<RemoteConnectionSetting
     fun shortenConnectionName() = (displayName ?: generatedURL)
         .let { StringUtil.shortenPathWithEllipsis(it, 20) }
 
-    override fun compareTo(other: RemoteConnectionSettings) = uuid
+    override fun compareTo(other: RemoteConnectionSettingsState) = uuid
         ?.compareTo(other.uuid ?: "")
         ?: -1
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is RemoteConnectionSettings) return false
+        if (other !is RemoteConnectionSettingsState) return false
 
         if (uuid != other.uuid) return false
 

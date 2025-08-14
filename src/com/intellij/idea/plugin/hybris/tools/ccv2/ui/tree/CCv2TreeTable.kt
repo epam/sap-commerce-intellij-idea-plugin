@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.ui.tree
 
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.project.Project

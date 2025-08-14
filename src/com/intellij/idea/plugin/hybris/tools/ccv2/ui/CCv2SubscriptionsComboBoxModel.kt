@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import java.io.Serial

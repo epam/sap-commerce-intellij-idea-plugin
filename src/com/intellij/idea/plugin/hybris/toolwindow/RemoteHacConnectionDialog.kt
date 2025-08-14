@@ -20,10 +20,10 @@ package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.credentialStore.Credentials
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.EnumComboBoxModel
@@ -36,7 +36,7 @@ import java.awt.Component
 class RemoteHacConnectionDialog(
     project: Project,
     parentComponent: Component,
-    settings: RemoteConnectionSettings
+    settings: RemoteConnectionSettingsState
 ) : AbstractRemoteConnectionDialog(project, parentComponent, settings, "Remote SAP Commerce Instance") {
 
     private lateinit var sslProtocolComboBox: ComboBox<String>
@@ -48,7 +48,7 @@ class RemoteHacConnectionDialog(
         project.messageBus.syncPublisher(RemoteConnectionListener.TOPIC).onHybrisConnectionModified(settings)
     }
 
-    override fun createTestSettings() = with(RemoteConnectionSettings()) {
+    override fun createTestSettings() = with(RemoteConnectionSettingsState()) {
         type = settings.type
         hostIP = hostTextField.text
         port = portTextField.text
@@ -61,7 +61,7 @@ class RemoteHacConnectionDialog(
         this
     }
 
-    override fun testConnection(testSettings: RemoteConnectionSettings): String = HybrisHacHttpClient.getInstance(project)
+    override fun testConnection(testSettings: RemoteConnectionSettingsState): String = HybrisHacHttpClient.getInstance(project)
         .testConnection(testSettings)
 
     override fun panel() = panel {

@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.ccv2.options
+package com.intellij.idea.plugin.hybris.tools.ccv2.settings.options
 
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2SubscriptionDto
 import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SubscriptionDto
 import com.intellij.idea.plugin.hybris.ui.CCv2SubscriptionListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider

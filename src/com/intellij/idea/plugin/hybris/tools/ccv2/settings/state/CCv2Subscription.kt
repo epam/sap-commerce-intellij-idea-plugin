@@ -15,36 +15,41 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.ccv2.settings.state
+package com.intellij.idea.plugin.hybris.tools.ccv2.settings.state
 
 import com.intellij.openapi.components.BaseState
+import java.util.*
 
-class SUser : BaseState(), Comparable<SUser> {
+class CCv2Subscription : BaseState(), Comparable<CCv2Subscription> {
+    var uuid by string(UUID.randomUUID().toString())
     var id by string()
-    var alias by string(null)
+    var name by string(null)
 
-    override fun compareTo(other: SUser) = toString().compareTo(other.toString())
+    override fun compareTo(other: CCv2Subscription) = toString().compareTo(other.toString())
 
-    override fun toString() = alias
+    override fun toString() = name
         ?: id
         ?: "?"
 
-    fun toDto() = SUserDto(id, alias)
+    fun toDto() = CCv2SubscriptionDto(uuid ?: UUID.randomUUID().toString(), id, name)
 }
 
-data class SUserDto(
+data class CCv2SubscriptionDto(
+    var uuid: String = UUID.randomUUID().toString(),
     var id: String? = null,
-    var alias: String? = null,
+    var name: String? = null,
+    var ccv2Token: String? = null,
 ) {
-    fun toModel() = SUser()
+    fun toModel() = CCv2Subscription()
         .also {
+            it.uuid = uuid
             it.id = id
-            it.alias = alias
+            it.name = name
         }
 
-    fun copy() = SUserDto(id, alias)
+    fun copy() = CCv2SubscriptionDto(uuid, id, name, ccv2Token)
 
-    override fun toString() = alias
+    override fun toString() = name
         ?: id
         ?: "?"
 }

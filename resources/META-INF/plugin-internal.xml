@@ -44,7 +44,7 @@
         <applicationConfigurable id="hybris.settings" parentId="root" displayName="[y] SAP CX"
                                  provider="com.intellij.idea.plugin.hybris.settings.options.ApplicationSettingsConfigurableProvider"/>
         <applicationConfigurable id="hybris.settings.ccv2" parentId="hybris.settings" displayName="CCv2"
-                                 provider="com.intellij.idea.plugin.hybris.ccv2.options.ApplicationCCv2SettingsConfigurableProvider"/>
+                                 provider="com.intellij.idea.plugin.hybris.tools.ccv2.settings.options.ApplicationCCv2SettingsConfigurableProvider"/>
         <applicationConfigurable id="hybris.project.import.settings" parentId="hybris.settings"
                                  key="hybris.settings.application.project_import.title"
                                  provider="com.intellij.idea.plugin.hybris.settings.options.ApplicationProjectImportSettingsConfigurableProvider"/>

@@ -19,13 +19,13 @@
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
 import com.intellij.database.script.generator.concatWithSpace
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.copyLink
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.date
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.sUser

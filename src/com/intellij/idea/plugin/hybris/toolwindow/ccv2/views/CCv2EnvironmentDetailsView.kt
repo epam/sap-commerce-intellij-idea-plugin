@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
 import com.intellij.ide.HelpTooltip
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
@@ -29,6 +28,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DataBackupDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.*
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2ViewUtil
 import com.intellij.idea.plugin.hybris.ui.UiUtil

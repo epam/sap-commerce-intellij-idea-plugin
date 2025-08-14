@@ -23,12 +23,12 @@ import com.intellij.idea.plugin.hybris.ccv1.api.PermissionsApi
 import com.intellij.idea.plugin.hybris.ccv1.api.ServiceApi
 import com.intellij.idea.plugin.hybris.ccv1.invoker.infrastructure.ApiClient
 import com.intellij.idea.plugin.hybris.ccv1.model.*
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2MediaStorageDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application

@@ -21,9 +21,9 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -88,7 +88,7 @@ class CommonIdeaService {
         }
     }
 
-    private fun fixSslRemoteConnectionSettings(connectionSettings: Collection<RemoteConnectionSettings>) {
+    private fun fixSslRemoteConnectionSettings(connectionSettings: Collection<RemoteConnectionSettingsState>) {
         connectionSettings.forEach {
             it.isSsl = it.generatedURL.startsWith(HybrisConstants.HTTPS_PROTOCOL)
             it.hostIP = it.hostIP?.replace(regex, "")

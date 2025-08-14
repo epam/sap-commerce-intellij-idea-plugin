@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.solr
 
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -46,7 +46,7 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
 
     fun coresData(): Array<SolrCoreData> = coresData(solrConnectionSettings(project))
 
-    fun listOfCores(solrConnectionSettings: RemoteConnectionSettings) = coresData(solrConnectionSettings)
+    fun listOfCores(solrConnectionSettings: RemoteConnectionSettingsState) = coresData(solrConnectionSettings)
         .map { it.core }
         .toTypedArray()
 
@@ -73,7 +73,7 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
             }
     }
 
-    private fun coresData(settings: RemoteConnectionSettings) = CoreAdminRequest()
+    private fun coresData(settings: RemoteConnectionSettingsState) = CoreAdminRequest()
         .apply {
             setAction(CoreAdminParams.CoreAdminAction.STATUS)
             setBasicAuthCredentials(settings.username, settings.password)
@@ -100,7 +100,7 @@ class SolrExecutionClient(project: Project, coroutineScope: CoroutineScope) : De
 
     private fun buildHttpSolrClient(url: String) = HttpSolrClient.Builder(url).build()
 
-    private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: RemoteConnectionSettings) = QueryRequest(solrQuery).apply {
+    private fun buildQueryRequest(solrQuery: SolrQuery, solrConnectionSettings: RemoteConnectionSettingsState) = QueryRequest(solrQuery).apply {
         setBasicAuthCredentials(solrConnectionSettings.username, solrConnectionSettings.password)
         method = SolrRequest.METHOD.POST
         // https://issues.apache.org/jira/browse/SOLR-5530

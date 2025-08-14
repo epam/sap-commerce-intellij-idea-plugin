@@ -20,11 +20,11 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.ide.passwordSafe.PasswordSafe
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2Subscription
-import com.intellij.idea.plugin.hybris.ccv2.settings.state.CCv2SubscriptionDto
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.state.ApplicationSettingsState
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SubscriptionDto
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager

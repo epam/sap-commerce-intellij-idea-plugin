@@ -15,19 +15,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package com.intellij.idea.plugin.hybris.tools.ccv2.settings.state
 
-package com.intellij.idea.plugin.hybris.settings
+import com.intellij.openapi.components.BaseState
 
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
-import com.intellij.util.messages.Topic
+class SUser : BaseState(), Comparable<SUser> {
+    var id by string()
+    var alias by string(null)
 
-interface RemoteConnectionListener {
-    fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
-    fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
-    fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettings) = Unit
-    fun onSolrConnectionModified(remoteConnection: RemoteConnectionSettings) = Unit
+    override fun compareTo(other: SUser) = toString().compareTo(other.toString())
 
-    companion object {
-        val TOPIC = Topic(RemoteConnectionListener::class.java)
-    }
+    override fun toString() = alias
+        ?: id
+        ?: "?"
+
+    fun toDto() = SUserDto(id, alias)
+}
+
+data class SUserDto(
+    var id: String? = null,
+    var alias: String? = null,
+) {
+    fun toModel() = SUser()
+        .also {
+            it.id = id
+            it.alias = alias
+        }
+
+    fun copy() = SUserDto(id, alias)
+
+    override fun toString() = alias
+        ?: id
+        ?: "?"
 }

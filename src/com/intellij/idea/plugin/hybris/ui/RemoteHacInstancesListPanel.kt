@@ -18,16 +18,16 @@
 package com.intellij.idea.plugin.hybris.ui
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
 import com.intellij.openapi.project.Project
 import java.io.Serial
 
 class RemoteHacInstancesListPanel(
     project: Project,
-    private val onDataChanged: (EventType, Set<RemoteConnectionSettings>) -> Unit
+    private val onDataChanged: (EventType, Set<RemoteConnectionSettingsState>) -> Unit
 ) : RemoteInstancesListPanel(project, RemoteConnectionType.Hybris, HybrisIcons.Y.REMOTE) {
 
     public override fun addItem() {
@@ -40,10 +40,10 @@ class RemoteHacInstancesListPanel(
 
     override fun onDataChanged(
         eventType: EventType,
-        data: Set<RemoteConnectionSettings>
+        data: Set<RemoteConnectionSettingsState>
     ) = onDataChanged.invoke(eventType, data)
 
-    override fun editSelectedItem(item: RemoteConnectionSettings) = if (RemoteHacConnectionDialog(myProject, this, item).showAndGet()) item
+    override fun editSelectedItem(item: RemoteConnectionSettingsState) = if (RemoteHacConnectionDialog(myProject, this, item).showAndGet()) item
     else null
 
     companion object {

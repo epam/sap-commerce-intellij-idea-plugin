@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree
 
-import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersRootNode
 import com.intellij.openapi.Disposable
@@ -52,7 +52,7 @@ class LoggersOptionsTree(val myProject: Project) : Tree(), Disposable {
 
     override fun dispose() = Unit
 
-    fun update(connections: Map<RemoteConnectionSettings, Boolean>) = myTreeModel.reload(connections)
+    fun update(connections: Map<RemoteConnectionSettingsState, Boolean>) = myTreeModel.reload(connections)
     fun update() = myTreeModel.reload()
 
     companion object {

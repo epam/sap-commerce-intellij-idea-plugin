@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.settings.state
 
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
+import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
@@ -53,7 +54,7 @@ data class ProjectSettingsState(
     // by BaseState.property(TreeMap<String, ExtensionDescriptor> { a, b -> a.compareTo(b, true) }) { it.isEmpty() }
     @JvmField val availableExtensions: Map<String, ExtensionDescriptor> = emptyMap(),
     @JvmField val excludedFromScanning: Set<String> = emptySet(),
-    @JvmField val remoteConnectionSettingsList: List<RemoteConnectionSettings> = emptyList(),
+    @JvmField val remoteConnectionSettingsList: List<RemoteConnectionSettingsState> = emptyList(),
     @JvmField @OptionTag val useFakeOutputPathForCustomExtensions: Boolean = false,
     @JvmField @OptionTag val activeCCv2Subscription: String? = null
 )
