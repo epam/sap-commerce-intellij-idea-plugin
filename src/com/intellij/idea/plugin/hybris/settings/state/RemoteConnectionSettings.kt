@@ -31,6 +31,7 @@ import com.intellij.util.xmlb.Accessor
 import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.Transient
 
+// TODO: split to hAC and SOLR settings
 @Tag("HybrisRemoteConnectionSettings")
 class RemoteConnectionSettings : BaseState(), Comparable<RemoteConnectionSettings> {
 
