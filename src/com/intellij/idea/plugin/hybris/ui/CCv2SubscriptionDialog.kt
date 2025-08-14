@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.ui
 
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
-import com.intellij.idea.plugin.hybris.settings.CCv2SubscriptionDto
+import com.intellij.idea.plugin.hybris.settings.state.CCv2SubscriptionDto
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBTextField

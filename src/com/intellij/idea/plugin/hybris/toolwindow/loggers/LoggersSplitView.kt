@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.toolwindow.loggers
 
 import com.intellij.idea.plugin.hybris.settings.RemoteConnectionListener
-import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
+import com.intellij.idea.plugin.hybris.settings.state.RemoteConnectionSettings
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggersStateListener
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService

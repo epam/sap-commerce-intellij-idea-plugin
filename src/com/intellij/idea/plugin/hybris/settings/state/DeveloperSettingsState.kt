@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.settings.state
 
-import com.intellij.idea.plugin.hybris.settings.RemoteConnectionSettings
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 

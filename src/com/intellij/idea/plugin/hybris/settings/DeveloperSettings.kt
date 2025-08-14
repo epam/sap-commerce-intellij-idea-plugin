@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.state.DeveloperSettingsState
+import com.intellij.idea.plugin.hybris.settings.state.SUser
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 

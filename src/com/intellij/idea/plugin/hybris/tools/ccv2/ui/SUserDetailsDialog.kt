@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.settings.SUser
-import com.intellij.idea.plugin.hybris.settings.SUserDto
+import com.intellij.idea.plugin.hybris.settings.state.SUser
+import com.intellij.idea.plugin.hybris.settings.state.SUserDto
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper

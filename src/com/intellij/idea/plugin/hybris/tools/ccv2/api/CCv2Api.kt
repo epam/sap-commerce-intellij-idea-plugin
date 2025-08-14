@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentDetailDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
-import com.intellij.idea.plugin.hybris.settings.CCv2Subscription
+import com.intellij.idea.plugin.hybris.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service

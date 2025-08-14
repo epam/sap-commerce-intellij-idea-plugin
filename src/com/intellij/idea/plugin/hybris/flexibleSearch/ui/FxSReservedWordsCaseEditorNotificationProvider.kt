@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.ui
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 import com.intellij.idea.plugin.hybris.settings.state.FlexibleSearchSettings
+import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction

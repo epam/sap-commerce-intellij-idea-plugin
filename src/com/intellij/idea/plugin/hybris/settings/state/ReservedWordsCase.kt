@@ -16,17 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings
+package com.intellij.idea.plugin.hybris.settings.state
 
-import com.intellij.util.messages.Topic
-
-interface RemoteConnectionListener {
-    fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
-    fun onActiveSolrConnectionChanged(remoteConnection: RemoteConnectionSettings) = Unit
-    fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettings) = Unit
-    fun onSolrConnectionModified(remoteConnection: RemoteConnectionSettings) = Unit
-
-    companion object {
-        val TOPIC = Topic(RemoteConnectionListener::class.java)
-    }
+enum class ReservedWordsCase {
+    UPPERCASE, LOWERCASE
 }

@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.settings.state
 
-import com.intellij.idea.plugin.hybris.settings.SUser
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
 import kotlinx.collections.immutable.toImmutableMap

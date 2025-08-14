@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.settings.state
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.settings.ReservedWordsCase
 import com.intellij.util.xmlb.annotations.OptionTag
 
 data class FlexibleSearchSettings(
