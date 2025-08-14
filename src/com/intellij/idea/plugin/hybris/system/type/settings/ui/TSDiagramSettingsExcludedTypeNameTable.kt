@@ -16,12 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.ui
+package com.intellij.idea.plugin.hybris.system.type.settings.ui
 
 import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemDiagramSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable
 import com.intellij.openapi.project.Project
-import com.intellij.util.ui.ListTableModel
 import java.io.Serial
 
 private const val COLUMN_NAME = "Name"
@@ -38,7 +37,7 @@ class TSDiagramSettingsExcludedTypeNameTable private constructor(project: Projec
         .sortedBy { it.typeName }
         .toMutableList()
 
-    override fun createModel() = with(MyListTableModel()) {
+    override fun createModel() = with(TSTypeNameListTableModel()) {
         columnInfos = arrayOf(
             createColumn(
                 name = COLUMN_NAME,
@@ -70,20 +69,3 @@ class TSDiagramSettingsExcludedTypeNameTable private constructor(project: Projec
         }
     }
 }
-
-class MyListTableModel : ListTableModel<TSTypeNameHolder>() {
-    override fun addRow() {
-        addRow(TSTypeNameHolder(""))
-    }
-
-    companion object {
-        @Serial
-        private val serialVersionUID: Long = 2743342735794887335L
-    }
-}
-
-data class TSTypeNameHolder(
-    var typeName: String,
-    var valid: Boolean = false,
-    var custom: Boolean = false
-)
