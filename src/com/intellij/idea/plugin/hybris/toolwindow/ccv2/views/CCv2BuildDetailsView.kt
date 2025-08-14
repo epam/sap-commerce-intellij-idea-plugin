@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscriptio
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.copyLink
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.date
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.sUser
-import com.intellij.idea.plugin.hybris.ui.UiUtil
+import com.intellij.idea.plugin.hybris.ui.scrollPanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -226,7 +226,7 @@ class CCv2BuildDetailsView(
             }.visible(!isBuildInProgress)
         }
     }
-        .let { UiUtil.scrollPanel(it) }
+        .let { scrollPanel(it) }
 
 
     private fun buildDeploymentHistoryPanel(groupedDeployments: Map<String, List<CCv2DeploymentDto>>) = panel {

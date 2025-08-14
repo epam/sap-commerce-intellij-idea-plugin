@@ -24,8 +24,8 @@ import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
-import com.intellij.idea.plugin.hybris.ui.UiUtil.addItemListener
-import com.intellij.idea.plugin.hybris.ui.UiUtil.addKeyListener
+import com.intellij.idea.plugin.hybris.ui.addItemListener
+import com.intellij.idea.plugin.hybris.ui.addKeyListener
 import com.intellij.idea.plugin.hybris.ui.event.KeyListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT

@@ -24,10 +24,10 @@ import com.intellij.idea.plugin.hybris.toolwindow.system.type.forms.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.TSTree
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
-import com.intellij.idea.plugin.hybris.ui.UiUtil.addTreeModelListener
-import com.intellij.idea.plugin.hybris.ui.UiUtil.addTreeSelectionListener
-import com.intellij.idea.plugin.hybris.ui.UiUtil.pathData
+import com.intellij.idea.plugin.hybris.ui.addTreeModelListener
+import com.intellij.idea.plugin.hybris.ui.addTreeSelectionListener
 import com.intellij.idea.plugin.hybris.ui.event.TreeModelListener
+import com.intellij.idea.plugin.hybris.ui.pathData
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer

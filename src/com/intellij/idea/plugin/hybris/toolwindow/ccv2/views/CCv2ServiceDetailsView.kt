@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceProperties
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.*
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2ViewUtil
-import com.intellij.idea.plugin.hybris.ui.UiUtil
+import com.intellij.idea.plugin.hybris.ui.scrollPanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -339,7 +339,7 @@ class CCv2ServiceDetailsView(
             }
         }
     }
-        .let { UiUtil.scrollPanel(it) }
+        .let { scrollPanel(it) }
 
     companion object {
         @Serial

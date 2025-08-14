@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchBindParameter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
-import com.intellij.idea.plugin.hybris.ui.UiUtil
+import com.intellij.idea.plugin.hybris.ui.scrollPanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
@@ -101,7 +101,7 @@ class FlexibleSearchInEditorParametersView(private val project: Project, private
                 border = JBUI.Borders.empty(5, 16, 10, 16)
                 registerValidators(parentDisposable)
             }
-            .let { UiUtil.scrollPanel(it) }
+            .let { scrollPanel(it) }
             .apply {
                 minimumSize = Dimension(minimumSize.width, 165)
                 focusTraversalPolicy = LayoutFocusTraversalPolicy()

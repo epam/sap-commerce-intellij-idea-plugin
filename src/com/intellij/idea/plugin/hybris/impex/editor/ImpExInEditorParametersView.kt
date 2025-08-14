@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.editor
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
-import com.intellij.idea.plugin.hybris.ui.UiUtil
+import com.intellij.idea.plugin.hybris.ui.scrollPanel
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
@@ -85,7 +85,7 @@ class ImpExInEditorParametersView(private val project: Project, private val coro
                 border = JBUI.Borders.empty(5, 16, 10, 16)
                 registerValidators(parentDisposable)
             }
-            .let { UiUtil.scrollPanel(it) }
+            .let { scrollPanel(it) }
             .apply {
                 minimumSize = Dimension(minimumSize.width, 165)
                 focusTraversalPolicy = LayoutFocusTraversalPolicy()
