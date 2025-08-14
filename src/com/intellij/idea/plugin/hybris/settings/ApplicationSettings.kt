@@ -176,7 +176,7 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
             updateState { it.copy(ccv2Subscriptions = value) }
         }
 
-    fun getCCv2Token(subscriptionUUID: String? = null) = PasswordSafe.Companion.instance.get(getCredentials(subscriptionUUID))
+    fun getCCv2Token(subscriptionUUID: String? = null) = PasswordSafe.instance.get(getCredentials(subscriptionUUID))
         ?.getPasswordAsString()
         ?.takeIf { it.isNotBlank() }
 
@@ -204,8 +204,8 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
             override fun run(indicator: ProgressIndicator) {
                 callback?.invoke(token)
 
-                if (token.isNullOrEmpty()) PasswordSafe.Companion.instance.setPassword(getCredentials(subscriptionUUID), null)
-                else PasswordSafe.Companion.instance.setPassword(getCredentials(subscriptionUUID), token)
+                if (token.isNullOrEmpty()) PasswordSafe.instance.setPassword(getCredentials(subscriptionUUID), null)
+                else PasswordSafe.instance.setPassword(getCredentials(subscriptionUUID), token)
             }
         })
     }
@@ -218,7 +218,7 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
 
         ccv2Subscriptions = subscriptions
         application.messageBus
-            .syncPublisher(CCv2SettingsListener.Companion.TOPIC)
+            .syncPublisher(CCv2SettingsListener.TOPIC)
             .onSubscriptionsChanged(subscriptions)
     }
 

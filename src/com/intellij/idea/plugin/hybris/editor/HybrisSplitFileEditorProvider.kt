@@ -41,7 +41,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType
 
 class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
 
-    override fun createEditor(project: Project, file: VirtualFile): FileEditor = with(TextEditorProvider.Companion.getInstance().createEditor(project, file)) {
+    override fun createEditor(project: Project, file: VirtualFile): FileEditor = with(TextEditorProvider.getInstance().createEditor(project, file)) {
         asSafely<TextEditor>()
             ?.let {
                 when (file.fileType) {

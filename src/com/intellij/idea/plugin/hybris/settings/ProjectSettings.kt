@@ -203,7 +203,7 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
     }
 
-    fun getModuleSettings(module: Module): ExtensionDescriptor = YFacet.Companion.getState(module)
+    fun getModuleSettings(module: Module): ExtensionDescriptor = YFacet.getState(module)
         ?: ExtensionDescriptor(module.yExtensionName())
 
     fun getAvailableExtensions() : Map<String, ExtensionDescriptor>{

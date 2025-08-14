@@ -38,7 +38,7 @@ class ProjectCngSettingsConfigurableProvider(private val project: Project) : Con
         HybrisI18NBundleUtils.message("hybris.settings.project.cng.title"), "[y] SAP CX Cockpit NG configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
+        private val developerSettings = DeveloperSettings.getInstance(project)
         private val mutableSettings = developerSettings.cngSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox

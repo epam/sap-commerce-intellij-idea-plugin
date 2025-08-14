@@ -38,7 +38,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
         "CCv2", "[y] SAP Commerce Cloud CCv2 configuration."
     ) {
 
-        private val applicationSettings = ApplicationSettings.Companion.getInstance()
+        private val applicationSettings = ApplicationSettings.getInstance()
         private var originalCCv2Token: String? = ""
         private var originalCCv2Subscriptions = applicationSettings.ccv2Subscriptions
             .map { it.toDto() }
@@ -102,7 +102,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
                     cell(ccv2SubscriptionListPanel)
                         .align(AlignX.FILL)
                         .onApply {
-                            val applicationSettings = ApplicationSettings.Companion.getInstance()
+                            val applicationSettings = ApplicationSettings.getInstance()
                             val subscriptions = ccv2SubscriptionListPanel.data
                             subscriptions.forEach {
                                 applicationSettings.saveCCv2Token(it.uuid, it.ccv2Token)
@@ -125,7 +125,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
         }
 
         private fun loadCCv2TokensForSubscriptions(subscriptions: List<CCv2SubscriptionDto>) {
-            val applicationSettings = ApplicationSettings.Companion.getInstance()
+            val applicationSettings = ApplicationSettings.getInstance()
             subscriptions.forEach { subscription ->
                 applicationSettings.loadCCv2Token(subscription.uuid) {
                     subscription.ccv2Token = it

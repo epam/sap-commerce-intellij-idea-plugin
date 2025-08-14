@@ -69,7 +69,7 @@ class CCv2TreeTable(
         loadingState.set(subscription)
         resetTree()
 
-        CCv2Service.Companion.getInstance(project).fetchEnvironments(
+        CCv2Service.getInstance(project).fetchEnvironments(
             listOf(subscription),
             onCompleteCallback = { response ->
                 response[subscription]

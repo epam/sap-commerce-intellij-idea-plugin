@@ -80,7 +80,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
 
         _metaModelState.value = CachedState(null, computed = false, computing = true)
 
-        DumbService.Companion.getInstance(project).runWhenSmart {
+        DumbService.getInstance(project).runWhenSmart {
             coroutineScope.launch {
                 val newState = withBackgroundProgress(project, "Re-building $systemName System...", true) {
                     val collectedDependencies = metaCollector.collectDependencies()

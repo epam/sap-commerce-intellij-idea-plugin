@@ -46,7 +46,7 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(private val project: Proj
         HybrisI18NBundleUtils.message("hybris.settings.project.pgq.title"), "hybris.pgq.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
+        private val developerSettings = DeveloperSettings.getInstance(project)
         private val mutableSettings = developerSettings.polyglotQuerySettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox

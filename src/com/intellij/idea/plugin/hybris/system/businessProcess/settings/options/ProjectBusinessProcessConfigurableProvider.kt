@@ -38,7 +38,7 @@ class ProjectBusinessProcessConfigurableProvider(val project: Project) : Configu
         HybrisI18NBundleUtils.message("hybris.settings.project.bp.title"), "[y] SAP CX Business Process configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
+        private val developerSettings = DeveloperSettings.getInstance(project)
         private val mutableSettings = developerSettings.bpSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox

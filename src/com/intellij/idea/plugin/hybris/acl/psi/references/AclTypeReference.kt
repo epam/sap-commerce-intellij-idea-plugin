@@ -58,7 +58,7 @@ class AclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), 
             val lookingForName = ref.value
             val project = ref.project
 
-            val results: Array<ResolveResult> = TSMetaModelAccess.Companion.getInstance(project).findMetaItemByName(lookingForName)
+            val results: Array<ResolveResult> = TSMetaModelAccess.getInstance(project).findMetaItemByName(lookingForName)
                 ?.takeIf { getAllowedVariants(ref.element).contains(it) }
                 ?.declarations
                 ?.map { meta -> ItemResolveResult(meta) }
@@ -72,7 +72,7 @@ class AclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), 
             )
         }
 
-        private fun getAllowedVariants(element: PsiElement): Collection<TSGlobalMetaItem> = with(TSMetaModelAccess.Companion.getInstance(element.project)) {
+        private fun getAllowedVariants(element: PsiElement): Collection<TSGlobalMetaItem> = with(TSMetaModelAccess.getInstance(element.project)) {
             listOfNotNull(
                 findMetaItemByName(HybrisConstants.TS_TYPE_USER_GROUP),
                 findMetaItemByName(HybrisConstants.TS_TYPE_USER)

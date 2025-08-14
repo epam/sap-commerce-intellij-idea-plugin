@@ -43,7 +43,7 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(private val project: Pro
         HybrisI18NBundleUtils.message("hybris.settings.project.fxs.title"), "hybris.fxs.settings"
     ) {
 
-        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
+        private val developerSettings = DeveloperSettings.getInstance(project)
         private val mutableSettings = developerSettings.flexibleSearchSettings.mutable()
 
         private lateinit var verifyCaseCheckBox: JCheckBox

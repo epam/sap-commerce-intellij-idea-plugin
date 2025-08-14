@@ -49,7 +49,7 @@ open class AclTSTargetAttributeReference : TSReferenceBase<PsiElement>, Highligh
 
     override fun getVariants() = getType()
         ?.let {
-            TSCompletionService.Companion.getInstance(element.project)
+            TSCompletionService.getInstance(element.project)
                 .getCompletions(
                     it,
                     TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION
@@ -76,7 +76,7 @@ open class AclTSTargetAttributeReference : TSReferenceBase<PsiElement>, Highligh
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AclTSTargetAttributeReference> { ref ->
             val project = ref.project
-            val metaModelAccess = TSMetaModelAccess.Companion.getInstance(project)
+            val metaModelAccess = TSMetaModelAccess.getInstance(project)
             val featureName = ref.value
             val type = ref.getType()
             val result: Array<ResolveResult> = metaModelAccess.findMetaClassifierByName(type)

@@ -173,7 +173,7 @@ class PolyglotQueryInEditorParametersView(private val project: Project, private 
                         Date::class -> cell(
                             DatePicker(
                                 parameter.rawValue?.asSafely<Date>(),
-                                SimpleDateFormat(PolyglotQueryVirtualParameter.Companion.DATE_FORMAT)
+                                SimpleDateFormat(PolyglotQueryVirtualParameter.DATE_FORMAT)
                             )
                         )
                             .label("${parameter.displayName}:")
