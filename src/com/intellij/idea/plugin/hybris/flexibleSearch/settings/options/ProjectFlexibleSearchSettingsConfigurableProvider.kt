@@ -53,15 +53,6 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
         private lateinit var foldingEnableCheckBox: JCheckBox
         private lateinit var documentationEnableCheckBox: JCheckBox
 
-        override fun apply() {
-            super.apply()
-
-            developerSettings.flexibleSearchSettings = mutableSettings.immutable()
-
-            EditorNotificationProvider.EP_NAME.findExtension(FxSReservedWordsCaseEditorNotificationProvider::class.java, project)
-                ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }
-        }
-
         override fun createPanel() = panel {
             group("Language") {
                 row {
@@ -160,6 +151,15 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(val project: Project) : 
                         .enabledIf(documentationEnableCheckBox.selected)
                 }
             }
+        }
+
+        override fun apply() {
+            super.apply()
+
+            developerSettings.flexibleSearchSettings = mutableSettings.immutable()
+
+            EditorNotificationProvider.EP_NAME.findExtension(FxSReservedWordsCaseEditorNotificationProvider::class.java, project)
+                ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }
         }
     }
 }

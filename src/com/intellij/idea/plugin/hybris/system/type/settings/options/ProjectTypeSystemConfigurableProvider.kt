@@ -59,13 +59,6 @@ class ProjectTypeSystemConfigurableProvider(val project: Project) : Configurable
 
         private lateinit var foldingEnableCheckBox: JCheckBox
 
-        override fun apply() {
-            super.apply()
-
-            developerSettings.typeSystemSettings = tsMutableSettings.immutable()
-            developerSettings.typeSystemDiagramSettings = tsDiagramMutableSettings.immutable()
-        }
-
         override fun createPanel() = panel {
             group("Code Folding - items.xml") {
                 row {
@@ -150,6 +143,13 @@ class ProjectTypeSystemConfigurableProvider(val project: Project) : Configurable
                         .align(Align.Companion.FILL)
                 }
             }
+        }
+
+        override fun apply() {
+            super.apply()
+
+            developerSettings.typeSystemSettings = tsMutableSettings.immutable()
+            developerSettings.typeSystemDiagramSettings = tsDiagramMutableSettings.immutable()
         }
 
         private fun getNewTypeNames() = excludedTypeNamesTable.getItems()

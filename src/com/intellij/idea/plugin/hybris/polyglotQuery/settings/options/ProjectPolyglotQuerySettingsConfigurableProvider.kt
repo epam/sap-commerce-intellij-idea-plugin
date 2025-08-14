@@ -54,15 +54,6 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(val project: Project) : C
 
         private val reservedWordsModel = EnumComboBoxModel(ReservedWordsCase::class.java)
 
-        override fun apply() {
-            super.apply()
-
-            developerSettings.polyglotQuerySettings = mutableSettings.immutable()
-
-            EditorNotificationProvider.EP_NAME.findExtension(PolyglotQueryEditorNotificationProvider::class.java, project)
-                ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }
-        }
-
         override fun createPanel() = panel {
             group("Language") {
                 row {
@@ -95,6 +86,15 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(val project: Project) : C
                         .comment("If checked localized attribute <code>{name[en]}</code> will be represented as <code>name:en</code>")
                 }
             }
+        }
+
+        override fun apply() {
+            super.apply()
+
+            developerSettings.polyglotQuerySettings = mutableSettings.immutable()
+
+            EditorNotificationProvider.EP_NAME.findExtension(PolyglotQueryEditorNotificationProvider::class.java, project)
+                ?.let { EditorNotifications.getInstance(project).updateAllNotifications() }
         }
     }
 }
