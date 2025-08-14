@@ -43,7 +43,6 @@
     <depends>com.intellij.modules.json</depends>
 
     <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-java.xml">com.intellij.modules.java</depends>
-    <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-properties.xml">com.intellij.properties</depends>
 
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-junit.xml">JUnit</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-ant.xml">AntSupport</depends>
@@ -81,6 +80,7 @@
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-typeSystem.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-logging.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-console.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-jsp.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>

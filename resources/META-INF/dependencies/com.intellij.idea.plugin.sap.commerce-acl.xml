@@ -43,6 +43,12 @@
 
         <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.acl.formatting.AclCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.acl.formatting.AclLanguageCodeStyleSettingsProvider"/>
+
+        <projectConfigurable id="hybris.project.acl.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             bundle="i18n.HybrisBundle" key="hybris.settings.project.acl.title"
+                             order="after hybris.project.impex.settings"
+                             provider="com.intellij.idea.plugin.hybris.acl.settings.options.ProjectAclSettingsConfigurableProvider"/>
     </extensions>
 
     <actions>

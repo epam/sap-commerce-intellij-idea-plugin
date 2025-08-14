@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.impex.settings.options
 
 import com.intellij.ide.projectView.ProjectView
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -36,7 +36,7 @@ class ProjectImpExSettingsConfigurableProvider(private val project: Project) : C
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        HybrisI18NBundleUtils.message("hybris.settings.project.impex.title"), "hybris.impex.settings"
+        message("hybris.settings.project.impex.title"), "hybris.impex.settings"
     ) {
 
         private val developerSettings = DeveloperSettings.getInstance(project)

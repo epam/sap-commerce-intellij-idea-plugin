@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.ui
 
-import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.TreeNode
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.observable.util.addItemListener
 import com.intellij.openapi.observable.util.addKeyListener
@@ -41,6 +40,7 @@ import javax.swing.ScrollPaneConstants
 import javax.swing.border.Border
 import javax.swing.event.TreeModelListener
 import javax.swing.event.TreeSelectionListener
+import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
@@ -63,7 +63,7 @@ object UiUtil {
     }
 
     internal fun <T : Any> TreePath.pathData(clazz: KClass<T>): T? = lastPathComponent
-        .asSafely<TreeNode>()
+        .asSafely<DefaultMutableTreeNode>()
         ?.userObject
         ?.let { clazz.safeCast(it) }
 

@@ -16,23 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.acl.settings.state
+package com.intellij.idea.plugin.hybris.jsp.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
-@Tag("AclSettings")
-data class AclSettingsState(
-    @JvmField @OptionTag val folding: AclFoldingSettingsState = AclFoldingSettingsState(),
+@Tag("JspSettingsState")
+data class JspSettingsState(
+    @JvmField @OptionTag val folding: JspFoldingSettingsState = JspFoldingSettingsState(),
 ) {
     fun mutable() = Mutable(
         folding = folding.mutable(),
     )
 
     data class Mutable(
-        var folding: AclFoldingSettingsState.Mutable,
+        var folding: JspFoldingSettingsState.Mutable,
     ) {
-        fun immutable() = AclSettingsState(
+        fun immutable() = JspSettingsState(
             folding = folding.immutable(),
         )
     }

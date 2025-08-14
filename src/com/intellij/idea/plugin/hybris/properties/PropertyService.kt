@@ -30,7 +30,7 @@ import com.intellij.lang.properties.psi.PropertiesFile
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
@@ -60,10 +60,7 @@ import java.util.regex.Pattern
  * @see <a href="https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/1be46286b36a4aa48205be5a96240672/d090fb3dd48a418d967a1dfdca9fcac6.html?locale=en-US">SAP Commerce Cloud Properties</a> to support CCv2 properties.
  */
 @Service(Service.Level.PROJECT)
-class PropertyService(val project: Project) {
-
-    private val LOG = logger<PropertyService>()
-
+class PropertyService(private val project: Project) {
 
     private val nestedPropertyPrefix = "\${"
     private val nestedPropertySuffix = "}"
@@ -232,7 +229,7 @@ class PropertyService(val project: Project) {
                 }
             }
         } catch (e: Exception) {
-            LOG.error(e)
+            thisLogger().error(e)
         }
 
         return properties

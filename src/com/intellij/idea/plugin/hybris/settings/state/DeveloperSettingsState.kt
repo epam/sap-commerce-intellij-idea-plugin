@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.acl.settings.state.AclSettingsState
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
 import com.intellij.idea.plugin.hybris.groovy.settings.state.GroovySettingsState
 import com.intellij.idea.plugin.hybris.impex.settings.state.ImpExSettingsState
+import com.intellij.idea.plugin.hybris.jsp.settings.state.JspSettingsState
 import com.intellij.idea.plugin.hybris.polyglotQuery.settings.state.PolyglotQuerySettingsState
 import com.intellij.idea.plugin.hybris.system.bean.settings.state.BeanSystemSettingsState
 import com.intellij.idea.plugin.hybris.system.businessProcess.settings.state.BpSettingsState
@@ -51,5 +52,6 @@ data class DeveloperSettingsState(
     @JvmField @OptionTag val polyglotQuerySettings: PolyglotQuerySettingsState = PolyglotQuerySettingsState(),
     @JvmField @OptionTag val impexSettings: ImpExSettingsState = ImpExSettingsState(),
     @JvmField @OptionTag val groovySettings: GroovySettingsState = GroovySettingsState(),
+    @JvmField @OptionTag val jspSettings: JspSettingsState = JspSettingsState(),
     @JvmField @OptionTag val ccv2Settings: CCv2SettingsState = CCv2SettingsState(),
 )
