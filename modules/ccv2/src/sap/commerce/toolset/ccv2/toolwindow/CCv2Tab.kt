@@ -19,10 +19,10 @@
 package sap.commerce.toolset.ccv2.toolwindow
 
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.toolwindow.views.AbstractCCv2DataView
-import sap.commerce.toolset.ccv2.toolwindow.views.CCv2BuildsDataView
-import sap.commerce.toolset.ccv2.toolwindow.views.CCv2DeploymentsDataView
-import sap.commerce.toolset.ccv2.toolwindow.views.CCv2EnvironmentsDataView
+import sap.commerce.toolset.ccv2.ui.views.AbstractCCv2DataView
+import sap.commerce.toolset.ccv2.ui.views.CCv2BuildsDataView
+import sap.commerce.toolset.ccv2.ui.views.CCv2DeploymentsDataView
+import sap.commerce.toolset.ccv2.ui.views.CCv2EnvironmentsDataView
 import javax.swing.Icon
 
 enum class CCv2Tab(val title: String, val icon: Icon, val view: AbstractCCv2DataView<*>) {

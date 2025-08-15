@@ -39,7 +39,7 @@ import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2SettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
-import sap.commerce.toolset.ccv2.toolwindow.views.CCv2EnvironmentDetailsView
+import sap.commerce.toolset.ccv2.ui.views.CCv2EnvironmentDetailsView
 
 class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction<CCv2EnvironmentDto>(
     tab = CCv2Tab.ENVIRONMENTS,

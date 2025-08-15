@@ -239,7 +239,7 @@ dependencies {
         pluginVerifier()
 
         pluginComposedModule(implementation(project(":shared")))
-        pluginComposedModule(implementation(project(":core")))
+        pluginComposedModule(implementation(project(":remote")))
         pluginComposedModule(implementation(project(":localextensions")))
         pluginComposedModule(implementation(project(":extensioninfo")))
         pluginComposedModule(implementation(project(":project")))

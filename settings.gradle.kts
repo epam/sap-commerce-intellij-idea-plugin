@@ -42,9 +42,9 @@ include(
     "modules/extensioninfo",
     "modules/localextensions",
     "modules/project",
-    "modules/core",
     "modules/terminal",
     "modules/ccv2",
+    "modules/remote",
 )
 
 rootProject.children.forEach {

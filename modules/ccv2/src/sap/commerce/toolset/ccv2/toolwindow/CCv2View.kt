@@ -41,10 +41,10 @@ import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.toolwindow.views.CCv2BuildsDataView
-import sap.commerce.toolset.ccv2.toolwindow.views.CCv2DeploymentsDataView
-import sap.commerce.toolset.ccv2.toolwindow.views.CCv2EnvironmentsDataView
 import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
+import sap.commerce.toolset.ccv2.ui.views.CCv2BuildsDataView
+import sap.commerce.toolset.ccv2.ui.views.CCv2DeploymentsDataView
+import sap.commerce.toolset.ccv2.ui.views.CCv2EnvironmentsDataView
 import java.io.Serial
 
 class CCv2View(private val project: Project) : SimpleToolWindowPanel(false), Disposable {

@@ -36,7 +36,6 @@ sourceSets {
 dependencies {
     implementation(libs.bundles.commons)
     implementation(project(":shared"))
-    implementation(project(":core"))
     implementation(project(":extensioninfo"))
 
     intellijPlatform {

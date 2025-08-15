@@ -49,6 +49,9 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
                         )
                         .important(true)
                         .system(true)
+                        .addAction("Restart") {
+
+                        }
                         .notify(project)
                 }
             }
