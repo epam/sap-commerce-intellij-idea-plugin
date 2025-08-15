@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,15 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ConsoleAwareExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
+package sap.commerce.toolset.remote.execution
+
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.execution.ReplicaContext
 
-data class FlexibleSearchExecutionResult(
+data class DefaultExecutionResult(
     override val remoteConnectionType: RemoteConnectionType = RemoteConnectionType.Hybris,
     val statusCode: Int = HttpStatus.SC_OK,
     override val result: String? = null,
@@ -32,20 +29,4 @@ data class FlexibleSearchExecutionResult(
     override val replicaContext: ReplicaContext? = null,
     override val errorMessage: String? = null,
     override val errorDetailMessage: String? = null,
-) : ConsoleAwareExecutionResult {
-
-    val hasDataRows: Boolean
-        get() = output?.trim()?.contains("\n") ?: false
-
-    companion object {
-        fun from(result: DefaultExecutionResult) = FlexibleSearchExecutionResult(
-            remoteConnectionType = result.remoteConnectionType,
-            statusCode = result.statusCode,
-            result = result.result,
-            output = result.output,
-            replicaContext = result.replicaContext,
-            errorMessage = result.errorMessage,
-            errorDetailMessage = result.errorDetailMessage,
-        )
-    }
-}
+) : ConsoleAwareExecutionResult

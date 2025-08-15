@@ -16,18 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution
+fun properties(key: String) = providers.gradleProperty(key)
 
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.execution.ExecutionResult
-import sap.commerce.toolset.remote.execution.ReplicaContext
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-interface ConsoleAwareExecutionResult : ExecutionResult {
-    val remoteConnectionType: RemoteConnectionType
-    val result: String?
-    val output: String?
-    val replicaContext: ReplicaContext?
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-    val hasError
-        get() = errorMessage != null
+dependencies {
+    implementation(project(":shared"))
+    implementation(project(":remote-core"))
+
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+    }
 }

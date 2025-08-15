@@ -22,7 +22,6 @@ import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ConsoleAwareExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.TimeOption
 import com.intellij.openapi.components.Service
@@ -36,6 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.remote.execution.ConsoleAwareExecutionResult
 import java.awt.BorderLayout
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout

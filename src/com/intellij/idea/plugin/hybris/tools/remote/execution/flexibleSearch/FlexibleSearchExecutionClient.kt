@@ -28,6 +28,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
+import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient
 import java.io.Serial

@@ -14,11 +14,14 @@
             <option value="$PROJECT_DIR$/modules/ant" />
             <option value="$PROJECT_DIR$/modules/ccv2" />
             <option value="$PROJECT_DIR$/modules/extensioninfo" />
+            <option value="$PROJECT_DIR$/modules/flexibleSearch/remote" />
+            <option value="$PROJECT_DIR$/modules/groovy/remote" />
+            <option value="$PROJECT_DIR$/modules/impex/remote" />
             <option value="$PROJECT_DIR$/modules/localextensions" />
+            <option value="$PROJECT_DIR$/modules/logging/remote" />
             <option value="$PROJECT_DIR$/modules/project/core" />
             <option value="$PROJECT_DIR$/modules/project/import" />
             <option value="$PROJECT_DIR$/modules/remote/core" />
-            <option value="$PROJECT_DIR$/modules/remote/logging" />
             <option value="$PROJECT_DIR$/modules/shared" />
             <option value="$PROJECT_DIR$/modules/terminal" />
             <option value="$PROJECT_DIR$/modules/ui" />

@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSimpl
 import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
-import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionResult
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -36,6 +35,7 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
 import javax.swing.JComponent
 
 @Service(Service.Level.PROJECT)

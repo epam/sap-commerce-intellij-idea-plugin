@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.impex.editor
 
 import com.intellij.idea.plugin.hybris.editor.InEditorResultsView
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -30,6 +29,7 @@ import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.remote.execution.DefaultExecutionResult
 import javax.swing.JComponent
 
 @Service(Service.Level.PROJECT)
@@ -45,7 +45,7 @@ class ImpExInEditorResultsView(project: Project, coroutineScope: CoroutineScope)
                         result.errorDetailMessage
                     )
 
-                    result.output != null -> it.resultsView(result.output)
+                    result.output != null -> it.resultsView(result.output!!)
                     else -> it.noResultsView()
                 }
             }

@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext.Companion.auto
 import com.intellij.openapi.components.Service
@@ -37,6 +36,7 @@ import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.execution.DefaultExecutionResult
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient
 import java.io.IOException
 import java.io.Serial
