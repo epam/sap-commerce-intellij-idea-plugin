@@ -107,7 +107,7 @@ class RunConfigurationConfigurator {
         }
     }
 
-    private fun getDebugPort(hybrisProjectDescriptor: HybrisProjectDescriptor, cache: HybrisConfiguratorCache) = hybrisProjectDescriptor.getConfigHybrisModuleDescriptor()
+    private fun getDebugPort(hybrisProjectDescriptor: HybrisProjectDescriptor, cache: HybrisConfiguratorCache) = hybrisProjectDescriptor.configHybrisModuleDescriptor
         ?.let { findPortProperty(it, HybrisConstants.LOCAL_PROPERTIES_FILE, cache) }
         ?: CommonIdeaService.getInstance().getPlatformDescriptor(hybrisProjectDescriptor)
             ?.let { findPortProperty(it, HybrisConstants.PROJECT_PROPERTIES_FILE, cache) }

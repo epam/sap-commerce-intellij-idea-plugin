@@ -19,6 +19,7 @@
 
 /out/
 /build/
+/modules/*/build
 /buildsrc/build
 /buildsrc/.gradle
 /common/build/

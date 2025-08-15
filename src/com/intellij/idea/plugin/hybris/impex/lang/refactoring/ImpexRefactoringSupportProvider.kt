@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.lang.refactoring
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement
 import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
@@ -25,5 +25,5 @@ import com.intellij.psi.PsiElement
 class ImpexRefactoringSupportProvider : RefactoringSupportProvider() {
 
     override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?) = element is ImpexPsiNamedElement
-        && !element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
+        && !element.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
 }

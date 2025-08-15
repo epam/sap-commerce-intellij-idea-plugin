@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.refactoring
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.openapi.util.Condition
 import com.intellij.psi.PsiElement
 
 class ImpExVetoRenameCondition : Condition<PsiElement> {
 
-    override fun value(t: PsiElement?) = t?.text?.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
+    override fun value(t: PsiElement?) = t?.text?.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
         ?: false
 }

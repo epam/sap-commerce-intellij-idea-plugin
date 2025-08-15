@@ -11,6 +11,12 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/modules/core" />
+            <option value="$PROJECT_DIR$/modules/extensioninfo" />
+            <option value="$PROJECT_DIR$/modules/localextensions" />
+            <option value="$PROJECT_DIR$/modules/project" />
+            <option value="$PROJECT_DIR$/modules/shared" />
+            <option value="$PROJECT_DIR$/modules/terminal" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />

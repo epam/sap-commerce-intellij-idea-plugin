@@ -26,7 +26,6 @@ import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.*;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
@@ -37,6 +36,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.utils.Plugin;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -540,7 +540,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         projectSettings.setModulesOnBlackList(createModulesOnBlackList());
         projectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
 
-        final var credentialAttributes = new CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN);
+        final var credentialAttributes = new CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN);
         PasswordSafe.getInstance().setPassword(credentialAttributes, hybrisProjectDescriptor.getCCv2Token());
 
         projectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());

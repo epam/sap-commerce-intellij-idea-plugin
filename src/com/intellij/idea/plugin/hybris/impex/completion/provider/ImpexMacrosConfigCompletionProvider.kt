@@ -22,7 +22,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionUtilCore
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.psi.PsiElement
@@ -37,7 +37,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
         val prevLeaf = PsiTreeUtil.prevLeaf(psiElementUnderCaret)
         val propertyService = PropertyService.getInstance(project)
 
-        if (prevLeaf != null && prevLeaf.text.contains(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
+        if (prevLeaf != null && prevLeaf.text.contains(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
             val position = parameters.position
             val query = getQuery(position)
             propertyService.findAutoCompleteProperties(query)
@@ -46,7 +46,7 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
                 .forEach { result.addElement(it) }
         }
 
-        if (psiElementUnderCaret.text.contains(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
+        if (psiElementUnderCaret.text.contains(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
             val position = parameters.position
             val prefix = getPrefix(position)
             val query = position.text
@@ -66,8 +66,8 @@ class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParamet
     private fun getPrefix(position: PsiElement): String {
         val text = position.text
 
-        val index = text.indexOf(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
-        return text.substring(0, index + HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
+        val index = text.indexOf(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
+        return text.substring(0, index + ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
     }
 
 }

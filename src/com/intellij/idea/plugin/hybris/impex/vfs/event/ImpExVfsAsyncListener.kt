@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.vfs.event
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.editor.ImpExEditorMarkupModelHelper
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
@@ -35,7 +35,7 @@ class ImpExVfsAsyncListener : AsyncFileListener {
         val allEditors = EditorFactory.getInstance().allEditors
         val editors = events
             .mapNotNull { it.file }
-            .filter { it.extension == HybrisConstants.IMPEX_FILE_EXTENSION }
+            .filter { it.extension == ImpExConstants.IMPEX_FILE_EXTENSION }
             .distinct()
             .mapNotNull { vf -> allEditors.find { it.virtualFile == vf } }
             .mapNotNull { editor ->

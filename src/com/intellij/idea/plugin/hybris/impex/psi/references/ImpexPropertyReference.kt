@@ -19,7 +19,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.openapi.util.TextRange
@@ -34,13 +34,13 @@ class ImpexPropertyReference(owner: ImpexMacroUsageDec) : PsiReferenceBase.Poly<
         .configPropertyKey
         ?.let {
             TextRange.from(
-                HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length,
+                ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length,
                 it.length
             )
         }
         ?: TextRange.from(
-            HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length,
-            element.textLength - HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length
+            ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length,
+            element.textLength - ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length
         )
 
     override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
@@ -51,7 +51,7 @@ class ImpexPropertyReference(owner: ImpexMacroUsageDec) : PsiReferenceBase.Poly<
         ?: ResolveResult.EMPTY_ARRAY
 
     private fun getPropertyKey() = element.text
-        .replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+        .replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
         .takeUnless { it.isBlank() }
 
 }

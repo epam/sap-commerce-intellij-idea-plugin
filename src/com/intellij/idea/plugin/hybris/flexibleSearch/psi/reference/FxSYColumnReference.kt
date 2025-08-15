@@ -22,6 +22,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
 import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
@@ -68,11 +69,11 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
         val hasColumnAlias = isAliasedReference()
         val canFallback = canFallbackToTableName()
 
-        if (!hasColumnAlias && HybrisConstants.FXS_DUMMY_IDENTIFIER == element.text && hasTableAlias) {
+        if (!hasColumnAlias && FlexibleSearchConstants.DUMMY_IDENTIFIER == element.text && hasTableAlias) {
             return getSuitablePrefixes()
         }
 
-        if (!hasColumnAlias && HybrisConstants.FXS_DUMMY_IDENTIFIER == element.text && !hasTableAlias) {
+        if (!hasColumnAlias && FlexibleSearchConstants.DUMMY_IDENTIFIER == element.text && !hasTableAlias) {
             return getSuitablePrefixes() + getColumns(type)
         }
         if ((hasColumnAlias && hasTableAlias)
@@ -98,8 +99,8 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
     private fun getPostfixes(type: String): Array<LookupElementBuilder> = if (element.parent.text.contains("[")) {
         emptyArray()
     } else {
-        val text = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
-        element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
+        val text = element.text.replace(FlexibleSearchConstants.DUMMY_IDENTIFIER, "")
+        element.text.substringAfter(FlexibleSearchConstants.DUMMY_IDENTIFIER, "")
             .takeIf { it.isBlank() && text.isNotBlank() }
             ?.let {
                 resolve(element.project, type, text)
@@ -117,9 +118,9 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
      */
     private fun getSuitablePrefixes(): Array<LookupElementBuilder> {
         val fxsSettings = DeveloperSettings.getInstance(element.project).flexibleSearchSettings
-        val aliasText = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
+        val aliasText = element.text.replace(FlexibleSearchConstants.DUMMY_IDENTIFIER, "")
 
-        val separators: Array<LookupElementBuilder> = element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER)
+        val separators: Array<LookupElementBuilder> = element.text.substringAfter(FlexibleSearchConstants.DUMMY_IDENTIFIER)
             .takeIf { it.isBlank() && aliasText.isNotBlank() }
             ?.let {
                 arrayOf(

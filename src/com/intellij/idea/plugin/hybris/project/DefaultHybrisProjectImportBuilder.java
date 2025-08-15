@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -163,7 +163,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         if (refresh) {
             PostImportConfigurator.getInstance(project).configure(hybrisProjectDescriptor, allModules, refresh);
         } else {
-            project.putUserData(HybrisConstants.getKEY_FINALIZE_PROJECT_IMPORT(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
+            project.putUserData(ProjectConstants.getKEY_FINALIZE_PROJECT_IMPORT(), new Triple<>(hybrisProjectDescriptor, allModules, refresh));
         }
         notifyImportNotFinishedYet(project);
         return modules;

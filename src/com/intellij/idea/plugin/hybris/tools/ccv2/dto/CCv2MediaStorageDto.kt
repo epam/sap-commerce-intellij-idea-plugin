@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv1.model.MediaStorageDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 
 data class CCv2MediaStorageDto(
     val code: String,
@@ -36,7 +36,7 @@ data class CCv2MediaStorageDto(
             name = dto.name,
             accountName = dto.accountName,
             publicUrl = dto.publicUrl,
-            link = "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${environment.subscriptionCode}/applications/commerce-cloud/environments/${environment.code}/cloud-storage/${dto.code}"
+            link = "https://${CCv2Constants.DOMAIN}/subscription/${environment.subscriptionCode}/applications/commerce-cloud/environments/${environment.code}/cloud-storage/${dto.code}"
         )
     }
 }

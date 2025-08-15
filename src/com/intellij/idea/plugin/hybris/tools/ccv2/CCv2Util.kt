@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
@@ -27,7 +26,7 @@ object CCv2Util {
 
     fun formatTime(time: OffsetDateTime?) = time
         ?.atZoneSameInstant(ZoneId.systemDefault())
-        ?.format(HybrisConstants.CCV2_DATE_TIME_FORMATTER_LOCAL)
+        ?.format(CCv2Constants.DATE_TIME_FORMATTER_LOCAL)
         ?: "N/A";
 
     fun getTimeDiffInMinutes(startTime: OffsetDateTime?, endTime: OffsetDateTime?): Long {

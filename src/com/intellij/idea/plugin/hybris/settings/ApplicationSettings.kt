@@ -22,6 +22,7 @@ import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.state.ApplicationSettingsState
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SubscriptionDto
@@ -222,8 +223,8 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
             .onSubscriptionsChanged(subscriptions)
     }
 
-    private fun getCredentials(subscriptionUUID: String?) = if (subscriptionUUID == null) CredentialAttributes(HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
-    else CredentialAttributes(subscriptionUUID, HybrisConstants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
+    private fun getCredentials(subscriptionUUID: String?) = if (subscriptionUUID == null) CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
+    else CredentialAttributes(subscriptionUUID, CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
 
     companion object {
         @JvmStatic

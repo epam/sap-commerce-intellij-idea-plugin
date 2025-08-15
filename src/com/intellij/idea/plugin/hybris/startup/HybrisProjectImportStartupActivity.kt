@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.util.RunOnceUtil
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
+import com.intellij.idea.plugin.hybris.project.ProjectConstants
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
@@ -33,9 +33,9 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
         if (project.isNotHybrisProject) return
 
         RunOnceUtil.runOnceForProject(project, "afterHybrisProjectImport") {
-            project.getUserData(HybrisConstants.KEY_FINALIZE_PROJECT_IMPORT)
+            project.getUserData(ProjectConstants.KEY_FINALIZE_PROJECT_IMPORT)
                 ?.let {
-                    project.removeUserData(HybrisConstants.KEY_FINALIZE_PROJECT_IMPORT)
+                    project.removeUserData(ProjectConstants.KEY_FINALIZE_PROJECT_IMPORT)
 
                     PostImportConfigurator.getInstance(project).configure(
                         it.first,

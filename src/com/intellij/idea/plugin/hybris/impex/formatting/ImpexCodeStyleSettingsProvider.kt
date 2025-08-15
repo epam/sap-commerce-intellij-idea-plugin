@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.impex.formatting
 
 import com.intellij.application.options.CodeStyleAbstractConfigurable
 import com.intellij.application.options.TabbedLanguageCodeStylePanel
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
@@ -30,13 +30,13 @@ class ImpexCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
 
     override fun getLanguage() = ImpexLanguage
     override fun createCustomSettings(settings: CodeStyleSettings) = ImpexCodeStyleSettings(settings)
-    override fun getConfigurableDisplayName() = HybrisConstants.IMPEX
+    override fun getConfigurableDisplayName() = ImpExConstants.IMPEX
 
     override fun createConfigurable(settings: CodeStyleSettings, originalSettings: CodeStyleSettings) = object
         : CodeStyleAbstractConfigurable(
         settings,
         originalSettings,
-        HybrisConstants.IMPEX
+        ImpExConstants.IMPEX
     ) {
         override fun createPanel(settings: CodeStyleSettings) = SimpleCodeStyleMainPanel(currentSettings, settings)
         override fun getHelpTopic() = null

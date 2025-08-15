@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,17 +18,17 @@
  */
 package com.intellij.idea.plugin.hybris.impex.file
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
 object ImpexFileType : LanguageFileType(ImpexLanguage) {
 
-    override fun getName() = HybrisConstants.IMPEX
+    override fun getName() = ImpExConstants.IMPEX
     override fun getDescription() = "ImpEx language file"
-    override fun getDefaultExtension() = HybrisConstants.IMPEX_FILE_EXTENSION
+    override fun getDefaultExtension() = ImpExConstants.IMPEX_FILE_EXTENSION
 
     override fun getIcon(): Icon = HybrisIcons.ImpEx.FILE
 

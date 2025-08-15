@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.ui
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
 import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
 import com.intellij.openapi.application.ModalityState
@@ -83,7 +84,7 @@ class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotifica
 
     class Collector(private val fxsSettings: FlexibleSearchSettingsState) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
         override fun execute(element: LeafPsiElement): Boolean {
-            if (HybrisConstants.FXS_RESERVED_KEYWORDS.contains(element.elementType)) {
+            if (FlexibleSearchConstants.RESERVED_KEYWORDS.contains(element.elementType)) {
                 val text = element.text.trim()
 
                 val mismatch = when (fxsSettings.defaultCaseForReservedWords) {

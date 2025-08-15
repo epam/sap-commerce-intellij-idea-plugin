@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv1.model.ServiceDTO
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.util.asSafely
 import java.time.OffsetDateTime
@@ -53,7 +53,7 @@ data class CCv2ServiceDto(
             runnable = dto.runnable,
             desiredReplicas = dto.desiredReplicas,
             availableReplicas = dto.availableReplicas,
-            link = "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${subscription.id!!}/applications/commerce-cloud/environments/${environment.code}/services/${dto.code}/replicas",
+            link = "https://${CCv2Constants.DOMAIN}/subscription/${subscription.id!!}/applications/commerce-cloud/environments/${environment.code}/services/${dto.code}/replicas",
             replicas = dto.replicas
                 ?.map { CCv2ServiceReplicaDto.map(it) }
                 ?: emptyList()

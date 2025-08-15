@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ import com.intellij.find.FindSettings;
 import com.intellij.ide.projectView.impl.ModuleGroup;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.openapi.application.ApplicationManager;
@@ -125,7 +126,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
         );
         final FilePatternPackageSet impexFilePatternPackageSet = new FilePatternPackageSet(
             customGroupName + '*',
-            "*//*" + HYBRIS_IMPEX_XML_FILE_ENDING
+            "*//*" + ImpExConstants.HYBRIS_IMPEX_XML_FILE_ENDING
         );
         return UnionPackageSet.create(
             UnionPackageSet.create(tsFilePatternPackageSet, beansFilePatternPackageSet),

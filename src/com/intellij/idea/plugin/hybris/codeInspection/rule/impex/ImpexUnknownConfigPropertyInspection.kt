@@ -22,8 +22,8 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroValue
@@ -43,8 +43,8 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
     private val cachedProperties = HashMap<String, Boolean>()
 
     override fun visitMacroUsageDec(usage: ImpexMacroUsageDec) {
-        if (!usage.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return
-        val propertyName = usage.text.substring(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
+        if (!usage.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return
+        val propertyName = usage.text.substring(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
 
         if (propertyName.isNotEmpty()) {
             val isDeclarationExists = cachedProperties[propertyName]
@@ -76,7 +76,7 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
         val macroValue = PsiTreeUtil.findChildOfType(declaration, ImpexMacroValue::class.java)
         if (macroValue != null) {
             val prevLeaf = PsiTreeUtil.prevLeaf(macroValue)
-            if (prevLeaf != null && prevLeaf.text.contains(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
+            if (prevLeaf != null && prevLeaf.text.contains(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
                 val key = macroValue.text
                 val properties = PropertiesImplUtil.findPropertiesByKey(declaration.project, key)
                 if (properties.isEmpty()) {

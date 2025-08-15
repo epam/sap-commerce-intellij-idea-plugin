@@ -20,7 +20,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
@@ -102,19 +102,19 @@ fun getHeaderTypeName(element: ImpexSubTypeName): ImpexHeaderTypeName? = element
     ?.headerTypeName
 
 fun getConfigPropertyKey(element: ImpexMacroUsageDec): String? {
-    if (!element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return null
+    if (!element.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) return null
 
     val project = element.project
-    val propertyKey = element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+    val propertyKey = element.text.replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
 
     if (propertyKey.isBlank()) return null
 
     return if (DumbService.isDumb(project)) {
-        element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+        element.text.replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
     } else PropertyService.getInstance(project)
         .findMacroProperty(propertyKey)
         ?.key
-        ?: element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+        ?: element.text.replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
 }
 
 fun getInlineTypeName(element: ImpexParameter): String? = element.text

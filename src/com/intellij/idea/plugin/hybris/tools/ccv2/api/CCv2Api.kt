@@ -25,8 +25,8 @@ import com.intellij.idea.plugin.hybris.ccv2.model.CreateBuildRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.CreateDeploymentRequestDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentDetailDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.openapi.components.Service
@@ -199,7 +199,7 @@ class CCv2Api {
                 val code = deployment.code
                 val environmentCode = deployment.environmentCode
                 val link = if (environmentCode != null && code != null)
-                    "https://${HybrisConstants.CCV2_DOMAIN}/subscription/$subscriptionCode/applications/commerce-cloud/environments/$environmentCode/deployments/$code"
+                    "https://${CCv2Constants.DOMAIN}/subscription/$subscriptionCode/applications/commerce-cloud/environments/$environmentCode/deployments/$code"
                 else null
 
                 ccv2DeploymentDto(code, deployment, environmentCode, link)
@@ -221,7 +221,7 @@ class CCv2Api {
                 val code = deployment.code
                 val environmentCode = deployment.environmentCode
                 val link = if (environmentCode != null && code != null)
-                    "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${subscription.id}/applications/commerce-cloud/environments/$environmentCode/deployments/$code"
+                    "https://${CCv2Constants.DOMAIN}/subscription/${subscription.id}/applications/commerce-cloud/environments/$environmentCode/deployments/$code"
                 else null
 
                 ccv2DeploymentDto(code, deployment, environmentCode, link)

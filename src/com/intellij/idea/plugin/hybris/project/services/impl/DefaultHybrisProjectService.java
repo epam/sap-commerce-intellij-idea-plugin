@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisUtil;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
 
@@ -41,11 +42,11 @@ public class DefaultHybrisProjectService implements HybrisProjectService {
     public boolean isCCv2Module(@NotNull final File file) {
         return
             (
-                file.getAbsolutePath().contains(HybrisConstants.CCV2_CORE_CUSTOMIZE_NAME)
-                || file.getAbsolutePath().contains(HybrisConstants.CCV2_DATAHUB_NAME)
-                || file.getAbsolutePath().contains(HybrisConstants.CCV2_JS_STOREFRONT_NAME)
+                file.getAbsolutePath().contains(CCv2Constants.CORE_CUSTOMIZE_NAME)
+                || file.getAbsolutePath().contains(CCv2Constants.DATAHUB_NAME)
+                || file.getAbsolutePath().contains(CCv2Constants.JS_STOREFRONT_NAME)
             )
-            && new File(file, HybrisConstants.CCV2_MANIFEST_NAME).isFile();
+            && new File(file, CCv2Constants.MANIFEST_NAME).isFile();
     }
 
     @Override

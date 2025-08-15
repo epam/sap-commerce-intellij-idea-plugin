@@ -19,15 +19,12 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
-import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.state.ProjectSettingsState
 import com.intellij.openapi.components.*
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.util.text.VersionComparatorUtil
 
@@ -185,11 +182,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(useFakeOutputPathForCustomExtensions = value) }
         }
-    var activeCCv2Subscription
-        get() = state.activeCCv2Subscription
-        set(value) {
-            updateState { it.copy(activeCCv2Subscription = value) }
-        }
 
     // TODO: improve this logic for initially non-hybris projects
     fun isHybrisProject() = hybrisProject
@@ -202,9 +194,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
 
         return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
     }
-
-    fun getModuleSettings(module: Module): ExtensionDescriptor = YFacet.getState(module)
-        ?: ExtensionDescriptor(module.yExtensionName())
 
     fun getAvailableExtensions() : Map<String, ExtensionDescriptor>{
         if (_availableExtensions.isEmpty()) {

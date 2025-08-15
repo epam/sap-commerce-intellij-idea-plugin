@@ -16,9 +16,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
 
 rootProject.name = "SAP Commerce Developers Toolset"
 
 plugins {
+    id("org.jetbrains.intellij.platform.settings") version "2.7.1"
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
+dependencyResolutionManagement {
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+
+    repositories {
+        mavenCentral()
+
+        intellijPlatform {
+            defaultRepositories()
+        }
+    }
+}
+
+include(
+    "modules/shared",
+    "modules/extensioninfo",
+    "modules/localextensions",
+    "modules/project",
+    "modules/core",
+    "modules/terminal",
+)
+
+rootProject.children.forEach {
+    it.name = it.name
+        .replaceFirst("modules/", "")
+//        .replace("/", ":")
 }

@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.impex.highlighting
 
 import com.intellij.codeHighlighting.RainbowHighlighter
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.options.colors.AttributesDescriptor
@@ -34,7 +34,7 @@ class ImpexColorSettingsPage : ColorSettingsPage {
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey> = customTags
     override fun getAttributeDescriptors() = descriptors
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
-    override fun getDisplayName() = HybrisConstants.IMPEX
+    override fun getDisplayName() = ImpExConstants.IMPEX
 
     override fun getDemoText(): String {
         return """# Comment

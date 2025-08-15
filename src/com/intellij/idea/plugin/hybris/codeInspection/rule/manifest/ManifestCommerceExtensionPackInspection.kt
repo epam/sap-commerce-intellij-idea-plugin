@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,9 +21,9 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.manifest
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.json.psi.JsonElementVisitor
 import com.intellij.json.psi.JsonProperty
 import com.intellij.json.psi.JsonPsiUtil
@@ -46,7 +46,7 @@ class ManifestCommerceExtensionPackInspection : LocalInspectionTool() {
 
         override fun visitStringLiteral(o: JsonStringLiteral) {
             val parent = o.parent
-            if (isApplicable(parent, o) && !HybrisConstants.CCV2_COMMERCE_EXTENSION_PACKS.contains(o.value)) {
+            if (isApplicable(parent, o) && !CCv2Constants.COMMERCE_EXTENSION_PACKS.contains(o.value)) {
                 holder.registerProblem(
                         o,
                         HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownExtensionPackInspection.message", o.value)

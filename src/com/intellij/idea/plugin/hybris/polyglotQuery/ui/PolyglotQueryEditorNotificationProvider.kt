@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.ui
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryConstants
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.settings.state.PolyglotQuerySettingsState
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
@@ -101,7 +102,7 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
     class Collector(private val pgqSettings: PolyglotQuerySettingsState) : PsiElementProcessor.CollectElements<LeafPsiElement>() {
 
         override fun execute(element: LeafPsiElement): Boolean {
-            if (HybrisConstants.PGQ_RESERVED_KEYWORDS.contains(element.elementType)) {
+            if (PolyglotQueryConstants.RESERVED_KEYWORDS.contains(element.elementType)) {
                 val text = element.text.trim()
 
                 val mismatch = when (pgqSettings.defaultCaseForReservedWords) {

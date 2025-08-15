@@ -17,8 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.impex.lang.annotation
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpExSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
@@ -201,24 +201,24 @@ class ImpexAnnotator : AbstractAnnotator(ImpExSyntaxHighlighter.getInstance()) {
             }
 
             ImpexTypes.MACRO_USAGE -> {
-                if (element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
+                if (element.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)) {
                     val macroUsageDec = element.parent as? ImpexMacroUsageDec ?: return
 
                     val propertyKey = macroUsageDec.configPropertyKey
-                        ?: element.text.replace(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
+                        ?: element.text.replace(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX, "")
 
                     highlight(
                         ImpexHighlighterColors.MACRO_CONFIG_KEY,
                         holder,
                         element,
-                        range = TextRange.from(element.textRange.startOffset + HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length, propertyKey.length)
+                        range = TextRange.from(element.textRange.startOffset + ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length, propertyKey.length)
                     )
 
                     highlight(
                         ImpexHighlighterColors.MACRO_CONFIG_PREFIX,
                         holder,
                         element,
-                        range = TextRange.from(element.textRange.startOffset, HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
+                        range = TextRange.from(element.textRange.startOffset, ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length)
                     )
                 } else if (element.text.startsWith("$")) {
                     val textLength = element.parent.reference

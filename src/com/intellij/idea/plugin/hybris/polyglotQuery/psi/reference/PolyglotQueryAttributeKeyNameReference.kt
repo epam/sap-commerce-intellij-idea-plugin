@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.psi.reference
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryAttributeKeyName
@@ -61,8 +62,8 @@ class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyNam
     private fun getPostfixes(type: String) = if (element.parent.text.contains("[")) {
         emptyArray()
     } else {
-        val text = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
-        element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
+        val text = element.text.replace(FlexibleSearchConstants.DUMMY_IDENTIFIER, "")
+        element.text.substringAfter(FlexibleSearchConstants.DUMMY_IDENTIFIER, "")
             .takeIf { it.isBlank() && text.isNotBlank() }
             ?.let {
                 resolve(element.project, type, text)

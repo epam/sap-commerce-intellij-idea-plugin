@@ -56,5 +56,4 @@ data class ProjectSettingsState(
     @JvmField val excludedFromScanning: Set<String> = emptySet(),
     @JvmField val remoteConnectionSettingsList: List<RemoteConnectionSettingsState> = emptyList(),
     @JvmField @OptionTag val useFakeOutputPathForCustomExtensions: Boolean = false,
-    @JvmField @OptionTag val activeCCv2Subscription: String? = null
 )

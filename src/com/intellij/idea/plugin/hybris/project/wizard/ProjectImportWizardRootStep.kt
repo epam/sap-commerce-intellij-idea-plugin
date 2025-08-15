@@ -341,7 +341,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isScanThroughExternalModule = scanThroughExternalModuleCheckbox.isSelected
             this.isUseFakeOutputPathForCustomExtensions = useFakeOutputPathForCustomExtensionsCheckbox.isSelected
 
-            this.setExcludedFromScanning(excludedFromScanningList.data)
+            this.excludedFromScanning = excludedFromScanningList.data.toMutableSet()
 
             this.externalExtensionsDirectory = overrideCustomDirChooser.takeIf { it.isEnabled }
                 ?.let { FileUtils.toFile(it.text) }
@@ -519,7 +519,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 )
             }
 
-            this.setExcludedFromScanning(projectSettings.excludedFromScanning)
+            this.excludedFromScanning = projectSettings.excludedFromScanning.toMutableSet()
             val rootProjectDirectory = FileUtils.toFile(builder.fileToImport)!!
             context.setRootProjectDirectory(rootProjectDirectory)
 

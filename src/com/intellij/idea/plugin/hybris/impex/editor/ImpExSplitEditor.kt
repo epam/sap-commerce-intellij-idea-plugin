@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.editor
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
@@ -54,7 +54,7 @@ fun AnActionEvent.impexSplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR
     ?.asSafely<ImpExSplitEditor>()
 
 fun AnActionEvent.impexExecutionContextSettings(fallback: () -> ImpExExecutionContext.Settings) = this.getData(CommonDataKeys.EDITOR)
-    ?.getUserData(HybrisConstants.KEY_IMPEX_EXECUTION_SETTINGS)
+    ?.getUserData(ImpExConstants.KEY_EXECUTION_SETTINGS)
     ?: fallback()
 
 class ImpExSplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {

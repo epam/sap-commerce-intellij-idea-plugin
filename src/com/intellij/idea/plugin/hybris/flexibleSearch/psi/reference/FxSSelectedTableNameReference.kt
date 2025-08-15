@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
@@ -54,7 +54,7 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSSelectedTableNameReference> { ref ->
             val lookingForName = ref.element.text
-                .replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
+                .replace(FlexibleSearchConstants.DUMMY_IDENTIFIER, "")
                 .trim()
 
             val result: Array<ResolveResult> = ref.element.tableAliases

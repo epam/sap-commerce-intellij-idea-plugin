@@ -29,19 +29,10 @@ fun environment(key: String) = providers.environmentVariable(key)
 plugins {
     id("java") // Java support
     id("idea") // IDEA support
+    id("org.jetbrains.intellij.platform") // IDEA support
     alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
     alias(libs.plugins.changelog) // Gradle IntelliJ Plugin
     alias(libs.plugins.openAPIGenerator) // openapi Generator
-}
-
-repositories {
-    mavenCentral()
-
-    intellijPlatform {
-        defaultRepositories()
-        jetbrainsRuntime()
-    }
 }
 
 java {
@@ -52,10 +43,7 @@ java {
 }
 
 kotlin {
-    jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-        vendor = JvmVendorSpec.JETBRAINS
-    }
+    jvmToolchain(21)
 }
 
 sourceSets {
@@ -314,6 +302,13 @@ dependencies {
         }
 
         pluginVerifier()
+
+        pluginComposedModule(implementation(project(":shared")))
+        pluginComposedModule(implementation(project(":core")))
+        pluginComposedModule(implementation(project(":localextensions")))
+        pluginComposedModule(implementation(project(":extensioninfo")))
+        pluginComposedModule(implementation(project(":project")))
+        pluginComposedModule(implementation(project(":terminal")))
 
         bundledModules(
             "intellij.grid.impl"

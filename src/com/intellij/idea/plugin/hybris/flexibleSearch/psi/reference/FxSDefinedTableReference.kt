@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
@@ -51,8 +51,8 @@ class FxSDefinedTableReference(owner: FlexibleSearchDefinedTableName) : PsiRefer
         .let { PsiUtils.getValidResults(it) }
 
     override fun getVariants(): Array<out Any> {
-        val aliasText = element.text.replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
-        val suffixes = element.text.substringAfter(HybrisConstants.FXS_DUMMY_IDENTIFIER)
+        val aliasText = element.text.replace(FlexibleSearchConstants.DUMMY_IDENTIFIER, "")
+        val suffixes = element.text.substringAfter(FlexibleSearchConstants.DUMMY_IDENTIFIER)
             .takeIf { it.isBlank() && aliasText.isNotBlank() }
             ?.let {
                 arrayOf(

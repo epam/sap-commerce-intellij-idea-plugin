@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.psi.util;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.facet.YFacetConstants;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
 import com.intellij.openapi.module.Module;
@@ -60,8 +61,7 @@ public final class PsiUtils {
         if (null == module) {
             return false;
         }
-        final var settingsComponent = ProjectSettings.getInstance(project);
-        final var descriptorType = settingsComponent.getModuleSettings(module).getType();
+        final var descriptorType = YFacetConstants.INSTANCE.getModuleSettings(module).getType();
 
         if (descriptorType == ModuleDescriptorType.NONE) {
             if (shouldCheckFilesWithoutHybrisSettings(project)) {

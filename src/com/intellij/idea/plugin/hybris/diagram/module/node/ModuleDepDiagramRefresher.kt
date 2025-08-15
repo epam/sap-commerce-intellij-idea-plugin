@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.diagram.module.node
 
 import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramVisibilityManager
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphFactory
+import com.intellij.idea.plugin.hybris.facet.YFacetConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.module.Module
@@ -51,24 +52,24 @@ object ModuleDepDiagramRefresher {
         if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules
                 .filter {
-                    val descriptor = projectSettings.getModuleSettings(it).type
+                    val descriptor = YFacetConstants.getModuleSettings(it).type
                     isCustomExtension(descriptor) || isOotbOrPlatformExtension(descriptor)
                 }
         }
         val customExtModules = allModules
-            .filter { isCustomExtension(projectSettings.getModuleSettings(it).type) }
+            .filter { isCustomExtension(YFacetConstants.getModuleSettings(it).type) }
 
         if (ModuleDepDiagramVisibilityManager.ONLY_CUSTOM_MODULES == visibilityLevel) return customExtModules
 
         val dependencies = customExtModules
             .flatMap { ModuleRootManager.getInstance(it).dependencies.asIterable() }
-            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).type) }
+            .filter { isOotbOrPlatformExtension(YFacetConstants.getModuleSettings(it).type) }
         val backwardDependencies = allModules
             .filter {
                 ModuleRootManager.getInstance(it).dependencies
-                    .any { module: Module -> isCustomExtension(projectSettings.getModuleSettings(module).type) }
+                    .any { module: Module -> isCustomExtension(YFacetConstants.getModuleSettings(module).type) }
             }
-            .filter { isOotbOrPlatformExtension(projectSettings.getModuleSettings(it).type) }
+            .filter { isOotbOrPlatformExtension(YFacetConstants.getModuleSettings(it).type) }
         return customExtModules + dependencies + backwardDependencies
     }
 

@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdUsage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
@@ -207,7 +208,7 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
     private fun collectTSReferencesForMetaAtomic(attributeType: String): List<PsiReference>? {
         if (HybrisConstants.TS_TYPE_JAVA_CLASS != attributeType) return null
 
-        return if (text.startsWith(HybrisConstants.IMPEX_PREFIX_MACRO)) null
+        return if (text.startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)) null
         else listOf(ImpExJavaClassReference(this))
     }
 
@@ -304,4 +305,4 @@ abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiL
 }
 
 private fun TextRange.isMacro(text: String): Boolean = substring(text)
-    .startsWith(HybrisConstants.IMPEX_PREFIX_MACRO)
+    .startsWith(ImpExConstants.IMPEX_PREFIX_MACRO)

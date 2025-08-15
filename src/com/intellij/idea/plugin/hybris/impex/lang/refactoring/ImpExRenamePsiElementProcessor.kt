@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.refactoring
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -37,7 +37,7 @@ class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
     override fun canProcessElement(element: PsiElement) = element is ImpexMacroNameDec
         || element is ImpexDocumentIdDec
         || element is ImpexDocumentIdUsage
-        || (element is ImpexMacroUsageDec && !element.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX))
+        || (element is ImpexMacroUsageDec && !element.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX))
 
     override fun findReferences(element: PsiElement, searchScope: SearchScope, searchInCommentsAndStrings: Boolean): Collection<PsiReference> {
         return findElements(element, element.text)

@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
@@ -54,7 +54,7 @@ fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FI
     ?.asSafely<FlexibleSearchSplitEditor>()
 
 fun AnActionEvent.flexibleSearchExecutionContextSettings(fallback: () -> FlexibleSearchExecutionContext.Settings) = this.getData(CommonDataKeys.EDITOR)
-    ?.getUserData(HybrisConstants.KEY_FXS_EXECUTION_SETTINGS)
+    ?.getUserData(FlexibleSearchConstants.KEY_EXECUTION_SETTINGS)
     ?: fallback()
 
 class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {

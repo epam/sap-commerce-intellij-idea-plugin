@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -30,8 +30,8 @@ import com.jetbrains.jsonSchema.extension.SchemaType
 
 @Service(Service.Level.PROJECT)
 class ManifestJavascriptStorefrontJsonSchemaFileProvider(val project: Project) : JsonSchemaFileProvider {
-    override fun isAvailable(file: VirtualFile) = HybrisConstants.CCV2_MANIFEST_NAME == file.name
-            && HybrisConstants.CCV2_JS_STOREFRONT_NAME == file.parent?.name
+    override fun isAvailable(file: VirtualFile) = CCv2Constants.MANIFEST_NAME == file.name
+            && CCv2Constants.JS_STOREFRONT_NAME == file.parent?.name
             && project.isHybrisProject
 
     override fun getName() = "SAP Javascript Storefront Manifest"

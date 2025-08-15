@@ -20,6 +20,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
@@ -72,7 +73,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, FxSColumnNameReference> { ref ->
             val lookingForName = ref.element.text
-                .replace(HybrisConstants.FXS_DUMMY_IDENTIFIER, "")
+                .replace(FlexibleSearchConstants.DUMMY_IDENTIFIER, "")
                 .trim()
 
             val result: Array<ResolveResult> = PsiTreeUtil.getPrevSiblingOfType(ref.element, FlexibleSearchSelectedTableName::class.java)

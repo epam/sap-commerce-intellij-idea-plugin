@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchColumnName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchSelectedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.COLUMN_ALIAS_NAME
@@ -35,7 +35,7 @@ class FlexibleSearchReferenceSearcher : QueryExecutorBase<PsiReference, Referenc
     override fun processQuery(queryParameters: ReferencesSearch.SearchParameters, consumer: Processor<in PsiReference>) {
         val elementToSearch = queryParameters.elementToSearch
         if (!elementToSearch.isValid) return
-        if (!HybrisConstants.FXS_SUPPORTED_ELEMENT_TYPES.contains(elementToSearch.elementType)) return
+        if (!FlexibleSearchConstants.SUPPORTED_ELEMENT_TYPES.contains(elementToSearch.elementType)) return
 
         when (elementToSearch.elementType) {
             TABLE_ALIAS_NAME -> processTableAlias(elementToSearch, consumer)

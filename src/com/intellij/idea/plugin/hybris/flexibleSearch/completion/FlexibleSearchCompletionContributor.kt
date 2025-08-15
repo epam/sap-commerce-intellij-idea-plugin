@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.idea.plugin.hybris.codeInsight.patterns.CaseInsensitiveContainsPatternCondition
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSHybrisColumnCompletionProvider
@@ -52,7 +52,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
     override fun beforeCompletion(context: CompletionInitializationContext) {
         if (context.file !is FlexibleSearchFile) return
 
-        context.dummyIdentifier = HybrisConstants.FXS_DUMMY_IDENTIFIER
+        context.dummyIdentifier = FlexibleSearchConstants.DUMMY_IDENTIFIER
     }
 
 //    override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
@@ -81,7 +81,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             fxsBasePattern
-                .withText(StandardPatterns.string().startsWith(HybrisConstants.FXS_DUMMY_IDENTIFIER))
+                .withText(StandardPatterns.string().startsWith(FlexibleSearchConstants.DUMMY_IDENTIFIER))
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
                     psiElement(RBRACKET)
@@ -99,7 +99,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             fxsBasePattern
-                .withText(HybrisConstants.FXS_DUMMY_IDENTIFIER)
+                .withText(FlexibleSearchConstants.DUMMY_IDENTIFIER)
                 .withParent(
                     psiElement(TABLE_ALIAS_NAME)
                         .withParent(
@@ -118,7 +118,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             fxsBasePattern
                 .withElementType(IDENTIFIER)
-                .withText(HybrisConstants.FXS_DUMMY_IDENTIFIER)
+                .withText(FlexibleSearchConstants.DUMMY_IDENTIFIER)
                 .withParent(psiElement(COLUMN_NAME)),
             FxSHybrisColumnCompletionProvider()
         )
@@ -127,7 +127,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             fxsBasePattern
-                .withText(HybrisConstants.FXS_DUMMY_IDENTIFIER)
+                .withText(FlexibleSearchConstants.DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
                     psiElement(FROM)
@@ -144,7 +144,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             fxsBasePattern
-                .withText(HybrisConstants.FXS_DUMMY_IDENTIFIER)
+                .withText(FlexibleSearchConstants.DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
                     psiElement(LPAREN)
@@ -169,7 +169,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             fxsBasePattern
-                .withText(HybrisConstants.FXS_DUMMY_IDENTIFIER)
+                .withText(FlexibleSearchConstants.DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),
                     psiElement(IDENTIFIER)
@@ -183,7 +183,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             fxsBasePattern
-                .withText(HybrisConstants.FXS_DUMMY_IDENTIFIER)
+                .withText(FlexibleSearchConstants.DUMMY_IDENTIFIER)
                 .afterLeafSkipping(
                     PlatformPatterns.or(
                         psiElement(TokenType.WHITE_SPACE),
@@ -199,7 +199,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             fxsBasePattern
-                .withText(HybrisConstants.FXS_DUMMY_IDENTIFIER)
+                .withText(FlexibleSearchConstants.DUMMY_IDENTIFIER)
                 .withSuperParent(2, psiElement(WHERE_CLAUSE))
                 .withParent(
                     psiElement(TokenType.ERROR_ELEMENT)
@@ -224,7 +224,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             fxsBasePattern
-                .withText(HybrisConstants.FXS_DUMMY_IDENTIFIER)
+                .withText(FlexibleSearchConstants.DUMMY_IDENTIFIER)
                 .withSuperParent(2, psiElement(WHERE_CLAUSE))
                 .afterLeafSkipping(
                     psiElement(TokenType.WHITE_SPACE),

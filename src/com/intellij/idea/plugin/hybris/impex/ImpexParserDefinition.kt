@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
  */
 package com.intellij.idea.plugin.hybris.impex
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.lang.ASTNode
@@ -36,7 +35,7 @@ class ImpexParserDefinition : ParserDefinition {
     override fun createElement(node: ASTNode): PsiElement = ImpexTypes.Factory.createElement(node)
     override fun createFile(viewProvider: FileViewProvider) = ImpexFile(viewProvider)
 
-    override fun getFileNodeType() = HybrisConstants.IMPEX_FILE_NODE_TYPE
+    override fun getFileNodeType() = ImpExConstants.FILE_NODE_TYPE
     override fun getWhitespaceTokens(): TokenSet = TokenSet.WHITE_SPACE
     override fun getCommentTokens() = TokenSet.create(ImpexTypes.LINE_COMMENT)
     override fun getStringLiteralElements() = TokenSet.create(

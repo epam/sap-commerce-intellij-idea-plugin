@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentHealthDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import javax.swing.Icon
 
 data class CCv2EnvironmentDto(
@@ -68,7 +68,7 @@ data class CCv2EnvironmentDto(
             val code = environment.code
 
             val link = if (v1Environment != null && status == CCv2EnvironmentStatus.AVAILABLE)
-                "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${environment.subscriptionCode}/applications/commerce-cloud/environments/$code"
+                "https://${CCv2Constants.DOMAIN}/subscription/${environment.subscriptionCode}/applications/commerce-cloud/environments/$code"
             else null
 
             val mediaStorages = (v1Environment

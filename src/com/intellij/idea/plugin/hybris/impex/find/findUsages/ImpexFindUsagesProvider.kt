@@ -18,7 +18,7 @@
  */
 package com.intellij.idea.plugin.hybris.impex.find.findUsages
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexLexerAdapter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
@@ -46,7 +46,7 @@ class ImpexFindUsagesProvider : FindUsagesProvider {
     )
 
     override fun canFindUsagesFor(psiElement: PsiElement) = psiElement is PsiNamedElement
-        && !psiElement.text.startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
+        && !psiElement.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
 
     override fun getHelpId(psiElement: PsiElement) = null
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String = element.text

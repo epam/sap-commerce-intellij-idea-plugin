@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,14 +19,13 @@ package com.intellij.idea.plugin.hybris.facet
 
 import com.intellij.facet.Facet
 import com.intellij.facet.FacetType
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.module.JavaModuleType
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
 import javax.swing.Icon
 
-class YFacetType : FacetType<YFacet, YFacetConfiguration>(HybrisConstants.Y_FACET_TYPE_ID, FACET_ID, FACET_NAME) {
+class YFacetType : FacetType<YFacet, YFacetConfiguration>(YFacetConstants.Y_FACET_TYPE_ID, FACET_ID, FACET_NAME) {
 
     override fun getIcon(): Icon = HybrisIcons.Y.FACET
     override fun isSuitableModuleType(type: ModuleType<*>?) = type is JavaModuleType

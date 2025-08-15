@@ -18,8 +18,8 @@
 package com.intellij.idea.plugin.hybris.project.utils
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.facet.YFacetConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
@@ -27,9 +27,8 @@ import com.intellij.openapi.vfs.VirtualFile
 
 object HybrisRootUtil {
 	fun findPlatformRootDirectory(project: Project): VirtualFile? {
-		val settingsComponent = ProjectSettings.getInstance(project)
 		return ModuleManager.getInstance(project).modules
-				.firstOrNull { settingsComponent.getModuleSettings(it).type == ModuleDescriptorType.PLATFORM }
+				.firstOrNull { YFacetConstants.getModuleSettings(it).type == ModuleDescriptorType.PLATFORM }
 				?.let { ModuleRootManager.getInstance(it) }
 				?.contentRoots
 				?.firstOrNull { it.findChild(HybrisConstants.EXTENSIONS_XML) != null }

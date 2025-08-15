@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.folding;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
@@ -91,16 +91,16 @@ public class ImpexMacroFoldingBuilder implements FoldingBuilder {
 
     @Nullable
     private FoldingDescriptor buildFoldRegion(final ImpexMacroUsageDec macroUsage) {
-        final var configPropertyMacro = macroUsage.getText().startsWith(HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX);
+        final var configPropertyMacro = macroUsage.getText().startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX);
 
-        if (configPropertyMacro && macroUsage.getText().length() == HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length()) return null;
+        if (configPropertyMacro && macroUsage.getText().length() == ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length()) return null;
 
         final var reference = macroUsage.getReference();
         if (reference == null) return null;
 
         final var start = macroUsage.getTextRange().getStartOffset();
         final var end = configPropertyMacro
-            ? start + reference.getCanonicalText().length() + HybrisConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length()
+            ? start + reference.getCanonicalText().length() + ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length()
             : start + reference.getCanonicalText().length();
         final var range = new TextRange(start, end);
 

@@ -30,6 +30,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
@@ -184,7 +185,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
 
         // hide `core-customize/hybris` node
         if (HybrisConstants.HYBRIS_DIRECTORY == vf.name
-            && HybrisConstants.CCV2_CORE_CUSTOMIZE_NAME == parent.name
+            && CCv2Constants.CORE_CUSTOMIZE_NAME == parent.name
         ) return false
 
         val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vf)
@@ -199,7 +200,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
             ?.let {
                 // show CCv2 Angular modules only under js-storefront
                 if (it.type == ModuleDescriptorType.ANGULAR
-                    && module.name.contains(HybrisConstants.CCV2_JS_STOREFRONT_NAME)
+                    && module.name.contains(CCv2Constants.JS_STOREFRONT_NAME)
                 ) parent !is YProjectViewModuleGroupNode
                 else if (it.subModuleType == null) true
                 else parent !is ProjectViewModuleGroupNode

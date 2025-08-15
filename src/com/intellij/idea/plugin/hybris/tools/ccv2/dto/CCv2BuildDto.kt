@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv2.model.BuildDetailDTO
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.util.asSafely
@@ -72,7 +72,7 @@ data class CCv2BuildDto(
                 ?.asSafely<String>()
                 ?: "N/A",
             link = if (build.subscriptionCode != null && build.code != null)
-                "https://${HybrisConstants.CCV2_DOMAIN}/subscription/${build.subscriptionCode}/applications/commerce-cloud/builds/${build.code}"
+                "https://${CCv2Constants.DOMAIN}/subscription/${build.subscriptionCode}/applications/commerce-cloud/builds/${build.code}"
             else null
         )
 

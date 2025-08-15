@@ -19,7 +19,7 @@ package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.idea.plugin.hybris.actions.ExecutionContextSettingsAction
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -52,7 +52,7 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         .modifiable()
 
     override fun applySettings(editor: Editor, settings: ImpExExecutionContext.ModifiableSettings) {
-        editor.putUserData(HybrisConstants.KEY_IMPEX_EXECUTION_SETTINGS, settings.immutable())
+        editor.putUserData(ImpExConstants.KEY_EXECUTION_SETTINGS, settings.immutable())
     }
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: ImpExExecutionContext.ModifiableSettings) = panel {

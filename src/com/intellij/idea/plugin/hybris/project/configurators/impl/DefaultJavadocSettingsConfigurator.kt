@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -31,7 +31,7 @@ class DefaultJavadocSettingsConfigurator : JavadocSettingsConfigurator {
         val javadocRefList = mutableListOf<String>()
         val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)
 
-        moduleDescriptor.rootProjectDescriptor.getJavadocUrl()
+        moduleDescriptor.rootProjectDescriptor.javadocUrl
             ?.takeUnless { moduleDescriptor is YCustomRegularModuleDescriptor }
             ?.takeUnless { moduleDescriptor is CCv2ModuleDescriptor }
             ?.takeUnless { moduleDescriptor is ConfigModuleDescriptor }

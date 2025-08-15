@@ -35,6 +35,7 @@ import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -461,7 +462,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public void setExcludedFromScanning(final Collection<String> excludedFromScanning) {
+    public void setExcludedFromScanning(final Set<String> excludedFromScanning) {
         this.excludedFromScanning.clear();
         this.excludedFromScanning.addAll(excludedFromScanning);
     }
@@ -720,7 +721,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 LOG.info("Detected CCv2 module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(CCV2).add(rootProjectDirectory);
                 final var name = rootProjectDirectory.getName();
-                if (name.endsWith(HybrisConstants.CCV2_DATAHUB_NAME)) {
+                if (name.endsWith(CCv2Constants.DATAHUB_NAME)) {
                     // faster import: no need to process sub-folders of the CCv2 js-storefront and datahub directories
                     return;
                 }

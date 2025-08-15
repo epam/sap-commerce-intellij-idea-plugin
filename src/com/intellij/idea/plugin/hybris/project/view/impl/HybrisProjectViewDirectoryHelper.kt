@@ -21,7 +21,7 @@ import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.JavaProjectViewDirectoryHelper
 import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper
 import com.intellij.ide.projectView.impl.nodes.PsiFileSystemItemFilter
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.idea.plugin.hybris.util.ifHybrisProject
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
@@ -90,6 +90,6 @@ class HybrisProjectViewDirectoryHelper(project: Project) : ProjectViewDirectoryH
         val contentRoot = fileIndex.getContentRootForFile(file, false)
             ?: return false
 
-        return !contentRoot.name.endsWith(HybrisConstants.CCV2_CORE_CUSTOMIZE_NAME)
+        return !contentRoot.name.endsWith(CCv2Constants.CORE_CUSTOMIZE_NAME)
     }
 }

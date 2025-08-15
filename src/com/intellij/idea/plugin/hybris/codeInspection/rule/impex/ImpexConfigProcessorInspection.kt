@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiComment
@@ -47,12 +48,12 @@ private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder)
     override fun visitMacroDeclaration(declaration: ImpexMacroDeclaration) {
         val macroValue = PsiTreeUtil.findChildOfType(declaration, ImpexMacroUsageDec::class.java) ?: return
 
-        if (!macroValue.text.contains(HybrisConstants.IMPEX_CONFIG_PREFIX)) return
+        if (!macroValue.text.contains(ImpExConstants.IMPEX_CONFIG_PREFIX)) return
 
         var isExist = false
         PsiSearchHelper.getInstance(macroValue.project)
             .processElementsWithWord({ element, _ ->
-                if (element.node.elementType != HybrisConstants.IMPEX_FILE_NODE_TYPE
+                if (element.node.elementType != ImpExConstants.FILE_NODE_TYPE
                     && element.node.elementType != ImpexTypes.LINE_COMMENT) {
                     isExist = true
                 }
@@ -65,7 +66,7 @@ private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder)
         if (!isExist) {
             problemsHolder.registerProblem(
                 macroValue,
-                HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexConfigProcessorInspection.key", HybrisConstants.IMPEX_CONFIG_PREFIX),
+                HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexConfigProcessorInspection.key", ImpExConstants.IMPEX_CONFIG_PREFIX),
                 ProblemHighlightType.ERROR,
                 LocalFix(macroValue)
             )

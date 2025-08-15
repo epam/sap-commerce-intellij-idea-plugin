@@ -19,6 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
@@ -87,7 +88,7 @@ class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : Hyb
             }.immutable()
     )
 
-    override fun title(): String = HybrisConstants.IMPEX
+    override fun title(): String = ImpExConstants.IMPEX
     override fun tip(): String = "ImpEx Console"
 
     companion object {

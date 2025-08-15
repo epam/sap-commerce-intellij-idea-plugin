@@ -19,8 +19,8 @@
 package com.intellij.idea.plugin.hybris.impex.file.actions
 
 import com.intellij.idea.plugin.hybris.actions.OpenInHybrisConsoleService
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.IMPEX_FILE_EXTENSION
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -39,7 +39,7 @@ class ImpExOpenInConsoleAction : DumbAwareAction() {
         val project = e.project ?: return
 
         e.presentation.isEnabledAndVisible = project.isHybrisProject
-            && OpenInHybrisConsoleService.getInstance(project).isRequiredMultipleFileExtension(IMPEX_FILE_EXTENSION)
+            && OpenInHybrisConsoleService.getInstance(project).isRequiredMultipleFileExtension(ImpExConstants.IMPEX_FILE_EXTENSION)
 
         e.presentation.text = "Copy to ImpEx Console"
         e.presentation.description = "Copy ImpEx file to SAP Commerce console"
@@ -50,6 +50,6 @@ class ImpExOpenInConsoleAction : DumbAwareAction() {
         val project = event.project ?: return
 
         OpenInHybrisConsoleService.getInstance(project)
-            .openSelectedFilesInConsole(HybrisImpexConsole::class, IMPEX_FILE_EXTENSION)
+            .openSelectedFilesInConsole(HybrisImpexConsole::class, ImpExConstants.IMPEX_FILE_EXTENSION)
     }
 }

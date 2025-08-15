@@ -24,6 +24,7 @@ import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
+import com.intellij.idea.plugin.hybris.facet.YFacetConstants
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
@@ -53,7 +54,7 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
             .find { it == node.virtualFile }
             ?: return
 
-        val extensionDescriptor = projectSettings.getModuleSettings(module)
+        val extensionDescriptor = YFacetConstants.getModuleSettings(module)
 
         if (HybrisConstants.EXTENSION_NAME_KOTLIN_NATURE == module.yExtensionName() && Plugin.KOTLIN.isActive()) {
             data.setIcon(HybrisIcons.Extension.KOTLIN_NATURE)

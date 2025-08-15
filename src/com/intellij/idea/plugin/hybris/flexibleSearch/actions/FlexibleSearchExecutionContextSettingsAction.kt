@@ -19,6 +19,7 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.actions.ExecutionContextSettingsAction
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
@@ -64,7 +65,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
     }
 
     override fun applySettings(editor: Editor, settings: FlexibleSearchExecutionContext.ModifiableSettings) {
-        editor.putUserData(HybrisConstants.KEY_FXS_EXECUTION_SETTINGS, settings.immutable())
+        editor.putUserData(FlexibleSearchConstants.KEY_EXECUTION_SETTINGS, settings.immutable())
     }
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecutionContext.ModifiableSettings): DialogPanel {
