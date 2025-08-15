@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.terminal
+package sap.commerce.toolset.terminal
 
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.components.PathMacroManager
