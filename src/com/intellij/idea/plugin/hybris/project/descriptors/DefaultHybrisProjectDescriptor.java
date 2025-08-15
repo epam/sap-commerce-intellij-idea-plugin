@@ -990,12 +990,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     }
 
     @Override
-    public @Nullable String getCCv2Token() {
+    public @Nullable String getCcv2Token() {
         return ccv2Token;
     }
 
     @Override
-    public void setCCv2Token(@Nullable final String ccv2Token) {
+    public void setCcv2Token(@Nullable final String ccv2Token) {
         this.ccv2Token = ccv2Token;
     }
 

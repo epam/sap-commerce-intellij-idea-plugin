@@ -113,7 +113,7 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         }
 
     fun getActiveCCv2Subscription() = state.activeCCv2SubscriptionID
-        ?.let { ApplicationSettings.getInstance().getCCv2Subscription(it) }
+        ?.let { CCv2Settings.getInstance().getCCv2Subscription(it) }
 
     fun getSUser(id: String) = state
         .ccv2Settings

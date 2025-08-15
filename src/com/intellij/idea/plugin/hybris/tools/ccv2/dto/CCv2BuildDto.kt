@@ -19,13 +19,11 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv2.model.BuildDetailDTO
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.util.asSafely
 import java.time.OffsetDateTime
-import javax.swing.Icon
 
 data class CCv2BuildDto(
     val code: String,
@@ -76,21 +74,6 @@ data class CCv2BuildDto(
             else null
         )
 
-    }
-}
-
-enum class CCv2BuildStatus(val title: String, val icon: Icon) {
-    UNKNOWN("Unknown", HybrisIcons.CCv2.Build.Status.UNKNOWN),
-    SCHEDULED("Scheduled", HybrisIcons.CCv2.Build.Status.SCHEDULED),
-    BUILDING("Building", HybrisIcons.CCv2.Build.Status.BUILDING),
-    SUCCESS("Success", HybrisIcons.CCv2.Build.Status.SUCCESS),
-    FAIL("Fail", HybrisIcons.CCv2.Build.Status.FAIL),
-    DELETED("Deleted", HybrisIcons.CCv2.Build.Status.DELETED);
-
-    companion object {
-        fun tryValueOf(name: String?) = CCv2BuildStatus.entries
-            .find { it.name == name }
-            ?: UNKNOWN
     }
 }
 

@@ -54,11 +54,8 @@ class HybrisDirectoryIndexExcludePolicy(project: Project) : DirectoryIndexExclud
         return excludedFoldersFromIndex
     }
 
-    private fun getExcludedFromIndexList(): List<String> {
-        return ApplicationSettings.getInstance()
-            .state
-            .excludedFromIndexList
-    }
+    private fun getExcludedFromIndexList(): List<String> = ApplicationSettings.getInstance()
+        .excludedFromIndexList
 
     internal class HybrisExcludeFromIndexFileVisitor(
         excludedFolderPath: String,

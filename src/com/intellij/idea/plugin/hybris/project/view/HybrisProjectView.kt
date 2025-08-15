@@ -244,7 +244,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         children: Collection<AbstractTreeNode<*>>,
         settings: ViewSettings?
     ): Collection<AbstractTreeNode<*>> {
-        val junkFileNames = ApplicationSettings.getInstance().state.junkDirectoryList
+        val junkFileNames = ApplicationSettings.getInstance().junkDirectoryList
             .takeIf { it.isNotEmpty() }
             ?: return children
 

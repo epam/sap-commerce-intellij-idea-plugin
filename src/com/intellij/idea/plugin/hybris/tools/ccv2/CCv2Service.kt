@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2
 import com.intellij.ide.BrowserUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
+import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.api.CCv1Api
 import com.intellij.idea.plugin.hybris.tools.ccv2.api.CCv2Api
@@ -754,7 +754,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
     }
 
     private fun getCCv2Token(subscription: CCv2Subscription): String? {
-        val appSettings = ApplicationSettings.getInstance()
+        val appSettings = CCv2Settings.getInstance()
         val ccv2Token = appSettings.getCCv2Token(subscription.uuid)
             ?: appSettings.getCCv2Token()
 

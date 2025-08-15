@@ -43,7 +43,7 @@ interface HybrisProjectDescriptor {
     val alreadyOpenedModules: MutableSet<ModuleDescriptor?>
     val rootDirectory: File?
     var modulesFilesDirectory: File?
-    var cCv2Token: String?
+    var ccv2Token: String?
     var sourceCodeFile: File?
     var projectIconFile: File?
     var isOpenProjectSettingsAfterImport: Boolean

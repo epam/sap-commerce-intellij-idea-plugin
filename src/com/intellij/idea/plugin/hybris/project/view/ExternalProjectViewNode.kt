@@ -43,7 +43,7 @@ class ExternalProjectViewNode(
     public override fun update(presentation: PresentationData) {
         with(presentation) {
             setIcon(HybrisIcons.Module.EXTERNAL_GROUP)
-            val groupNameExternalModules = ApplicationSettings.getInstance().state.groupNameExternalModules
+            val groupNameExternalModules = ApplicationSettings.getInstance().groupNameExternalModules
                 .takeIf { it.isNotBlank() }
                 ?: message("hybris.project.view.external.module.directory.name")
             addText(groupNameExternalModules, SimpleTextAttributes.REGULAR_ATTRIBUTES)

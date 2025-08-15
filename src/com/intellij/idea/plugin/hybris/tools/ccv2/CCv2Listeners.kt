@@ -30,15 +30,6 @@ sealed interface CCv2Listener<T : CCv2DTO> {
     fun onFetchingBuildDetailsCompleted(data: Map<CCv2Subscription, Collection<T>> = emptyMap()) = Unit
 }
 
-interface CCv2SettingsListener {
-    fun onSubscriptionsChanged(subscriptions: List<CCv2Subscription>) = Unit
-    fun onActiveSubscriptionChanged(subscription: CCv2Subscription?) = Unit
-
-    companion object {
-        val TOPIC = Topic( CCv2SettingsListener::class.java)
-    }
-}
-
 interface CCv2EnvironmentsListener : CCv2Listener<CCv2EnvironmentDto> {
     companion object {
         val TOPIC = Topic(CCv2EnvironmentsListener::class.java)

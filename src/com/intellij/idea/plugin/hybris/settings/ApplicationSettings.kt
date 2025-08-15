@@ -18,18 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.credentialStore.CredentialAttributes
-import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.state.ApplicationSettingsState
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
-import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SubscriptionDto
 import com.intellij.openapi.components.*
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
 import com.intellij.util.application
 import org.apache.commons.lang3.StringUtils
 
@@ -166,65 +157,6 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(excludedFromIndexList = value) }
         }
-    var ccv2ReadTimeout: Int
-        get() = state.ccv2ReadTimeout
-        set(value) {
-            updateState { it.copy(ccv2ReadTimeout = value) }
-        }
-    var ccv2Subscriptions: List<CCv2Subscription>
-        get() = state.ccv2Subscriptions
-        set(value) {
-            updateState { it.copy(ccv2Subscriptions = value) }
-        }
-
-    fun getCCv2Token(subscriptionUUID: String? = null) = PasswordSafe.instance.get(getCredentials(subscriptionUUID))
-        ?.getPasswordAsString()
-        ?.takeIf { it.isNotBlank() }
-
-    fun loadDefaultCCv2Token(callback: (String?) -> Unit) {
-        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Token", false) {
-            override fun run(indicator: ProgressIndicator) {
-                callback.invoke(getCCv2Token())
-            }
-        })
-    }
-
-    fun loadCCv2Token(subscriptionUUID: String?, callback: (String?) -> Unit) {
-        subscriptionUUID ?: return
-        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Retrieving SAP CCv2 Token", false) {
-            override fun run(indicator: ProgressIndicator) {
-                callback.invoke(getCCv2Token(subscriptionUUID))
-            }
-        })
-    }
-
-    fun saveDefaultCCv2Token(token: String?, callback: ((String?) -> Unit)? = null) = saveCCv2Token(null, token, callback)
-
-    fun saveCCv2Token(subscriptionUUID: String?, token: String?, callback: ((String?) -> Unit)? = null) {
-        ProgressManager.getInstance().run(object : Task.Backgroundable(null, "Persisting SAP CCv2 Token", false) {
-            override fun run(indicator: ProgressIndicator) {
-                callback?.invoke(token)
-
-                if (token.isNullOrEmpty()) PasswordSafe.instance.setPassword(getCredentials(subscriptionUUID), null)
-                else PasswordSafe.instance.setPassword(getCredentials(subscriptionUUID), token)
-            }
-        })
-    }
-
-    fun getCCv2Subscription(uuid: String) = ccv2Subscriptions
-        .find { it.uuid == uuid }
-
-    fun setCCv2Subscriptions(subscriptionDtos: List<CCv2SubscriptionDto>) {
-        val subscriptions = subscriptionDtos.map { it.toModel() }
-
-        ccv2Subscriptions = subscriptions
-        application.messageBus
-            .syncPublisher(CCv2SettingsListener.TOPIC)
-            .onSubscriptionsChanged(subscriptions)
-    }
-
-    private fun getCredentials(subscriptionUUID: String?) = if (subscriptionUUID == null) CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
-    else CredentialAttributes(subscriptionUUID, CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
 
     companion object {
         @JvmStatic

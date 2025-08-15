@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilde
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
+import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.diagnostic.Logger
@@ -311,9 +312,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         preferredSize = Dimension(preferredSize.width, JBUIScale.scale(600))
 
-        val appSettings = ApplicationSettings.getInstance()
-
-        appSettings.loadDefaultCCv2Token {
+        CCv2Settings.getInstance().loadDefaultCCv2Token {
             ccv2TokenTextField.text = it
         }
 
@@ -363,7 +362,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 .takeIf { it.isEnabled }
                 ?.let { this.modulesFilesDirectory = FileUtils.toFile(storeModuleFilesInChooser.text) }
 
-            this.cCv2Token = String(ccv2TokenTextField.password)
+            this.ccv2Token = String(ccv2TokenTextField.password)
 
             logger.info("importing a project with the following settings: $this")
         }
@@ -373,7 +372,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
     }
 
     override fun updateStep() {
-        val appSettings = ApplicationSettings.getInstance().state
+        val appSettings = ApplicationSettings.getInstance()
         storeModuleFilesInChooser.text = File(
             builder.fileToImport, HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
         ).absolutePath
@@ -498,9 +497,9 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isUseFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions
 
             val appSettings = ApplicationSettings.getInstance()
-            val appSettingsState = appSettings.state
-            this.isIgnoreNonExistingSourceDirectories = appSettingsState.ignoreNonExistingSourceDirectories
-            this.isWithStandardProvidedSources = appSettingsState.withStandardProvidedSources
+            val ccv2Settings = CCv2Settings.getInstance()
+            this.isIgnoreNonExistingSourceDirectories = appSettings.ignoreNonExistingSourceDirectories
+            this.isWithStandardProvidedSources = appSettings.withStandardProvidedSources
 
             this.modulesFilesDirectory = projectSettings.ideModulesFilesDirectory
                 ?.let { File(it) }
@@ -509,7 +508,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
                 )
 
-            this.cCv2Token = appSettings.getCCv2Token()
+            this.ccv2Token = ccv2Settings.getCCv2Token()
 
             val hybrisDirectory = projectSettings.hybrisDirectory
             if (hybrisDirectory != null) {

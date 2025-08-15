@@ -20,9 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentHealthDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
-import javax.swing.Icon
 
 data class CCv2EnvironmentDto(
     val code: String,
@@ -93,30 +91,3 @@ data class CCv2EnvironmentDto(
     }
 }
 
-enum class CCv2EnvironmentType(val title: String, val icon: Icon) {
-    DEV("Development", HybrisIcons.CCv2.Environment.Type.DEV),
-    STG("Staging", HybrisIcons.CCv2.Environment.Type.STG),
-    PROD("Production", HybrisIcons.CCv2.Environment.Type.PROD),
-    UNKNOWN("Unknown", HybrisIcons.CCv2.Environment.Type.UNKNOWN);
-
-    companion object {
-        fun tryValueOf(name: String?) = entries
-            .find { it.name == name }
-            ?: UNKNOWN
-    }
-}
-
-enum class CCv2EnvironmentStatus(val title: String, val icon: Icon) {
-    PROVISIONING("Provisioning", HybrisIcons.CCv2.Environment.Status.PROVISIONING),
-    AVAILABLE("Available", HybrisIcons.CCv2.Environment.Status.AVAILABLE),
-    TERMINATING("Terminating", HybrisIcons.CCv2.Environment.Status.TERMINATING),
-    TERMINATED("Terminated", HybrisIcons.CCv2.Environment.Status.TERMINATED),
-    READY_FOR_DEPLOYMENT("Ready for deployment", HybrisIcons.CCv2.Environment.Status.READY_FOR_DEPLOYMENT),
-    UNKNOWN("Unknown", HybrisIcons.CCv2.Environment.Status.UNKNOWN);
-
-    companion object {
-        fun tryValueOf(name: String?) = CCv2EnvironmentStatus.entries
-            .find { it.name == name }
-            ?: UNKNOWN
-    }
-}

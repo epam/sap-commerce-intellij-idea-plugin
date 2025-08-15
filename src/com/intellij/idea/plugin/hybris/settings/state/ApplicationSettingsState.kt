@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.settings.state
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 
@@ -51,7 +50,4 @@ data class ApplicationSettingsState(
     @JvmField val junkDirectoryList: List<String> = HybrisConstants.DEFAULT_JUNK_FILE_NAMES,
     @JvmField val extensionsResourcesToExclude: List<String> = HybrisConstants.DEFAULT_EXTENSIONS_RESOURCES_TO_EXCLUDE,
     @JvmField val excludedFromIndexList: List<String> = HybrisConstants.DEFAULT_EXCLUDED_FROM_INDEX,
-
-    @JvmField @OptionTag val ccv2ReadTimeout: Int = 60,
-    @JvmField val ccv2Subscriptions: List<CCv2Subscription> = emptyList()
 )

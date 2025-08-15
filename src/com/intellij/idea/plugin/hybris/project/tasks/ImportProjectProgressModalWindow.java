@@ -541,7 +541,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         projectSettings.setHybrisVersion(hybrisProjectDescriptor.getHybrisVersion());
 
         final var credentialAttributes = new CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN);
-        PasswordSafe.getInstance().setPassword(credentialAttributes, hybrisProjectDescriptor.getCCv2Token());
+        PasswordSafe.getInstance().setPassword(credentialAttributes, hybrisProjectDescriptor.getCcv2Token());
 
         projectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
         final var completeSetOfHybrisModules = hybrisProjectDescriptor.getFoundModules().stream()
