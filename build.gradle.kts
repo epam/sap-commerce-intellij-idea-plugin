@@ -220,12 +220,6 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.dtdparser)
     implementation(libs.maven.model)
-    implementation(libs.solr.solrj) {
-        exclude("org.slf4j", "slf4j-api")
-        exclude("org.apache.httpcomponents", "httpclient")
-        exclude("org.apache.httpcomponents", "httpcore")
-        exclude("org.apache.httpcomponents", "httpmime")
-    }
     testImplementation(kotlin("test"))
     testRuntimeOnly("junit:junit:4.13.2")
 

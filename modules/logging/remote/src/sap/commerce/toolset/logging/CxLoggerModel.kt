@@ -31,7 +31,7 @@ data class CxLoggerModel(
     val parentName: String?,
     val inherited: Boolean,
     val icon: Icon,
-    val level: LogLevel = LogLevel.Companion.of(effectiveLevel),
+    val level: LogLevel = LogLevel.of(effectiveLevel),
     val psiElementPointer: SmartPsiElementPointer<PsiElement>? = null
 ) {
     val resolved: Boolean

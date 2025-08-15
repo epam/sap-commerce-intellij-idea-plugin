@@ -35,6 +35,12 @@ sourceSets {
 
 dependencies {
     implementation(libs.jsoup)
+    implementation(libs.solr.solrj) {
+        exclude("org.slf4j", "slf4j-api")
+        exclude("org.apache.httpcomponents", "httpclient")
+        exclude("org.apache.httpcomponents", "httpcore")
+        exclude("org.apache.httpcomponents", "httpmime")
+    }
     implementation(project(":shared"))
     implementation(project(":remote-core"))
 

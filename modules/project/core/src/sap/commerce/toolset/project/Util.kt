@@ -30,7 +30,7 @@ import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.facet.YFacetConstants
 import java.nio.file.Path
 
-fun Module.yExtensionName(): String = YFacet.Companion.get(this)
+fun Module.yExtensionName(): String = YFacet.get(this)
     ?.configuration
     ?.state
     ?.name
@@ -41,7 +41,7 @@ fun Module.root(): Path? = this
     .firstOrNull()
     ?.toNioPathOrNull()
 
-fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.Companion.getInstance(project)
+fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.getInstance(project)
     .modules
     .firstOrNull { YFacetConstants.getModuleSettings(it).type == ModuleDescriptorType.PLATFORM }
     ?.let { ModuleRootManager.getInstance(it) }

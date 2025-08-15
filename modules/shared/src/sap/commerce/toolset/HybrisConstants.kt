@@ -688,7 +688,7 @@ object HybrisConstants {
 
     val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
 
-    val DATA_KEY_LOGGER_IDENTIFIER = DataKey.Companion.create<String>("sap.cx.logger.identifier")
+    val DATA_KEY_LOGGER_IDENTIFIER = DataKey.create<String>("sap.cx.logger.identifier")
 
     val CHARS_UPPERCASE_REGEX = "[A-Z]".toRegex()
     val CHARS_LOWERCASE_REGEX = "[a-z]".toRegex()

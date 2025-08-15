@@ -306,11 +306,11 @@ class PropertyService(private val project: Project) {
         return envPropertiesScope.or(advancedPropertiesScope).or(localPropertiesScope).or(projectPropertiesScope)
     }
 
-    private fun obtainConfigModule() = ModuleManager.Companion.getInstance(project)
+    private fun obtainConfigModule() = ModuleManager.getInstance(project)
         .modules
         .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_CONFIG }
 
-    private fun obtainPlatformModule() = ModuleManager.Companion.getInstance(project)
+    private fun obtainPlatformModule() = ModuleManager.getInstance(project)
         .modules
         .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
 

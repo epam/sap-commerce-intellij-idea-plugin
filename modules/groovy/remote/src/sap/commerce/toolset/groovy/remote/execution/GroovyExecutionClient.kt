@@ -70,7 +70,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         try {
             val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
             val jsonAsString = document.getElementsByTag("body").text()
-            val json = Json.Default.parseToJsonElement(jsonAsString)
+            val json = Json.parseToJsonElement(jsonAsString)
 
             json.jsonObject["stacktraceText"]
 

@@ -29,7 +29,7 @@ class YFacet(
     name: String,
     configuration: YFacetConfiguration,
     underlyingFacet: Facet<*>?
-) : com.intellij.facet.Facet<YFacetConfiguration>(facetType, module, name, configuration, underlyingFacet) {
+) : Facet<YFacetConfiguration>(facetType, module, name, configuration, underlyingFacet) {
 
     companion object {
         @Serial

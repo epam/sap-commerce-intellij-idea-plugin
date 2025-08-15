@@ -67,7 +67,7 @@ class YFacetEditorTab(
 
         if (state.subModuleType == SubModuleDescriptorType.ADDON && state.installedIntoExtensions.isNotEmpty()) {
             group("Installed Into Extensions") {
-                ModuleManager.Companion.getInstance(editorContext.project)
+                ModuleManager.getInstance(editorContext.project)
                     .modules
                     .mapNotNull { YFacet.getState(it) }
                     .filter { state.installedIntoExtensions.contains(it.name) }

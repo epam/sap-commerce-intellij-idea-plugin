@@ -41,7 +41,7 @@ import java.nio.charset.StandardCharsets
 class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<ImpExExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: ImpExExecutionContext): DefaultExecutionResult {
-        val settings = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val actionUrl = when (context.executionMode) {
             ImpExExecutionContext.ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
             ImpExExecutionContext.ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"
