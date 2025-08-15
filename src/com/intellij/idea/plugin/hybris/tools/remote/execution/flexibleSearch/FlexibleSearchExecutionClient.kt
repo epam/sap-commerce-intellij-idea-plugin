@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 import com.google.gson.Gson
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -30,6 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.http.HybrisHacHttpClient
 import java.io.Serial
 import java.nio.charset.StandardCharsets
 

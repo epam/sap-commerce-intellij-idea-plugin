@@ -34,6 +34,8 @@ sourceSets {
 }
 
 dependencies {
+    implementation(libs.jsoup)
+
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
