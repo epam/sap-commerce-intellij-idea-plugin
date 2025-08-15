@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions;
+package sap.commerce.toolset.localextensions.jaxb;
 
 import jakarta.xml.bind.annotation.XmlRegistry;
 

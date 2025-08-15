@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions;
+package sap.commerce.toolset.localextensions.jaxb;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -25,19 +25,18 @@ import jakarta.xml.bind.annotation.XmlType;
 
 
 /**
- * Scans for extensions in a given folder.
+ * Adds an extension to the hybris platform.
  * 
- * <p>Java class for scanType complex type.
+ * <p>Java class for extensionType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="scanType">
+ * &lt;complexType name="extensionType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="dir" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="autoload" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
- *       &lt;attribute name="depth" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="dir" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -46,15 +45,13 @@ import jakarta.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "scanType")
-public class ScanType {
+@XmlType(name = "extensionType")
+public class ExtensionType {
 
-    @XmlAttribute(name = "dir", required = true)
+    @XmlAttribute(name = "dir")
     protected String dir;
-    @XmlAttribute(name = "autoload")
-    protected Boolean autoload;
-    @XmlAttribute(name = "depth")
-    protected Integer depth;
+    @XmlAttribute(name = "name")
+    protected String name;
 
     /**
      * Gets the value of the dir property.
@@ -81,55 +78,27 @@ public class ScanType {
     }
 
     /**
-     * Gets the value of the autoload property.
+     * Gets the value of the name property.
      * 
      * @return
      *     possible object is
-     *     {@link Boolean }
+     *     {@link String }
      *     
      */
-    public boolean isAutoload() {
-        if (autoload == null) {
-            return false;
-        } else {
-            return autoload;
-        }
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the autoload property.
+     * Sets the value of the name property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Boolean }
+     *     {@link String }
      *     
      */
-    public void setAutoload(Boolean value) {
-        this.autoload = value;
-    }
-
-    /**
-     * Gets the value of the depth property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getDepth() {
-        return depth;
-    }
-
-    /**
-     * Sets the value of the depth property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setDepth(Integer value) {
-        this.depth = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
 }
