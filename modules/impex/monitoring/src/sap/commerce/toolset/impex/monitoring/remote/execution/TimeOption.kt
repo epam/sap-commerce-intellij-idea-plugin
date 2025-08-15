@@ -16,14 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.monitor
+package sap.commerce.toolset.impex.monitoring.remote.execution
 
-import sap.commerce.toolset.remote.execution.ExecutionContext
 import java.util.concurrent.TimeUnit
-
-data class ImpExMonitorExecutionContext(
-    val timeOption: TimeOption,
-    val workingDir: String,
-) : ExecutionContext
 
 data class TimeOption(val name: String, val value: Int, val unit: TimeUnit)

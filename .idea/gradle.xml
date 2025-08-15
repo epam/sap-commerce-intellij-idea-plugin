@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/modules/extensioninfo" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/remote" />
             <option value="$PROJECT_DIR$/modules/groovy/remote" />
+            <option value="$PROJECT_DIR$/modules/impex/monitoring" />
             <option value="$PROJECT_DIR$/modules/impex/remote" />
             <option value="$PROJECT_DIR$/modules/localextensions" />
             <option value="$PROJECT_DIR$/modules/logging/remote" />

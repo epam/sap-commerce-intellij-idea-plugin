@@ -236,6 +236,7 @@ dependencies {
         pluginComposedModule(implementation(project(":remote-core")))
         pluginComposedModule(implementation(project(":logging-remote")))
         pluginComposedModule(implementation(project(":impex-remote")))
+        pluginComposedModule(implementation(project(":impex-monitoring")))
         pluginComposedModule(implementation(project(":flexibleSearch-remote")))
         pluginComposedModule(implementation(project(":groovy-remote")))
         pluginComposedModule(implementation(project(":solr-remote")))
