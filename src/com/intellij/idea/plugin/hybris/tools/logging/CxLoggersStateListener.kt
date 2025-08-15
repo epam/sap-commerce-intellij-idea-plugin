@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.util.messages.Topic
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 
 interface CxLoggersStateListener {
 

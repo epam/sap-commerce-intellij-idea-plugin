@@ -22,9 +22,9 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.psi.PsiErrorElement
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class FxSRootCompletionProvider : CompletionProvider<CompletionParameters>() {
 

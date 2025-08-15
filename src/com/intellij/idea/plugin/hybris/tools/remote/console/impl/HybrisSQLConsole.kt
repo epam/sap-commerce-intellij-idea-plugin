@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
@@ -34,6 +33,7 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.settings.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon

@@ -19,15 +19,15 @@
 package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.credentialStore.Credentials
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.remote.RemoteConnectionScope
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import java.awt.Component
 
 class RemoteSolrConnectionDialog(

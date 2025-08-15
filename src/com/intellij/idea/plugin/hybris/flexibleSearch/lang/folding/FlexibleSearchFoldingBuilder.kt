@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFile
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.*
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -34,6 +33,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
 

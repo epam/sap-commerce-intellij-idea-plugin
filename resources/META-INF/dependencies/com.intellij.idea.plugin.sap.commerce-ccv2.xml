@@ -23,6 +23,8 @@
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
+        <project.converterProvider implementation="sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings$MyConverterProvider"/>
+
         <completion.contributor language="JSON" id="CCv2ManifestCompletionContributor"
                                 implementationClass="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.ManifestJsonCompletionProvider"/>
     </extensions>

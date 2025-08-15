@@ -19,8 +19,6 @@ package com.intellij.idea.plugin.hybris.common.services
 
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -30,6 +28,8 @@ import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.impl.PlatformModuleDescriptor
+import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 
 @Service
 class CommonIdeaService {

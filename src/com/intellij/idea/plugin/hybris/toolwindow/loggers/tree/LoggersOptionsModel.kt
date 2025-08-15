@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree
 
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNodeParameters
 import com.intellij.openapi.Disposable
@@ -26,6 +25,7 @@ import com.intellij.ui.tree.BaseTreeModel
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import javax.swing.tree.TreePath
 
 class LoggersOptionsModel(

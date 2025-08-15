@@ -19,10 +19,10 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSimpleFoldingBlocksFilter
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSmartFoldingBlocksFilter
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.util.application
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class ImpExPsiElementFilterFactory private constructor() {
     init {

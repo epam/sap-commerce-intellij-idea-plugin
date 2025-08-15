@@ -18,11 +18,11 @@
  */
 package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ConsoleAwareExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import org.apache.http.HttpStatus
+import sap.commerce.toolset.remote.RemoteConnectionType
 
 data class FlexibleSearchExecutionResult(
     override val remoteConnectionType: RemoteConnectionType = RemoteConnectionType.Hybris,

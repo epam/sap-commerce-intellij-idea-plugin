@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.impex.ImpExConstants;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine;
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec;
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -33,6 +32,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sap.commerce.toolset.settings.DeveloperSettings;
 
 import java.util.HashSet;
 import java.util.Objects;

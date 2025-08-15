@@ -19,12 +19,12 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem.actions
 
 import com.intellij.diagram.DiagramAction
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.TSDiagramNode
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class ExcludeTypeNameDiagramAction : DiagramAction(
     message("hybris.diagram.ts.provider.actions.exclude_type_name"),

@@ -21,11 +21,11 @@ package com.intellij.idea.plugin.hybris.flexibleSearch
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchGroupByClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchOrderClause
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchResultColumns
-import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.*
 import com.intellij.psi.impl.JavaConstantExpressionEvaluator
 import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.settings.state.FlexibleSearchSettingsState
 
 object FxSUtils {
 

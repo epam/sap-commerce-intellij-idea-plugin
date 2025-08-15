@@ -18,9 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
-import sap.commerce.toolset.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.components.Service
@@ -31,6 +29,8 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.groovy.GroovyLanguage
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.settings.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel

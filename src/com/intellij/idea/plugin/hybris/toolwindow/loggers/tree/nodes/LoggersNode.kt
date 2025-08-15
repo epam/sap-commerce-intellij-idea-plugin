@@ -20,10 +20,10 @@ package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.tree.LeafState
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 
 abstract class LoggersNode : PresentableNodeDescriptor<LoggersNode>, LeafState.Supplier, Disposable {
 

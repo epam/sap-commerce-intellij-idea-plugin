@@ -18,10 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.settings.options
 
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.idea.plugin.hybris.ui.RemoteHacInstancesListPanel
 import com.intellij.idea.plugin.hybris.ui.RemoteInstancesListPanel
 import com.intellij.idea.plugin.hybris.ui.RemoteSolrInstancesListPanel
@@ -41,6 +38,9 @@ import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.settings.DeveloperSettings
 import javax.swing.DefaultComboBoxModel
 
 class ProjectIntegrationsSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {

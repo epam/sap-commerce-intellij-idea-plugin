@@ -19,8 +19,8 @@ package com.intellij.idea.plugin.hybris.impex.lang.folding
 
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSimpleFoldingPlaceholderBuilder
 import com.intellij.idea.plugin.hybris.impex.lang.folding.util.ImpExSmartFoldingPlaceholderBuilder
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.settings.DeveloperSettings
 
 object ImpexFoldingPlaceholderBuilderFactory {
 

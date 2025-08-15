@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjectorProvider
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.util.text.StringUtil
@@ -33,6 +32,7 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.settings.DeveloperSettings
 import java.util.*
 
 @Service

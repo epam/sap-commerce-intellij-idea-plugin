@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.actions
 
 import com.intellij.idea.plugin.hybris.settings.options.ProjectIntegrationsSettingsConfigurableProvider
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
 import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.*
@@ -29,6 +28,7 @@ import kotlinx.html.div
 import kotlinx.html.p
 import kotlinx.html.stream.createHTML
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.remote.RemoteConnectionType
 import java.awt.Component
 import java.awt.event.InputEvent
 import javax.swing.Icon

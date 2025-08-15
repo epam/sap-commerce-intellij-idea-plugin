@@ -24,12 +24,12 @@ import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifie
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.idea.plugin.hybris.impex.settings.state.ImpExCompletionSettingsState
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.settings.state.ImpExCompletionSettingsState
 
 object ImpExLookupElementFactory {
 

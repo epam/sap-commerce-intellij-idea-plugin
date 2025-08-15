@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.folding
 
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.psi.PsiElement
+import sap.commerce.toolset.settings.DeveloperSettings
 
 abstract class AbstractImpExFoldingBuilder : FoldingBuilderEx() {
 

@@ -23,8 +23,8 @@ import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.idea.plugin.hybris.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class ImpexHeaderTypeModifierNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 

@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution
 
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
+import sap.commerce.toolset.remote.RemoteConnectionType
 
 interface ConsoleAwareExecutionResult : ExecutionResult {
     val remoteConnectionType: RemoteConnectionType

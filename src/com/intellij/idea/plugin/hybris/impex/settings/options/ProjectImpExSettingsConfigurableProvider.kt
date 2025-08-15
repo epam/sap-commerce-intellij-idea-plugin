@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.impex.settings.options
 
 import com.intellij.ide.projectView.ProjectView
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -28,6 +27,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.settings.DeveloperSettings
 import javax.swing.JCheckBox
 
 class ProjectImpExSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {

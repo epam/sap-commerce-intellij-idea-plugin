@@ -19,10 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.solr
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -39,6 +37,8 @@ import org.apache.solr.client.solrj.request.QueryRequest
 import org.apache.solr.client.solrj.response.CoreAdminResponse
 import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
+import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import java.io.Serial
 
 @Service(Service.Level.PROJECT)

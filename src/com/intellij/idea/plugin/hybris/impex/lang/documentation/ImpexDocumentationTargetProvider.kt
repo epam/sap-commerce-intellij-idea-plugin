@@ -20,13 +20,13 @@ package com.intellij.idea.plugin.hybris.impex.lang.documentation
 
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.DocumentationTargetProvider
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class ImpexDocumentationTargetProvider : DocumentationTargetProvider {
 

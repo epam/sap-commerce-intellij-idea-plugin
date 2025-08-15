@@ -18,13 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.acl.settings.options
 
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class ProjectAclSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 

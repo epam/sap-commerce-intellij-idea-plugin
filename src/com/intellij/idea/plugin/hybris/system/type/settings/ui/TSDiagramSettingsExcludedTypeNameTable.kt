@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.system.type.settings.ui
 
-import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemDiagramSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.settings.state.TypeSystemDiagramSettingsState
 import java.io.Serial
 
 private const val COLUMN_NAME = "Name"

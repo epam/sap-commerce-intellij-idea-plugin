@@ -21,15 +21,17 @@ package com.intellij.idea.plugin.hybris.tools.remote
 import ai.grazie.utils.toLinkedSet
 import com.intellij.credentialStore.Credentials
 import com.intellij.idea.plugin.hybris.properties.PropertyService
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.collections.immutable.toImmutableList
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.remote.RemoteConnectionScope
+import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.settings.DeveloperSettings
 import java.util.*
 
 @Service(Service.Level.PROJECT)
@@ -185,32 +187,6 @@ class RemoteConnectionService(private val project: Project) {
         ?: fallback
 
     companion object {
-        fun generateUrl(ssl: Boolean, host: String?, port: String?, webroot: String?) = buildString {
-            if (ssl) append(HybrisConstants.HTTPS_PROTOCOL)
-            else append(HybrisConstants.HTTP_PROTOCOL)
-            append(host?.trim() ?: "")
-            port
-                ?.takeIf { it.isNotBlank() }
-                ?.takeUnless { "443" == it && ssl }
-                ?.takeUnless { "80" == it && !ssl }
-                ?.let {
-                    append(HybrisConstants.URL_PORT_DELIMITER)
-                    append(it)
-                }
-                ?: ""
-            webroot
-                ?.takeUnless { it.isBlank() }
-                ?.let {
-                    append('/')
-                    append(
-                        it
-                            .trimStart(' ', '/')
-                            .trimEnd(' ', '/')
-                    )
-                }
-                ?: ""
-        }
-
         fun getInstance(project: Project): RemoteConnectionService = project.service()
     }
 }

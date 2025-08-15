@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.jsp;
 
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -40,6 +39,7 @@ import com.intellij.util.ObjectUtils;
 import com.intellij.util.SmartList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sap.commerce.toolset.settings.DeveloperSettings;
 
 import java.util.*;
 

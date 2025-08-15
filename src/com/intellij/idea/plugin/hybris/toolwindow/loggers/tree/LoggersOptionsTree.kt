@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree
 
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersRootNode
 import com.intellij.openapi.Disposable
@@ -27,6 +26,7 @@ import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath

@@ -21,9 +21,7 @@ package com.intellij.idea.plugin.hybris.toolwindow.loggers
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggersStateListener
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTree
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTreeNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersHacConnectionNode
@@ -40,6 +38,8 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addTreeModelListener
 import sap.commerce.toolset.ui.addTreeSelectionListener

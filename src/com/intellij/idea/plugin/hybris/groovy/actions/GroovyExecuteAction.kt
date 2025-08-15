@@ -21,10 +21,8 @@ package com.intellij.idea.plugin.hybris.groovy.actions
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.groovy.editor.GroovySplitEditor
 import com.intellij.idea.plugin.hybris.groovy.editor.groovySplitEditor
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisGroovyConsole
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
-import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -34,6 +32,8 @@ import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.TransactionMode
 
 class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySplitEditor>(
     GroovyLanguage,

@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypes
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -31,6 +30,7 @@ import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
 

@@ -19,10 +19,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
-import sap.commerce.toolset.HybrisConstants;
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext;
 import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener;
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -56,6 +54,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.helper.ValidationException;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;

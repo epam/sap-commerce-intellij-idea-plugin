@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.system.businessProcess.settings.options
 
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -27,6 +26,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.settings.DeveloperSettings
 import javax.swing.JCheckBox
 
 class ProjectBusinessProcessConfigurableProvider(val project: Project) : ConfigurableProvider() {

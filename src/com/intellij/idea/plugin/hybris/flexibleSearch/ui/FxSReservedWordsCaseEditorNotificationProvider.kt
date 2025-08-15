@@ -18,8 +18,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.ui
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
-import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
-import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -36,6 +34,8 @@ import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.settings.ReservedWordsCase
+import sap.commerce.toolset.settings.state.FlexibleSearchSettingsState
 import java.util.function.Function
 
 class FxSReservedWordsCaseEditorNotificationProvider : AbstractFxSEditorNotificationProvider() {

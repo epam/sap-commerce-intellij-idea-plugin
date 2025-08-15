@@ -19,9 +19,6 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.ui
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryConstants
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
-import com.intellij.idea.plugin.hybris.polyglotQuery.settings.state.PolyglotQuerySettingsState
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -43,6 +40,9 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.ReservedWordsCase
+import sap.commerce.toolset.settings.state.PolyglotQuerySettingsState
 import java.util.function.Function
 import javax.swing.JComponent
 

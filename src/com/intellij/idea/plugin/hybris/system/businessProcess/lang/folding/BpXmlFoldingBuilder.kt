@@ -19,15 +19,15 @@
 package com.intellij.idea.plugin.hybris.system.businessProcess.lang.folding
 
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
-import com.intellij.idea.plugin.hybris.system.businessProcess.settings.state.BpFoldingSettingsState
 import com.intellij.idea.plugin.hybris.system.businessProcess.util.BpHelper
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
+import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.state.BpFoldingSettingsState
 
 class BpXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<BpFoldingSettingsState, Process>(Process::class.java), DumbAware {
 

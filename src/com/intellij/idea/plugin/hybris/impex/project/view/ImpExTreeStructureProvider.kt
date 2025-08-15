@@ -22,13 +22,13 @@ import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import org.jetbrains.annotations.Unmodifiable
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.settings.DeveloperSettings
 
 /**
  * This provider enables:

@@ -17,13 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class GroovyTransactionModeActionGroup : DefaultActionGroup() {
 

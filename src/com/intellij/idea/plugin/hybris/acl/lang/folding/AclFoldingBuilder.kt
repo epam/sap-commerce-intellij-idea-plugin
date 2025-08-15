@@ -22,7 +22,6 @@ import com.intellij.idea.plugin.hybris.acl.psi.AclUserRights
 import com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsBody
 import com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLines
 import com.intellij.idea.plugin.hybris.psi.FoldablePsiElement
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -35,6 +34,7 @@ import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.*
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
 

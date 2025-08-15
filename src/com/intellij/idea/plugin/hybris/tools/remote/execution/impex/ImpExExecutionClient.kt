@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.impex
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
@@ -33,6 +32,7 @@ import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import sap.commerce.toolset.remote.RemoteConnectionType
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets

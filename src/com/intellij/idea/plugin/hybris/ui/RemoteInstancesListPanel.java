@@ -19,13 +19,13 @@
 package com.intellij.idea.plugin.hybris.ui;
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService;
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType;
-import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.AddEditDeleteListPanel;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.util.ui.JBEmptyBorder;
 import org.jetbrains.annotations.Nullable;
+import sap.commerce.toolset.remote.RemoteConnectionType;
+import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState;
 
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;

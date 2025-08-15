@@ -18,16 +18,16 @@
 package com.intellij.idea.plugin.hybris.system.type.lang.folding
 
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.system.type.model.deployment.DatabaseSchema
 import com.intellij.idea.plugin.hybris.system.type.model.deployment.Model
 import com.intellij.idea.plugin.hybris.system.type.model.deployment.TypeMapping
-import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemFoldingSettingsState
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
+import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.state.TypeSystemFoldingSettingsState
 
 class DeploymentModelFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSettingsState, Model>(Model::class.java), DumbAware {
 

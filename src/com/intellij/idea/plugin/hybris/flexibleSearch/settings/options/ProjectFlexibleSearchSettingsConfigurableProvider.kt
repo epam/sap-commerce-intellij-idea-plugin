@@ -19,8 +19,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.settings.options
 
 import com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -32,6 +30,8 @@ import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.ReservedWordsCase
 import javax.swing.JCheckBox
 
 class ProjectFlexibleSearchSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {

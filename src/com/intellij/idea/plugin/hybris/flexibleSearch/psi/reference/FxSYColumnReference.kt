@@ -28,7 +28,6 @@ import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchYColumnName
 import com.intellij.idea.plugin.hybris.psi.util.PsiTreeUtilExt
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
@@ -45,6 +44,7 @@ import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_SOURCE
 import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_TARGET
+import sap.commerce.toolset.settings.DeveloperSettings
 
 class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.Poly<FlexibleSearchYColumnName>(owner) {
 
