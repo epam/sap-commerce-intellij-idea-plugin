@@ -45,6 +45,7 @@ include(
     "modules/terminal",
     "modules/ccv2",
     "modules/remote",
+    "modules/ant",
 )
 
 rootProject.children.forEach {

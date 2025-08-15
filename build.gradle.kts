@@ -245,6 +245,7 @@ dependencies {
         pluginComposedModule(implementation(project(":project")))
         pluginComposedModule(implementation(project(":terminal")))
         pluginComposedModule(implementation(project(":ccv2")))
+        pluginComposedModule(implementation(project(":ant")))
 
         bundledModules(
             "intellij.grid.impl"

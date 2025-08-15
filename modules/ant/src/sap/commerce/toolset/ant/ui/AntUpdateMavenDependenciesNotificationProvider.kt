@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.ant.ui
+
+package sap.commerce.toolset.ant.ui
 
 import com.intellij.lang.ant.config.AntBuildFileBase
 import com.intellij.lang.ant.config.AntConfiguration
@@ -63,7 +64,7 @@ class AntUpdateMavenDependenciesNotificationProvider : EditorNotificationProvide
                             EditorNotifications.getInstance(project).removeNotificationsForProvider(this)
                             file.removeUserData(HybrisConstants.KEY_ANT_UPDATE_MAVEN_DEPENDENCIES)
                         }
-                        ToolWindowManager.getInstance(project).activateEditorComponent()
+                        ToolWindowManager.Companion.getInstance(project).activateEditorComponent()
                     }
             }
             panel
