@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo;
+package sap.commerce.toolset.extensioninfo.jaxb;
 
 import jakarta.xml.bind.annotation.*;
 

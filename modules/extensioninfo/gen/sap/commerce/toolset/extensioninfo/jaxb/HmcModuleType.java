@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo;
+package sap.commerce.toolset.extensioninfo.jaxb;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -26,70 +26,93 @@ import jakarta.xml.bind.annotation.XmlType;
 
 
 /**
- * Configures metadata.
+ * Configures an hmc module for the extension. Required directory: /hmc.
  * <p/>
- * <p>Java class for metaType complex type.
+ * <p>Java class for hmcmoduleType complex type.
  * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p/>
  * <pre>
- * &lt;complexType name="metaType">
+ * &lt;complexType name="hmcmoduleType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="key" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="value" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="additionalclasspath" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="extensionclassname" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="sourceavailable" type="{http://www.w3.org/2001/XMLSchema}boolean" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "metaType")
-public class MetaType {
+@XmlType(name = "hmcmoduleType")
+public class HmcModuleType {
 
-    @XmlAttribute(required = true)
-    protected String key;
-    @XmlAttribute(required = true)
-    protected String value;
+    @XmlAttribute
+    protected String additionalclasspath;
+    @XmlAttribute
+    protected String extensionclassname;
+    @XmlAttribute
+    protected Boolean sourceavailable;
 
     /**
-     * Gets the value of the key property.
+     * Gets the value of the additionalclasspath property.
      *
      * @return possible object is
      * {@link String }
      */
-    public String getKey() {
-        return key;
+    public String getAdditionalclasspath() {
+        return additionalclasspath;
     }
 
     /**
-     * Sets the value of the key property.
+     * Sets the value of the additionalclasspath property.
      *
      * @param value allowed object is
      *              {@link String }
      */
-    public void setKey(String value) {
-        this.key = value;
+    public void setAdditionalclasspath(String value) {
+        this.additionalclasspath = value;
     }
 
     /**
-     * Gets the value of the value property.
+     * Gets the value of the extensionclassname property.
      *
      * @return possible object is
      * {@link String }
      */
-    public String getValue() {
-        return value;
+    public String getExtensionclassname() {
+        return extensionclassname;
     }
 
     /**
-     * Sets the value of the value property.
+     * Sets the value of the extensionclassname property.
      *
      * @param value allowed object is
      *              {@link String }
      */
-    public void setValue(String value) {
-        this.value = value;
+    public void setExtensionclassname(String value) {
+        this.extensionclassname = value;
+    }
+
+    /**
+     * Gets the value of the sourceavailable property.
+     *
+     * @return possible object is
+     * {@link Boolean }
+     */
+    public Boolean isSourceavailable() {
+        return sourceavailable;
+    }
+
+    /**
+     * Sets the value of the sourceavailable property.
+     *
+     * @param value allowed object is
+     *              {@link Boolean }
+     */
+    public void setSourceavailable(Boolean value) {
+        this.sourceavailable = value;
     }
 
 }

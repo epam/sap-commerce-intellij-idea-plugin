@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo;
+package sap.commerce.toolset.extensioninfo.jaxb;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -26,18 +26,19 @@ import jakarta.xml.bind.annotation.XmlType;
 
 
 /**
- * Configures an hmc module for the extension. Required directory: /hmc.
+ * Configures an hMC module for the extension. Required directory: /web.
  * <p/>
- * <p>Java class for hmcmoduleType complex type.
+ * <p>Java class for webmoduleType complex type.
  * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p/>
  * <pre>
- * &lt;complexType name="hmcmoduleType">
+ * &lt;complexType name="webmoduleType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;attribute name="webroot" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="additionalclasspath" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="extensionclassname" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="jspcompile" type="{http://www.w3.org/2001/XMLSchema}boolean" />
  *       &lt;attribute name="sourceavailable" type="{http://www.w3.org/2001/XMLSchema}boolean" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -45,15 +46,37 @@ import jakarta.xml.bind.annotation.XmlType;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "hmcmoduleType")
-public class HmcModuleType {
+@XmlType(name = "webmoduleType")
+public class WebModuleType {
 
+    @XmlAttribute(required = true)
+    protected String webroot;
     @XmlAttribute
     protected String additionalclasspath;
     @XmlAttribute
-    protected String extensionclassname;
+    protected Boolean jspcompile;
     @XmlAttribute
     protected Boolean sourceavailable;
+
+    /**
+     * Gets the value of the webroot property.
+     *
+     * @return possible object is
+     * {@link String }
+     */
+    public String getWebroot() {
+        return webroot;
+    }
+
+    /**
+     * Sets the value of the webroot property.
+     *
+     * @param value allowed object is
+     *              {@link String }
+     */
+    public void setWebroot(String value) {
+        this.webroot = value;
+    }
 
     /**
      * Gets the value of the additionalclasspath property.
@@ -76,23 +99,23 @@ public class HmcModuleType {
     }
 
     /**
-     * Gets the value of the extensionclassname property.
+     * Gets the value of the jspcompile property.
      *
      * @return possible object is
-     * {@link String }
+     * {@link Boolean }
      */
-    public String getExtensionclassname() {
-        return extensionclassname;
+    public Boolean isJspcompile() {
+        return jspcompile;
     }
 
     /**
-     * Sets the value of the extensionclassname property.
+     * Sets the value of the jspcompile property.
      *
      * @param value allowed object is
-     *              {@link String }
+     *              {@link Boolean }
      */
-    public void setExtensionclassname(String value) {
-        this.extensionclassname = value;
+    public void setJspcompile(Boolean value) {
+        this.jspcompile = value;
     }
 
     /**

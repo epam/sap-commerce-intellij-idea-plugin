@@ -20,14 +20,14 @@ package com.intellij.idea.plugin.hybris.project.factories
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
-import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ExtensionInfo
-import com.intellij.idea.plugin.hybris.project.settings.jaxb.extensioninfo.ObjectFactory
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.application
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.JAXBException
 import org.jetbrains.idea.eclipse.EclipseProjectFinder
+import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
+import sap.commerce.toolset.extensioninfo.jaxb.ObjectFactory
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.*
