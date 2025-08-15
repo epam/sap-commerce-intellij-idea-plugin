@@ -19,12 +19,14 @@ package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.util.RunOnceUtil
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
+import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.ProjectConstants
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.removeUserData
@@ -34,7 +36,22 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isNotHybrisProject) {
             if (ProjectSettings.getInstance(project).importedByVersion == null) return
-            else WorkspaceSettings.getInstance(project).hybrisProject = true
+            else {
+                WorkspaceSettings.getInstance(project).hybrisProject = true
+                invokeLater {
+                    Notifications
+                        .error(
+                            "Incompatible Plugin API changes",
+                            """
+                                It's highly recommended to re-import and re-configure the Project due drastic changes in the Plugin API.<br>
+                                Unfortunately, some configurations and settings may be lost.
+                            """.trimIndent()
+                        )
+                        .important(true)
+                        .system(true)
+                        .notify(project)
+                }
+            }
         }
 
         RunOnceUtil.runOnceForProject(project, "afterHybrisProjectImport") {
