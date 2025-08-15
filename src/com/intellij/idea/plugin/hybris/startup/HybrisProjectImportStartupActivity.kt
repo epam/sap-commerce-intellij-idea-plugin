@@ -21,6 +21,8 @@ import com.intellij.ide.util.RunOnceUtil
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.project.ProjectConstants
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
+import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.project.Project
@@ -30,7 +32,10 @@ import com.intellij.openapi.util.removeUserData
 class HybrisProjectImportStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-        if (project.isNotHybrisProject) return
+        if (project.isNotHybrisProject) {
+            if (ProjectSettings.getInstance(project).importedByVersion == null) return
+            else WorkspaceSettings.getInstance(project).hybrisProject = true
+        }
 
         RunOnceUtil.runOnceForProject(project, "afterHybrisProjectImport") {
             project.getUserData(ProjectConstants.KEY_FINALIZE_PROJECT_IMPORT)
