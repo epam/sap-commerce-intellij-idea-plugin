@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,13 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.solr
+package sap.commerce.toolset.remote.execution
 
-import sap.commerce.toolset.remote.execution.ExecutionContext
+interface ExecutionContext {
+    val executionTitle: String
+        get() = "Executing HTTP Call to the remote SAP Commerce instance…"
 
-data class SolrQueryExecutionContext(
-    override val executionTitle: String = "Execute HTTP Call to SOLR...",
-    val content: String,
-    val core: String,
-    val rows: Int
-) : ExecutionContext
+
+    interface Settings {
+        fun modifiable(): ModifiableSettings
+    }
+
+    interface ModifiableSettings {
+        fun immutable(): Settings
+    }
+}

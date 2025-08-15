@@ -16,18 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution
+package sap.commerce.toolset.remote.execution
 
-interface ExecutionContext {
-    val executionTitle: String
-        get() = "Executing HTTP Call to the remote SAP Commerce instance…"
+import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CoroutineScope
+import java.io.Serial
 
+abstract class DefaultExecutionClient<E : ExecutionContext>(
+    project: Project,
+    coroutineScope: CoroutineScope
+) : ExecutionClient<E, DefaultExecutionResult>(project, coroutineScope) {
 
-    interface Settings {
-        fun modifiable(): ModifiableSettings
-    }
+    override suspend fun onError(context: E, exception: Throwable) = DefaultExecutionResult(
+        errorMessage = exception.message,
+        errorDetailMessage = exception.stackTraceToString(),
+    )
 
-    interface ModifiableSettings {
-        fun immutable(): Settings
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = -7785886660763821295L
     }
 }

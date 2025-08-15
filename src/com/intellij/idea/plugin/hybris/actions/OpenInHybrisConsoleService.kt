@@ -23,7 +23,6 @@ import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.toolwindow.OpenInConsoleConsoleDialog
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -34,6 +33,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.messageFallback
+import sap.commerce.toolset.remote.execution.ExecutionContext
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 import kotlin.reflect.KClass

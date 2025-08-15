@@ -19,10 +19,8 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
-import sap.commerce.toolset.Plugin
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
@@ -35,6 +33,8 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.remote.execution.ExecutionContext
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel

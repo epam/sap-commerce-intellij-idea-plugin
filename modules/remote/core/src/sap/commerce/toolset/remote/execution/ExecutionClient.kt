@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution
+package sap.commerce.toolset.remote.execution
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
@@ -24,26 +24,8 @@ import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.*
-import sap.commerce.toolset.remote.execution.DefaultExecutionResult
-import sap.commerce.toolset.remote.execution.ExecutionResult
 import java.io.Serial
 import kotlin.coroutines.CoroutineContext
-
-abstract class DefaultExecutionClient<E : ExecutionContext>(
-    project: Project,
-    coroutineScope: CoroutineScope
-) : ExecutionClient<E, DefaultExecutionResult>(project, coroutineScope) {
-
-    override suspend fun onError(context: E, exception: Throwable) = DefaultExecutionResult(
-        errorMessage = exception.message,
-        errorDetailMessage = exception.stackTraceToString(),
-    )
-
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = -7785886660763821295L
-    }
-}
 
 abstract class ExecutionClient<E : ExecutionContext, R : ExecutionResult>(
     protected val project: Project,
@@ -89,9 +71,9 @@ abstract class ExecutionClient<E : ExecutionContext, R : ExecutionResult>(
         }
     }
 
-    internal abstract suspend fun execute(context: E): R
+    abstract suspend fun execute(context: E): R
 
-    internal abstract suspend fun onError(context: E, exception: Throwable): R
+    abstract suspend fun onError(context: E, exception: Throwable): R
 
     private suspend fun process(
         context: E,

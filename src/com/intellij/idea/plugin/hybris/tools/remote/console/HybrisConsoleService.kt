@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.components.Service
@@ -27,6 +26,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.remote.execution.ExecutionContext
 import kotlin.reflect.KClass
 
 @Service(Service.Level.PROJECT)

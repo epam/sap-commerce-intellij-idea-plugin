@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.execution.ExecutionContext
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient
 import sap.commerce.toolset.settings.state.TransactionMode
 

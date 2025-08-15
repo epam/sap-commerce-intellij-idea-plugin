@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.monitor
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
+import sap.commerce.toolset.remote.execution.ExecutionContext
 import java.util.concurrent.TimeUnit
 
 data class ImpExMonitorExecutionContext(

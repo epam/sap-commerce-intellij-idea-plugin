@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.monitor
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionClient
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
+import sap.commerce.toolset.remote.execution.DefaultExecutionClient
 import sap.commerce.toolset.remote.execution.DefaultExecutionResult
 import java.io.File
 import java.io.Serial

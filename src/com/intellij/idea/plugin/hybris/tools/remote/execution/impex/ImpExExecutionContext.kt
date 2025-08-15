@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.impex
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import org.apache.commons.lang3.BooleanUtils
+import sap.commerce.toolset.remote.execution.ExecutionContext
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient
 import java.nio.charset.StandardCharsets
 

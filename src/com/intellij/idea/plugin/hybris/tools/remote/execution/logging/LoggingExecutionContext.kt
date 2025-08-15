@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import sap.commerce.toolset.logging.LogLevel
+import sap.commerce.toolset.remote.execution.ExecutionContext
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient
 
 data class LoggingExecutionContext(

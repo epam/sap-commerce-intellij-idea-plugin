@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.actions
 
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.lang.Language
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.editor.Editor
@@ -29,6 +28,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.ui.AnimatedIcon
+import sap.commerce.toolset.remote.execution.ExecutionContext
 import javax.swing.Icon
 import kotlin.reflect.KClass
 
