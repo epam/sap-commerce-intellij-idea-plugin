@@ -22,7 +22,6 @@ import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -31,6 +30,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionClient
 import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
+import sap.commerce.toolset.solr.remote.execution.SolrExecutionClient
 
 class ConsoleExecuteStatementAction : AnAction() {
 

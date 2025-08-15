@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.solr
+package sap.commerce.toolset.solr.remote.execution
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
