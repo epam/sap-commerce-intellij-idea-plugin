@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.settings
+package sap.commerce.toolset.settings.state
 
 enum class TransactionMode {
     COMMIT, ROLLBACK

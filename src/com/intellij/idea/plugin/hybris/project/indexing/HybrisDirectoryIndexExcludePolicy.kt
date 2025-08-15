@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.indexing
 
-import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -31,6 +30,7 @@ import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer
 import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager
 import com.intellij.util.application
+import sap.commerce.toolset.settings.ApplicationSettings
 
 class HybrisDirectoryIndexExcludePolicy(project: Project) : DirectoryIndexExcludePolicy {
 

@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationExc
 import com.intellij.idea.plugin.hybris.project.factories.ModuleDescriptorFactory;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
-import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -58,6 +57,7 @@ import sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus;
 import sap.commerce.toolset.project.descriptors.YModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.impl.*;
 import sap.commerce.toolset.project.tasks.TaskProgressProcessor;
+import sap.commerce.toolset.settings.ApplicationSettings;
 import sap.commerce.toolset.settings.WorkspaceSettings;
 
 import javax.annotation.concurrent.GuardedBy;

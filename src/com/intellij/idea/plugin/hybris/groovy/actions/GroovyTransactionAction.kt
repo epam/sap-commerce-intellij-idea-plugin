@@ -22,7 +22,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.settings.DeveloperSettings
-import sap.commerce.toolset.settings.TransactionMode
+import sap.commerce.toolset.settings.state.TransactionMode
 
 open class GroovyTransactionAction(text: String, description: String, private val transactionMode: TransactionMode) : CheckboxAction(
     text, description, null

@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.settings.TransactionMode
+import sap.commerce.toolset.settings.state.TransactionMode
 import java.util.*
 
 @Service(Service.Level.PROJECT)

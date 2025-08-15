@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import org.apache.commons.lang3.BooleanUtils
-import sap.commerce.toolset.settings.TransactionMode
+import sap.commerce.toolset.settings.state.TransactionMode
 
 data class GroovyExecutionContext(
     override val executionTitle: String = DEFAULT_TITLE,

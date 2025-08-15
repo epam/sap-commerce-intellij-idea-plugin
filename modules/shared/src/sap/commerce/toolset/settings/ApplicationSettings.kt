@@ -16,13 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings
+package sap.commerce.toolset.settings
 
-import com.intellij.idea.plugin.hybris.settings.state.ApplicationSettingsState
 import com.intellij.openapi.components.*
 import com.intellij.util.application
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.settings.state.ApplicationSettingsState
 
 @State(
     name = "[y] Global Settings",

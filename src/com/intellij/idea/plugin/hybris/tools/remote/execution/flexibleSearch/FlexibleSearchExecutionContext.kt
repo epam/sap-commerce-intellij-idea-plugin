@@ -24,7 +24,7 @@ import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.settings.TransactionMode
+import sap.commerce.toolset.settings.state.TransactionMode
 
 data class FlexibleSearchExecutionContext(
     private val content: String = "",

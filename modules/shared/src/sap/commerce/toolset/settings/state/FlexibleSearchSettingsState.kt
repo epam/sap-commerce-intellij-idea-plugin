@@ -20,7 +20,6 @@ package sap.commerce.toolset.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
-import sap.commerce.toolset.settings.ReservedWordsCase
 
 @Tag("FlexibleSearchSettings")
 data class FlexibleSearchSettingsState(

@@ -20,7 +20,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
-import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -39,6 +38,7 @@ import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.impl.*;
+import sap.commerce.toolset.settings.ApplicationSettings;
 
 import java.io.File;
 import java.io.FileFilter;

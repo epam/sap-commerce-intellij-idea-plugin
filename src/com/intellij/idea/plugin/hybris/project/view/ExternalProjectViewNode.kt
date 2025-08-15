@@ -20,12 +20,12 @@ package com.intellij.idea.plugin.hybris.project.view
 
 import com.intellij.ide.projectView.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
-import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.settings.ApplicationSettings
 
 class ExternalProjectViewNode(
     project: Project,

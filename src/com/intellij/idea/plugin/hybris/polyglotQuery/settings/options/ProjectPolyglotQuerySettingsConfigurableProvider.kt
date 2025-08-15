@@ -34,7 +34,7 @@ import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
-import sap.commerce.toolset.settings.ReservedWordsCase
+import sap.commerce.toolset.settings.state.ReservedWordsCase
 import javax.swing.JCheckBox
 
 class ProjectPolyglotQuerySettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {

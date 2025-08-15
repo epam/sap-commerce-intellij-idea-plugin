@@ -41,8 +41,8 @@ import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
-import sap.commerce.toolset.settings.ReservedWordsCase
 import sap.commerce.toolset.settings.state.PolyglotQuerySettingsState
+import sap.commerce.toolset.settings.state.ReservedWordsCase
 import java.util.function.Function
 import javax.swing.JComponent
 
