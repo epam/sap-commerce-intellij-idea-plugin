@@ -34,12 +34,12 @@ import com.intellij.util.application
 import org.apache.commons.lang3.StringUtils
 
 @State(
-    name = "[y] CCv2 Settings",
+    name = "[y] CCv2 Project Settings",
     category = SettingsCategory.PLUGINS,
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service
-class CCv2Settings : SerializablePersistentStateComponent<ApplicationSettingsState>(ApplicationSettingsState()) {
+class CCv2ProjectSettings : SerializablePersistentStateComponent<ApplicationSettingsState>(ApplicationSettingsState()) {
 
     var ccv2ReadTimeout: Int
         get() = state.ccv2ReadTimeout
@@ -103,7 +103,7 @@ class CCv2Settings : SerializablePersistentStateComponent<ApplicationSettingsSta
 
     companion object {
         @JvmStatic
-        fun getInstance(): CCv2Settings = application.service()
+        fun getInstance(): CCv2ProjectSettings = application.service()
 
         @JvmStatic
         fun toIdeaGroup(group: String?): Array<String>? {

@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
+import com.intellij.idea.plugin.hybris.settings.CCv2DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.SUser
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.SUserDto
 import com.intellij.openapi.Disposable
@@ -68,7 +68,7 @@ class SUserDetailsDialog(
     }
 
     override fun applyFields() {
-        val developerSettings = DeveloperSettings.getInstance(project)
+        val developerSettings = CCv2DeveloperSettings.getInstance(project)
         val mutableSettings = developerSettings.ccv2Settings.mutable()
         mutableSettings.sUsers[sUser.id!!] = sUserDto.toModel()
 

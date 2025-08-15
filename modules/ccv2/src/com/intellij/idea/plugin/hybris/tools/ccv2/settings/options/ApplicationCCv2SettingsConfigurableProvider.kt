@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.settings.options
 
 import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
-import com.intellij.idea.plugin.hybris.settings.CCv2Settings
+import com.intellij.idea.plugin.hybris.settings.CCv2ProjectSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SubscriptionDto
 import com.intellij.idea.plugin.hybris.ui.CCv2SubscriptionListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -38,14 +38,14 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
         "CCv2", "[y] SAP Commerce Cloud CCv2 configuration."
     ) {
 
-        private val ccv2Settings = CCv2Settings.Companion.getInstance()
+        private val ccv2ProjectSettings = CCv2ProjectSettings.Companion.getInstance()
         private var originalCCv2Token: String? = ""
-        private var originalCCv2Subscriptions = ccv2Settings.ccv2Subscriptions
+        private var originalCCv2Subscriptions = ccv2ProjectSettings.ccv2Subscriptions
             .map { it.toDto() }
 
         private lateinit var defaultCCv2TokenTextField: JBPasswordField
         private val ccv2SubscriptionListPanel = CCv2SubscriptionListPanel(
-            ccv2Settings.ccv2Subscriptions
+            ccv2ProjectSettings.ccv2Subscriptions
                 .map { it.toDto() }
         )
 
@@ -69,8 +69,8 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
                     .onReset {
                         defaultCCv2TokenTextField.isEnabled = false
 
-                        ccv2Settings.loadDefaultCCv2Token {
-                            val ccv2Token = ccv2Settings.getCCv2Token()
+                        ccv2ProjectSettings.loadDefaultCCv2Token {
+                            val ccv2Token = ccv2ProjectSettings.getCCv2Token()
                             originalCCv2Token = ccv2Token
 
                             defaultCCv2TokenTextField.text = ccv2Token
@@ -78,7 +78,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
                         }
                     }
                     .onApply {
-                        ccv2Settings.saveDefaultCCv2Token(String(defaultCCv2TokenTextField.password)) {
+                        ccv2ProjectSettings.saveDefaultCCv2Token(String(defaultCCv2TokenTextField.password)) {
                             originalCCv2Token = it
                         }
                     }
@@ -94,7 +94,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
                             Indicates read timeout in seconds when invoking Cloud Portal API.
                         """.trimIndent()
                     )
-                    .bindIntText(ccv2Settings::ccv2ReadTimeout)
+                    .bindIntText(ccv2ProjectSettings::ccv2ReadTimeout)
             }
 
             group("CCv2 Subscriptions", false) {
@@ -104,16 +104,16 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
                         .onApply {
                             val subscriptions = ccv2SubscriptionListPanel.data
                             subscriptions.forEach {
-                                ccv2Settings.saveCCv2Token(it.uuid, it.ccv2Token)
+                                ccv2ProjectSettings.saveCCv2Token(it.uuid, it.ccv2Token)
                             }
                             originalCCv2Subscriptions = subscriptions
-                            ccv2Settings.setCCv2Subscriptions(subscriptions)
+                            ccv2ProjectSettings.setCCv2Subscriptions(subscriptions)
 
                             ccv2SubscriptionListPanel.data = originalCCv2Subscriptions
                                 .map { it.copy() }
                         }
                         .onReset {
-                            ccv2SubscriptionListPanel.data = ccv2Settings.ccv2Subscriptions
+                            ccv2SubscriptionListPanel.data = ccv2ProjectSettings.ccv2Subscriptions
                                 .map { it.toDto() }
 
                             loadCCv2TokensForSubscriptions(ccv2SubscriptionListPanel.data)
@@ -125,7 +125,7 @@ class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
 
         private fun loadCCv2TokensForSubscriptions(subscriptions: List<CCv2SubscriptionDto>) {
             subscriptions.forEach { subscription ->
-                ccv2Settings.loadCCv2Token(subscription.uuid) {
+                ccv2ProjectSettings.loadCCv2Token(subscription.uuid) {
                     subscription.ccv2Token = it
                 }
             }

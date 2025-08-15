@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.state.DeveloperSettingsState
-import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.SUser
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 
@@ -40,11 +39,6 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         get() = state.activeSolrConnectionID
         set(value) {
             updateState { it.copy(activeSolrConnectionID = value) }
-        }
-    var activeCCv2SubscriptionID
-        get() = state.activeCCv2SubscriptionID
-        set(value) {
-            updateState { it.copy(activeCCv2SubscriptionID = value) }
         }
     var remoteConnectionSettingsList
         get() = state.remoteConnectionSettingsList
@@ -106,22 +100,6 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         set(value) {
             updateState { it.copy(jspSettings = value) }
         }
-    var ccv2Settings
-        get() = state.ccv2Settings
-        set(value) {
-            updateState { it.copy(ccv2Settings = value) }
-        }
-
-    fun getActiveCCv2Subscription() = state.activeCCv2SubscriptionID
-        ?.let { CCv2Settings.getInstance().getCCv2Subscription(it) }
-
-    fun getSUser(id: String) = state
-        .ccv2Settings
-        .sUsers[id]
-        ?: SUser()
-            .also {
-                it.id = id
-            }
 
     companion object {
         @JvmStatic

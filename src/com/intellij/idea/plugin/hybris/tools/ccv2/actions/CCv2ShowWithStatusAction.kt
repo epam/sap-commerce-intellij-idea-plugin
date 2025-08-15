@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
+import com.intellij.idea.plugin.hybris.settings.CCv2DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
@@ -55,5 +55,5 @@ abstract class CCv2ShowWithStatusAction<T : Enum<T>>(
     protected abstract fun getStatuses(settings: CCv2SettingsState): Set<T>?
 
     private fun getCCv2Settings(e: AnActionEvent) = e.project
-        ?.let { DeveloperSettings.getInstance(it).ccv2Settings }
+        ?.let { CCv2DeveloperSettings.getInstance(it).ccv2Settings }
 }

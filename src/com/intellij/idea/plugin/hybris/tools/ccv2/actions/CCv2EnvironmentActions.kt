@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.CCv2Settings
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
+import com.intellij.idea.plugin.hybris.settings.CCv2DeveloperSettings
+import com.intellij.idea.plugin.hybris.settings.CCv2ProjectSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
@@ -92,7 +92,7 @@ class CCv2FetchEnvironmentAction(
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabled = !fetching && CCv2Settings.getInstance().ccv2Subscriptions.isNotEmpty()
+        e.presentation.isEnabled = !fetching && CCv2ProjectSettings.getInstance().ccv2Subscriptions.isNotEmpty()
         e.presentation.text = if (fetching) "Fetching..." else "Fetch Environment"
         e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else HybrisIcons.CCv2.Actions.FETCH
     }
@@ -141,7 +141,7 @@ class CCv2FetchEnvironmentServiceAction(
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabled = !fetching && CCv2Settings.getInstance().ccv2Subscriptions.isNotEmpty()
+        e.presentation.isEnabled = !fetching && CCv2ProjectSettings.getInstance().ccv2Subscriptions.isNotEmpty()
         e.presentation.text = if (fetching) "Fetching..." else "Fetch Service"
         e.presentation.disabledIcon = if (fetching) AnimatedIcon.Default.INSTANCE else HybrisIcons.CCv2.Actions.FETCH
     }
@@ -189,7 +189,7 @@ abstract class CCv2ShowEnvironmentWithStatusAction(status: CCv2EnvironmentStatus
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
-        val developerSettings = DeveloperSettings.getInstance(project)
+        val developerSettings = CCv2DeveloperSettings.getInstance(project)
         val mutableSettings = developerSettings.ccv2Settings.mutable()
         if (state) mutableSettings.showEnvironmentStatuses.add(status)
         else mutableSettings.showEnvironmentStatuses.remove(status)

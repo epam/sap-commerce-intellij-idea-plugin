@@ -25,7 +25,7 @@ import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilde
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
-import com.intellij.idea.plugin.hybris.settings.CCv2Settings
+import com.intellij.idea.plugin.hybris.settings.CCv2ProjectSettings
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.diagnostic.Logger
@@ -312,7 +312,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         horizontalScrollBarPolicy = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
         preferredSize = Dimension(preferredSize.width, JBUIScale.scale(600))
 
-        CCv2Settings.getInstance().loadDefaultCCv2Token {
+        CCv2ProjectSettings.getInstance().loadDefaultCCv2Token {
             ccv2TokenTextField.text = it
         }
 
@@ -497,7 +497,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
             this.isUseFakeOutputPathForCustomExtensions = projectSettings.useFakeOutputPathForCustomExtensions
 
             val appSettings = ApplicationSettings.getInstance()
-            val ccv2Settings = CCv2Settings.getInstance()
+            val ccv2ProjectSettings = CCv2ProjectSettings.getInstance()
             this.isIgnoreNonExistingSourceDirectories = appSettings.ignoreNonExistingSourceDirectories
             this.isWithStandardProvidedSources = appSettings.withStandardProvidedSources
 
@@ -508,7 +508,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     HybrisConstants.DEFAULT_DIRECTORY_NAME_FOR_IDEA_MODULE_FILES
                 )
 
-            this.ccv2Token = ccv2Settings.getCCv2Token()
+            this.ccv2Token = ccv2ProjectSettings.getCCv2Token()
 
             val hybrisDirectory = projectSettings.hybrisDirectory
             if (hybrisDirectory != null) {

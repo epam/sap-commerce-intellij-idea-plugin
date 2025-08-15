@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 import com.intellij.ide.HelpTooltip
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
+import com.intellij.idea.plugin.hybris.settings.CCv2DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.formatTime
@@ -59,7 +59,7 @@ fun Row.copyLink(project: Project, label: String?, value: String, confirmationMe
 fun Row.sUser(project: Project, sUserId: String, icon: Icon, label: String = "Created by") {
     icon(icon)
         .gap(RightGap.SMALL)
-    val sUser = DeveloperSettings.getInstance(project).getSUser(sUserId)
+    val sUser = CCv2DeveloperSettings.getInstance(project).getSUser(sUserId)
     link(sUser.toString()) { SUserDetailsDialog(project, sUser).showAndGet() }
         .comment(label)
         .applyToComponent {

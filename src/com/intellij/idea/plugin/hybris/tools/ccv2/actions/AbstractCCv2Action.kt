@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
-import com.intellij.idea.plugin.hybris.settings.CCv2Settings
+import com.intellij.idea.plugin.hybris.settings.CCv2ProjectSettings
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2View
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -46,5 +46,5 @@ abstract class AbstractCCv2Action(
             ?: false
     }
 
-    protected open fun isEnabled() = CCv2Settings.getInstance().ccv2Subscriptions.isNotEmpty()
+    protected open fun isEnabled() = CCv2ProjectSettings.getInstance().ccv2Subscriptions.isNotEmpty()
 }

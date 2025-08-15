@@ -34,9 +34,9 @@ import javax.swing.tree.TreePath
 private const val SHOW_LOADING_NODE = true
 private const val SEARCH_CAN_EXPAND = true
 
-class LoggersOptionsTree(val myProject: Project) : Tree(), Disposable {
+class LoggersOptionsTree(myProject: Project) : Tree(), Disposable {
 
-    private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggersRootNode(this)))
+    private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggersRootNode(myProject)))
 
     init {
         isRootVisible = false

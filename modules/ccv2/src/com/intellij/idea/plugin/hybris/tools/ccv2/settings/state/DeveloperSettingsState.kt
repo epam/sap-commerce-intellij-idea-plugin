@@ -16,22 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes
+package com.intellij.idea.plugin.hybris.tools.ccv2.settings.state
 
-import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.remote.RemoteHacInstancesLoggersOptionsNode
-import com.intellij.openapi.project.Project
-import com.intellij.ui.SimpleTextAttributes
+import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Tag
 
-class LoggersRootNode(project: Project) : LoggersNode(project) {
+@Tag("HybrisDeveloperSpecificProjectSettings")
+data class DeveloperSettingsState(
 
-    override fun getName() = "root"
-    override fun update(presentation: PresentationData) {
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-    }
-
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters) = listOf(
-        RemoteHacInstancesLoggersOptionsNode(project)
-        //LoggersTemplateLoggersOptionsNode(project)
-    ).associateBy { it.name }
-}
+    @JvmField @OptionTag val activeCCv2SubscriptionID: String? = null,
+    @JvmField @OptionTag val ccv2Settings: CCv2SettingsState = CCv2SettingsState(),
+)

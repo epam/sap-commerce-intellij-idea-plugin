@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.help.HybrisWebHelpProvider
-import com.intellij.idea.plugin.hybris.settings.CCv2Settings
+import com.intellij.idea.plugin.hybris.settings.CCv2ProjectSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
@@ -67,7 +67,7 @@ class CCv2DeployBuildDialog(
         title = "Schedule CCv2 Build Deployment"
         super.init()
 
-        val subscriptions = CCv2Settings.getInstance().ccv2Subscriptions
+        val subscriptions = CCv2ProjectSettings.getInstance().ccv2Subscriptions
 
         isOKActionEnabled = false
         subscriptionComboBox.isEnabled = false

@@ -29,7 +29,6 @@ import com.intellij.idea.plugin.hybris.system.businessProcess.settings.state.BpS
 import com.intellij.idea.plugin.hybris.system.cockpitng.settings.state.CngSettingsState
 import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemDiagramSettingsState
 import com.intellij.idea.plugin.hybris.system.type.settings.state.TypeSystemSettingsState
-import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SettingsState
 import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
@@ -39,7 +38,6 @@ data class DeveloperSettingsState(
 
     @JvmField @OptionTag val activeRemoteConnectionID: String? = null,
     @JvmField @OptionTag val activeSolrConnectionID: String? = null,
-    @JvmField @OptionTag val activeCCv2SubscriptionID: String? = null,
 
     @JvmField val remoteConnectionSettingsList: List<RemoteConnectionSettingsState> = emptyList(),
     @JvmField @OptionTag val typeSystemDiagramSettings: TypeSystemDiagramSettingsState = TypeSystemDiagramSettingsState(),
@@ -53,5 +51,4 @@ data class DeveloperSettingsState(
     @JvmField @OptionTag val impexSettings: ImpExSettingsState = ImpExSettingsState(),
     @JvmField @OptionTag val groovySettings: GroovySettingsState = GroovySettingsState(),
     @JvmField @OptionTag val jspSettings: JspSettingsState = JspSettingsState(),
-    @JvmField @OptionTag val ccv2Settings: CCv2SettingsState = CCv2SettingsState(),
 )

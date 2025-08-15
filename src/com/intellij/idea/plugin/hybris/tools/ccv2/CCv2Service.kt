@@ -21,8 +21,8 @@ package com.intellij.idea.plugin.hybris.tools.ccv2
 import com.intellij.ide.BrowserUtil
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.settings.CCv2Settings
-import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
+import com.intellij.idea.plugin.hybris.settings.CCv2DeveloperSettings
+import com.intellij.idea.plugin.hybris.settings.CCv2ProjectSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.api.CCv1Api
 import com.intellij.idea.plugin.hybris.tools.ccv2.api.CCv2Api
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.*
@@ -95,7 +95,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
     ) {
         if (sendEvents) project.messageBus.syncPublisher(CCv2EnvironmentsListener.TOPIC).onFetchingStarted(subscriptions)
 
-        val ccv2Settings = DeveloperSettings.getInstance(project).ccv2Settings
+        val ccv2Settings = CCv2DeveloperSettings.getInstance(project).ccv2Settings
         val statuses = (statuses ?: ccv2Settings.showEnvironmentStatuses)
             .map { it.name }
 
@@ -277,7 +277,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
     ) {
         project.messageBus.syncPublisher(CCv2BuildsListener.TOPIC).onFetchingStarted(subscriptions)
 
-        val ccv2Settings = DeveloperSettings.getInstance(project).ccv2Settings
+        val ccv2Settings = CCv2DeveloperSettings.getInstance(project).ccv2Settings
         val statusNot = CCv2BuildStatus.entries
             .filterNot { ccv2Settings.showBuildStatuses.contains(it) }
             .map { it.name }
@@ -754,7 +754,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
     }
 
     private fun getCCv2Token(subscription: CCv2Subscription): String? {
-        val appSettings = CCv2Settings.getInstance()
+        val appSettings = CCv2ProjectSettings.getInstance()
         val ccv2Token = appSettings.getCCv2Token(subscription.uuid)
             ?: appSettings.getCCv2Token()
 

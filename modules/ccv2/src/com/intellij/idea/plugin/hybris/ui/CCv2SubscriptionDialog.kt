@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.ui
 
-import com.intellij.idea.plugin.hybris.settings.CCv2Settings
+import com.intellij.idea.plugin.hybris.settings.CCv2ProjectSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SubscriptionDto
 import com.intellij.openapi.observable.properties.AtomicBooleanProperty
 import com.intellij.openapi.ui.DialogWrapper
@@ -39,7 +39,7 @@ internal class CCv2SubscriptionDialog(
         super.init()
 
         if (subscription.ccv2Token == null) {
-            CCv2Settings.Companion.getInstance().loadCCv2Token(subscription.uuid) {
+            CCv2ProjectSettings.Companion.getInstance().loadCCv2Token(subscription.uuid) {
                 subscription.ccv2Token = it
                 enableCCv2Token.set(true)
             }

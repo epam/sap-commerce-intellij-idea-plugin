@@ -27,7 +27,7 @@ import com.intellij.idea.plugin.hybris.ccv1.model.MediaStoragePublicKeyDTO
 import com.intellij.idea.plugin.hybris.ccv1.model.PermissionDTO
 import com.intellij.idea.plugin.hybris.ccv1.model.ServiceReplicaStatusDTO
 import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
-import com.intellij.idea.plugin.hybris.settings.CCv2Settings
+import com.intellij.idea.plugin.hybris.settings.CCv2ProjectSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2MediaStorageDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
@@ -43,7 +43,7 @@ class CCv1Api {
 
     private val apiClient by lazy {
         ApiClient.Companion.builder
-            .readTimeout(CCv2Settings.Companion.getInstance().ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
+            .readTimeout(CCv2ProjectSettings.Companion.getInstance().ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
             .build()
     }
     private val environmentApi by lazy { EnvironmentApi(client = apiClient) }
