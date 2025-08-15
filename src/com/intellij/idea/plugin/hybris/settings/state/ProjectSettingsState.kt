@@ -36,7 +36,6 @@ data class ProjectSettingsState(
     @JvmField @OptionTag val externalConfigDirectory: String? = null,
     @JvmField @OptionTag val externalDbDriversDirectory: String? = null,
     @JvmField @OptionTag val ideModulesFilesDirectory: String? = null,
-    @JvmField @OptionTag val hybrisProject: Boolean = false,
     @JvmField @OptionTag val generateCodeOnRebuild: Boolean = true,
     @JvmField @OptionTag val generateCodeOnJUnitRunConfiguration: Boolean = false,
     @JvmField @OptionTag val generateCodeTimeoutSeconds: Int = 60,

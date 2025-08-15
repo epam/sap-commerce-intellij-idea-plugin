@@ -21,6 +21,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
 import com.intellij.openapi.compiler.CompilerManager
@@ -31,7 +32,7 @@ class ProjectAfterCompilerTask : CompileTask {
     override fun execute(context: CompileContext) = application.runReadAction<Boolean> {
         val project = context.project
         val settings = ProjectSettings.getInstance(project)
-        if (!settings.isHybrisProject()) return@runReadAction true
+        if (!project.isHybrisProject) return@runReadAction true
         if (!settings.generateCodeOnRebuild) return@runReadAction true
 
         val typeId = context.compileScope.getUserData(CompilerManager.RUN_CONFIGURATION_TYPE_ID_KEY)

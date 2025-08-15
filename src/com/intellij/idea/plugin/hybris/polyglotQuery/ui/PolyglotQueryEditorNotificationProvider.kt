@@ -24,8 +24,8 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryConstants
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.settings.state.PolyglotQuerySettingsState
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -49,8 +49,7 @@ import javax.swing.JComponent
 class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, DumbAware {
 
     override fun collectNotificationData(project: Project, file: VirtualFile): Function<in FileEditor, out JComponent?>? {
-        val projectSettings = ProjectSettings.getInstance(project)
-        if (!projectSettings.isHybrisProject()) return null
+        if (!project.isHybrisProject) return null
         if (!FileTypeRegistry.getInstance().isFileOfType(file, PolyglotQueryFileType)) return null
 
         val developerSettings = DeveloperSettings.getInstance(project)

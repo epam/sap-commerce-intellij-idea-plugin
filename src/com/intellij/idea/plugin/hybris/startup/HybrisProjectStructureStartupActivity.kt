@@ -25,6 +25,7 @@ import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
@@ -39,7 +40,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
 
         val commonIdeaService = CommonIdeaService.getInstance()
         val settingsComponent = ProjectSettings.getInstance(project)
-        val isHybrisProject = settingsComponent.isHybrisProject()
+        val isHybrisProject = project.isHybrisProject
 
         if (isHybrisProject) {
             settingsComponent.registerCloudExtensions()

@@ -28,7 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileToolbarInstaller
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.editor.ex.EditorEx
@@ -43,8 +43,7 @@ class HybrisEditorFactoryListener : EditorFactoryListener {
         val file = event.editor.virtualFile ?: return
 
         if (SingleRootFileViewProvider.isTooLargeForIntelligence(file)) return
-        val projectSettings = ProjectSettings.getInstance(project)
-        if (!projectSettings.isHybrisProject()) return
+        if (!project.isHybrisProject) return
 
         val toolbarInstaller = when {
             file.fileType is FlexibleSearchFileType -> FlexibleSearchFileToolbarInstaller.getInstance()

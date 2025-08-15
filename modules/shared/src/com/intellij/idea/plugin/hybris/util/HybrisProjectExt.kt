@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.util
 
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
@@ -32,7 +32,7 @@ val PsiElement.isNotHybrisProject: Boolean
     get() = project.isNotHybrisProject
 
 val Project.isHybrisProject: Boolean
-    get() = ProjectSettings.getInstance(this).isHybrisProject()
+    get() = WorkspaceSettings.getInstance(this).hybrisProject
 
 val Project.isNotHybrisProject: Boolean
     get() = !isHybrisProject

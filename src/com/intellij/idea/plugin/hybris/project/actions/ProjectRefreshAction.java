@@ -33,6 +33,7 @@ import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.wizard.RefreshSupport;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
+import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.openapi.application.ApplicationManager;
@@ -119,7 +120,7 @@ public class ProjectRefreshAction extends AnAction {
         }
         presentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true);
         presentation.setIcon(HybrisIcons.Y.INSTANCE.getLOGO_BLUE());
-        presentation.setVisible(ProjectSettings.getInstance(project).isHybrisProject());
+        presentation.setVisible(WorkspaceSettings.getInstance(project).getHybrisProject());
     }
 
     @Override

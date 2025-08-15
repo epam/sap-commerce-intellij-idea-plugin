@@ -26,6 +26,7 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.compiler.*
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.projectRoots.JavaSdk
@@ -57,7 +58,7 @@ class ProjectBeforeCompilerTask : CompileTask {
     override fun execute(context: CompileContext): Boolean {
         val project = context.project
         val settings = ProjectSettings.getInstance(project)
-        if (!settings.isHybrisProject()) return true
+        if (!project.isHybrisProject) return true
         if (!settings.generateCodeOnRebuild) {
             context.addMessage(CompilerMessageCategory.WARNING, "[y] Code generation is disabled, to enable it adjust SAP Commerce Project specific settings.", null, -1, -1)
             return true

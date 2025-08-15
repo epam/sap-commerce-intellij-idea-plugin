@@ -36,6 +36,7 @@ import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.utils.Plugin;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
+import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings;
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
@@ -445,7 +446,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     private void initializeHybrisProjectSettings(final @NotNull ProjectSettings projectSettings) {
-        projectSettings.setHybrisProject(true);
+        WorkspaceSettings.getInstance(project).setHybrisProject(true);
         final var plugin = Plugin.HYBRIS.getPluginDescriptor();
 
         if (plugin == null) return;

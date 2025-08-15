@@ -34,7 +34,7 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Sca
 import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
+import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings;
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -884,11 +884,8 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             return;
         }
         // the project may not be hybris based project.
-        final ProjectSettings projectSettings = ProjectSettings.getInstance(project);
-        if (projectSettings == null) {
-            return;
-        }
-        if (projectSettings.isHybrisProject()) {
+        final var projectSettings = WorkspaceSettings.getInstance(project);
+        if (projectSettings.getHybrisProject()) {
             setHybrisProject(project);
         }
     }

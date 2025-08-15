@@ -92,11 +92,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(ideModulesFilesDirectory = value) }
         }
-    var hybrisProject
-        get() =  state.hybrisProject
-        set(value) {
-            updateState { it.copy(hybrisProject = value) }
-        }
     var generateCodeOnRebuild
         get() = state.generateCodeOnRebuild
         set(value) {
@@ -182,9 +177,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(useFakeOutputPathForCustomExtensions = value) }
         }
-
-    // TODO: improve this logic for initially non-hybris projects
-    fun isHybrisProject() = hybrisProject
 
     fun isOutdatedHybrisProject(): Boolean {
         val lastImportVersion = importedByVersion ?: return true

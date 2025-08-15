@@ -29,7 +29,7 @@ import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
+import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
@@ -44,7 +44,7 @@ import java.io.File
 
 open class HybrisProjectView(val project: Project) : TreeStructureProvider, DumbAware {
 
-    private val hybrisProject = ProjectSettings.getInstance(project).hybrisProject
+    private val hybrisProject = WorkspaceSettings.getInstance(project).hybrisProject
     private val hybrisApplicationSettings = ApplicationSettings.getInstance()
     private val commerceGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupHybris)
         ?.firstOrNull()

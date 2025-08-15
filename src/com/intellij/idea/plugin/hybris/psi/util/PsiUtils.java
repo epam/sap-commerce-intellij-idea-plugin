@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.psi.util;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.facet.YFacetConstants;
 import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType;
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
+import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -75,7 +75,7 @@ public final class PsiUtils {
 
     private static boolean shouldCheckFilesWithoutHybrisSettings(@NotNull final Project project) {
         // at least it needs to have a hybris flag
-        return ProjectSettings.getInstance(project).isHybrisProject();
+        return WorkspaceSettings.getInstance(project).getHybrisProject();
     }
 
     private static ModuleDescriptorType estimateIsCustomExtension(@NotNull final VirtualFile file) {
