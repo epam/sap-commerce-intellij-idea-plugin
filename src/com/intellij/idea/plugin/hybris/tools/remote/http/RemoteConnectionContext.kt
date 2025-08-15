@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaSelectionMode
+import sap.commerce.toolset.remote.execution.ReplicaContext
 
 data class RemoteConnectionContext(
     val replicaSelectionMode: ReplicaSelectionMode,

@@ -18,9 +18,9 @@
  */
 package com.intellij.idea.plugin.hybris.tools.remote.execution
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.execution.ReplicaContext
 
 data class DefaultExecutionResult(
     override val remoteConnectionType: RemoteConnectionType = RemoteConnectionType.Hybris,
