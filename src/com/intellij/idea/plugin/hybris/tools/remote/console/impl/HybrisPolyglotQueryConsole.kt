@@ -22,8 +22,6 @@ import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.QueryMode
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -31,6 +29,8 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.remote.execution.QueryMode
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel

@@ -21,9 +21,7 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
-import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.monitor.ImpExMonitorExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -31,6 +29,8 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionClient
+import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
 
 class ConsoleExecuteStatementAction : AnAction() {
 

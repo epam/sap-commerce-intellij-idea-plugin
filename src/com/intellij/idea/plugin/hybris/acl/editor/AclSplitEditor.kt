@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.acl.editor
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
@@ -35,6 +34,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
 import sap.commerce.toolset.remote.execution.DefaultExecutionResult
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener

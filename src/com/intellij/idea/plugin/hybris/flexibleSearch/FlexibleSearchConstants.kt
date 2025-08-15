@@ -20,9 +20,9 @@ package com.intellij.idea.plugin.hybris.flexibleSearch
 
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
-import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.openapi.util.Key
 import com.intellij.psi.tree.IFileElementType
+import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
 
 object FlexibleSearchConstants {
     val FILE_NODE_TYPE = IFileElementType(FlexibleSearchLanguage)

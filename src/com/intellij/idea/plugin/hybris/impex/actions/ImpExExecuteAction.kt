@@ -24,8 +24,6 @@ import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
 import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
 import com.intellij.idea.plugin.hybris.impex.editor.impexSplitEditor
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
@@ -33,6 +31,8 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
+import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
 
 class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole, ImpExSplitEditor>(
     ImpexLanguage,

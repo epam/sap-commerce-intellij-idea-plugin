@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.impex
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.util.Key
 import com.intellij.psi.tree.IFileElementType
+import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
 
 object ImpExConstants {
     const val IMPEX_CONFIG_PREFIX = "\$config"

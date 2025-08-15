@@ -21,7 +21,6 @@ import com.intellij.ide.BrowserUtil
 import com.intellij.idea.plugin.hybris.actions.ExecutionContextSettingsAction
 import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
-import com.intellij.idea.plugin.hybris.tools.remote.execution.impex.ImpExExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -30,6 +29,7 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
 import javax.swing.LayoutFocusTraversalPolicy
 
 class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpExExecutionContext.ModifiableSettings>() {

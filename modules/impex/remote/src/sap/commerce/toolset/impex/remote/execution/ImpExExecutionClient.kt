@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.impex
+package sap.commerce.toolset.impex.remote.execution
 
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.openapi.components.Service
@@ -41,7 +41,7 @@ import java.nio.charset.StandardCharsets
 class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<ImpExExecutionContext>(project, coroutineScope) {
 
     override suspend fun execute(context: ImpExExecutionContext): DefaultExecutionResult {
-        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val actionUrl = when (context.executionMode) {
             ImpExExecutionContext.ExecutionMode.IMPORT -> settings.generatedURL + "/console/impex/import"
             ImpExExecutionContext.ExecutionMode.VALIDATE -> settings.generatedURL + "/console/impex/import/validate"

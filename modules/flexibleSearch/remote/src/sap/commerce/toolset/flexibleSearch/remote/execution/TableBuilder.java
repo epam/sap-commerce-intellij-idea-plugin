@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch;
+package sap.commerce.toolset.flexibleSearch.remote.execution;
 
 import org.apache.commons.lang3.StringUtils;
 import sap.commerce.toolset.HybrisConstants;

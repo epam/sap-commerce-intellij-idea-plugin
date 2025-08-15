@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
+package sap.commerce.toolset.flexibleSearch.remote.execution
 
 import com.google.gson.Gson
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
@@ -27,7 +27,6 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
-import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.execution.ExecutionClient
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient

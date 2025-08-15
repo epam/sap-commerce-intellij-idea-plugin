@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
+package sap.commerce.toolset.flexibleSearch.remote.execution
 
 enum class QueryMode(val title: String) {
     SQL("SQL"),
