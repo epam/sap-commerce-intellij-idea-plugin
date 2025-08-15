@@ -16,21 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common
+package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.toNioPathOrNull
-import java.nio.file.Path
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import javax.swing.Icon
 
-fun Module.yExtensionName(): String = YFacet.get(this)
-    ?.configuration
-    ?.state
-    ?.name
-    ?: this.name.substringAfterLast(".")
+enum class CCv2DeploymentStatusEnum(val title: String, val icon: Icon) {
+    SCHEDULED("Scheduled", HybrisIcons.CCv2.Deployment.Status.SCHEDULED),
+    DEPLOYED("Deployed", HybrisIcons.CCv2.Deployment.Status.DEPLOYED),
+    DEPLOYING("Deploying", HybrisIcons.CCv2.Deployment.Status.DEPLOYING),
+    UNDEPLOYED("Undeployed", HybrisIcons.CCv2.Deployment.Status.UNDEPLOYED),
+    FAIL("Fail", HybrisIcons.CCv2.Deployment.Status.FAIL),
+    UNKNOWN("Unknown", HybrisIcons.CCv2.Deployment.Status.UNKNOWN);
 
-fun Module.root(): Path? = this
-    .let { ModuleRootManager.getInstance(it).contentRoots }
-    .firstOrNull()
-    ?.toNioPathOrNull()
+    companion object {
+        fun tryValueOf(name: String?) = entries
+            .find { it.name == name }
+            ?: UNKNOWN
+    }
+}

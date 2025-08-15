@@ -18,21 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2
 
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
+import com.intellij.util.messages.Topic
 
-object CCv2Util {
-
-    fun formatTime(time: OffsetDateTime?) = time
-        ?.atZoneSameInstant(ZoneId.systemDefault())
-        ?.format(CCv2Constants.DATE_TIME_FORMATTER_LOCAL)
-        ?: "N/A";
-
-    fun getTimeDiffInMinutes(startTime: OffsetDateTime?, endTime: OffsetDateTime?): Long {
-        if (startTime == null || endTime == null) {
-            return -1;
-        }
-        return ChronoUnit.MINUTES.between(startTime, endTime)
+interface CCv2EnvironmentsListener : CCv2Listener<CCv2EnvironmentDto> {
+    companion object {
+        val TOPIC = Topic(CCv2EnvironmentsListener::class.java)
     }
 }

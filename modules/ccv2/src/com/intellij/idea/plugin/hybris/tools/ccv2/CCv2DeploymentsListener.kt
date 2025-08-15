@@ -16,21 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common
+package com.intellij.idea.plugin.hybris.tools.ccv2
 
-import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.toNioPathOrNull
-import java.nio.file.Path
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
+import com.intellij.util.messages.Topic
 
-fun Module.yExtensionName(): String = YFacet.get(this)
-    ?.configuration
-    ?.state
-    ?.name
-    ?: this.name.substringAfterLast(".")
-
-fun Module.root(): Path? = this
-    .let { ModuleRootManager.getInstance(it).contentRoots }
-    .firstOrNull()
-    ?.toNioPathOrNull()
+interface CCv2DeploymentsListener : CCv2Listener<CCv2DeploymentDto> {
+    companion object {
+        val TOPIC = Topic(CCv2DeploymentsListener::class.java)
+    }
+}

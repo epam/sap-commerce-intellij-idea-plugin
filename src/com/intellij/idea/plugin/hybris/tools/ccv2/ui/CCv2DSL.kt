@@ -22,9 +22,9 @@ import com.intellij.ide.HelpTooltip
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
+import com.intellij.idea.plugin.hybris.tools.ccv2.formatTime
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
@@ -37,7 +37,7 @@ import java.time.OffsetDateTime
 import javax.swing.Icon
 
 fun Row.date(label: String, dateTime: OffsetDateTime?) {
-    label(CCv2Util.formatTime(dateTime))
+    label(formatTime(dateTime))
         .comment(label)
 }
 

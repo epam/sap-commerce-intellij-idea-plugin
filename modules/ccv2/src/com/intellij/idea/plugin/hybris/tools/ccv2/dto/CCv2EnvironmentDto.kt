@@ -37,7 +37,7 @@ data class CCv2EnvironmentDto(
     val mediaStorages: Collection<CCv2MediaStorageDto>,
     var services: Collection<CCv2ServiceDto>? = null,
     var dataBackups: Collection<CCv2DataBackupDto>? = null,
-) : CCv2DTO, Comparable<CCv2EnvironmentDto> {
+) : CCv2Dto, Comparable<CCv2EnvironmentDto> {
 
     val accessible
         get() = dynatraceLink != null

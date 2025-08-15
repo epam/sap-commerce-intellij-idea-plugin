@@ -16,21 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common
+package com.intellij.idea.plugin.hybris.tools.ccv2
 
-import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.toNioPathOrNull
-import java.nio.file.Path
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Dto
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 
-fun Module.yExtensionName(): String = YFacet.get(this)
-    ?.configuration
-    ?.state
-    ?.name
-    ?: this.name.substringAfterLast(".")
+sealed interface CCv2Listener<T : CCv2Dto> {
+    fun onFetchingStarted(subscriptions: Collection<CCv2Subscription>) = Unit
+    fun onFetchingCompleted(data: Map<CCv2Subscription, Collection<T>> = emptyMap()) = Unit
 
-fun Module.root(): Path? = this
-    .let { ModuleRootManager.getInstance(it).contentRoots }
-    .firstOrNull()
-    ?.toNioPathOrNull()
+    fun onFetchingBuildDetailsStarted(data: Map<CCv2Subscription, Collection<T>>) = Unit
+    fun onFetchingBuildDetailsCompleted(data: Map<CCv2Subscription, Collection<T>> = emptyMap()) = Unit
+}

@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Dto
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.ui.scrollPanel
@@ -31,7 +31,7 @@ import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
 
-abstract class AbstractCCv2DataView<T : CCv2DTO> {
+abstract class AbstractCCv2DataView<T : CCv2Dto> {
 
     abstract val tab: CCv2Tab
     abstract fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<T>>): DialogPanel

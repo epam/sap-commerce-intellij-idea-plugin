@@ -22,7 +22,11 @@ import com.intellij.idea.plugin.hybris.ccv1.api.EnvironmentApi
 import com.intellij.idea.plugin.hybris.ccv1.api.PermissionsApi
 import com.intellij.idea.plugin.hybris.ccv1.api.ServiceApi
 import com.intellij.idea.plugin.hybris.ccv1.invoker.infrastructure.ApiClient
-import com.intellij.idea.plugin.hybris.ccv1.model.*
+import com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentHealthDTO
+import com.intellij.idea.plugin.hybris.ccv1.model.MediaStoragePublicKeyDTO
+import com.intellij.idea.plugin.hybris.ccv1.model.PermissionDTO
+import com.intellij.idea.plugin.hybris.ccv1.model.ServiceReplicaStatusDTO
+import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO
 import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2MediaStorageDto
@@ -33,14 +37,13 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
 import java.util.concurrent.TimeUnit
-import com.intellij.idea.plugin.hybris.ccv2.model.EnvironmentDetailDTO as V2EnvironmentDetailDTO
 
 @Service
 class CCv1Api {
 
     private val apiClient by lazy {
-        ApiClient.builder
-            .readTimeout(CCv2Settings.getInstance().ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
+        ApiClient.Companion.builder
+            .readTimeout(CCv2Settings.Companion.getInstance().ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
             .build()
     }
     private val environmentApi by lazy { EnvironmentApi(client = apiClient) }
@@ -55,8 +58,8 @@ class CCv1Api {
 
     suspend fun fetchEnvironment(
         accessToken: String,
-        v2Environment: V2EnvironmentDetailDTO
-    ): EnvironmentDetailDTO? {
+        v2Environment: EnvironmentDetailDTO
+    ): com.intellij.idea.plugin.hybris.ccv1.model.EnvironmentDetailDTO? {
         val subscriptionCode = v2Environment.subscriptionCode ?: return null
         val environmentCode = v2Environment.code ?: return null
 
@@ -70,7 +73,7 @@ class CCv1Api {
 
     suspend fun fetchEnvironmentHealth(
         accessToken: String,
-        v2Environment: V2EnvironmentDetailDTO
+        v2Environment: EnvironmentDetailDTO
     ): EnvironmentHealthDTO? {
         val subscriptionCode = v2Environment.subscriptionCode ?: return null
         val environmentCode = v2Environment.code ?: return null
@@ -106,7 +109,7 @@ class CCv1Api {
             environmentCode = environment.code,
             requestHeaders = createRequestParams(accessToken)
         )
-        .map { CCv2ServiceDto.map(subscription, environment, it) }
+        .map { CCv2ServiceDto.Companion.map(subscription, environment, it) }
 
     suspend fun restartServiceReplica(
         accessToken: String,

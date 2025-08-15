@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.ui
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
@@ -30,7 +31,7 @@ import javax.swing.JComponent
 import javax.swing.JList
 import javax.swing.ListCellRenderer
 
-class CCv2SubscriptionListPanel(initialList: List<CCv2SubscriptionDto>) : AddEditDeleteListPanel<CCv2SubscriptionDto>(null, initialList) {
+internal class CCv2SubscriptionListPanel(initialList: List<CCv2SubscriptionDto>) : AddEditDeleteListPanel<CCv2SubscriptionDto>(null, initialList) {
 
     private var myListCellRenderer: ListCellRenderer<*>? = null
 

@@ -19,8 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv2.model.BuildProgressDTO
-import com.intellij.idea.plugin.hybris.ccv2.model.BuildProgressStartedTaskDTO
-import java.time.OffsetDateTime
 
 data class CCv2BuildProgressDto(
     val buildStatus: CCv2BuildStatus,
@@ -29,7 +27,7 @@ data class CCv2BuildProgressDto(
     val numberOfTasks: Int,
     val percentage: Int,
     val startedTasks: Collection<CCv2BuildProgressStartedTaskDto>,
-) : CCv2DTO {
+) : CCv2Dto {
 
     companion object {
         fun map(buildProgress: BuildProgressDTO) = CCv2BuildProgressDto(
@@ -43,20 +41,5 @@ data class CCv2BuildProgressDto(
                 ?: emptyList(),
         )
 
-    }
-}
-
-
-data class CCv2BuildProgressStartedTaskDto(
-    val task: String,
-    val name: String,
-    val startTimestamp: OffsetDateTime?
-) {
-    companion object {
-        fun map(buildProgress: BuildProgressStartedTaskDTO) = CCv2BuildProgressStartedTaskDto(
-            task = buildProgress.task ?: "N/A",
-            name = buildProgress.name ?: "N/A",
-            startTimestamp = buildProgress.startTimestamp
-        )
     }
 }

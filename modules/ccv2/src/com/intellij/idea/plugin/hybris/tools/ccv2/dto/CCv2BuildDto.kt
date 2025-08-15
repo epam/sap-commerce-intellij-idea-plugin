@@ -20,8 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv2.model.BuildDetailDTO
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Util
-import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
+import com.intellij.idea.plugin.hybris.tools.ccv2.getTimeDiffInMinutes
 import com.intellij.util.asSafely
 import java.time.OffsetDateTime
 
@@ -39,8 +38,8 @@ data class CCv2BuildDto(
     val version: String,
     val revision: String,
     val link: String?,
-) : CCv2DTO {
-    val duration = CCv2Util.getTimeDiffInMinutes(startTime, endTime).takeIf { it.toInt() != -1 } ?: "N/A"
+) : CCv2Dto {
+    val duration = getTimeDiffInMinutes(startTime, endTime).takeIf { it.toInt() != -1 } ?: "N/A"
 
     fun canDelete() = status != CCv2BuildStatus.DELETED && status != CCv2BuildStatus.UNKNOWN
     fun canDownloadLogs() = status != CCv2BuildStatus.DELETED
@@ -77,10 +76,3 @@ data class CCv2BuildDto(
     }
 }
 
-data class CCv2BuildRequest(
-    val subscription: CCv2Subscription,
-    val name: String,
-    val branch: String,
-    val track: Boolean,
-    val deploymentRequests: Collection<CCv2DeploymentRequest> = listOf(),
-)

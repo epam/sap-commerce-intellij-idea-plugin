@@ -16,21 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common
+package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.toNioPathOrNull
-import java.nio.file.Path
+import java.time.OffsetDateTime
 
-fun Module.yExtensionName(): String = YFacet.get(this)
-    ?.configuration
-    ?.state
-    ?.name
-    ?: this.name.substringAfterLast(".")
-
-fun Module.root(): Path? = this
-    .let { ModuleRootManager.getInstance(it).contentRoots }
-    .firstOrNull()
-    ?.toNioPathOrNull()
+data class CCv2DeploymentDto(
+    val code: String,
+    val createdBy: String,
+    val createdTime: OffsetDateTime?,
+    val buildCode: String,
+    val envCode: String,
+    val updateMode: CCv2DeploymentDatabaseUpdateModeEnum,
+    val strategy: CCv2DeploymentStrategyEnum,
+    val scheduledTime: OffsetDateTime?,
+    val deployedTime: OffsetDateTime?,
+    val failedTime: OffsetDateTime?,
+    val undeployedTime: OffsetDateTime?,
+    val status: CCv2DeploymentStatusEnum,
+    val link: String?,
+) : CCv2Dto {
+    fun canTrack() = status == CCv2DeploymentStatusEnum.DEPLOYING || status == CCv2DeploymentStatusEnum.SCHEDULED
+}

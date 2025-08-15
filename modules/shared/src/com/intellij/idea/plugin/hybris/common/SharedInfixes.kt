@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,21 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.ccv2.dto
+package com.intellij.idea.plugin.hybris.common
 
-import com.intellij.idea.plugin.hybris.ccv1.model.ServiceReplicaDTO
-
-data class CCv2ServiceReplicaDto(
-    val name: String,
-    val status: String,
-    val ready: Boolean,
-) {
-
-    companion object {
-        fun map(dto: ServiceReplicaDTO) = CCv2ServiceReplicaDto(
-            name = dto.name,
-            status = dto.status,
-            ready = dto.ready ?: false
-        )
-    }
-}
+infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>) = this.size == other.size && this.toSet() == other.toSet()

@@ -16,21 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common
+package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.toNioPathOrNull
-import java.nio.file.Path
+import com.intellij.idea.plugin.hybris.ccv1.model.ServiceReplicaDTO
 
-fun Module.yExtensionName(): String = YFacet.get(this)
-    ?.configuration
-    ?.state
-    ?.name
-    ?: this.name.substringAfterLast(".")
+data class CCv2ServiceReplicaDto(
+    val name: String,
+    val status: String,
+    val ready: Boolean,
+) {
 
-fun Module.root(): Path? = this
-    .let { ModuleRootManager.getInstance(it).contentRoots }
-    .firstOrNull()
-    ?.toNioPathOrNull()
+    companion object {
+        fun map(dto: ServiceReplicaDTO) = CCv2ServiceReplicaDto(
+            name = dto.name,
+            status = dto.status,
+            ready = dto.ready ?: false
+        )
+    }
+}

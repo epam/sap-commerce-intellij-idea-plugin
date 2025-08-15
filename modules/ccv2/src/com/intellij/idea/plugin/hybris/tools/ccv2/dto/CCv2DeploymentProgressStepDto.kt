@@ -16,21 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common
+package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.toNioPathOrNull
-import java.nio.file.Path
+import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentProgressStepDTO
+import java.time.OffsetDateTime
 
-fun Module.yExtensionName(): String = YFacet.get(this)
-    ?.configuration
-    ?.state
-    ?.name
-    ?: this.name.substringAfterLast(".")
-
-fun Module.root(): Path? = this
-    .let { ModuleRootManager.getInstance(it).contentRoots }
-    .firstOrNull()
-    ?.toNioPathOrNull()
+data class CCv2DeploymentProgressStepDto(
+    val code: String,
+    val name: String,
+    val status: String,
+    val message: String,
+    val startTimestamp: OffsetDateTime?,
+    val endTimestamp: OffsetDateTime?,
+) {
+    companion object {
+        fun map(progress: DeploymentProgressStepDTO) = CCv2DeploymentProgressStepDto(
+            code = progress.code ?: "N/A",
+            name = progress.name ?: "N/A",
+            status = progress.status ?: "N/A",
+            message = progress.message ?: "N/A",
+            startTimestamp = progress.startTimestamp,
+            endTimestamp = progress.endTimestamp
+        )
+    }
+}

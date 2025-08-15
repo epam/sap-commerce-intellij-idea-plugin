@@ -16,21 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common
+package com.intellij.idea.plugin.hybris.tools.ccv2
 
-import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.toNioPathOrNull
-import java.nio.file.Path
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 
-fun Module.yExtensionName(): String = YFacet.get(this)
-    ?.configuration
-    ?.state
-    ?.name
-    ?: this.name.substringAfterLast(".")
+fun formatTime(time: OffsetDateTime?) = time
+    ?.atZoneSameInstant(ZoneId.systemDefault())
+    ?.format(CCv2Constants.DATE_TIME_FORMATTER_LOCAL)
+    ?: "N/A";
 
-fun Module.root(): Path? = this
-    .let { ModuleRootManager.getInstance(it).contentRoots }
-    .firstOrNull()
-    ?.toNioPathOrNull()
+fun getTimeDiffInMinutes(startTime: OffsetDateTime?, endTime: OffsetDateTime?): Long {
+    if (startTime == null || endTime == null) {
+        return -1;
+    }
+    return ChronoUnit.MINUTES.between(startTime, endTime)
+}

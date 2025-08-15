@@ -19,9 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
 import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentProgressDTO
-import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentProgressStageDTO
-import com.intellij.idea.plugin.hybris.ccv2.model.DeploymentProgressStepDTO
-import java.time.OffsetDateTime
 
 data class CCv2DeploymentProgressDto(
     val subscriptionCode: String,
@@ -29,7 +26,7 @@ data class CCv2DeploymentProgressDto(
     val deploymentStatus: CCv2DeploymentStatusEnum,
     val percentage: Int,
     val stages: Collection<CCv2DeploymentProgressStageDto>,
-) : CCv2DTO {
+) : CCv2Dto {
 
     companion object {
         fun map(progress: DeploymentProgressDTO) = CCv2DeploymentProgressDto(
@@ -42,49 +39,5 @@ data class CCv2DeploymentProgressDto(
                 ?: emptyList(),
         )
 
-    }
-}
-
-data class CCv2DeploymentProgressStageDto(
-    val name: String,
-    val type: String,
-    val status: String,
-    val logLink: String,
-    val startTimestamp: OffsetDateTime?,
-    val endTimestamp: OffsetDateTime?,
-    val steps: Collection<CCv2DeploymentProgressStepDto>,
-) {
-    companion object {
-        fun map(progress: DeploymentProgressStageDTO) = CCv2DeploymentProgressStageDto(
-            name = progress.name ?: "N/A",
-            type = progress.type ?: "N/A",
-            status = progress.status ?: "N/A",
-            logLink = progress.logLink ?: "N/A",
-            startTimestamp = progress.startTimestamp,
-            endTimestamp = progress.endTimestamp,
-            steps =  progress.steps
-                ?.map { CCv2DeploymentProgressStepDto.map(it) }
-                ?: emptyList(),
-        )
-    }
-}
-
-data class CCv2DeploymentProgressStepDto(
-    val code: String,
-    val name: String,
-    val status: String,
-    val message: String,
-    val startTimestamp: OffsetDateTime?,
-    val endTimestamp: OffsetDateTime?,
-) {
-    companion object {
-        fun map(progress: DeploymentProgressStepDTO) = CCv2DeploymentProgressStepDto(
-            code = progress.code ?: "N/A",
-            name = progress.name ?: "N/A",
-            status = progress.status ?: "N/A",
-            message = progress.message ?: "N/A",
-            startTimestamp = progress.startTimestamp,
-            endTimestamp = progress.endTimestamp
-        )
     }
 }

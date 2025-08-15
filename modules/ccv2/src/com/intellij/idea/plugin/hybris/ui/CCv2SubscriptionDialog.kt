@@ -26,7 +26,7 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import java.awt.Component
 
-class CCv2SubscriptionDialog(
+internal class CCv2SubscriptionDialog(
     parentComponent: Component,
     private val subscription: CCv2SubscriptionDto,
     dialogTitle: String
@@ -39,7 +39,7 @@ class CCv2SubscriptionDialog(
         super.init()
 
         if (subscription.ccv2Token == null) {
-            CCv2Settings.getInstance().loadCCv2Token(subscription.uuid) {
+            CCv2Settings.Companion.getInstance().loadCCv2Token(subscription.uuid) {
                 subscription.ccv2Token = it
                 enableCCv2Token.set(true)
             }

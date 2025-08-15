@@ -44,8 +44,8 @@ import java.util.concurrent.TimeUnit
 class CCv2Api {
 
     private val apiClient by lazy {
-        ApiClient.builder
-            .readTimeout(CCv2Settings.getInstance().ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
+        ApiClient.Companion.builder
+            .readTimeout(CCv2Settings.Companion.getInstance().ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
             .build()
     }
     private val environmentApi by lazy { EnvironmentApi(client = apiClient) }
@@ -101,7 +101,7 @@ class CCv2Api {
                 }
                 .awaitAll()
                 .map { (environment, details) ->
-                    CCv2EnvironmentDto.map(environment, details.first, details.second, details.third)
+                    CCv2EnvironmentDto.Companion.map(environment, details.first, details.second, details.third)
                 }
         }
     }
@@ -116,7 +116,7 @@ class CCv2Api {
         requestHeaders = createRequestParams(ccv2Token)
     )
         .value
-        ?.map { CCv2DataBackupDto.map(it) }
+        ?.map { CCv2DataBackupDto.Companion.map(it) }
         ?: emptyList()
 
     fun fetchEnvironmentsBuilds(
@@ -161,7 +161,7 @@ class CCv2Api {
         buildCode = buildCode,
         requestHeaders = createRequestParams(ccv2Token)
     )
-        .let { CCv2BuildDto.map(it) }
+        .let { CCv2BuildDto.Companion.map(it) }
 
     suspend fun fetchBuilds(
         ccv2Token: String,
@@ -177,7 +177,7 @@ class CCv2Api {
                 requestHeaders = createRequestParams(ccv2Token)
             )
             .value
-            ?.map { build -> CCv2BuildDto.map(build) }
+            ?.map { build -> CCv2BuildDto.Companion.map(build) }
             ?: emptyList()
     }
 
@@ -237,7 +237,7 @@ class CCv2Api {
     ) = progressReporter.indeterminateStep("Fetching the Build progress...") {
         buildApi
             .getBuildProgress(subscription.id!!, buildCode, requestHeaders = createRequestParams(ccv2Token))
-            .let { CCv2BuildProgressDto.map(it) }
+            .let { CCv2BuildProgressDto.Companion.map(it) }
     }
 
     suspend fun fetchDeploymentProgress(
@@ -248,7 +248,7 @@ class CCv2Api {
     ) = progressReporter.indeterminateStep("Fetching the Deployment progress...") {
         deploymentApi
             .getDeploymentProgress(subscription.id!!, deploymentCode, requestHeaders = createRequestParams(ccv2Token))
-            .let { CCv2DeploymentProgressDto.map(it) }
+            .let { CCv2DeploymentProgressDto.Companion.map(it) }
     }
 
     suspend fun createBuild(
@@ -334,13 +334,13 @@ class CCv2Api {
         createdTime = deployment.createdTimestamp,
         buildCode = deployment.buildCode ?: "N/A",
         envCode = environmentCode ?: "N/A",
-        updateMode = CCv2DeploymentDatabaseUpdateModeEnum.tryValueOf(deployment.databaseUpdateMode),
-        strategy = CCv2DeploymentStrategyEnum.tryValueOf(deployment.strategy),
+        updateMode = CCv2DeploymentDatabaseUpdateModeEnum.Companion.tryValueOf(deployment.databaseUpdateMode),
+        strategy = CCv2DeploymentStrategyEnum.Companion.tryValueOf(deployment.strategy),
         scheduledTime = deployment.scheduledTimestamp,
         deployedTime = deployment.deployedTimestamp,
         failedTime = deployment.failedTimestamp,
         undeployedTime = deployment.undeployedTimestamp,
-        status = CCv2DeploymentStatusEnum.tryValueOf(deployment.status),
+        status = CCv2DeploymentStatusEnum.Companion.tryValueOf(deployment.status),
         link = link
     )
 

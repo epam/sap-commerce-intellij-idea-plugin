@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
 import com.intellij.idea.plugin.hybris.settings.CCv2Settings
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DTO
+import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2Dto
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -29,7 +29,7 @@ import com.intellij.ui.AnimatedIcon
 import java.util.*
 import javax.swing.Icon
 
-abstract class AbstractCCv2FetchAction<T : CCv2DTO>(
+abstract class AbstractCCv2FetchAction<T : CCv2Dto>(
     tab: CCv2Tab,
     private val text: String,
     description: String? = null,

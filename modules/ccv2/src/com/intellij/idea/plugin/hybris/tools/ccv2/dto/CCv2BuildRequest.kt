@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,4 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-interface CCv2DTO
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
+
+data class CCv2BuildRequest(
+    val subscription: CCv2Subscription,
+    val name: String,
+    val branch: String,
+    val track: Boolean,
+    val deploymentRequests: Collection<CCv2DeploymentRequest> = listOf(),
+)

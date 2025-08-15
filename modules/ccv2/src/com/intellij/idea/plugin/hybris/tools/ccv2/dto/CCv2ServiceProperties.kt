@@ -18,48 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.ccv1.model.ServiceDTO
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
-import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.util.asSafely
-import java.time.OffsetDateTime
 import java.util.*
-
-data class CCv2ServiceDto(
-    val code: String,
-    val name: String,
-    val modifiedBy: String,
-    val modifiedTime: OffsetDateTime,
-    val customerScalableSupported: Boolean,
-    val runnable: Boolean,
-    val desiredReplicas: Int?,
-    val availableReplicas: Int?,
-    val link: String,
-    val replicas: Collection<CCv2ServiceReplicaDto>,
-    val supportedProperties: EnumSet<CCv2ServiceProperties> = CCv2ServiceProperties.getSupportedProperties(code),
-    var customerProperties: Map<String, String>? = null,
-    var securityProperties: Map<String, String>? = null,
-    var initialPasswords: Map<String, String>? = null,
-    var greenDeploymentSupported: Boolean? = null,
-) {
-
-    companion object {
-        fun map(subscription: CCv2Subscription, environment: CCv2EnvironmentDto, dto: ServiceDTO) = CCv2ServiceDto(
-            code = dto.code,
-            name = dto.name,
-            modifiedBy = dto.modifiedBy,
-            modifiedTime = dto.modifiedTime,
-            customerScalableSupported = dto.customerScalableSupported,
-            runnable = dto.runnable,
-            desiredReplicas = dto.desiredReplicas,
-            availableReplicas = dto.availableReplicas,
-            link = "https://${CCv2Constants.DOMAIN}/subscription/${subscription.id!!}/applications/commerce-cloud/environments/${environment.code}/services/${dto.code}/replicas",
-            replicas = dto.replicas
-                ?.map { CCv2ServiceReplicaDto.map(it) }
-                ?: emptyList()
-        )
-    }
-}
 
 enum class CCv2ServiceProperties(val title: String, val id: String, val documentationUrl: String) {
     CUSTOMER_PROPERTIES(
