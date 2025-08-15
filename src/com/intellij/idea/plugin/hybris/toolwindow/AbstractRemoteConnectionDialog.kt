@@ -23,7 +23,6 @@ import com.intellij.credentialStore.Credentials
 import com.intellij.execution.wsl.WSLDistribution
 import com.intellij.execution.wsl.WslDistributionManager
 import com.intellij.ide.passwordSafe.PasswordSafe
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.progress.ProgressIndicator
@@ -41,6 +40,7 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.remote.RemoteConnectionService
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import java.awt.Component
 import java.awt.event.ActionEvent

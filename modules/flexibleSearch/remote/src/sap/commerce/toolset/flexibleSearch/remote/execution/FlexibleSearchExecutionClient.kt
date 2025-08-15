@@ -19,7 +19,6 @@
 package sap.commerce.toolset.flexibleSearch.remote.execution
 
 import com.google.gson.Gson
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -27,6 +26,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
+import sap.commerce.toolset.remote.RemoteConnectionService
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.execution.ExecutionClient
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient

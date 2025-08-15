@@ -17,13 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaSelectionMode
 import com.intellij.idea.plugin.hybris.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
+import sap.commerce.toolset.remote.execution.ReplicaSelectionMode
 
 class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 

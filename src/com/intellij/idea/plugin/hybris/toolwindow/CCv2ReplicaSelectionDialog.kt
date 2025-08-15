@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -42,7 +40,9 @@ import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ccv2.ui.tree.CCv2TreeTable
+import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
 import sap.commerce.toolset.remote.execution.ReplicaContext
+import sap.commerce.toolset.remote.http.RemoteConnectionContext
 import java.awt.BorderLayout
 import java.awt.Component
 import javax.swing.JComponent

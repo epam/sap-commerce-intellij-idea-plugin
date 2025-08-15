@@ -26,8 +26,6 @@ import com.intellij.idea.plugin.hybris.polyglotQuery.editor.polyglotQuerySplitEd
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFile
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryTypeKeyName
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisPolyglotQueryConsole
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.readAction
@@ -43,6 +41,8 @@ import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecut
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
 import sap.commerce.toolset.flexibleSearch.remote.execution.QueryMode
+import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
+import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionContext
 
 class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryConsole, PolyglotQuerySplitEditor>(
     PolyglotQueryLanguage,

@@ -16,10 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.http
+package sap.commerce.toolset.remote.http
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaSelectionMode
 import sap.commerce.toolset.remote.execution.ReplicaContext
+import sap.commerce.toolset.remote.execution.ReplicaSelectionMode
 
 data class RemoteConnectionContext(
     val replicaSelectionMode: ReplicaSelectionMode,

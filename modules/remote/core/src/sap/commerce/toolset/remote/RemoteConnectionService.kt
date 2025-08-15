@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote
+package sap.commerce.toolset.remote
 
 import ai.grazie.utils.toLinkedSet
 import com.intellij.credentialStore.Credentials
@@ -26,9 +26,6 @@ import com.intellij.openapi.project.Project
 import kotlinx.collections.immutable.toImmutableList
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.remote.RemoteConnectionScope
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.RemoteConstants
 import sap.commerce.toolset.remote.settings.RemoteConnectionListener
 import sap.commerce.toolset.remote.settings.RemoteDeveloperSettings
 import sap.commerce.toolset.remote.settings.RemoteProjectSettings
@@ -112,12 +109,12 @@ class RemoteConnectionService(private val project: Project) {
     }
 
     fun saveRemoteConnections(type: RemoteConnectionType, settings: Collection<RemoteConnectionSettingsState>) {
-        with(RemoteProjectSettings.getInstance(project)) {
+        with(RemoteProjectSettings.Companion.getInstance(project)) {
             remoteConnectionSettingsList = remoteConnectionSettingsList.toMutableList()
                 .apply { removeIf { it.type == type } }
         }
 
-        val developerSettings = RemoteDeveloperSettings.getInstance(project)
+        val developerSettings = RemoteDeveloperSettings.Companion.getInstance(project)
         val mutableList = developerSettings.remoteConnectionSettingsList.toMutableList()
         mutableList.removeIf { it.type == type }
         developerSettings.remoteConnectionSettingsList = mutableList.toImmutableList()
@@ -127,7 +124,7 @@ class RemoteConnectionService(private val project: Project) {
     }
 
     fun setActiveRemoteConnectionSettings(settings: RemoteConnectionSettingsState) {
-        val developerSettings = RemoteDeveloperSettings.getInstance(project)
+        val developerSettings = RemoteDeveloperSettings.Companion.getInstance(project)
 
         when (settings.type) {
             RemoteConnectionType.Hybris -> {
@@ -145,14 +142,14 @@ class RemoteConnectionService(private val project: Project) {
     fun changeRemoteConnectionScope(settings: RemoteConnectionSettingsState, originalScope: RemoteConnectionScope) {
         when (originalScope) {
             RemoteConnectionScope.PROJECT_PERSONAL -> {
-                val developerSettings = RemoteDeveloperSettings.getInstance(project)
+                val developerSettings = RemoteDeveloperSettings.Companion.getInstance(project)
                 val mutableList = developerSettings.remoteConnectionSettingsList.toMutableList()
                 mutableList.remove(settings)
                 developerSettings.remoteConnectionSettingsList = mutableList.toImmutableList()
             }
 
             RemoteConnectionScope.PROJECT -> {
-                with(RemoteProjectSettings.getInstance(project)) {
+                with(RemoteProjectSettings.Companion.getInstance(project)) {
                     remoteConnectionSettingsList = remoteConnectionSettingsList.toMutableList()
                         .apply { remove(settings) }
                 }
@@ -165,13 +162,13 @@ class RemoteConnectionService(private val project: Project) {
     private fun getProjectPersonalLevelSettings(type: RemoteConnectionType) = getRemoteConnectionSettings(
         type,
         RemoteConnectionScope.PROJECT_PERSONAL,
-        RemoteDeveloperSettings.getInstance(project).remoteConnectionSettingsList
+        RemoteDeveloperSettings.Companion.getInstance(project).remoteConnectionSettingsList
     )
 
     private fun getProjectLevelSettings(type: RemoteConnectionType) = getRemoteConnectionSettings(
         type,
         RemoteConnectionScope.PROJECT,
-        RemoteProjectSettings.getInstance(project).remoteConnectionSettingsList
+        RemoteProjectSettings.Companion.getInstance(project).remoteConnectionSettingsList
     )
 
     private fun getRemoteConnectionSettings(
@@ -183,7 +180,7 @@ class RemoteConnectionService(private val project: Project) {
         .filter { it.uuid?.isNotBlank() ?: false }
         .onEach { it.scope = scope }
 
-    private fun getPropertyOrDefault(project: Project, key: String, fallback: String) = PropertyService.getInstance(project)
+    private fun getPropertyOrDefault(project: Project, key: String, fallback: String) = PropertyService.Companion.getInstance(project)
         .findProperty(key)
         ?: fallback
 

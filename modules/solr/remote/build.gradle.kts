@@ -16,26 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
+fun properties(key: String) = providers.gradleProperty(key)
 
-import com.intellij.icons.AllIcons
-import sap.commerce.toolset.HybrisIcons
-import javax.swing.Icon
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-enum class ReplicaSelectionMode(val tooltip: String, val title: String, val icon: Icon) {
-    AUTO(
-        "Automatically discover replica",
-        "Auto-discover",
-        AllIcons.Actions.Lightning
-    ),
-    CCV2(
-        "Select id of the CCv2 service specific replica",
-        "CCv2",
-        HybrisIcons.CCv2.DESCRIPTOR
-    ),
-    MANUAL(
-        "Manually specify replica id and corresponding cookie name",
-        "Manual",
-        AllIcons.Actions.Edit
-    )
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
+
+dependencies {
+    implementation(libs.jsoup)
+    implementation(project(":shared"))
+    implementation(project(":remote-core"))
+
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+    }
 }

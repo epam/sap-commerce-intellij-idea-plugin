@@ -19,9 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.logging
 
 import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
 import com.intellij.notification.NotificationType
@@ -34,9 +31,12 @@ import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
+import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionContext
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.LogLevel
 import sap.commerce.toolset.logging.execution.LoggingExecutionResult
+import sap.commerce.toolset.remote.RemoteConnectionService
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.settings.RemoteConnectionListener
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState

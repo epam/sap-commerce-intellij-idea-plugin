@@ -18,8 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
-import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
@@ -28,7 +26,9 @@ import com.intellij.ui.InlineBanner
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
+import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
 import sap.commerce.toolset.remote.execution.ReplicaContext
+import sap.commerce.toolset.remote.http.RemoteConnectionContext
 import java.awt.Component
 import javax.swing.JComponent
 

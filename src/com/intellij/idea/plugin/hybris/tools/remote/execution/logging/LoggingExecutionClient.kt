@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerUtilities
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -35,6 +34,7 @@ import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.execution.LoggingExecutionResult
+import sap.commerce.toolset.remote.RemoteConnectionService
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.execution.ExecutionClient
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient

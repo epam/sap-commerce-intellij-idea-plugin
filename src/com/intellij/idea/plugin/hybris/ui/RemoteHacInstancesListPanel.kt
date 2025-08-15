@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.ui
 
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteHacConnectionDialog
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.remote.RemoteConnectionService
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import java.io.Serial

@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.impex.remote.execution
 
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -29,6 +28,7 @@ import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import sap.commerce.toolset.remote.RemoteConnectionService
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.execution.DefaultExecutionClient
 import sap.commerce.toolset.remote.execution.DefaultExecutionResult

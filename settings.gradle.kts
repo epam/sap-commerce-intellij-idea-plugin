@@ -44,6 +44,7 @@ include(
     "modules/remote/core",
     "modules/logging/remote",
     "modules/groovy/remote",
+    "modules/solr/remote",
     "modules/impex/remote",
     "modules/flexibleSearch/remote",
     "modules/project/core",

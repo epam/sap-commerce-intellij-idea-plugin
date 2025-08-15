@@ -16,11 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
+package sap.commerce.toolset.groovy.remote.execution
 
-import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
-import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
-import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext.Companion.auto
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -34,10 +31,12 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
+import sap.commerce.toolset.remote.RemoteConnectionService
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.execution.DefaultExecutionClient
 import sap.commerce.toolset.remote.execution.DefaultExecutionResult
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient
+import sap.commerce.toolset.remote.http.RemoteConnectionContext
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
@@ -46,7 +45,7 @@ import java.nio.charset.StandardCharsets
 class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<GroovyExecutionContext>(project, coroutineScope) {
 
     var connectionContext: RemoteConnectionContext
-        get() = putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, auto())
+        get() = putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, RemoteConnectionContext.auto())
         set(value) {
             putUserData(KEY_REMOTE_CONNECTION_CONTEXT, value)
         }
@@ -71,7 +70,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         try {
             val document = Jsoup.parse(response.entity.content, StandardCharsets.UTF_8.name(), "")
             val jsonAsString = document.getElementsByTag("body").text()
-            val json = Json.parseToJsonElement(jsonAsString)
+            val json = Json.Default.parseToJsonElement(jsonAsString)
 
             json.jsonObject["stacktraceText"]
 

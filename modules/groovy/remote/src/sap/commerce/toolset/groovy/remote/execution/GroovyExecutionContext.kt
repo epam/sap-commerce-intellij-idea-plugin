@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
+package sap.commerce.toolset.groovy.remote.execution
 
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.remote.execution.ExecutionContext
