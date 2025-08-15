@@ -37,11 +37,6 @@ import sap.commerce.toolset.project.settings.state.ProjectSettingsState
 @Service(Service.Level.PROJECT)
 class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsState>(ProjectSettingsState()) {
 
-    var hybrisProject
-        get() = state.hybrisProject
-        set(value) {
-            updateState { it.copy(hybrisProject = value) }
-        }
     var customDirectory
         get() = state.customDirectory
         set(value) {
@@ -179,11 +174,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(showFullModuleName = value) }
         }
-    var remoteConnectionSettingsList
-        get() = state.remoteConnectionSettingsList
-        set(value) {
-            updateState { it.copy(remoteConnectionSettingsList = value) }
-        }
 
     fun isOutdatedHybrisProject(): Boolean {
         val lastImportVersion = importedByVersion ?: return true
@@ -194,7 +184,7 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         return VersionComparatorUtil.compare(currentVersion, lastImportVersion) > 0
     }
 
-    fun getAvailableExtensions() : Map<String, ExtensionDescriptor>{
+    fun getAvailableExtensions(): Map<String, ExtensionDescriptor> {
         if (_availableExtensions.isEmpty()) {
             synchronized(state) {
                 _availableExtensions = completeSetOfAvailableExtensionsInHybris

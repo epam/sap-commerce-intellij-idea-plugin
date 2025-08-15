@@ -26,12 +26,12 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.collections.immutable.toImmutableList
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.remote.RemoteConnectionScope
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.RemoteConstants
 import sap.commerce.toolset.remote.settings.RemoteConnectionListener
 import sap.commerce.toolset.remote.settings.RemoteDeveloperSettings
+import sap.commerce.toolset.remote.settings.RemoteProjectSettings
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import java.util.*
 
@@ -103,7 +103,7 @@ class RemoteConnectionService(private val project: Project) {
             }
 
             RemoteConnectionScope.PROJECT -> {
-                with(ProjectSettings.getInstance(project)) {
+                with(RemoteProjectSettings.getInstance(project)) {
                     remoteConnectionSettingsList = remoteConnectionSettingsList.toMutableList()
                         .apply { add(settings) }
                 }
@@ -112,7 +112,7 @@ class RemoteConnectionService(private val project: Project) {
     }
 
     fun saveRemoteConnections(type: RemoteConnectionType, settings: Collection<RemoteConnectionSettingsState>) {
-        with(ProjectSettings.getInstance(project)) {
+        with(RemoteProjectSettings.getInstance(project)) {
             remoteConnectionSettingsList = remoteConnectionSettingsList.toMutableList()
                 .apply { removeIf { it.type == type } }
         }
@@ -152,7 +152,7 @@ class RemoteConnectionService(private val project: Project) {
             }
 
             RemoteConnectionScope.PROJECT -> {
-                with(ProjectSettings.getInstance(project)) {
+                with(RemoteProjectSettings.getInstance(project)) {
                     remoteConnectionSettingsList = remoteConnectionSettingsList.toMutableList()
                         .apply { remove(settings) }
                 }
@@ -171,7 +171,7 @@ class RemoteConnectionService(private val project: Project) {
     private fun getProjectLevelSettings(type: RemoteConnectionType) = getRemoteConnectionSettings(
         type,
         RemoteConnectionScope.PROJECT,
-        ProjectSettings.getInstance(project).remoteConnectionSettingsList
+        RemoteProjectSettings.getInstance(project).remoteConnectionSettingsList
     )
 
     private fun getRemoteConnectionSettings(

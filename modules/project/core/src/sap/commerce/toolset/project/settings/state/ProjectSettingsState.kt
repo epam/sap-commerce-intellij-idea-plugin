@@ -21,11 +21,9 @@ package sap.commerce.toolset.project.settings.state
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 import sap.commerce.toolset.project.ExtensionDescriptor
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 
 @Tag("HybrisProjectSettings")
 data class ProjectSettingsState(
-    @JvmField @OptionTag val hybrisProject: Boolean = false,
     @JvmField @OptionTag val customDirectory: String? = null,
     @JvmField @OptionTag val hybrisDirectory: String? = null,
     @JvmField @OptionTag val configDirectory: String? = null,
@@ -54,6 +52,5 @@ data class ProjectSettingsState(
     // by BaseState.property(TreeMap<String, ExtensionDescriptor> { a, b -> a.compareTo(b, true) }) { it.isEmpty() }
     @JvmField val availableExtensions: Map<String, ExtensionDescriptor> = emptyMap(),
     @JvmField val excludedFromScanning: Set<String> = emptySet(),
-    @JvmField val remoteConnectionSettingsList: List<RemoteConnectionSettingsState> = emptyList(),
     @JvmField @OptionTag val useFakeOutputPathForCustomExtensions: Boolean = false,
 )
