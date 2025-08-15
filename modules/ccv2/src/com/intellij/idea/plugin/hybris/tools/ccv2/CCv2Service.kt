@@ -57,7 +57,7 @@ import kotlin.io.path.pathString
 import kotlin.time.Duration.Companion.seconds
 
 @Service(Service.Level.PROJECT)
-class CCv2Service(val project: Project, private val coroutineScope: CoroutineScope) : UserDataHolderBase(), Disposable {
+class CCv2Service(private val project: Project, private val coroutineScope: CoroutineScope) : UserDataHolderBase(), Disposable {
 
     init {
         with(project.messageBus.connect(this)) {
@@ -720,7 +720,7 @@ class CCv2Service(val project: Project, private val coroutineScope: CoroutineSco
                             totalProgress = progress.percentage
 
                             if (progress.deploymentStatus == CCv2DeploymentStatusEnum.FAIL) {
-                                cancel(CancellationException("Deployment failed"))
+                                cancel(kotlinx.coroutines.CancellationException("Deployment failed"))
                             }
 
                             progressReporter.sizedStep(reportProgress, "Deployment $buildCode progress ${progress.percentage}%") {

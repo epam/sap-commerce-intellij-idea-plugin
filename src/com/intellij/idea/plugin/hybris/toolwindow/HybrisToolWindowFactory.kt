@@ -79,7 +79,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
             this
         }
 
-    private fun createCCv2CLIContent(toolWindow: ToolWindow, project: Project, panel: CCv2View) = with(toolWindow.contentManager.factory.createContent(panel, CCV2, true)) {
+    private fun createCCv2CLIContent(toolWindow: ToolWindow, project: Project, panel: CCv2View) = with(toolWindow.contentManager.factory.createContent(panel, CCv2View.TAB_NAME, true)) {
         Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
         Disposer.register(toolWindow.disposable, panel)
 
@@ -101,7 +101,6 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
     }
 
     companion object {
-        const val ID = "SAP CX"
         const val CONSOLES_ID = "Consoles"
         const val TS_ID = "Type System"
         const val BS_ID = "Bean System"

@@ -54,13 +54,13 @@ class RemoteConnectionSettingsState : BaseState(), Comparable<RemoteConnectionSe
 
     val username: String
         get() = credentials?.userName
-            ?: PasswordSafe.Companion.instance.get(CredentialAttributes("SAP CX - $uuid"))
+            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
                 ?.userName
             ?: if (type == RemoteConnectionType.Hybris) "admin"
             else "solrserver"
     val password: String
         get() = credentials?.getPasswordAsString()
-            ?: PasswordSafe.Companion.instance.get(CredentialAttributes("SAP CX - $uuid"))
+            ?: PasswordSafe.instance.get(CredentialAttributes("SAP CX - $uuid"))
                 ?.getPasswordAsString()
             ?: if (type == RemoteConnectionType.Hybris) "nimda"
             else "server123"
@@ -68,8 +68,8 @@ class RemoteConnectionSettingsState : BaseState(), Comparable<RemoteConnectionSe
     val generatedURL: String
         get() {
             return when (type) {
-                RemoteConnectionType.Hybris -> RemoteConnectionService.Companion.generateUrl(isSsl, hostIP, port, hacWebroot)
-                RemoteConnectionType.SOLR -> RemoteConnectionService.Companion.generateUrl(isSsl, hostIP, port, solrWebroot)
+                RemoteConnectionType.Hybris -> RemoteConnectionService.generateUrl(isSsl, hostIP, port, hacWebroot)
+                RemoteConnectionType.SOLR -> RemoteConnectionService.generateUrl(isSsl, hostIP, port, solrWebroot)
             }
         }
 

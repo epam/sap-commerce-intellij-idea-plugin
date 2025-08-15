@@ -42,8 +42,8 @@ import java.util.concurrent.TimeUnit
 class CCv1Api {
 
     private val apiClient by lazy {
-        ApiClient.Companion.builder
-            .readTimeout(CCv2ProjectSettings.Companion.getInstance().ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
+        ApiClient.builder
+            .readTimeout(CCv2ProjectSettings.getInstance().ccv2ReadTimeout.toLong(), TimeUnit.SECONDS)
             .build()
     }
     private val environmentApi by lazy { EnvironmentApi(client = apiClient) }
@@ -109,7 +109,7 @@ class CCv1Api {
             environmentCode = environment.code,
             requestHeaders = createRequestParams(accessToken)
         )
-        .map { CCv2ServiceDto.Companion.map(subscription, environment, it) }
+        .map { CCv2ServiceDto.map(subscription, environment, it) }
 
     suspend fun restartServiceReplica(
         accessToken: String,

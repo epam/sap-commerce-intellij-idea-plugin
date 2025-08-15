@@ -45,7 +45,7 @@ object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
     fun dataPanelWithBuilds(project: Project, data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>) = panel(project, data, true)
 
     private fun panel(project: Project, data: Map<CCv2Subscription, Collection<CCv2EnvironmentDto>>, showBuilds: Boolean = false): DialogPanel = if (data.isEmpty()) noDataPanel()
-    else panel {
+    else com.intellij.ui.dsl.builder.panel {
         data.forEach { (subscription, environments) ->
             collapsibleGroup(subscription.toString()) {
                 if (environments.isEmpty()) {

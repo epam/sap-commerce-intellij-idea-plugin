@@ -26,6 +26,8 @@ import java.util.regex.Pattern
 
 object HybrisConstants {
 
+    const val TOOLWINDOW_ID = "SAP CX"
+
     const val PLATFORM_VERSION_1811 = "1811"
     const val PLATFORM_VERSION_5_0 = "5.0"
     const val PLATFORM_VERSION_5_2 = "5.2"
@@ -694,7 +696,7 @@ object HybrisConstants {
 
     val KEY_ANT_UPDATE_MAVEN_DEPENDENCIES = Key.create<Boolean>("notification_update_external-dependencies.xml")
 
-    val DATA_KEY_LOGGER_IDENTIFIER = DataKey.Companion.create<String>("sap.cx.logger.identifier")
+    val DATA_KEY_LOGGER_IDENTIFIER = DataKey.create<String>("sap.cx.logger.identifier")
 
     val CHARS_UPPERCASE_REGEX = "[A-Z]".toRegex()
     val CHARS_LOWERCASE_REGEX = "[a-z]".toRegex()

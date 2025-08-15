@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2.views
 
-import com.intellij.database.script.generator.concatWithSpace
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.actions.*
@@ -201,8 +200,9 @@ class CCv2BuildDetailsView(
                                 if (build.status == CCv2BuildStatus.BUILDING) {
                                     label("-").comment("Duration")
                                 } else {
-                                    build.duration.toString().concatWithSpace("minutes")
-                                        ?.let { label(it).comment("Duration") }
+                                    build.duration.toString()
+                                        .let { "$it minutes" }
+                                        .let { label(it).comment("Duration") }
                                 }
                             }
                         }

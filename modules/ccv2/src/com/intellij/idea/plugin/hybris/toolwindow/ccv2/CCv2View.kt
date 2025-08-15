@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.CCv2DeveloperSettings
 import com.intellij.idea.plugin.hybris.tools.ccv2.*
@@ -26,7 +27,6 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2DeploymentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildsDataView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2DeploymentsDataView
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2EnvironmentsDataView
@@ -47,7 +47,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.asSafely
 import java.io.Serial
 
-class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable {
+class CCv2View(private val project: Project) : SimpleToolWindowPanel(false), Disposable {
 
     override fun dispose() = Unit
 
@@ -188,12 +188,13 @@ class CCv2View(val project: Project) : SimpleToolWindowPanel(false), Disposable 
     companion object {
         @Serial
         private val serialVersionUID: Long = -3734294049693312978L
+        const val TAB_NAME = "CCv2"
         const val PLACE = "SAP_CX_CCv2_View"
 
         fun getActiveTab(project: Project) = ToolWindowManager.getInstance(project)
-            .getToolWindow(HybrisToolWindowFactory.ID)
+            .getToolWindow(HybrisConstants.TOOLWINDOW_ID)
             ?.contentManager
-            ?.findContent(HybrisToolWindowFactory.CCV2)
+            ?.findContent(TAB_NAME)
             ?.component
             ?.asSafely<CCv2View>()
             ?.getActiveTab()

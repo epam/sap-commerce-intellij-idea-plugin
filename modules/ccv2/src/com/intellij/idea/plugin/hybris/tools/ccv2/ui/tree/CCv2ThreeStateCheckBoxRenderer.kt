@@ -46,11 +46,11 @@ class CCv2ThreeStateCheckBoxRenderer : ThreeStateCheckBox(), TableCellRenderer, 
 
     override fun getTableCellRendererComponent(
         table: JTable, value: Any?, isSelected: Boolean, hasFocus: Boolean, row: Int, column: Int
-    ): Component? = tune(value, isSelected, table).apply { isOpaque = true }
+    ): Component = tune(value, isSelected, table).apply { isOpaque = true }
 
     override fun getTableCellEditorComponent(
         table: JTable, value: Any?, isSelected: Boolean, row: Int, column: Int
-    ): Component? = tune(value, isSelected, table)
+    ): Component = tune(value, isSelected, table)
 
     override fun getCellEditorValue(): Any? = if (state != State.DONT_CARE) isSelected
     else null

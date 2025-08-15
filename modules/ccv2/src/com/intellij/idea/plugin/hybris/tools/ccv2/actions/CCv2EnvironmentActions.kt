@@ -18,6 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.settings.CCv2DeveloperSettings
@@ -28,7 +29,6 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentStatus
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2SettingsState
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.CCv2Tab
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2EnvironmentDetailsView
 import com.intellij.notification.NotificationType
@@ -157,7 +157,7 @@ class CCv2ShowEnvironmentDetailsAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val toolWindow = ToolWindowManager.getInstance(project)
-            .getToolWindow(HybrisToolWindowFactory.ID) ?: return
+            .getToolWindow(HybrisConstants.TOOLWINDOW_ID) ?: return
         val contentManager = toolWindow.contentManager
         val panel = CCv2EnvironmentDetailsView(project, subscription, environment)
         val content = contentManager.factory

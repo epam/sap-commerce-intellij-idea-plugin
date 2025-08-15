@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.ccv2
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2BuildDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2BuildDetailsView
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -37,7 +37,7 @@ object CCv2ViewUtil {
 
     fun showBuildDetailsTab(project: Project, subscription: CCv2Subscription, build: CCv2BuildDto) {
         val toolWindow = ToolWindowManager.getInstance(project)
-            .getToolWindow(HybrisToolWindowFactory.ID) ?: return
+            .getToolWindow(HybrisConstants.TOOLWINDOW_ID) ?: return
         val contentManager = toolWindow.contentManager
         val panel = CCv2BuildDetailsView(project, subscription, build)
         val content = contentManager.factory
@@ -45,7 +45,7 @@ object CCv2ViewUtil {
             .also {
                 it.isCloseable = true
                 it.isPinnable = true
-                it.icon = SHOW_DETAILS
+                it.icon = HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
                 it.putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
             }
 

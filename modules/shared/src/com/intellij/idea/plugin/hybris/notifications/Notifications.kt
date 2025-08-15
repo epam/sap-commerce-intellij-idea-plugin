@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.notifications
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.NOTIFICATION_GROUP_HYBRIS
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationAction
@@ -35,7 +35,7 @@ import java.util.function.BiConsumer
 class Notifications private constructor(type: NotificationType, title: String, content: String) {
 
     private val notification: Notification = NotificationGroupManager.getInstance()
-        .getNotificationGroup(NOTIFICATION_GROUP_HYBRIS)
+        .getNotificationGroup(HybrisConstants.NOTIFICATION_GROUP_HYBRIS)
         .createNotification(title, content, type)
         .setIcon(
             when (type) {

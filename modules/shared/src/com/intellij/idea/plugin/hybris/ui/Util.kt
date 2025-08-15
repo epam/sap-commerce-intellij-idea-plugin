@@ -48,7 +48,7 @@ import kotlin.reflect.safeCast
 fun scrollPanel(content: JComponent, horizontalScrollBarPolicy: Int = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED) = panel {
     row {
         scrollCell(content)
-            .align(Align.Companion.FILL)
+            .align(Align.FILL)
             .resizableColumn()
             .applyToComponent {
                 (this.parent.parent as? JBScrollPane)?.apply {
@@ -60,34 +60,34 @@ fun scrollPanel(content: JComponent, horizontalScrollBarPolicy: Int = ScrollPane
     }.resizableRow()
 }
 
-internal fun <T : Any> TreePath.pathData(clazz: KClass<T>): T? = lastPathComponent
+fun <T : Any> TreePath.pathData(clazz: KClass<T>): T? = lastPathComponent
     .asSafely<DefaultMutableTreeNode>()
     ?.userObject
     ?.let { clazz.safeCast(it) }
 
-internal fun <J : JComponent> Cell<J>.border(border: Border?): Cell<J> = this.apply { component.border = border }
-internal fun <J : JComponent> Cell<J>.background(background: Color?): Cell<J> = this.apply { component.background = background }
-internal fun <J : JComponent> Cell<J>.opaque(opaque: Boolean): Cell<J> = this.apply { component.isOpaque = opaque }
-internal fun <J : JComponent> Cell<J>.font(font: Font): Cell<J> = this.apply { component.font = font }
-internal fun <J : Any> Cell<ComboBox<J>>.addItemListener(parentDisposable: Disposable? = null, listener: ItemListener): Cell<ComboBox<J>> = this
+fun <J : JComponent> Cell<J>.border(border: Border?): Cell<J> = this.apply { component.border = border }
+fun <J : JComponent> Cell<J>.background(background: Color?): Cell<J> = this.apply { component.background = background }
+fun <J : JComponent> Cell<J>.opaque(opaque: Boolean): Cell<J> = this.apply { component.isOpaque = opaque }
+fun <J : JComponent> Cell<J>.font(font: Font): Cell<J> = this.apply { component.font = font }
+fun <J : Any> Cell<ComboBox<J>>.addItemListener(parentDisposable: Disposable? = null, listener: ItemListener): Cell<ComboBox<J>> = this
     .apply { component.addItemListener(parentDisposable, listener) }
 
-internal fun <T : KeyListener, J : JComponent> Cell<J>.addKeyListener(parentDisposable: Disposable? = null, listener: T): Cell<J> = this
+fun <T : KeyListener, J : JComponent> Cell<J>.addKeyListener(parentDisposable: Disposable? = null, listener: T): Cell<J> = this
     .apply { component.addKeyListener(parentDisposable, listener) }
 
-internal fun JTree.addTreeSelectionListener(parentDisposable: Disposable? = null, listener: TreeSelectionListener): JTree = this
+fun JTree.addTreeSelectionListener(parentDisposable: Disposable? = null, listener: TreeSelectionListener): JTree = this
     .apply {
         addTreeSelectionListener(listener)
         parentDisposable?.whenDisposed { removeTreeSelectionListener(listener) }
     }
 
-internal fun <T : TreeModelListener> JTree.addTreeModelListener(parentDisposable: Disposable? = null, listener: T): JTree = this
+fun <T : TreeModelListener> JTree.addTreeModelListener(parentDisposable: Disposable? = null, listener: T): JTree = this
     .apply {
         model.addTreeModelListener(listener)
         parentDisposable?.whenDisposed { model.removeTreeModelListener(listener) }
     }
 
-internal fun <T : MouseListener> JTree.addMouseListener(parentDisposable: Disposable? = null, listener: T): JTree = this
+fun <T : MouseListener> JTree.addMouseListener(parentDisposable: Disposable? = null, listener: T): JTree = this
     .apply {
         addMouseListener(listener)
         parentDisposable?.whenDisposed { removeMouseListener(listener) }

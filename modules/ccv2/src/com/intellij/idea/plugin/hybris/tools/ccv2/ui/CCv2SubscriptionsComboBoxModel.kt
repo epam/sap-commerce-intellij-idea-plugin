@@ -15,19 +15,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.help
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.openapi.help.WebHelpProvider
+package com.intellij.idea.plugin.hybris.tools.ccv2.ui
 
-class HybrisWebHelpProvider : WebHelpProvider() {
+import com.intellij.idea.plugin.hybris.settings.CCv2ProjectSettings
+import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
+import java.io.Serial
+import javax.swing.DefaultComboBoxModel
 
-    override fun getHelpPageUrl(helpTopicId: String) = when (helpTopicId) {
-        CCV2_DEPLOYMENTS -> "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/106f7a8370db44a0b052f4a0cd5c4deb.html"
-        else -> null
+class CCv2SubscriptionsComboBoxModel(
+    private val onSelectedItem: ((Any?) -> Unit)? = null
+) : DefaultComboBoxModel<CCv2Subscription>() {
+
+    override fun setSelectedItem(anObject: Any?) {
+        super.setSelectedItem(anObject)
+        onSelectedItem?.invoke(anObject)
+    }
+
+    fun refresh() {
+        removeAllElements()
+        val subscriptions = CCv2ProjectSettings.getInstance().ccv2Subscriptions
+        addAll(subscriptions.sortedBy { it.toString() })
     }
 
     companion object {
-        const val CCV2_DEPLOYMENTS = HybrisConstants.PLUGIN_ID + ".ccv2.deployments"
+        @Serial
+        private val serialVersionUID: Long = 4646717472092758251L
     }
 }

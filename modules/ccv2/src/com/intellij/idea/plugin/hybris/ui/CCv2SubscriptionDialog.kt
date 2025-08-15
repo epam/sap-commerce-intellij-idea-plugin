@@ -39,7 +39,7 @@ internal class CCv2SubscriptionDialog(
         super.init()
 
         if (subscription.ccv2Token == null) {
-            CCv2ProjectSettings.Companion.getInstance().loadCCv2Token(subscription.uuid) {
+            CCv2ProjectSettings.getInstance().loadCCv2Token(subscription.uuid) {
                 subscription.ccv2Token = it
                 enableCCv2Token.set(true)
             }

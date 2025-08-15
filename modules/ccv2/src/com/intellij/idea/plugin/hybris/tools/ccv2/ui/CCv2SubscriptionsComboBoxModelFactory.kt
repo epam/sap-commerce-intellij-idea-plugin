@@ -24,30 +24,6 @@ import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
-import java.io.Serial
-import javax.swing.DefaultComboBoxModel
-
-class CCv2SubscriptionsComboBoxModel(
-    private val onSelectedItem: ((Any?) -> Unit)? = null
-) : DefaultComboBoxModel<CCv2Subscription>() {
-
-    override fun setSelectedItem(anObject: Any?) {
-        super.setSelectedItem(anObject)
-        onSelectedItem?.invoke(anObject)
-    }
-
-    fun refresh() {
-        removeAllElements()
-        val subscriptions = CCv2ProjectSettings.getInstance().ccv2Subscriptions
-        addAll(subscriptions.sortedBy { it.toString() })
-    }
-
-    companion object {
-        @Serial
-        private val serialVersionUID: Long = 4646717472092758251L
-    }
-}
-
 
 object CCv2SubscriptionsComboBoxModelFactory {
 

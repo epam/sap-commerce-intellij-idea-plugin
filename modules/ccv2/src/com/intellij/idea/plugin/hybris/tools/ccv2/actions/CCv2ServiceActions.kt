@@ -18,13 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.tools.ccv2.actions
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Service
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2EnvironmentDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.dto.CCv2ServiceReplicaDto
 import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
-import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
 import com.intellij.idea.plugin.hybris.toolwindow.ccv2.views.CCv2ServiceDetailsView
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -45,7 +45,7 @@ class CCv2ShowServiceDetailsAction(
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val toolWindow = ToolWindowManager.getInstance(project)
-            .getToolWindow(HybrisToolWindowFactory.ID) ?: return
+            .getToolWindow(HybrisConstants.TOOLWINDOW_ID) ?: return
         val contentManager = toolWindow.contentManager
         val panel = CCv2ServiceDetailsView(project, subscription, environment, service)
         val content = contentManager.factory

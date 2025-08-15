@@ -17,6 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.tools.remote.console
 
+import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.console.view.HybrisConsolesView
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.toolwindow.HybrisToolWindowFactory
@@ -67,7 +68,7 @@ class HybrisConsoleService(private val project: Project) {
         ?.component
         ?.asSafely<HybrisConsolesView>()
 
-    private fun hybrisToolWindow() = ToolWindowManager.getInstance(project).getToolWindow(HybrisToolWindowFactory.ID)
+    private fun hybrisToolWindow() = ToolWindowManager.getInstance(project).getToolWindow(HybrisConstants.TOOLWINDOW_ID)
 
     companion object {
         fun getInstance(project: Project): HybrisConsoleService = project.service()
