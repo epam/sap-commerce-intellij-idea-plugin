@@ -43,7 +43,7 @@ class ImpexPropertyReference(owner: ImpexMacroUsageDec) : PsiReferenceBase.Poly<
             element.textLength - ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX.length
         )
 
-    override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
+    override fun getVariants(): Array<PsiReference> = EMPTY_ARRAY
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = getPropertyKey()
         ?.let { PropertyService.getInstance(element.project).findMacroProperty(it) }

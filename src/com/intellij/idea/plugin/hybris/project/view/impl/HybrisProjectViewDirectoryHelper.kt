@@ -21,13 +21,13 @@ import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.JavaProjectViewDirectoryHelper
 import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper
 import com.intellij.ide.projectView.impl.nodes.PsiFileSystemItemFilter
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.idea.plugin.hybris.util.ifHybrisProject
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
+import sap.commerce.toolset.ccv2.CCv2Constants
 
 class HybrisProjectViewDirectoryHelper(project: Project) : ProjectViewDirectoryHelper(project) {
 

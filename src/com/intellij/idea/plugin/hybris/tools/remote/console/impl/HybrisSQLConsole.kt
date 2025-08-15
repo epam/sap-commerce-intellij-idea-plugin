@@ -79,7 +79,7 @@ class HybrisSQLConsole(project: Project, coroutineScope: CoroutineScope) : Hybri
 
     override fun title(): String = "SQL"
     override fun tip(): String = "SQL Console"
-    override fun icon(): Icon? = HybrisIcons.FlexibleSearch.SQL
+    override fun icon(): Icon = HybrisIcons.FlexibleSearch.SQL
 
     companion object {
         @Serial

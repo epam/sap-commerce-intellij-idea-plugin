@@ -30,7 +30,7 @@ class BSModificationTracker(project: Project) : MetaModelModificationTracker(pro
 
     private val stateService by lazy { BSMetaModelStateService.getInstance(project) }
 
-    override fun getKeys(vararg xmlFiles: XmlFile): Collection<String>? = xmlFiles.map { it.name }
+    override fun getKeys(vararg xmlFiles: XmlFile): Collection<String> = xmlFiles.map { it.name }
 
     override fun updateState(keys: Collection<String>) {
         stateService.update(keys)

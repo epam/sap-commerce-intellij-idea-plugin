@@ -62,7 +62,7 @@ class SimpleSpringService(val project: Project) {
 
     fun initCache() {
         ReadAction
-            .nonBlocking<Map<String, XmlTag>>() {
+            .nonBlocking<Map<String, XmlTag>> {
                 cache.value
             }
             .submit(AppExecutorUtil.getAppExecutorService())

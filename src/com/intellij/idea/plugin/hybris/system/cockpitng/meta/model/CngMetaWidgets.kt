@@ -25,5 +25,4 @@ class CngMetaWidgets(
     custom: Boolean,
     val widgets: Collection<CngMetaWidget> = emptyList(),
     val widgetExtensions: Collection<CngMetaWidgetExtension> = emptyList(),
-) : CngMeta<Widgets>(dom, fileName, custom) {
-}
+) : CngMeta<Widgets>(dom, fileName, custom)

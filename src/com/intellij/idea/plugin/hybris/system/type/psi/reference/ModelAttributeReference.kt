@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -61,7 +61,7 @@ class ModelAttributeReference(
             .let { PsiElementResolveResult.createResults(it) }
     }
 
-    override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
+    override fun getVariants(): Array<PsiReference> = EMPTY_ARRAY
 
     private fun findGetter(psiClass: PsiClass, itemName: String, searchFieldName: String): PsiMethod? {
         val methodName = if (isBooleanProperty(itemName, searchFieldName))

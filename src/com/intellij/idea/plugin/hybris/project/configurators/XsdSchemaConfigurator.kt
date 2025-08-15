@@ -53,7 +53,7 @@ class XsdSchemaConfigurator {
             ?.toMap()
             ?: return emptyList()
 
-        return listOf() {
+        return listOf {
             runWriteAction {
                 val externalResourceManager = ExternalResourceManagerEx.getInstanceEx()
 

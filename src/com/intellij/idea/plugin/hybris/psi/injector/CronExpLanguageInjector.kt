@@ -49,7 +49,7 @@ class CronExpLanguageInjector : LanguageInjector {
             is ImpexString -> {
                 val valueGroup = host.valueGroup ?: return
                 if (isTriggerCronExpression(valueGroup)) {
-                    injectLanguage(injectionPlacesRegistrar, host.getTextLength() - quoteSymbolLength - 1, quoteSymbolLength)
+                    injectLanguage(injectionPlacesRegistrar, host.textLength - quoteSymbolLength - 1, quoteSymbolLength)
                 }
             }
 
@@ -58,7 +58,7 @@ class CronExpLanguageInjector : LanguageInjector {
 
                 val valueGroup = host.valueGroup ?: return
                 if (isTriggerCronExpression(valueGroup)) {
-                    injectLanguage(injectionPlacesRegistrar, host.getTextLength(), 0)
+                    injectLanguage(injectionPlacesRegistrar, host.textLength, 0)
                 }
             }
         }

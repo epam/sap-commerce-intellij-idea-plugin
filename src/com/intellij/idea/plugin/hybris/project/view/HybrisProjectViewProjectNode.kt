@@ -46,7 +46,7 @@ class HybrisProjectViewProjectNode(project: Project, viewSettings: ViewSettings)
 
         val nodes = modulesAndGroups(modules).toMutableList()
 
-        val baseDirPath = project.basePath
+        project.basePath
             ?.let { LocalFileSystem.getInstance().findFileByPath(it) }
             ?.let { baseDir ->
                 val psiManager = PsiManager.getInstance(project)

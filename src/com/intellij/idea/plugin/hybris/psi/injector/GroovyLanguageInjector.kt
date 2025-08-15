@@ -55,22 +55,22 @@ class GroovyLanguageInjector : LanguageInjector {
     private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
         when (host) {
             is ImpexString -> {
-                val hostString = StringUtil.unquoteString(host.getText()).lowercase()
+                val hostString = StringUtil.unquoteString(host.text).lowercase()
                 if (StringUtil.trim(hostString).replaceFirst("\"", "").startsWith(groovyMarker)) {
                     val markerOffset = setOf("beforeeach:", "aftereach:", "if:")
-                        .map { it to host.getText().indexOf(it, 0, true) }
+                        .map { it to host.text.indexOf(it, 0, true) }
                         .firstOrNull { it.second > -1 }
                         ?.let { it.first.length + it.second }
                         ?: offset
 
-                    injectLanguage(injectionPlacesRegistrar, host.getTextLength() - markerOffset - quoteSymbolLength, markerOffset)
+                    injectLanguage(injectionPlacesRegistrar, host.textLength - markerOffset - quoteSymbolLength, markerOffset)
                 } else if (LanguageInjectionUtil.getScriptType(host) == ScriptType.GROOVY) {
-                    injectLanguage(injectionPlacesRegistrar, host.getTextLength() - quoteSymbolLength - 1, quoteSymbolLength)
+                    injectLanguage(injectionPlacesRegistrar, host.textLength - quoteSymbolLength - 1, quoteSymbolLength)
                 }
             }
 
             is ImpexGroovyScriptBody -> {
-                injectLanguage(injectionPlacesRegistrar, host.getTextLength(), 0)
+                injectLanguage(injectionPlacesRegistrar, host.textLength, 0)
             }
         }
     }

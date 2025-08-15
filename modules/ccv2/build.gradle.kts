@@ -64,8 +64,8 @@ idea {
 // OpenAPI - Kotlin generator
 // https://openapi-generator.tech/docs/generators/kotlin/
 val ccv2OpenApiSpecs = listOf(
-    Triple("ccv1OpenApiGenerate", "commerce-cloud-management-api-v1.yaml", "com.intellij.idea.plugin.hybris.ccv1"),
-    Triple("ccv2OpenApiGenerate", "commerce-cloud-management-api-v2.yaml", "com.intellij.idea.plugin.hybris.ccv2"),
+    Triple("ccv1OpenApiGenerate", "commerce-cloud-management-api-v1.yaml", "sap.commerce.toolset.ccv1"),
+    Triple("ccv2OpenApiGenerate", "commerce-cloud-management-api-v2.yaml", "sap.commerce.toolset.ccv2"),
 )
 val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, packagePrefix) ->
     tasks.register<GenerateTask>(taskName) {
@@ -130,5 +130,9 @@ dependencies {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+
+        bundledPlugins(
+            "com.intellij.modules.json",
+        )
     }
 }

@@ -24,6 +24,4 @@ class CngMetaConfig(
     fileName: String,
     custom: Boolean,
     val contexts: List<CngMetaContext>
-) : CngMeta<Config>(dom, fileName, custom) {
-
-}
+) : CngMeta<Config>(dom, fileName, custom)

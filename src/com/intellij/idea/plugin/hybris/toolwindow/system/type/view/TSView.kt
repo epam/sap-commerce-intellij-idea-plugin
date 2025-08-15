@@ -83,7 +83,7 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
     private fun installSettingsListener() {
         with(project.messageBus.connect(this)) {
-            subscribe(TSViewListener.TOPIC, object : TSViewSettings.TSViewListener {
+            subscribe(TSViewListener.TOPIC, object : TSViewListener {
                 override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
                     refreshContent(changeType)
                 }

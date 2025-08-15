@@ -42,7 +42,7 @@ class ImpExValueTSClassifierReference(
 
     private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSClassifierReference>>("HYBRIS_TS_CACHED_REFERENCE_$textRange")
 
-    fun getTargetElement(): PsiElement? = element
+    fun getTargetElement(): PsiElement = element
 
     override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.getInstance(element.project)
         .getCompletions(*allowedTypes.toTypedArray())

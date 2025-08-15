@@ -29,7 +29,7 @@ class PolyglotQueryToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorPr
     override fun canProcess(expression: String) = PolyglotQueryUtils.isPolyglotQuery(expression)
 
     companion object {
-        fun getInstance(): PolyglotQueryToKotlinInjectorProvider? = application.service()
+        fun getInstance(): PolyglotQueryToKotlinInjectorProvider = application.service()
     }
 
 }

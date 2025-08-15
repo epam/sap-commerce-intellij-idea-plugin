@@ -268,7 +268,6 @@ dependencies {
             "com.intellij.javaee.el",
             "com.intellij.javaee.web",
             "com.intellij.platform.images",
-            "com.intellij.modules.json",
             "org.jetbrains.idea.maven",
             "org.jetbrains.idea.eclipse",
             "org.jetbrains.kotlin",

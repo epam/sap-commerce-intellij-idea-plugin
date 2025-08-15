@@ -48,7 +48,7 @@ class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpEx
         }
 
     override fun settings(e: AnActionEvent, project: Project) = e
-        .impexExecutionContextSettings() { ImpExExecutionContext.DEFAULT_SETTINGS }
+        .impexExecutionContextSettings { ImpExExecutionContext.DEFAULT_SETTINGS }
         .modifiable()
 
     override fun applySettings(editor: Editor, settings: ImpExExecutionContext.ModifiableSettings) {

@@ -27,6 +27,4 @@ open class GradleModuleDescriptor(
     rootProjectDescriptor: HybrisProjectDescriptor,
     val gradleFile: File = File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD),
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.GRADLE
-) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name) {
-
-}
+) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name)

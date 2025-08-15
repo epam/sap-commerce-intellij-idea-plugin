@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -62,8 +62,7 @@ class ImpexColumnBreadcrumbsProvider : BreadcrumbsProvider {
 
         if (element is ImpexAnyHeaderMode) return null
 
-        val adjustedPsi = adjustWhiteSpaceAndSeparator(element)
-        return when (adjustedPsi) {
+        return when (val adjustedPsi = adjustWhiteSpaceAndSeparator(element)) {
             is ImpexAnyHeaderMode -> adjustedPsi
             is ImpexFullHeaderParameter -> {
                 val line = getImpexHeaderLine(adjustedPsi)

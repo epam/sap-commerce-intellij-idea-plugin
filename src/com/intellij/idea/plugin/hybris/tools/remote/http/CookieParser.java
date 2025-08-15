@@ -36,15 +36,13 @@ public final class CookieParser {
     }
 
     public String getSpecialCookie(final Header[] headers) {
-        if (headers.length > 0) {
-            for (final Header header : headers) {
-                if ("Set-Cookie".equalsIgnoreCase(header.getName())) {
-                    final Matcher matcher = PATTERN.matcher(header.getValue());
-                    if (matcher.find()) {
-                        final String jsessionId = matcher.group(0);
-                        if (jsessionId != null && jsessionId.split("=").length > 1) {
-                            return jsessionId.split("=")[1];
-                        }
+        for (final Header header : headers) {
+            if ("Set-Cookie".equalsIgnoreCase(header.getName())) {
+                final Matcher matcher = PATTERN.matcher(header.getValue());
+                if (matcher.find()) {
+                    final String jsessionId = matcher.group(0);
+                    if (jsessionId != null && jsessionId.split("=").length > 1) {
+                        return jsessionId.split("=")[1];
                     }
                 }
             }

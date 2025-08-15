@@ -73,7 +73,7 @@ class KotlinCompilerConfigurator {
         val collector = NotificationMessageCollector.create(project)
         val actions = mutableListOf<() -> Unit>()
 
-        actions.add() {
+        actions.add {
             val writeActions = mutableListOf<() -> Unit>()
 
             runWriteAction {

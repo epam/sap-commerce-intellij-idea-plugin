@@ -63,7 +63,7 @@ class SelectOtherModulesToImportStep(context: WizardContext) : AbstractSelectMod
     override fun setList(otherElements: List<ModuleDescriptor>) {
         val allModules = context.hybrisModulesToImport + otherElements
         try {
-            this.context.setList(allModules)
+            this.context.list = allModules
         } catch (e: ConfigurationException) {
             // no-op already validated
         }

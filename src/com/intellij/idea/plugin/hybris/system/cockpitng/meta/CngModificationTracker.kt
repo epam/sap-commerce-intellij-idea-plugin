@@ -30,7 +30,7 @@ class CngModificationTracker(project: Project) : MetaModelModificationTracker(pr
 
     private val stateService by lazy { CngMetaModelStateService.getInstance(project) }
 
-    override fun getKeys(vararg xmlFiles: XmlFile): Collection<String>? = xmlFiles
+    override fun getKeys(vararg xmlFiles: XmlFile): Collection<String> = xmlFiles
         .mapNotNull { it.virtualFile }
         .map { it.path }
 

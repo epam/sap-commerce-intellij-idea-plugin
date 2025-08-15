@@ -46,7 +46,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
             .immutable()
     }
 
-    override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionContextSettings() { defaultPreviewSettings }
+    override fun previewSettings(e: AnActionEvent, project: Project): String = e.flexibleSearchExecutionContextSettings { defaultPreviewSettings }
         .let {
             """<pre>
  · rows:   ${it.maxCount}
@@ -57,7 +57,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
         }
 
     override fun settings(e: AnActionEvent, project: Project): FlexibleSearchExecutionContext.ModifiableSettings {
-        val settings = e.flexibleSearchExecutionContextSettings() {
+        val settings = e.flexibleSearchExecutionContextSettings {
             FlexibleSearchExecutionContext.defaultSettings(project)
         }
 

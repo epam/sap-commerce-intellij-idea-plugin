@@ -40,7 +40,7 @@ class UpdateAclCopyrightsProvider : UpdateCopyrightsProvider() {
         vf: VirtualFile?,
         ft: FileType?,
         options: CopyrightProfile?
-    ): UpdateCopyright? = object : UpdatePsiFileCopyright(project, module, vf, options) {
+    ): UpdateCopyright = object : UpdatePsiFileCopyright(project, module, vf, options) {
         override fun accept() = file is AclFile
 
         override fun scanFile() {

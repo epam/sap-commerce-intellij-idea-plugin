@@ -88,7 +88,7 @@ class ImpExTreeStructureProvider : TreeStructureProvider {
                     .dropLastWhile { it.isEmpty() }
                     .toTypedArray()
                 if (splitted.size > 1) {
-                    val langCode: String? = splitted[1]
+                    val langCode: String = splitted[1]
                     if (!HybrisConstants.Locales.LOCALES_CODES.contains(langCode)) {
                         matchIndex = matchResult.start(1) + 1
                         continue

@@ -33,7 +33,7 @@ class AclCommenter : CodeDocumentationAwareCommenter, SelfManagingCommenter<Comm
     override fun getLineCommentTokenType(): IElementType? = AclTypes.LINE_COMMENT
 
     override fun getLineCommentPrefix(): String = HASH_COMMENT_PREFIX
-    override fun getCommentPrefix(line: Int, document: Document, data: CommenterDataHolder): String? = HASH_COMMENT_PREFIX
+    override fun getCommentPrefix(line: Int, document: Document, data: CommenterDataHolder): String = HASH_COMMENT_PREFIX
     override fun getBlockCommentPrefix(): String? = null
     override fun getBlockCommentSuffix(): String? = null
     override fun getCommentedBlockCommentPrefix(): String? = null
@@ -50,7 +50,7 @@ class AclCommenter : CodeDocumentationAwareCommenter, SelfManagingCommenter<Comm
     override fun isLineCommented(line: Int, offset: Int, document: Document, data: CommenterDataHolder): Boolean = CharArrayUtil
         .regionMatches(document.charsSequence, offset, HASH_COMMENT_PREFIX)
 
-    override fun getBlockCommentRange(selectionStart: Int, selectionEnd: Int, document: Document, data: CommenterDataHolder): TextRange? = throw UnsupportedOperationException()
+    override fun getBlockCommentRange(selectionStart: Int, selectionEnd: Int, document: Document, data: CommenterDataHolder): TextRange = throw UnsupportedOperationException()
     override fun getBlockCommentPrefix(selectionStart: Int, document: Document, data: CommenterDataHolder): String? = getBlockCommentPrefix()
     override fun getBlockCommentSuffix(selectionEnd: Int, document: Document, data: CommenterDataHolder): String? = getBlockCommentSuffix()
     override fun uncommentBlockComment(startOffset: Int, endOffset: Int, document: Document?, data: CommenterDataHolder?) = throw UnsupportedOperationException()

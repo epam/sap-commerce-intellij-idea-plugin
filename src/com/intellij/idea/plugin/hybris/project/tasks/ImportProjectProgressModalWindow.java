@@ -37,7 +37,6 @@ import com.intellij.idea.plugin.hybris.project.utils.Plugin;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
 import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings;
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -74,6 +73,7 @@ import com.intellij.spellchecker.state.ProjectDictionaryState;
 import com.intellij.spring.facet.SpringFacet;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import sap.commerce.toolset.ccv2.CCv2Constants;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -29,7 +29,7 @@ class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorP
     override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
 
     companion object {
-        fun getInstance(): FlexibleSearchToKotlinInjectorProvider? = application.service()
+        fun getInstance(): FlexibleSearchToKotlinInjectorProvider = application.service()
     }
 
 }

@@ -27,7 +27,7 @@ class GotoTypeAction : SearchEverywhereBaseAction(), DumbAware {
 
     override fun actionPerformed(e: AnActionEvent) {
         val tabID = TypeSearchEverywhereContributor::class.java.simpleName
-        showInSearchEverywherePopup(tabID, e, false, true);
+        showInSearchEverywherePopup(tabID, e, false, true)
     }
 
     override fun update(event: AnActionEvent) {

@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,7 +29,7 @@ import com.intellij.util.IncorrectOperationException
 
 class ImpExJavaEnumValueReference(psiElement: PsiElement, private val className: String) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
 
-    override fun getVariants(): Array<PsiReference> = PsiReference.EMPTY_ARRAY
+    override fun getVariants(): Array<PsiReference> = EMPTY_ARRAY
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this to className)

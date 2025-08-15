@@ -34,7 +34,7 @@ import javax.swing.JTable
 class FlexibleSearchSimplifiedTableView(model: ListTableModel<List<String>>) : TableView<List<String>>(model) {
 
     init {
-        autoResizeMode = JTable.AUTO_RESIZE_OFF
+        autoResizeMode = AUTO_RESIZE_OFF
         intercellSpacing = Dimension(0, 0)
         autoResizeColumnsByHeader()
     }
@@ -73,7 +73,7 @@ class FlexibleSearchSimplifiedTableView(model: ListTableModel<List<String>>) : T
             listTableModel.addRows(dataRows)
 
             return FlexibleSearchSimplifiedTableView(listTableModel).apply {
-                autoResizeMode = JTable.AUTO_RESIZE_OFF
+                autoResizeMode = AUTO_RESIZE_OFF
                 intercellSpacing = Dimension(0, 0)
                 autoResizeColumnsByHeader()
             }

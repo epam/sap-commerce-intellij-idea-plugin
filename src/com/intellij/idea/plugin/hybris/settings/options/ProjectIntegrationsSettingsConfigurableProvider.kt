@@ -20,11 +20,7 @@ package com.intellij.idea.plugin.hybris.settings.options
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.settings.CCv2DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2SettingsListener
-import com.intellij.idea.plugin.hybris.tools.ccv2.settings.state.CCv2Subscription
-import com.intellij.idea.plugin.hybris.tools.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
@@ -41,6 +37,10 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
+import sap.commerce.toolset.ccv2.CCv2SettingsListener
+import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
+import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import javax.swing.DefaultComboBoxModel
 
 class ProjectIntegrationsSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {
@@ -66,7 +66,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
         private val hacInstances = RemoteHacInstancesListPanel(project) { eventType, data ->
             if (!isReset) {
                 if (eventType == RemoteInstancesListPanel.EventType.REMOVE) {
-                    RemoteConnectionService.getInstance(project).saveRemoteConnections(RemoteConnectionType.Hybris, data);
+                    RemoteConnectionService.getInstance(project).saveRemoteConnections(RemoteConnectionType.Hybris, data)
                 }
                 updateModel(activeHacServerModel, activeHacServerModel.selectedItem as RemoteConnectionSettingsState?, data)
             }
@@ -75,7 +75,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
         private val solrInstances = RemoteSolrInstancesListPanel(project) { eventType, data ->
             if (!isReset) {
                 if (eventType == RemoteInstancesListPanel.EventType.REMOVE) {
-                    RemoteConnectionService.getInstance(project).saveRemoteConnections(RemoteConnectionType.Hybris, data);
+                    RemoteConnectionService.getInstance(project).saveRemoteConnections(RemoteConnectionType.Hybris, data)
                     updateModel(activeSolrServerModel, activeSolrServerModel.selectedItem as RemoteConnectionSettingsState?, data)
                 }
             }

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.system.manifest.jsonSchema
 
 import com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
@@ -26,9 +27,9 @@ import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
 class ManifestJsonSchemaProviderFactory : JsonSchemaProviderFactory {
 
     override fun getProviders(project: Project) = listOf(
-            ManifestCommerceJsonSchemaFileProvider.instance(project),
-            ManifestDataHubJsonSchemaFileProvider.instance(project),
-            ManifestJavascriptStorefrontJsonSchemaFileProvider.instance(project)
+        ManifestCommerceJsonSchemaFileProvider.instance(project),
+        ManifestDataHubJsonSchemaFileProvider.instance(project),
+        ManifestJavascriptStorefrontJsonSchemaFileProvider.instance(project)
     )
 
 }

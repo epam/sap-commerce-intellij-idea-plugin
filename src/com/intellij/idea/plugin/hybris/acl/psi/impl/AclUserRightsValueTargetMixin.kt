@@ -46,13 +46,13 @@ abstract class AclUserRightsValueTargetMixin(astNode: ASTNode) : ASTWrapperPsiEl
                 }
                 .toTypedArray()
         }
-        return myReferences!!;
+        return myReferences!!
     }
 
     override fun subtreeChanged() {
         removeUserData(AclTSTargetAttributeReference.CACHE_KEY)
         removeUserData(AclTSTargetTypeReference.CACHE_KEY)
-        myReferences = null;
+        myReferences = null
     }
 
     companion object {

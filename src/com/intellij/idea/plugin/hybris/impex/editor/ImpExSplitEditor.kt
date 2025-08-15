@@ -233,6 +233,6 @@ class ImpExSplitEditor(internal val textEditor: TextEditor, private val project:
                     text = text.replaceRange(textRange.startOffset, textRange.endOffset, virtualParameter.finalText)
                 }
             }
-        return text;
+        return text
     }
 }

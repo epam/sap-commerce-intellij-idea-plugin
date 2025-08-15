@@ -102,7 +102,7 @@ class ProjectBeforeCompilerTask : CompileTask {
             return false
         }
 
-        return true;
+        return true
     }
 
     private fun invokeCodeGeneration(
@@ -262,7 +262,7 @@ class ProjectBeforeCompilerTask : CompileTask {
         }
         context.addMessage(CompilerMessageCategory.INFORMATION, "[y] Completed creation of the models.jar file.", null, -1, -1)
 
-        return true;
+        return true
     }
 
     private fun cleanDirectory(context: CompileContext, pathToBeDeleted: Path) {

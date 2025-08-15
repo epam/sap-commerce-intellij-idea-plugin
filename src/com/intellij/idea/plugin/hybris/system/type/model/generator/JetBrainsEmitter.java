@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,7 +42,7 @@ public class JetBrainsEmitter implements Emitter {
     private String AUTHOR = null;
     private boolean myUseQualifiedClassNames = false;
 
-
+    @Override
     public void emit(final FileManager fileManager, final ModelDesc model, final File outputRoot) {
         final NamespaceDesc nsdDef = model.nsdMap.get("");
         final Set<String> simpleTypes = new TreeSet<>();
@@ -97,7 +97,7 @@ public class JetBrainsEmitter implements Emitter {
                             "",
                             nsd.superClass,
                             false
-                        ) + nsd.superClass.substring(nsd.superClass.lastIndexOf(".") + 1));
+                        ) + nsd.superClass.substring(nsd.superClass.lastIndexOf('.') + 1));
                 }
                 if (td.supers != null) {
                     for (TypeDesc tds : td.supers) {
@@ -129,7 +129,7 @@ public class JetBrainsEmitter implements Emitter {
                 }
             }
 
-            Util.log("Generating type: " + typeName + "");
+            Util.log("Generating type: " + typeName);
             out = new PrintWriter(new FileWriter(outFile));
             if (NOT_COMPARE_MODE) {
                 out.println("// Generated on " + new Date());
@@ -233,7 +233,7 @@ public class JetBrainsEmitter implements Emitter {
                 boolean comma = false;
                 if (td.type != TypeDesc.TypeEnum.GROUP_INTERFACE) {
                     if (nsd.superClass != null) {
-                        out.print(" extends " + nsd.superClass.substring(nsd.superClass.lastIndexOf(".") + 1));
+                        out.print(" extends " + nsd.superClass.substring(nsd.superClass.lastIndexOf('.') + 1));
                         comma = true;
                     }
                 }
@@ -497,14 +497,14 @@ public class JetBrainsEmitter implements Emitter {
         if (nsd.superClass == null || nsd.superClass.length() == 0) {
             return;
         }
-        final String typeName = nsd.superClass.substring(nsd.superClass.lastIndexOf(".") + 1);
+        final String typeName = nsd.superClass.substring(nsd.superClass.lastIndexOf('.') + 1);
         final String typeQName = model.toJavaQualifiedTypeName("", nsd.superClass, false);
         final String pkgName = typeQName.substring(0, typeQName.lastIndexOf('.'));
         File outFile = new File(outDir, toJavaFileName(typeQName));
         outFile = fileManager.getOutputFile(outFile);
         PrintWriter out = null;
         try {
-            Util.log("Generating type: " + typeName + "");
+            Util.log("Generating type: " + typeName);
             out = new PrintWriter(new FileWriter(outFile));
             out.println("// Generated on " + new Date());
             out.println("// DTD/Schema  :    " + nsd.name);
@@ -559,14 +559,14 @@ public class JetBrainsEmitter implements Emitter {
         }
 
         final String stringClass = getStringClassName();
-        final String typeName = nsd.helperClass.substring(nsd.helperClass.lastIndexOf(".") + 1);
+        final String typeName = nsd.helperClass.substring(nsd.helperClass.lastIndexOf('.') + 1);
         final String typeQName = model.toJavaQualifiedTypeName("", nsd.helperClass, false);
         final String pkgName = typeQName.substring(0, typeQName.lastIndexOf('.'));
         File outFile = new File(outDir, toJavaFileName(typeQName));
         outFile = fileManager.getOutputFile(outFile);
         PrintWriter out = null;
         try {
-            Util.log("Generating type: " + typeName + "");
+            Util.log("Generating type: " + typeName);
             out = new PrintWriter(new FileWriter(outFile));
             out.println("// Generated on " + new Date());
             out.println("// DTD/Schema  :    " + nsd.name);

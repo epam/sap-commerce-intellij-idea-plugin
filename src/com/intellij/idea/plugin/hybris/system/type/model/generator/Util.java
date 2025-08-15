@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -174,7 +174,7 @@ public class Util {
                 fd2.name = fd1.name + '1';
                 fd2.duplicateIndex = 1;
                 fdMap.put(fd2.name, fd2);
-                fd1.name = fd1.name + '2';
+                fd1.name += '2';
                 fd1.duplicateIndex = 2;
             }
         } else if ((fd2 = fdMap.get(fd1.name + '1')) != null) {
@@ -182,7 +182,7 @@ public class Util {
             while (fdMap.containsKey(fd1.name + id)) {
                 id++;
             }
-            fd1.name = fd1.name + id;
+            fd1.name += id;
             fd1.duplicateIndex = id;
         }
         fdMap.put(fd1.name, fd1);

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,7 +29,8 @@ public enum ParameterUse implements com.intellij.util.xml.NamedEnum {
 	REQUIRED ("required");
 
 	private final String value;
-	private ParameterUse(final String value) { this.value = value; }
-	public String getValue() { return value; }
+	ParameterUse(final String value) { this.value = value; }
+	@Override
+    public String getValue() { return value; }
 
 }

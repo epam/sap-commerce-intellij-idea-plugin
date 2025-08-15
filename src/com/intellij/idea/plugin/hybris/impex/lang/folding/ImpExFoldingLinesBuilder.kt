@@ -57,6 +57,6 @@ class ImpExFoldingLinesBuilder : AbstractImpExFoldingBuilder() {
             }.toTypedArray()
     }
 
-    override fun getPlaceholderText(node: ASTNode): String? = "..."
+    override fun getPlaceholderText(node: ASTNode): String = "..."
     override fun isCollapsedByDefault(node: ASTNode) = true
 }

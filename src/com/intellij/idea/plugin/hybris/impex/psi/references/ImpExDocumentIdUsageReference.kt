@@ -74,7 +74,7 @@ class ImpExDocumentIdUsageReference(
                 ?.distinctBy { it.text }
                 ?.map { idDec ->
                     val meta = idDec.valueGroup?.fullHeaderParameter?.headerLine?.fullHeaderType?.headerTypeName?.text
-                        ?.let { it -> TSMetaModelAccess.getInstance(ref.impexValue.project).findMetaClassifierByName(it) }
+                        ?.let { TSMetaModelAccess.getInstance(ref.impexValue.project).findMetaClassifierByName(it) }
 
                     LookupElementBuilder.createWithSmartPointer(idDec.text, idDec).also { builder ->
                         if (meta != null) {

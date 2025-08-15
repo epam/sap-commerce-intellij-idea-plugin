@@ -126,7 +126,7 @@ class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(F
     }
 
     companion object {
-        fun getInstance(): FlexibleSearchToImpexInjectorProvider? = application.service()
+        fun getInstance(): FlexibleSearchToImpexInjectorProvider = application.service()
     }
 
 }

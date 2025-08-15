@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -35,6 +35,7 @@ public class DTDModelLoader implements ModelLoader {
 
     private ModelDesc model;
 
+    @Override
     public void loadModel(final ModelDesc model, final Collection<File> schemas, final XMLEntityResolver resolver) throws Exception {
         this.model = model;
         for (File dtdFile : schemas) {
@@ -43,7 +44,7 @@ public class DTDModelLoader implements ModelLoader {
                 Util.log("skipping " + fileName);
                 continue;
             }
-            Util.log("loading " + fileName + "");
+            Util.log("loading " + fileName);
             final String ns = fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1);
             //loadDTDByXerces(ns, dtdFile, resolver);
 
@@ -116,7 +117,7 @@ public class DTDModelLoader implements ModelLoader {
                     required
                 );
                 fd1.tagName = attrName;
-                fd1.documentation = "Attribute " + attrName + "";
+                fd1.documentation = "Attribute " + attrName;
                 fd1.realIndex = td.fdMap.size();
                 duplicates = Util.addToNameMap(td.fdMap, fd1, false) || duplicates;
             }

@@ -54,7 +54,7 @@ abstract class ImpExValueTSEnumReference(
 
     private val cacheKey = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpExValueTSEnumReference>>("HYBRIS_TS_CACHED_REFERENCE_$textRange")
 
-    fun getTargetElement(): PsiElement? = element
+    fun getTargetElement(): PsiElement = element
 
     override fun getVariants(): Array<LookupElementBuilder> = TSMetaModelAccess.getInstance(project)
         .findMetaEnumByName(metaName)

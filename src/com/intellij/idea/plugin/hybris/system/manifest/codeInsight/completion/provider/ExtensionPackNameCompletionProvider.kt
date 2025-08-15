@@ -15,14 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.ccv2.CCv2Constants
 
 class ExtensionPackNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 

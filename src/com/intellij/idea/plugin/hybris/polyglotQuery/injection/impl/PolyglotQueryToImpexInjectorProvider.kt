@@ -51,6 +51,6 @@ class PolyglotQueryToImpexInjectorProvider : AbstractLanguageInjectorProvider(Po
     }
 
     companion object {
-        fun getInstance(): PolyglotQueryToImpexInjectorProvider? = application.service()
+        fun getInstance(): PolyglotQueryToImpexInjectorProvider = application.service()
     }
 }

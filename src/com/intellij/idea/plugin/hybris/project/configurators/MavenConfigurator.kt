@@ -53,8 +53,8 @@ class MavenConfigurator {
             }
             .toMutableList()
 
-        actions.add() {
-            MavenProjectsManager.getInstance(project).scheduleUpdateAllMavenProjects(MavenSyncSpec.full("MavenProjectsManager.importProjects"));
+        actions.add {
+            MavenProjectsManager.getInstance(project).scheduleUpdateAllMavenProjects(MavenSyncSpec.full("MavenProjectsManager.importProjects"))
         }
 
         return actions

@@ -35,7 +35,7 @@ object TSUtils {
     private val ITEM_MODEL_KEY = Key.create<Boolean>("Y_IS_ITEM_MODEL_CLASS")
     private val ENUM_MODEL_KEY = Key.create<Boolean>("Y_IS_ENUM_MODEL_CLASS")
 
-    fun isTypeSystemFile(file: PsiFile): Boolean = (file is XmlFile && file.getName().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING))
+    fun isTypeSystemFile(file: PsiFile): Boolean = (file is XmlFile && file.name.endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING))
         && DomManager.getDomManager(file.project).getFileElement(file, Items::class.java) != null
 
     fun isCustomExtensionFile(file: PsiFile): Boolean = CachedValuesManager.getCachedValue(file) {

@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -50,6 +50,7 @@ public class XSDModelLoader implements ModelLoader {
 
     private ModelDesc model;
 
+    @Override
     public void loadModel(final ModelDesc model, final Collection<File> files, final XMLEntityResolver resolver) throws Exception {
         this.model = model;
         processSchemas(files, resolver);
@@ -191,7 +192,7 @@ public class XSDModelLoader implements ModelLoader {
                 Util.log("skipping " + fileName);
                 continue;
             }
-            Util.log("loading " + fileName + "");
+            Util.log("loading " + fileName);
 
             final XSModel model = loadSchema(schemaFile, resolver);
             if (model == null) {
@@ -239,7 +240,7 @@ public class XSDModelLoader implements ModelLoader {
         final ArrayList<XSComplexTypeDefinition> toAdd = new ArrayList<>();
         for (final ListIterator<XSTypeDefinition> it = toProcess.listIterator(); it.hasNext(); ) {
             final XSTypeDefinition td = it.next();
-            Util.log("processing " + td.getName() + ',' + td.getNamespace() + "");
+            Util.log("processing " + td.getName() + ',' + td.getNamespace());
             if (checkComplexType(td)) {
                 processType((XSComplexTypeDefinition) td, models, jtMap, nsdMap, toAdd);
             } else if (checkEnumType(td)) {
@@ -442,7 +443,7 @@ public class XSDModelLoader implements ModelLoader {
     private static String getSimpleTypesString(XSTypeDefinition et) {
         final StringBuffer typesHierarchy = new StringBuffer();
         while (et != null && !"anySimpleType".equals(et.getName()) && !"anyType".equals(et.getName()) && et.getNamespace() != null) {
-            typesHierarchy.append(et.getNamespace().substring(et.getNamespace().lastIndexOf("/") + 1))
+            typesHierarchy.append(et.getNamespace().substring(et.getNamespace().lastIndexOf('/') + 1))
                           .append(':')
                           .append(et.getName())
                           .append(';');
@@ -684,10 +685,10 @@ public class XSDModelLoader implements ModelLoader {
                     fd1.comment = "array of " + fd1.elementType;
                 }
                 fd1.realIndex = td.fdMap.size();
-                final boolean merge = globalMerge || globalChoice.containsKey(p) && globalChoice.values().contains(fd1.name);
+                final boolean merge = globalMerge || globalChoice.containsKey(p) && globalChoice.containsValue(fd1.name);
                 td.duplicates = Util.addToNameMap(td.fdMap, fd1, merge) || td.duplicates;
                 globalChoice.put(p, fd1.name);
-            } else if (p.getTerm() instanceof XSModelGroup) {
+            } else if (p.getTerm() instanceof final XSModelGroup groupDef) {
                 boolean addToGlobalChoice = false;
                 final boolean many = p.getMaxOccursUnbounded() || p.getMaxOccurs() > 1;
                 final XSObjectList l = ((XSModelGroup) p.getTerm()).getParticles();
@@ -697,7 +698,6 @@ public class XSDModelLoader implements ModelLoader {
                         choiceList.add(l);
                     } else {
                         // generate group interface???
-                        final XSModelGroup groupDef = (XSModelGroup) p.getTerm();
                         final TypeDesc gtd = processGroup(groupDef, models, jtMap, nsdMap);
                         if (gtd != null) {
                             supers.add(gtd);
@@ -783,7 +783,7 @@ public class XSDModelLoader implements ModelLoader {
         if (idx == -1) {
             return null;
         }
-        idx = str.indexOf(">", idx + 1);
+        idx = str.indexOf('>', idx + 1);
         if (idx == -1) {
             return null;
         }
@@ -791,12 +791,12 @@ public class XSDModelLoader implements ModelLoader {
         if (idx2 == -1) {
             idx2 = str.indexOf("</documentation", idx + 1);
         }
-        idx2 = str.lastIndexOf("<", idx2 + 1);
+        idx2 = str.lastIndexOf('<', idx2 + 1);
         str = str.substring(idx + 1, idx2).trim();
 
         idx = str.indexOf("<![CDATA[");
         if (idx > -1) {
-            idx = str.indexOf("[", idx + 3);
+            idx = str.indexOf('[', idx + 3);
             idx2 = str.indexOf("]]>", idx + 1);
             str = str.substring(idx + 1, idx2);
         }

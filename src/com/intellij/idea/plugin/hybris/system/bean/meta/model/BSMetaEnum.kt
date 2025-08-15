@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -28,8 +28,7 @@ interface BSMetaEnum : BSMetaClassifier<Enum>  {
     val deprecatedSince: String?
     val isDeprecated: Boolean
 
-    interface BSMetaEnumValue : BSMetaClassifier<EnumValue> {
-    }
+    interface BSMetaEnumValue : BSMetaClassifier<EnumValue>
 }
 
 interface BSGlobalMetaEnum : BSMetaEnum, BSGlobalMetaClassifier<Enum> {

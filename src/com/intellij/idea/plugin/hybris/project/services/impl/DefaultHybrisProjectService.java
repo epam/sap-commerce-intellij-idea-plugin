@@ -24,9 +24,9 @@ import com.intellij.idea.plugin.hybris.common.HybrisUtil;
 import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
-import com.intellij.idea.plugin.hybris.tools.ccv2.CCv2Constants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
+import sap.commerce.toolset.ccv2.CCv2Constants;
 
 import java.io.File;
 

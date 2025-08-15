@@ -35,7 +35,7 @@ class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
 ) {
 
     companion object {
-        fun getInstance(): GroovyFileToolbarInstaller? = application.service()
+        fun getInstance(): GroovyFileToolbarInstaller = application.service()
     }
 
     override fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean {

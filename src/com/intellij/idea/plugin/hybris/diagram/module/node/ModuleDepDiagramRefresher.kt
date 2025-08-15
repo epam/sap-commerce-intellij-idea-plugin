@@ -47,7 +47,7 @@ object ModuleDepDiagramRefresher {
     private fun modulesToShow(model: ModuleDepDiagramDataModel): Collection<Module> {
         val visibilityLevel = model.visibilityManager.currentVisibilityLevel
         val allModules = ModuleManager.getInstance(model.project).modules
-        val projectSettings = ProjectSettings.getInstance(model.project)
+        ProjectSettings.getInstance(model.project)
 
         if (ModuleDepDiagramVisibilityManager.ALL_MODULES == visibilityLevel) {
             return allModules

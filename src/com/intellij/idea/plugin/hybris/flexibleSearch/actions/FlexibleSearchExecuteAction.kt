@@ -51,7 +51,7 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchC
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return
-        val settings = e.flexibleSearchExecutionContextSettings() { FlexibleSearchExecutionContext.defaultSettings(project) }
+        val settings = e.flexibleSearchExecutionContextSettings { FlexibleSearchExecutionContext.defaultSettings(project) }
         val context = FlexibleSearchExecutionContext(
             content = content,
             settings = settings
