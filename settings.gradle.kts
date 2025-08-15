@@ -44,6 +44,7 @@ include(
     "modules/project",
     "modules/core",
     "modules/terminal",
+    "modules/ccv2",
 )
 
 rootProject.children.forEach {
