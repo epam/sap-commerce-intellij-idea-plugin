@@ -16,18 +16,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution
+package sap.commerce.toolset.logging
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.execution.ExecutionResult
+import sap.commerce.toolset.HybrisIcons
+import javax.swing.Icon
 
-interface ConsoleAwareExecutionResult : ExecutionResult {
-    val remoteConnectionType: RemoteConnectionType
-    val result: String?
-    val output: String?
-    val replicaContext: ReplicaContext?
+enum class LogLevel(val icon: Icon) {
+    ALL(HybrisIcons.Log.Level.ALL),
+    OFF(HybrisIcons.Log.Level.OFF),
+    TRACE(HybrisIcons.Log.Level.TRACE),
+    DEBUG(HybrisIcons.Log.Level.DEBUG),
+    INFO(HybrisIcons.Log.Level.INFO),
+    WARN(HybrisIcons.Log.Level.WARN),
+    ERROR(HybrisIcons.Log.Level.ERROR),
+    FATAL(HybrisIcons.Log.Level.FATAL);
 
-    val hasError
-        get() = errorMessage != null
+    companion object {
+        private val cache by lazy { entries.associateBy { it.name } }
+
+        fun of(effectiveLevel: String) = cache.getOrElse(effectiveLevel.uppercase()) { INFO }
+    }
+
 }

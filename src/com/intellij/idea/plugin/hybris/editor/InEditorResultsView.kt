@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.editor
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -33,6 +32,7 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.remote.execution.ExecutionResult
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import java.lang.Boolean

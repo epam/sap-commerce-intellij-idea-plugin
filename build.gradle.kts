@@ -240,10 +240,12 @@ dependencies {
 
         pluginComposedModule(implementation(project(":shared")))
         pluginComposedModule(implementation(project(":remote-core")))
+        pluginComposedModule(implementation(project(":remote-logging")))
         pluginComposedModule(implementation(project(":localextensions")))
         pluginComposedModule(implementation(project(":extensioninfo")))
         pluginComposedModule(implementation(project(":project-core")))
         pluginComposedModule(implementation(project(":project-import")))
+        pluginComposedModule(implementation(project(":ui")))
         pluginComposedModule(implementation(project(":terminal")))
         pluginComposedModule(implementation(project(":ccv2")))
         pluginComposedModule(implementation(project(":ant")))

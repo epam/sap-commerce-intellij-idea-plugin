@@ -22,8 +22,6 @@ import com.intellij.ide.IdeBundle
 import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.util.PsiNavigationSupport
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
-import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
-import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.idea.plugin.hybris.ui.event.KeyListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
@@ -52,6 +50,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.logging.CxLoggerModel
+import sap.commerce.toolset.logging.LogLevel
 import sap.commerce.toolset.ui.addItemListener
 import sap.commerce.toolset.ui.addKeyListener
 import java.awt.event.KeyEvent

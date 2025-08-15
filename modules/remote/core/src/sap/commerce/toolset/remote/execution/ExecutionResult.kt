@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution
+package sap.commerce.toolset.remote.execution
 
 interface ExecutionResult {
     val errorMessage: String?

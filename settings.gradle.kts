@@ -42,11 +42,13 @@ include(
     "modules/extensioninfo",
     "modules/localextensions",
     "modules/remote/core",
+    "modules/remote/logging",
     "modules/project/core",
     "modules/project/import",
     "modules/terminal",
     "modules/ccv2",
     "modules/ant",
+    "modules/ui",
 )
 
 rootProject.children.forEach {

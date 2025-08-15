@@ -16,17 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution
+package sap.commerce.toolset.logging.execution
 
-import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext
-import sap.commerce.toolset.remote.RemoteConnectionType
+import org.apache.http.HttpStatus
+import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.remote.execution.ExecutionResult
 
-interface ConsoleAwareExecutionResult : ExecutionResult {
-    val remoteConnectionType: RemoteConnectionType
-    val result: String?
-    val output: String?
-    val replicaContext: ReplicaContext?
+data class LoggingExecutionResult(
+    val statusCode: Int = HttpStatus.SC_OK,
+    override val errorMessage: String? = null,
+    override val errorDetailMessage: String? = null,
+    private val result: List<CxLoggerModel>? = null,
+) : ExecutionResult {
+
+    val loggers
+        get() = result
+            ?.distinctBy { it.name }
+            ?.associateBy { it.name }
 
     val hasError
         get() = errorMessage != null

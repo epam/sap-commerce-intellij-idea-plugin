@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
-import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.http.HybrisHacHttpClient
+import sap.commerce.toolset.logging.LogLevel
 
 data class LoggingExecutionContext(
     override val executionTitle: String,

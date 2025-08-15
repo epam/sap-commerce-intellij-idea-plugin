@@ -18,6 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
+import sap.commerce.toolset.logging.CxLoggerModel
+
 class CxLoggersState {
 
     private val _loggers: MutableMap<String, CxLoggerModel>

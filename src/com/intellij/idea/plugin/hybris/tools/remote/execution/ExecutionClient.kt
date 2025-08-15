@@ -24,6 +24,7 @@ import com.intellij.openapi.util.UserDataHolderBase
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportProgress
 import kotlinx.coroutines.*
+import sap.commerce.toolset.remote.execution.ExecutionResult
 import java.io.Serial
 import kotlin.coroutines.CoroutineContext
 

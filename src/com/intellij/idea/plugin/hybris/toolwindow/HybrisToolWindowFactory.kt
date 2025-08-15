@@ -42,7 +42,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
             createBSContent(toolWindow, BSView(project)),
             createConsolesContent(toolWindow, project, HybrisConsolesView.getInstance(project)),
             createCCv2CLIContent(toolWindow, project, CCv2View(project)),
-            createLoggersContent(toolWindow, project, LoggersView(project, coroutineScope))
+            createLoggersContent(toolWindow, LoggersView(project, coroutineScope))
         ).forEach { toolWindow.contentManager.addContent(it) }
     }
 
@@ -90,7 +90,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
         this
     }
 
-    private fun createLoggersContent(toolWindow: ToolWindow, project: Project, panel: LoggersView) = with(toolWindow.contentManager.factory.createContent(panel, LOGGERS, true)) {
+    private fun createLoggersContent(toolWindow: ToolWindow, panel: LoggersView) = with(toolWindow.contentManager.factory.createContent(panel, LOGGERS, true)) {
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false
@@ -104,7 +104,6 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
         const val CONSOLES_ID = "Consoles"
         const val TS_ID = "Type System"
         const val BS_ID = "Bean System"
-        const val CCV2 = "CCv2"
         const val LOGGERS = "Loggers"
     }
 }

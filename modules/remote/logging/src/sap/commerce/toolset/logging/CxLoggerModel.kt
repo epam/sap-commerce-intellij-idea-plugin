@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.logging
+package sap.commerce.toolset.logging
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
@@ -31,7 +31,7 @@ data class CxLoggerModel(
     val parentName: String?,
     val inherited: Boolean,
     val icon: Icon,
-    val level: LogLevel = LogLevel.of(effectiveLevel),
+    val level: LogLevel = LogLevel.Companion.of(effectiveLevel),
     val psiElementPointer: SmartPsiElementPointer<PsiElement>? = null
 ) {
     val resolved: Boolean

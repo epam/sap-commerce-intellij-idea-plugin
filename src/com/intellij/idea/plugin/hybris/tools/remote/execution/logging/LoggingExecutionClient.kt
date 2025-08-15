@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
 
-import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerUtilities
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionClient
@@ -36,6 +35,8 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
+import sap.commerce.toolset.logging.CxLoggerModel
+import sap.commerce.toolset.logging.execution.LoggingExecutionResult
 import sap.commerce.toolset.remote.RemoteConnectionType
 import java.io.IOException
 import java.io.Serial

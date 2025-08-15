@@ -16,25 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.logging
+fun properties(key: String) = providers.gradleProperty(key)
 
-import sap.commerce.toolset.HybrisIcons
-import javax.swing.Icon
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-enum class LogLevel(val icon: Icon) {
-    ALL(HybrisIcons.Log.Level.ALL),
-    OFF(HybrisIcons.Log.Level.OFF),
-    TRACE(HybrisIcons.Log.Level.TRACE),
-    DEBUG(HybrisIcons.Log.Level.DEBUG),
-    INFO(HybrisIcons.Log.Level.INFO),
-    WARN(HybrisIcons.Log.Level.WARN),
-    ERROR(HybrisIcons.Log.Level.ERROR),
-    FATAL(HybrisIcons.Log.Level.FATAL);
-
-    companion object {
-        private val cache by lazy { entries.associateBy { it.name } }
-
-        fun of(effectiveLevel: String) = cache.getOrElse(effectiveLevel.uppercase()) { INFO }
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
     }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
+dependencies {
+    implementation(project(":shared"))
+    implementation(project(":project-core"))
+
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+    }
 }

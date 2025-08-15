@@ -16,24 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.execution.logging
+fun properties(key: String) = providers.gradleProperty(key)
 
-import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
-import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionResult
-import org.apache.http.HttpStatus
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-data class LoggingExecutionResult(
-    val statusCode: Int = HttpStatus.SC_OK,
-    override val errorMessage: String? = null,
-    override val errorDetailMessage: String? = null,
-    private val result: List<CxLoggerModel>? = null,
-) : ExecutionResult {
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-    val loggers
-        get() = result
-            ?.distinctBy { it.name }
-            ?.associateBy { it.name }
+dependencies {
+    implementation(project(":shared"))
+    implementation(project(":remote-core"))
 
-    val hasError
-        get() = errorMessage != null
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+    }
 }
