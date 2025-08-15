@@ -272,7 +272,6 @@ dependencies {
             "org.jetbrains.idea.maven",
             "org.jetbrains.idea.eclipse",
             "org.jetbrains.kotlin",
-            "org.jetbrains.plugins.terminal",
             "JavaScript",
             "JUnit",
         )
