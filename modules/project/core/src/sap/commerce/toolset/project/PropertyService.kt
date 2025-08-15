@@ -16,10 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.properties
+package sap.commerce.toolset.project
 
-import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil
 import com.intellij.lang.properties.IProperty
 import com.intellij.lang.properties.PropertiesFileType
 import com.intellij.lang.properties.psi.PropertiesFile
@@ -44,9 +42,6 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisConstants.DEFAULT_WRAPPER_FILENAME
-import sap.commerce.toolset.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY
-import sap.commerce.toolset.HybrisConstants.TOMCAT_WRAPPER_CONFIG_DIR
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -165,7 +160,8 @@ class PropertyService(private val project: Project) {
 
     private fun addEnvironmentProperties(properties: MutableMap<String, String>) {
         val platformHomePropertyKey = HybrisConstants.PROPERTY_PLATFORMHOME
-        getPlatformHome()?.let { properties[platformHomePropertyKey] = it }
+        getPlatformHome()
+            ?.let { properties[platformHomePropertyKey] = it }
 
         properties[HybrisConstants.PROPERTY_ENV_PROPERTY_PREFIX]
             ?.let { prefix ->
@@ -181,9 +177,8 @@ class PropertyService(private val project: Project) {
             }
     }
 
-    fun getPlatformHome(): String? {
-        return HybrisRootUtil.findPlatformRootDirectory(project)?.path
-    }
+    private fun getPlatformHome(): String? = findPlatformRootDirectory(project)
+        ?.path
 
     fun getTomcatWrapperProperties(executionId: String? = null): Properties {
         val platformModule = obtainPlatformModule()
@@ -192,11 +187,11 @@ class PropertyService(private val project: Project) {
         val tomcatDir = findTomcatDirectory(platformModule)
 
         val configFileName = when (executionId) {
-            null -> DEFAULT_WRAPPER_FILENAME
+            null -> HybrisConstants.DEFAULT_WRAPPER_FILENAME
             else -> "wrapper-$executionId.conf"
         }
 
-        val confFile = tomcatDir.findFileByRelativePath("$TOMCAT_WRAPPER_CONFIG_DIR/$configFileName")
+        val confFile = tomcatDir.findFileByRelativePath("${HybrisConstants.TOMCAT_WRAPPER_CONFIG_DIR}/$configFileName")
         return loadProperties(confFile)
     }
 
@@ -204,7 +199,7 @@ class PropertyService(private val project: Project) {
         return ModuleRootManager.getInstance(platformModule)
             .contentRoots
             .asSequence()
-            .mapNotNull { it.findFileByRelativePath(PLATFORM_TOMCAT_DIRECTORY) }
+            .mapNotNull { it.findFileByRelativePath(HybrisConstants.PLATFORM_TOMCAT_DIRECTORY) }
             .firstOrNull()
             ?: throw IllegalStateException("Tomcat directory not found")
     }
@@ -311,11 +306,11 @@ class PropertyService(private val project: Project) {
         return envPropertiesScope.or(advancedPropertiesScope).or(localPropertiesScope).or(projectPropertiesScope)
     }
 
-    private fun obtainConfigModule() = ModuleManager.getInstance(project)
+    private fun obtainConfigModule() = ModuleManager.Companion.getInstance(project)
         .modules
         .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_CONFIG }
 
-    private fun obtainPlatformModule() = ModuleManager.getInstance(project)
+    private fun obtainPlatformModule() = ModuleManager.Companion.getInstance(project)
         .modules
         .firstOrNull { it.yExtensionName() == HybrisConstants.EXTENSION_NAME_PLATFORM }
 

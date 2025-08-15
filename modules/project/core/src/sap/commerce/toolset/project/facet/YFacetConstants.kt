@@ -15,22 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.project.utils
 
-import com.intellij.idea.plugin.hybris.facet.YFacetConstants
-import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.vfs.VirtualFile
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+package sap.commerce.toolset.project.facet
 
-object HybrisRootUtil {
-	fun findPlatformRootDirectory(project: Project): VirtualFile? {
-		return ModuleManager.getInstance(project).modules
-				.firstOrNull { YFacetConstants.getModuleSettings(it).type == ModuleDescriptorType.PLATFORM }
-				?.let { ModuleRootManager.getInstance(it) }
-				?.contentRoots
-				?.firstOrNull { it.findChild(HybrisConstants.EXTENSIONS_XML) != null }
-	}
+import com.intellij.facet.FacetTypeId
+import com.intellij.openapi.module.Module
+import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.project.yExtensionName
+
+object YFacetConstants {
+    val Y_FACET_TYPE_ID = FacetTypeId<YFacet>(YFacetType.FACET_ID)
+
+    fun getModuleSettings(module: Module): ExtensionDescriptor = YFacet.getState(module)
+        ?: ExtensionDescriptor(module.yExtensionName())
 }

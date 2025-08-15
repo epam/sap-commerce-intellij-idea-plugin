@@ -22,7 +22,6 @@ package com.intellij.idea.plugin.hybris.impex.psi
 
 import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.psi.reference.result.*
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.TextRange
@@ -30,6 +29,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
+import sap.commerce.toolset.project.PropertyService
 
 fun getHeaderLine(element: ImpexFullHeaderParameter): ImpexHeaderLine? = PsiTreeUtil
     .getParentOfType(element, ImpexHeaderLine::class.java)

@@ -24,13 +24,13 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.psi.references.*
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.PropertyService
 import java.io.Serial
 
 abstract class ImpexAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexAnyHeaderParameterName {

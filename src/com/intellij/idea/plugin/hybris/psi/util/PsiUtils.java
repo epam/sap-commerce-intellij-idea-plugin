@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.psi.util;
 
-import com.intellij.idea.plugin.hybris.facet.YFacetConstants;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
@@ -32,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType;
+import sap.commerce.toolset.project.facet.YFacetConstants;
 import sap.commerce.toolset.settings.WorkspaceSettings;
 
 import java.io.File;

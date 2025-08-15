@@ -17,8 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta
 
-import com.intellij.idea.plugin.hybris.common.root
-import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.system.type.meta.impl.TSMetaModelNameProvider
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
@@ -31,6 +29,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
 import org.apache.commons.collections4.CollectionUtils
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.root
+import sap.commerce.toolset.project.yExtensionName
 import java.util.*
 import kotlin.io.path.exists
 import kotlin.io.path.inputStream

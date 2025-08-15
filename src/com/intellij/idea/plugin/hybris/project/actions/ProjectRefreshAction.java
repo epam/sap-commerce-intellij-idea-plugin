@@ -25,7 +25,6 @@ import com.intellij.ide.util.newProjectWizard.StepSequence;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.ProjectBuilder;
 import com.intellij.ide.util.projectWizard.WizardContext;
-import com.intellij.idea.plugin.hybris.facet.YFacet;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
@@ -50,6 +49,7 @@ import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisI18NBundleUtils;
 import sap.commerce.toolset.HybrisIcons;
+import sap.commerce.toolset.project.facet.YFacet;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.settings.WorkspaceSettings;
 

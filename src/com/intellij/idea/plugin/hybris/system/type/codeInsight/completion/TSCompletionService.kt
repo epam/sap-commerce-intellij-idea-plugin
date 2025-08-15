@@ -21,7 +21,6 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -36,6 +35,7 @@ import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_KEY
 import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_SOURCE
 import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_TARGET
 import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_VALUE
+import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.settings.DeveloperSettings
 import java.util.*
 

@@ -16,32 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.facet
+package sap.commerce.toolset.project.facet
 
-import com.intellij.facet.Facet
-import com.intellij.facet.FacetManager
-import com.intellij.openapi.module.Module
-import java.io.Serial
+import com.intellij.facet.FacetConfiguration
+import com.intellij.facet.ui.FacetEditorContext
+import com.intellij.facet.ui.FacetValidatorsManager
+import com.intellij.openapi.components.PersistentStateComponent
+import sap.commerce.toolset.project.ExtensionDescriptor
 
-class YFacet(
-    facetType: YFacetType,
-    module: Module,
-    name: String,
-    configuration: YFacetConfiguration,
-    underlyingFacet: Facet<*>?
-) : Facet<YFacetConfiguration>(facetType, module, name, configuration, underlyingFacet) {
+class YFacetConfiguration : FacetConfiguration, PersistentStateComponent<ExtensionDescriptor?> {
 
-    companion object {
-        @Serial
-        private val serialVersionUID: Long = -112372831447187023L
+    private var extensionDescriptor: ExtensionDescriptor? = null
 
-        fun get(module: Module): YFacet? {
-            if (module.isDisposed) return null
-            return FacetManager.getInstance(module).getFacetByType(YFacetConstants.Y_FACET_TYPE_ID)
-        }
+    override fun createEditorTabs(editorContext: FacetEditorContext, validatorsManager: FacetValidatorsManager) = getState()
+        ?.let { arrayOf(YFacetEditorTab(it, editorContext)) }
+        ?: emptyArray()
 
-        fun getState(module: Module) = get(module)
-            ?.configuration
-            ?.state
+    override fun getState() = extensionDescriptor
+    override fun loadState(state: ExtensionDescriptor) {
+        this.extensionDescriptor = state
     }
 }

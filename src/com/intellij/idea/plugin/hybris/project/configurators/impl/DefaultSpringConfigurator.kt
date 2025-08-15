@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.facet.ModifiableFacetModel
-import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
@@ -40,6 +39,7 @@ import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.YRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.yExtensionName
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException

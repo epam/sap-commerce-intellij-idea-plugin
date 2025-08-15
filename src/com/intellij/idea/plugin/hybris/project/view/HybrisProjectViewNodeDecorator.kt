@@ -21,15 +21,15 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ProjectViewNodeDecorator
 import com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode
-import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.facet.YFacetConstants
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.facet.YFacetConstants
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.yExtensionName
 
 class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
 

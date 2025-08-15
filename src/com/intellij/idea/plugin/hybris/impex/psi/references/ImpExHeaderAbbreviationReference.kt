@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.impex.psi.references
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExPsiElementManipulator
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -31,6 +30,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.PropertyService
 
 class ImpExHeaderAbbreviationReference(owner: ImpexAnyHeaderParameterName) : PsiReferenceBase.Poly<PsiElement?>(owner, false) {
 

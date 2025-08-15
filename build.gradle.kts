@@ -268,7 +268,6 @@ dependencies {
             "com.intellij.database",
             "com.intellij.diagram",
             "com.intellij.spring",
-            "com.intellij.properties",
             "org.intellij.groovy",
             "com.intellij.gradle",
             "com.intellij.javaee",

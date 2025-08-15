@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 import com.intellij.idea.plugin.hybris.actions.ExecutionContextSettingsAction
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionContextSettings
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionContext
 import com.intellij.idea.plugin.hybris.ui.ComboItem
 import com.intellij.idea.plugin.hybris.ui.GroupedComboBoxModel
@@ -36,6 +35,7 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.PropertyService
 import javax.swing.LayoutFocusTraversalPolicy
 
 class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecutionContext.ModifiableSettings>() {

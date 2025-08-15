@@ -20,12 +20,12 @@ package com.intellij.idea.plugin.hybris.tools.remote
 
 import ai.grazie.utils.toLinkedSet
 import com.intellij.credentialStore.Credentials
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.collections.immutable.toImmutableList
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.remote.RemoteConnectionScope
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.RemoteConstants
@@ -49,7 +49,7 @@ class RemoteConnectionService(private val project: Project) {
             ?: instances.first()
     }
 
-    fun getActiveRemoteConnectionId(type: RemoteConnectionType) = RemoteDeveloperSettings.getInstance(project)
+    fun getActiveRemoteConnectionId(type: RemoteConnectionType) = RemoteDeveloperSettings.Companion.getInstance(project)
         .let {
             when (type) {
                 RemoteConnectionType.Hybris -> it.activeRemoteConnectionID
@@ -96,14 +96,14 @@ class RemoteConnectionService(private val project: Project) {
 
         when (settings.scope) {
             RemoteConnectionScope.PROJECT_PERSONAL -> {
-                val developerSettings = RemoteDeveloperSettings.getInstance(project)
+                val developerSettings = RemoteDeveloperSettings.Companion.getInstance(project)
                 val mutableList = developerSettings.remoteConnectionSettingsList.toMutableList()
                 mutableList.add(settings)
                 developerSettings.remoteConnectionSettingsList = mutableList.toImmutableList()
             }
 
             RemoteConnectionScope.PROJECT -> {
-                with(RemoteProjectSettings.getInstance(project)) {
+                with(RemoteProjectSettings.Companion.getInstance(project)) {
                     remoteConnectionSettingsList = remoteConnectionSettingsList.toMutableList()
                         .apply { add(settings) }
                 }
@@ -132,12 +132,12 @@ class RemoteConnectionService(private val project: Project) {
         when (settings.type) {
             RemoteConnectionType.Hybris -> {
                 developerSettings.activeRemoteConnectionID = settings.uuid
-                project.messageBus.syncPublisher(RemoteConnectionListener.TOPIC).onActiveHybrisConnectionChanged(settings)
+                project.messageBus.syncPublisher(RemoteConnectionListener.Companion.TOPIC).onActiveHybrisConnectionChanged(settings)
             }
 
             RemoteConnectionType.SOLR -> {
                 developerSettings.activeSolrConnectionID = settings.uuid
-                project.messageBus.syncPublisher(RemoteConnectionListener.TOPIC).onActiveHybrisConnectionChanged(settings)
+                project.messageBus.syncPublisher(RemoteConnectionListener.Companion.TOPIC).onActiveHybrisConnectionChanged(settings)
             }
         }
     }

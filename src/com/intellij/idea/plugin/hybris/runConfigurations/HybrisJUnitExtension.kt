@@ -26,8 +26,6 @@ import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunnerSettings
 import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.junit.JUnitConfiguration
-import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
@@ -38,6 +36,8 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.search.GlobalSearchScope
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.PropertyService
+import sap.commerce.toolset.project.facet.YFacet
 import java.util.*
 
 class HybrisJUnitExtension : RunConfigurationExtension() {

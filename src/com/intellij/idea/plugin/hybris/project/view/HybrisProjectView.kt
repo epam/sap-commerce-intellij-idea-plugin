@@ -22,8 +22,6 @@ import com.intellij.ide.projectView.TreeStructureProvider
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.nodes.*
 import com.intellij.ide.util.treeView.AbstractTreeNode
-import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbAware
@@ -39,6 +37,8 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.yExtensionName
 import sap.commerce.toolset.settings.ApplicationSettings
 import java.io.File
 

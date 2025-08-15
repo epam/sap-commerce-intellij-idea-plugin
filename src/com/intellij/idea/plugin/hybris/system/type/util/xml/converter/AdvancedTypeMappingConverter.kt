@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.system.type.util.xml.converter
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -34,6 +33,7 @@ import com.intellij.util.Processor
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.stubs.index.DomElementClassIndex
+import sap.commerce.toolset.project.PropertyService
 import java.util.*
 
 class AdvancedTypeMappingConverter : AbstractTSConverterBase<TypeMapping>(TypeMapping::class.java) {

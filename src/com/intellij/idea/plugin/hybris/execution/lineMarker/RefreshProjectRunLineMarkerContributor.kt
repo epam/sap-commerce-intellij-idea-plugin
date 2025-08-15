@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.execution.lineMarker
 
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
-import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.Extension
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Extensions
@@ -33,6 +32,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.yExtensionName
 
 class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
 

@@ -36,6 +36,7 @@ sourceSets {
 dependencies {
     implementation(libs.jsoup)
     implementation(project(":shared"))
+    implementation(project(":project-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

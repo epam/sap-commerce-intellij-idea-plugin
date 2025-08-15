@@ -18,8 +18,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.facet.FacetManager
-import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.module.ModuleManager
@@ -37,7 +35,9 @@ import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfiguration
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
 import org.jetbrains.kotlin.idea.util.application.isUnitTestMode
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
+import sap.commerce.toolset.project.yExtensionName
 
 class KotlinCompilerConfigurator {
 

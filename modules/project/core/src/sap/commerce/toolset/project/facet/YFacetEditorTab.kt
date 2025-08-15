@@ -16,10 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.facet
+package sap.commerce.toolset.project.facet
 
 import com.intellij.facet.ui.FacetEditorContext
-import com.intellij.facet.ui.FacetEditorTab
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
@@ -32,7 +31,7 @@ import sap.commerce.toolset.project.descriptors.SubModuleDescriptorType
 class YFacetEditorTab(
     val state: ExtensionDescriptor,
     private val editorContext: FacetEditorContext
-) : FacetEditorTab() {
+) : com.intellij.facet.ui.FacetEditorTab() {
 
     override fun getDisplayName() = "[y] SAP Commerce Facet"
     override fun isModified() = dialogPanel.isModified()
@@ -68,7 +67,7 @@ class YFacetEditorTab(
 
         if (state.subModuleType == SubModuleDescriptorType.ADDON && state.installedIntoExtensions.isNotEmpty()) {
             group("Installed Into Extensions") {
-                ModuleManager.getInstance(editorContext.project)
+                ModuleManager.Companion.getInstance(editorContext.project)
                     .modules
                     .mapNotNull { YFacet.getState(it) }
                     .filter { state.installedIntoExtensions.contains(it.name) }

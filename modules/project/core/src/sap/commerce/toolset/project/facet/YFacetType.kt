@@ -15,17 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.facet
+
+package sap.commerce.toolset.project.facet
 
 import com.intellij.facet.Facet
-import com.intellij.facet.FacetType
 import com.intellij.openapi.module.JavaModuleType
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
-class YFacetType : FacetType<YFacet, YFacetConfiguration>(YFacetConstants.Y_FACET_TYPE_ID, FACET_ID, FACET_NAME) {
+class YFacetType : com.intellij.facet.FacetType<YFacet, YFacetConfiguration>(YFacetConstants.Y_FACET_TYPE_ID, FACET_ID, FACET_NAME) {
 
     override fun getIcon(): Icon = HybrisIcons.Y.FACET
     override fun isSuitableModuleType(type: ModuleType<*>?) = type is JavaModuleType

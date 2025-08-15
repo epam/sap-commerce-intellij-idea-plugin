@@ -32,7 +32,7 @@
         <!--                                            Facet                                                        -->
         <!-- ####################################################################################################### -->
 
-        <facetType implementation="com.intellij.idea.plugin.hybris.facet.YFacetType"/>
+        <facetType implementation="sap.commerce.toolset.project.facet.YFacetType"/>
 
         <postStartupActivity order="first" id="hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
         <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>

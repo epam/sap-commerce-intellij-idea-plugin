@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.system.meta
 
-import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderRootType
@@ -36,6 +35,7 @@ import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.stubs.index.DomElementClassIndex
 import kotlinx.collections.immutable.toImmutableSet
+import sap.commerce.toolset.project.yExtensionName
 
 data class Meta<T : DomElement>(
     val container: String,

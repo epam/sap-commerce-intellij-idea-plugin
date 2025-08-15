@@ -37,11 +37,14 @@ dependencies {
     implementation(libs.bundles.commons)
     implementation(project(":shared"))
     implementation(project(":extensioninfo"))
-    implementation(project(":remote-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+        bundledPlugins(
+            "com.intellij.java",
+            "com.intellij.properties",
+        )
     }
 }

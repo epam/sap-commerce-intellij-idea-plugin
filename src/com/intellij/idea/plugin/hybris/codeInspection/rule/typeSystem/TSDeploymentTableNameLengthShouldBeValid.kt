@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.idea.plugin.hybris.system.type.model.deployments
@@ -28,6 +27,7 @@ import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.project.PropertyService
 
 class TSDeploymentTableNameLengthShouldBeValid : AbstractCustomOnlyTSInspection() {
 

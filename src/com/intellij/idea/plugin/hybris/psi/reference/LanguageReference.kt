@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.psi.reference
 
 import com.intellij.idea.plugin.hybris.codeInsight.lookup.LookupElementFactory
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -27,6 +26,7 @@ import com.intellij.pom.references.PomService
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.PropertyService
 
 class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(owner) {
 

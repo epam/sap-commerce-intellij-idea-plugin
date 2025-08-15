@@ -16,15 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common
+package sap.commerce.toolset.project
 
-import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.facet.YFacet
+import sap.commerce.toolset.project.facet.YFacetConstants
 import java.nio.file.Path
 
-fun Module.yExtensionName(): String = YFacet.get(this)
+fun Module.yExtensionName(): String = YFacet.Companion.get(this)
     ?.configuration
     ?.state
     ?.name
@@ -34,3 +40,10 @@ fun Module.root(): Path? = this
     .let { ModuleRootManager.getInstance(it).contentRoots }
     .firstOrNull()
     ?.toNioPathOrNull()
+
+fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.Companion.getInstance(project)
+    .modules
+    .firstOrNull { YFacetConstants.getModuleSettings(it).type == ModuleDescriptorType.PLATFORM }
+    ?.let { ModuleRootManager.getInstance(it) }
+    ?.contentRoots
+    ?.firstOrNull { it.findChild(HybrisConstants.EXTENSIONS_XML) != null }

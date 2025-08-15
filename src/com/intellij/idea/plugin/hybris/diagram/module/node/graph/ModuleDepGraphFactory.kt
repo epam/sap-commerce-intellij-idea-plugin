@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.diagram.module.node.graph
 
-import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.facet.YFacetConstants
 import com.intellij.openapi.module.Module
+import sap.commerce.toolset.project.facet.YFacetConstants
+import sap.commerce.toolset.project.yExtensionName
 
 object ModuleDepGraphFactory {
 

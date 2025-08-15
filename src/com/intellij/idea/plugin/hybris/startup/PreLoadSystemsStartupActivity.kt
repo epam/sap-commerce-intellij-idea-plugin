@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.startup
 
-import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
@@ -26,6 +25,7 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.project.PropertyService
 
 class PreLoadSystemsStartupActivity : ProjectActivity {
 

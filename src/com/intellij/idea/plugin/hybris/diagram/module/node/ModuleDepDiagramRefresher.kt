@@ -20,12 +20,12 @@ package com.intellij.idea.plugin.hybris.diagram.module.node
 
 import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramVisibilityManager
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphFactory
-import com.intellij.idea.plugin.hybris.facet.YFacetConstants
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.uml.java.project.*
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.facet.YFacetConstants
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 object ModuleDepDiagramRefresher {
