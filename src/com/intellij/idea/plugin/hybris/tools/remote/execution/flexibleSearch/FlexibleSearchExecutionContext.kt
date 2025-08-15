@@ -92,9 +92,3 @@ data class FlexibleSearchExecutionContext(
             .immutable()
     }
 }
-
-enum class QueryMode(val title: String) {
-    SQL("SQL"),
-    FlexibleSearch("FlexibleSearch"),
-    PolyglotQuery("Polyglot Query")
-}

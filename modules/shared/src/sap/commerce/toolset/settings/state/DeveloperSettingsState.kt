@@ -20,15 +20,10 @@ package sap.commerce.toolset.settings.state
 
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 
 @Tag("HybrisDeveloperSpecificProjectSettings")
 data class DeveloperSettingsState(
 
-    @JvmField @OptionTag val activeRemoteConnectionID: String? = null,
-    @JvmField @OptionTag val activeSolrConnectionID: String? = null,
-
-    @JvmField val remoteConnectionSettingsList: List<RemoteConnectionSettingsState> = emptyList(),
     @JvmField @OptionTag val typeSystemDiagramSettings: TypeSystemDiagramSettingsState = TypeSystemDiagramSettingsState(),
     @JvmField @OptionTag val beanSystemSettings: BeanSystemSettingsState = BeanSystemSettingsState(),
     @JvmField @OptionTag val typeSystemSettings: TypeSystemSettingsState = TypeSystemSettingsState(),

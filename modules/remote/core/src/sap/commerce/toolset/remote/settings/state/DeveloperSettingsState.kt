@@ -16,35 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.remote.settings.state
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Tag
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+@Tag("HybrisDeveloperSpecificProjectSettings")
+data class DeveloperSettingsState(
 
-dependencies {
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.gradle",
-            "org.jetbrains.kotlin",
-        )
-        compatiblePlugins(
-            "AngularJS"
-        )
-    }
-}
+    @JvmField @OptionTag val activeRemoteConnectionID: String? = null,
+    @JvmField @OptionTag val activeSolrConnectionID: String? = null,
+
+    @JvmField val remoteConnectionSettingsList: List<RemoteConnectionSettingsState> = emptyList(),
+)

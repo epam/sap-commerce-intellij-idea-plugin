@@ -16,35 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
-
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.gradle",
-            "org.jetbrains.kotlin",
-        )
-        compatiblePlugins(
-            "AngularJS"
-        )
-    }
+enum class QueryMode(val title: String) {
+    SQL("SQL"),
+    FlexibleSearch("FlexibleSearch"),
+    PolyglotQuery("Polyglot Query")
 }

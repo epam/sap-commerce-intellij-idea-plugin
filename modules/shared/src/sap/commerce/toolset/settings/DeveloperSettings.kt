@@ -30,21 +30,6 @@ import sap.commerce.toolset.settings.state.DeveloperSettingsState
 @Service(Service.Level.PROJECT)
 class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()) {
 
-    var activeRemoteConnectionID
-        get() = state.activeRemoteConnectionID
-        set(value) {
-            updateState { it.copy(activeRemoteConnectionID = value) }
-        }
-    var activeSolrConnectionID
-        get() = state.activeSolrConnectionID
-        set(value) {
-            updateState { it.copy(activeSolrConnectionID = value) }
-        }
-    var remoteConnectionSettingsList
-        get() = state.remoteConnectionSettingsList
-        set(value) {
-            updateState { it.copy(remoteConnectionSettingsList = value) }
-        }
     var typeSystemDiagramSettings
         get() = state.typeSystemDiagramSettings
         set(value) {

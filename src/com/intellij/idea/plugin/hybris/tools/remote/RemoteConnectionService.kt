@@ -31,8 +31,8 @@ import sap.commerce.toolset.remote.RemoteConnectionScope
 import sap.commerce.toolset.remote.RemoteConnectionType
 import sap.commerce.toolset.remote.RemoteConstants
 import sap.commerce.toolset.remote.settings.RemoteConnectionListener
+import sap.commerce.toolset.remote.settings.RemoteDeveloperSettings
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.settings.DeveloperSettings
 import java.util.*
 
 @Service(Service.Level.PROJECT)
@@ -49,7 +49,7 @@ class RemoteConnectionService(private val project: Project) {
             ?: instances.first()
     }
 
-    fun getActiveRemoteConnectionId(type: RemoteConnectionType) = DeveloperSettings.getInstance(project)
+    fun getActiveRemoteConnectionId(type: RemoteConnectionType) = RemoteDeveloperSettings.getInstance(project)
         .let {
             when (type) {
                 RemoteConnectionType.Hybris -> it.activeRemoteConnectionID
@@ -96,7 +96,7 @@ class RemoteConnectionService(private val project: Project) {
 
         when (settings.scope) {
             RemoteConnectionScope.PROJECT_PERSONAL -> {
-                val developerSettings = DeveloperSettings.getInstance(project)
+                val developerSettings = RemoteDeveloperSettings.getInstance(project)
                 val mutableList = developerSettings.remoteConnectionSettingsList.toMutableList()
                 mutableList.add(settings)
                 developerSettings.remoteConnectionSettingsList = mutableList.toImmutableList()
@@ -117,7 +117,7 @@ class RemoteConnectionService(private val project: Project) {
                 .apply { removeIf { it.type == type } }
         }
 
-        val developerSettings = DeveloperSettings.getInstance(project)
+        val developerSettings = RemoteDeveloperSettings.getInstance(project)
         val mutableList = developerSettings.remoteConnectionSettingsList.toMutableList()
         mutableList.removeIf { it.type == type }
         developerSettings.remoteConnectionSettingsList = mutableList.toImmutableList()
@@ -127,7 +127,7 @@ class RemoteConnectionService(private val project: Project) {
     }
 
     fun setActiveRemoteConnectionSettings(settings: RemoteConnectionSettingsState) {
-        val developerSettings = DeveloperSettings.getInstance(project)
+        val developerSettings = RemoteDeveloperSettings.getInstance(project)
 
         when (settings.type) {
             RemoteConnectionType.Hybris -> {
@@ -145,7 +145,7 @@ class RemoteConnectionService(private val project: Project) {
     fun changeRemoteConnectionScope(settings: RemoteConnectionSettingsState, originalScope: RemoteConnectionScope) {
         when (originalScope) {
             RemoteConnectionScope.PROJECT_PERSONAL -> {
-                val developerSettings = DeveloperSettings.getInstance(project)
+                val developerSettings = RemoteDeveloperSettings.getInstance(project)
                 val mutableList = developerSettings.remoteConnectionSettingsList.toMutableList()
                 mutableList.remove(settings)
                 developerSettings.remoteConnectionSettingsList = mutableList.toImmutableList()
@@ -165,7 +165,7 @@ class RemoteConnectionService(private val project: Project) {
     private fun getProjectPersonalLevelSettings(type: RemoteConnectionType) = getRemoteConnectionSettings(
         type,
         RemoteConnectionScope.PROJECT_PERSONAL,
-        DeveloperSettings.getInstance(project).remoteConnectionSettingsList
+        RemoteDeveloperSettings.getInstance(project).remoteConnectionSettingsList
     )
 
     private fun getProjectLevelSettings(type: RemoteConnectionType) = getRemoteConnectionSettings(
