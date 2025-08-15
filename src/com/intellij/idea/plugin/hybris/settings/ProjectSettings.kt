@@ -92,21 +92,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(ideModulesFilesDirectory = value) }
         }
-    var generateCodeOnRebuild
-        get() = state.generateCodeOnRebuild
-        set(value) {
-            updateState { it.copy(generateCodeOnRebuild = value) }
-        }
-    var generateCodeOnJUnitRunConfiguration
-        get() = state.generateCodeOnJUnitRunConfiguration
-        set(value) {
-            updateState { it.copy(generateCodeOnJUnitRunConfiguration = value) }
-        }
-    var generateCodeTimeoutSeconds
-        get() = state.generateCodeTimeoutSeconds
-        set(value) {
-            updateState { it.copy(generateCodeTimeoutSeconds = value) }
-        }
     var importOotbModulesInReadOnlyMode
         get() = state.importOotbModulesInReadOnlyMode
         set(value) {
@@ -132,11 +117,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(importCustomAntBuildFiles = value) }
         }
-    var showFullModuleName
-        get() = state.showFullModuleName
-        set(value) {
-            updateState { it.copy(showFullModuleName = value) }
-        }
     var removeExternalModulesOnRefresh
         get() = state.removeExternalModulesOnRefresh
         set(value) {
@@ -157,25 +137,47 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         set(value) {
             updateState { it.copy(modulesOnBlackList = value) }
         }
-    private var _availableExtensions: Map<String, ExtensionDescriptor>
-        get() = state.availableExtensions
-        set(value) {
-            updateState { it.copy(availableExtensions = value) }
-        }
     var excludedFromScanning
         get() = state.excludedFromScanning
         set(value) {
             updateState { it.copy(excludedFromScanning = value) }
         }
-    var remoteConnectionSettingsList
-        get() = state.remoteConnectionSettingsList
-        set(value) {
-            updateState { it.copy(remoteConnectionSettingsList = value) }
-        }
     var useFakeOutputPathForCustomExtensions
         get() = state.useFakeOutputPathForCustomExtensions
         set(value) {
             updateState { it.copy(useFakeOutputPathForCustomExtensions = value) }
+        }
+
+    private var _availableExtensions: Map<String, ExtensionDescriptor>
+        get() = state.availableExtensions
+        set(value) {
+            updateState { it.copy(availableExtensions = value) }
+        }
+
+    var generateCodeOnRebuild
+        get() = state.generateCodeOnRebuild
+        set(value) {
+            updateState { it.copy(generateCodeOnRebuild = value) }
+        }
+    var generateCodeOnJUnitRunConfiguration
+        get() = state.generateCodeOnJUnitRunConfiguration
+        set(value) {
+            updateState { it.copy(generateCodeOnJUnitRunConfiguration = value) }
+        }
+    var generateCodeTimeoutSeconds
+        get() = state.generateCodeTimeoutSeconds
+        set(value) {
+            updateState { it.copy(generateCodeTimeoutSeconds = value) }
+        }
+    var showFullModuleName
+        get() = state.showFullModuleName
+        set(value) {
+            updateState { it.copy(showFullModuleName = value) }
+        }
+    var remoteConnectionSettingsList
+        get() = state.remoteConnectionSettingsList
+        set(value) {
+            updateState { it.copy(remoteConnectionSettingsList = value) }
         }
 
     fun isOutdatedHybrisProject(): Boolean {
