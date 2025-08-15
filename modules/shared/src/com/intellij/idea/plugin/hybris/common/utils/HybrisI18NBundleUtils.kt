@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,13 +22,11 @@ import com.intellij.AbstractBundle
 import org.apache.commons.lang3.StringUtils
 import org.jetbrains.annotations.PropertyKey
 
-const val PATH_TO_BUNDLE: String = "i18n.HybrisBundle"
-
-object HybrisI18NBundleUtils : AbstractBundle(PATH_TO_BUNDLE) {
+object HybrisI18NBundleUtils : AbstractBundle("i18n.HybrisBundle") {
 
     @JvmStatic
     fun message(
-        @PropertyKey(resourceBundle = PATH_TO_BUNDLE) key: String,
+        @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
         vararg params: Any
     ): String {
         if (StringUtils.isBlank(key)) {
@@ -41,7 +39,7 @@ object HybrisI18NBundleUtils : AbstractBundle(PATH_TO_BUNDLE) {
     }
 
     fun messageFallback(
-        @PropertyKey(resourceBundle = PATH_TO_BUNDLE) key: String,
+        @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
         fallback: String,
         vararg params: Any
     ) = messageOrDefault(key, fallback, *params)!!
