@@ -36,6 +36,7 @@ import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
+import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.impl.*;
 import sap.commerce.toolset.settings.ApplicationSettings;

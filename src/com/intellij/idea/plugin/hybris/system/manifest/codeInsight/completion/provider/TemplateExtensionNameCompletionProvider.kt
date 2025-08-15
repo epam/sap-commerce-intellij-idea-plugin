@@ -20,8 +20,8 @@ package com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.p
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ExtensionNameCompletionProvider
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.project.settings.ProjectSettings
 
 class TemplateExtensionNameCompletionProvider : ExtensionNameCompletionProvider() {
 

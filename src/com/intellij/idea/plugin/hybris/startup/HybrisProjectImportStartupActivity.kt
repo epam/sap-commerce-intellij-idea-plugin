@@ -21,7 +21,6 @@ import com.intellij.ide.util.RunOnceUtil
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.project.ProjectConstants
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.application.invokeLater
@@ -32,6 +31,7 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
 
 class HybrisProjectImportStartupActivity : ProjectActivity {

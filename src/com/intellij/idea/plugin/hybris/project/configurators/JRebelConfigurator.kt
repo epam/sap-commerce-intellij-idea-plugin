@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.facet.FacetType
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
@@ -37,6 +36,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YCustomRegularModuleDescriptor
+import sap.commerce.toolset.project.settings.ProjectSettings
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream

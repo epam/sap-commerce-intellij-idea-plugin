@@ -34,6 +34,8 @@ sourceSets {
 }
 
 dependencies {
+    implementation(project(":remote-core"))
+
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false

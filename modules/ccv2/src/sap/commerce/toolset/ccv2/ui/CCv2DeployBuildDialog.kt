@@ -34,9 +34,9 @@ import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.*
+import sap.commerce.toolset.ccv2.help.CCv2WebHelpProvider
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.help.HybrisWebHelpProvider
 import java.util.*
 import javax.swing.JLabel
 
@@ -216,5 +216,5 @@ class CCv2DeployBuildDialog(
 
     override fun getStyle() = DialogStyle.COMPACT
     override fun getPreferredFocusedComponent() = subscriptionComboBox
-    override fun getHelpId() = HybrisWebHelpProvider.CCV2_DEPLOYMENTS
+    override fun getHelpId() = CCv2WebHelpProvider.CCV2_DEPLOYMENTS
 }

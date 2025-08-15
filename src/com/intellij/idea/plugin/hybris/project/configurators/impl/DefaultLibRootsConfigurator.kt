@@ -33,8 +33,8 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.project.descriptors.JavaLibraryDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptors.YModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.PlatformModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor

@@ -28,8 +28,8 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.remote.RemoteConnectionScope
+import sap.commerce.toolset.remote.RemoteConstants
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import java.awt.Component
 
@@ -56,7 +56,7 @@ class RemoteHacConnectionDialog(
         isWsl = isWslCheckBox?.isSelected ?: false
         sslProtocol = sslProtocolComboBox.selectedItem?.toString() ?: ""
         hacWebroot = webrootTextField.text
-        sessionCookieName = sessionCookieNameTextField.text.takeIf { !it.isNullOrBlank() } ?: HybrisConstants.DEFAULT_SESSION_COOKIE_NAME
+        sessionCookieName = sessionCookieNameTextField.text.takeIf { !it.isNullOrBlank() } ?: RemoteConstants.DEFAULT_SESSION_COOKIE_NAME
         credentials = Credentials(usernameTextField.text, String(passwordTextField.password))
         this
     }
@@ -107,7 +107,7 @@ class RemoteHacConnectionDialog(
                 hostTextField = textField()
                     .comment("Host name or IP address")
                     .align(AlignX.FILL)
-                    .bindText(settings::hostIP.toNonNullableProperty(HybrisConstants.DEFAULT_HOST_URL))
+                    .bindText(settings::hostIP.toNonNullableProperty(RemoteConstants.DEFAULT_HOST_URL))
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
                     .component
@@ -161,7 +161,7 @@ class RemoteHacConnectionDialog(
                 sessionCookieNameTextField = textField()
                     .comment("Optional: override the session cookie name. Default is JSESSIONID.")
                     .align(AlignX.FILL)
-                    .bindText(settings::sessionCookieName.toNonNullableProperty(HybrisConstants.DEFAULT_SESSION_COOKIE_NAME))
+                    .bindText(settings::sessionCookieName.toNonNullableProperty(RemoteConstants.DEFAULT_SESSION_COOKIE_NAME))
                     .apply { component.text = "" }
                     .component
             }.layout(RowLayout.PARENT_GRID)

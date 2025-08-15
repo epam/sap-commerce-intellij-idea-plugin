@@ -22,7 +22,7 @@ import com.intellij.facet.FacetConfiguration
 import com.intellij.facet.ui.FacetEditorContext
 import com.intellij.facet.ui.FacetValidatorsManager
 import com.intellij.openapi.components.PersistentStateComponent
-import sap.commerce.toolset.project.facet.ExtensionDescriptor
+import sap.commerce.toolset.project.ExtensionDescriptor
 
 class YFacetConfiguration : FacetConfiguration, PersistentStateComponent<ExtensionDescriptor?> {
 

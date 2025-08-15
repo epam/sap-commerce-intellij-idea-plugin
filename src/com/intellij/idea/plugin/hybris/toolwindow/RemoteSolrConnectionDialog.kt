@@ -25,8 +25,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.remote.RemoteConnectionScope
+import sap.commerce.toolset.remote.RemoteConstants
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import java.awt.Component
 
@@ -85,7 +85,7 @@ class RemoteSolrConnectionDialog(
                 hostTextField = textField()
                     .comment("Host name or IP address")
                     .align(AlignX.FILL)
-                    .bindText(settings::hostIP.toNonNullableProperty(HybrisConstants.DEFAULT_HOST_URL))
+                    .bindText(settings::hostIP.toNonNullableProperty(RemoteConstants.DEFAULT_HOST_URL))
                     .onChanged { urlPreviewLabel.text = generateUrl() }
                     .addValidationRule("Address cannot be blank.") { it.text.isNullOrBlank() }
                     .component

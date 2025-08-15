@@ -21,7 +21,7 @@ package com.intellij.idea.plugin.hybris.facet
 import com.intellij.facet.FacetTypeId
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.openapi.module.Module
-import sap.commerce.toolset.project.facet.ExtensionDescriptor
+import sap.commerce.toolset.project.ExtensionDescriptor
 
 object YFacetConstants {
     val Y_FACET_TYPE_ID = FacetTypeId<YFacet>(YFacetType.FACET_ID)

@@ -28,9 +28,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.compiler.JavaCompilers;
 import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.project.descriptors.ConfigModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
-import sap.commerce.toolset.project.descriptors.impl.ConfigModuleDescriptor;
-import sap.commerce.toolset.project.descriptors.impl.PlatformModuleDescriptor;
+import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor;
 
 import java.io.File;
 import java.util.ArrayList;

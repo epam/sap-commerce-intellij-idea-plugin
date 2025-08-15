@@ -67,8 +67,6 @@
 
         <errorHandler implementation="com.intellij.diagnostic.JetBrainsMarketplaceErrorReportSubmitter"/>
 
-        <webHelpProvider implementation="sap.commerce.toolset.help.HybrisWebHelpProvider"/>
-
         <fileEditorProvider implementation="com.intellij.idea.plugin.hybris.editor.HybrisSplitFileEditorProvider"/>
     </extensions>
 

@@ -27,8 +27,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.impl.PlatformModuleDescriptor
+import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor
 import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.RemoteConstants
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 
 @Service
@@ -90,7 +91,7 @@ class CommonIdeaService {
 
     private fun fixSslRemoteConnectionSettings(connectionSettings: Collection<RemoteConnectionSettingsState>) {
         connectionSettings.forEach {
-            it.isSsl = it.generatedURL.startsWith(HybrisConstants.HTTPS_PROTOCOL)
+            it.isSsl = it.generatedURL.startsWith(RemoteConstants.HTTPS_PROTOCOL)
             it.hostIP = it.hostIP?.replace(regex, "")
         }
     }

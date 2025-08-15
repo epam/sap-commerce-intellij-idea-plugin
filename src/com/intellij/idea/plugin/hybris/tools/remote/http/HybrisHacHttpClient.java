@@ -54,7 +54,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.helper.ValidationException;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.remote.RemoteConstants;
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -306,7 +306,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
 
     private String getCookieName(@NotNull final RemoteConnectionSettingsState settings) {
         final var sessionCookieName = settings.getSessionCookieName();
-        return StringUtils.isNotBlank(sessionCookieName) ? sessionCookieName : HybrisConstants.DEFAULT_SESSION_COOKIE_NAME;
+        return StringUtils.isNotBlank(sessionCookieName) ? sessionCookieName : RemoteConstants.DEFAULT_SESSION_COOKIE_NAME;
     }
 
     @Nullable

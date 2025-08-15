@@ -28,6 +28,7 @@ import org.jetbrains.idea.eclipse.EclipseProjectFinder
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.extensioninfo.jaxb.ObjectFactory
+import sap.commerce.toolset.project.descriptors.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.*
@@ -59,7 +60,7 @@ object ModuleDescriptorFactory {
         return when {
             hybrisProjectService.isConfigModule(resolvedFile) -> {
                 LOG.info("Creating Config module for $path")
-                ConfigModuleDescriptor(resolvedFile, rootProjectDescriptor)
+                ConfigModuleDescriptorImpl(resolvedFile, rootProjectDescriptor)
             }
 
             hybrisProjectService.isCCv2Module(resolvedFile) -> {
@@ -69,7 +70,7 @@ object ModuleDescriptorFactory {
 
             hybrisProjectService.isPlatformModule(resolvedFile) -> {
                 LOG.info("Creating Platform module for $path")
-                PlatformModuleDescriptor(resolvedFile, rootProjectDescriptor)
+                PlatformModuleDescriptorImpl(resolvedFile, rootProjectDescriptor)
             }
 
             hybrisProjectService.isCoreExtModule(resolvedFile) -> {
@@ -151,7 +152,7 @@ object ModuleDescriptorFactory {
     ): ConfigModuleDescriptor {
         validateModuleDirectory(moduleRootDirectory)
 
-        return ConfigModuleDescriptor(
+        return ConfigModuleDescriptorImpl(
             moduleRootDirectory,
             rootProjectDescriptor, name
         )

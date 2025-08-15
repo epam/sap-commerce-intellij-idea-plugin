@@ -21,15 +21,16 @@ package com.intellij.idea.plugin.hybris.tools.remote
 import ai.grazie.utils.toLinkedSet
 import com.intellij.credentialStore.Credentials
 import com.intellij.idea.plugin.hybris.properties.PropertyService
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.collections.immutable.toImmutableList
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.remote.RemoteConnectionScope
 import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.RemoteConstants
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.settings.DeveloperSettings
 import java.util.*
@@ -63,7 +64,7 @@ class RemoteConnectionService(private val project: Project) {
                 RemoteConnectionType.Hybris -> {
                     it.port = getPropertyOrDefault(project, HybrisConstants.PROPERTY_TOMCAT_SSL_PORT, "9002")
                     it.hacWebroot = getPropertyOrDefault(project, HybrisConstants.PROPERTY_HAC_WEBROOT, "")
-                    it.sslProtocol = HybrisConstants.DEFAULT_SSL_PROTOCOL
+                    it.sslProtocol = RemoteConstants.DEFAULT_SSL_PROTOCOL
                     it.credentials = Credentials(
                         "admin",
                         getPropertyOrDefault(project, HybrisConstants.PROPERTY_ADMIN_INITIAL_PASSWORD, "nimda")

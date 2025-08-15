@@ -15,8 +15,9 @@
             <option value="$PROJECT_DIR$/modules/ccv2" />
             <option value="$PROJECT_DIR$/modules/extensioninfo" />
             <option value="$PROJECT_DIR$/modules/localextensions" />
-            <option value="$PROJECT_DIR$/modules/project" />
-            <option value="$PROJECT_DIR$/modules/remote" />
+            <option value="$PROJECT_DIR$/modules/project/core" />
+            <option value="$PROJECT_DIR$/modules/project/import" />
+            <option value="$PROJECT_DIR$/modules/remote/core" />
             <option value="$PROJECT_DIR$/modules/shared" />
             <option value="$PROJECT_DIR$/modules/terminal" />
           </set>

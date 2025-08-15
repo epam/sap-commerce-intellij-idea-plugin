@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.codeInsight.daemon
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.extensioninfo.EiSModelAccess
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.modules
@@ -34,6 +33,7 @@ import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.settings.ProjectSettings
 import javax.swing.Icon
 
 abstract class AbstractExtensionLineMarkerProvider : AbstractHybrisLineMarkerProvider<XmlAttributeValue>() {

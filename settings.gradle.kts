@@ -41,15 +41,16 @@ include(
     "modules/shared",
     "modules/extensioninfo",
     "modules/localextensions",
-    "modules/project",
+    "modules/remote/core",
+    "modules/project/core",
+    "modules/project/import",
     "modules/terminal",
     "modules/ccv2",
-    "modules/remote",
     "modules/ant",
 )
 
 rootProject.children.forEach {
     it.name = it.name
         .replaceFirst("modules/", "")
-//        .replace("/", ":")
+        .replace("/", "-")
 }

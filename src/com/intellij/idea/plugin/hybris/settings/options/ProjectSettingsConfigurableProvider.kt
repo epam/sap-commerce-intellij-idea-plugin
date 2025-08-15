@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.settings.options
 
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -28,6 +27,7 @@ import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.equalsIgnoreOrder
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.settings.ProjectSettings
 import javax.swing.JCheckBox
 
 class ProjectSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {

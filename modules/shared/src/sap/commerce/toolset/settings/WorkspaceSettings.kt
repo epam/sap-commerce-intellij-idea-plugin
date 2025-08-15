@@ -29,7 +29,7 @@ import sap.commerce.toolset.settings.state.WorkspaceSettingsState
     ]
 )
 @Service(Service.Level.PROJECT)
-class WorkspaceSettings : SerializablePersistentStateComponent<WorkspaceSettingsState>(WorkspaceSettingsState()) {
+class WorkspaceSettings(private val project: Project) : SerializablePersistentStateComponent<WorkspaceSettingsState>(WorkspaceSettingsState()) {
 
     var hybrisProject
         get() = state.hybrisProject

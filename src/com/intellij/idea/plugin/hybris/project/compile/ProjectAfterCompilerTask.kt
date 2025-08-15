@@ -19,13 +19,13 @@ package com.intellij.idea.plugin.hybris.project.compile
 
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.compiler.CompileContext
 import com.intellij.openapi.compiler.CompileTask
 import com.intellij.openapi.compiler.CompilerManager
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.settings.ProjectSettings
 
 class ProjectAfterCompilerTask : CompileTask {
 

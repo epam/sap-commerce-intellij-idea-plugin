@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigura
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -46,6 +45,7 @@ import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus;
 import sap.commerce.toolset.project.descriptors.YModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.impl.RootModuleDescriptor;
+import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService;
 
 import javax.annotation.concurrent.GuardedBy;

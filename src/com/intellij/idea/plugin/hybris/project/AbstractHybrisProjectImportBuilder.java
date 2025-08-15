@@ -19,12 +19,12 @@
 
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
+import sap.commerce.toolset.project.settings.ProjectSettings;
 
 import java.io.File;
 import java.util.List;

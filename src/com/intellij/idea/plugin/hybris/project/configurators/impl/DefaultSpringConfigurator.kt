@@ -37,8 +37,8 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptors.YRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YCoreExtModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor
 import java.io.File
 import java.io.FileNotFoundException

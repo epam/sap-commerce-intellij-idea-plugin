@@ -34,7 +34,7 @@ import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.impl.AbstractModuleDescriptor
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import java.io.File
 
 @Service(Service.Level.APP)
@@ -114,7 +114,7 @@ class RunConfigurationConfigurator {
         ?: HybrisConstants.DEBUG_PORT
 
 
-    private fun findPortProperty(moduleDescriptor: AbstractModuleDescriptor, fileName: String, cache: HybrisConfiguratorCache) = cache.findPropertyInFile(
+    private fun findPortProperty(moduleDescriptor: ModuleDescriptor, fileName: String, cache: HybrisConfiguratorCache) = cache.findPropertyInFile(
         File(moduleDescriptor.moduleRootDirectory, fileName),
         HybrisConstants.TOMCAT_JAVA_DEBUG_OPTIONS
     )

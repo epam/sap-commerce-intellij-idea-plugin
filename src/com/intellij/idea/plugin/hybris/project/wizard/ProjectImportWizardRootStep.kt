@@ -22,7 +22,6 @@ import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder
 import com.intellij.idea.plugin.hybris.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
@@ -46,6 +45,7 @@ import org.intellij.images.fileTypes.impl.SvgFileType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
+import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.ApplicationSettings
 import java.awt.Dimension
 import java.io.File

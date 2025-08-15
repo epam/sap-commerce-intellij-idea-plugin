@@ -30,7 +30,6 @@ import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilde
 import com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.wizard.RefreshSupport;
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.openapi.application.ApplicationManager;
@@ -51,6 +50,7 @@ import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisI18NBundleUtils;
 import sap.commerce.toolset.HybrisIcons;
+import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.settings.WorkspaceSettings;
 
 public class ProjectRefreshAction extends AnAction {

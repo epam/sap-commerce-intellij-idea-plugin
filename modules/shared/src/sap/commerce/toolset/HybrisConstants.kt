@@ -21,8 +21,7 @@ package sap.commerce.toolset
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.io.FileUtilRt
-import java.util.Locale
-import java.util.MissingResourceException
+import java.util.*
 import java.util.regex.Pattern
 
 object HybrisConstants {
@@ -207,14 +206,6 @@ object HybrisConstants {
 
     const val DEFAULT_DEPLOYMENT_TABLENAME_MAXLENGTH = 24
 
-    const val DEFAULT_HOST_URL = "localhost"
-    const val DEFAULT_SSL_PROTOCOL = "TLSv1.2"
-    const val DEFAULT_SESSION_COOKIE_NAME = "JSESSIONID"
-
-    const val HTTP_PROTOCOL = "http://"
-    const val HTTPS_PROTOCOL = "https://"
-
-    const val URL_PORT_DELIMITER = ":"
     const val TOMCAT_JAVA_DEBUG_OPTIONS = "tomcat.debugjavaoptions"
     const val X_RUNJDWP_TRANSPORT = "-Xrunjdwp:transport="
     const val ADDRESS = "address="

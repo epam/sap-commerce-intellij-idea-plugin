@@ -27,9 +27,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
-import sap.commerce.toolset.project.descriptors.YModuleDescriptor;
-import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor;
+import sap.commerce.toolset.project.descriptors.*;
 import sap.commerce.toolset.project.descriptors.impl.*;
 import sap.commerce.toolset.settings.ApplicationSettings;
 

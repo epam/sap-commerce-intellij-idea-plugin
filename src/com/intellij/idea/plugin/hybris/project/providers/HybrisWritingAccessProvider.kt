@@ -18,10 +18,10 @@
  */
 package com.intellij.idea.plugin.hybris.project.providers
 
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.WritingAccessProvider
+import sap.commerce.toolset.project.settings.ProjectSettings
 
 class HybrisWritingAccessProvider(myProject: Project) : WritingAccessProvider() {
 

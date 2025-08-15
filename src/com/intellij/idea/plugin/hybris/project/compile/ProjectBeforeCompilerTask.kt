@@ -24,7 +24,6 @@ import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
 import com.intellij.idea.plugin.hybris.common.root
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.compiler.*
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.projectRoots.JavaSdk
@@ -40,6 +39,7 @@ import com.intellij.util.lang.JavaVersion
 import org.jetbrains.jps.model.java.compiler.AnnotationProcessingConfiguration
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.settings.ProjectSettings
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream

@@ -37,14 +37,13 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
+import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 import sap.commerce.toolset.settings.ApplicationSettings
-import sap.commerce.toolset.settings.WorkspaceSettings
 import java.io.File
 
 open class HybrisProjectView(val project: Project) : TreeStructureProvider, DumbAware {
 
-    private val hybrisProject = WorkspaceSettings.getInstance(project).hybrisProject
     private val hybrisApplicationSettings = ApplicationSettings.getInstance()
     private val commerceGroupName = ApplicationSettings.toIdeaGroup(hybrisApplicationSettings.groupHybris)
         ?.firstOrNull()
@@ -78,7 +77,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
         children: MutableCollection<AbstractTreeNode<*>>,
         settings: ViewSettings
     ): Collection<AbstractTreeNode<*>> {
-        if (!hybrisProject) return children
+        if (project.isNotHybrisProject) return children
 
         if (parent is ProjectViewProjectNode) {
             children.clear()

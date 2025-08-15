@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.startup
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
@@ -30,6 +29,7 @@ import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.project.settings.ProjectSettings
 
 class HybrisProjectStructureStartupActivity : ProjectActivity {
 

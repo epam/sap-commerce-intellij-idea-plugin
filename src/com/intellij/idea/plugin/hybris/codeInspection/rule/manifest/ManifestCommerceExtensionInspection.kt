@@ -21,13 +21,13 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.manifest
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
 import com.intellij.json.psi.*
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
 import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.project.settings.ProjectSettings
 
 class ManifestCommerceExtensionInspection : LocalInspectionTool() {
 
