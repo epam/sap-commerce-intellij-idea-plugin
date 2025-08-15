@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.system.spring
 
 import com.intellij.ide.highlighter.XmlFileType
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.application.ApplicationNamesInfo
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.components.Service
@@ -35,6 +34,7 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.concurrency.AppExecutorUtil
+import sap.commerce.toolset.HybrisConstants
 
 /**
  * Incredibly simple handling of the Spring beans.

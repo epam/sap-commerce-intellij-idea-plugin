@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
@@ -26,6 +25,7 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import org.apache.commons.io.filefilter.DirectoryFileFilter
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType

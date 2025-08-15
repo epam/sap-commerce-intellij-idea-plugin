@@ -17,15 +17,15 @@
  */
 package com.intellij.idea.plugin.hybris.settings.options
 
-import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.ui.CRUDListPanel
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.equalsIgnoreOrder
 import javax.swing.JCheckBox
 
 class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvider() {

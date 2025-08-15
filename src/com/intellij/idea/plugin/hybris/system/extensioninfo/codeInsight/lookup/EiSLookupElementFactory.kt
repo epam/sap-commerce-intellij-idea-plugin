@@ -20,7 +20,7 @@ package com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.lookup
 
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.ExtensionDescriptor
 

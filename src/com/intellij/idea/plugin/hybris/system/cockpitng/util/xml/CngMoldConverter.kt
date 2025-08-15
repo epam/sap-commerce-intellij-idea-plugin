@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.util.xml
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.ResolvingConverter
+import sap.commerce.toolset.HybrisIcons
 
 private const val NULL = "null-mold"
 private const val LIST = "list-view"

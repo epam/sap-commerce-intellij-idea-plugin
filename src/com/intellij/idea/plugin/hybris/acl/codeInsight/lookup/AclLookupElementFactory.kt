@@ -22,7 +22,7 @@ import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 object AclLookupElementFactory {

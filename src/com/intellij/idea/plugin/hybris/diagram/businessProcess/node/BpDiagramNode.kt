@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,11 +19,11 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess.node
 
 import com.intellij.diagram.DiagramNodeBase
 import com.intellij.diagram.DiagramProvider
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNodeContextParameters
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNodeNavigable
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
+import sap.commerce.toolset.HybrisIcons
 import java.io.Serial
 
 class BpDiagramNode(val graphNode: BpGraphNode, provider: DiagramProvider<BpGraphNode?>) : DiagramNodeBase<BpGraphNode>(provider) {

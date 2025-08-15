@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 enum class CCv2EnvironmentType(val title: String, val icon: Icon) {

@@ -19,8 +19,8 @@
 
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 interface TSMetaAtomic : TSMetaClassifier<AtomicType> {

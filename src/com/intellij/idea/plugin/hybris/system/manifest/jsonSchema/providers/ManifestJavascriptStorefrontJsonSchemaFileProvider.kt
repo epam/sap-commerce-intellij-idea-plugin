@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.providers
 
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -27,6 +26,7 @@ import com.jetbrains.jsonSchema.extension.JsonSchemaFileProvider
 import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
 import com.jetbrains.jsonSchema.extension.SchemaType
 import sap.commerce.toolset.ccv2.CCv2Constants
+import sap.commerce.toolset.isHybrisProject
 
 @Service(Service.Level.PROJECT)
 class ManifestJavascriptStorefrontJsonSchemaFileProvider(val project: Project) : JsonSchemaFileProvider {

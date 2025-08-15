@@ -19,9 +19,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.psi.reference
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
@@ -45,6 +42,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_SOURCE
+import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_TARGET
 
 class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.Poly<FlexibleSearchYColumnName>(owner) {
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,14 +19,14 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSViewSettings
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.xml.DomElement
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.HybrisIcons
 
 class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(parent) {
 

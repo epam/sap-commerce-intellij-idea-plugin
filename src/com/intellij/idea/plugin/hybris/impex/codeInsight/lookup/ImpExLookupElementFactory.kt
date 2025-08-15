@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.impex.codeInsight.lookup
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.idea.plugin.hybris.codeInsight.completion.AutoPopupInsertHandler
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAttribute
@@ -30,6 +29,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
+import sap.commerce.toolset.HybrisIcons
 
 object ImpExLookupElementFactory {
 

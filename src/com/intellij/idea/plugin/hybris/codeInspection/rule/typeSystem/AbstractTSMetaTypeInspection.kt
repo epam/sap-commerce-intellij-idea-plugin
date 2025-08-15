@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.model.Items
@@ -27,6 +26,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import sap.commerce.toolset.HybrisI18NBundleUtils
 
 abstract class AbstractTSMetaTypeInspection(private val messageKey: String) : AbstractTSInspection() {
 

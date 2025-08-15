@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,14 +19,14 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaHelper
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.xml.DomElement
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.HybrisIcons
 
 @Suppress("UNCHECKED_CAST")
 class BSMetaTypeNode(parent: BSNode, private val metaType: BSMetaType) : BSNode(parent) {

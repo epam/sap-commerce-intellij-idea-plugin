@@ -19,9 +19,6 @@
 package sap.commerce.toolset.ccv2.toolwindow.views
 
 import com.intellij.ide.HelpTooltip
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.ui.scrollPanel
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -38,6 +35,8 @@ import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.actions.CCv2FetchEnvironmentAction
 import sap.commerce.toolset.ccv2.actions.CCv2ShowServiceDetailsAction
@@ -48,6 +47,7 @@ import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ccv2.ui.*
+import sap.commerce.toolset.ui.scrollPanel
 import java.awt.GridBagLayout
 import java.awt.datatransfer.StringSelection
 import java.io.Serial

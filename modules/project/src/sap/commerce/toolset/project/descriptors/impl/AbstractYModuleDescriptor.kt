@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.YModuleDescriptor

@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.psi.TSPsiHelper
 import com.intellij.openapi.util.text.StringUtil
@@ -28,6 +27,7 @@ import com.intellij.psi.impl.source.xml.XmlAttributeValueImpl
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.psi.util.MethodSignatureUtil
+import sap.commerce.toolset.HybrisConstants
 
 class ModelAttributeReference(
     element: PsiElement

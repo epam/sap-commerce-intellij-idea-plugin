@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.ccv2.toolwindow
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.ToolWindow
@@ -29,6 +27,8 @@ import com.intellij.ui.InlineBanner
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.panel
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.views.CCv2BuildDetailsView

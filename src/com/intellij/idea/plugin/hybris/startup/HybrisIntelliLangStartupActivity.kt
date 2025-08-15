@@ -17,10 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.startup
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.project.Project
@@ -34,6 +32,8 @@ import org.intellij.plugins.intelliLang.Configuration
 import org.intellij.plugins.intelliLang.inject.config.InjectionPlace
 import org.intellij.plugins.intelliLang.inject.java.InjectionCache
 import org.intellij.plugins.intelliLang.inject.java.JavaLanguageInjectionSupport
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.isNotHybrisProject
 
 /**
  * TODO: reset Injection Cache on CRUD operation on classes related to FlexibleSearchQuery

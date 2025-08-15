@@ -18,9 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging.actions
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -28,6 +25,9 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
 
 abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
 

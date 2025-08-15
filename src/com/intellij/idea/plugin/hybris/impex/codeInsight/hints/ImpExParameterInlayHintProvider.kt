@@ -21,12 +21,12 @@ package com.intellij.idea.plugin.hybris.impex.codeInsight.hints
 import com.intellij.codeInsight.hints.declarative.*
 import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.util.asSafely
+import sap.commerce.toolset.isNotHybrisProject
 
 class ImpExParameterInlayHintProvider : InlayHintsProvider {
 

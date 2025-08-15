@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.ccv2.toolwindow.views
 
-import com.intellij.idea.plugin.hybris.ui.scrollPanel
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.EditorNotificationPanel
@@ -30,6 +29,7 @@ import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.ccv2.dto.CCv2Dto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
+import sap.commerce.toolset.ui.scrollPanel
 
 abstract class AbstractCCv2DataView<T : CCv2Dto> {
 

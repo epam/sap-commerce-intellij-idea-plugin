@@ -25,10 +25,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.system.bean.forms.BSMetaEnumVi
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.BSTree
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.tree.nodes.*
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSViewSettings
-import com.intellij.idea.plugin.hybris.ui.addTreeModelListener
-import com.intellij.idea.plugin.hybris.ui.addTreeSelectionListener
 import com.intellij.idea.plugin.hybris.ui.event.TreeModelListener
-import com.intellij.idea.plugin.hybris.ui.pathData
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -36,6 +33,9 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
+import sap.commerce.toolset.ui.addTreeModelListener
+import sap.commerce.toolset.ui.addTreeSelectionListener
+import sap.commerce.toolset.ui.pathData
 import java.io.Serial
 import javax.swing.event.TreeModelEvent
 

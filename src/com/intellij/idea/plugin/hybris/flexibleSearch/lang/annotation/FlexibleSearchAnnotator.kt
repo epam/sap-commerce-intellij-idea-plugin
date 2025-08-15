@@ -18,8 +18,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.annotation
 
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
 import com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
@@ -38,6 +36,8 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighter.getInstance()) {
 

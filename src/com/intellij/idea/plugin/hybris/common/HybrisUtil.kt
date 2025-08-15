@@ -22,6 +22,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileVisitor
+import sap.commerce.toolset.HybrisConstants
 import java.io.File
 
 object HybrisUtil {

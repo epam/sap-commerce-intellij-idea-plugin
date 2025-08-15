@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteSubTagQuickFix
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
 import com.intellij.idea.plugin.hybris.system.type.model.Items
@@ -28,6 +27,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class TSDeploymentTableMustNotBeRedeclaredInChildTypes : AbstractTSInspection() {
 

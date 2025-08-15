@@ -17,12 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.settings.options
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
 

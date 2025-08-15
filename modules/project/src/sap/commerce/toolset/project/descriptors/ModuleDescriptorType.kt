@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.descriptors
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 enum class ModuleDescriptorType(val icon: Icon = HybrisIcons.Y.LOGO_BLUE) {

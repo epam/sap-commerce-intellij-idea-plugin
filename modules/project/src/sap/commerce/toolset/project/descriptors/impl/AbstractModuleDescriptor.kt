@@ -18,11 +18,11 @@
 
 package sap.commerce.toolset.project.descriptors.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.util.asSafely
 import kotlinx.collections.immutable.toImmutableSet
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.*
 import sap.commerce.toolset.project.facet.ExtensionDescriptor
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService

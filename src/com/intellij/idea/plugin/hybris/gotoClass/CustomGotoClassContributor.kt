@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.gotoClass
 
 import com.intellij.ide.util.gotoByName.DefaultClassNavigationContributor
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.navigation.GotoClassContributor
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
@@ -27,6 +26,7 @@ import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.util.Processors
 import com.intellij.util.indexing.FindSymbolParameters
 import com.intellij.util.indexing.IdFilter
+import sap.commerce.toolset.isNotHybrisProject
 
 class CustomGotoClassContributor : GotoClassContributor {
 

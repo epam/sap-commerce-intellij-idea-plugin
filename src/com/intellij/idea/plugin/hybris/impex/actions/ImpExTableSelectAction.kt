@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
@@ -30,6 +29,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.concurrency.AppExecutorUtil
+import sap.commerce.toolset.HybrisIcons
 
 class ImpExTableSelectAction : AbstractImpExTableAction() {
 

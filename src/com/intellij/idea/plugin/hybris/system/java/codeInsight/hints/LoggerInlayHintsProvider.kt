@@ -27,10 +27,7 @@ import com.intellij.codeInsight.daemon.impl.JavaCodeVisionProviderBase
 import com.intellij.codeInsight.hints.InlayHintsUtils
 import com.intellij.codeInsight.hints.settings.language.isInlaySettingsEditor
 import com.intellij.ide.actions.FqnUtil
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -44,6 +41,9 @@ import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.SimpleTextAttributes.*
 import com.intellij.ui.awt.RelativePoint
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isNotHybrisProject
 import java.awt.event.MouseEvent
 
 class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {

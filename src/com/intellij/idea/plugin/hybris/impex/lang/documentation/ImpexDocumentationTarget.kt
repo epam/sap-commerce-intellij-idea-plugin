@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.documentation
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.lang.documentation.renderer.impexDoc
@@ -34,6 +33,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.createSmartPointer
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class ImpexDocumentationTarget(val element: PsiElement, private val originalElement: PsiElement?) : DocumentationTarget {
 

@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule
 
 import com.intellij.codeInsight.daemon.HighlightDisplayKey
 import com.intellij.codeInspection.ex.InspectionProfileWrapper
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -34,6 +33,7 @@ import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomElementAnnotationsManager
 import com.intellij.util.xml.highlighting.DomElementsInspection
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import sap.commerce.toolset.isNotHybrisProject
 
 abstract class AbstractInspection<T : DomElement>(domClass: Class<T>) : DomElementsInspection<T>(domClass) {
 

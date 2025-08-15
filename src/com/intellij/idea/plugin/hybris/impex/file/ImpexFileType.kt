@@ -18,10 +18,10 @@
  */
 package com.intellij.idea.plugin.hybris.impex.file
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.openapi.fileTypes.LanguageFileType
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 object ImpexFileType : LanguageFileType(ImpexLanguage) {

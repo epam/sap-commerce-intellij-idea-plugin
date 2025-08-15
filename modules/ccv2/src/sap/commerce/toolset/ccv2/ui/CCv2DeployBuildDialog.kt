@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.ccv2.ui
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.help.HybrisWebHelpProvider
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
@@ -33,10 +31,12 @@ import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import sap.commerce.toolset.help.HybrisWebHelpProvider
 import java.util.*
 import javax.swing.JLabel
 

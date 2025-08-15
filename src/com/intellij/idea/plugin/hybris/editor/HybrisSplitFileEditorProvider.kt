@@ -27,7 +27,6 @@ import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
 import com.intellij.openapi.fileEditor.FileEditorProvider
@@ -38,6 +37,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyFileType
+import sap.commerce.toolset.Plugin
 
 class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
 

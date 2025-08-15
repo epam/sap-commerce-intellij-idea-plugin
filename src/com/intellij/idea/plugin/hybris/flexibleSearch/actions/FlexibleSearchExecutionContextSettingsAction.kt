@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.actions.ExecutionContextSettingsAction
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import com.intellij.idea.plugin.hybris.properties.PropertyService
@@ -36,6 +35,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.HybrisConstants
 import javax.swing.LayoutFocusTraversalPolicy
 
 class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecutionContext.ModifiableSettings>() {

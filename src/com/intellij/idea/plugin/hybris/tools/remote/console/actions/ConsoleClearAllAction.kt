@@ -20,10 +20,10 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 
 import com.intellij.execution.ExecutionBundle
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.DumbAwareAction
+import sap.commerce.toolset.HybrisIcons
 
 class ConsoleClearAllAction : DumbAwareAction(
     ExecutionBundle.message("clear.all.from.console.action.name"),

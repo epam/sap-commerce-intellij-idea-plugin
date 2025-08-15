@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.facet.FacetType
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module
@@ -34,6 +33,7 @@ import com.zeroturnaround.javarebel.idea.plugin.facet.JRebelFacetType
 import com.zeroturnaround.javarebel.idea.plugin.xml.RebelXML
 import org.apache.commons.io.IOUtils
 import org.zeroturnaround.jrebel.client.config.JRebelConfiguration
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YCustomRegularModuleDescriptor

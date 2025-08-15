@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.ccv2.startup
 
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ccv2.CCv2BuildsListener
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentRequest

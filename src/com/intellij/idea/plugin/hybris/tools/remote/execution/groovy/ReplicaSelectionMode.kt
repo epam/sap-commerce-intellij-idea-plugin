@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.execution.groovy
 
 import com.intellij.icons.AllIcons
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 enum class ReplicaSelectionMode(val tooltip: String, val title: String, val icon: Icon) {

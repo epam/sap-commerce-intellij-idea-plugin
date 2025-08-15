@@ -19,13 +19,12 @@
 package sap.commerce.toolset.ccv2.toolwindow.views
 
 import com.intellij.ide.HelpTooltip
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.ui.scrollPanel
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.dsl.builder.*
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.actions.CCv2ShowEnvironmentDetailsAction
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentStatusEnum
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
@@ -33,6 +32,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 import sap.commerce.toolset.ccv2.toolwindow.CCv2ViewUtil
 import sap.commerce.toolset.ccv2.ui.dynatrace
+import sap.commerce.toolset.ui.scrollPanel
 import java.util.*
 
 object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {

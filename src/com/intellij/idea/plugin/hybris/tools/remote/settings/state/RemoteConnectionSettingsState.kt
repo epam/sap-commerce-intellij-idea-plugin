@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.tools.remote.settings.state
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.credentialStore.Credentials
 import com.intellij.ide.passwordSafe.PasswordSafe
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
@@ -30,6 +29,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.xmlb.Accessor
 import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.Transient
+import sap.commerce.toolset.HybrisConstants
 
 // TODO: split to hAC and SOLR settings
 @Tag("HybrisRemoteConnectionSettings")

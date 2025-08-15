@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
@@ -31,6 +30,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.HybrisConstants
 import java.io.Serial
 
 abstract class ImpexAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexAnyHeaderParameterName {

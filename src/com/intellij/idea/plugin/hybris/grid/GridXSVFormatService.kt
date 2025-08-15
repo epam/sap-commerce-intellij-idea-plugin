@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.grid
 
 import com.intellij.database.csv.CsvFormat
 import com.intellij.database.csv.CsvRecordFormat
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
@@ -29,6 +28,7 @@ import com.intellij.lang.Language
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisConstants
 import java.util.*
 
 class GridXSVFormatService(private val project: Project) : Disposable {

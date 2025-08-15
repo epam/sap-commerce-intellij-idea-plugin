@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.localextensions
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlDeleteTagQuickFix
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Extension
 import com.intellij.idea.plugin.hybris.system.localextensions.model.Hybrisconfig
@@ -27,6 +26,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class LeUnknownExtensionDefinition : AbstractLeInspection() {
 

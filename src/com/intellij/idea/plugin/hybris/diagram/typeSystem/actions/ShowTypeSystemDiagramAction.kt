@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.typeSystem.actions
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.uml.core.actions.ShowDiagram
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isHybrisProject
 
 class ShowTypeSystemDiagramAction : ShowDiagram() {
 

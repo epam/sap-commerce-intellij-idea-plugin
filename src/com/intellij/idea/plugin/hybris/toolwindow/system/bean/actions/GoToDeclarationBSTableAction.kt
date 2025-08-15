@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.actions
 
 import com.intellij.idea.plugin.hybris.actions.AbstractGoToDeclarationAction
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaClassifier
 import com.intellij.idea.plugin.hybris.system.bean.model.*
 import com.intellij.idea.plugin.hybris.toolwindow.ui.AbstractTable
@@ -28,6 +27,7 @@ import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisIcons
 
 class GoToDeclarationBSTableAction : AbstractGoToDeclarationAction() {
 

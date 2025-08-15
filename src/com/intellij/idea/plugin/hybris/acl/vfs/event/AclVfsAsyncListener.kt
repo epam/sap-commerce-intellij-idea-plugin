@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.acl.vfs.event
 import com.intellij.idea.plugin.hybris.acl.editor.AclEditorMarkupModelHelper
 import com.intellij.idea.plugin.hybris.acl.psi.AclFile
 import com.intellij.idea.plugin.hybris.acl.psi.AclUserRightsValueLineType
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.AsyncFileListener.ChangeApplier
@@ -28,6 +27,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisConstants
 
 class AclVfsAsyncListener : AsyncFileListener {
 

@@ -16,12 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings.state
+package sap.commerce.toolset.help
 
-import com.intellij.util.xmlb.annotations.OptionTag
-import com.intellij.util.xmlb.annotations.Tag
+import com.intellij.openapi.help.WebHelpProvider
+import sap.commerce.toolset.HybrisConstants
 
-@Tag("HybrisProjectSettings")
-data class WorkspaceSettingsState(
-    @JvmField @OptionTag val hybrisProject: Boolean = false,
-)
+class HybrisWebHelpProvider : WebHelpProvider() {
+
+    override fun getHelpPageUrl(helpTopicId: String) = when (helpTopicId) {
+        CCV2_DEPLOYMENTS -> "https://help.sap.com/docs/SAP_COMMERCE_CLOUD_PUBLIC_CLOUD/0fa6bcf4736c46f78c248512391eb467/106f7a8370db44a0b052f4a0cd5c4deb.html"
+        else -> null
+    }
+
+    companion object {
+        const val CCV2_DEPLOYMENTS = HybrisConstants.PLUGIN_ID + ".ccv2.deployments"
+    }
+}

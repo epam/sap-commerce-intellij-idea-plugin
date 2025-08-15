@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.notifications.Notifications
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.Notifications
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction

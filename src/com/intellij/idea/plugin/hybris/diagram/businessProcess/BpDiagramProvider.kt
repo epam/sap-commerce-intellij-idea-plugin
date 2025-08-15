@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,13 +21,13 @@ import com.intellij.diagram.*
 import com.intellij.diagram.extras.DiagramExtras
 import com.intellij.diagram.settings.DiagramConfigElement
 import com.intellij.diagram.settings.DiagramConfigGroup
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramDataModel
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.BpGraphNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.intellij.lang.annotations.Pattern
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 class BpDiagramProvider : BaseDiagramProvider<BpGraphNode>() {

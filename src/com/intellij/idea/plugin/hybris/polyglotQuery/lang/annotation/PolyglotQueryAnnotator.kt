@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.polyglotQuery.lang.annotation
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.lang.annotation.AbstractAnnotator
 import com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryAttributeKeyName
@@ -29,6 +28,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class PolyglotQueryAnnotator : AbstractAnnotator(PolyglotQuerySyntaxHighlighter.getInstance()) {
 

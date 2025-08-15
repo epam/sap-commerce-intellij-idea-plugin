@@ -28,10 +28,8 @@ import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.*;
-import com.intellij.idea.plugin.hybris.project.utils.Plugin;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
-import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -68,12 +66,14 @@ import com.intellij.spellchecker.state.ProjectDictionaryState;
 import com.intellij.spring.facet.SpringFacet;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.YModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.impl.*;
+import sap.commerce.toolset.settings.WorkspaceSettings;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -88,8 +88,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
-import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
+import static sap.commerce.toolset.HybrisConstants.*;
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class ImportProjectProgressModalWindow extends Task.Modal {
     private static final Logger LOG = Logger.getInstance(ImportProjectProgressModalWindow.class);

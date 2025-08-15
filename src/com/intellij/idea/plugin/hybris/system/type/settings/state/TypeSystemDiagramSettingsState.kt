@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.system.type.settings.state
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
 import kotlinx.collections.immutable.toImmutableSet
+import sap.commerce.toolset.HybrisConstants
 
 @Tag("TSDiagramSettings")
 data class TypeSystemDiagramSettingsState(

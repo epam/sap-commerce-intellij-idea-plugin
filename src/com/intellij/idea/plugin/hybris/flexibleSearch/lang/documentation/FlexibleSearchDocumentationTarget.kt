@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.lang.documentation
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -30,6 +29,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import com.intellij.psi.createSmartPointer
 import com.intellij.psi.util.elementType
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class FlexibleSearchDocumentationTarget(val element: PsiElement, private val originalElement: PsiElement?) : DocumentationTarget {
 

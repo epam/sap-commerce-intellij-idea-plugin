@@ -20,11 +20,6 @@ package com.intellij.idea.plugin.hybris.system.type.codeInsight.completion
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_KEY
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_SOURCE
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_TARGET
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.ATTRIBUTE_VALUE
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexParameter
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
@@ -37,6 +32,11 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.StringUtils
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_KEY
+import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_SOURCE
+import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_TARGET
+import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_VALUE
 import java.util.*
 
 @Service(Service.Level.PROJECT)

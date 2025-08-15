@@ -17,12 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.project.utils
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.facet.YFacetConstants
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 
 object HybrisRootUtil {

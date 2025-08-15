@@ -22,7 +22,6 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyAttributeValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdUsage
@@ -31,6 +30,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexVisitor
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class ImpexUnknownTypeNameInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR

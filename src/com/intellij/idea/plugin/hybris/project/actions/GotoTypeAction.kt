@@ -19,9 +19,9 @@ package com.intellij.idea.plugin.hybris.project.actions
 
 import com.intellij.ide.actions.SearchEverywhereBaseAction
 import com.intellij.idea.plugin.hybris.system.type.searcheverywhere.TypeSearchEverywhereContributor
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
+import sap.commerce.toolset.isHybrisProject
 
 class GotoTypeAction : SearchEverywhereBaseAction(), DumbAware {
 

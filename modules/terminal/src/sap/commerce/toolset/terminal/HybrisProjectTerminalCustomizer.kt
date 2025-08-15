@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.terminal
 
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.terminal.LocalTerminalCustomizer
+import sap.commerce.toolset.isNotHybrisProject
 
 class HybrisProjectTerminalCustomizer : LocalTerminalCustomizer() {
 

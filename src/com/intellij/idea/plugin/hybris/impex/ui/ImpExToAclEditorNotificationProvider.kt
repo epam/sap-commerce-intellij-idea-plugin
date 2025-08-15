@@ -17,10 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.impex.ui
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.project.Project
@@ -31,6 +29,8 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.util.application
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isHybrisProject
 import java.util.function.Function
 
 class ImpExToAclEditorNotificationProvider : EditorNotificationProvider {

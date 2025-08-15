@@ -21,8 +21,6 @@ package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.ActionsBundle
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.meta.MetaModelChangeListener
 import com.intellij.idea.plugin.hybris.system.type.meta.TSGlobalMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
@@ -37,6 +35,8 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.HybrisIcons
 import java.awt.GridBagLayout
 import java.io.Serial
 

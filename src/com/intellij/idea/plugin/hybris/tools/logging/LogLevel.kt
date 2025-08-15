@@ -18,7 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 enum class LogLevel(val icon: Icon) {

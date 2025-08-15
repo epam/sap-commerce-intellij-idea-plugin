@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.settings.state
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.HybrisConstants
 
 @Tag("HybrisApplicationSettings")
 data class ApplicationSettingsState(

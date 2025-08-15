@@ -18,10 +18,10 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.lang.documentation.renderer.hybrisDoc
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.EnumValue
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 interface TSMetaEnum : TSMetaClassifier<EnumType> {

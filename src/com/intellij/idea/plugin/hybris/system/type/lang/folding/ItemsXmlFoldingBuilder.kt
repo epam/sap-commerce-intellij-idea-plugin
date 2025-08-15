@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.lang.folding
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.lang.folding.AbstractXmlFoldingBuilderEx
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.system.type.model.*
@@ -30,6 +29,7 @@ import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
+import sap.commerce.toolset.HybrisConstants
 
 class ItemsXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<TypeSystemFoldingSettingsState, Items>(Items::class.java), DumbAware {
 

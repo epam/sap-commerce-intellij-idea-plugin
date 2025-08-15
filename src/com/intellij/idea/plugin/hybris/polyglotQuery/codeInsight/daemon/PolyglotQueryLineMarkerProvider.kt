@@ -21,12 +21,8 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.codeInsight.daemon
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor
 import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryUtils
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotElementFactory
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
@@ -37,6 +33,10 @@ import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.PsiPolyadicExpression
 import com.intellij.psi.PsiVariable
 import com.intellij.psi.codeStyle.CodeStyleManager
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.isNotHybrisProject
 import java.awt.datatransfer.StringSelection
 import java.util.function.Supplier
 import javax.swing.Icon

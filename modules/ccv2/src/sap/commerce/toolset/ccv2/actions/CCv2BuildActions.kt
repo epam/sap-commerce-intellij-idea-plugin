@@ -18,9 +18,6 @@
 
 package sap.commerce.toolset.ccv2.actions
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Actions.FETCH
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKey
@@ -31,6 +28,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.AnimatedIcon
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.HybrisIcons.CCv2.Actions.FETCH
+import sap.commerce.toolset.HybrisIcons.CCv2.Build.Actions.SHOW_DETAILS
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.dto.CCv2BuildRequest

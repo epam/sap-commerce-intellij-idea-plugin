@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,9 +19,9 @@ package com.intellij.idea.plugin.hybris.diagram.typeSystem
 
 import com.intellij.diagram.AbstractUmlVisibilityManager
 import com.intellij.diagram.VisibilityLevel
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.diagram.typeSystem.node.graph.*
 import com.intellij.util.ArrayUtil
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class TSDiagramVisibilityManager : AbstractUmlVisibilityManager() {
 

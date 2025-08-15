@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.lang.annotation
 
 import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInspection.ProblemHighlightType
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
@@ -32,6 +31,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : Annotator {
 

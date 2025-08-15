@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.system.bean.codeInsight.completion
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.codeInsight.lookup.BSLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
@@ -28,6 +27,7 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSMetaType
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisConstants
 
 @Service(Service.Level.PROJECT)
 class BSCompletionService(private val project: Project) {

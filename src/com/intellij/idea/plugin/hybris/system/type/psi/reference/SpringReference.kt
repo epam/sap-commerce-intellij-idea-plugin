@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.system.type.psi.reference
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
+import sap.commerce.toolset.HybrisConstants
 
 class SpringReference(
     element: PsiElement,

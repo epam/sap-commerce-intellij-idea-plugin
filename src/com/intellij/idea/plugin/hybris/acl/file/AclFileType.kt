@@ -18,9 +18,9 @@
 package com.intellij.idea.plugin.hybris.acl.file
 
 import com.intellij.idea.plugin.hybris.acl.AclLanguage
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.fileTypes.LanguageFileType
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 object AclFileType : LanguageFileType(AclLanguage) {

@@ -20,13 +20,13 @@ package com.intellij.idea.plugin.hybris.impex.file.actions
 
 import com.intellij.ide.actions.CreateFileFromTemplateAction
 import com.intellij.ide.actions.CreateFileFromTemplateDialog
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isHybrisProject
 
 class ImpexFileCreateAction : CreateFileFromTemplateAction(NEW_FILE, "", HybrisIcons.ImpEx.FILE), DumbAware {
 

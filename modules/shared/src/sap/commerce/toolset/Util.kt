@@ -16,14 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.util
+package sap.commerce.toolset
 
-import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import sap.commerce.toolset.settings.WorkspaceSettings
 
 val PsiElement.isHybrisProject: Boolean
     get() = project.isHybrisProject
@@ -46,3 +46,5 @@ val DataContext.isHybrisProject: Boolean
 fun <T> DataContext.ifHybrisProject(operation: () -> T): T? = if (isHybrisProject) operation() else null
 
 fun <T> Project.ifHybrisProject(operation: () -> T): T? = if (isHybrisProject) operation() else null
+
+infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>) = this.size == other.size && this.toSet() == other.toSet()

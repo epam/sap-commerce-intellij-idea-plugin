@@ -28,7 +28,6 @@ import com.intellij.database.dataSource.LocalDataSourceManager
 import com.intellij.database.model.DasDataSource
 import com.intellij.database.util.DataSourceUtil
 import com.intellij.database.util.DbImplUtil
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
@@ -37,6 +36,7 @@ import com.intellij.openapi.roots.libraries.LibraryUtil
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
+import sap.commerce.toolset.HybrisConstants
 
 class DataSourcesConfigurator {
 

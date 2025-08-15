@@ -19,7 +19,6 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
@@ -28,6 +27,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.YModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor;
@@ -36,9 +36,9 @@ import sap.commerce.toolset.project.descriptors.impl.*;
 import java.io.*;
 import java.util.*;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
-import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static com.intellij.idea.plugin.hybris.project.utils.FileUtils.toFile;
+import static sap.commerce.toolset.HybrisConstants.*;
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private static final Logger LOG = Logger.getInstance(DefaultGroupModuleConfigurator.class);

@@ -17,14 +17,14 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.file
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.model.deployment.Model
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.Iconable.IconFlags
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isHybrisProject
 import javax.swing.Icon
 
 class TSDeploymentModelDomFileDescription : DomFileDescription<Model>(Model::class.java, HybrisConstants.ROOT_TAG_DEPLOYMENT_MODEL_XML) {

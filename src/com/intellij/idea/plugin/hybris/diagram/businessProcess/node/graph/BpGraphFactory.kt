@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph
 
 import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.diagram.presentation.DiagramLineType
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramEdge
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramEdgeType
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.BpDiagramNode
@@ -32,6 +31,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomManager
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 object BpGraphFactory {
 

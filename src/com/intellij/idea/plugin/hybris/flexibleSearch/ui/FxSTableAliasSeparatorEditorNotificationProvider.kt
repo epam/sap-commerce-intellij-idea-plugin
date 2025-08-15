@@ -17,8 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.ui
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.idea.plugin.hybris.flexibleSearch.settings.state.FlexibleSearchSettingsState
@@ -37,6 +35,8 @@ import com.intellij.psi.util.elementType
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotifications
 import com.intellij.util.concurrency.AppExecutorUtil
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.HybrisIcons
 import java.util.function.Function
 
 class FxSTableAliasSeparatorEditorNotificationProvider : AbstractFxSEditorNotificationProvider() {

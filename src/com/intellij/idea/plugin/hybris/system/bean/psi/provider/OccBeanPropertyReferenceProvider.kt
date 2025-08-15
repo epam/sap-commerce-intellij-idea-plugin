@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.bean.psi.provider
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.BSGlobalMetaBean
 import com.intellij.idea.plugin.hybris.system.bean.psi.BSConstants
@@ -32,6 +31,7 @@ import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.HybrisConstants
 import java.util.*
 
 class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {

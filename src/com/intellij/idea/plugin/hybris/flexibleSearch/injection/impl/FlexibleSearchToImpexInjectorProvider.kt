@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
@@ -33,6 +32,7 @@ import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.application
+import sap.commerce.toolset.HybrisConstants
 import java.util.*
 
 @Service

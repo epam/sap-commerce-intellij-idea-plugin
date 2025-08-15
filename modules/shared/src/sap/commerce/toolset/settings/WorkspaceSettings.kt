@@ -16,11 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.settings
+package sap.commerce.toolset.settings
 
-import com.intellij.idea.plugin.hybris.settings.state.WorkspaceSettingsState
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.settings.state.WorkspaceSettingsState
 
 @State(
     name = "HybrisProjectWorkspaceSettings",

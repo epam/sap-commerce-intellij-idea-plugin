@@ -19,11 +19,11 @@
 
 package com.intellij.idea.plugin.hybris.actions
 
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.project.DumbAware
+import sap.commerce.toolset.isHybrisProject
 
 class HybrisToolsActionGroup : DefaultActionGroup(), DumbAware {
 

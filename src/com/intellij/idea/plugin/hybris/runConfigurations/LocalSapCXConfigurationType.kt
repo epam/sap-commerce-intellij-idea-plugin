@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,9 +20,9 @@ package com.intellij.idea.plugin.hybris.runConfigurations
 
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.configurations.SimpleConfigurationType
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NotNullLazyValue
+import sap.commerce.toolset.HybrisIcons
 
 class LocalSapCXConfigurationType : SimpleConfigurationType(
     "SAPCX",

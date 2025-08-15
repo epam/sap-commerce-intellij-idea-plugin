@@ -18,12 +18,12 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.lang.documentation.renderer.hybrisDoc
 import com.intellij.idea.plugin.hybris.system.type.model.Cardinality
 import com.intellij.idea.plugin.hybris.system.type.model.Relation
 import com.intellij.idea.plugin.hybris.system.type.model.RelationElement
 import com.intellij.idea.plugin.hybris.system.type.model.Type
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 interface TSMetaRelation : TSMetaClassifier<Relation> {

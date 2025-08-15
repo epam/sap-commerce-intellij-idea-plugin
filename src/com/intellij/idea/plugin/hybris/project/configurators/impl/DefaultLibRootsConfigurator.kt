@@ -17,8 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleLibDescriptorUtil
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
@@ -31,6 +29,8 @@ import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.project.descriptors.JavaLibraryDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.YModuleDescriptor

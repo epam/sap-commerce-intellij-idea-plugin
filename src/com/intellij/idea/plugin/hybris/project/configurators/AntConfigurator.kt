@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.execution.configurations.ConfigurationTypeUtil.findConfigurationType
 import com.intellij.execution.impl.RunManagerImpl
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.lang.ant.config.AntBuildFileBase
 import com.intellij.lang.ant.config.AntConfigurationBase
 import com.intellij.lang.ant.config.AntNoFileException
@@ -36,6 +35,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.ConfigModuleDescriptor

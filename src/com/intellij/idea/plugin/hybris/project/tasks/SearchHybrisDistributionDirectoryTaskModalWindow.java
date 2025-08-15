@@ -19,14 +19,14 @@
 
 package com.intellij.idea.plugin.hybris.project.tasks;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.utils.Processor;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
+import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.HybrisI18NBundleUtils;
 import sap.commerce.toolset.project.tasks.DirectoriesScannerProgressIndicatorUpdaterProcessor;
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService;
 

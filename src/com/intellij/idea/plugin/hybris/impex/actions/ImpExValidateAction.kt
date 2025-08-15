@@ -19,7 +19,6 @@ package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.ide.ActivityTracker
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
 import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
@@ -31,6 +30,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.HybrisIcons
 
 class ImpExValidateAction : ExecuteStatementAction<HybrisImpexConsole, ImpExSplitEditor>(
     ImpexLanguage,

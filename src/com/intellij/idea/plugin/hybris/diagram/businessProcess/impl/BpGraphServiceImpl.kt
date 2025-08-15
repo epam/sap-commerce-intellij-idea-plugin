@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,11 +18,11 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.impl
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.*
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.*
 import org.apache.commons.collections4.CollectionUtils
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class BpGraphServiceImpl : BpGraphService {
 

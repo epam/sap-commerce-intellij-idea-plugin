@@ -18,9 +18,9 @@
 package com.intellij.idea.plugin.hybris.system.bean.codeInsight.hints
 
 import com.intellij.codeInsight.hints.*
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
+import sap.commerce.toolset.isHybrisProject
 import javax.swing.JPanel
 
 class BeansXmlInlayHintsProvider : InlayHintsProvider<NoSettings> {

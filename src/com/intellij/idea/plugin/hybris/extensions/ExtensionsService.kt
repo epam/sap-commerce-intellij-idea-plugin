@@ -19,11 +19,11 @@
 package com.intellij.idea.plugin.hybris.extensions
 
 import com.intellij.ide.extensionResources.ExtensionsRootType
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.util.application
+import sap.commerce.toolset.Plugin
 import java.nio.file.Files
 import java.nio.file.Path
 

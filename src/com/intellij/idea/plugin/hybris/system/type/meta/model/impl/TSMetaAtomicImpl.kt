@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.system.type.meta.model.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaAtomic
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaAtomic
@@ -27,6 +26,7 @@ import com.intellij.idea.plugin.hybris.system.type.model.AtomicType
 import com.intellij.idea.plugin.hybris.util.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
+import sap.commerce.toolset.HybrisConstants
 
 internal class TSMetaAtomicImpl(
     dom: AtomicType,

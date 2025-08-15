@@ -19,17 +19,17 @@ package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.util.RunOnceUtil
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.ProjectConstants
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
-import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.removeUserData
+import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.settings.WorkspaceSettings
 
 class HybrisProjectImportStartupActivity : ProjectActivity {
 

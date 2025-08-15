@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPsiHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
@@ -27,6 +26,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import sap.commerce.toolset.HybrisConstants
 
 class CngFlowTSItemReference(element: PsiElement) : CngTSItemReference(element) {
 

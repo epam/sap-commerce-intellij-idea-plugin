@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.refactoring
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.psi.PsiElement
@@ -31,6 +30,7 @@ import com.intellij.refactoring.listeners.RefactoringElementListener
 import com.intellij.refactoring.rename.RenamePsiElementProcessor
 import com.intellij.refactoring.rename.UnresolvableCollisionUsageInfo
 import com.intellij.usageView.UsageInfo
+import sap.commerce.toolset.HybrisI18NBundleUtils
 
 class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
 

@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.remote
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersHacConnectionNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNodeParameters
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.LoggersOptionsNode
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisIcons
 
 class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNode("Remote hAC Instances", HybrisIcons.Y.REMOTES, project) {
 

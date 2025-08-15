@@ -23,7 +23,6 @@ import com.intellij.idea.plugin.hybris.editor.InEditorResultsView
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch.FlexibleSearchExecutionResult
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
@@ -35,6 +34,7 @@ import com.intellij.testFramework.LightVirtualFile
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.Plugin
 import javax.swing.JComponent
 
 @Service(Service.Level.PROJECT)

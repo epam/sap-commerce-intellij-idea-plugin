@@ -20,13 +20,13 @@ package sap.commerce.toolset.ccv2.settings
 
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.ide.passwordSafe.PasswordSafe
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.util.application
 import org.apache.commons.lang3.StringUtils
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.state.ApplicationSettingsState

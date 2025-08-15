@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project
 
 import com.intellij.ide.actions.ImportModuleAction
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.HybrisUtil
 import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.progress.ProgressManager
@@ -32,6 +31,7 @@ import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeFrame
 import com.intellij.projectImport.ProjectImportBuilder
 import com.intellij.projectImport.ProjectOpenProcessorBase
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisConstants
 
 class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImportBuilder>() {
 

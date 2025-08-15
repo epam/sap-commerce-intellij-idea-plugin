@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
@@ -32,6 +31,7 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import sap.commerce.toolset.HybrisConstants
 
 class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 

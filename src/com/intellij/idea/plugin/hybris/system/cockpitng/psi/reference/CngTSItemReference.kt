@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -36,6 +35,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import sap.commerce.toolset.HybrisConstants
 
 /**
  * see, standard-editors-spring.xml

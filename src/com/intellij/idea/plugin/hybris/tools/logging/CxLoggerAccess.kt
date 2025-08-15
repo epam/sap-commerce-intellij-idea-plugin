@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.logging
 
 import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
@@ -39,6 +38,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.Notifications
 import java.util.*
 
 @Service(Service.Level.PROJECT)

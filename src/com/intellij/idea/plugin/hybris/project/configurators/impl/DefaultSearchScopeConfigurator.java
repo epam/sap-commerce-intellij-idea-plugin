@@ -21,8 +21,6 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.find.FindSettings;
 import com.intellij.ide.projectView.impl.ModuleGroup;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.impex.ImpExConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
@@ -33,6 +31,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.scope.packageSet.*;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
+import sap.commerce.toolset.HybrisI18NBundleUtils;
+import sap.commerce.toolset.HybrisIcons;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -41,8 +41,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
-import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
+import static sap.commerce.toolset.HybrisConstants.*;
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
 

@@ -21,7 +21,6 @@ import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProvider
 import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo
 import com.intellij.database.vfs.fragment.CsvTableDataFragmentFile
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
 import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
@@ -33,6 +32,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.firstLeaf
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.Function
+import sap.commerce.toolset.HybrisIcons
 import java.util.function.Supplier
 import javax.swing.Icon
 

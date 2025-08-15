@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.COCKPIT_NG_NAMESPACE_KEY
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.advancedSearch.AdvancedSearch
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.collectionBrowser.CollectionBrowser
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context
@@ -35,6 +34,7 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.model.wizardConfig.Flow
 import com.intellij.util.xml.XmlName
 import com.intellij.util.xml.reflect.DomExtender
 import com.intellij.util.xml.reflect.DomExtensionsRegistrar
+import sap.commerce.toolset.HybrisConstants.COCKPIT_NG_NAMESPACE_KEY
 
 class CngConfigDomExtender : DomExtender<Context>() {
 

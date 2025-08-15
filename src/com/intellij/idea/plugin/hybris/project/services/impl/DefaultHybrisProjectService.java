@@ -19,11 +19,11 @@
 
 package com.intellij.idea.plugin.hybris.project.services.impl;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.common.HybrisUtil;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
+import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService;

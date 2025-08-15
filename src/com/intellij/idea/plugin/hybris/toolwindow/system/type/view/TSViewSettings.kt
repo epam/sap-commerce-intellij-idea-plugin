@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.toolwindow.system.type.view
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.util.messages.MessageBus
 import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil
+import sap.commerce.toolset.HybrisConstants
 
 @State(name = "[y] Type System View settings", category = SettingsCategory.PLUGINS)
 @Storage(value = HybrisConstants.STORAGE_HYBRIS_TS_VIEW, roamingType = RoamingType.DISABLED)

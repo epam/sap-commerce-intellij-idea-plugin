@@ -16,11 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.project.utils
+package sap.commerce.toolset
 
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManagerCore
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.extensions.PluginId
 import org.jetbrains.annotations.Nullable
 

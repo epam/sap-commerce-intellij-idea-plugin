@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.ccv2.dto
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.model.CreateDeploymentRequestDTO
 import sap.commerce.toolset.ccv2.model.DeploymentDetailDTO
 import javax.swing.Icon

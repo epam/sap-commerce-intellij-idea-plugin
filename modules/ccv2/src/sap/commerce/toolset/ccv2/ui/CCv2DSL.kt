@@ -19,8 +19,6 @@
 package sap.commerce.toolset.ccv2.ui
 
 import com.intellij.ide.HelpTooltip
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.Project
@@ -28,6 +26,8 @@ import com.intellij.ui.JBColor
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.Row
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
 import sap.commerce.toolset.ccv2.formatTime

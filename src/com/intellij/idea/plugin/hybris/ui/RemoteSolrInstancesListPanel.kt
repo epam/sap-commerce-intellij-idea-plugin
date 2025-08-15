@@ -17,12 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.ui
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
 import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.idea.plugin.hybris.toolwindow.RemoteSolrConnectionDialog
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisIcons
 import java.io.Serial
 
 class RemoteSolrInstancesListPanel(

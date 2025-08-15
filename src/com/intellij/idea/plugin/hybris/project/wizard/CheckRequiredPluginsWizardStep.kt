@@ -22,8 +22,6 @@ import com.intellij.ide.BrowserUtil
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.ide.util.projectWizard.WizardContext
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.utils.Plugin.*
 import com.intellij.openapi.application.ApplicationNamesInfo
 import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.extensions.PluginId
@@ -35,6 +33,8 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin.*
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.io.Serial

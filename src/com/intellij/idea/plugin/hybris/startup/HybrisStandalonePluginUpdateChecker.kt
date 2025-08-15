@@ -19,13 +19,13 @@
 package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.plugins.StandalonePluginUpdateChecker
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Plugin
 
 @Service(Service.Level.PROJECT)
 class HybrisStandalonePluginUpdateChecker : StandalonePluginUpdateChecker(

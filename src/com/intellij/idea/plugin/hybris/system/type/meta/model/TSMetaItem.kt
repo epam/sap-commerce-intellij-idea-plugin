@@ -18,13 +18,13 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.lang.documentation.renderer.hybrisDoc
 import com.intellij.idea.plugin.hybris.system.type.model.Attribute
 import com.intellij.idea.plugin.hybris.system.type.model.CreationMode
 import com.intellij.idea.plugin.hybris.system.type.model.Index
 import com.intellij.idea.plugin.hybris.system.type.model.ItemType
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 

@@ -16,6 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common
+package sap.commerce.toolset.settings.state
 
-infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>) = this.size == other.size && this.toSet() == other.toSet()
+import com.intellij.util.xmlb.annotations.OptionTag
+import com.intellij.util.xmlb.annotations.Tag
+
+@Tag("HybrisProjectSettings")
+data class WorkspaceSettingsState(
+    @JvmField @OptionTag val hybrisProject: Boolean = false,
+)

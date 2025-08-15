@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.actions
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaSelectionMode
 import com.intellij.idea.plugin.hybris.tools.remote.http.RemoteConnectionContext
@@ -29,6 +28,7 @@ import com.intellij.openapi.actionSystem.KeepPopupOnPerform
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
 import com.intellij.openapi.util.Disposer
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import java.awt.Component
 
 abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode: ReplicaSelectionMode) : CheckboxAction(

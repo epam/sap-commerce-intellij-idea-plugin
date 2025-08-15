@@ -18,14 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.system.cockpitng
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Config
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isHybrisProject
 import javax.swing.Icon
 
 class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.java, CngPatterns.CONFIG_ROOT) {

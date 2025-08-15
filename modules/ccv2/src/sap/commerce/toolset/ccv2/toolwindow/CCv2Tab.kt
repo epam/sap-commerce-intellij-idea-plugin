@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.ccv2.toolwindow
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.toolwindow.views.AbstractCCv2DataView
 import sap.commerce.toolset.ccv2.toolwindow.views.CCv2BuildsDataView
 import sap.commerce.toolset.ccv2.toolwindow.views.CCv2DeploymentsDataView

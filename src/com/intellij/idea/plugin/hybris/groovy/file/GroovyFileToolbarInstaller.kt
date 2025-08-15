@@ -17,8 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.groovy.file
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.components.service
@@ -26,6 +24,8 @@ import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import org.jetbrains.plugins.groovy.GroovyFileType
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
 
 class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
     "hybris.groovy.console",

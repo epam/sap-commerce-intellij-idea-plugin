@@ -17,9 +17,9 @@
  */
 package com.intellij.idea.plugin.hybris.diagram.module.actions
 
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.uml.core.actions.ShowDiagram
+import sap.commerce.toolset.isHybrisProject
 
 class ShowModuleDependencyDiagramAction : ShowDiagram() {
 

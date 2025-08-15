@@ -19,11 +19,11 @@ package com.intellij.idea.plugin.hybris.diagram.module.node
 
 import com.intellij.diagram.DiagramNodeBase
 import com.intellij.diagram.DiagramProvider
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramColors
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNode
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNodeModule
 import com.intellij.openapi.editor.colors.EditorColorsManager
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 import java.awt.Color
 import java.io.Serial

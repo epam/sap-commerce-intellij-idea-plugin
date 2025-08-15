@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.ccv2.ui
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.ui.AddEditDeleteListPanel
 import com.intellij.ui.ListSpeedSearch
 import com.intellij.util.ui.JBEmptyBorder
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto
 import java.awt.Component
 import java.io.Serial

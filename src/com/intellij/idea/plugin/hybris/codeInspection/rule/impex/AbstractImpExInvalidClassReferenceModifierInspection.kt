@@ -22,8 +22,6 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.ImpexModifier
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.TypeModifier
@@ -33,6 +31,8 @@ import com.intellij.idea.plugin.hybris.impex.psi.references.ImpExJavaClassRefere
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.PsiClassImplUtil
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 abstract class AbstractImpExInvalidClassReferenceModifierInspection(
     private val modifier: ImpexModifier,

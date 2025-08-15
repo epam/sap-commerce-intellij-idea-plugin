@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.system.type.model.EnumType
 import com.intellij.idea.plugin.hybris.system.type.model.EnumValue
 import com.intellij.idea.plugin.hybris.system.type.model.Items
@@ -28,6 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import java.util.*
 
 class TSEnumValueMustBeUppercase : AbstractTSInspection() {

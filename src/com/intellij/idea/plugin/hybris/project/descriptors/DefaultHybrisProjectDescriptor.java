@@ -22,13 +22,11 @@ package com.intellij.idea.plugin.hybris.project.descriptors;
 import com.google.common.collect.Sets;
 import com.intellij.execution.wsl.WSLDistribution;
 import com.intellij.execution.wsl.WslDistributionManager;
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.factories.ModuleDescriptorFactory;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
-import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
@@ -48,6 +46,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.localextensions.jaxb.ExtensionType;
 import sap.commerce.toolset.localextensions.jaxb.Hybrisconfig;
@@ -59,6 +58,7 @@ import sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus;
 import sap.commerce.toolset.project.descriptors.YModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.impl.*;
 import sap.commerce.toolset.project.tasks.TaskProgressProcessor;
+import sap.commerce.toolset.settings.WorkspaceSettings;
 
 import javax.annotation.concurrent.GuardedBy;
 import java.io.File;
@@ -78,8 +78,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 

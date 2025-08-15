@@ -22,12 +22,12 @@ import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.ProjectViewPane
 import com.intellij.ide.util.treeView.AbstractTreeNode
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
 import org.jetbrains.annotations.Unmodifiable
+import sap.commerce.toolset.HybrisIcons
 
 class LocalizedImpExNode(
     name: String,

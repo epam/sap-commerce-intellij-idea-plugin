@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset.ccv2.settings
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.settings.state.DeveloperSettingsState
 import sap.commerce.toolset.ccv2.settings.state.SUser
 

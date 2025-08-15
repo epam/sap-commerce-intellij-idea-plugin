@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.system.type.meta
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import kotlinx.collections.immutable.toImmutableSet
+import sap.commerce.toolset.HybrisConstants
 
 object TSMetaHelper {
 

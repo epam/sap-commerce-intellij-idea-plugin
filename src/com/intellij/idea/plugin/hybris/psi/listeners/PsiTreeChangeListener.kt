@@ -29,7 +29,6 @@ import com.intellij.idea.plugin.hybris.system.cockpitng.*
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.extensions.ExtensionNotApplicableException
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
@@ -37,6 +36,7 @@ import com.intellij.psi.PsiTreeChangeEvent
 import com.intellij.psi.PsiTreeChangeListener
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
+import sap.commerce.toolset.isNotHybrisProject
 
 /**
  * Psi Tree Change Listener is required to reset Meta Cache before invocation of the Inspections.

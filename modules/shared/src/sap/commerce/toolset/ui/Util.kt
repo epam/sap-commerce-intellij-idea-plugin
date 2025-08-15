@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.ui
+package sap.commerce.toolset.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.observable.util.addItemListener

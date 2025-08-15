@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.toolwindow
 
 import com.intellij.credentialStore.Credentials
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionScope
 import com.intellij.idea.plugin.hybris.tools.remote.execution.solr.SolrExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
@@ -28,6 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
+import sap.commerce.toolset.HybrisConstants
 import java.awt.Component
 
 class RemoteSolrConnectionDialog(

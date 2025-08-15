@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
 import com.intellij.idea.plugin.hybris.codeInspection.fix.xml.XmlAddTagQuickFix
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.type.model.Deployment
@@ -31,6 +30,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import org.apache.commons.lang3.StringUtils
+import sap.commerce.toolset.HybrisConstants
 
 class TSDeploymentTableMustExistForItemExtendingGenericItem : AbstractTSInspection() {
 

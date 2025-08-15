@@ -17,12 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModel
 import com.intellij.idea.plugin.hybris.system.type.meta.model.*
 import com.intellij.idea.plugin.hybris.system.type.meta.model.impl.*
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import org.apache.commons.lang3.StringUtils
+import sap.commerce.toolset.HybrisConstants
 
 class TSMetaModelBuilder(
     private val moduleName: String,

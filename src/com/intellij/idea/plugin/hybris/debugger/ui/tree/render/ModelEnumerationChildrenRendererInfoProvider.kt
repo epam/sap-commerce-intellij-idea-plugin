@@ -22,13 +22,13 @@ import com.intellij.debugger.engine.DebuggerUtils
 import com.intellij.debugger.settings.NodeRendererSettings
 import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer
 import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer.ChildInfo
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.application
+import sap.commerce.toolset.HybrisConstants
 
 object ModelEnumerationChildrenRendererInfoProvider {
 

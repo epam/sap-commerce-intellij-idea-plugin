@@ -17,10 +17,10 @@
  */
 package sap.commerce.toolset.ccv2.actions
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 
 class CCv2ResetCacheAction : DumbAwareAction("Reset Cached CCv2 Details", null, HybrisIcons.Actions.FORCE_REFRESH) {

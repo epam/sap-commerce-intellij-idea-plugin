@@ -18,9 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.impex.editor
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
-import com.intellij.idea.plugin.hybris.ui.scrollPanel
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
@@ -41,6 +39,8 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import javax.swing.LayoutFocusTraversalPolicy
 

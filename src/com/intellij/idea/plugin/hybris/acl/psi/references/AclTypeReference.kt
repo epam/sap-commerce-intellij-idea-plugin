@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.acl.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
@@ -35,6 +34,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
+import sap.commerce.toolset.HybrisConstants
 
 class AclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), HighlightedReference {
 

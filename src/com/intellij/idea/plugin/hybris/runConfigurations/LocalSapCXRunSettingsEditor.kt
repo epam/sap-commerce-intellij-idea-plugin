@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,8 +25,6 @@ import com.intellij.execution.ui.BeforeRunFragment
 import com.intellij.execution.ui.CommonParameterFragments
 import com.intellij.execution.ui.RunConfigurationFragmentedEditor
 import com.intellij.execution.ui.SettingsEditorFragment
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.openapi.externalSystem.service.execution.configuration.addBeforeRunFragment
 import com.intellij.openapi.externalSystem.service.execution.configuration.addEnvironmentFragment
 import com.intellij.openapi.externalSystem.service.execution.configuration.fragments.SettingsEditorFragmentContainer
@@ -36,6 +34,8 @@ import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.observable.util.bind
 import com.intellij.ui.components.fields.ExtendableTextField
 import com.intellij.ui.components.fields.IntegerField
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisI18NBundleUtils
 import java.io.Serial
 
 class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfiguration) :

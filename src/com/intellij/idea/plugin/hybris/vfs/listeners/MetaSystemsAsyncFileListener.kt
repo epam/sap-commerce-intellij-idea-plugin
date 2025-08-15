@@ -17,12 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.vfs.listeners
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSModificationTracker
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngModificationTracker
 import com.intellij.idea.plugin.hybris.system.type.meta.TSModificationTracker
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -31,6 +29,8 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import com.intellij.util.PathUtil
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.isHybrisProject
 
 /**
  * Limitation due performance restrictions:

@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.psi.injector
 
 import com.intellij.cron.CronExpLanguage
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValue
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueGroup
@@ -28,6 +27,7 @@ import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.childrenOfType
+import sap.commerce.toolset.HybrisConstants
 
 class CronExpLanguageInjector : LanguageInjector {
 

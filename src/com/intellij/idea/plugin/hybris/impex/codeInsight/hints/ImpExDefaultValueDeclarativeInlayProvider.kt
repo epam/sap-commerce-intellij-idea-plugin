@@ -18,9 +18,9 @@
 package com.intellij.idea.plugin.hybris.impex.codeInsight.hints
 
 import com.intellij.codeInsight.hints.declarative.InlayHintsProvider
-import com.intellij.idea.plugin.hybris.util.ifHybrisProject
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
+import sap.commerce.toolset.ifHybrisProject
 
 class ImpExDefaultValueDeclarativeInlayProvider : InlayHintsProvider {
 

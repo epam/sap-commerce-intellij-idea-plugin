@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexAnyHeaderParameterName
 import com.intellij.idea.plugin.hybris.psi.reference.TSReferenceBase
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
@@ -33,6 +32,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
+import sap.commerce.toolset.HybrisConstants
 
 internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterName) : TSReferenceBase<ImpexAnyHeaderParameterName>(owner) {
 

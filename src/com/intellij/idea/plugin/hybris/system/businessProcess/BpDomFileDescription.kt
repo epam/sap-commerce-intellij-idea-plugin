@@ -17,13 +17,13 @@
  */
 package com.intellij.idea.plugin.hybris.system.businessProcess
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isHybrisProject
 import javax.swing.Icon
 
 class BpDomFileDescription : DomFileDescription<Process>(Process::class.java, HybrisConstants.ROOT_TAG_BUSINESS_PROCESS_XML) {

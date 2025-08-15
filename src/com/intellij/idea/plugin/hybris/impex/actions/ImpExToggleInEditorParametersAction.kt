@@ -18,13 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.impex.actions
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.impex.editor.impexSplitEditor
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.DumbAware
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.HybrisIcons
 
 class ImpExToggleInEditorParametersAction : ToggleAction(
     HybrisI18NBundleUtils.message("hybris.actions.in_editor.virtual_parameters"),

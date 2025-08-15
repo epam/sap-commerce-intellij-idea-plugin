@@ -19,10 +19,10 @@ package com.intellij.idea.plugin.hybris.facet
 
 import com.intellij.facet.Facet
 import com.intellij.facet.FacetType
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.module.JavaModuleType
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 class YFacetType : FacetType<YFacet, YFacetConfiguration>(YFacetConstants.Y_FACET_TYPE_ID, FACET_ID, FACET_NAME) {

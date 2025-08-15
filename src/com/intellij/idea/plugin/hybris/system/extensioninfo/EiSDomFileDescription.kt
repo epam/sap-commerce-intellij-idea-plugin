@@ -18,13 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.system.extensioninfo
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isHybrisProject
 import javax.swing.Icon
 
 class EiSDomFileDescription : DomFileDescription<ExtensionInfo>(ExtensionInfo::class.java, HybrisConstants.ROOT_TAG_EXTENSION_INFO_XML) {

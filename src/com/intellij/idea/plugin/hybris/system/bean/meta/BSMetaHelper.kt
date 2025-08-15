@@ -18,14 +18,14 @@
 
 package com.intellij.idea.plugin.hybris.system.bean.meta
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.BS_SIGN_GREATER_THAN
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.BS_SIGN_LESS_THAN
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED
 import com.intellij.idea.plugin.hybris.system.bean.meta.model.*
 import com.intellij.util.xml.DomElement
 import kotlinx.collections.immutable.toImmutableSet
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisConstants.BS_SIGN_GREATER_THAN
+import sap.commerce.toolset.HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED
+import sap.commerce.toolset.HybrisConstants.BS_SIGN_LESS_THAN
+import sap.commerce.toolset.HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED
 
 object BSMetaHelper {
     private val flattenTypeRegex = Regex("""\w+\.""")

@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.util
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.psi.util.PsiUtils
 import com.intellij.idea.plugin.hybris.system.type.model.Items
 import com.intellij.openapi.util.Key
@@ -29,6 +28,7 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
+import sap.commerce.toolset.HybrisConstants
 
 object TSUtils {
     private val ITEM_JALO_KEY = Key.create<Boolean>("Y_IS_ITEM_JALO_CLASS")

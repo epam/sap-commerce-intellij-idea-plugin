@@ -22,10 +22,10 @@ import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import sap.commerce.toolset.isNotHybrisProject
 
 class PreLoadSystemsStartupActivity : ProjectActivity {
 

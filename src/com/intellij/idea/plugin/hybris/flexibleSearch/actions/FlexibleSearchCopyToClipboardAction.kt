@@ -18,16 +18,16 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAwareAction
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.Notifications
 import java.awt.datatransfer.StringSelection
 
 class FlexibleSearchCopyToClipboardAction : DumbAwareAction() {

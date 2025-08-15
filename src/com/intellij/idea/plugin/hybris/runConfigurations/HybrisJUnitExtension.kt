@@ -28,7 +28,6 @@ import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.junit.JUnitConfiguration
 import com.intellij.idea.plugin.hybris.facet.YFacet
 import com.intellij.idea.plugin.hybris.properties.PropertyService
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
@@ -38,6 +37,7 @@ import com.intellij.openapi.roots.OrderEnumerator
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.search.GlobalSearchScope
+import sap.commerce.toolset.isHybrisProject
 import java.util.*
 
 class HybrisJUnitExtension : RunConfigurationExtension() {

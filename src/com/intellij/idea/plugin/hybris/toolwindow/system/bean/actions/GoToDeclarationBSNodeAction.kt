@@ -18,7 +18,6 @@
 package com.intellij.idea.plugin.hybris.toolwindow.system.bean.actions
 
 import com.intellij.idea.plugin.hybris.actions.AbstractGoToDeclarationAction
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.model.Bean
 import com.intellij.idea.plugin.hybris.system.bean.model.Enum
 import com.intellij.idea.plugin.hybris.system.bean.model.EnumValue
@@ -32,6 +31,7 @@ import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.JTree
 
 class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {

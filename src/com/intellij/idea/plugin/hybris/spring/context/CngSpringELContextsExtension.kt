@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,8 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.spring.context
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.spring.SpringHelper
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
@@ -41,6 +39,8 @@ import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlText
 import com.intellij.spring.el.contextProviders.SpringElContextsExtension
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
 
 class CngSpringELContextsExtension : SpringElContextsExtension() {
 

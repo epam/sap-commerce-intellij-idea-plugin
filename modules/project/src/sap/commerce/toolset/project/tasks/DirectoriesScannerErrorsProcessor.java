@@ -19,9 +19,9 @@
 
 package sap.commerce.toolset.project.tasks;
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.Messages;
+import sap.commerce.toolset.HybrisI18NBundleUtils;
 
 import java.io.File;
 import java.util.List;

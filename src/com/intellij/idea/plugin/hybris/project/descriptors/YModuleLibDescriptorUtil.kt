@@ -18,13 +18,13 @@
 
 package com.intellij.idea.plugin.hybris.project.descriptors
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesModifiableModel
 import com.intellij.openapi.vfs.VfsUtil
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.*
 import sap.commerce.toolset.project.descriptors.impl.*
 import java.io.File

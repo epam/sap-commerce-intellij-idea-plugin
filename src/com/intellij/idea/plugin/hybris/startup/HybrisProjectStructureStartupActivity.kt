@@ -19,17 +19,17 @@
 package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.isHybrisProject
 
 class HybrisProjectStructureStartupActivity : ProjectActivity {
 

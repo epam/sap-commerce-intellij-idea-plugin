@@ -18,11 +18,11 @@
 package com.intellij.idea.plugin.hybris.project
 
 import com.intellij.ide.IconProvider
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 class HybrisProjectIconProvider : IconProvider() {

@@ -18,8 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.project.factories
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import kotlinx.collections.immutable.toImmutableSet
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.YModuleDescriptor
 import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.*

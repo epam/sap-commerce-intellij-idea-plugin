@@ -17,11 +17,11 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription
 import com.intellij.javaee.ExternalResourceManagerEx
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import java.nio.file.Path
 import kotlin.io.path.exists

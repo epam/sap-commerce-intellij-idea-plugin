@@ -20,10 +20,10 @@ package com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
 import com.intellij.idea.plugin.hybris.system.cockpitng.meta.CngMetaModelStateService
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.HybrisConstants
 
 class CngWidgetConnectionWidgetIdCompletionProvider : CompletionProvider<CompletionParameters>() {
 

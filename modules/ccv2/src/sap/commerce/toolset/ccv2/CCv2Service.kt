@@ -19,8 +19,6 @@
 package sap.commerce.toolset.ccv2
 
 import com.intellij.ide.BrowserUtil
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.invokeLater
@@ -40,6 +38,8 @@ import com.intellij.platform.util.progress.ProgressReporter
 import com.intellij.platform.util.progress.reportProgress
 import com.intellij.util.io.ZipUtil
 import kotlinx.coroutines.*
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ccv2.api.CCv1Api
 import sap.commerce.toolset.ccv2.api.CCv2Api
 import sap.commerce.toolset.ccv2.dto.*

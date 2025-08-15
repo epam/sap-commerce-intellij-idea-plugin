@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaHelper
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
@@ -29,6 +28,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import sap.commerce.toolset.HybrisConstants
 
 class TSCatalogAwareCatalogVersionAttributeQualifier : AbstractTSInspection() {
 

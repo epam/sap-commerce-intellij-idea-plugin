@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.editor
 
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryBindParameter
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelStateService
-import com.intellij.idea.plugin.hybris.ui.scrollPanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
@@ -42,6 +41,7 @@ import com.intellij.util.ui.JBUI
 import com.michaelbaranov.microba.calendar.DatePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import java.beans.PropertyChangeListener
 import java.text.SimpleDateFormat

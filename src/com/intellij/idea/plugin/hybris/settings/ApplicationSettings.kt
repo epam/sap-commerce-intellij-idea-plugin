@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.settings
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.settings.state.ApplicationSettingsState
 import com.intellij.openapi.components.*
 import com.intellij.util.application
 import org.apache.commons.lang3.StringUtils
+import sap.commerce.toolset.HybrisConstants
 
 @State(
     name = "[y] Global Settings",

@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,9 +18,6 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.structureView
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.model.*
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.Function
@@ -30,6 +27,9 @@ import com.intellij.util.xml.DomElementNavigationProvider
 import com.intellij.util.xml.DomService
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.structure.DomStructureTreeElement
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisConstants.TS_ATTRIBUTE_LOCALIZED_PREFIX
+import sap.commerce.toolset.HybrisIcons
 
 class TSStructureTreeElement(
     stableCopy: DomElement,

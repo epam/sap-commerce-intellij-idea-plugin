@@ -19,12 +19,12 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.file.actions
 
 import com.intellij.ide.actions.CreateFileFromTemplateAction
 import com.intellij.ide.actions.CreateFileFromTemplateDialog
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isHybrisProject
 
 class PolyglotQueryFileCreateAction : CreateFileFromTemplateAction(
     NEW_FILE,

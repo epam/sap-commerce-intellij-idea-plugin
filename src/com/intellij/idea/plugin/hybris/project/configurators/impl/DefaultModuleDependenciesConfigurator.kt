@@ -18,13 +18,13 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.project.configurators.ModuleDependenciesConfigurator
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.ModifiableRootModel
+import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YPlatformExtModuleDescriptor

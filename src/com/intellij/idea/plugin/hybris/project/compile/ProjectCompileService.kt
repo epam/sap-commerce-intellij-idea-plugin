@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.project.compile
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -27,6 +26,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.HybrisConstants
 import java.nio.file.Path
 
 @Service(Service.Level.PROJECT)

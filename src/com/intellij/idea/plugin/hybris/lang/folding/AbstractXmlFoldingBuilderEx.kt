@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.lang.folding
 
 import com.intellij.idea.plugin.hybris.settings.state.FoldingSettings
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
@@ -37,6 +36,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomManager
+import sap.commerce.toolset.isNotHybrisProject
 
 abstract class AbstractXmlFoldingBuilderEx<S : FoldingSettings, T : DomElement>(private val clazz: Class<T>) : FoldingBuilderEx() {
 

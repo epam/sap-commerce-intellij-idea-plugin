@@ -19,7 +19,7 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
+import sap.commerce.toolset.HybrisConstants;
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.ReplicaContext;
 import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener;
 import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState;

@@ -21,11 +21,11 @@ package com.intellij.idea.plugin.hybris.polyglotQuery.codeInsight.hints
 import com.intellij.codeInsight.hints.declarative.*
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQuerySplitEditor
 import com.intellij.idea.plugin.hybris.polyglotQuery.psi.PolyglotQueryBindParameter
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import sap.commerce.toolset.isNotHybrisProject
 
 class PolyglotQueryParameterInlayHintProvider : InlayHintsProvider {
 

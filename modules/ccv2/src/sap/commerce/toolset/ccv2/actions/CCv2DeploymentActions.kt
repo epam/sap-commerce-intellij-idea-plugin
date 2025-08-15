@@ -18,8 +18,8 @@
 
 package sap.commerce.toolset.ccv2.actions
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.openapi.actionSystem.AnActionEvent
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription

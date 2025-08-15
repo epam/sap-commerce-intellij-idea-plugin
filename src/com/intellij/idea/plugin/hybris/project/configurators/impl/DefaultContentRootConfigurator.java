@@ -19,7 +19,6 @@
 
 package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.ContentRootConfigurator;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -36,6 +35,7 @@ import org.jetbrains.jps.model.java.JavaResourceRootType;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
+import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.impl.*;
@@ -45,8 +45,8 @@ import java.io.FileFilter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.HybrisConstants.*;
-import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
+import static sap.commerce.toolset.HybrisConstants.*;
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class DefaultContentRootConfigurator implements ContentRootConfigurator {
 

@@ -18,10 +18,8 @@
 
 package com.intellij.idea.plugin.hybris.system.type.settings.options
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.system.type.settings.ui.TSDiagramSettingsExcludedTypeNameTable
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -31,6 +29,8 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import com.intellij.util.ui.JBUI
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.isHybrisProject
 import java.awt.Dimension
 import javax.swing.JCheckBox
 

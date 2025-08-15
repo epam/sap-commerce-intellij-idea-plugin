@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
 import com.intellij.execution.ui.ConsoleViewContentType.*
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
@@ -31,6 +30,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.HybrisConstants
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel

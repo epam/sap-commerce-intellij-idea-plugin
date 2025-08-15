@@ -19,7 +19,7 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
+import sap.commerce.toolset.Plugin
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.idea.plugin.hybris.tools.remote.execution.ExecutionContext

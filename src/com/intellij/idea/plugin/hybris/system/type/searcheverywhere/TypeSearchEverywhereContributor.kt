@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.system.type.searcheverywhere
 import com.intellij.ide.actions.SearchEverywherePsiRenderer
 import com.intellij.ide.actions.searcheverywhere.*
 import com.intellij.ide.util.gotoByName.FilteringGotoByModel
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.bean.meta.BSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.bean.model.Beans
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
@@ -33,6 +32,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.ListCellRenderer
 
 class TypeSearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSEContributor(event), SearchEverywherePreviewProvider {

@@ -19,16 +19,16 @@ package com.intellij.idea.plugin.hybris.diagram.businessProcess
 
 import com.intellij.diagram.AbstractDiagramElementManager
 import com.intellij.diagram.DiagramBuilder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.diagram.businessProcess.node.graph.*
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Action
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.ParameterUse
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isNotHybrisProject
 
 class BpDiagramElementManager : AbstractDiagramElementManager<BpGraphNode>() {
 

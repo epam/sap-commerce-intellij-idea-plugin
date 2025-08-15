@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 import com.intellij.facet.FacetManager
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.facet.ModifiableFacetModel
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.project.configurators.FacetConfigurator
 import com.intellij.javaee.DeploymentDescriptorsConstants
 import com.intellij.javaee.web.facet.WebFacet
@@ -30,6 +29,7 @@ import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VfsUtil
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YAcceleratorAddonSubModuleDescriptor

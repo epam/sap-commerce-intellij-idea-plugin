@@ -16,10 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.common.utils
+package sap.commerce.toolset
 
 import com.intellij.icons.AllIcons
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.openapi.util.IconLoader
 import icons.AngularIcons
 import icons.GradleIcons

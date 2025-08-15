@@ -18,10 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.properties
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.DEFAULT_WRAPPER_FILENAME
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY
-import com.intellij.idea.plugin.hybris.common.HybrisConstants.TOMCAT_WRAPPER_CONFIG_DIR
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.utils.HybrisRootUtil
 import com.intellij.lang.properties.IProperty
@@ -47,6 +43,10 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisConstants.DEFAULT_WRAPPER_FILENAME
+import sap.commerce.toolset.HybrisConstants.PLATFORM_TOMCAT_DIRECTORY
+import sap.commerce.toolset.HybrisConstants.TOMCAT_WRAPPER_CONFIG_DIR
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader

@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
+import sap.commerce.toolset.HybrisIcons
 
 class LoggersHacConnectionNode(
     val connectionSettings: RemoteConnectionSettingsState,

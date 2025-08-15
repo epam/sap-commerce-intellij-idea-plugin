@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.groovy.actions
 
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.groovy.editor.GroovySplitEditor
 import com.intellij.idea.plugin.hybris.groovy.editor.groovySplitEditor
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
@@ -34,6 +33,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
+import sap.commerce.toolset.HybrisIcons
 
 class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySplitEditor>(
     GroovyLanguage,

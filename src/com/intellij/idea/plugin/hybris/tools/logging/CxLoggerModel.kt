@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.tools.logging
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.DeferredIcon
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 data class CxLoggerModel(

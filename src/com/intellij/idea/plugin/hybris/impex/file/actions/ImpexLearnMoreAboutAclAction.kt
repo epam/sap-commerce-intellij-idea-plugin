@@ -18,11 +18,11 @@
 package com.intellij.idea.plugin.hybris.impex.file.actions
 
 import com.intellij.ide.BrowserUtil
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import sap.commerce.toolset.HybrisConstants
 
 class ImpexLearnMoreAboutAclAction : AnAction() {
 

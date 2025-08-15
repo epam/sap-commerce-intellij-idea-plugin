@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.project.configurators.impl.*
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.components.serviceOrNull
+import sap.commerce.toolset.Plugin
 
 @Service
 class ConfiguratorFactory {

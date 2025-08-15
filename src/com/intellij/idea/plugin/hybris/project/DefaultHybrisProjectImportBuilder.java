@@ -19,9 +19,6 @@
 
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
-import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator;
 import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
@@ -41,6 +38,9 @@ import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import kotlin.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sap.commerce.toolset.HybrisConstants;
+import sap.commerce.toolset.HybrisIcons;
+import sap.commerce.toolset.Notifications;
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus;
@@ -58,7 +58,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 import static sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus.MANDATORY;
 import static sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus.UNUSED;
 

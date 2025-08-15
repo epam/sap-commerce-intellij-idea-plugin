@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.tools.remote
 
 import ai.grazie.utils.toLinkedSet
 import com.intellij.credentialStore.Credentials
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
@@ -30,6 +29,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.collections.immutable.toImmutableList
+import sap.commerce.toolset.HybrisConstants
 import java.util.*
 
 @Service(Service.Level.PROJECT)

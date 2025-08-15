@@ -19,8 +19,6 @@ package com.intellij.idea.plugin.hybris.startup
 
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.util.RunOnceUtil
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
-import com.intellij.idea.plugin.hybris.util.isNotHybrisProject
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.fileEditor.TextEditorWithPreview
 import com.intellij.openapi.fileEditor.impl.HTMLEditorProvider
@@ -30,6 +28,8 @@ import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.io.StreamUtil
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.ui.jcef.JBCefApp
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.isNotHybrisProject
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 

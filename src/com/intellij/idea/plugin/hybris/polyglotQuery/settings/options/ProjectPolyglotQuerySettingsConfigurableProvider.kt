@@ -18,11 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.polyglotQuery.settings.options
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider
 import com.intellij.idea.plugin.hybris.settings.DeveloperSettings
 import com.intellij.idea.plugin.hybris.settings.state.ReservedWordsCase
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -35,6 +33,8 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.isHybrisProject
 import javax.swing.JCheckBox
 
 class ProjectPolyglotQuerySettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {

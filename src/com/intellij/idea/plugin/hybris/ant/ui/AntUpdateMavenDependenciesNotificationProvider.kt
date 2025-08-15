@@ -17,9 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.ant.ui
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.util.isHybrisProject
 import com.intellij.lang.ant.config.AntBuildFileBase
 import com.intellij.lang.ant.config.AntConfiguration
 import com.intellij.lang.ant.config.execution.ExecutionHandler
@@ -33,6 +30,9 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.ui.EditorNotifications
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.isHybrisProject
 import java.util.function.Function
 import javax.swing.JComponent
 

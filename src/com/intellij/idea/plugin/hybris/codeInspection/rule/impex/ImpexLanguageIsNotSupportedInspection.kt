@@ -21,11 +21,11 @@ package com.intellij.idea.plugin.hybris.codeInspection.rule.impex
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.properties.PropertyService
 import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class ImpexLanguageIsNotSupportedInspection : LocalInspectionTool() {
 

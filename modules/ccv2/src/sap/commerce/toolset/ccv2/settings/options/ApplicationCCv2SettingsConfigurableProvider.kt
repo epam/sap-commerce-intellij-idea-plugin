@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.ccv2.settings.options
 
-import com.intellij.idea.plugin.hybris.common.equalsIgnoreOrder
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.ui.components.JBPasswordField
@@ -29,6 +28,7 @@ import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto
 import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionListPanel
+import sap.commerce.toolset.equalsIgnoreOrder
 
 class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {
 

@@ -17,12 +17,12 @@
  */
 package com.intellij.idea.plugin.hybris.system.cockpitng.psi.contributor
 
-import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.CngPatterns
 import com.intellij.idea.plugin.hybris.system.cockpitng.psi.provider.*
 import com.intellij.lang.properties.PropertiesReferenceProvider
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
+import sap.commerce.toolset.Plugin
 
 class CngReferenceContributor : PsiReferenceContributor() {
 

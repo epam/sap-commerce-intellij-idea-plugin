@@ -19,8 +19,8 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.execution.flexibleSearch;
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import org.apache.commons.lang3.StringUtils;
+import sap.commerce.toolset.HybrisConstants;
 
 import java.util.Collection;
 import java.util.LinkedList;

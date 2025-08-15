@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexSubTypeName
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexValueLine
 import com.intellij.idea.plugin.hybris.impex.psi.references.ImpexTSItemReference
@@ -30,6 +29,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisConstants
 import java.io.Serial
 
 abstract class ImpexSubTypeNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), ImpexSubTypeName {

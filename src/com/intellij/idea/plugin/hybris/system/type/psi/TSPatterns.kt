@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.system.type.psi
 
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.insideTagPattern
 import com.intellij.idea.plugin.hybris.common.utils.PsiXmlUtils.tagAttributeValuePattern
 import com.intellij.idea.plugin.hybris.system.type.model.*
@@ -26,6 +25,7 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
 import com.intellij.patterns.XmlPatterns
+import sap.commerce.toolset.HybrisConstants
 
 object TSPatterns {
 

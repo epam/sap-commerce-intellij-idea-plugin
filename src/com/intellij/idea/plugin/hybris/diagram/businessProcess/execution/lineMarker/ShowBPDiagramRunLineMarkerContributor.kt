@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,8 +18,6 @@
 package com.intellij.idea.plugin.hybris.diagram.businessProcess.execution.lineMarker
 
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.businessProcess.model.Process
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.psi.PsiElement
@@ -28,6 +26,8 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
 
 class ShowBPDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
 

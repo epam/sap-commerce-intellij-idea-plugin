@@ -17,8 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.system.type.meta.model
 
-import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.system.type.model.MapType
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 interface TSMetaMap : TSMetaClassifier<MapType> {
