@@ -18,12 +18,12 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus
 
 @Service
 class LoadedConfigurator {

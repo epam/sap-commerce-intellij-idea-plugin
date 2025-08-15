@@ -19,14 +19,14 @@
 package com.intellij.idea.plugin.hybris.settings
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.settings.state.ProjectSettingsState
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.util.text.VersionComparatorUtil
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptors.YModuleDescriptor
+import sap.commerce.toolset.project.facet.ExtensionDescriptor
 
 @State(
     name = "HybrisProjectSettings",

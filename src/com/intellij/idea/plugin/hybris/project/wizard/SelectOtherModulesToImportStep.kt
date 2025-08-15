@@ -21,11 +21,11 @@ package com.intellij.idea.plugin.hybris.project.wizard
 import com.intellij.ide.JavaUiBundle
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.ui.IdeBorderFactory
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus
+import sap.commerce.toolset.project.descriptors.impl.*
 import javax.swing.Icon
 
 class SelectOtherModulesToImportStep(context: WizardContext) : AbstractSelectModulesToImportStep(context) {

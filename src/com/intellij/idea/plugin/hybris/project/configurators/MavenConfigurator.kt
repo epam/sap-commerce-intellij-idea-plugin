@@ -18,14 +18,14 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.MavenModuleDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import org.jetbrains.idea.maven.buildtool.MavenSyncSpec
 import org.jetbrains.idea.maven.model.MavenConstants
 import org.jetbrains.idea.maven.project.MavenProjectsManager
 import org.jetbrains.idea.maven.wizards.MavenProjectAsyncBuilder
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptors.impl.MavenModuleDescriptor
 import java.io.File
 
 class MavenConfigurator {

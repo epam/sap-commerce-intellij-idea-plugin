@@ -21,7 +21,6 @@ import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.Extension
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
@@ -33,6 +32,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.*
 import com.intellij.util.xml.DomManager
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 
 class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
 

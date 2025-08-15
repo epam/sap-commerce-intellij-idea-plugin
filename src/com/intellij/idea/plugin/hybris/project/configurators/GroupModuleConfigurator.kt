@@ -18,8 +18,8 @@
  */
 package com.intellij.idea.plugin.hybris.project.configurators
 
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.openapi.progress.ProgressIndicator
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 
 interface GroupModuleConfigurator {
 

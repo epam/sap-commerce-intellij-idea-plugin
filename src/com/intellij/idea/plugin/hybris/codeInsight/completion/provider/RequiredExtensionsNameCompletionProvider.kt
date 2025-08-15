@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.extensioninfo.model.ExtensionInfo
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
+import sap.commerce.toolset.project.facet.ExtensionDescriptor
 
 class RequiredExtensionsNameCompletionProvider : ExtensionNameCompletionProvider() {
 

@@ -20,13 +20,14 @@ package com.intellij.idea.plugin.hybris.facet
 
 import com.intellij.facet.ui.FacetEditorContext
 import com.intellij.facet.ui.FacetEditorTab
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
-import com.intellij.idea.plugin.hybris.project.descriptors.SubModuleDescriptorType
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import com.intellij.ui.dsl.builder.text
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptors.SubModuleDescriptorType
+import sap.commerce.toolset.project.facet.ExtensionDescriptor
 
 class YFacetEditorTab(
     val state: ExtensionDescriptor,

@@ -26,7 +26,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings
 import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings
@@ -40,6 +39,7 @@ import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import sap.commerce.toolset.ccv2.CCv2Constants
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 import java.io.File
 
 open class HybrisProjectView(val project: Project) : TreeStructureProvider, DumbAware {

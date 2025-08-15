@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,12 +19,12 @@
 
 package com.intellij.idea.plugin.hybris.project;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
 
 import java.io.File;
 import java.util.List;

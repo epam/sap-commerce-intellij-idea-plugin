@@ -21,11 +21,11 @@ package com.intellij.idea.plugin.hybris.codeInsight.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.idea.plugin.hybris.system.extensioninfo.codeInsight.lookup.EiSLookupElementFactory
 import com.intellij.openapi.project.Project
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.project.facet.ExtensionDescriptor
 
 open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 

@@ -18,10 +18,10 @@
 
 package com.intellij.idea.plugin.hybris.settings.state
 
-import com.intellij.idea.plugin.hybris.facet.ExtensionDescriptor
 import com.intellij.idea.plugin.hybris.tools.remote.settings.state.RemoteConnectionSettingsState
 import com.intellij.util.xmlb.annotations.OptionTag
 import com.intellij.util.xmlb.annotations.Tag
+import sap.commerce.toolset.project.facet.ExtensionDescriptor
 
 @Tag("HybrisProjectSettings")
 data class ProjectSettingsState(

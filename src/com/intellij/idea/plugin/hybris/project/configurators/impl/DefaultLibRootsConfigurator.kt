@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,14 +20,7 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator
-import com.intellij.idea.plugin.hybris.project.descriptors.JavaLibraryDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
 import com.intellij.idea.plugin.hybris.project.descriptors.YModuleLibDescriptorUtil
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YOotbRegularModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.DependencyScope
@@ -38,6 +31,13 @@ import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import sap.commerce.toolset.project.descriptors.JavaLibraryDescriptor
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptors.YModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.PlatformModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.YCoreExtModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.YOotbRegularModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor
 import java.io.File
 
 class DefaultLibRootsConfigurator : LibRootsConfigurator {

@@ -20,13 +20,11 @@
 package com.intellij.idea.plugin.hybris.project;
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.common.services.VirtualFileSystemService;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons;
 import com.intellij.idea.plugin.hybris.notifications.Notifications;
 import com.intellij.idea.plugin.hybris.project.configurators.ConfiguratorFactory;
 import com.intellij.idea.plugin.hybris.project.configurators.PostImportConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.*;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.RootModuleDescriptor;
+import com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor;
 import com.intellij.idea.plugin.hybris.project.tasks.ImportProjectProgressModalWindow;
 import com.intellij.idea.plugin.hybris.project.tasks.SearchModulesRootsTaskModalWindow;
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings;
@@ -43,6 +41,12 @@ import com.intellij.packaging.artifacts.ModifiableArtifactModel;
 import kotlin.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus;
+import sap.commerce.toolset.project.descriptors.YModuleDescriptor;
+import sap.commerce.toolset.project.descriptors.impl.RootModuleDescriptor;
+import sap.commerce.toolset.project.vfs.VirtualFileSystemService;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.swing.*;
@@ -55,8 +59,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
-import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.MANDATORY;
-import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.UNUSED;
+import static sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus.MANDATORY;
+import static sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus.UNUSED;
 
 public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImportBuilder {
 

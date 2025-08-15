@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,8 +23,8 @@ import com.intellij.diagram.DiagramEdge
 import com.intellij.diagram.DiagramNode
 import com.intellij.idea.plugin.hybris.diagram.module.node.ModuleDepDiagramEdge
 import com.intellij.idea.plugin.hybris.diagram.module.node.graph.ModuleDepGraphNodeModule
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.openapi.editor.colors.ColorKey
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 
 class ModuleDepDiagramColorManager : DiagramColorManagerBase() {
 

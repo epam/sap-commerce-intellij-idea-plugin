@@ -19,8 +19,8 @@
 
 package com.intellij.idea.plugin.hybris.project.services;
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import org.jetbrains.annotations.NotNull;
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
 
 import java.io.File;
 

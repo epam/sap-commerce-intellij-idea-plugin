@@ -19,12 +19,12 @@
 package com.intellij.idea.plugin.hybris.project.configurators.impl
 
 import com.intellij.idea.plugin.hybris.project.configurators.JavadocSettingsConfigurator
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.CCv2ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCustomRegularModuleDescriptor
 import com.intellij.openapi.roots.JavaModuleExternalPaths
 import com.intellij.openapi.roots.ModifiableRootModel
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.CCv2ModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.ConfigModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.YCustomRegularModuleDescriptor
 
 class DefaultJavadocSettingsConfigurator : JavadocSettingsConfigurator {
     override fun configure(modifiableRootModel: ModifiableRootModel, moduleDescriptor: ModuleDescriptor) {

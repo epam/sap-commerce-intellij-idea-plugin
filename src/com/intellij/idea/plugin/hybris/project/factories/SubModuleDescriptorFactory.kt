@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.project.factories
 
 import com.intellij.idea.plugin.hybris.common.HybrisConstants
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import kotlinx.collections.immutable.toImmutableSet
+import sap.commerce.toolset.project.descriptors.YModuleDescriptor
+import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.*
 import java.io.File
 
 object SubModuleDescriptorFactory {

@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.spring
 
 import com.intellij.idea.plugin.hybris.facet.YFacet
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.idea.plugin.hybris.project.utils.Plugin
 import com.intellij.idea.plugin.hybris.system.spring.SimpleSpringService
 import com.intellij.openapi.module.Module
@@ -37,6 +36,7 @@ import com.intellij.spring.java.SpringJavaClassInfo
 import com.intellij.spring.model.SpringBeanPointer
 import com.intellij.spring.model.utils.SpringModelSearchers
 import com.intellij.spring.model.xml.beans.SpringBean
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 
 object SpringHelper {
 

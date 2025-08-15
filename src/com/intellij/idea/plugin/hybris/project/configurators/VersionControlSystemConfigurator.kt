@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
@@ -27,6 +26,7 @@ import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.openapi.vcs.VcsDirectoryMapping
 import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 
 @Service
 class VersionControlSystemConfigurator {

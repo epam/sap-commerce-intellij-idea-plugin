@@ -24,13 +24,13 @@ import com.intellij.compiler.impl.javaCompiler.BackendCompiler;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.HybrisConfiguratorCache;
 import com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.ConfigModuleDescriptor;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.PlatformModuleDescriptor;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.compiler.JavaCompilers;
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.descriptors.impl.ConfigModuleDescriptor;
+import sap.commerce.toolset.project.descriptors.impl.PlatformModuleDescriptor;
 
 import java.io.File;
 import java.util.ArrayList;

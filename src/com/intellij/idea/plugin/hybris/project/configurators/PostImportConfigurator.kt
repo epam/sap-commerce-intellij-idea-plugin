@@ -20,8 +20,6 @@ package com.intellij.idea.plugin.hybris.project.configurators
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.notifications.Notifications
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
@@ -29,6 +27,8 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.concurrency.AppExecutorUtil
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 
 @Service(Service.Level.PROJECT)
 class PostImportConfigurator(val project: Project) {

@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,21 +22,21 @@ package com.intellij.idea.plugin.hybris.project.wizard;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
 import com.intellij.idea.plugin.hybris.project.AbstractHybrisProjectImportBuilder;
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ui.ImageUtil;
 import org.jetbrains.annotations.NotNull;
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
-import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.MANDATORY;
-import static com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus.UNUSED;
+import static sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus.MANDATORY;
+import static sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus.UNUSED;
 
 public abstract class AbstractSelectModulesToImportStep extends SelectImportedProjectsStep<ModuleDescriptor> {
 

@@ -1,6 +1,7 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,11 +20,13 @@
 package com.intellij.idea.plugin.hybris.project.tasks;
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils;
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.tasks.DirectoriesScannerErrorsProcessor;
+import sap.commerce.toolset.project.tasks.DirectoriesScannerProgressIndicatorUpdaterProcessor;
 
 import java.io.File;
 

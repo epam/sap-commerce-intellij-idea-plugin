@@ -21,15 +21,15 @@ package com.intellij.idea.plugin.hybris.project.wizard
 import com.intellij.ide.util.ElementsChooser
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorImportStatus
-import com.intellij.idea.plugin.hybris.project.descriptors.YModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.YSubModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.*
 import com.intellij.idea.plugin.hybris.settings.ProjectSettings
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.ui.table.JBTable
 import org.apache.commons.lang3.BooleanUtils
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus
+import sap.commerce.toolset.project.descriptors.YModuleDescriptor
+import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.*
 
 class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectModulesToImportStep(wizard), OpenSupport, RefreshSupport {
 

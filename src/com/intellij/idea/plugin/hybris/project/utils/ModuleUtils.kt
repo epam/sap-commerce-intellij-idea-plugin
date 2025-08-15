@@ -19,9 +19,9 @@
 package com.intellij.idea.plugin.hybris.project.utils
 
 import com.intellij.idea.plugin.hybris.facet.YFacetConstants
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptorType
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.psi.PsiElement
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 
 object ModuleUtils {
 

@@ -23,7 +23,6 @@ import com.google.common.collect.Sets;
 import com.intellij.execution.wsl.WSLDistribution;
 import com.intellij.execution.wsl.WslDistributionManager;
 import com.intellij.idea.plugin.hybris.common.HybrisConstants;
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.*;
 import com.intellij.idea.plugin.hybris.project.exceptions.HybrisConfigurationException;
 import com.intellij.idea.plugin.hybris.project.factories.ModuleDescriptorFactory;
 import com.intellij.idea.plugin.hybris.project.services.HybrisProjectService;
@@ -31,7 +30,6 @@ import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Ext
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.Hybrisconfig;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ObjectFactory;
 import com.intellij.idea.plugin.hybris.project.settings.jaxb.localextensions.ScanType;
-import com.intellij.idea.plugin.hybris.project.tasks.TaskProgressProcessor;
 import com.intellij.idea.plugin.hybris.project.utils.FileUtils;
 import com.intellij.idea.plugin.hybris.settings.ApplicationSettings;
 import com.intellij.idea.plugin.hybris.settings.WorkspaceSettings;
@@ -55,6 +53,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.ccv2.CCv2Constants;
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
+import sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus;
+import sap.commerce.toolset.project.descriptors.YModuleDescriptor;
+import sap.commerce.toolset.project.descriptors.impl.*;
+import sap.commerce.toolset.project.tasks.TaskProgressProcessor;
 
 import javax.annotation.concurrent.GuardedBy;
 import java.io.File;
@@ -75,7 +79,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message;
-import static com.intellij.idea.plugin.hybris.project.descriptors.DefaultHybrisProjectDescriptor.DIRECTORY_TYPE.*;
 import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
 
 public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
@@ -559,14 +562,14 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
     ) throws InterruptedException, IOException {
         final Map<String, File> moduleRootDirectories = new HashMap<>();
 
-        moduleRootMap.get(HYBRIS).forEach(file -> addIfNotExists(moduleRootDirectories, file));
+        moduleRootMap.get(DIRECTORY_TYPE.HYBRIS).forEach(file -> addIfNotExists(moduleRootDirectories, file));
 
         if (scanThroughExternalModule) {
             LOG.info("Scanning for higher priority modules");
-            for (final File nonHybrisDir : moduleRootMap.get(NON_HYBRIS)) {
+            for (final File nonHybrisDir : moduleRootMap.get(DIRECTORY_TYPE.NON_HYBRIS)) {
                 final Map<DIRECTORY_TYPE, Set<File>> nonHybrisModuleRootMap = newModuleRootMap();
                 scanForSubdirectories(nonHybrisModuleRootMap, excludedFromScanning, true, nonHybrisDir.toPath(), progressListenerProcessor);
-                final Set<File> hybrisModuleSet = nonHybrisModuleRootMap.get(HYBRIS);
+                final Set<File> hybrisModuleSet = nonHybrisModuleRootMap.get(DIRECTORY_TYPE.HYBRIS);
                 if (hybrisModuleSet.isEmpty()) {
                     LOG.info("Confirmed module " + nonHybrisDir);
                     addIfNotExists(moduleRootDirectories, nonHybrisDir);
@@ -576,10 +579,10 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 }
             }
         } else {
-            moduleRootMap.get(NON_HYBRIS).forEach(file -> addIfNotExists(moduleRootDirectories, file));
+            moduleRootMap.get(DIRECTORY_TYPE.NON_HYBRIS).forEach(file -> addIfNotExists(moduleRootDirectories, file));
         }
 
-        moduleRootMap.get(CCV2).forEach(file -> addIfNotExists(moduleRootDirectories, file));
+        moduleRootMap.get(DIRECTORY_TYPE.CCV2).forEach(file -> addIfNotExists(moduleRootDirectories, file));
 
         return Sets.newHashSet(moduleRootDirectories.values());
     }
@@ -617,9 +620,9 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
     private Map<DIRECTORY_TYPE, Set<File>> newModuleRootMap() {
         return Map.of(
-            HYBRIS, new HashSet<>(),
-            NON_HYBRIS, new HashSet<>(),
-            CCV2, new HashSet<>()
+            DIRECTORY_TYPE.HYBRIS, new HashSet<>(),
+            DIRECTORY_TYPE.NON_HYBRIS, new HashSet<>(),
+            DIRECTORY_TYPE.CCV2, new HashSet<>()
         );
     }
 
@@ -678,12 +681,12 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         if (hybrisProjectService.isHybrisModule(rootProjectDirectory)) {
             LOG.info("Detected hybris module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
+            moduleRootMap.get(DIRECTORY_TYPE.HYBRIS).add(rootProjectDirectory);
             return;
         }
         if (hybrisProjectService.isConfigModule(rootProjectDirectory)) {
             LOG.info("Detected config module " + rootProjectDirectory.getAbsolutePath());
-            moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
+            moduleRootMap.get(DIRECTORY_TYPE.HYBRIS).add(rootProjectDirectory);
             return;
         }
 
@@ -693,7 +696,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 && (hybrisProjectService.isGradleModule(rootProjectDirectory) || hybrisProjectService.isGradleKtsModule(rootProjectDirectory))
                 && !hybrisProjectService.isCCv2Module(rootProjectDirectory)) {
                 LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());
-                moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                moduleRootMap.get(DIRECTORY_TYPE.NON_HYBRIS).add(rootProjectDirectory);
 //                return;
             }
 
@@ -702,24 +705,24 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                 && !hybrisProjectService.isCCv2Module(rootProjectDirectory)
             ) {
                 LOG.info("Detected maven module " + rootProjectDirectory.getAbsolutePath());
-                moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                moduleRootMap.get(DIRECTORY_TYPE.NON_HYBRIS).add(rootProjectDirectory);
 //                return;
             }
 
             if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
                 LOG.info("Detected platform module " + rootProjectDirectory.getAbsolutePath());
-                moduleRootMap.get(HYBRIS).add(rootProjectDirectory);
+                moduleRootMap.get(DIRECTORY_TYPE.HYBRIS).add(rootProjectDirectory);
             } else if (hybrisProjectService.isEclipseModule(rootProjectDirectory)
                 && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)
             ) {
                 LOG.info("Detected eclipse module " + rootProjectDirectory.getAbsolutePath());
-                moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                moduleRootMap.get(DIRECTORY_TYPE.NON_HYBRIS).add(rootProjectDirectory);
 //                return;
             }
 
             if (hybrisProjectService.isCCv2Module(rootProjectDirectory)) {
                 LOG.info("Detected CCv2 module " + rootProjectDirectory.getAbsolutePath());
-                moduleRootMap.get(CCV2).add(rootProjectDirectory);
+                moduleRootMap.get(DIRECTORY_TYPE.CCV2).add(rootProjectDirectory);
                 final var name = rootProjectDirectory.getName();
                 if (name.endsWith(CCv2Constants.DATAHUB_NAME)) {
                     // faster import: no need to process sub-folders of the CCv2 js-storefront and datahub directories
@@ -729,7 +732,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
             if (hybrisProjectService.isAngularModule(rootProjectDirectory)) {
                 LOG.info("Detected Angular module " + rootProjectDirectory.getAbsolutePath());
-                moduleRootMap.get(NON_HYBRIS).add(rootProjectDirectory);
+                moduleRootMap.get(DIRECTORY_TYPE.NON_HYBRIS).add(rootProjectDirectory);
                 // do not go deeper
                 return;
             }

@@ -23,11 +23,6 @@ import com.intellij.idea.plugin.hybris.common.HybrisConstants
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils.message
 import com.intellij.idea.plugin.hybris.common.yExtensionName
 import com.intellij.idea.plugin.hybris.project.configurators.SpringConfigurator
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YCoreExtModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YRegularModuleDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.impl.YWebSubModuleDescriptor
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
@@ -40,6 +35,11 @@ import com.intellij.spring.settings.SpringGeneralSettings
 import org.apache.commons.lang3.StringUtils
 import org.jdom.Element
 import org.jdom.JDOMException
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.YCoreExtModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.YRegularModuleDescriptor
+import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException

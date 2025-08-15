@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.project
 
-import com.intellij.idea.plugin.hybris.project.descriptors.HybrisProjectDescriptor
-import com.intellij.idea.plugin.hybris.project.descriptors.ModuleDescriptor
 import com.intellij.openapi.util.Key
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 
 object ProjectConstants {
     @JvmStatic
