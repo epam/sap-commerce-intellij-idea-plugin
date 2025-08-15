@@ -19,7 +19,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.http;
 
-import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -55,6 +54,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import sap.commerce.toolset.remote.RemoteConstants;
 import sap.commerce.toolset.remote.execution.ReplicaContext;
+import sap.commerce.toolset.remote.settings.RemoteConnectionListener;
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState;
 
 import javax.net.ssl.HttpsURLConnection;

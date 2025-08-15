@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.settings
+package sap.commerce.toolset.remote.settings
 
 import com.intellij.util.messages.Topic
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState

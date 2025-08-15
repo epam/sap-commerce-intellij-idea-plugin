@@ -24,7 +24,6 @@ import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecu
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.logging.LoggingExecutionContext
-import com.intellij.idea.plugin.hybris.tools.remote.settings.RemoteConnectionListener
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
@@ -39,6 +38,7 @@ import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.LogLevel
 import sap.commerce.toolset.logging.execution.LoggingExecutionResult
 import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.settings.RemoteConnectionListener
 import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.util.*
