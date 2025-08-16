@@ -232,28 +232,9 @@ dependencies {
 
         pluginVerifier()
 
-        pluginComposedModule(implementation(project(":shared")))
-        pluginComposedModule(implementation(project(":remote-core")))
-        pluginComposedModule(implementation(project(":remote-console")))
-        pluginComposedModule(implementation(project(":logging-remote")))
-        pluginComposedModule(implementation(project(":acl-core")))
-        pluginComposedModule(implementation(project(":impex-core")))
-        pluginComposedModule(implementation(project(":impex-remote")))
-        pluginComposedModule(implementation(project(":impex-monitoring")))
-        pluginComposedModule(implementation(project(":flexibleSearch-core")))
-        pluginComposedModule(implementation(project(":flexibleSearch-remote")))
-        pluginComposedModule(implementation(project(":polyglotQuery-core")))
-        pluginComposedModule(implementation(project(":polyglotQuery-remote")))
-        pluginComposedModule(implementation(project(":groovy-remote")))
-        pluginComposedModule(implementation(project(":solr-remote")))
-        pluginComposedModule(implementation(project(":localextensions")))
-        pluginComposedModule(implementation(project(":extensioninfo")))
-        pluginComposedModule(implementation(project(":project-core")))
-        pluginComposedModule(implementation(project(":project-import")))
-        pluginComposedModule(implementation(project(":ui")))
-        pluginComposedModule(implementation(project(":terminal")))
-        pluginComposedModule(implementation(project(":ccv2")))
-        pluginComposedModule(implementation(project(":ant")))
+        rootProject.childProjects.keys.forEach {
+            pluginComposedModule(implementation(project(it)))
+        }
 
         bundledModules(
             "intellij.grid.impl"

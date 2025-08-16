@@ -37,33 +37,14 @@ dependencyResolutionManagement {
     }
 }
 
-include(
-    "modules/shared",
-    "modules/extensioninfo",
-    "modules/localextensions",
-    "modules/remote/core",
-    "modules/remote/console",
-    "modules/logging/remote",
-    "modules/groovy/remote",
-    "modules/solr/remote",
-    "modules/acl/core",
-    "modules/impex/core",
-    "modules/impex/remote",
-    "modules/impex/monitoring",
-    "modules/flexibleSearch/core",
-    "modules/flexibleSearch/remote",
-    "modules/polyglotQuery/core",
-    "modules/polyglotQuery/remote",
-    "modules/project/core",
-    "modules/project/import",
-    "modules/terminal",
-    "modules/ccv2",
-    "modules/ant",
-    "modules/ui",
-)
-
-rootProject.children.forEach {
-    it.name = it.name
-        .replaceFirst("modules/", "")
-        .replace("/", "-")
-}
+// auto-import sub-mobules
+File(rootDir, "modules").walk()
+    .maxDepth(4)
+    .filter { it.isFile && it.name == "build.gradle.kts" }
+    .map { it.parentFile.relativeTo(rootDir).path }
+    .forEach { modulePath ->
+        include(modulePath)
+        project(":$modulePath").name = modulePath
+            .replaceFirst("modules/", "")
+            .replace(File.separatorChar, '-')
+    }
