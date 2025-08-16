@@ -71,6 +71,7 @@
     <depends config-file="sap.commerce.toolset-ccv2-core.xml"/>
     <depends config-file="sap.commerce.toolset-ccv2-ui.xml"/>
     <depends config-file="sap.commerce.toolset-logging-ui.xml"/>
+    <depends config-file="sap.commerce.toolset-meta-type-system.xml"/>
 
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-xdebugger.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>

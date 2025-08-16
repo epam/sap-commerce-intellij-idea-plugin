@@ -18,29 +18,6 @@
 
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-
-        <dom.fileMetaData rootTagName="items" stubVersion="23"
-                          implementation="sap.commerce.toolset.system.type.file.TSDomFileDescription"/>
-
-        <dom.fileMetaData rootTagName="model" stubVersion="2"
-                          implementation="sap.commerce.toolset.system.type.file.TSDeploymentModelDomFileDescription"/>
-
-        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.system.type.lang.folding.ItemsXmlFoldingBuilder"/>
-        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.system.type.lang.folding.DeploymentModelFoldingBuilder"/>
-
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlItemAlternativeDeclarationsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlItemSiblingsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
-
-        <completion.contributor language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionContributor"/>
-
-        <xmlStructureViewBuilderProvider order="first" implementation="sap.commerce.toolset.system.type.structureView.TSXmlStructureViewBuilderProvider"/>
-
-        <projectConfigurable id="hybris.project.ts.settings" parentId="hybris.project.settings"
-                             nonDefaultProject="true" dynamic="true"
-                             bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
-                             order="after hybris.project.integrations.settings"
-                             provider="sap.commerce.toolset.system.type.settings.options.ProjectTypeSystemConfigurableProvider"/>
     </extensions>
 
     <actions>
