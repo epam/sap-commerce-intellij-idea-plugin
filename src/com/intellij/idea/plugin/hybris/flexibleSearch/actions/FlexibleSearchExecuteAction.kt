@@ -20,11 +20,9 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.ide.ActivityTracker
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.FlexibleSearchSplitEditor
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import com.intellij.idea.plugin.hybris.flexibleSearch.editor.flexibleSearchSplitEditor
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
@@ -32,12 +30,14 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
+import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
 
-class FlexibleSearchExecuteAction : ExecuteStatementAction<HybrisFlexibleSearchConsole, FlexibleSearchSplitEditor>(
+class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole, FlexibleSearchSplitEditor>(
     FlexibleSearchLanguage,
-    HybrisFlexibleSearchConsole::class,
+    FlexibleSearchConsole::class,
     message("hybris.fxs.actions.execute_query"),
     message("hybris.fxs.actions.execute_query.description"),
     HybrisIcons.Console.Actions.EXECUTE

@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -29,6 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionContext
+import sap.commerce.toolset.remote.console.HybrisConsole
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout

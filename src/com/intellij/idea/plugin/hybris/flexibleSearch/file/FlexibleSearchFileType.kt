@@ -18,9 +18,9 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.file
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.openapi.fileTypes.LanguageFileType
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import javax.swing.Icon
 
 object FlexibleSearchFileType : LanguageFileType(FlexibleSearchLanguage) {

@@ -26,9 +26,11 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionClient
 import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
 import sap.commerce.toolset.impex.monitoring.remote.execution.ImpExMonitorExecutionClient
+import sap.commerce.toolset.impex.remote.console.ImpExConsole
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
 import sap.commerce.toolset.solr.remote.execution.SolrExecutionClient
 
@@ -51,14 +53,14 @@ class ConsoleExecuteStatementAction : AnAction() {
                 resultCallback = { coroutineScope, result -> console.print(result) }
             )
 
-            is HybrisImpexConsole -> ImpExExecutionClient.getInstance(project).execute(
+            is ImpExConsole -> ImpExExecutionClient.getInstance(project).execute(
                 context = console.context,
                 beforeCallback = { coroutineScope -> console.beforeExecution() },
                 resultCallback = { coroutineScope, result -> console.print(result) }
             )
 
             is HybrisPolyglotQueryConsole,
-            is HybrisFlexibleSearchConsole,
+            is FlexibleSearchConsole,
             is HybrisSQLConsole -> FlexibleSearchExecutionClient.getInstance(project).execute(
                 context = console.context,
                 beforeCallback = { coroutineScope -> console.beforeExecution() },

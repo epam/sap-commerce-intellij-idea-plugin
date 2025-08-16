@@ -22,11 +22,11 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.CompletionUtilCore
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.system.type.codeInsight.lookup.TSLookupElementFactory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.project.PropertyService
 
 class ImpexMacrosConfigCompletionProvider : CompletionProvider<CompletionParameters>() {

@@ -19,10 +19,10 @@
 package com.intellij.idea.plugin.hybris.acl.formatting
 
 import com.intellij.formatting.SpacingBuilder
-import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.idea.plugin.hybris.acl.psi.AclTypes
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
+import sap.commerce.toolset.acl.AclLanguage
 
 class AclSpacingBuilder(
     settings: CodeStyleSettings,

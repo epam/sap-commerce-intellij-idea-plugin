@@ -35,6 +35,7 @@ sourceSets {
 
 dependencies {
     implementation(libs.jsoup)
+    implementation(project(":impex-core"))
     implementation(project(":shared"))
     implementation(project(":remote-core"))
 

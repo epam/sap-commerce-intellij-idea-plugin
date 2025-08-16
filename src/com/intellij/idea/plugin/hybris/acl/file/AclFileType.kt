@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.acl.file
 
-import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.openapi.fileTypes.LanguageFileType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.acl.AclLanguage
 import javax.swing.Icon
 
 object AclFileType : LanguageFileType(AclLanguage) {

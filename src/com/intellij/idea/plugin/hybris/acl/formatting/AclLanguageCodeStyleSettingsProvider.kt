@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.acl.formatting
 
-import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
+import sap.commerce.toolset.acl.AclLanguage
 
 class AclLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 

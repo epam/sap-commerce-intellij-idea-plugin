@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.util.text.VersionComparatorUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
@@ -35,7 +36,7 @@ import sap.commerce.toolset.project.settings.state.ProjectSettingsState
     ]
 )
 @Service(Service.Level.PROJECT)
-class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsState>(ProjectSettingsState()) {
+class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsState>(ProjectSettingsState()), ModificationTracker {
 
     var customDirectory
         get() = state.customDirectory
@@ -215,6 +216,8 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
     private fun getCloudExtensions() = HybrisConstants.CCV2_COMMERCE_CLOUD_EXTENSIONS
         .map { ExtensionDescriptor(name = it, type = ModuleDescriptorType.CCV2) }
         .associateBy { it.name }
+
+    override fun getModificationCount() = stateModificationCount
 
     companion object {
         @JvmStatic

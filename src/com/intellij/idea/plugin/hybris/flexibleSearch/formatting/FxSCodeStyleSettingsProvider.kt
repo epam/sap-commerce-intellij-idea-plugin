@@ -20,9 +20,9 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.formatting
 
 import com.intellij.application.options.CodeStyleAbstractConfigurable
 import com.intellij.application.options.TabbedLanguageCodeStylePanel
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 
 class FxSCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
 

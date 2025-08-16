@@ -18,13 +18,13 @@
  */
 package com.intellij.idea.plugin.hybris.impex.file
 
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.openapi.fileTypes.LanguageFileType
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.ImpExLanguage
 import javax.swing.Icon
 
-object ImpexFileType : LanguageFileType(ImpexLanguage) {
+object ImpexFileType : LanguageFileType(ImpExLanguage) {
 
     override fun getName() = ImpExConstants.IMPEX
     override fun getDescription() = "ImpEx language file"

@@ -20,6 +20,7 @@ package sap.commerce.toolset.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import sap.commerce.toolset.settings.state.WorkspaceSettingsState
 
 @State(
@@ -29,13 +30,15 @@ import sap.commerce.toolset.settings.state.WorkspaceSettingsState
     ]
 )
 @Service(Service.Level.PROJECT)
-class WorkspaceSettings(private val project: Project) : SerializablePersistentStateComponent<WorkspaceSettingsState>(WorkspaceSettingsState()) {
+class WorkspaceSettings : SerializablePersistentStateComponent<WorkspaceSettingsState>(WorkspaceSettingsState()), ModificationTracker {
 
     var hybrisProject
         get() = state.hybrisProject
         set(value) {
             updateState { it.copy(hybrisProject = value) }
         }
+
+    override fun getModificationCount() = stateModificationCount
 
     companion object {
         @JvmStatic

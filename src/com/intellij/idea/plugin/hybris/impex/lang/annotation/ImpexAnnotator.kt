@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.impex.lang.annotation
 
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpExSyntaxHighlighter
 import com.intellij.idea.plugin.hybris.impex.highlighting.ImpexHighlighterColors
@@ -31,6 +30,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.impex.ImpExConstants
 
 class ImpexAnnotator : AbstractAnnotator(ImpExSyntaxHighlighter.getInstance()) {
 

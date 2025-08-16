@@ -26,7 +26,6 @@ import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage;
 import com.intellij.idea.plugin.hybris.project.configurators.*;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
@@ -66,6 +65,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
+import sap.commerce.toolset.impex.ImpExLanguage;
 import sap.commerce.toolset.project.descriptors.*;
 import sap.commerce.toolset.project.descriptors.impl.*;
 import sap.commerce.toolset.project.settings.ProjectSettings;
@@ -153,7 +153,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
 
         this.saveImportedSettings(projectSettings, appSettings, projectSettings);
-        this.disableWrapOnType(ImpexLanguage.INSTANCE);
+        this.disableWrapOnType(ImpExLanguage.INSTANCE);
 
         PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
 

@@ -23,6 +23,7 @@ import com.intellij.conversion.ConverterProvider
 import com.intellij.conversion.ProjectConverter
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.util.NlsContexts
 import org.jetbrains.annotations.Nls
 import sap.commerce.toolset.HybrisConstants
@@ -34,7 +35,7 @@ import sap.commerce.toolset.ccv2.settings.state.SUser
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service(Service.Level.PROJECT)
-class CCv2DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()) {
+class CCv2DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()), ModificationTracker {
 
     var activeCCv2SubscriptionID
         get() = state.activeCCv2SubscriptionID
@@ -56,6 +57,8 @@ class CCv2DeveloperSettings : SerializablePersistentStateComponent<DeveloperSett
             .also {
                 it.id = id
             }
+
+    override fun getModificationCount() = stateModificationCount
 
     class MyConverterProvider : ConverterProvider() {
         override fun getConversionDescription(): @NlsContexts.DialogMessage String {

@@ -19,13 +19,13 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.references
 
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
+import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.project.PropertyService
 
 class ImpexPropertyReference(owner: ImpexMacroUsageDec) : PsiReferenceBase.Poly<ImpexMacroUsageDec>(owner, false) {

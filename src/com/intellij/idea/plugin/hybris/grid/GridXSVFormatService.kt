@@ -20,14 +20,14 @@ package com.intellij.idea.plugin.hybris.grid
 
 import com.intellij.database.csv.CsvFormat
 import com.intellij.database.csv.CsvRecordFormat
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.lang.Language
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
+import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.settings.DeveloperSettings
 import java.util.*
 
@@ -41,7 +41,7 @@ class GridXSVFormatService(private val project: Project) : Disposable {
     override fun dispose() = impExFormats.clear()
 
     fun getFormat(language: Language): CsvFormat = when (language) {
-        is ImpexLanguage -> getImpExFormat()
+        is ImpExLanguage -> getImpExFormat()
         is FlexibleSearchLanguage -> getFlexibleSearchFormat()
         is PolyglotQueryLanguage -> getFlexibleSearchFormat()
         else -> throw IllegalArgumentException("Unsupported language $language")

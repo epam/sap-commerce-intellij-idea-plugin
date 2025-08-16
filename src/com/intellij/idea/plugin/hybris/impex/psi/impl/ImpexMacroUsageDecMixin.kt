@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement
@@ -33,6 +32,7 @@ import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
+import sap.commerce.toolset.impex.ImpExConstants
 import java.io.Serial
 
 abstract class ImpexMacroUsageDecMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), ImpexMacroUsageDec, ImpexPsiNamedElement {

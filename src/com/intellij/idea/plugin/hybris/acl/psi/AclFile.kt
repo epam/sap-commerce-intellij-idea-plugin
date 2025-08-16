@@ -18,9 +18,9 @@
 package com.intellij.idea.plugin.hybris.acl.psi
 
 import com.intellij.extapi.psi.PsiFileBase
-import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.idea.plugin.hybris.acl.file.AclFileType
 import com.intellij.psi.FileViewProvider
+import sap.commerce.toolset.acl.AclLanguage
 import java.io.Serial
 
 class AclFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, AclLanguage) {

@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.completion
 import com.intellij.codeInsight.completion.*
 import com.intellij.idea.plugin.hybris.codeInsight.patterns.CaseInsensitiveContainsPatternCondition
 import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchConstants
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSHybrisColumnCompletionProvider
 import com.intellij.idea.plugin.hybris.flexibleSearch.completion.provider.FxSKeywordsCompletionProvider
@@ -38,6 +37,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.TokenType
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 
 class FlexibleSearchCompletionContributor : CompletionContributor() {
 

@@ -36,7 +36,9 @@ sourceSets {
 dependencies {
     implementation(libs.jsoup)
     implementation(project(":shared"))
+    implementation(project(":impex-core"))
     implementation(project(":remote-core"))
+    implementation(project(":remote-console"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

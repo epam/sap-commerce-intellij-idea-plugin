@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.impex.remote.execution
 
+import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.remote.execution.ExecutionContext
 import sap.commerce.toolset.remote.http.HybrisHacHttpClient
@@ -117,6 +118,7 @@ data class ImpExExecutionContext(
     }
 
     companion object {
+        val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.impex.execution.settings")
         val DEFAULT_SETTINGS by lazy {
             Settings(
                 validationMode = ValidationMode.IMPORT_STRICT,

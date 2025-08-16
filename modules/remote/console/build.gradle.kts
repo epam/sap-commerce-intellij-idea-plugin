@@ -15,16 +15,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.acl
 
-import com.intellij.lang.Language
-import java.io.Serial
+fun properties(key: String) = providers.gradleProperty(key)
 
-object AclLanguage : Language("ACL") {
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-    private fun readResolve(): Any = AclLanguage
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-    @Serial
-    private const val serialVersionUID: Long = -8859665962664648066L
+dependencies {
+    implementation(libs.jsoup)
+    implementation(project(":shared"))
+    implementation(project(":project-core"))
+    implementation(project(":remote-core"))
 
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+        bundledPlugins(
+            "org.jetbrains.kotlin",
+        )
+    }
 }

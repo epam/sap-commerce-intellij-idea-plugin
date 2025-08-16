@@ -17,8 +17,8 @@
  */
 package com.intellij.idea.plugin.hybris.acl.psi
 
-import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.psi.tree.IElementType
+import sap.commerce.toolset.acl.AclLanguage
 import java.util.regex.Pattern
 
 class AclTokenType(debugName: String) : IElementType(debugName, AclLanguage) {

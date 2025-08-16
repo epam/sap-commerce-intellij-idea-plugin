@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
 import com.intellij.idea.plugin.hybris.actions.HybrisActionPlaces
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.idea.plugin.hybris.tools.remote.console.impl.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
@@ -34,6 +33,9 @@ import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
+import sap.commerce.toolset.impex.remote.console.ImpExConsole
+import sap.commerce.toolset.remote.console.HybrisConsole
 import sap.commerce.toolset.remote.execution.ExecutionContext
 import java.awt.BorderLayout
 import java.io.Serial
@@ -52,9 +54,9 @@ class HybrisConsolesView(project: Project) : SimpleToolWindowPanel(true), Dispos
     private val actionToolbar: ActionToolbar
     private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
     private val consoles = listOfNotNull(
-        HybrisImpexConsole.getInstance(project),
+        ImpExConsole.getInstance(project),
         Plugin.GROOVY.ifActive { HybrisGroovyConsole.getInstance(project) },
-        HybrisFlexibleSearchConsole.getInstance(project),
+        FlexibleSearchConsole.getInstance(project),
         HybrisPolyglotQueryConsole.getInstance(project),
         HybrisSQLConsole.getInstance(project),
         HybrisSolrSearchConsole.getInstance(project),

@@ -18,11 +18,11 @@
  */
 package com.intellij.idea.plugin.hybris.flexibleSearch.formatting
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 
 class FxSLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 

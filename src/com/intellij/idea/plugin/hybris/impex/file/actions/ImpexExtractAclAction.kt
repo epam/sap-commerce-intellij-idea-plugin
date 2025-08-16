@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.impex.file.actions
 
-import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.idea.plugin.hybris.acl.file.AclFileType
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexUserRights
@@ -38,6 +37,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.acl.AclLanguage
 
 class ImpexExtractAclAction : AnAction() {
 

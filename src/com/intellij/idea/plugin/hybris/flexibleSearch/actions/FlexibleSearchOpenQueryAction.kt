@@ -19,12 +19,12 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.actions
 
 import com.intellij.idea.plugin.hybris.actions.OpenInHybrisConsoleService
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
 
 class FlexibleSearchOpenQueryAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -49,7 +49,7 @@ class FlexibleSearchOpenQueryAction : AnAction() {
             ?: return
 
         OpenInHybrisConsoleService.getInstance(project)
-            .openInConsole(HybrisFlexibleSearchConsole::class, content)
+            .openInConsole(FlexibleSearchConsole::class, content)
     }
 
 }

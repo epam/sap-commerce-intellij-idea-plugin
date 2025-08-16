@@ -19,6 +19,7 @@
 package sap.commerce.toolset.settings
 
 import com.intellij.openapi.components.*
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.util.application
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.HybrisConstants
@@ -30,7 +31,7 @@ import sap.commerce.toolset.settings.state.ApplicationSettingsState
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service
-class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSettingsState>(ApplicationSettingsState()) {
+class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSettingsState>(ApplicationSettingsState()), ModificationTracker {
 
     var groupModules: Boolean
         get() = state.groupModules
@@ -157,6 +158,8 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         set(value) {
             updateState { it.copy(excludedFromIndexList = value) }
         }
+
+    override fun getModificationCount() = stateModificationCount
 
     companion object {
         @JvmStatic

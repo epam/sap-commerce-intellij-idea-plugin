@@ -24,6 +24,7 @@ import com.intellij.openapi.components.*
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
+import com.intellij.openapi.util.ModificationTracker
 import com.intellij.util.application
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.HybrisConstants
@@ -39,7 +40,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_INTEGRATION_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service
-class CCv2ProjectSettings : SerializablePersistentStateComponent<ApplicationSettingsState>(ApplicationSettingsState()) {
+class CCv2ProjectSettings : SerializablePersistentStateComponent<ApplicationSettingsState>(ApplicationSettingsState()), ModificationTracker {
 
     var ccv2ReadTimeout: Int
         get() = state.ccv2ReadTimeout
@@ -100,6 +101,8 @@ class CCv2ProjectSettings : SerializablePersistentStateComponent<ApplicationSett
 
     private fun getCredentials(subscriptionUUID: String?) = if (subscriptionUUID == null) CredentialAttributes(CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
     else CredentialAttributes(subscriptionUUID, CCv2Constants.SECURE_STORAGE_SERVICE_NAME_SAP_CX_CCV2_TOKEN)
+
+    override fun getModificationCount() = stateModificationCount
 
     companion object {
         @JvmStatic

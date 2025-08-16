@@ -19,12 +19,12 @@ package com.intellij.idea.plugin.hybris.acl.file.actions
 
 import com.intellij.idea.plugin.hybris.acl.file.AclFileType
 import com.intellij.idea.plugin.hybris.actions.OpenInHybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.remote.console.ImpExConsole
 
 class AclOpenQueryAction : AnAction() {
 
@@ -50,7 +50,7 @@ class AclOpenQueryAction : AnAction() {
             ?: return
 
         OpenInHybrisConsoleService.getInstance(project)
-            .openInConsole(HybrisImpexConsole::class, content)
+            .openInConsole(ImpExConsole::class, content)
     }
 
 }

@@ -20,13 +20,13 @@ package com.intellij.idea.plugin.hybris.tools.remote.console.actions
 
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.remote.console.ImpExConsole
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
 
@@ -62,7 +62,7 @@ class ConsoleImpExValidateAction : AnAction() {
         val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
 
-        e.presentation.isVisible = activeConsole is HybrisImpexConsole
+        e.presentation.isVisible = activeConsole is ImpExConsole
         e.presentation.isEnabled = activeConsole.canExecute() && (lookup == null || !lookup.isCompletion)
         e.presentation.disabledIcon = AnimatedIcon.Default.INSTANCE
         e.presentation.text = "Validate ImpEx"

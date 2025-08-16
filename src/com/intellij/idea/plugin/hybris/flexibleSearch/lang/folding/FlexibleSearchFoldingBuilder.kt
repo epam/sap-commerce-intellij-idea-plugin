@@ -40,7 +40,8 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private val filter = FlexibleSearchFoldingBlocksFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingSettings = DeveloperSettings.getInstance(root.project).flexibleSearchSettings.folding
+        val developerSettings = DeveloperSettings.getInstance(root.project)
+        val foldingSettings = developerSettings.flexibleSearchSettings.folding
         if (!foldingSettings.enabled) return emptyArray()
 
         return CachedValuesManager.getCachedValue(root) {
@@ -57,7 +58,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 results,
                 root.containingFile,
                 ProjectRootModificationTracker.getInstance(root.project),
-                foldingSettings
+                developerSettings
             )
         }
     }

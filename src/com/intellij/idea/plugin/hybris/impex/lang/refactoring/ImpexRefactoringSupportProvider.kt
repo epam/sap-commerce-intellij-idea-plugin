@@ -17,10 +17,10 @@
  */
 package com.intellij.idea.plugin.hybris.impex.lang.refactoring
 
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexPsiNamedElement
 import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
+import sap.commerce.toolset.impex.ImpExConstants
 
 class ImpexRefactoringSupportProvider : RefactoringSupportProvider() {
 

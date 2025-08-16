@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.impex.lang.refactoring
 
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdUsage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroNameDec
@@ -28,6 +27,7 @@ import com.intellij.patterns.StandardPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.RenameInputValidator
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.impex.ImpExConstants
 
 class ImpExRenameInputValidator : RenameInputValidator {
 

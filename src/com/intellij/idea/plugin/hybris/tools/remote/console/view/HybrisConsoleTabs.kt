@@ -18,12 +18,12 @@
 
 package com.intellij.idea.plugin.hybris.tools.remote.console.view
 
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
+import sap.commerce.toolset.remote.console.HybrisConsole
 import sap.commerce.toolset.remote.execution.ExecutionContext
 
 class HybrisConsoleTabs(

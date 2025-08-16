@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.impex.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.idea.plugin.hybris.codeInsight.completion.provider.ItemCodeCompletionProvider
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.completion.provider.*
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderType
@@ -29,6 +28,7 @@ import com.intellij.idea.plugin.hybris.impex.psi.ImpexModifiers
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.tree.TokenSet
+import sap.commerce.toolset.impex.ImpExLanguage
 
 class ImpexCompletionContributor : CompletionContributor() {
     init {
@@ -36,7 +36,7 @@ class ImpexCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
-                .withLanguage(ImpexLanguage)
+                .withLanguage(ImpExLanguage)
                 .withElementType(ImpexTypes.ATTRIBUTE_NAME)
                 .inside(ImpexFullHeaderType::class.java)
                 .inside(ImpexModifiers::class.java),
@@ -47,7 +47,7 @@ class ImpexCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
-                .withLanguage(ImpexLanguage)
+                .withLanguage(ImpExLanguage)
                 .withElementType(ImpexTypes.ATTRIBUTE_NAME)
                 .inside(ImpexFullHeaderParameter::class.java)
                 .inside(ImpexModifiers::class.java),
@@ -58,7 +58,7 @@ class ImpexCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
-                .withLanguage(ImpexLanguage)
+                .withLanguage(ImpExLanguage)
                 .withElementType(ImpexTypes.ATTRIBUTE_VALUE)
                 .inside(ImpexFullHeaderType::class.java)
                 .inside(ImpexModifiers::class.java),
@@ -69,7 +69,7 @@ class ImpexCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
-                .withLanguage(ImpexLanguage)
+                .withLanguage(ImpExLanguage)
                 .withElementType(ImpexTypes.ATTRIBUTE_VALUE)
                 .inside(ImpexFullHeaderParameter::class.java)
                 .inside(ImpexModifiers::class.java),
@@ -82,7 +82,7 @@ class ImpexCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
-                .withLanguage(ImpexLanguage)
+                .withLanguage(ImpExLanguage)
                 .withElementType(ImpexTypes.HEADER_TYPE),
             ItemCodeCompletionProvider()
         )
@@ -91,7 +91,7 @@ class ImpexCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
-                .withLanguage(ImpexLanguage)
+                .withLanguage(ImpExLanguage)
                 .withElementType(ImpexTypes.HEADER_PARAMETER_NAME)
                 .andNot(PlatformPatterns.psiElement().withParent(PlatformPatterns.psiElement().withElementType(ImpexTypes.PARAMETER))),
             ImpexHeaderItemTypeAttributeNameCompletionProvider()
@@ -100,7 +100,7 @@ class ImpexCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
-                .withLanguage(ImpexLanguage)
+                .withLanguage(ImpExLanguage)
                 .withParent(PlatformPatterns.psiElement().withElementType(ImpexTypes.PARAMETER))
                 .and(PlatformPatterns.psiElement().withElementType(ImpexTypes.HEADER_PARAMETER_NAME)),
             ImpexHeaderItemTypeParameterNameCompletionProvider()
@@ -123,7 +123,7 @@ class ImpexCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
-                .withLanguage(ImpexLanguage)
+                .withLanguage(ImpExLanguage)
                 .withElementType(ImpexTypes.MACRO_USAGE),
             ImpexMacrosCompletionProvider()
         )
@@ -131,14 +131,14 @@ class ImpexCompletionContributor : CompletionContributor() {
         extend(
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
-                .withLanguage(ImpexLanguage)
+                .withLanguage(ImpExLanguage)
                 .inside(PlatformPatterns.psiElement().withElementType(TokenSet.create(ImpexTypes.MACRO_USAGE, ImpexTypes.MACRO_DECLARATION))),
             ImpexMacrosConfigCompletionProvider()
         )
     }
 
     private fun topLevel() = PlatformPatterns.psiElement()
-        .withLanguage(ImpexLanguage)
+        .withLanguage(ImpExLanguage)
         .andNot(
             PlatformPatterns.psiElement() // FIXME bad code, but working
                 .andOr(

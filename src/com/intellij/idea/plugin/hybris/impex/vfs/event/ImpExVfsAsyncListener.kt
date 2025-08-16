@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.impex.vfs.event
 
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.editor.ImpExEditorMarkupModelHelper
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFile
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexHeaderLine
@@ -28,6 +27,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.childrenOfType
 import com.intellij.util.asSafely
+import sap.commerce.toolset.impex.ImpExConstants
 
 class ImpExVfsAsyncListener : AsyncFileListener {
 

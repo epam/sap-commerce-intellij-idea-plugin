@@ -19,22 +19,22 @@
 package com.intellij.idea.plugin.hybris.acl.file.actions
 
 import com.intellij.ide.ActivityTracker
-import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.idea.plugin.hybris.acl.editor.AclSplitEditor
 import com.intellij.idea.plugin.hybris.acl.editor.aclSplitEditor
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.acl.AclLanguage
+import sap.commerce.toolset.impex.remote.console.ImpExConsole
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
 
-class AclValidateAction : ExecuteStatementAction<HybrisImpexConsole, AclSplitEditor>(
+class AclValidateAction : ExecuteStatementAction<ImpExConsole, AclSplitEditor>(
     AclLanguage,
-    HybrisImpexConsole::class,
+    ImpExConsole::class,
     "Validate Access Control Lists",
     "Validate Access Control Lists (user rights) via remote SAP Commerce instance",
     HybrisIcons.Acl.Actions.VALIDATE

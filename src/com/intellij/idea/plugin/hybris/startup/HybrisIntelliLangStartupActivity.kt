@@ -17,7 +17,6 @@
  */
 package com.intellij.idea.plugin.hybris.startup
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
@@ -33,6 +32,7 @@ import org.intellij.plugins.intelliLang.inject.config.InjectionPlace
 import org.intellij.plugins.intelliLang.inject.java.InjectionCache
 import org.intellij.plugins.intelliLang.inject.java.JavaLanguageInjectionSupport
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.isNotHybrisProject
 
 /**

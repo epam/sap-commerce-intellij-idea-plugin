@@ -19,13 +19,13 @@
 package com.intellij.idea.plugin.hybris.impex.file.actions
 
 import com.intellij.idea.plugin.hybris.actions.OpenInHybrisConsoleService
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.remote.console.ImpExConsole
 import sap.commerce.toolset.isHybrisProject
 
 class ImpExOpenInConsoleAction : DumbAwareAction() {
@@ -50,6 +50,6 @@ class ImpExOpenInConsoleAction : DumbAwareAction() {
         val project = event.project ?: return
 
         OpenInHybrisConsoleService.getInstance(project)
-            .openSelectedFilesInConsole(HybrisImpexConsole::class, ImpExConstants.IMPEX_FILE_EXTENSION)
+            .openSelectedFilesInConsole(ImpExConsole::class, ImpExConstants.IMPEX_FILE_EXTENSION)
     }
 }

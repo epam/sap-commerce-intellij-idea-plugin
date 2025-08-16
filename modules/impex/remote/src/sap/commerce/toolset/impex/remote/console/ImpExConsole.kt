@@ -16,68 +16,78 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.console.impl
+package sap.commerce.toolset.impex.remote.console
 
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.ui.EnumComboBoxModel
+import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBLabel
-import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
+import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.selected
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
+import sap.commerce.toolset.remote.console.HybrisConsole
 import java.awt.BorderLayout
 import java.io.Serial
-import javax.swing.JPanel
-import javax.swing.JSpinner
-import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExExecutionContext>(
+class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX,
-    ImpexLanguage,
+    ImpExLanguage,
     coroutineScope
 ) {
 
-    private val legacyModeCheckbox = JBCheckBox("Legacy mode")
-        .also { it.border = borders10 }
-    private val enableCodeExecutionCheckbox = JBCheckBox("Enable code execution", true)
-        .also { it.border = borders10 }
-    private val directPersistenceCheckbox = JBCheckBox("Direct persistence", true)
-        .also { it.border = borders10 }
-    private val maxThreadsSpinner = JSpinner(SpinnerNumberModel(1, 1, 100, 1))
-        .also { it.border = borders5 }
-    private val importModeComboBox = ComboBox(ImpExExecutionContext.ValidationMode.entries.toTypedArray(), 175)
-        .also {
-            it.border = borders5
-            it.selectedItem = ImpExExecutionContext.ValidationMode.IMPORT_STRICT
-            it.renderer = SimpleListCellRenderer.create("...") { value -> value.name }
-        }
+    private lateinit var legacyModeCheckbox: JBCheckBox
+    private lateinit var enableCodeExecutionCheckbox: JBCheckBox
+    private lateinit var directPersistenceCheckbox: JBCheckBox
+    private lateinit var maxThreadsSpinner: JBIntSpinner
+    private lateinit var importModeComboBox: ComboBox<ImpExExecutionContext.ValidationMode>
 
     init {
-        val panel = JPanel(WrappedFlowLayout(0, 0))
-        panel.add(JBLabel("UTF-8").also { it.border = borders10 })
-        panel.add(JBLabel("Validation mode:").also { it.border = bordersLabel })
-        panel.add(importModeComboBox)
-        panel.add(JBLabel("Max threads:").also { it.border = bordersLabel })
-        panel.add(maxThreadsSpinner)
-        panel.add(enableCodeExecutionCheckbox)
-        panel.add(directPersistenceCheckbox)
-        panel.add(legacyModeCheckbox)
+        val myPanel = panel {
+            row {
+                label("UTF-8")
 
-        add(panel, BorderLayout.NORTH)
+                importModeComboBox = comboBox(
+                    model = EnumComboBoxModel<ImpExExecutionContext.ValidationMode>(ImpExExecutionContext.ValidationMode::class.java),
+                    renderer = SimpleListCellRenderer.create("...") { value -> value.name }
+                )
+                    .label("Validation mode:")
+                    .component
+                    .apply { selectedItem = ImpExExecutionContext.ValidationMode.IMPORT_STRICT }
+
+                maxThreadsSpinner = spinner(1..Int.MAX_VALUE)
+                    .label("Max threads:")
+                    .component
+                    .apply { value = 1 }
+
+                enableCodeExecutionCheckbox = checkBox("Enable code execution")
+                    .selected(true)
+                    .component
+
+                directPersistenceCheckbox = checkBox("Direct persistence")
+                    .selected(true)
+                    .component
+
+                legacyModeCheckbox = checkBox("Legacy mode")
+                    .component
+            }
+        }
+
+        add(myPanel, BorderLayout.NORTH)
     }
 
     override fun currentExecutionContext(content: String) = ImpExExecutionContext(
         content = content,
-        settings = ImpExExecutionContext.DEFAULT_SETTINGS.modifiable()
+        settings = ImpExExecutionContext.Companion.DEFAULT_SETTINGS.modifiable()
             .apply {
                 validationMode = importModeComboBox.selectedItem as ImpExExecutionContext.ValidationMode
                 maxThreads = maxThreadsSpinner.value.toString().toInt()
@@ -95,6 +105,6 @@ class HybrisImpexConsole(project: Project, coroutineScope: CoroutineScope) : Hyb
         @Serial
         private val serialVersionUID: Long = -8798339041999147739L
 
-        fun getInstance(project: Project): HybrisImpexConsole = project.service()
+        fun getInstance(project: Project): ImpExConsole = project.service()
     }
 }

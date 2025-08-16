@@ -22,7 +22,6 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroDeclaration
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroUsageDec
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexMacroValue
@@ -31,6 +30,7 @@ import com.intellij.lang.properties.PropertiesImplUtil
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.project.PropertyService
 
 class ImpexUnknownConfigPropertyInspection : LocalInspectionTool() {

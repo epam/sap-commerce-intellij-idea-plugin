@@ -37,7 +37,8 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private val filter = PolyglotQueryFoldingBlocksFilter()
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingSetting = DeveloperSettings.getInstance(root.project).polyglotQuerySettings.folding
+        val developerSettings = DeveloperSettings.getInstance(root.project)
+        val foldingSetting = developerSettings.polyglotQuerySettings.folding
 
         if (!foldingSetting.enabled) return emptyArray()
 
@@ -55,7 +56,7 @@ class PolyglotQueryFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 results,
                 root.containingFile,
                 ProjectRootModificationTracker.getInstance(root.project),
-                foldingSetting
+                developerSettings
             )
         }
     }

@@ -21,7 +21,6 @@ package com.intellij.idea.plugin.hybris.project.configurators.impl;
 
 import com.intellij.find.FindSettings;
 import com.intellij.ide.projectView.impl.ModuleGroup;
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants;
 import com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
@@ -32,6 +31,7 @@ import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisI18NBundleUtils;
 import sap.commerce.toolset.HybrisIcons;
+import sap.commerce.toolset.impex.ImpExConstants;
 import sap.commerce.toolset.settings.ApplicationSettings;
 
 import javax.swing.*;

@@ -20,6 +20,7 @@ package sap.commerce.toolset.remote.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.remote.settings.state.DeveloperSettingsState
 
@@ -28,7 +29,7 @@ import sap.commerce.toolset.remote.settings.state.DeveloperSettingsState
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service(Service.Level.PROJECT)
-class RemoteDeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()) {
+class RemoteDeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()), ModificationTracker {
 
     var activeRemoteConnectionID
         get() = state.activeRemoteConnectionID
@@ -45,6 +46,8 @@ class RemoteDeveloperSettings : SerializablePersistentStateComponent<DeveloperSe
         set(value) {
             updateState { it.copy(remoteConnectionSettingsList = value) }
         }
+
+    override fun getModificationCount() = stateModificationCount
 
     companion object {
         @JvmStatic

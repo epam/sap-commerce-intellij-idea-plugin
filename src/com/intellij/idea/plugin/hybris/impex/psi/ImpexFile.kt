@@ -1,7 +1,7 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.impex.psi
 
 import com.intellij.extapi.psi.PsiFileBase
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.file.ImpexFileType
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.roots.ModuleRootManager
@@ -29,10 +28,11 @@ import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.*
 import org.apache.commons.lang3.StringUtils
+import sap.commerce.toolset.impex.ImpExLanguage
 import java.io.File
 import java.io.Serial
 
-class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ImpexLanguage) {
+class ImpexFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, ImpExLanguage) {
 
     override fun getFileType() = ImpexFileType
     override fun toString() = "ImpEx File"

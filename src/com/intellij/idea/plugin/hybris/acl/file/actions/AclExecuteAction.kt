@@ -19,24 +19,24 @@
 package com.intellij.idea.plugin.hybris.acl.file.actions
 
 import com.intellij.ide.ActivityTracker
-import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.idea.plugin.hybris.acl.editor.AclSplitEditor
 import com.intellij.idea.plugin.hybris.acl.editor.aclSplitEditor
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
 import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.acl.AclLanguage
+import sap.commerce.toolset.impex.remote.console.ImpExConsole
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
 
-class AclExecuteAction : ExecuteStatementAction<HybrisImpexConsole, AclSplitEditor>(
+class AclExecuteAction : ExecuteStatementAction<ImpExConsole, AclSplitEditor>(
     AclLanguage,
-    HybrisImpexConsole::class,
+    ImpExConsole::class,
     message("hybris.acl.actions.execute_query"),
     message("hybris.acl.actions.execute_query.description"),
     HybrisIcons.Console.Actions.EXECUTE

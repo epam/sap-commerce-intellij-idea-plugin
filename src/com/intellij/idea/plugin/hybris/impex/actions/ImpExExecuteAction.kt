@@ -19,11 +19,9 @@ package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.ide.ActivityTracker
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
 import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
 import com.intellij.idea.plugin.hybris.impex.editor.impexSplitEditor
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
@@ -31,12 +29,14 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.remote.console.ImpExConsole
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
 
-class ImpExExecuteAction : ExecuteStatementAction<HybrisImpexConsole, ImpExSplitEditor>(
-    ImpexLanguage,
-    HybrisImpexConsole::class,
+class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditor>(
+    ImpExLanguage,
+    ImpExConsole::class,
     message("hybris.impex.actions.execute_query"),
     message("hybris.impex.actions.execute_query.description"),
     HybrisIcons.Console.Actions.EXECUTE

@@ -1,7 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,15 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.intellij.idea.plugin.hybris.flexibleSearch
 
-import com.intellij.lang.Language
-import java.io.Serial
+package sap.commerce.toolset.impex
 
-object FlexibleSearchLanguage : Language("FlexibleSearch") {
+import com.intellij.psi.tree.IFileElementType
 
-    private fun readResolve(): Any = FlexibleSearchLanguage
+object ImpExConstants {
+    const val IMPEX_CONFIG_PREFIX = "\$config"
+    const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
+    const val IMPEX = "ImpEx"
+    const val IMPEX_FILE_EXTENSION = "impex"
+    const val HYBRIS_IMPEX_XML_FILE_ENDING = ".${IMPEX_FILE_EXTENSION}"
+    const val IMPEX_PREFIX_DOC_ID = "&"
+    const val IMPEX_PREFIX_MACRO = "$"
 
-    @Serial
-    private val serialVersionUID: Long = 1870292616506709017L
+    val FILE_NODE_TYPE = IFileElementType(ImpExLanguage)
 }

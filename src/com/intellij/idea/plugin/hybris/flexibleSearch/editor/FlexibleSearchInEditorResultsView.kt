@@ -20,7 +20,6 @@ package com.intellij.idea.plugin.hybris.flexibleSearch.editor
 
 import com.intellij.database.editor.CsvTableFileEditor
 import com.intellij.idea.plugin.hybris.editor.InEditorResultsView
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.idea.plugin.hybris.grid.GridXSVFormatService
 import com.intellij.openapi.application.edtWriteAction
@@ -34,6 +33,7 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
 import javax.swing.JComponent
 

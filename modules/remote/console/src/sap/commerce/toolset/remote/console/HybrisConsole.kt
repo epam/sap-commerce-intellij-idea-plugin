@@ -16,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.console
+package sap.commerce.toolset.remote.console
 
 import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.console.LanguageConsoleImpl
-import com.intellij.execution.ui.ConsoleViewContentType.*
+import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.lang.Language
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.project.Project
@@ -69,7 +69,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     val context
         get() = currentExecutionContext(content)
 
-    internal abstract fun currentExecutionContext(content: String): E
+    abstract fun currentExecutionContext(content: String): E
     abstract fun title(): String
     abstract fun tip(): String
 
@@ -80,7 +80,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     open fun printDefaultText() = setInputText("")
 
     override fun dispose() {
-        LineStatusTrackerManager.getInstance(project).releaseTrackerFor(editorDocument, consoleEditor)
+        LineStatusTrackerManager.Companion.getInstance(project).releaseTrackerFor(editorDocument, consoleEditor)
         super.dispose()
     }
 
@@ -127,22 +127,22 @@ abstract class HybrisConsole<E : ExecutionContext>(
     }
 
     protected fun printHost(remoteConnectionType: RemoteConnectionType, replicaContext: ReplicaContext?) {
-        val activeConnectionSettings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(remoteConnectionType)
-        print("[HOST] ", SYSTEM_OUTPUT)
+        val activeConnectionSettings = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(remoteConnectionType)
+        print("[HOST] ", ConsoleViewContentType.SYSTEM_OUTPUT)
         activeConnectionSettings.displayName
-            ?.let { name -> print("($name) ", LOG_INFO_OUTPUT) }
+            ?.let { name -> print("($name) ", ConsoleViewContentType.LOG_INFO_OUTPUT) }
         replicaContext
             ?.replicaId
-            ?.let { print("($it) ", LOG_VERBOSE_OUTPUT) }
+            ?.let { print("($it) ", ConsoleViewContentType.LOG_VERBOSE_OUTPUT) }
 
-        print("${activeConnectionSettings.generatedURL}\n", NORMAL_OUTPUT)
+        print("${activeConnectionSettings.generatedURL}\n", ConsoleViewContentType.NORMAL_OUTPUT)
     }
 
     private fun printPlainText(result: ConsoleAwareExecutionResult) {
         if (result.hasError) {
-            print("[ERROR]\n", SYSTEM_OUTPUT)
+            print("[ERROR]\n", ConsoleViewContentType.SYSTEM_OUTPUT)
             listOfNotNull(result.errorMessage, result.errorDetailMessage)
-                .forEach { print("$it\n", ERROR_OUTPUT) }
+                .forEach { print("$it\n", ConsoleViewContentType.ERROR_OUTPUT) }
 
             return
         }
@@ -150,12 +150,12 @@ abstract class HybrisConsole<E : ExecutionContext>(
         printOutput("OUTPUT", result.output)
         printOutput("RESULT", result.result)
 
-        print("\n", NORMAL_OUTPUT)
+        print("\n", ConsoleViewContentType.NORMAL_OUTPUT)
     }
 
     private fun printOutput(type: String, text: String?) = text?.let {
-        print("[$type]\n", SYSTEM_OUTPUT)
-        print(it, NORMAL_OUTPUT)
+        print("[$type]\n", ConsoleViewContentType.SYSTEM_OUTPUT)
+        print(it, ConsoleViewContentType.NORMAL_OUTPUT)
     }
 
     companion object {
@@ -164,5 +164,3 @@ abstract class HybrisConsole<E : ExecutionContext>(
     }
 
 }
-
-

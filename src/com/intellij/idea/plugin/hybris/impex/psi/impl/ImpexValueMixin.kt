@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.constants.modifier.AttributeModifier
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexDocumentIdUsage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
@@ -45,6 +44,7 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.impex.ImpExConstants
 import java.io.Serial
 
 abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiLanguageInjectionHost, ImpexValue {

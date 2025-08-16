@@ -18,11 +18,11 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
 import com.intellij.openapi.components.service
 import com.intellij.util.application
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 
 class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(FlexibleSearchLanguage) {
 

@@ -16,53 +16,53 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.tools.remote.console.impl
+package sap.commerce.toolset.flexibleSearch.remote.console
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.ui.components.JBLabel
-import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
+import com.intellij.ui.JBIntSpinner
+import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.remote.execution.QueryMode
+import sap.commerce.toolset.remote.console.HybrisConsole
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
-import javax.swing.JPanel
-import javax.swing.JSpinner
-import javax.swing.SpinnerNumberModel
 
 @Service(Service.Level.PROJECT)
-class HybrisFlexibleSearchConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
+class FlexibleSearchConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
     FlexibleSearchLanguage,
     coroutineScope
 ) {
 
-    private val panel = JPanel(WrappedFlowLayout(0, 0))
-
-    private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
-        .also { it.border = borders5 }
+    private lateinit var maxRowsSpinner: JBIntSpinner
 
     init {
         isEditable = true
 
-        panel.add(JBLabel("Rows:").also { it.border = bordersLabel })
-        panel.add(maxRowsSpinner)
+        val myPanel = panel {
+            row {
+                maxRowsSpinner = spinner(1..Integer.MAX_VALUE)
+                    .label("Rows: ")
+                    .component
+                    .apply { value = 200 }
+            }
+        }
 
-        add(panel, BorderLayout.NORTH)
+        add(myPanel, BorderLayout.NORTH)
     }
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
         content = content,
         transactionMode = TransactionMode.ROLLBACK,
         queryMode = QueryMode.FlexibleSearch,
-        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
+        settings = FlexibleSearchExecutionContext.Companion.defaultSettings(project).modifiable()
             .apply {
                 maxCount = maxRowsSpinner.value.toString().toInt()
             }
@@ -76,6 +76,6 @@ class HybrisFlexibleSearchConsole(project: Project, coroutineScope: CoroutineSco
         @Serial
         private val serialVersionUID: Long = -112651125533211607L
 
-        fun getInstance(project: Project): HybrisFlexibleSearchConsole = project.service()
+        fun getInstance(project: Project): FlexibleSearchConsole = project.service()
     }
 }

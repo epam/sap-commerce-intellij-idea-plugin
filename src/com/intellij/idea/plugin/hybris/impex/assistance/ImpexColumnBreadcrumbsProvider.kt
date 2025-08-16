@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.impex.assistance
 
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.lang.Language
@@ -26,10 +25,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
+import sap.commerce.toolset.impex.ImpExLanguage
 
 class ImpexColumnBreadcrumbsProvider : BreadcrumbsProvider {
 
-    override fun getLanguages(): Array<Language> = arrayOf(ImpexLanguage)
+    override fun getLanguages(): Array<Language> = arrayOf(ImpExLanguage)
 
     override fun acceptElement(element: PsiElement) = element is ImpexFullHeaderParameter
         || element is ImpexFullHeaderType

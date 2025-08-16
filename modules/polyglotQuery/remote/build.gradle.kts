@@ -16,22 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.impex
+fun properties(key: String) = providers.gradleProperty(key)
 
-import com.intellij.openapi.util.Key
-import com.intellij.psi.tree.IFileElementType
-import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-object ImpExConstants {
-    const val IMPEX_CONFIG_PREFIX = "\$config"
-    const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
-    const val IMPEX = "ImpEx"
-    const val IMPEX_FILE_EXTENSION = "impex"
-    const val HYBRIS_IMPEX_XML_FILE_ENDING = ".${IMPEX_FILE_EXTENSION}"
-    const val IMPEX_PREFIX_DOC_ID = "&"
-    const val IMPEX_PREFIX_MACRO = "$"
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-    val FILE_NODE_TYPE = IFileElementType(ImpexLanguage)
+dependencies {
+    implementation(project(":shared"))
+    implementation(project(":remote-core"))
 
-    val KEY_EXECUTION_SETTINGS = Key.create<ImpExExecutionContext.Settings>("sap.cx.impex.execution.settings")
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+    }
 }

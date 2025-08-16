@@ -18,9 +18,9 @@
 
 package com.intellij.idea.plugin.hybris.impex.lang.refactoring
 
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.openapi.util.Condition
 import com.intellij.psi.PsiElement
+import sap.commerce.toolset.impex.ImpExConstants
 
 class ImpExVetoRenameCondition : Condition<PsiElement> {
 

@@ -19,13 +19,13 @@
 package com.intellij.idea.plugin.hybris.flexibleSearch.file.actions
 
 import com.intellij.idea.plugin.hybris.actions.OpenInHybrisConsoleService
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisFlexibleSearchConsole
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisConstants.FLEXIBLE_SEARCH_FILE_EXTENSION
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
 import sap.commerce.toolset.isHybrisProject
 
 class FlexibleSearchOpenInConsoleAction : DumbAwareAction() {
@@ -48,6 +48,6 @@ class FlexibleSearchOpenInConsoleAction : DumbAwareAction() {
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
         OpenInHybrisConsoleService.getInstance(project)
-            .openSelectedFilesInConsole(HybrisFlexibleSearchConsole::class, FLEXIBLE_SEARCH_FILE_EXTENSION)
+            .openSelectedFilesInConsole(FlexibleSearchConsole::class, FLEXIBLE_SEARCH_FILE_EXTENSION)
     }
 }

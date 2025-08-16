@@ -22,7 +22,6 @@ import com.intellij.codeInsight.highlighting.HighlightManager
 import com.intellij.codeInsight.highlighting.HighlightManagerImpl
 import com.intellij.codeInsight.highlighting.HighlightUsagesHandler
 import com.intellij.idea.plugin.hybris.common.services.CommonIdeaService
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexFullHeaderParameter
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
 import com.intellij.openapi.application.ModalityState
@@ -43,6 +42,7 @@ import com.intellij.psi.util.PsiUtilBase
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
+import sap.commerce.toolset.impex.ImpExLanguage
 
 @Service
 class ImpexHighlightingCaretListener : CaretListener {
@@ -59,7 +59,7 @@ class ImpexHighlightingCaretListener : CaretListener {
 
         ReadAction
             .nonBlocking<List<PsiElement>> {
-                if (PsiUtilBase.getLanguageInEditor(editor, project) !is ImpexLanguage) return@nonBlocking emptyList()
+                if (PsiUtilBase.getLanguageInEditor(editor, project) !is ImpExLanguage) return@nonBlocking emptyList()
 
                 ImpexPsiUtils.getHeaderOfValueGroupUnderCaret(editor)
                     ?.asSafely<ImpexFullHeaderParameter>()

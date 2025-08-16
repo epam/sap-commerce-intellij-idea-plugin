@@ -17,7 +17,7 @@
  */
 package com.intellij.idea.plugin.hybris.acl.psi
 
-import com.intellij.idea.plugin.hybris.acl.AclLanguage
 import com.intellij.psi.tree.IElementType
+import sap.commerce.toolset.acl.AclLanguage
 
 class AclElementType(debugName: String) : IElementType(debugName, AclLanguage)

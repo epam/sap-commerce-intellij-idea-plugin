@@ -20,6 +20,7 @@ package sap.commerce.toolset.remote.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.remote.settings.state.ProjectSettingsState
 
@@ -30,13 +31,15 @@ import sap.commerce.toolset.remote.settings.state.ProjectSettingsState
     ]
 )
 @Service(Service.Level.PROJECT)
-class RemoteProjectSettings : SerializablePersistentStateComponent<ProjectSettingsState>(ProjectSettingsState()) {
+class RemoteProjectSettings : SerializablePersistentStateComponent<ProjectSettingsState>(ProjectSettingsState()), ModificationTracker {
 
     var remoteConnectionSettingsList
         get() = state.remoteConnectionSettingsList
         set(value) {
             updateState { it.copy(remoteConnectionSettingsList = value) }
         }
+
+    override fun getModificationCount() = stateModificationCount
 
     companion object {
         @JvmStatic

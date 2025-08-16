@@ -19,7 +19,6 @@
 package com.intellij.idea.plugin.hybris.tools.remote.console.impl
 
 import com.intellij.execution.impl.ConsoleViewUtil
-import com.intellij.idea.plugin.hybris.tools.remote.console.HybrisConsole
 import com.intellij.json.JsonFileType
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.invokeLater
@@ -45,6 +44,7 @@ import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.remote.console.HybrisConsole
 import sap.commerce.toolset.remote.execution.ConsoleAwareExecutionResult
 import sap.commerce.toolset.solr.remote.execution.SolrCoreData
 import sap.commerce.toolset.solr.remote.execution.SolrExecutionClient

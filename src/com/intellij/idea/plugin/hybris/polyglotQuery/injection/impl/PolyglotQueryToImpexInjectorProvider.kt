@@ -18,7 +18,6 @@
 
 package com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl
 
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexString
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjectorProvider
 import com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryLanguage
@@ -29,10 +28,11 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.util.application
+import sap.commerce.toolset.impex.ImpExLanguage
 import java.util.*
 
 @Service
-class PolyglotQueryToImpexInjectorProvider : AbstractLanguageInjectorProvider(PolyglotQueryLanguage, ImpexLanguage) {
+class PolyglotQueryToImpexInjectorProvider : AbstractLanguageInjectorProvider(PolyglotQueryLanguage, ImpExLanguage) {
 
     override fun tryInject(
         host: PsiLanguageInjectionHost,

@@ -46,7 +46,8 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
     }
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val foldingSettings = DeveloperSettings.getInstance(root.project).aclSettings.folding
+        val developerSettings = DeveloperSettings.getInstance(root.project)
+        val foldingSettings = developerSettings.aclSettings.folding
         if (!foldingSettings.enabled) return emptyArray()
 
         return CachedValuesManager.getCachedValue(root) {
@@ -69,7 +70,7 @@ class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 results,
                 PsiModificationTracker.MODIFICATION_COUNT,
                 ProjectRootModificationTracker.getInstance(root.project),
-                foldingSettings
+                developerSettings
             )
         }
     }

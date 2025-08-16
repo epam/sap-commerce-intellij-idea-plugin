@@ -26,6 +26,7 @@ import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
+import sap.commerce.toolset.acl.AclLanguage
 
 class AclParserDefinition : ParserDefinition {
 

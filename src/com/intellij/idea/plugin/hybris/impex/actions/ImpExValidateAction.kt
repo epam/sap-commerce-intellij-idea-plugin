@@ -19,22 +19,22 @@ package com.intellij.idea.plugin.hybris.impex.actions
 
 import com.intellij.ide.ActivityTracker
 import com.intellij.idea.plugin.hybris.actions.ExecuteStatementAction
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.editor.ImpExSplitEditor
 import com.intellij.idea.plugin.hybris.impex.editor.impexExecutionContextSettings
 import com.intellij.idea.plugin.hybris.impex.editor.impexSplitEditor
-import com.intellij.idea.plugin.hybris.tools.remote.console.impl.HybrisImpexConsole
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.remote.console.ImpExConsole
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
 import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
 
-class ImpExValidateAction : ExecuteStatementAction<HybrisImpexConsole, ImpExSplitEditor>(
-    ImpexLanguage,
-    HybrisImpexConsole::class,
+class ImpExValidateAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditor>(
+    ImpExLanguage,
+    ImpExConsole::class,
     "Validate ImpEx",
     "Validate ImpEx file via remote SAP Commerce instance",
     HybrisIcons.ImpEx.Actions.VALIDATE

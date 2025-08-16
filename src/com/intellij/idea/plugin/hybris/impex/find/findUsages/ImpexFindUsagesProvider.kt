@@ -18,7 +18,6 @@
  */
 package com.intellij.idea.plugin.hybris.impex.find.findUsages
 
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.idea.plugin.hybris.impex.ImpexLexerAdapter
 import com.intellij.idea.plugin.hybris.impex.psi.ImpexTypes
 import com.intellij.idea.plugin.hybris.impex.utils.ImpexPsiUtils
@@ -27,6 +26,7 @@ import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.tree.TokenSet
+import sap.commerce.toolset.impex.ImpExConstants
 
 class ImpexFindUsagesProvider : FindUsagesProvider {
 

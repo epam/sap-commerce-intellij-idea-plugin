@@ -21,14 +21,14 @@ package com.intellij.idea.plugin.hybris.impex.formatting
 
 import com.intellij.application.options.CodeStyleAbstractConfigurable
 import com.intellij.application.options.TabbedLanguageCodeStylePanel
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
+import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.ImpExLanguage
 
 class ImpexCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
 
-    override fun getLanguage() = ImpexLanguage
+    override fun getLanguage() = ImpExLanguage
     override fun createCustomSettings(settings: CodeStyleSettings) = ImpexCodeStyleSettings(settings)
     override fun getConfigurableDisplayName() = ImpExConstants.IMPEX
 
@@ -43,5 +43,5 @@ class ImpexCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
     }
 
     private class SimpleCodeStyleMainPanel(currentSettings: CodeStyleSettings, settings: CodeStyleSettings) :
-        TabbedLanguageCodeStylePanel(ImpexLanguage, currentSettings, settings)
+        TabbedLanguageCodeStylePanel(ImpExLanguage, currentSettings, settings)
 }

@@ -27,6 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
+import sap.commerce.toolset.impex.ImpExConstants
 
 class ImpexParserDefinition : ParserDefinition {
 

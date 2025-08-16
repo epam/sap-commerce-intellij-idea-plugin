@@ -20,6 +20,7 @@ package sap.commerce.toolset.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.ModificationTracker
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.settings.state.DeveloperSettingsState
 
@@ -28,7 +29,7 @@ import sap.commerce.toolset.settings.state.DeveloperSettingsState
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service(Service.Level.PROJECT)
-class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()) {
+class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()), ModificationTracker {
 
     var typeSystemDiagramSettings
         get() = state.typeSystemDiagramSettings
@@ -85,6 +86,8 @@ class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettings
         set(value) {
             updateState { it.copy(jspSettings = value) }
         }
+
+    override fun getModificationCount() = stateModificationCount
 
     companion object {
         @JvmStatic

@@ -18,13 +18,13 @@
 package com.intellij.idea.plugin.hybris.impex.highlighting
 
 import com.intellij.codeHighlighting.RainbowHighlighter
-import com.intellij.idea.plugin.hybris.impex.ImpExConstants
 import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.ImpExConstants
 import javax.swing.Icon
 
 class ImpexColorSettingsPage : ColorSettingsPage {

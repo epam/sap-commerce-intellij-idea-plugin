@@ -18,9 +18,7 @@
 
 package com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl
 
-import com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchLanguage
 import com.intellij.idea.plugin.hybris.flexibleSearch.FxSUtils
-import com.intellij.idea.plugin.hybris.impex.ImpexLanguage
 import com.intellij.idea.plugin.hybris.impex.psi.*
 import com.intellij.idea.plugin.hybris.lang.injection.impl.AbstractLanguageInjectorProvider
 import com.intellij.openapi.components.Service
@@ -32,11 +30,13 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
+import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.settings.DeveloperSettings
 import java.util.*
 
 @Service
-class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(FlexibleSearchLanguage, ImpexLanguage) {
+class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(FlexibleSearchLanguage, ImpExLanguage) {
 
     override fun tryInject(
         host: PsiLanguageInjectionHost,
