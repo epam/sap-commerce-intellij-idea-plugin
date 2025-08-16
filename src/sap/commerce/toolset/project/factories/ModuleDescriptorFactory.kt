@@ -25,8 +25,8 @@ import jakarta.xml.bind.JAXBException
 import org.jetbrains.idea.eclipse.EclipseProjectFinder
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
-import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
-import sap.commerce.toolset.extensioninfo.jaxb.ObjectFactory
+import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
+import sap.commerce.toolset.extensioninfo.model.ObjectFactory
 import sap.commerce.toolset.project.descriptors.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor

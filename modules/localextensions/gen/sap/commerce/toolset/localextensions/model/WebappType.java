@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.localextensions.jaxb;
+package sap.commerce.toolset.localextensions.model;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -25,19 +25,19 @@ import jakarta.xml.bind.annotation.XmlType;
 
 
 /**
- * Scans for extensions in a given folder.
+ * Adds external extension to the hybris platform.
  * 
- * <p>Java class for scanType complex type.
+ * <p>Java class for webappType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="scanType">
+ * &lt;complexType name="webappType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="dir" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="autoload" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
- *       &lt;attribute name="depth" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="contextroot" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="context" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="path" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -46,90 +46,86 @@ import jakarta.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "scanType")
-public class ScanType {
+@XmlType(name = "webappType")
+public class WebappType {
 
-    @XmlAttribute(name = "dir", required = true)
-    protected String dir;
-    @XmlAttribute(name = "autoload")
-    protected Boolean autoload;
-    @XmlAttribute(name = "depth")
-    protected Integer depth;
+    @XmlAttribute(name = "contextroot")
+    protected String contextroot;
+    @XmlAttribute(name = "context")
+    protected String context;
+    @XmlAttribute(name = "path")
+    protected String path;
 
     /**
-     * Gets the value of the dir property.
+     * Gets the value of the contextroot property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDir() {
-        return dir;
+    public String getContextroot() {
+        return contextroot;
     }
 
     /**
-     * Sets the value of the dir property.
+     * Sets the value of the contextroot property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDir(String value) {
-        this.dir = value;
+    public void setContextroot(String value) {
+        this.contextroot = value;
     }
 
     /**
-     * Gets the value of the autoload property.
+     * Gets the value of the context property.
      * 
      * @return
      *     possible object is
-     *     {@link Boolean }
+     *     {@link String }
      *     
      */
-    public boolean isAutoload() {
-        if (autoload == null) {
-            return false;
-        } else {
-            return autoload;
-        }
+    public String getContext() {
+        return context;
     }
 
     /**
-     * Sets the value of the autoload property.
+     * Sets the value of the context property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Boolean }
+     *     {@link String }
      *     
      */
-    public void setAutoload(Boolean value) {
-        this.autoload = value;
+    public void setContext(String value) {
+        this.context = value;
     }
 
     /**
-     * Gets the value of the depth property.
+     * Gets the value of the path property.
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public Integer getDepth() {
-        return depth;
+    public String getPath() {
+        return path;
     }
 
     /**
-     * Sets the value of the depth property.
+     * Sets the value of the path property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public void setDepth(Integer value) {
-        this.depth = value;
+    public void setPath(String value) {
+        this.path = value;
     }
 
 }

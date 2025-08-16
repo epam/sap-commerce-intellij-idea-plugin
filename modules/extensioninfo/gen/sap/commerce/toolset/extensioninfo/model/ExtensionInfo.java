@@ -1,5 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,64 +17,58 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.localextensions.jaxb;
+package sap.commerce.toolset.extensioninfo.model;
 
 import jakarta.xml.bind.annotation.*;
 
 
 /**
- * Configures the installed extensions for the hybris platform.
- * 
+ * Configures the available modules of the extension.
+ * <p/>
  * <p>Java class for anonymous complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="extensions" type="{}extensionsType"/>
+ *         &lt;element name="extension" type="{}extensionType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "extensions"
+    "extension"
 })
-@XmlRootElement(name = "hybrisconfig")
-public class Hybrisconfig {
+@XmlRootElement(name = "extensioninfo")
+public class ExtensionInfo {
 
     @XmlElement(required = true)
-    protected ExtensionsType extensions;
+    protected ExtensionType extension;
 
     /**
-     * Gets the value of the extensions property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ExtensionsType }
-     *     
+     * Gets the value of the extension property.
+     *
+     * @return possible object is
+     * {@link ExtensionType }
      */
-    public ExtensionsType getExtensions() {
-        return extensions;
+    public ExtensionType getExtension() {
+        return extension;
     }
 
     /**
-     * Sets the value of the extensions property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ExtensionsType }
-     *     
+     * Sets the value of the extension property.
+     *
+     * @param value allowed object is
+     *              {@link ExtensionType }
      */
-    public void setExtensions(ExtensionsType value) {
-        this.extensions = value;
+    public void setExtension(ExtensionType value) {
+        this.extension = value;
     }
 
 }

@@ -17,58 +17,79 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.extensioninfo.jaxb;
+package sap.commerce.toolset.extensioninfo.model;
 
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlType;
 
 
 /**
- * Configures the available modules of the extension.
+ * Configures metadata.
  * <p/>
- * <p>Java class for anonymous complex type.
+ * <p>Java class for metaType complex type.
  * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p/>
  * <pre>
- * &lt;complexType>
+ * &lt;complexType name="metaType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="extension" type="{}extensionType"/>
- *       &lt;/sequence>
+ *       &lt;attribute name="key" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="value" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "extension"
-})
-@XmlRootElement(name = "extensioninfo")
-public class ExtensionInfo {
+@XmlType(name = "metaType")
+public class MetaType {
 
-    @XmlElement(required = true)
-    protected ExtensionType extension;
+    @XmlAttribute(required = true)
+    protected String key;
+    @XmlAttribute(required = true)
+    protected String value;
 
     /**
-     * Gets the value of the extension property.
+     * Gets the value of the key property.
      *
      * @return possible object is
-     * {@link ExtensionType }
+     * {@link String }
      */
-    public ExtensionType getExtension() {
-        return extension;
+    public String getKey() {
+        return key;
     }
 
     /**
-     * Sets the value of the extension property.
+     * Sets the value of the key property.
      *
      * @param value allowed object is
-     *              {@link ExtensionType }
+     *              {@link String }
      */
-    public void setExtension(ExtensionType value) {
-        this.extension = value;
+    public void setKey(String value) {
+        this.key = value;
+    }
+
+    /**
+     * Gets the value of the value property.
+     *
+     * @return possible object is
+     * {@link String }
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Sets the value of the value property.
+     *
+     * @param value allowed object is
+     *              {@link String }
+     */
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }
