@@ -21,41 +21,41 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.psi.injector.GroovyLanguageInjector"/>
+        <languageInjector implementation="sap.commerce.toolset.psi.injector.GroovyLanguageInjector"/>
 
         <projectConfigurable id="hybris.project.groovy.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.groovy.title"
-                             provider="com.intellij.idea.plugin.hybris.groovy.settings.options.ProjectGroovySettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.groovy.settings.options.ProjectGroovySettingsConfigurableProvider"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.groovy.file.GroovyFileToolbarInstaller"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.groovy.file.GroovyFileToolbarInstaller"/>
     </extensions>
 
     <actions>
         <group id="hybris.groovy.toolbar.left">
-            <action id="hybris.groovy.execute" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecuteAction">
+            <action id="hybris.groovy.execute" class="sap.commerce.toolset.groovy.actions.GroovyExecuteAction">
                 <keyboard-shortcut first-keystroke="control shift alt ENTER" keymap="$default"/>
             </action>
-            <action id="hybris.groovy.openQuery" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenQueryAction"/>
+            <action id="hybris.groovy.openQuery" class="sap.commerce.toolset.groovy.actions.GroovyOpenQueryAction"/>
             <separator/>
-            <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyToggleInEditorResultsAction"/>
+            <action class="sap.commerce.toolset.groovy.actions.GroovyToggleInEditorResultsAction"/>
             <separator/>
-            <action id="hybris.groovy.openSettings" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyOpenSettingsAction"/>
+            <action id="hybris.groovy.openSettings" class="sap.commerce.toolset.groovy.actions.GroovyOpenSettingsAction"/>
             <separator/>
 
             <group id="hybris.groovy.toolbar.tx" popup="true"
-                   class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyTransactionModeActionGroup">
+                   class="sap.commerce.toolset.groovy.actions.GroovyTransactionModeActionGroup">
                 <separator key="hybris.groovy.actions.transaction.mode.separator"/>
-                <action id="hybris.groovy.tx.commit" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyCommitTransactionAction"/>
-                <action id="hybris.groovy.tx.execute" class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyRollbackTransactionAction"/>
+                <action id="hybris.groovy.tx.commit" class="sap.commerce.toolset.groovy.actions.GroovyCommitTransactionAction"/>
+                <action id="hybris.groovy.tx.execute" class="sap.commerce.toolset.groovy.actions.GroovyRollbackTransactionAction"/>
             </group>
 
             <group id="hybris.groovy.toolbar.mode" popup="true"
-                   class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyExecutionModeActionGroup">
+                   class="sap.commerce.toolset.groovy.actions.GroovyExecutionModeActionGroup">
                 <separator key="hybris.groovy.actions.executionMode.separator"/>
-                <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyAutoReplicaSelectionModeAction"/>
-                <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyCCv2ReplicaSelectionModeAction"/>
-                <action class="com.intellij.idea.plugin.hybris.groovy.actions.GroovyManualReplicaSelectionModeAction"/>
+                <action class="sap.commerce.toolset.groovy.actions.GroovyAutoReplicaSelectionModeAction"/>
+                <action class="sap.commerce.toolset.groovy.actions.GroovyCCv2ReplicaSelectionModeAction"/>
+                <action class="sap.commerce.toolset.groovy.actions.GroovyManualReplicaSelectionModeAction"/>
             </group>
         </group>
         <group id="hybris.groovy.toolbar.right">

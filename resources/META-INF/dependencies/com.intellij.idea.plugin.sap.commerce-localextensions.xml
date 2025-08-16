@@ -19,10 +19,10 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
         <dom.fileMetaData rootTagName="hybrisconfig" stubVersion="1"
-                          implementation="com.intellij.idea.plugin.hybris.system.localextensions.LeSDomFileDescription"/>
+                          implementation="sap.commerce.toolset.system.localextensions.LeSDomFileDescription"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.completion.LocalExtensionsCompletionContributor"/>
+        <completion.contributor language="XML" implementationClass="sap.commerce.toolset.system.localextensions.codeInsight.completion.LocalExtensionsCompletionContributor"/>
 
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.localextensions.codeInsight.daemon.LeSExtensionLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.localextensions.codeInsight.daemon.LeSExtensionLineMarkerProvider"/>
     </extensions>
 </idea-plugin>

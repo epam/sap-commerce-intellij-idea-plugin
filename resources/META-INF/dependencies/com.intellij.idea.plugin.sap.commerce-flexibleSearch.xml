@@ -22,7 +22,7 @@
         <internalFileTemplate name="FlexibleSearch File"/>
 
         <codeInsight.declarativeInlayProvider language="FlexibleSearch"
-                                              implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.hints.FlexibleSearchParameterInlayHintProvider"
+                                              implementationClass="sap.commerce.toolset.flexibleSearch.codeInsight.hints.FlexibleSearchParameterInlayHintProvider"
                                               isEnabledByDefault="true"
                                               group="VALUES_GROUP"
                                               providerId="hybris.FlexibleSearch.parameter"
@@ -31,66 +31,66 @@
                                               descriptionKey="hybris.fxs.editor.parameter.description"/>
 
         <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="INSTANCE"
-                  implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.file.FlexibleSearchFileType"/>
+                  implementationClass="sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType"/>
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/FlexibleSearchDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/FlexibleSearchDarcula.xml"/>
 
         <!-- Core elements -->
-        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSCodeStyleSettingsProvider"/>
+        <codeStyleSettingsProvider implementation="sap.commerce.toolset.flexibleSearch.formatting.FxSCodeStyleSettingsProvider"/>
 
-        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSLanguageCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.flexibleSearch.formatting.FxSLanguageCodeStyleSettingsProvider"/>
 
-        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
+        <colorSettingsPage implementation="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
 
-        <platform.backend.documentation.psiTargetProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.documentation.FlexibleSearchPsiDocumentationTargetProvider" />
-        <platform.backend.documentation.targetProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.documentation.FlexibleSearchDocumentationTargetProvider"/>
-        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
+        <platform.backend.documentation.psiTargetProvider implementation="sap.commerce.toolset.flexibleSearch.lang.documentation.FlexibleSearchPsiDocumentationTargetProvider" />
+        <platform.backend.documentation.targetProvider implementation="sap.commerce.toolset.flexibleSearch.lang.documentation.FlexibleSearchDocumentationTargetProvider"/>
+        <lang.braceMatcher language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
         <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
-        <lang.quoteHandler language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchQuoteHandler"/>
-        <lang.parserDefinition language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.FlexibleSearchParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighterFactory"/>
-        <lang.commenter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.FlexibleSearchCommenter"/>
-        <lang.formatter language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.formatting.FxSFormattingModelBuilder"/>
-        <lang.foldingBuilder language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.folding.FlexibleSearchFoldingBuilder"/>
-        <lang.findUsagesProvider language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages.FlexibleSearchFindUsagesProvider"/>
-        <lang.refactoringSupport language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.refactoring.FlexibleSearchRefactoringSupportProvider"/>
+        <lang.quoteHandler language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.FlexibleSearchQuoteHandler"/>
+        <lang.parserDefinition language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.FlexibleSearchParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighterFactory"/>
+        <lang.commenter language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.FlexibleSearchCommenter"/>
+        <lang.formatter language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.formatting.FxSFormattingModelBuilder"/>
+        <lang.foldingBuilder language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.folding.FlexibleSearchFoldingBuilder"/>
+        <lang.findUsagesProvider language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.findUsages.FlexibleSearchFindUsagesProvider"/>
+        <lang.refactoringSupport language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.refactoring.FlexibleSearchRefactoringSupportProvider"/>
 
-        <referencesSearch implementation="com.intellij.idea.plugin.hybris.flexibleSearch.lang.findUsages.FlexibleSearchReferenceSearcher"/>
-        <elementDescriptionProvider implementation="com.intellij.idea.plugin.hybris.flexibleSearch.psi.FlexibleSearchElementDescriptionProvider"/>
+        <referencesSearch implementation="sap.commerce.toolset.flexibleSearch.lang.findUsages.FlexibleSearchReferenceSearcher"/>
+        <elementDescriptionProvider implementation="sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementDescriptionProvider"/>
 
-        <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.flexibleSearch.refactoring.rename.processor.FlexibleSearchRenameProcessor"/>
+        <renamePsiElementProcessor implementation="sap.commerce.toolset.flexibleSearch.refactoring.rename.processor.FlexibleSearchRenameProcessor"/>
 
-        <highlightUsagesHandlerFactory implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlightUsagesHandlerFactory"/>
-        <editorNotificationProvider id="fxsReservedWordsCaseEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider"/>
-        <editorNotificationProvider id="fxsTableAliasSeparatorEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.flexibleSearch.ui.FxSTableAliasSeparatorEditorNotificationProvider"/>
+        <highlightUsagesHandlerFactory implementation="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlightUsagesHandlerFactory"/>
+        <editorNotificationProvider id="fxsReservedWordsCaseEditorNotificationProvider" implementation="sap.commerce.toolset.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider"/>
+        <editorNotificationProvider id="fxsTableAliasSeparatorEditorNotificationProvider" implementation="sap.commerce.toolset.flexibleSearch.ui.FxSTableAliasSeparatorEditorNotificationProvider"/>
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.FlexibleSearchLanguageInjector"/>
+        <languageInjector implementation="sap.commerce.toolset.flexibleSearch.injection.FlexibleSearchLanguageInjector"/>
 
-        <completion.contributor language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
+        <completion.contributor language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.completion.FlexibleSearchCompletionContributor"/>
 
-        <annotator language="FlexibleSearch" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.lang.annotation.FlexibleSearchAnnotator"/>
-        <highlightErrorFilter implementation="com.intellij.idea.plugin.hybris.flexibleSearch.highlighting.FlexibleSearchHighlightErrorFilter"/>
+        <annotator language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.annotation.FlexibleSearchAnnotator"/>
+        <highlightErrorFilter implementation="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlightErrorFilter"/>
 
         <projectConfigurable id="hybris.project.fxs.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.fxs.title"
                              order="after hybris.project.integrations.settings"
-                             provider="com.intellij.idea.plugin.hybris.flexibleSearch.settings.options.ProjectFlexibleSearchSettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.flexibleSearch.settings.options.ProjectFlexibleSearchSettingsConfigurableProvider"/>
     </extensions>
 
     <actions>
 
         <action id="hybris.fxs.openFileInConsole"
-                class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchOpenInConsoleAction"/>
+                class="sap.commerce.toolset.flexibleSearch.file.actions.FlexibleSearchOpenInConsoleAction"/>
         <action id="FlexibleSearch.NewFlexibleSearchFile"
-                class="com.intellij.idea.plugin.hybris.flexibleSearch.file.actions.FlexibleSearchFileCreateAction"
+                class="sap.commerce.toolset.flexibleSearch.file.actions.FlexibleSearchFileCreateAction"
                 text="FlexibleSearch File" description="Create new FlexibleSearch file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <group id="FSRemoteControl.Actions" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchActionsGroup">
-            <action id="hybris.fxs.execute" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchExecuteAction">
+        <group id="FSRemoteControl.Actions" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchActionsGroup">
+            <action id="hybris.fxs.execute" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchExecuteAction">
                 <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
             </action>
 
@@ -98,12 +98,12 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
 
-        <action id="hybris.fxs.openQuery" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenQueryAction"/>
-        <action id="hybris.fxs.openSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchOpenSettingsAction"/>
-        <action id="hybris.fxs.toggleParameters" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchToggleInEditorParametersAction"/>
-        <action id="hybris.fxs.toggleInEditorResults" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchToggleInEditorResultsAction"/>
-        <action id="hybris.fxs.copyToClipboard" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchCopyToClipboardAction"/>
-        <action id="hybris.fxs.executionContextSettings" class="com.intellij.idea.plugin.hybris.flexibleSearch.actions.FlexibleSearchExecutionContextSettingsAction"/>
+        <action id="hybris.fxs.openQuery" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchOpenQueryAction"/>
+        <action id="hybris.fxs.openSettings" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchOpenSettingsAction"/>
+        <action id="hybris.fxs.toggleParameters" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchToggleInEditorParametersAction"/>
+        <action id="hybris.fxs.toggleInEditorResults" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchToggleInEditorResultsAction"/>
+        <action id="hybris.fxs.copyToClipboard" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchCopyToClipboardAction"/>
+        <action id="hybris.fxs.executionContextSettings" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchExecutionContextSettingsAction"/>
 
         <group id="hybris.fxs.toolbar.left">
             <reference ref="hybris.fxs.executionContextSettings"/>

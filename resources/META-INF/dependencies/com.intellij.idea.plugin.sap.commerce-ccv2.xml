@@ -19,7 +19,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="JavaScript.JsonSchema">
-        <ProviderFactory implementation="com.intellij.idea.plugin.hybris.system.manifest.jsonSchema.ManifestJsonSchemaProviderFactory"/>
+        <ProviderFactory implementation="sap.commerce.toolset.system.manifest.jsonSchema.ManifestJsonSchemaProviderFactory"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -28,7 +28,7 @@
         <project.converterProvider implementation="sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings$MyConverterProvider"/>
 
         <completion.contributor language="JSON" id="CCv2ManifestCompletionContributor"
-                                implementationClass="com.intellij.idea.plugin.hybris.system.manifest.codeInsight.completion.ManifestJsonCompletionProvider"/>
+                                implementationClass="sap.commerce.toolset.system.manifest.codeInsight.completion.ManifestJsonCompletionProvider"/>
     </extensions>
 
     <actions>

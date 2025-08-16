@@ -19,7 +19,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.JRebelConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.JRebelConfigurator"/>
     </extensions>
 
 </idea-plugin>

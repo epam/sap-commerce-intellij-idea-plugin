@@ -20,14 +20,14 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.SpringFacetConfigurator"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSpringConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.impl.SpringFacetConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultSpringConfigurator"/>
 
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlInterceptorLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelItemInterceptorLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlInterceptorLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ModelItemInterceptorLineMarkerProvider"/>
 
-        <multiHostInjector implementation="com.intellij.idea.plugin.hybris.lang.injection.HybrisSpringELInjector"/>
-        <spring.el.contexts order="first" implementation="com.intellij.idea.plugin.hybris.spring.context.CngSpringELContextsExtension"/>
+        <multiHostInjector implementation="sap.commerce.toolset.lang.injection.HybrisSpringELInjector"/>
+        <spring.el.contexts order="first" implementation="sap.commerce.toolset.spring.context.CngSpringELContextsExtension"/>
     </extensions>
 
 </idea-plugin>

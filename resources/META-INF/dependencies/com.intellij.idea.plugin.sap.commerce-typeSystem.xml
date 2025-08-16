@@ -20,39 +20,39 @@
     <extensions defaultExtensionNs="com.intellij">
 
         <dom.fileMetaData rootTagName="items" stubVersion="23"
-                          implementation="com.intellij.idea.plugin.hybris.system.type.file.TSDomFileDescription"/>
+                          implementation="sap.commerce.toolset.system.type.file.TSDomFileDescription"/>
 
         <dom.fileMetaData rootTagName="model" stubVersion="2"
-                          implementation="com.intellij.idea.plugin.hybris.system.type.file.TSDeploymentModelDomFileDescription"/>
+                          implementation="sap.commerce.toolset.system.type.file.TSDeploymentModelDomFileDescription"/>
 
-        <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.lang.folding.ItemsXmlFoldingBuilder"/>
-        <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.lang.folding.DeploymentModelFoldingBuilder"/>
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.system.type.lang.folding.ItemsXmlFoldingBuilder"/>
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.system.type.lang.folding.DeploymentModelFoldingBuilder"/>
 
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlItemAlternativeDeclarationsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlItemSiblingsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ItemsXmlAttributeHandlerLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlItemAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlItemSiblingsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlAttributeHandlerLineMarkerProvider"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.completion.TSCompletionContributor"/>
+        <completion.contributor language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionContributor"/>
 
-        <xmlStructureViewBuilderProvider order="first" implementation="com.intellij.idea.plugin.hybris.system.type.structureView.TSXmlStructureViewBuilderProvider"/>
+        <xmlStructureViewBuilderProvider order="first" implementation="sap.commerce.toolset.system.type.structureView.TSXmlStructureViewBuilderProvider"/>
 
         <projectConfigurable id="hybris.project.ts.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
                              order="after hybris.project.integrations.settings"
-                             provider="com.intellij.idea.plugin.hybris.system.type.settings.options.ProjectTypeSystemConfigurableProvider"/>
+                             provider="sap.commerce.toolset.system.type.settings.options.ProjectTypeSystemConfigurableProvider"/>
     </extensions>
 
     <actions>
         <group id="TSView.ToolWindow">
             <group id="TSView.ToolWindow.TreePopup">
-                <action class="com.intellij.idea.plugin.hybris.toolwindow.system.type.actions.GoToDeclarationTSNodeAction"
+                <action class="sap.commerce.toolset.toolwindow.system.type.actions.GoToDeclarationTSNodeAction"
                         use-shortcut-of="GotoDeclaration"/>
             </group>
 
             <group id="TSView.ToolWindow.TablePopup">
-                <action class="com.intellij.idea.plugin.hybris.toolwindow.system.type.actions.GoToDeclarationTSTableAction"
+                <action class="sap.commerce.toolset.toolwindow.system.type.actions.GoToDeclarationTSTableAction"
                         use-shortcut-of="GotoDeclaration"/>
             </group>
         </group>

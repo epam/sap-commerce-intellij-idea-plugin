@@ -19,14 +19,14 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
         <dom.fileMetaData rootTagName="process" stubVersion="2"
-                          implementation="com.intellij.idea.plugin.hybris.system.businessProcess.BpDomFileDescription"/>
+                          implementation="sap.commerce.toolset.system.businessProcess.BpDomFileDescription"/>
 
-        <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.businessProcess.lang.folding.BpXmlFoldingBuilder"/>
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.system.businessProcess.lang.folding.BpXmlFoldingBuilder"/>
 
         <projectConfigurable id="hybris.project.bp.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.bp.title"
                              order="after hybris.project.bs.settings"
-                             provider="com.intellij.idea.plugin.hybris.system.businessProcess.settings.options.ProjectBusinessProcessConfigurableProvider"/>
+                             provider="sap.commerce.toolset.system.businessProcess.settings.options.ProjectBusinessProcessConfigurableProvider"/>
     </extensions>
 </idea-plugin>

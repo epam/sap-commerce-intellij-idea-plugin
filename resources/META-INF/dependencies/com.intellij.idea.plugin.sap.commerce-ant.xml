@@ -20,7 +20,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.AntConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.AntConfigurator"/>
 
         <editorNotificationProvider id="antUpdateMavenDependenciesNotificationProvider"
                                     implementation="sap.commerce.toolset.ant.ui.AntUpdateMavenDependenciesNotificationProvider"/>

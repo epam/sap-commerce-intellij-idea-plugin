@@ -18,7 +18,7 @@
 
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij.copyright">
-        <updater filetype="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.copyright.UpdateImpexCopyrightsProvider"/>
-        <updater filetype="Access Control Lists" implementationClass="com.intellij.idea.plugin.hybris.acl.copyright.UpdateAclCopyrightsProvider"/>
+        <updater filetype="ImpEx" implementationClass="sap.commerce.toolset.impex.copyright.UpdateImpexCopyrightsProvider"/>
+        <updater filetype="Access Control Lists" implementationClass="sap.commerce.toolset.acl.copyright.UpdateAclCopyrightsProvider"/>
     </extensions>
 </idea-plugin>

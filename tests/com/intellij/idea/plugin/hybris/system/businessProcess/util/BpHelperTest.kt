@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.intellij.idea.plugin.hybris.system.businessProcess.util
+package sap.commerce.toolset.system.businessProcess.util
 
 import kotlin.test.Ignore
 import kotlin.test.Test

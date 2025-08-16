@@ -19,14 +19,14 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.vfs.listeners.MetaSystemsAsyncFileListener"/>
-        <psi.treeChangeListener implementation="com.intellij.idea.plugin.hybris.psi.listeners.PsiTreeChangeListener"/>
+        <vfs.asyncListener implementation="sap.commerce.toolset.vfs.listeners.MetaSystemsAsyncFileListener"/>
+        <psi.treeChangeListener implementation="sap.commerce.toolset.psi.listeners.PsiTreeChangeListener"/>
 
         <!-- ####################################################################################################### -->
         <!--                                        Run Contributors                                                 -->
         <!-- ####################################################################################################### -->
         <runLineMarkerContributor language="XML"
-                                  implementationClass="com.intellij.idea.plugin.hybris.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
+                                  implementationClass="sap.commerce.toolset.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Facet                                                        -->
@@ -34,38 +34,38 @@
 
         <facetType implementation="sap.commerce.toolset.project.facet.YFacetType"/>
 
-        <postStartupActivity order="first" id="hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectImportStartupActivity"/>
-        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisProjectStructureStartupActivity"/>
-        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.HybrisJavaTypeRenderersStartupActivity"/>
-        <postStartupActivity order="after hybrisProjectImport" implementation="com.intellij.idea.plugin.hybris.startup.WhatsNewStartupActivity"/>
-        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.HybrisPluginUpdateCheckerStartupActivity"/>
-        <backgroundPostStartupActivity implementation="com.intellij.idea.plugin.hybris.startup.PreLoadSystemsStartupActivity"/>
+        <postStartupActivity order="first" id="hybrisProjectImport" implementation="sap.commerce.toolset.startup.HybrisProjectImportStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport" implementation="sap.commerce.toolset.startup.HybrisProjectStructureStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport" implementation="sap.commerce.toolset.startup.HybrisJavaTypeRenderersStartupActivity"/>
+        <postStartupActivity order="after hybrisProjectImport" implementation="sap.commerce.toolset.startup.WhatsNewStartupActivity"/>
+        <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.HybrisPluginUpdateCheckerStartupActivity"/>
+        <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.PreLoadSystemsStartupActivity"/>
         <backgroundPostStartupActivity implementation="sap.commerce.toolset.ccv2.startup.CCv2EventsSubscriberStartupActivity"/>
 
-        <searchEverywhereContributor implementation="com.intellij.idea.plugin.hybris.system.type.searcheverywhere.TypeSearchEverywhereContributor$Factory"/>
+        <searchEverywhereContributor implementation="sap.commerce.toolset.system.type.searcheverywhere.TypeSearchEverywhereContributor$Factory"/>
 
-        <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.editor.event.HybrisEditorFactoryListener"/>
+        <editorFactoryListener implementation="sap.commerce.toolset.editor.event.HybrisEditorFactoryListener"/>
     </extensions>
 
     <actions>
-        <action id="File.yRefresh" class="com.intellij.idea.plugin.hybris.project.actions.ProjectRefreshAction"
+        <action id="File.yRefresh" class="sap.commerce.toolset.project.actions.ProjectRefreshAction"
                 text="Refresh SAP Commerce Project"
                 description="Re-imports the current hybris project with default values">
             <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
         </action>
 
-        <action id="GotoType" class="com.intellij.idea.plugin.hybris.project.actions.GotoTypeAction"
+        <action id="GotoType" class="sap.commerce.toolset.project.actions.GotoTypeAction"
                 text="SAP Type...">
             <keyboard-shortcut first-keystroke="control shift H" keymap="$default"/>
             <add-to-group group-id="GoToTargetEx"/>
         </action>
 
-        <action id="hybris.hac.configureConnection" class="com.intellij.idea.plugin.hybris.actions.ConfigureHacConnectionAction"/>
+        <action id="hybris.hac.configureConnection" class="sap.commerce.toolset.actions.ConfigureHacConnectionAction"/>
 
         <group id="hybris.hac.chooseConnection" popup="true" searchable="false"
-               class="com.intellij.idea.plugin.hybris.actions.HacChooseConnectionAction">
-            <action class="com.intellij.idea.plugin.hybris.actions.AddHacConnectionAction"/>
-            <action class="com.intellij.idea.plugin.hybris.actions.EditActiveHacConnectionAction"/>
+               class="sap.commerce.toolset.actions.HacChooseConnectionAction">
+            <action class="sap.commerce.toolset.actions.AddHacConnectionAction"/>
+            <action class="sap.commerce.toolset.actions.EditActiveHacConnectionAction"/>
             <reference ref="hybris.hac.configureConnection"/>
         </group>
     </actions>

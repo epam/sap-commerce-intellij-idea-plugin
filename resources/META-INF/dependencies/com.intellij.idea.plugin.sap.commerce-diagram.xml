@@ -31,36 +31,36 @@
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/HybrisDiagramDarcula.xml"/>
 
         <diagram.Provider id="HybrisBusinessProcessDiagramProvider"
-                          implementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpDiagramProvider"/>
+                          implementation="sap.commerce.toolset.diagram.businessProcess.BpDiagramProvider"/>
 
         <diagram.Provider id="HybrisModuleDependencies"
-                          implementation="com.intellij.idea.plugin.hybris.diagram.module.ModuleDepDiagramProvider"/>
+                          implementation="sap.commerce.toolset.diagram.module.ModuleDepDiagramProvider"/>
 
         <diagram.Provider id="HybrisTypeSystemDependencies"
-                          implementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramProvider"/>
+                          implementation="sap.commerce.toolset.diagram.typeSystem.TSDiagramProvider"/>
 
-        <projectService serviceInterface="com.intellij.idea.plugin.hybris.diagram.businessProcess.BpGraphService"
-                        serviceImplementation="com.intellij.idea.plugin.hybris.diagram.businessProcess.impl.BpGraphServiceImpl"/>
+        <projectService serviceInterface="sap.commerce.toolset.diagram.businessProcess.BpGraphService"
+                        serviceImplementation="sap.commerce.toolset.diagram.businessProcess.impl.BpGraphServiceImpl"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.diagram.typeSystem.TSDiagramToolbarActionsProvider"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.diagram.typeSystem.TSDiagramToolbarActionsProvider"/>
 
-        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.businessProcess.execution.lineMarker.ShowBPDiagramRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.typeSystem.execution.lineMarker.ShowTSDiagramRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.diagram.module.execution.lineMarker.ShowModuleDepDiagramRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.diagram.businessProcess.execution.lineMarker.ShowBPDiagramRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.diagram.typeSystem.execution.lineMarker.ShowTSDiagramRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.diagram.module.execution.lineMarker.ShowModuleDepDiagramRunLineMarkerContributor"/>
     </extensions>
 
     <actions>
         <action id="ShowBusinessProcessDiagram"
-                class="com.intellij.idea.plugin.hybris.diagram.businessProcess.actions.ShowBusinessProcessDiagramAction"
+                class="sap.commerce.toolset.diagram.businessProcess.actions.ShowBusinessProcessDiagramAction"
                 text="Show Business Process Diagram">
         </action>
         <action id="ShowTypeSystemDiagram"
-                class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ShowTypeSystemDiagramAction"
+                class="sap.commerce.toolset.diagram.typeSystem.actions.ShowTypeSystemDiagramAction"
                 text="Show Type System Diagram">
             <add-to-group group-id="HybrisToolsActions"/>
         </action>
         <action id="ShowModuleDependencyDiagram"
-                class="com.intellij.idea.plugin.hybris.diagram.module.actions.ShowModuleDependencyDiagramAction"
+                class="sap.commerce.toolset.diagram.module.actions.ShowModuleDependencyDiagramAction"
                 text="Show Module Dependency Diagram"
                 icon="AllIcons.FileTypes.Diagram">
             <add-to-group group-id="HybrisToolsActions"/>
@@ -68,19 +68,19 @@
 
         <group id="Diagram.Hybris.TypeSystem.Actions">
             <action id="Diagram.Hybris.TypeSystem.Actions.OpenSettings"
-                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.OpenSettingsDiagramAction"/>
+                    class="sap.commerce.toolset.diagram.typeSystem.actions.OpenSettingsDiagramAction"/>
             <separator/>
             <action id="Diagram.Hybris.TypeSystem.Actions.RestoreRemovedNodes"
-                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.RestoreRemovedNodesDiagramAction"/>
+                    class="sap.commerce.toolset.diagram.typeSystem.actions.RestoreRemovedNodesDiagramAction"/>
             <action id="Diagram.Hybris.TypeSystem.Actions.ExpandAll"
-                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ExpandAllDiagramAction"/>
+                    class="sap.commerce.toolset.diagram.typeSystem.actions.ExpandAllDiagramAction"/>
             <action id="Diagram.Hybris.TypeSystem.Actions.CollapseAll"
-                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.CollapseAllDiagramAction"/>
+                    class="sap.commerce.toolset.diagram.typeSystem.actions.CollapseAllDiagramAction"/>
         </group>
 
         <group id="Diagram.Hybris.TypeSystem.Node.Actions">
             <action id="Diagram.Hybris.TypeSystem.Node.Actions.ExcludeTypeName"
-                    class="com.intellij.idea.plugin.hybris.diagram.typeSystem.actions.ExcludeTypeNameDiagramAction">
+                    class="sap.commerce.toolset.diagram.typeSystem.actions.ExcludeTypeNameDiagramAction">
                 <keyboard-shortcut first-keystroke="ctrl meta pressed E" keymap="$default"/>
             </action>
         </group>

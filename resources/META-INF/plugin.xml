@@ -29,7 +29,7 @@
 
     <resource-bundle>i18n.HybrisBundle</resource-bundle>
 
-    <incompatible-with>ccom.intellij.idea.plugin.hybris.impex</incompatible-with>
+    <incompatible-with>csap.commerce.toolset.impex</incompatible-with>
     <incompatible-with>ccom.intellij.idea.plugin.commerce.integration</incompatible-with>
 
     <extensions defaultExtensionNs="org.jetbrains.kotlin">

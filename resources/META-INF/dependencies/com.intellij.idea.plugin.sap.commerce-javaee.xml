@@ -21,7 +21,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.XsdSchemaConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.XsdSchemaConfigurator"/>
 
     </extensions>
 

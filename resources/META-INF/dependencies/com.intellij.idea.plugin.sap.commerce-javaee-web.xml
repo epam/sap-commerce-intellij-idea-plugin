@@ -21,7 +21,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.WebFacetConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.impl.WebFacetConfigurator"/>
 
     </extensions>
 

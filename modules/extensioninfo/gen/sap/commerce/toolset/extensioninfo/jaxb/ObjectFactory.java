@@ -25,7 +25,7 @@ import jakarta.xml.bind.annotation.XmlRegistry;
 /**
  * This object contains factory methods for each
  * Java content interface and Java element interface
- * generated in the com.intellij.idea.plugin.hybris.project.settings.jaxb package.
+ * generated in the sap.commerce.toolset.project.settings.jaxb package.
  * <p>An ObjectFactory allows you to programatically
  * construct new instances of the Java representation
  * for XML content. The Java representation of XML
@@ -40,7 +40,7 @@ public class ObjectFactory {
 
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.intellij.idea.plugin.hybris.project.settings.jaxb
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: sap.commerce.toolset.project.settings.jaxb
      */
     public ObjectFactory() {
     }

@@ -20,7 +20,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.GradleConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.GradleConfigurator"/>
 
     </extensions>
 

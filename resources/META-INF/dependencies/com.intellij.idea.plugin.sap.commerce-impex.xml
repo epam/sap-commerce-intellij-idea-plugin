@@ -22,10 +22,10 @@
         <internalFileTemplate name="ImpEx File"/>
 
         <treeStructureProvider order="after hybris.project.root.tree.structure.provider"
-                               implementation="com.intellij.idea.plugin.hybris.impex.project.view.ImpExTreeStructureProvider"/>
+                               implementation="sap.commerce.toolset.impex.project.view.ImpExTreeStructureProvider"/>
 
         <codeInsight.declarativeInlayProvider language="ImpEx"
-                                              implementationClass="com.intellij.idea.plugin.hybris.impex.codeInsight.hints.ImpExParameterInlayHintProvider"
+                                              implementationClass="sap.commerce.toolset.impex.codeInsight.hints.ImpExParameterInlayHintProvider"
                                               isEnabledByDefault="true"
                                               group="VALUES_GROUP"
                                               providerId="hybris.ImpEx.parameter"
@@ -34,70 +34,70 @@
                                               descriptionKey="hybris.impex.editor.parameter.description"/>
 
         <fileType name="ImpEx" language="ImpEx" extensions="impex" fieldName="INSTANCE"
-                  implementationClass="com.intellij.idea.plugin.hybris.impex.file.ImpexFileType"/>
+                  implementationClass="sap.commerce.toolset.impex.file.ImpexFileType"/>
 
-        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexColorSettingsPage"/>
+        <colorSettingsPage implementation="sap.commerce.toolset.impex.highlighting.ImpexColorSettingsPage"/>
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/ImpExDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpExDarcula.xml"/>
 
-        <platform.backend.documentation.psiTargetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexPsiDocumentationTargetProvider"/>
-        <platform.backend.documentation.targetProvider implementation="com.intellij.idea.plugin.hybris.impex.lang.documentation.ImpexDocumentationTargetProvider"/>
+        <platform.backend.documentation.psiTargetProvider implementation="sap.commerce.toolset.impex.lang.documentation.ImpexPsiDocumentationTargetProvider"/>
+        <platform.backend.documentation.targetProvider implementation="sap.commerce.toolset.impex.lang.documentation.ImpexDocumentationTargetProvider"/>
 
-        <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.impex.editor.event.ImpExLineEditorFactoryListener"/>
-        <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.impex.vfs.event.ImpExVfsAsyncListener"/>
+        <editorFactoryListener implementation="sap.commerce.toolset.impex.editor.event.ImpExLineEditorFactoryListener"/>
+        <vfs.asyncListener implementation="sap.commerce.toolset.impex.vfs.event.ImpExVfsAsyncListener"/>
 
-        <lang.parserDefinition language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.ImpexParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
-        <lang.commenter language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.ImpexCommenter"/>
-        <lang.formatter language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.formatting.ImpexFormattingModelBuilder"/>
-        <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpExFoldingBuilder"/>
-        <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpExFoldingLinesBuilder"/>
-        <lang.foldingBuilder language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.folding.ImpexMacroFoldingBuilder"/>
-        <lang.psiStructureViewFactory language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.view.ImpexStructureViewBuilderProvider"/>
-        <lang.refactoringSupport language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpexRefactoringSupportProvider"/>
+        <lang.parserDefinition language="ImpEx" implementationClass="sap.commerce.toolset.impex.ImpexParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="ImpEx" implementationClass="sap.commerce.toolset.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+        <lang.commenter language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.ImpexCommenter"/>
+        <lang.formatter language="ImpEx" implementationClass="sap.commerce.toolset.impex.formatting.ImpexFormattingModelBuilder"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingBuilder"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingLinesBuilder"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpexMacroFoldingBuilder"/>
+        <lang.psiStructureViewFactory language="ImpEx" implementationClass="sap.commerce.toolset.impex.view.ImpexStructureViewBuilderProvider"/>
+        <lang.refactoringSupport language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.refactoring.ImpexRefactoringSupportProvider"/>
 
-        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexCodeStyleSettingsProvider"/>
-        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
+        <codeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
 
-        <breadcrumbsInfoProvider implementation="com.intellij.idea.plugin.hybris.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
+        <breadcrumbsInfoProvider implementation="sap.commerce.toolset.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
 
         <defaultLiveTemplates file="liveTemplates/ImpEx.xml"/>
-        <liveTemplateContext contextId="IMPEX" implementation="com.intellij.idea.plugin.hybris.impex.liveTemplates.ImpexContextType"/>
+        <liveTemplateContext contextId="IMPEX" implementation="sap.commerce.toolset.impex.liveTemplates.ImpexContextType"/>
 
-        <vetoRenameCondition implementation="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExVetoRenameCondition"/>
-        <renameInputValidator implementation="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExRenameInputValidator"/>
-        <renamePsiElementProcessor implementation="com.intellij.idea.plugin.hybris.impex.lang.refactoring.ImpExRenamePsiElementProcessor"/>
+        <vetoRenameCondition implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExVetoRenameCondition"/>
+        <renameInputValidator implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExRenameInputValidator"/>
+        <renamePsiElementProcessor implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExRenamePsiElementProcessor"/>
 
-        <editorNotificationProvider id="impexToAclEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.impex.ui.ImpExToAclEditorNotificationProvider"/>
+        <editorNotificationProvider id="impexToAclEditorNotificationProvider" implementation="sap.commerce.toolset.impex.ui.ImpExToAclEditorNotificationProvider"/>
 
         <projectConfigurable id="hybris.project.impex.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.impex.title"
                              order="after hybris.project.integrations.settings"
-                             provider="com.intellij.idea.plugin.hybris.impex.settings.options.ProjectImpExSettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.impex.settings.options.ProjectImpExSettingsConfigurableProvider"/>
 
         <!-- ####################################################################################################### -->
         <!--                                        Impex Completion Providers                                       -->
         <!-- ####################################################################################################### -->
 
-        <completion.contributor language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.completion.ImpexCompletionContributor"/>
+        <completion.contributor language="ImpEx" implementationClass="sap.commerce.toolset.impex.completion.ImpexCompletionContributor"/>
 
         <!-- ####################################################################################################### -->
 
         <highlightUsagesHandlerFactory
-                implementation="com.intellij.idea.plugin.hybris.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
+                implementation="sap.commerce.toolset.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
 
-        <lang.findUsagesProvider language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.find.findUsages.ImpexFindUsagesProvider"/>
+        <lang.findUsagesProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.find.findUsages.ImpexFindUsagesProvider"/>
 
-        <annotator language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.annotation.ImpexAnnotator"/>
+        <annotator language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.annotation.ImpexAnnotator"/>
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.impex.injection.ImpexXmlLanguageInjector"/>
+        <languageInjector implementation="sap.commerce.toolset.impex.injection.ImpexXmlLanguageInjector"/>
 
-        <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.impex.assistance.event.ImpexEditorFactoryListener"/>
+        <editorFactoryListener implementation="sap.commerce.toolset.impex.assistance.event.ImpexEditorFactoryListener"/>
 
         <codeInsight.declarativeInlayProvider language="ImpEx"
-                                              implementationClass="com.intellij.idea.plugin.hybris.impex.codeInsight.hints.ImpExDefaultValueDeclarativeInlayProvider"
+                                              implementationClass="sap.commerce.toolset.impex.codeInsight.hints.ImpExDefaultValueDeclarativeInlayProvider"
                                               isEnabledByDefault="true"
                                               group="VALUES_GROUP"
                                               providerId="hybris.ImpEx.defaultValue"
@@ -107,49 +107,49 @@
     </extensions>
 
     <actions>
-        <action id="ImpEx.NewImpExFile" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexFileCreateAction"
+        <action id="ImpEx.NewImpExFile" class="sap.commerce.toolset.impex.file.actions.ImpexFileCreateAction"
                 text="ImpEx File" description="Create new ImpEx file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <action id="hybris.impex.extractAcl" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexExtractAclAction"/>
-        <action id="hybris.impex.learnMoreAcl" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpexLearnMoreAboutAclAction"/>
-        <action id="hybris.impex.openFileInConsole" class="com.intellij.idea.plugin.hybris.impex.file.actions.ImpExOpenInConsoleAction"/>
-        <action id="hybris.impex.openQuery" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenQueryAction">
+        <action id="hybris.impex.extractAcl" class="sap.commerce.toolset.impex.file.actions.ImpexExtractAclAction"/>
+        <action id="hybris.impex.learnMoreAcl" class="sap.commerce.toolset.impex.file.actions.ImpexLearnMoreAboutAclAction"/>
+        <action id="hybris.impex.openFileInConsole" class="sap.commerce.toolset.impex.file.actions.ImpExOpenInConsoleAction"/>
+        <action id="hybris.impex.openQuery" class="sap.commerce.toolset.impex.actions.ImpExOpenQueryAction">
             <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
         </action>
-        <action id="hybris.impex.openSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExOpenSettingsAction"/>
-        <action id="hybris.impex.validate" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExValidateAction">
+        <action id="hybris.impex.openSettings" class="sap.commerce.toolset.impex.actions.ImpExOpenSettingsAction"/>
+        <action id="hybris.impex.validate" class="sap.commerce.toolset.impex.actions.ImpExValidateAction">
             <keyboard-shortcut first-keystroke="control alt V" keymap="$default"/>
         </action>
-        <action id="hybris.impex.import" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecuteAction">
+        <action id="hybris.impex.import" class="sap.commerce.toolset.impex.actions.ImpExExecuteAction">
             <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
         </action>
-        <action id="hybris.impex.table.select" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSelectAction">
+        <action id="hybris.impex.table.select" class="sap.commerce.toolset.impex.actions.ImpExTableSelectAction">
             <keyboard-shortcut first-keystroke="control shift s" keymap="$default"/>
         </action>
-        <action id="hybris.impex.executionContextSettings" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExExecutionContextSettingsAction"/>
+        <action id="hybris.impex.executionContextSettings" class="sap.commerce.toolset.impex.actions.ImpExExecutionContextSettingsAction"/>
 
         <group id="hybris.impex.table.actions">
             <reference ref="hybris.impex.table.select"/>
             <separator/>
-            <action id="hybris.impex.table.column.move.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveLeftAction">
+            <action id="hybris.impex.table.column.move.left" class="sap.commerce.toolset.impex.actions.ImpExTableColumnMoveLeftAction">
                 <keyboard-shortcut first-keystroke="control shift alt COMMA" keymap="$default"/>
             </action>
-            <action id="hybris.impex.table.column.move.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnMoveRightAction">
+            <action id="hybris.impex.table.column.move.right" class="sap.commerce.toolset.impex.actions.ImpExTableColumnMoveRightAction">
                 <keyboard-shortcut first-keystroke="control shift alt PERIOD" keymap="$default"/>
             </action>
             <separator/>
-            <action id="hybris.impex.table.column.add.left" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnInsertLeftAction"/>
-            <action id="hybris.impex.table.column.add.right" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnInsertRightAction"/>
+            <action id="hybris.impex.table.column.add.left" class="sap.commerce.toolset.impex.actions.ImpExTableColumnInsertLeftAction"/>
+            <action id="hybris.impex.table.column.add.right" class="sap.commerce.toolset.impex.actions.ImpExTableColumnInsertRightAction"/>
             <separator/>
-            <action id="hybris.impex.table.column.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableColumnRemoveAction">
+            <action id="hybris.impex.table.column.remove" class="sap.commerce.toolset.impex.actions.ImpExTableColumnRemoveAction">
                 <keyboard-shortcut first-keystroke="control alt BACK_SPACE" keymap="$default"/>
             </action>
-            <action id="hybris.impex.table.remove" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableRemoveAction">
+            <action id="hybris.impex.table.remove" class="sap.commerce.toolset.impex.actions.ImpExTableRemoveAction">
                 <keyboard-shortcut first-keystroke="control shift alt BACK_SPACE" keymap="$default"/>
             </action>
-            <action id="hybris.impex.table.split" class="com.intellij.idea.plugin.hybris.impex.actions.ImpExTableSplitVerticallyAction">
+            <action id="hybris.impex.table.split" class="sap.commerce.toolset.impex.actions.ImpExTableSplitVerticallyAction">
                 <keyboard-shortcut first-keystroke="control shift alt BACK_SLASH" keymap="$default"/>
             </action>
         </group>
@@ -163,8 +163,8 @@
             <separator/>
             <reference ref="hybris.impex.table.actions"/>
             <separator/>
-            <action class="com.intellij.idea.plugin.hybris.impex.actions.ImpExToggleInEditorResultsAction"/>
-            <action class="com.intellij.idea.plugin.hybris.impex.actions.ImpExToggleInEditorParametersAction"/>
+            <action class="sap.commerce.toolset.impex.actions.ImpExToggleInEditorResultsAction"/>
+            <action class="sap.commerce.toolset.impex.actions.ImpExToggleInEditorParametersAction"/>
             <separator/>
             <reference ref="hybris.impex.openSettings"/>
         </group>

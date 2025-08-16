@@ -22,7 +22,7 @@
         <internalFileTemplate name="Polyglot Query File"/>
 
         <codeInsight.declarativeInlayProvider language="Polyglot Query"
-                                              implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.codeInsight.hints.PolyglotQueryParameterInlayHintProvider"
+                                              implementationClass="sap.commerce.toolset.polyglotQuery.codeInsight.hints.PolyglotQueryParameterInlayHintProvider"
                                               isEnabledByDefault="true"
                                               group="VALUES_GROUP"
                                               providerId="hybris.PolyglotQuery.parameter"
@@ -33,52 +33,52 @@
         <additionalTextAttributes scheme="Default" file="colorSchemes/PolyglotQueryDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/PolyglotQueryDarcula.xml"/>
 
-        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQueryColorSettingsPage"/>
-        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.polyglotQuery.formatting.PgQCodeStyleSettingsProvider"/>
-        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.polyglotQuery.formatting.PgQLanguageCodeStyleSettingsProvider"/>
+        <colorSettingsPage implementation="sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQueryColorSettingsPage"/>
+        <codeStyleSettingsProvider implementation="sap.commerce.toolset.polyglotQuery.formatting.PgQCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.polyglotQuery.formatting.PgQLanguageCodeStyleSettingsProvider"/>
 
-        <lang.formatter language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.formatting.PgQFormattingModelBuilder"/>
-        <lang.commenter language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.PolyglotQueryCommenter"/>
-        <lang.braceMatcher language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
-        <lang.foldingBuilder language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.folding.PolyglotQueryFoldingBuilder"/>
+        <lang.formatter language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.formatting.PgQFormattingModelBuilder"/>
+        <lang.commenter language="Polyglot Query" implementationClass="sap.commerce.toolset.impex.lang.PolyglotQueryCommenter"/>
+        <lang.braceMatcher language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
+        <lang.foldingBuilder language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.folding.PolyglotQueryFoldingBuilder"/>
 
         <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="INSTANCE"
-                  implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.file.PolyglotQueryFileType"/>
+                  implementationClass="sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType"/>
 
         <lang.parserDefinition language="Polyglot Query"
-                               implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.PolyglotQueryParserDefinition"/>
+                               implementationClass="sap.commerce.toolset.polyglotQuery.PolyglotQueryParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Polyglot Query"
-                                       implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighterFactory"/>
-        <annotator language="Polyglot Query" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
-        <editorNotificationProvider id="pgqEditorNotificationProvider" implementation="com.intellij.idea.plugin.hybris.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider"/>
+                                       implementationClass="sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighterFactory"/>
+        <annotator language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
+        <editorNotificationProvider id="pgqEditorNotificationProvider" implementation="sap.commerce.toolset.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider"/>
 
-        <languageInjector implementation="com.intellij.idea.plugin.hybris.polyglotQuery.injection.PolyglotQueryLanguageInjector"/>
+        <languageInjector implementation="sap.commerce.toolset.polyglotQuery.injection.PolyglotQueryLanguageInjector"/>
 
         <projectConfigurable id="hybris.project.pgq.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.pgq.title"
                              order="after hybris.project.fxs.settings"
-                             provider="com.intellij.idea.plugin.hybris.polyglotQuery.settings.options.ProjectPolyglotQuerySettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.polyglotQuery.settings.options.ProjectPolyglotQuerySettingsConfigurableProvider"/>
     </extensions>
 
     <actions>
         <action id="PolyglotQuery.NewPolyglotQueryFile"
-                class="com.intellij.idea.plugin.hybris.polyglotQuery.file.actions.PolyglotQueryFileCreateAction">
+                class="sap.commerce.toolset.polyglotQuery.file.actions.PolyglotQueryFileCreateAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <action id="hybris.pgq.openSettings" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenSettingsAction"/>
+        <action id="hybris.pgq.openSettings" class="sap.commerce.toolset.polyglotQuery.actions.PolyglotQueryOpenSettingsAction"/>
 
         <group id="hybris.pgq.toolbar.left">
             <reference ref="hybris.fxs.executionContextSettings"/>
             <separator/>
-            <action id="hybris.pgq.execute" class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryExecuteAction">
+            <action id="hybris.pgq.execute" class="sap.commerce.toolset.polyglotQuery.actions.PolyglotQueryExecuteAction">
                 <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
             </action>
-            <action class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryOpenQueryAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.actions.PolyglotQueryOpenQueryAction"/>
             <separator/>
-            <action class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryToggleRetrieveAllDataAction"/>
-            <action class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryToggleInEditorResultsAction"/>
-            <action class="com.intellij.idea.plugin.hybris.polyglotQuery.actions.PolyglotQueryToggleInEditorParametersAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.actions.PolyglotQueryToggleRetrieveAllDataAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.actions.PolyglotQueryToggleInEditorResultsAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.actions.PolyglotQueryToggleInEditorParametersAction"/>
             <separator/>
             <reference ref="hybris.pgq.openSettings"/>
         </group>

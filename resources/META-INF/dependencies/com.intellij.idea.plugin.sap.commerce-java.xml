@@ -23,62 +23,62 @@
         <!-- We cannot rely on `context.isRebuild` as it will be false in case of modules of various types.-->
         <!-- Thus, we're looking for Platform module.-->
         <!-- See ModulesBuildSettings.isRebuild.-->
-        <compiler.task execute="BEFORE" implementation="com.intellij.idea.plugin.hybris.project.compile.ProjectBeforeCompilerTask"/>
-        <compiler.task execute="AFTER" implementation="com.intellij.idea.plugin.hybris.project.compile.ProjectAfterCompilerTask"/>
+        <compiler.task execute="BEFORE" implementation="sap.commerce.toolset.project.compile.ProjectBeforeCompilerTask"/>
+        <compiler.task execute="AFTER" implementation="sap.commerce.toolset.project.compile.ProjectAfterCompilerTask"/>
 
         <defaultLiveTemplates file="liveTemplates/Java.xml"/>
 
-        <projectImportProvider implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectImportProvider"/>
-        <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.DefaultHybrisProjectImportBuilder"/>
-        <projectImportBuilder implementation="com.intellij.idea.plugin.hybris.project.OpenHybrisProjectImportBuilder"/>
-        <projectOpenProcessor implementation="com.intellij.idea.plugin.hybris.project.HybrisProjectOpenProcessor"/>
-        <writingAccessProvider implementation="com.intellij.idea.plugin.hybris.project.providers.HybrisWritingAccessProvider" />
-        <nonProjectFileWritingAccessExtension implementation="com.intellij.idea.plugin.hybris.project.providers.HybrisNonProjectFileWritingAccessExtension"/>
+        <projectImportProvider implementation="sap.commerce.toolset.project.HybrisProjectImportProvider"/>
+        <projectImportBuilder implementation="sap.commerce.toolset.project.DefaultHybrisProjectImportBuilder"/>
+        <projectImportBuilder implementation="sap.commerce.toolset.project.OpenHybrisProjectImportBuilder"/>
+        <projectOpenProcessor implementation="sap.commerce.toolset.project.HybrisProjectOpenProcessor"/>
+        <writingAccessProvider implementation="sap.commerce.toolset.project.providers.HybrisWritingAccessProvider" />
+        <nonProjectFileWritingAccessExtension implementation="sap.commerce.toolset.project.providers.HybrisNonProjectFileWritingAccessExtension"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.services.HybrisProjectService"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.services.impl.DefaultHybrisProjectService"/>
+        <applicationService serviceInterface="sap.commerce.toolset.project.services.HybrisProjectService"
+                            serviceImplementation="sap.commerce.toolset.project.services.impl.DefaultHybrisProjectService"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultContentRootConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultContentRootConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.GroupModuleConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultGroupModuleConfigurator"/>
+        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.GroupModuleConfigurator"
+                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultGroupModuleConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.LibRootsConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultLibRootsConfigurator"/>
+        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.LibRootsConfigurator"
+                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultLibRootsConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavadocSettingsConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavadocSettingsConfigurator"/>
+        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.JavadocSettingsConfigurator"
+                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultJavadocSettingsConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ModuleDependenciesConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultModuleDependenciesConfigurator"/>
+        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.ModuleDependenciesConfigurator"
+                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultModuleDependenciesConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.ModuleSettingsConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultModuleSettingsConfigurator"/>
+        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.ModuleSettingsConfigurator"
+                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultModuleSettingsConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.SearchScopeConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultSearchScopeConfigurator"/>
+        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.SearchScopeConfigurator"
+                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultSearchScopeConfigurator"/>
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.JavaCompilerConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
+        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.JavaCompilerConfigurator"
+                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.JaloItemLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelEnumLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelItemLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelItemAttributeMethodLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelItemAttributeFieldLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.daemon.ModelEnumValueLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.codeInsight.daemon.PopulatorsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.JaloItemLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ModelEnumLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ModelItemLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ModelItemAttributeMethodLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ModelItemAttributeFieldLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ModelEnumValueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.codeInsight.daemon.PopulatorsLineMarkerProvider"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.DtoBeanLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.DtoEnumLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.DtoEnumValueLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.daemon.DtoBeanPropertyLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.DtoBeanLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.DtoEnumLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.DtoEnumValueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.DtoBeanPropertyLineMarkerProvider"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.flexibleSearch.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="com.intellij.idea.plugin.hybris.polyglotQuery.codeInsight.daemon.PolyglotQueryLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.flexibleSearch.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.polyglotQuery.codeInsight.daemon.PolyglotQueryLineMarkerProvider"/>
 
         <codeInsight.declarativeInlayProvider language="JAVA"
-                                              implementationClass="com.intellij.idea.plugin.hybris.codeInsight.hints.DynamicAttributeDeclarativeInlayProvider"
+                                              implementationClass="sap.commerce.toolset.codeInsight.hints.DynamicAttributeDeclarativeInlayProvider"
                                               isEnabledByDefault="true"
                                               group="METHOD_CHAINS_GROUP"
                                               providerId="hybris.typeSystem"
@@ -86,13 +86,13 @@
                                               nameKey="hybris.editor.java.inlay_provider.dynamic_attribute.name"
                                               descriptionKey="hybris.editor.java.inlay_provider.dynamic_attribute.description"/>
         <codeInsight.inlayActionHandler handlerId="inlay.hybris.dynamic.attribute"
-                                        implementationClass="com.intellij.idea.plugin.hybris.codeInsight.hints.DynamicAttributeDeclarativeInlayActionHandler"/>
+                                        implementationClass="sap.commerce.toolset.codeInsight.hints.DynamicAttributeDeclarativeInlayActionHandler"/>
         <codeInsight.inlayProvider language="XML"
-                                   implementationClass="com.intellij.idea.plugin.hybris.system.type.codeInsight.hints.ItemsXmlInlayHintsProvider"/>
+                                   implementationClass="sap.commerce.toolset.system.type.codeInsight.hints.ItemsXmlInlayHintsProvider"/>
         <codeInsight.inlayProvider language="XML"
-                                   implementationClass="com.intellij.idea.plugin.hybris.system.bean.codeInsight.hints.BeansXmlInlayHintsProvider"/>
+                                   implementationClass="sap.commerce.toolset.system.bean.codeInsight.hints.BeansXmlInlayHintsProvider"/>
 
-        <codeInsight.daemonBoundCodeVisionProvider implementation="com.intellij.idea.plugin.hybris.system.java.codeInsight.hints.LoggerInlayHintsProvider"/>
+        <codeInsight.daemonBoundCodeVisionProvider implementation="sap.commerce.toolset.system.java.codeInsight.hints.LoggerInlayHintsProvider"/>
         
     </extensions>
 
