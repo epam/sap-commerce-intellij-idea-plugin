@@ -34,7 +34,7 @@ sourceSets {
 }
 
 dependencies {
-    implementation(project(":shared"))
+    implementation(project(":shared-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

@@ -21,7 +21,7 @@ package sap.commerce.toolset.toolwindow.system.type.forms;
 import sap.commerce.toolset.system.type.meta.model.*;
 import sap.commerce.toolset.system.type.psi.TSPsiHelper;
 import sap.commerce.toolset.toolwindow.system.type.components.*;
-import sap.commerce.toolset.toolwindow.ui.AbstractTable;
+import sap.commerce.toolset.ui.AbstractTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.PopupHandler;

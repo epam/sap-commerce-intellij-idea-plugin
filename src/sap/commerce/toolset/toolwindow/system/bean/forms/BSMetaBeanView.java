@@ -24,7 +24,7 @@ import sap.commerce.toolset.toolwindow.system.bean.components.BSMetaAnnotationsT
 import sap.commerce.toolset.toolwindow.system.bean.components.BSMetaHintsTable;
 import sap.commerce.toolset.toolwindow.system.bean.components.BSMetaImportsTable;
 import sap.commerce.toolset.toolwindow.system.bean.components.BSMetaPropertiesTable;
-import sap.commerce.toolset.toolwindow.ui.AbstractTable;
+import sap.commerce.toolset.ui.AbstractTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.PopupHandler;

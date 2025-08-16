@@ -20,7 +20,7 @@ package sap.commerce.toolset.toolwindow.system.bean.components
 
 import sap.commerce.toolset.system.bean.meta.model.BSGlobalMetaEnum
 import sap.commerce.toolset.system.bean.meta.model.BSMetaEnum
-import sap.commerce.toolset.toolwindow.ui.AbstractTable
+import sap.commerce.toolset.ui.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 import java.io.Serial

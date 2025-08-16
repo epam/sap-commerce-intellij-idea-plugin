@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset.system.type.settings.ui
 
-import sap.commerce.toolset.toolwindow.ui.AbstractTable
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.settings.state.TypeSystemDiagramSettingsState
+import sap.commerce.toolset.ui.AbstractTable
 import java.io.Serial
 
 private const val COLUMN_NAME = "Name"

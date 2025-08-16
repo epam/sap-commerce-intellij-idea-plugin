@@ -34,7 +34,7 @@ sourceSets {
 }
 
 dependencies {
-    implementation(project(":shared"))
+    implementation(project(":shared-core"))
     implementation(project(":remote-core"))
     implementation(project(":remote-console"))
     implementation(project(":flexibleSearch-core"))

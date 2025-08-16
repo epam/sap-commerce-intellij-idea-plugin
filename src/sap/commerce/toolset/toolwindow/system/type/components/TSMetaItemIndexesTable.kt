@@ -20,7 +20,7 @@ package sap.commerce.toolset.toolwindow.system.type.components
 
 import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.system.type.meta.model.TSMetaItem.TSMetaItemIndex
-import sap.commerce.toolset.toolwindow.ui.AbstractTable
+import sap.commerce.toolset.ui.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 import java.io.Serial

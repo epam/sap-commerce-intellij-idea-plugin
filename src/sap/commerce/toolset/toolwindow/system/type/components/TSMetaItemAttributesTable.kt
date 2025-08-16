@@ -22,7 +22,7 @@ import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.system.type.meta.model.TSMetaItem.TSMetaItemAttribute
 import sap.commerce.toolset.system.type.meta.model.TSMetaModifiers
 import sap.commerce.toolset.system.type.meta.model.TSMetaPersistence
-import sap.commerce.toolset.toolwindow.ui.AbstractTable
+import sap.commerce.toolset.ui.AbstractTable
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 import java.io.Serial

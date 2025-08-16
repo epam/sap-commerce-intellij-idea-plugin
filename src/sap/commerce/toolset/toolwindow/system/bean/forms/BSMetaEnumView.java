@@ -23,7 +23,7 @@ import sap.commerce.toolset.system.bean.meta.model.BSMetaClassifier;
 import sap.commerce.toolset.system.bean.meta.model.BSMetaEnum;
 import sap.commerce.toolset.system.bean.psi.BSPsiHelper;
 import sap.commerce.toolset.toolwindow.system.bean.components.BSMetaEnumValuesTable;
-import sap.commerce.toolset.toolwindow.ui.AbstractTable;
+import sap.commerce.toolset.ui.AbstractTable;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.PopupHandler;

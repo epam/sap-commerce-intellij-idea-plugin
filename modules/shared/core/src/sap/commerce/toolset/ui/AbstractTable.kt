@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.ui
+package sap.commerce.toolset.ui
 
 import com.intellij.ide.ui.search.SearchUtil
 import com.intellij.openapi.project.Project

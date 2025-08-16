@@ -41,7 +41,7 @@ dependencies {
         exclude("org.apache.httpcomponents", "httpcore")
         exclude("org.apache.httpcomponents", "httpmime")
     }
-    implementation(project(":shared"))
+    implementation(project(":shared-core"))
     implementation(project(":remote-core"))
 
     intellijPlatform {

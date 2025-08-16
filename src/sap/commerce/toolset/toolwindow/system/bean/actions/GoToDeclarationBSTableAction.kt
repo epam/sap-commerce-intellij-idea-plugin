@@ -21,7 +21,7 @@ package sap.commerce.toolset.toolwindow.system.bean.actions
 import sap.commerce.toolset.actions.AbstractGoToDeclarationAction
 import sap.commerce.toolset.system.bean.meta.model.BSMetaClassifier
 import sap.commerce.toolset.system.bean.model.*
-import sap.commerce.toolset.toolwindow.ui.AbstractTable
+import sap.commerce.toolset.ui.AbstractTable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil

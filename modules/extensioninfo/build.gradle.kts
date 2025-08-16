@@ -40,7 +40,7 @@ idea {
 }
 
 dependencies {
-    implementation(project(":shared"))
+    implementation(project(":shared-core"))
     implementation(libs.bundles.jaxb)
 
     intellijPlatform {
