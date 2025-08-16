@@ -21,10 +21,8 @@ package sap.commerce.toolset.ccv2
 import com.intellij.ide.BrowserUtil
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
@@ -40,12 +38,12 @@ import com.intellij.util.io.ZipUtil
 import kotlinx.coroutines.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.actionSystem.triggerAction
 import sap.commerce.toolset.ccv2.api.CCv1Api
 import sap.commerce.toolset.ccv2.api.CCv2Api
 import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
-import sap.commerce.toolset.ccv2.settings.options.ApplicationCCv2SettingsConfigurableProvider
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import java.io.Serial
 import java.net.SocketTimeoutException
@@ -766,11 +764,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                 "CCv2: API Token is not set",
                 "Please, specify CCv2 API token via corresponding application settings."
             )
-            .addAction("Open Settings") { _, _ ->
-                invokeLater {
-                    ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
-                }
-            }
+            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.show.settings") }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(10)
             .system(true)
@@ -788,11 +782,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                     Exceeded current read timeout, it can be adjusted via CCv2 settings.
                 """.trimIndent()
             )
-            .addAction("Open Settings") { _, _ ->
-                invokeLater {
-                    ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
-                }
-            }
+            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.show.settings") }
             .hideAfter(10)
             .system(true)
             .notify(project)
@@ -808,11 +798,7 @@ class CCv2Service(private val project: Project, private val coroutineScope: Coro
                     ${e.message ?: ""}
                 """.trimIndent()
             )
-            .addAction("Open Settings") { _, _ ->
-                invokeLater {
-                    ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
-                }
-            }
+            .addAction("Open Settings") { _, _ -> project.triggerAction("ccv2.show.settings") }
             .addAction("Generating API Tokens...") { _, _ -> BrowserUtil.browse(HybrisConstants.URL_HELP_GENERATING_API_TOKENS) }
             .hideAfter(15)
             .system(true)

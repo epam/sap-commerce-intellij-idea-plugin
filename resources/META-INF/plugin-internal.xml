@@ -43,8 +43,6 @@
 
         <applicationConfigurable id="hybris.settings" parentId="root" displayName="[y] SAP CX"
                                  provider="sap.commerce.toolset.settings.options.ApplicationSettingsConfigurableProvider"/>
-        <applicationConfigurable id="hybris.settings.ccv2" parentId="hybris.settings" displayName="CCv2"
-                                 provider="sap.commerce.toolset.ccv2.settings.options.ApplicationCCv2SettingsConfigurableProvider"/>
         <applicationConfigurable id="hybris.project.import.settings" parentId="hybris.settings"
                                  key="hybris.settings.application.project_import.title"
                                  provider="sap.commerce.toolset.settings.options.ApplicationProjectImportSettingsConfigurableProvider"/>

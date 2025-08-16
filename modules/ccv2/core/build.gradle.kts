@@ -125,7 +125,7 @@ tasks {
 dependencies {
     implementation(libs.bundles.openapi)
     implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
+    implementation(project(":project-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

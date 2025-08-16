@@ -13,7 +13,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/modules/acl/core" />
             <option value="$PROJECT_DIR$/modules/ant" />
-            <option value="$PROJECT_DIR$/modules/ccv2" />
+            <option value="$PROJECT_DIR$/modules/ccv2/core" />
+            <option value="$PROJECT_DIR$/modules/ccv2/ui" />
             <option value="$PROJECT_DIR$/modules/core/meta" />
             <option value="$PROJECT_DIR$/modules/core/meta-bean-system" />
             <option value="$PROJECT_DIR$/modules/core/meta-cockpitng" />

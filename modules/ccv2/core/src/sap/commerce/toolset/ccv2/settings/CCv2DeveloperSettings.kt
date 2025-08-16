@@ -18,14 +18,9 @@
 
 package sap.commerce.toolset.ccv2.settings
 
-import com.intellij.conversion.ConversionContext
-import com.intellij.conversion.ConverterProvider
-import com.intellij.conversion.ProjectConverter
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
-import com.intellij.openapi.util.NlsContexts
-import org.jetbrains.annotations.Nls
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.settings.state.DeveloperSettingsState
 import sap.commerce.toolset.ccv2.settings.state.SUser
@@ -59,16 +54,6 @@ class CCv2DeveloperSettings : SerializablePersistentStateComponent<DeveloperSett
             }
 
     override fun getModificationCount() = stateModificationCount
-
-    class MyConverterProvider : ConverterProvider() {
-        override fun getConversionDescription(): @NlsContexts.DialogMessage String {
-            TODO("Not yet implemented")
-        }
-
-        override fun createConverter(context: ConversionContext): @Nls(capitalization = Nls.Capitalization.Sentence) ProjectConverter {
-            TODO("Not yet implemented")
-        }
-    }
 
     companion object {
         @JvmStatic
