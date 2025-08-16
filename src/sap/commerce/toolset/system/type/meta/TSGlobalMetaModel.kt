@@ -18,7 +18,7 @@
 package sap.commerce.toolset.system.type.meta
 
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.system.meta.GlobalMetaModel
+import sap.commerce.toolset.meta.GlobalMetaModel
 import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive
 import sap.commerce.toolset.system.type.meta.model.*
 import java.util.concurrent.ConcurrentHashMap

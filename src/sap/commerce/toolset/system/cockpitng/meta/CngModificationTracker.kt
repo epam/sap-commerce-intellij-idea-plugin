@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.system.cockpitng.meta
 
-import sap.commerce.toolset.system.meta.MetaModelModificationTracker
+import sap.commerce.toolset.meta.MetaModelModificationTracker
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project

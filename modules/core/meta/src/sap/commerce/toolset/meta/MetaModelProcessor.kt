@@ -15,29 +15,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.meta
 
-package sap.commerce.toolset.system.bean.meta
-
-import sap.commerce.toolset.meta.MetaModelModificationTracker
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
+import sap.commerce.toolset.psi.util.PsiUtils
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.xml.XmlFile
+import com.intellij.util.xml.DomElement
+import kotlinx.coroutines.coroutineScope
 
-@Service(Service.Level.PROJECT)
-class BSModificationTracker(project: Project) : MetaModelModificationTracker(project) {
+abstract class MetaModelProcessor<D : DomElement, M>(private val project: Project) {
 
-    private val stateService by lazy { BSMetaModelStateService.getInstance(project) }
-
-    override fun getKeys(vararg xmlFiles: XmlFile): Collection<String> = xmlFiles.map { it.name }
-
-    override fun updateState(keys: Collection<String>) {
-        stateService.update(keys)
+    suspend fun process(meta: Meta<D>): M? = coroutineScope {
+        readAction {
+            process(
+                meta.container,
+                meta.yContainer,
+                meta.name,
+                PsiUtils.isCustomExtensionFile(meta.virtualFile, project),
+                meta.rootElement
+            )
+        }
     }
 
-    companion object {
-        val KEY_PROVIDER: (VirtualFile) -> String = { it.name }
-        fun getInstance(project: Project): BSModificationTracker = project.service()
-    }
+    abstract fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: D): M
 }

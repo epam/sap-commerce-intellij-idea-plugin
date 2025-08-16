@@ -22,8 +22,8 @@
 package sap.commerce.toolset.system.cockpitng.model.itemEditor;
 
 import sap.commerce.toolset.system.cockpitng.model.config.hybris.Mergeable;
-import sap.commerce.toolset.util.xml.FalseAttributeValue;
-import sap.commerce.toolset.util.xml.TrueAttributeValue;
+import sap.commerce.toolset.xml.FalseAttributeValue;
+import sap.commerce.toolset.xml.TrueAttributeValue;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;

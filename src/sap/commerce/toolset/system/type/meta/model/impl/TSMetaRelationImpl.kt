@@ -22,7 +22,7 @@ import sap.commerce.toolset.system.type.meta.model.*
 import sap.commerce.toolset.system.type.meta.model.TSMetaRelation.*
 import sap.commerce.toolset.system.type.model.Relation
 import sap.commerce.toolset.system.type.model.RelationElement
-import sap.commerce.toolset.util.xml.toBoolean
+import sap.commerce.toolset.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 

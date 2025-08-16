@@ -18,7 +18,7 @@
 package sap.commerce.toolset.system.bean.meta
 
 import sap.commerce.toolset.system.bean.model.Beans
-import sap.commerce.toolset.system.meta.MetaCollector
+import sap.commerce.toolset.meta.MetaCollector
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project

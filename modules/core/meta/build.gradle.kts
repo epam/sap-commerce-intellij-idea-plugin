@@ -42,6 +42,7 @@ idea {
 dependencies {
     implementation(libs.dtdparser)
     implementation(project(":shared"))
+    implementation(project(":project-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

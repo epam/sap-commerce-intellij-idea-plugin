@@ -20,7 +20,7 @@ package sap.commerce.toolset.system.bean.meta.model.impl
 
 import sap.commerce.toolset.system.bean.meta.model.BSMetaImport
 import sap.commerce.toolset.system.bean.model.Import
-import sap.commerce.toolset.util.xml.toBoolean
+import sap.commerce.toolset.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 

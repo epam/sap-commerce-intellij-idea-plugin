@@ -17,7 +17,7 @@
  */
 package sap.commerce.toolset.system.type.meta
 
-import sap.commerce.toolset.system.meta.MetaModelProcessor
+import sap.commerce.toolset.meta.MetaModelProcessor
 import sap.commerce.toolset.system.type.meta.impl.TSMetaModelBuilder
 import sap.commerce.toolset.system.type.model.Items
 import com.intellij.openapi.components.Service

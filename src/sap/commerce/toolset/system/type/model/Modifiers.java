@@ -21,8 +21,8 @@
 
 package sap.commerce.toolset.system.type.model;
 
-import sap.commerce.toolset.util.xml.FalseAttributeValue;
-import sap.commerce.toolset.util.xml.TrueAttributeValue;
+import sap.commerce.toolset.xml.FalseAttributeValue;
+import sap.commerce.toolset.xml.TrueAttributeValue;
 import com.intellij.util.xml.DomElement;
 import org.jetbrains.annotations.NotNull;
 

@@ -21,7 +21,7 @@
 
 package sap.commerce.toolset.system.type.model;
 
-import sap.commerce.toolset.util.xml.FalseAttributeValue;
+import sap.commerce.toolset.xml.FalseAttributeValue;
 import com.intellij.util.xml.Attribute;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;

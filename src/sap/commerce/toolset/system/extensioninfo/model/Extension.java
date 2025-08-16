@@ -20,7 +20,7 @@
 // DTD/Schema  :    null
 package sap.commerce.toolset.system.extensioninfo.model;
 
-import sap.commerce.toolset.util.xml.FalseAttributeValue;
+import sap.commerce.toolset.xml.FalseAttributeValue;
 import com.intellij.spellchecker.xml.NoSpellchecking;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.ApiStatus;

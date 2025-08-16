@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.meta
+package sap.commerce.toolset.meta
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.progress.ProcessCanceledException
@@ -32,12 +32,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-data class CachedState<T>(
-    val value: T?,
-    val computed: Boolean,
-    val computing: Boolean
-)
-
 abstract class MetaModelStateService<G, M, D : DomElement>(
     protected val project: Project,
     private val coroutineScope: CoroutineScope,
@@ -47,7 +41,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
 ) : Disposable {
 
     protected val _metaModelsState = MutableStateFlow<Map<String, M>>(emptyMap())
-    protected val _metaModelState = MutableStateFlow(CachedState<G>(null, computed = false, computing = false))
+    protected val _metaModelState = MutableStateFlow(CachedMetaState<G>(null, computed = false, computing = false))
     protected val _recomputeMetasState = MutableStateFlow<Collection<String>?>(null)
     protected val recomputeMetasState = _recomputeMetasState.asStateFlow()
     protected val metaModelsState = _metaModelsState.asStateFlow()
@@ -78,7 +72,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
     private fun processState(metaModels: Collection<String> = emptyList()) {
         if (metaModelState.value.computing) return
 
-        _metaModelState.value = CachedState(null, computed = false, computing = true)
+        _metaModelState.value = CachedMetaState(null, computed = false, computing = true)
 
         DumbService.getInstance(project).runWhenSmart {
             coroutineScope.launch {
@@ -110,7 +104,7 @@ abstract class MetaModelStateService<G, M, D : DomElement>(
                     create(metaModelsState.value.values)
                 }
 
-                _metaModelState.value = CachedState(newState, computed = true, computing = false)
+                _metaModelState.value = CachedMetaState(newState, computed = true, computing = false)
                 _recomputeMetasState.value = null
 
                 onCompletion(newState)

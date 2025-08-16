@@ -23,7 +23,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.system.meta.MetaModelStateService
+import sap.commerce.toolset.meta.MetaModelStateService
 import sap.commerce.toolset.system.type.model.Items
 
 @Service(Service.Level.PROJECT)

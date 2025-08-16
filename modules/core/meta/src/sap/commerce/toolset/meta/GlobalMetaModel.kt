@@ -16,6 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.util.xml.converter
+package sap.commerce.toolset.meta
 
-class FalseBooleanConverter : FallbackBooleanValueConverter(false)
+interface GlobalMetaModel

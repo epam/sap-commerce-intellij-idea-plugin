@@ -16,6 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.util.xml.converter
+package sap.commerce.toolset.xml.converter
 
-class TrueBooleanConverter : FallbackBooleanValueConverter(true)
+import com.intellij.util.xml.ConvertContext
+import com.intellij.util.xml.ResolvingConverter
+
+open class FallbackBooleanValueConverter(
+    private val fallbackValue: Boolean
+) : ResolvingConverter<Boolean>() {
+    override fun toString(t: Boolean?, context: ConvertContext): String? = t?.toString()
+
+    override fun fromString(stringValue: String?, context: ConvertContext): Boolean = stringValue?.toBoolean()
+        ?: fallbackValue
+
+    override fun getVariants(context: ConvertContext) = listOf(true, false)
+}

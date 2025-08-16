@@ -16,10 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.meta
+package sap.commerce.toolset.xml.converter
 
-interface MetaModelChangeListener<T: GlobalMetaModel> {
-
-    fun onChanged(globalMetaModel: T) = Unit
-
-}
+class FalseBooleanConverter : FallbackBooleanValueConverter(false)

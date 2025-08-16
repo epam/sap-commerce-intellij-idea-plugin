@@ -22,7 +22,7 @@ import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaMap
 import sap.commerce.toolset.system.type.meta.model.TSMetaMap
 import sap.commerce.toolset.system.type.meta.model.TSMetaSelfMerge
 import sap.commerce.toolset.system.type.model.MapType
-import sap.commerce.toolset.util.xml.toBoolean
+import sap.commerce.toolset.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 

@@ -19,7 +19,7 @@
 package sap.commerce.toolset.system.type.meta
 
 import com.intellij.util.messages.Topic
-import sap.commerce.toolset.system.meta.MetaModelChangeListener
+import sap.commerce.toolset.meta.MetaModelChangeListener
 
 interface TSMetaModelChangeListener: MetaModelChangeListener<TSGlobalMetaModel> {
 

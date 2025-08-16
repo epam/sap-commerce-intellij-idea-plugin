@@ -21,7 +21,7 @@ import sap.commerce.toolset.system.cockpitng.meta.model.CngMetaActionDefinition
 import sap.commerce.toolset.system.cockpitng.meta.model.CngMetaEditorDefinition
 import sap.commerce.toolset.system.cockpitng.meta.model.CngMetaWidget
 import sap.commerce.toolset.system.cockpitng.meta.model.CngMetaWidgetDefinition
-import sap.commerce.toolset.system.meta.GlobalMetaModel
+import sap.commerce.toolset.meta.GlobalMetaModel
 import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
 
 /**

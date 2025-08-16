@@ -19,7 +19,7 @@
 package sap.commerce.toolset.system.type.util.xml.converter
 
 import sap.commerce.toolset.system.type.model.Type
-import sap.commerce.toolset.util.xml.converter.FallbackEnumConverter
+import sap.commerce.toolset.xml.converter.FallbackEnumConverter
 
 class TypeEnumConverter : FallbackEnumConverter<Type>(
     Type::class.java,

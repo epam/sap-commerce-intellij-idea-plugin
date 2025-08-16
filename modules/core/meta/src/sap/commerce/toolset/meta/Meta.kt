@@ -16,18 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.util.xml
+package sap.commerce.toolset.meta
 
-import com.intellij.util.xml.Convert
-import com.intellij.util.xml.GenericAttributeValue
-import org.jetbrains.annotations.NotNull
-import sap.commerce.toolset.util.xml.converter.FalseBooleanConverter
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
+import com.intellij.util.xml.DomElement
 
-interface FalseAttributeValue : GenericAttributeValue<Boolean> {
-
-    @NotNull
-    @Convert(FalseBooleanConverter::class)
-    override fun getValue(): Boolean
-}
-
-fun FalseAttributeValue.toBoolean() = stringValue?.toBoolean() ?: false
+data class Meta<T : DomElement>(
+    val container: String,
+    val yContainer: String,
+    val psiFile: PsiFile,
+    val virtualFile: VirtualFile,
+    val rootElement: T,
+    val name: String,
+    val representationName: String = name,
+)

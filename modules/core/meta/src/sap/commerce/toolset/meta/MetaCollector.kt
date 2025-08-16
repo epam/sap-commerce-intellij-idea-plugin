@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.meta
+package sap.commerce.toolset.meta
 
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
@@ -36,16 +36,6 @@ import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.stubs.index.DomElementClassIndex
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.project.yExtensionName
-
-data class Meta<T : DomElement>(
-    val container: String,
-    val yContainer: String,
-    val psiFile: PsiFile,
-    val virtualFile: VirtualFile,
-    val rootElement: T,
-    val name: String,
-    val representationName: String = name,
-)
 
 abstract class MetaCollector<T : DomElement>(
     protected val project: Project,

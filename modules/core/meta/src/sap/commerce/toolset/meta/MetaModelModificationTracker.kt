@@ -16,28 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.bean.meta
+package sap.commerce.toolset.meta
 
-import sap.commerce.toolset.meta.MetaModelModificationTracker
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.util.SimpleModificationTracker
 import com.intellij.psi.xml.XmlFile
 
-@Service(Service.Level.PROJECT)
-class BSModificationTracker(project: Project) : MetaModelModificationTracker(project) {
+abstract class MetaModelModificationTracker(
+    protected val project: Project,
+) : SimpleModificationTracker() {
 
-    private val stateService by lazy { BSMetaModelStateService.getInstance(project) }
+    fun resetCache(keys: Collection<String>) {
+        updateState(keys)
 
-    override fun getKeys(vararg xmlFiles: XmlFile): Collection<String> = xmlFiles.map { it.name }
-
-    override fun updateState(keys: Collection<String>) {
-        stateService.update(keys)
+        incModificationCount()
     }
 
-    companion object {
-        val KEY_PROVIDER: (VirtualFile) -> String = { it.name }
-        fun getInstance(project: Project): BSModificationTracker = project.service()
-    }
+    fun resetCache(vararg xmlFiles: XmlFile) = getKeys(*xmlFiles)
+        ?.let { resetCache(it) }
+
+    abstract fun getKeys(vararg xmlFiles: XmlFile): Collection<String>?
+    abstract fun updateState(keys: Collection<String>)
+
 }

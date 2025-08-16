@@ -22,8 +22,8 @@ import sap.commerce.toolset.system.cockpitng.model.core.ActionDefinition
 import sap.commerce.toolset.system.cockpitng.model.core.EditorDefinition
 import sap.commerce.toolset.system.cockpitng.model.core.WidgetDefinition
 import sap.commerce.toolset.system.cockpitng.model.core.Widgets
-import sap.commerce.toolset.system.meta.Meta
-import sap.commerce.toolset.system.meta.MetaCollector
+import sap.commerce.toolset.meta.Meta
+import sap.commerce.toolset.meta.MetaCollector
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project

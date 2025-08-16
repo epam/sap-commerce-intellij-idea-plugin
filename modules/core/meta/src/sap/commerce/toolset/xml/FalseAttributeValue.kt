@@ -15,27 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.system.meta
 
-import sap.commerce.toolset.psi.util.PsiUtils
-import com.intellij.openapi.application.readAction
-import com.intellij.openapi.project.Project
-import com.intellij.util.xml.DomElement
-import kotlinx.coroutines.coroutineScope
+package sap.commerce.toolset.xml
 
-abstract class MetaModelProcessor<D : DomElement, M>(private val project: Project) {
+import com.intellij.util.xml.Convert
+import com.intellij.util.xml.GenericAttributeValue
+import org.jetbrains.annotations.NotNull
+import sap.commerce.toolset.xml.converter.FalseBooleanConverter
 
-    suspend fun process(meta: Meta<D>): M? = coroutineScope {
-        readAction {
-            process(
-                meta.container,
-                meta.yContainer,
-                meta.name,
-                PsiUtils.isCustomExtensionFile(meta.virtualFile, project),
-                meta.rootElement
-            )
-        }
-    }
+interface FalseAttributeValue : GenericAttributeValue<Boolean> {
 
-    abstract fun process(container: String, yContainer: String, fileName: String, custom: Boolean, dom: D): M
+    @NotNull
+    @Convert(FalseBooleanConverter::class)
+    override fun getValue(): Boolean
 }
+
+fun FalseAttributeValue.toBoolean() = stringValue?.toBoolean() ?: false

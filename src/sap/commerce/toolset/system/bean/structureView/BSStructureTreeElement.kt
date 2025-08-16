@@ -19,7 +19,7 @@ package sap.commerce.toolset.system.bean.structureView
 
 import sap.commerce.toolset.system.bean.model.*
 import sap.commerce.toolset.system.bean.model.Enum
-import sap.commerce.toolset.util.xml.FalseAttributeValue
+import sap.commerce.toolset.xml.FalseAttributeValue
 import com.intellij.util.Function
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomElementNavigationProvider

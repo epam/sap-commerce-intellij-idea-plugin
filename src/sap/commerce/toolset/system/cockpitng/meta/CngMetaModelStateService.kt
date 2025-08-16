@@ -25,7 +25,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.system.cockpitng.meta.model.CngMeta
-import sap.commerce.toolset.system.meta.MetaModelStateService
+import sap.commerce.toolset.meta.MetaModelStateService
 
 @Service(Service.Level.PROJECT)
 class CngMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<CngGlobalMetaModel, CngMeta<DomElement>, DomElement>(

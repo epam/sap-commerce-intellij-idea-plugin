@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.util.xml.converter
+package sap.commerce.toolset.xml.converter
 
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.NamedEnumUtil

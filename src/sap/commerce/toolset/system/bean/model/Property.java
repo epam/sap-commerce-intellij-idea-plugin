@@ -21,7 +21,7 @@
 
 package sap.commerce.toolset.system.bean.model;
 
-import sap.commerce.toolset.util.xml.FalseAttributeValue;
+import sap.commerce.toolset.xml.FalseAttributeValue;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 

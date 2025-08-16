@@ -21,7 +21,7 @@
 
 package sap.commerce.toolset.system.type.model;
 
-import sap.commerce.toolset.util.xml.TrueAttributeValue;
+import sap.commerce.toolset.xml.TrueAttributeValue;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.SubTagList;
 import org.jetbrains.annotations.NotNull;

@@ -16,6 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.meta
+package sap.commerce.toolset.xml
 
-interface GlobalMetaModel
+import com.intellij.util.xml.Convert
+import com.intellij.util.xml.GenericAttributeValue
+import org.jetbrains.annotations.NotNull
+import sap.commerce.toolset.xml.converter.TrueBooleanConverter
+
+interface TrueAttributeValue : GenericAttributeValue<Boolean> {
+
+    @NotNull
+    @Convert(TrueBooleanConverter::class)
+    override fun getValue(): Boolean
+}
+
+fun TrueAttributeValue.toBoolean() = stringValue?.toBoolean() ?: true

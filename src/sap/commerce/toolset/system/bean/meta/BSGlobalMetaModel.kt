@@ -20,7 +20,7 @@ package sap.commerce.toolset.system.bean.meta
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.system.bean.meta.model.BSGlobalMetaClassifier
 import sap.commerce.toolset.system.bean.meta.model.BSMetaType
-import sap.commerce.toolset.system.meta.GlobalMetaModel
+import sap.commerce.toolset.meta.GlobalMetaModel
 import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap

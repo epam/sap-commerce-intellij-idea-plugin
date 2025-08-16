@@ -24,7 +24,7 @@ import sap.commerce.toolset.system.bean.meta.model.BSMetaSelfMerge
 import sap.commerce.toolset.system.bean.model.Enum
 import sap.commerce.toolset.system.bean.model.EnumValue
 import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive
-import sap.commerce.toolset.util.xml.toBoolean
+import sap.commerce.toolset.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 

@@ -21,7 +21,7 @@ package sap.commerce.toolset.system.cockpitng.meta
 import sap.commerce.toolset.system.cockpitng.meta.model.*
 import sap.commerce.toolset.system.cockpitng.model.config.Config
 import sap.commerce.toolset.system.cockpitng.model.core.*
-import sap.commerce.toolset.system.meta.MetaModelProcessor
+import sap.commerce.toolset.meta.MetaModelProcessor
 import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service

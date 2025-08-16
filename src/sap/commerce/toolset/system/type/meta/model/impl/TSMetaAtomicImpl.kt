@@ -23,7 +23,7 @@ import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaAtomic
 import sap.commerce.toolset.system.type.meta.model.TSMetaAtomic
 import sap.commerce.toolset.system.type.meta.model.TSMetaSelfMerge
 import sap.commerce.toolset.system.type.model.AtomicType
-import sap.commerce.toolset.util.xml.toBoolean
+import sap.commerce.toolset.xml.toBoolean
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 import sap.commerce.toolset.HybrisConstants
