@@ -15,25 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.system.type.psi.contributor
 
-import com.intellij.psi.PsiReferenceContributor
-import com.intellij.psi.PsiReferenceRegistrar
-import sap.commerce.toolset.system.type.psi.TSPatterns
-import sap.commerce.toolset.system.type.psi.provider.TSItemAttributeReferenceProvider
-import sap.commerce.toolset.system.type.psi.provider.TSItemReferenceProvider
+package sap.commerce.toolset.spring.psi
 
-class TSReferenceContributor : PsiReferenceContributor() {
+import com.intellij.patterns.PlatformPatterns
+import com.intellij.patterns.StandardPatterns
+import com.intellij.patterns.XmlAttributeValuePattern
+import com.intellij.patterns.XmlPatterns
+import sap.commerce.toolset.HybrisConstants
 
-    override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) = with(registrar) {
-        registerReferenceProvider(
-            TSPatterns.INDEX_KEY_ATTRIBUTE,
-            TSItemAttributeReferenceProvider()
+object SpringPatterns {
+
+    private val itemsXmlFile = PlatformPatterns.psiFile()
+        .withName(StandardPatterns.string().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING))
+
+    private val ITEMS_XML_ATTRIBUTE_HANDLER: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue("attributeHandler")
+        .inside(
+            XmlPatterns.xmlTag()
+                .withLocalName("persistence")
         )
+        .inFile(itemsXmlFile)
 
-        registerReferenceProvider(
-            TSPatterns.SPRING_TYPE_CODE,
-            TSItemReferenceProvider()
-        )
-    }
+    val SPRING_MULTI_PATTERN = XmlPatterns.or(
+        ITEMS_XML_ATTRIBUTE_HANDLER,
+    )
 }

@@ -15,25 +15,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.system.type.psi.contributor
 
-import com.intellij.psi.PsiReferenceContributor
-import com.intellij.psi.PsiReferenceRegistrar
-import sap.commerce.toolset.system.type.psi.TSPatterns
-import sap.commerce.toolset.system.type.psi.provider.TSItemAttributeReferenceProvider
-import sap.commerce.toolset.system.type.psi.provider.TSItemReferenceProvider
+fun properties(key: String) = providers.gradleProperty(key)
 
-class TSReferenceContributor : PsiReferenceContributor() {
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-    override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) = with(registrar) {
-        registerReferenceProvider(
-            TSPatterns.INDEX_KEY_ATTRIBUTE,
-            TSItemAttributeReferenceProvider()
-        )
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-        registerReferenceProvider(
-            TSPatterns.SPRING_TYPE_CODE,
-            TSItemReferenceProvider()
+dependencies {
+    implementation(project(":shared"))
+    implementation(project(":project-core"))
+    implementation(project(":core-meta-type-system"))
+
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+        bundledPlugins(
+            "com.intellij.java",
+            "com.intellij.spring",
         )
     }
 }

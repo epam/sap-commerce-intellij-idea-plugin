@@ -35,6 +35,7 @@
             <option value="$PROJECT_DIR$/modules/remote/core" />
             <option value="$PROJECT_DIR$/modules/shared" />
             <option value="$PROJECT_DIR$/modules/solr/remote" />
+            <option value="$PROJECT_DIR$/modules/spring" />
             <option value="$PROJECT_DIR$/modules/terminal" />
             <option value="$PROJECT_DIR$/modules/ui" />
           </set>

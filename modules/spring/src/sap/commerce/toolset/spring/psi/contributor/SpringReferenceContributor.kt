@@ -15,25 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.system.type.psi.contributor
+package sap.commerce.toolset.spring.psi.contributor
 
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
-import sap.commerce.toolset.system.type.psi.TSPatterns
-import sap.commerce.toolset.system.type.psi.provider.TSItemAttributeReferenceProvider
-import sap.commerce.toolset.system.type.psi.provider.TSItemReferenceProvider
+import sap.commerce.toolset.spring.psi.SpringPatterns
+import sap.commerce.toolset.spring.psi.provider.SpringReferenceProvider
 
-class TSReferenceContributor : PsiReferenceContributor() {
+class SpringReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) = with(registrar) {
         registerReferenceProvider(
-            TSPatterns.INDEX_KEY_ATTRIBUTE,
-            TSItemAttributeReferenceProvider()
-        )
-
-        registerReferenceProvider(
-            TSPatterns.SPRING_TYPE_CODE,
-            TSItemReferenceProvider()
+            SpringPatterns.SPRING_MULTI_PATTERN,
+            SpringReferenceProvider()
         )
     }
 }

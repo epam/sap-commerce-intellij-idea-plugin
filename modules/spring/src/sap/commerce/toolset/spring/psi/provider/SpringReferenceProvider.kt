@@ -15,25 +15,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.system.type.psi.contributor
 
-import com.intellij.psi.PsiReferenceContributor
-import com.intellij.psi.PsiReferenceRegistrar
-import sap.commerce.toolset.system.type.psi.TSPatterns
-import sap.commerce.toolset.system.type.psi.provider.TSItemAttributeReferenceProvider
-import sap.commerce.toolset.system.type.psi.provider.TSItemReferenceProvider
+package sap.commerce.toolset.spring.psi.provider
 
-class TSReferenceContributor : PsiReferenceContributor() {
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
+import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.spring.psi.reference.SpringReference
 
-    override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) = with(registrar) {
-        registerReferenceProvider(
-            TSPatterns.INDEX_KEY_ATTRIBUTE,
-            TSItemAttributeReferenceProvider()
-        )
+class SpringReferenceProvider : PsiReferenceProvider() {
 
-        registerReferenceProvider(
-            TSPatterns.SPRING_TYPE_CODE,
-            TSItemReferenceProvider()
+    override fun getReferencesByElement(
+        element: PsiElement,
+        context: ProcessingContext
+    ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
+        CachedValueProvider.Result.createSingleDependency(
+            arrayOf(SpringReference(element)),
+            PsiModificationTracker.MODIFICATION_COUNT,
         )
     }
 }
