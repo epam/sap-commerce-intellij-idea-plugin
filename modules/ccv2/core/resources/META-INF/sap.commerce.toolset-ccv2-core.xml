@@ -18,6 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <backgroundPostStartupActivity implementation="sap.commerce.toolset.ccv2.startup.CCv2EventsSubscriberStartupActivity"/>
     </extensions>
 
 </idea-plugin>

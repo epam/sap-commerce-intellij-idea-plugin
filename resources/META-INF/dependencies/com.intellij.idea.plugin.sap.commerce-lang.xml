@@ -40,7 +40,6 @@
         <postStartupActivity order="after hybrisProjectImport" implementation="sap.commerce.toolset.startup.WhatsNewStartupActivity"/>
         <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.HybrisPluginUpdateCheckerStartupActivity"/>
         <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.PreLoadSystemsStartupActivity"/>
-        <backgroundPostStartupActivity implementation="sap.commerce.toolset.ccv2.startup.CCv2EventsSubscriberStartupActivity"/>
 
         <searchEverywhereContributor implementation="sap.commerce.toolset.searcheverywhere.SearchEverywhereContributor$Factory"/>
 
