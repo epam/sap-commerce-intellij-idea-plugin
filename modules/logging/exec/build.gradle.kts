@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":logging-core"))
     implementation(project(":exec-remote"))
+    implementation(project(":groovy-exec"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

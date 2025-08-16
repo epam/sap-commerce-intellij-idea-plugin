@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.loggers
+package sap.commerce.toolset.logging.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -30,6 +30,7 @@ import sap.commerce.toolset.exec.remote.RemoteConnectionService
 import sap.commerce.toolset.exec.remote.settings.event.RemoteConnectionListener
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.logging.CxLoggerAccess
 import sap.commerce.toolset.logging.exec.remote.event.CxLoggersStateListener
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTreeNode
@@ -37,7 +38,6 @@ import sap.commerce.toolset.logging.ui.tree.nodes.BundledLoggersTemplateLoggersO
 import sap.commerce.toolset.logging.ui.tree.nodes.CustomLoggersTemplateLoggersOptionsNode
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersHacConnectionNode
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
-import sap.commerce.toolset.tools.logging.CxLoggerAccess
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addTreeModelListener
 import sap.commerce.toolset.ui.addTreeSelectionListener
@@ -64,11 +64,11 @@ class LoggersSplitView(
         Disposer.register(this, tree)
         Disposer.register(this, loggersStateView)
 
-        val activeConnection = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val activeConnection = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         updateTree(activeConnection)
 
         with(project.messageBus.connect(this)) {
-            subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
+            subscribe(RemoteConnectionListener.Companion.TOPIC, object : RemoteConnectionListener {
                 override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettingsState) {
                     updateTree(remoteConnection)
                 }
@@ -76,7 +76,7 @@ class LoggersSplitView(
                 override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettingsState) = tree.update()
             })
 
-            subscribe(CxLoggersStateListener.TOPIC, object : CxLoggersStateListener {
+            subscribe(CxLoggersStateListener.Companion.TOPIC, object : CxLoggersStateListener {
                 override fun onLoggersStateChanged(remoteConnection: RemoteConnectionSettingsState) {
                     tree.lastSelectedPathComponent
                         ?.asSafely<LoggersOptionsTreeNode>()
@@ -90,7 +90,7 @@ class LoggersSplitView(
     }
 
     private fun updateTree(settings: RemoteConnectionSettingsState) {
-        val connections = RemoteConnectionService.getInstance(project)
+        val connections = RemoteConnectionService.Companion.getInstance(project)
             .getRemoteConnections(RemoteConnectionType.Hybris)
             .associateWith { (it == settings) }
         tree.update(connections)
@@ -118,7 +118,7 @@ class LoggersSplitView(
                     ?.pathData(LoggersHacConnectionNode::class)
                     ?.let {
                         e.consume()
-                        CxLoggerAccess.getInstance(project).fetch(it.connectionSettings)
+                        CxLoggerAccess.Companion.getInstance(project).fetch(it.connectionSettings)
                     }
             }
         })
@@ -128,7 +128,7 @@ class LoggersSplitView(
             if (project.isDisposed) return@launch
 
             when (node) {
-                is LoggersHacConnectionNode -> CxLoggerAccess.getInstance(project).state(node.connectionSettings).get()
+                is LoggersHacConnectionNode -> CxLoggerAccess.Companion.getInstance(project).state(node.connectionSettings).get()
                     ?.let { loggersStateView.renderLoggers(it) }
                     ?: loggersStateView.renderFetchLoggers()
 

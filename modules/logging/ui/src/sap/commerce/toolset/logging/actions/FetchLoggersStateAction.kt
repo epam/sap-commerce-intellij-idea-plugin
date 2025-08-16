@@ -16,58 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.tools.logging.actions
+package sap.commerce.toolset.logging.actions
 
-import sap.commerce.toolset.tools.logging.CxLoggerAccess
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.logging.LogLevel
-
-abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
-
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-        val logIdentifier = e.getData(HybrisConstants.DATA_KEY_LOGGER_IDENTIFIER)
-
-        if (logIdentifier == null) {
-            Notifications.error("Unable to change the log level", "Cannot retrieve a logger name.")
-                .hideAfter(5)
-                .notify(project)
-            return
-        }
-
-        CxLoggerAccess.getInstance(project).setLogger(logIdentifier, logLevel)
-    }
-
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        super.update(e)
-        val project = e.project ?: return
-
-        e.presentation.text = logLevel.name
-        e.presentation.icon = logLevel.icon
-        e.presentation.isEnabled = CxLoggerAccess.getInstance(project).ready
-    }
-}
-
-class AllLoggerAction : CxLoggerAction(LogLevel.ALL)
-class OffLoggerAction : CxLoggerAction(LogLevel.OFF)
-class TraceLoggerAction : CxLoggerAction(LogLevel.TRACE)
-class DebugLoggerAction : CxLoggerAction(LogLevel.DEBUG)
-class InfoLoggerAction : CxLoggerAction(LogLevel.INFO)
-class WarnLoggerAction : CxLoggerAction(LogLevel.WARN)
-class ErrorLoggerAction : CxLoggerAction(LogLevel.ERROR)
-class FatalLoggerAction : CxLoggerAction(LogLevel.FATAL)
+import sap.commerce.toolset.logging.CxLoggerAccess
 
 class FetchLoggersStateAction : AnAction() {
 
@@ -78,7 +35,7 @@ class FetchLoggersStateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val loggerAccessService = CxLoggerAccess.getInstance(project)
+        val loggerAccessService = CxLoggerAccess.Companion.getInstance(project)
 
         loggerAccessService.fetch()
     }
@@ -88,11 +45,11 @@ class FetchLoggersStateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val loggerAccess = CxLoggerAccess.getInstance(project)
+        val loggerAccess = CxLoggerAccess.Companion.getInstance(project)
 
         e.presentation.isEnabled = loggerAccess.ready
 
-        val state = CxLoggerAccess.getInstance(project).stateInitialized
+        val state = CxLoggerAccess.Companion.getInstance(project).stateInitialized
 
         e.presentation.text = if (state) "Refresh Loggers State" else "Fetch Loggers State"
         e.presentation.icon = if (state) HybrisIcons.Log.Action.REFRESH else HybrisIcons.Log.Action.FETCH

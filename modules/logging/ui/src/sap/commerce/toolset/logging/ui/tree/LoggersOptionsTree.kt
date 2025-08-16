@@ -22,6 +22,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
+import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
@@ -33,7 +34,7 @@ import javax.swing.tree.TreePath
 private const val SHOW_LOADING_NODE = true
 private const val SEARCH_CAN_EXPAND = true
 
-class LoggersOptionsTree(myProject: Project) : com.intellij.ui.treeStructure.Tree(), Disposable {
+class LoggersOptionsTree(myProject: Project) : Tree(), Disposable {
 
     private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggersRootNode(myProject)))
 

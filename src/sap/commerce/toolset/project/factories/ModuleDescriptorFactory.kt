@@ -17,8 +17,6 @@
  */
 package sap.commerce.toolset.project.factories
 
-import sap.commerce.toolset.project.exceptions.HybrisConfigurationException
-import sap.commerce.toolset.project.services.HybrisProjectService
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.application
@@ -26,12 +24,14 @@ import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.JAXBException
 import org.jetbrains.idea.eclipse.EclipseProjectFinder
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.extensioninfo.jaxb.ObjectFactory
 import sap.commerce.toolset.project.descriptors.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.*
+import sap.commerce.toolset.project.services.HybrisProjectService
 import java.io.File
 import java.io.IOException
 

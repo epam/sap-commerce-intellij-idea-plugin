@@ -70,6 +70,7 @@
     <depends config-file="sap.commerce.toolset-spring.xml"/>
     <depends config-file="sap.commerce.toolset-ccv2-core.xml"/>
     <depends config-file="sap.commerce.toolset-ccv2-ui.xml"/>
+    <depends config-file="sap.commerce.toolset-logging-ui.xml"/>
 
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-xdebugger.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
@@ -84,7 +85,6 @@
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-localextensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-polyglot-query.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-typeSystem.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-logging.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-console.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-jsp.xml" xpointer="xpointer(/idea-plugin/*)"/>
 

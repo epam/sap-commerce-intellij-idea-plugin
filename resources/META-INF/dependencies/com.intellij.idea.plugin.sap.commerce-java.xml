@@ -92,8 +92,6 @@
         <codeInsight.inlayProvider language="XML"
                                    implementationClass="sap.commerce.toolset.system.bean.codeInsight.hints.BeansXmlInlayHintsProvider"/>
 
-        <codeInsight.daemonBoundCodeVisionProvider implementation="sap.commerce.toolset.system.java.codeInsight.hints.LoggerInlayHintsProvider"/>
-        
     </extensions>
 
 </idea-plugin>

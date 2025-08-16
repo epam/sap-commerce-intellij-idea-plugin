@@ -18,19 +18,42 @@
 
 package sap.commerce.toolset.extensions
 
-import sap.commerce.toolset.project.exceptions.HybrisConfigurationException
+import com.intellij.ide.extensionResources.ExtensionsRootType
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.util.application
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import java.nio.file.Files
 
 /**
  * All resources located within the `resources/extensions` will be copied to the target IDE to the `config/extensions/<plugin_id>` folder.
  * The goal is to grant a chance to an end-user to adjust default scripts used by the Plugin to align with possible project specifics.
  */
-enum class ExtensionResource(val fqn: String) {
+@Service
+class ExtensionsService {
 
-    CX_LOGGERS_STATE("cx-loggers-state.groovy");
+    fun findResource(fqn: String): String {
+        val extensionsRootType = ExtensionsRootType.getInstance()
+        val pluginId = Plugin.HYBRIS.pluginId
+        var path = extensionsRootType.findResource(pluginId, fqn)
 
-    val content: String
-        get() = ExtensionsService.getInstance().findResource(this)
+        if (path == null || !Files.exists(path)) {
+            extensionsRootType.extractBundledResources(pluginId, "")
+            path = extensionsRootType.findResource(pluginId, fqn)
+
+            if (path != null) {
+                LocalFileSystem.getInstance().refreshAndFindFileByNioFile(path)
+            }
+        }
+
+        return path?.takeIf { Files.exists(it) }
             ?.let { Files.readString(it) }
             ?: throw HybrisConfigurationException("Unable to read Extension file: $fqn.")
+    }
+
+    companion object {
+        fun getInstance(): ExtensionsService = application.service()
+    }
 }

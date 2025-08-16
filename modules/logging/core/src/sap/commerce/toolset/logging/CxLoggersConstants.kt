@@ -16,36 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.logging
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.actionSystem.DataKey
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+object CxLoggersConstants {
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":logging-core"))
-    implementation(project(":logging-exec"))
-    implementation(project(":exec-remote"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
+    const val EXTENSION_STATE_SCRIPT = "cx-loggers-state.groovy"
+    val DATA_KEY_LOGGER_IDENTIFIER = DataKey.create<String>("sap.cx.logger.identifier")
 }

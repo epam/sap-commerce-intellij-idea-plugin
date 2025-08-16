@@ -16,13 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.loggers
+package sap.commerce.toolset.logging.ui
 
 import com.intellij.ide.IdeBundle
 import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.util.PsiNavigationSupport
-import sap.commerce.toolset.tools.logging.CxLoggerAccess
-import sap.commerce.toolset.ui.event.KeyListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.edtWriteAction
@@ -50,10 +48,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import sap.commerce.toolset.logging.CxLoggerAccess
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.LogLevel
 import sap.commerce.toolset.ui.addItemListener
 import sap.commerce.toolset.ui.addKeyListener
+import sap.commerce.toolset.ui.event.KeyListener
 import java.awt.event.KeyEvent
 import javax.swing.JPanel
 
@@ -96,7 +96,7 @@ class LoggersStateView(
                         .apply { border = null }
 
                     cell(dataScrollPane)
-                        .align(Align.FILL)
+                        .align(Align.Companion.FILL)
                         .visibleIf(showDataPanel)
                 }
                     .resizableRow()
@@ -134,7 +134,7 @@ class LoggersStateView(
 
     private fun Row.cellNoData(property: AtomicBooleanProperty, text: String) = text(text)
         .visibleIf(property)
-        .align(Align.CENTER)
+        .align(Align.Companion.CENTER)
         .resizableColumn()
 
     private fun noLoggersView() = panel {
@@ -146,7 +146,7 @@ class LoggersStateView(
                 )
                     .showCloseButton(false)
             )
-                .align(Align.CENTER)
+                .align(Align.Companion.CENTER)
                 .resizableColumn()
         }.resizableRow()
     }

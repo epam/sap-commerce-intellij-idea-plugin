@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.toolwindow.loggers
 
-import sap.commerce.toolset.actions.HybrisActionPlaces.LOGGERS_TOOLBAR
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -26,6 +25,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
 import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.actions.HybrisActionPlaces.LOGGERS_TOOLBAR
+import sap.commerce.toolset.logging.ui.LoggersSplitView
 import java.io.Serial
 
 class LoggersView(
