@@ -27,7 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.popup.*
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.remote.execution.ExecutionContext
+import sap.commerce.toolset.exec.remote.context.ExecutionContext
 import java.awt.event.KeyEvent
 
 abstract class ExecutionContextSettingsAction<M : ExecutionContext.ModifiableSettings> : DumbAwareAction() {

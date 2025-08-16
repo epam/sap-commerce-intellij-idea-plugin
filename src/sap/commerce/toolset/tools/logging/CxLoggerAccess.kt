@@ -18,9 +18,6 @@
 
 package sap.commerce.toolset.tools.logging
 
-import sap.commerce.toolset.extensions.ExtensionResource
-import sap.commerce.toolset.tools.remote.execution.logging.LoggingExecutionClient
-import sap.commerce.toolset.tools.remote.execution.logging.LoggingExecutionContext
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
@@ -31,15 +28,18 @@ import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.exec.remote.RemoteConnectionService
+import sap.commerce.toolset.exec.remote.settings.event.RemoteConnectionListener
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.extensions.ExtensionResource
 import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
 import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionContext
-import sap.commerce.toolset.logging.CxLoggerModel
-import sap.commerce.toolset.logging.LogLevel
-import sap.commerce.toolset.logging.execution.LoggingExecutionResult
-import sap.commerce.toolset.remote.RemoteConnectionService
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.settings.RemoteConnectionListener
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.logging.*
+import sap.commerce.toolset.logging.exec.remote.LoggingExecutionClient
+import sap.commerce.toolset.logging.exec.remote.context.LoggingExecutionContext
+import sap.commerce.toolset.logging.exec.remote.context.LoggingExecutionResult
+import sap.commerce.toolset.logging.exec.remote.event.CxLoggersStateListener
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.util.*
 
@@ -60,9 +60,7 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     init {
         with(project.messageBus.connect(this)) {
             subscribe(RemoteConnectionListener.TOPIC, object : RemoteConnectionListener {
-
                 override fun onActiveHybrisConnectionChanged(remoteConnection: RemoteConnectionSettingsState) = refresh()
-
                 override fun onHybrisConnectionModified(remoteConnection: RemoteConnectionSettingsState) = clearState(remoteConnection)
             })
         }
@@ -115,7 +113,6 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         fetching = true
 
         GroovyExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
-            val cxLoggerUtilities = CxLoggerUtilities.getInstance(project)
             coroutineScope.launch {
                 val loggers = result.result
                     ?.split("\n")
@@ -126,8 +123,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                         val effectiveLevel = it[1]
                         val parentName = it[2]
 
-                        val psiElementPointer = cxLoggerUtilities.getPsiElementPointer(loggerIdentifier)
-                        val icon = cxLoggerUtilities.getIcon(loggerIdentifier)
+                        val psiElementPointer = getPsiElementPointer(project, loggerIdentifier)
+                        val icon = getIcon(project, loggerIdentifier)
 
                         CxLoggerModel.of(loggerIdentifier, effectiveLevel, parentName, false, icon, psiElementPointer)
                     }
@@ -165,9 +162,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
         }
     }
 
-    fun state(settings: RemoteConnectionSettingsState): CxLoggersState {
-        return loggersStates.computeIfAbsent(settings) { CxLoggersState() }
-    }
+    fun state(settings: RemoteConnectionSettingsState): CxLoggersState = loggersStates
+        .computeIfAbsent(settings) { CxLoggersState() }
 
     private fun updateState(loggers: Map<String, CxLoggerModel>?, settings: RemoteConnectionSettingsState) {
         coroutineScope.launch {

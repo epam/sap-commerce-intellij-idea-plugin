@@ -17,14 +17,14 @@
  */
 package sap.commerce.toolset.acl.file.actions
 
-import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.actions.OpenInHybrisConsoleService
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.remote.console.ImpExConsole
+import sap.commerce.toolset.acl.file.AclFileType
+import sap.commerce.toolset.actions.OpenInHybrisConsoleService
+import sap.commerce.toolset.impex.exec.console.ImpExConsole
 
 class AclOpenQueryAction : AnAction() {
 

@@ -20,10 +20,10 @@ package sap.commerce.toolset.flexibleSearch.remote.execution
 
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.BooleanUtils
-import sap.commerce.toolset.remote.RemoteConnectionService
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.execution.ExecutionContext
-import sap.commerce.toolset.remote.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.remote.RemoteConnectionService
+import sap.commerce.toolset.exec.remote.context.ExecutionContext
+import sap.commerce.toolset.exec.remote.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
 import sap.commerce.toolset.settings.state.TransactionMode
 
 data class FlexibleSearchExecutionContext(

@@ -19,8 +19,6 @@
 package sap.commerce.toolset.tools.remote.console.actions
 
 import com.intellij.codeInsight.lookup.LookupManager
-import sap.commerce.toolset.tools.remote.console.HybrisConsoleService
-import sap.commerce.toolset.tools.remote.console.impl.*
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -29,10 +27,12 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionClient
 import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
-import sap.commerce.toolset.impex.monitoring.remote.execution.ImpExMonitorExecutionClient
-import sap.commerce.toolset.impex.remote.console.ImpExConsole
-import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
+import sap.commerce.toolset.impex.exec.console.ImpExConsole
+import sap.commerce.toolset.impex.exec.remote.ImpExExecutionClient
+import sap.commerce.toolset.impex.monitoring.exec.remote.ImpExMonitorExecutionClient
 import sap.commerce.toolset.solr.remote.execution.SolrExecutionClient
+import sap.commerce.toolset.tools.remote.console.HybrisConsoleService
+import sap.commerce.toolset.tools.remote.console.impl.*
 
 class ConsoleExecuteStatementAction : AnAction() {
 

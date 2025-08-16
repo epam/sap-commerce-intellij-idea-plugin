@@ -33,8 +33,8 @@ import com.intellij.ui.components.JBPanel
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.system.type.meta.TSGlobalMetaModel
-import sap.commerce.toolset.system.type.meta.TSMetaModelChangeListener
 import sap.commerce.toolset.system.type.meta.TSMetaModelStateService
+import sap.commerce.toolset.system.type.meta.event.TSMetaModelChangeListener
 import sap.commerce.toolset.toolwindow.system.type.components.TSTreePanel
 import sap.commerce.toolset.toolwindow.system.type.view.TSViewSettings.TSViewListener
 import java.awt.GridBagLayout

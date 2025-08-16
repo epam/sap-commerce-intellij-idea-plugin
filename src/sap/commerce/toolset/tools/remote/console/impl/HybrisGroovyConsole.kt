@@ -27,9 +27,9 @@ import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.exec.remote.console.HybrisConsole
+import sap.commerce.toolset.exec.remote.http.HybrisHacHttpClient
 import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionContext
-import sap.commerce.toolset.remote.console.HybrisConsole
-import sap.commerce.toolset.remote.http.HybrisHacHttpClient
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial

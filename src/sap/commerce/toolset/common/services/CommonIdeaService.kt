@@ -24,13 +24,13 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.exec.remote.RemoteConnectionService
+import sap.commerce.toolset.exec.remote.RemoteConstants
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor
 import sap.commerce.toolset.project.yExtensionName
-import sap.commerce.toolset.remote.RemoteConnectionService
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.RemoteConstants
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 
 @Service
 class CommonIdeaService {

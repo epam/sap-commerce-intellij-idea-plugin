@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.solr.remote.execution
 
-import sap.commerce.toolset.remote.execution.ExecutionContext
+import sap.commerce.toolset.exec.remote.context.ExecutionContext
 
 data class SolrQueryExecutionContext(
     override val executionTitle: String = "Execute HTTP Call to SOLR...",

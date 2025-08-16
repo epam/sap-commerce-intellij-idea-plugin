@@ -35,8 +35,8 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
-    implementation(project(":remote-core"))
-    implementation(project(":remote-console"))
+    implementation(project(":exec-remote"))
+    implementation(project(":exec-console"))
     implementation(project(":flexibleSearch-core"))
 
     intellijPlatform {

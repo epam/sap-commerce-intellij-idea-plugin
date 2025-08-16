@@ -17,12 +17,12 @@
  */
 package sap.commerce.toolset.ui
 
-import sap.commerce.toolset.toolwindow.RemoteHacConnectionDialog
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.remote.RemoteConnectionService
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.RemoteConnectionService
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.toolwindow.RemoteHacConnectionDialog
 import java.io.Serial
 
 class RemoteHacInstancesListPanel(

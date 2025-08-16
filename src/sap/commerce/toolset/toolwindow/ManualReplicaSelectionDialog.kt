@@ -26,9 +26,9 @@ import com.intellij.ui.InlineBanner
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
+import sap.commerce.toolset.exec.remote.context.ReplicaContext
+import sap.commerce.toolset.exec.remote.http.RemoteConnectionContext
 import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
-import sap.commerce.toolset.remote.execution.ReplicaContext
-import sap.commerce.toolset.remote.http.RemoteConnectionContext
 import java.awt.Component
 import javax.swing.JComponent
 

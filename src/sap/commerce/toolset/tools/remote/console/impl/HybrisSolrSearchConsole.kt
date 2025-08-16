@@ -43,9 +43,9 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.console.HybrisConsole
-import sap.commerce.toolset.remote.execution.ConsoleAwareExecutionResult
+import sap.commerce.toolset.exec.remote.console.HybrisConsole
+import sap.commerce.toolset.exec.remote.context.ConsoleAwareExecutionResult
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
 import sap.commerce.toolset.solr.remote.execution.SolrCoreData
 import sap.commerce.toolset.solr.remote.execution.SolrExecutionClient
 import sap.commerce.toolset.solr.remote.execution.SolrQueryExecutionContext

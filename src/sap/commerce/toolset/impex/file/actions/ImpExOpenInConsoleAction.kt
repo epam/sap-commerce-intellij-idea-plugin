@@ -18,14 +18,14 @@
 
 package sap.commerce.toolset.impex.file.actions
 
-import sap.commerce.toolset.actions.OpenInHybrisConsoleService
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actions.OpenInHybrisConsoleService
 import sap.commerce.toolset.impex.ImpExConstants
-import sap.commerce.toolset.impex.remote.console.ImpExConsole
+import sap.commerce.toolset.impex.exec.console.ImpExConsole
 import sap.commerce.toolset.isHybrisProject
 
 class ImpExOpenInConsoleAction : DumbAwareAction() {

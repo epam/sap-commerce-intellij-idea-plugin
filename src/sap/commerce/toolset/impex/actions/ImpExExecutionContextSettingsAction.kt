@@ -18,8 +18,6 @@
 package sap.commerce.toolset.impex.actions
 
 import com.intellij.ide.BrowserUtil
-import sap.commerce.toolset.actions.ExecutionContextSettingsAction
-import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -28,7 +26,9 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.UIBundle
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
+import sap.commerce.toolset.actions.ExecutionContextSettingsAction
+import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
+import sap.commerce.toolset.impex.exec.remote.context.ImpExExecutionContext
 import javax.swing.LayoutFocusTraversalPolicy
 
 class ImpExExecutionContextSettingsAction : ExecutionContextSettingsAction<ImpExExecutionContext.ModifiableSettings>() {

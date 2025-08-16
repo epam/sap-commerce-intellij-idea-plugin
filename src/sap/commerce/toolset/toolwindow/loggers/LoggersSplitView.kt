@@ -18,16 +18,6 @@
 
 package sap.commerce.toolset.toolwindow.loggers
 
-import sap.commerce.toolset.tools.logging.CxLoggerAccess
-import sap.commerce.toolset.tools.logging.CxLoggersStateListener
-import sap.commerce.toolset.toolwindow.loggers.tree.LoggersOptionsTree
-import sap.commerce.toolset.toolwindow.loggers.tree.LoggersOptionsTreeNode
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersHacConnectionNode
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNode
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.options.templates.CustomLoggersTemplateLoggersOptionsNode
-import sap.commerce.toolset.ui.event.MouseListener
-import sap.commerce.toolset.ui.event.TreeModelListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -36,13 +26,23 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.remote.RemoteConnectionService
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.settings.RemoteConnectionListener
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.RemoteConnectionService
+import sap.commerce.toolset.exec.remote.settings.event.RemoteConnectionListener
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.logging.exec.remote.event.CxLoggersStateListener
+import sap.commerce.toolset.tools.logging.CxLoggerAccess
+import sap.commerce.toolset.toolwindow.loggers.tree.LoggersOptionsTree
+import sap.commerce.toolset.toolwindow.loggers.tree.LoggersOptionsTreeNode
+import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersHacConnectionNode
+import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNode
+import sap.commerce.toolset.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateLoggersOptionsNode
+import sap.commerce.toolset.toolwindow.loggers.tree.nodes.options.templates.CustomLoggersTemplateLoggersOptionsNode
 import sap.commerce.toolset.ui.addMouseListener
 import sap.commerce.toolset.ui.addTreeModelListener
 import sap.commerce.toolset.ui.addTreeSelectionListener
+import sap.commerce.toolset.ui.event.MouseListener
+import sap.commerce.toolset.ui.event.TreeModelListener
 import sap.commerce.toolset.ui.pathData
 import java.awt.event.MouseEvent
 import java.io.Serial

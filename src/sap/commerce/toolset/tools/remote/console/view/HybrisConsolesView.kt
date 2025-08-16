@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.tools.remote.console.view
 
-import sap.commerce.toolset.actions.HybrisActionPlaces
-import sap.commerce.toolset.tools.remote.console.impl.*
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.ActionManager
@@ -33,10 +31,12 @@ import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.actions.HybrisActionPlaces
+import sap.commerce.toolset.exec.remote.console.HybrisConsole
+import sap.commerce.toolset.exec.remote.context.ExecutionContext
 import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
-import sap.commerce.toolset.impex.remote.console.ImpExConsole
-import sap.commerce.toolset.remote.console.HybrisConsole
-import sap.commerce.toolset.remote.execution.ExecutionContext
+import sap.commerce.toolset.impex.exec.console.ImpExConsole
+import sap.commerce.toolset.tools.remote.console.impl.*
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel

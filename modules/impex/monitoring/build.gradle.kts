@@ -37,7 +37,7 @@ dependencies {
     implementation(libs.jsoup)
     implementation(project(":impex-core"))
     implementation(project(":shared-core"))
-    implementation(project(":remote-core"))
+    implementation(project(":exec-remote"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

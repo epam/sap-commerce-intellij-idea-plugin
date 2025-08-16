@@ -23,8 +23,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
-import sap.commerce.toolset.remote.console.HybrisConsole
-import sap.commerce.toolset.remote.execution.ExecutionContext
+import sap.commerce.toolset.exec.remote.console.HybrisConsole
+import sap.commerce.toolset.exec.remote.context.ExecutionContext
 
 class HybrisConsoleTabs(
     project: Project,

@@ -19,16 +19,16 @@
 package sap.commerce.toolset.tools.remote.console.actions
 
 import com.intellij.codeInsight.lookup.LookupManager
-import sap.commerce.toolset.tools.remote.console.HybrisConsoleService
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.remote.console.ImpExConsole
-import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
-import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
+import sap.commerce.toolset.impex.exec.console.ImpExConsole
+import sap.commerce.toolset.impex.exec.remote.ImpExExecutionClient
+import sap.commerce.toolset.impex.exec.remote.context.ImpExExecutionContext
+import sap.commerce.toolset.tools.remote.console.HybrisConsoleService
 
 class ConsoleImpExValidateAction : AnAction() {
 

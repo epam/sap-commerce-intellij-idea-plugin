@@ -18,10 +18,6 @@
 package sap.commerce.toolset.impex.actions
 
 import com.intellij.ide.ActivityTracker
-import sap.commerce.toolset.actions.ExecuteStatementAction
-import sap.commerce.toolset.impex.editor.ImpExSplitEditor
-import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
-import sap.commerce.toolset.impex.editor.impexSplitEditor
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
@@ -29,10 +25,14 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actions.ExecuteStatementAction
 import sap.commerce.toolset.impex.ImpExLanguage
-import sap.commerce.toolset.impex.remote.console.ImpExConsole
-import sap.commerce.toolset.impex.remote.execution.ImpExExecutionClient
-import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
+import sap.commerce.toolset.impex.editor.ImpExSplitEditor
+import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
+import sap.commerce.toolset.impex.editor.impexSplitEditor
+import sap.commerce.toolset.impex.exec.console.ImpExConsole
+import sap.commerce.toolset.impex.exec.remote.ImpExExecutionClient
+import sap.commerce.toolset.impex.exec.remote.context.ImpExExecutionContext
 
 class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditor>(
     ImpExLanguage,

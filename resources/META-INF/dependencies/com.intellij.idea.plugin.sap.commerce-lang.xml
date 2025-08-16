@@ -19,8 +19,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <vfs.asyncListener implementation="sap.commerce.toolset.vfs.listeners.MetaSystemsAsyncFileListener"/>
-        <psi.treeChangeListener implementation="sap.commerce.toolset.psi.listeners.PsiTreeChangeListener"/>
+        <vfs.asyncListener implementation="sap.commerce.toolset.vfs.event.MetaSystemsAsyncFileListener"/>
+        <psi.treeChangeListener implementation="sap.commerce.toolset.psi.event.PsiTreeChangeListener"/>
 
         <!-- ####################################################################################################### -->
         <!--                                        Run Contributors                                                 -->

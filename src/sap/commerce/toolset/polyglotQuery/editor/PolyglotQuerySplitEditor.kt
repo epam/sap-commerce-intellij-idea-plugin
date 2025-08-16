@@ -38,7 +38,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
 import sap.commerce.toolset.system.type.meta.TSGlobalMetaModel
-import sap.commerce.toolset.system.type.meta.TSMetaModelChangeListener
+import sap.commerce.toolset.system.type.meta.event.TSMetaModelChangeListener
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial

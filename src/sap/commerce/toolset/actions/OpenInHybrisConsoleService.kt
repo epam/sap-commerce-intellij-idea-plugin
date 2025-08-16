@@ -21,8 +21,6 @@ import com.intellij.execution.console.ConsoleExecutionEditor
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.projectView.ProjectViewNode
-import sap.commerce.toolset.tools.remote.console.HybrisConsoleService
-import sap.commerce.toolset.toolwindow.OpenInConsoleConsoleDialog
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -32,8 +30,10 @@ import com.intellij.psi.PsiManager
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.messageFallback
-import sap.commerce.toolset.remote.console.HybrisConsole
-import sap.commerce.toolset.remote.execution.ExecutionContext
+import sap.commerce.toolset.exec.remote.console.HybrisConsole
+import sap.commerce.toolset.exec.remote.context.ExecutionContext
+import sap.commerce.toolset.tools.remote.console.HybrisConsoleService
+import sap.commerce.toolset.toolwindow.OpenInConsoleConsoleDialog
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 import kotlin.reflect.KClass

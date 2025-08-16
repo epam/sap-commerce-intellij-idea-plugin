@@ -18,9 +18,6 @@
 
 package sap.commerce.toolset.settings.options
 
-import sap.commerce.toolset.ui.RemoteHacInstancesListPanel
-import sap.commerce.toolset.ui.RemoteInstancesListPanel
-import sap.commerce.toolset.ui.RemoteSolrInstancesListPanel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -36,11 +33,14 @@ import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
+import sap.commerce.toolset.exec.remote.RemoteConnectionService
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.remote.RemoteConnectionService
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.ui.RemoteHacInstancesListPanel
+import sap.commerce.toolset.ui.RemoteInstancesListPanel
+import sap.commerce.toolset.ui.RemoteSolrInstancesListPanel
 import javax.swing.DefaultComboBoxModel
 
 class ProjectIntegrationsSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {

@@ -34,11 +34,11 @@ import org.apache.solr.client.solrj.request.QueryRequest
 import org.apache.solr.client.solrj.response.CoreAdminResponse
 import org.apache.solr.common.params.CoreAdminParams
 import org.apache.solr.common.util.NamedList
-import sap.commerce.toolset.remote.RemoteConnectionService
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.execution.DefaultExecutionClient
-import sap.commerce.toolset.remote.execution.DefaultExecutionResult
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.DefaultExecutionClient
+import sap.commerce.toolset.exec.remote.RemoteConnectionService
+import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
 import java.io.Serial
 
 @Service(Service.Level.PROJECT)

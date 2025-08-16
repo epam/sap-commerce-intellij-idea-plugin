@@ -23,8 +23,9 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.system.bean.model.Beans
 import sap.commerce.toolset.meta.MetaModelStateService
+import sap.commerce.toolset.system.bean.meta.event.BSMetaModelChangeListener
+import sap.commerce.toolset.system.bean.model.Beans
 
 @Service(Service.Level.PROJECT)
 class BSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<BSGlobalMetaModel, BSMetaModel, Beans>(

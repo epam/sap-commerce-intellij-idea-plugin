@@ -17,9 +17,6 @@
  */
 package sap.commerce.toolset.actions
 
-import sap.commerce.toolset.settings.options.ProjectIntegrationsSettingsConfigurableProvider
-import sap.commerce.toolset.toolwindow.RemoteHacConnectionDialog
-import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.options.ShowSettingsUtil
@@ -27,8 +24,11 @@ import kotlinx.html.div
 import kotlinx.html.p
 import kotlinx.html.stream.createHTML
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.remote.RemoteConnectionService
-import sap.commerce.toolset.remote.RemoteConnectionType
+import sap.commerce.toolset.exec.remote.RemoteConnectionService
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.settings.options.ProjectIntegrationsSettingsConfigurableProvider
+import sap.commerce.toolset.toolwindow.RemoteHacConnectionDialog
+import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 import java.awt.Component
 import java.awt.event.InputEvent
 import javax.swing.Icon

@@ -17,13 +17,13 @@
  */
 package sap.commerce.toolset.groovy.actions
 
-import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
+import sap.commerce.toolset.exec.remote.context.ReplicaSelectionMode
 import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
-import sap.commerce.toolset.remote.execution.ReplicaSelectionMode
+import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 
 class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 

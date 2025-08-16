@@ -22,7 +22,7 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
 
 class LoggersHacConnectionNode(
     val connectionSettings: RemoteConnectionSettingsState,

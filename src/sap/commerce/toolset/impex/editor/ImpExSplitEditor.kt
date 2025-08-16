@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.impex.editor
 
-import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -39,8 +38,9 @@ import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
-import sap.commerce.toolset.impex.remote.execution.ImpExExecutionContext
-import sap.commerce.toolset.remote.execution.DefaultExecutionResult
+import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
+import sap.commerce.toolset.impex.exec.remote.context.ImpExExecutionContext
+import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial

@@ -19,8 +19,6 @@
 package sap.commerce.toolset.tools.remote.console.impl
 
 import com.intellij.execution.ui.ConsoleViewContentType.*
-import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
-import sap.commerce.toolset.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -28,9 +26,11 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.exec.remote.console.HybrisConsole
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.remote.execution.QueryMode
-import sap.commerce.toolset.remote.console.HybrisConsole
+import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
+import sap.commerce.toolset.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel

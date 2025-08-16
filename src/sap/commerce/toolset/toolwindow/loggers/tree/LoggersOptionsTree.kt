@@ -18,15 +18,15 @@
 
 package sap.commerce.toolset.toolwindow.loggers.tree
 
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNode
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersRootNode
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNode
+import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersRootNode
 import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath

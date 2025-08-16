@@ -26,10 +26,10 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
-import sap.commerce.toolset.remote.RemoteConnectionService
-import sap.commerce.toolset.remote.RemoteConnectionType
-import sap.commerce.toolset.remote.execution.ExecutionClient
-import sap.commerce.toolset.remote.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.remote.ExecutionClient
+import sap.commerce.toolset.exec.remote.RemoteConnectionService
+import sap.commerce.toolset.exec.remote.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
 import java.io.Serial
 import java.nio.charset.StandardCharsets
 

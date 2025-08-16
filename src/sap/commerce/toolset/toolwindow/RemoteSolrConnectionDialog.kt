@@ -23,10 +23,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.EnumComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
-import sap.commerce.toolset.remote.RemoteConnectionScope
-import sap.commerce.toolset.remote.RemoteConstants
-import sap.commerce.toolset.remote.settings.RemoteConnectionListener
-import sap.commerce.toolset.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.remote.RemoteConstants
+import sap.commerce.toolset.exec.remote.settings.event.RemoteConnectionListener
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionScope
+import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.solr.remote.execution.SolrExecutionClient
 import java.awt.Component
 
