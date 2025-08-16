@@ -18,7 +18,7 @@
 package sap.commerce.toolset.project.actions
 
 import com.intellij.ide.actions.SearchEverywhereBaseAction
-import sap.commerce.toolset.system.type.searcheverywhere.TypeSearchEverywhereContributor
+import sap.commerce.toolset.searcheverywhere.SearchEverywhereContributor
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import sap.commerce.toolset.isHybrisProject
@@ -26,7 +26,7 @@ import sap.commerce.toolset.isHybrisProject
 class GotoTypeAction : SearchEverywhereBaseAction(), DumbAware {
 
     override fun actionPerformed(e: AnActionEvent) {
-        val tabID = TypeSearchEverywhereContributor::class.java.simpleName
+        val tabID = SearchEverywhereContributor::class.java.simpleName
         showInSearchEverywherePopup(tabID, e, false, true)
     }
 

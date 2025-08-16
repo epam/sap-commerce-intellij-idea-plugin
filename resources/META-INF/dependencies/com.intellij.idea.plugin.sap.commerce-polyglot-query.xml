@@ -26,7 +26,7 @@
                                               isEnabledByDefault="true"
                                               group="VALUES_GROUP"
                                               providerId="hybris.PolyglotQuery.parameter"
-                                              bundle="i18n/HybrisBundle"
+                                              bundle="i18n.HybrisBundle"
                                               nameKey="hybris.pgq.editor.parameter.name"
                                               descriptionKey="hybris.pgq.editor.parameter.description"/>
 

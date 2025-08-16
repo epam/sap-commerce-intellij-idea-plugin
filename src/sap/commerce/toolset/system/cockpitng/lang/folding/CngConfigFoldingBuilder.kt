@@ -17,7 +17,7 @@
  */
 package sap.commerce.toolset.system.cockpitng.lang.folding
 
-import sap.commerce.toolset.lang.folding.AbstractXmlFoldingBuilderEx
+import sap.commerce.toolset.lang.folding.XmlFoldingBuilderEx
 import sap.commerce.toolset.system.cockpitng.model.advancedSearch.Field
 import sap.commerce.toolset.system.cockpitng.model.advancedSearch.FieldList
 import sap.commerce.toolset.system.cockpitng.model.collectionBrowser.Mold
@@ -42,7 +42,7 @@ import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.CngFoldingSettingsState
 import java.util.*
 
-class CngConfigFoldingBuilder : AbstractXmlFoldingBuilderEx<CngFoldingSettingsState, Config>(Config::class.java), DumbAware {
+class CngConfigFoldingBuilder : XmlFoldingBuilderEx<CngFoldingSettingsState, Config>(Config::class.java), DumbAware {
 
     override val filter = PsiElementFilter {
         when (it) {

@@ -20,9 +20,19 @@
 package sap.commerce.toolset.impex.psi.references
 
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import com.intellij.psi.ResolveResult
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.ParameterizedCachedValue
+import com.intellij.psi.util.ParameterizedCachedValueProvider
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpexParameter
 import sap.commerce.toolset.impex.psi.ImpexTypes
-import sap.commerce.toolset.psi.reference.TSReferenceBase
+import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
 import sap.commerce.toolset.psi.util.PsiTreeUtilExt
 import sap.commerce.toolset.psi.util.PsiUtils
 import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
@@ -37,16 +47,6 @@ import sap.commerce.toolset.system.type.psi.reference.result.AttributeResolveRes
 import sap.commerce.toolset.system.type.psi.reference.result.MapResolveResult
 import sap.commerce.toolset.system.type.psi.reference.result.OrderingAttributeResolveResult
 import sap.commerce.toolset.system.type.psi.reference.result.RelationEndResolveResult
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.Key
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
-import com.intellij.psi.ResolveResult
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.ParameterizedCachedValue
-import com.intellij.psi.util.ParameterizedCachedValueProvider
-import sap.commerce.toolset.HybrisConstants
 
 class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
 
@@ -59,7 +59,7 @@ class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase
         // if an inline type already present, we should not suggest any other types
         if (element.inlineTypeName != null) return emptyArray()
         return TSCompletionService.getInstance(element.project)
-            .getImpExInlineTypeCompletions(element.project, element)
+            .getSubTypeCompletions(element.project, element.referenceItemTypeName, element.inlineTypeName)
             .toTypedArray()
     }
 

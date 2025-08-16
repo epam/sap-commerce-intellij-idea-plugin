@@ -20,7 +20,7 @@ package sap.commerce.toolset.acl.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import sap.commerce.toolset.acl.psi.AclTypes
-import sap.commerce.toolset.psi.reference.TSReferenceBase
+import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
 import sap.commerce.toolset.psi.util.PsiUtils
 import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.system.type.meta.TSMetaModelAccess

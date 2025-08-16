@@ -42,7 +42,7 @@
         <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.PreLoadSystemsStartupActivity"/>
         <backgroundPostStartupActivity implementation="sap.commerce.toolset.ccv2.startup.CCv2EventsSubscriberStartupActivity"/>
 
-        <searchEverywhereContributor implementation="sap.commerce.toolset.system.type.searcheverywhere.TypeSearchEverywhereContributor$Factory"/>
+        <searchEverywhereContributor implementation="sap.commerce.toolset.searcheverywhere.SearchEverywhereContributor$Factory"/>
 
         <editorFactoryListener implementation="sap.commerce.toolset.editor.event.HybrisEditorFactoryListener"/>
     </extensions>

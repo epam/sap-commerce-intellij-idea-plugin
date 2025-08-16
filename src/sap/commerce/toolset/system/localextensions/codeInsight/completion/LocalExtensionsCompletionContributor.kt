@@ -20,15 +20,15 @@ package sap.commerce.toolset.system.localextensions.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import sap.commerce.toolset.codeInsight.completion.provider.ExtensionNameCompletionProvider
-import sap.commerce.toolset.common.utils.PsiXmlUtils
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.psi.tagAttributePattern
 
 class LocalExtensionsCompletionContributor : CompletionContributor() {
 
     init {
         extend(
             CompletionType.BASIC,
-            PsiXmlUtils.tagAttributePattern("extension", "name", HybrisConstants.LOCAL_EXTENSIONS_XML),
+            tagAttributePattern("extension", "name", HybrisConstants.LOCAL_EXTENSIONS_XML),
             ExtensionNameCompletionProvider()
         )
     }

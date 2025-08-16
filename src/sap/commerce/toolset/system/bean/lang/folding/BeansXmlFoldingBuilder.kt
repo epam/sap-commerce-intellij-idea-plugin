@@ -17,7 +17,7 @@
  */
 package sap.commerce.toolset.system.bean.lang.folding
 
-import sap.commerce.toolset.lang.folding.AbstractXmlFoldingBuilderEx
+import sap.commerce.toolset.lang.folding.XmlFoldingBuilderEx
 import sap.commerce.toolset.system.bean.meta.BSMetaHelper
 import sap.commerce.toolset.system.bean.model.*
 import sap.commerce.toolset.system.bean.model.Enum
@@ -31,7 +31,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.BeanSystemFoldingSettingsState
 
-class BeansXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<BeanSystemFoldingSettingsState, Beans>(Beans::class.java), DumbAware {
+class BeansXmlFoldingBuilder : XmlFoldingBuilderEx<BeanSystemFoldingSettingsState, Beans>(Beans::class.java), DumbAware {
 
     private val foldHints = "[hints]"
 

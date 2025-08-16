@@ -21,9 +21,9 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import sap.commerce.toolset.codeInsight.completion.provider.ItemTypeCodeCompletionProvider
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.system.type.codeInsight.completion.ItemTypeCodeCompletionProvider
 
 class CngFlowTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
 

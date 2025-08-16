@@ -20,7 +20,7 @@ package sap.commerce.toolset.system.bean.codeInsight.hints
 
 import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
-import sap.commerce.toolset.codeInsight.hints.AbstractSystemAwareInlayHintsCollector
+import sap.commerce.toolset.codeInsight.hints.SystemAwareInlayHintsCollector
 import sap.commerce.toolset.system.bean.meta.BSMetaModelAccess
 import sap.commerce.toolset.system.bean.model.Bean
 import sap.commerce.toolset.system.bean.model.Beans
@@ -44,7 +44,7 @@ import sap.commerce.toolset.HybrisIcons
 /**
  * use com.intellij.codeInsight.hints.presentation.PresentationFactory#referenceOnHover and show popup from clickListener
  */
-class BeansXmlInlayHintsCollector(editor: Editor) : AbstractSystemAwareInlayHintsCollector(editor) {
+class BeansXmlInlayHintsCollector(editor: Editor) : SystemAwareInlayHintsCollector(editor) {
 
     override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
         val project = editor.project ?: return false

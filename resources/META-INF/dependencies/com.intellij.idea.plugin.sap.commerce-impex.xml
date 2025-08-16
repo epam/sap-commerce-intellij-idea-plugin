@@ -29,7 +29,7 @@
                                               isEnabledByDefault="true"
                                               group="VALUES_GROUP"
                                               providerId="hybris.ImpEx.parameter"
-                                              bundle="i18n/HybrisBundle"
+                                              bundle="i18n.HybrisBundle"
                                               nameKey="hybris.impex.editor.parameter.name"
                                               descriptionKey="hybris.impex.editor.parameter.description"/>
 
@@ -101,7 +101,7 @@
                                               isEnabledByDefault="true"
                                               group="VALUES_GROUP"
                                               providerId="hybris.ImpEx.defaultValue"
-                                              bundle="i18n/HybrisBundle"
+                                              bundle="i18n.HybrisBundle"
                                               nameKey="hybris.editor.impex.inlay_provider.default_value.name"
                                               descriptionKey="hybris.editor.impex.inlay_provider.default_value.description"/>
     </extensions>

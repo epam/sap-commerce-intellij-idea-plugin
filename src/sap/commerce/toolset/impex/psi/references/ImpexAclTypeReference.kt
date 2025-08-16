@@ -18,7 +18,7 @@
 package sap.commerce.toolset.impex.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import sap.commerce.toolset.psi.reference.TSReferenceBase
+import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
 import sap.commerce.toolset.psi.util.PsiUtils
 import sap.commerce.toolset.system.type.codeInsight.lookup.TSLookupElementFactory
 import sap.commerce.toolset.system.type.meta.TSMetaModelAccess

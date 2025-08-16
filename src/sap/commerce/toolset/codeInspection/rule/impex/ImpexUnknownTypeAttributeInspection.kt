@@ -25,7 +25,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.psi.references.ImpexFunctionTSAttributeReference
 import sap.commerce.toolset.impex.psi.references.ImpexTSAttributeReference
-import sap.commerce.toolset.psi.reference.TSReferenceBase
+import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.util.asSafely

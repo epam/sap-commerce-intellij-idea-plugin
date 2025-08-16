@@ -31,7 +31,6 @@
         <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlItemAlternativeDeclarationsLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlItemSiblingsLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.daemon.ItemsXmlAttributeHandlerLineMarkerProvider"/>
 
         <completion.contributor language="XML" implementationClass="sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionContributor"/>
 

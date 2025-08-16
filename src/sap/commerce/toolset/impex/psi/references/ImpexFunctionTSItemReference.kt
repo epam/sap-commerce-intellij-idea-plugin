@@ -19,14 +19,6 @@ package sap.commerce.toolset.impex.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.codeInsight.lookup.LookupElement
-import sap.commerce.toolset.impex.psi.ImpexParameter
-import sap.commerce.toolset.psi.reference.TSReferenceBase
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.meta.model.*
-import sap.commerce.toolset.system.type.psi.reference.result.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -35,6 +27,14 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
+import sap.commerce.toolset.impex.psi.ImpexParameter
+import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
+import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
+import sap.commerce.toolset.system.type.meta.TSModificationTracker
+import sap.commerce.toolset.system.type.meta.model.*
+import sap.commerce.toolset.system.type.psi.reference.result.*
 
 class ImpexFunctionTSItemReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner), HighlightedReference {
 
@@ -43,7 +43,7 @@ class ImpexFunctionTSItemReference(owner: ImpexParameter) : TSReferenceBase<Impe
         ?: super.calculateDefaultRangeInElement()
 
     override fun getVariants(): Array<LookupElement> = TSCompletionService.getInstance(element.project)
-        .getImpExInlineTypeCompletions(element.project, element)
+        .getSubTypeCompletions(element.project, element.referenceItemTypeName, element.inlineTypeName)
         .toTypedArray()
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {

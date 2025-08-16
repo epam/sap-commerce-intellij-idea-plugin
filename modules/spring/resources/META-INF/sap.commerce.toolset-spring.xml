@@ -19,6 +19,10 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.spring.codeInsight.daemon.ItemsXmlInterceptorLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.spring.codeInsight.daemon.ItemsXmlAttributeHandlerLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.spring.codeInsight.daemon.ModelItemInterceptorLineMarkerProvider"/>
+
         <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.spring.psi.contributor.SpringReferenceContributor"/>
     </extensions>
 

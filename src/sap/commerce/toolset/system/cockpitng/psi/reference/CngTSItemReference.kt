@@ -19,7 +19,7 @@
 package sap.commerce.toolset.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import sap.commerce.toolset.psi.reference.TSReferenceBase
+import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
 import sap.commerce.toolset.psi.util.PsiUtils
 import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
 import sap.commerce.toolset.system.type.meta.TSModificationTracker

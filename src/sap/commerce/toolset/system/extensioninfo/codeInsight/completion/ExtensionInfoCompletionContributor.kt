@@ -20,15 +20,15 @@ package sap.commerce.toolset.system.extensioninfo.codeInsight.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import sap.commerce.toolset.codeInsight.completion.provider.RequiredExtensionsNameCompletionProvider
-import sap.commerce.toolset.common.utils.PsiXmlUtils
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.psi.tagAttributePattern
 
 class ExtensionInfoCompletionContributor : CompletionContributor() {
 
     init {
         extend(
             CompletionType.BASIC,
-            PsiXmlUtils.tagAttributePattern("requires-extension", "name", HybrisConstants.EXTENSION_INFO_XML),
+            tagAttributePattern("requires-extension", "name", HybrisConstants.EXTENSION_INFO_XML),
             RequiredExtensionsNameCompletionProvider()
         )
     }

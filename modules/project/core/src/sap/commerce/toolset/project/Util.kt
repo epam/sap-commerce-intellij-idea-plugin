@@ -20,10 +20,12 @@ package sap.commerce.toolset.project
 
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
+import com.intellij.psi.PsiElement
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
@@ -47,3 +49,10 @@ fun findPlatformRootDirectory(project: Project): VirtualFile? = ModuleManager.ge
     ?.let { ModuleRootManager.getInstance(it) }
     ?.contentRoots
     ?.firstOrNull { it.findChild(HybrisConstants.EXTENSIONS_XML) != null }
+
+fun isHybrisModule(psi: PsiElement): Boolean {
+    val module = ModuleUtilCore.findModuleForPsiElement(psi) ?: return false
+    val descriptorType = YFacetConstants.getModuleSettings(module).type
+    return descriptorType == ModuleDescriptorType.PLATFORM
+        || descriptorType == ModuleDescriptorType.EXT
+}

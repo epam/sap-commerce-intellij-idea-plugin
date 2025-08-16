@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.system.businessProcess.lang.folding
 
-import sap.commerce.toolset.lang.folding.AbstractXmlFoldingBuilderEx
+import sap.commerce.toolset.lang.folding.XmlFoldingBuilderEx
 import sap.commerce.toolset.system.businessProcess.model.*
 import sap.commerce.toolset.system.businessProcess.util.BpHelper
 import com.intellij.lang.ASTNode
@@ -29,7 +29,7 @@ import com.intellij.psi.xml.XmlTag
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.BpFoldingSettingsState
 
-class BpXmlFoldingBuilder : AbstractXmlFoldingBuilderEx<BpFoldingSettingsState, Process>(Process::class.java), DumbAware {
+class BpXmlFoldingBuilder : XmlFoldingBuilderEx<BpFoldingSettingsState, Process>(Process::class.java), DumbAware {
 
     override val filter = PsiElementFilter {
         when (it) {

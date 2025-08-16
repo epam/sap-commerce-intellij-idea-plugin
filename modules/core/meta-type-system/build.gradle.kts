@@ -43,10 +43,16 @@ dependencies {
     implementation(libs.dtdparser)
     implementation(project(":shared"))
     implementation(project(":core-meta"))
+    implementation(project(":project-core"))
+    implementation(project(":project-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+        bundledPlugins(
+            "com.intellij.java",
+            "com.intellij.properties",
+        )
     }
 }

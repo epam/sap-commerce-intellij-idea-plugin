@@ -27,7 +27,7 @@ import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
 import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
 import sap.commerce.toolset.impex.psi.ImpexHeaderTypeName
 import sap.commerce.toolset.impex.psi.ImpexVisitor
-import sap.commerce.toolset.psi.reference.TSReferenceBase
+import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import sap.commerce.toolset.HybrisI18NBundleUtils.message

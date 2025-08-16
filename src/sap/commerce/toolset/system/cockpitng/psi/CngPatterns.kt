@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.system.cockpitng.psi
 
-import sap.commerce.toolset.common.utils.PsiXmlUtils
 import sap.commerce.toolset.system.cockpitng.CngConfigDomFileDescription
 import sap.commerce.toolset.system.cockpitng.model.config.Config
 import sap.commerce.toolset.system.cockpitng.model.config.Context
@@ -28,6 +27,8 @@ import com.intellij.patterns.DomPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
 import com.intellij.patterns.XmlPatterns
+import sap.commerce.toolset.psi.insideTagPattern
+import sap.commerce.toolset.psi.tagAttributeValuePattern
 
 object CngPatterns {
     const val CONFIG_ROOT = "config"
@@ -94,7 +95,7 @@ object CngPatterns {
         "widgetDefinitionId",
         "widget"
     )
-        .inside(PsiXmlUtils.insideTagPattern(WIDGETS_ROOT))
+        .inside(insideTagPattern(WIDGETS_ROOT))
 
     val ACTION_DEFINITION = attributeValue(
         "action-id",
@@ -381,7 +382,7 @@ object CngPatterns {
         .inFile(cngConfigFile)
 
     val ITEM_TYPE = XmlPatterns.or(
-        PsiXmlUtils.tagAttributeValuePattern(CONFIG_ROOT, CONFIG_CONTEXT, Context.TYPE)
+        tagAttributeValuePattern(CONFIG_ROOT, CONFIG_CONTEXT, Context.TYPE)
             .andNot(XmlPatterns.xmlAttributeValue().withValue(StandardPatterns.string().contains(".")))
             .inFile(cngConfigFile),
 
@@ -472,7 +473,7 @@ object CngPatterns {
         )
 
     private fun widgetPattern(attribute: String, tag: String) = attributeValue(attribute, tag)
-        .inside(PsiXmlUtils.insideTagPattern(WIDGETS_ROOT))
+        .inside(insideTagPattern(WIDGETS_ROOT))
         .inFile(cngWidgetsFile)
 
 }

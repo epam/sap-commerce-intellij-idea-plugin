@@ -21,23 +21,23 @@ package sap.commerce.toolset.system.cockpitng.codeInsight.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
-import sap.commerce.toolset.codeInsight.completion.provider.ItemTypeCodeCompletionProvider
-import sap.commerce.toolset.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
-import sap.commerce.toolset.system.cockpitng.meta.CngWrappingType
-import sap.commerce.toolset.system.cockpitng.model.config.Config
-import sap.commerce.toolset.system.cockpitng.model.config.Context
-import sap.commerce.toolset.system.type.codeInsight.lookup.TSLookupElementFactory
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaClassifier
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaEnum
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.system.type.meta.model.TSMetaType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.system.cockpitng.codeInsight.lookup.CngLookupElementFactory
+import sap.commerce.toolset.system.cockpitng.meta.CngWrappingType
+import sap.commerce.toolset.system.cockpitng.model.config.Config
+import sap.commerce.toolset.system.cockpitng.model.config.Context
+import sap.commerce.toolset.system.type.codeInsight.completion.ItemTypeCodeCompletionProvider
+import sap.commerce.toolset.system.type.codeInsight.lookup.TSLookupElementFactory
+import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
+import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaClassifier
+import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaEnum
+import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.system.type.meta.model.TSMetaType
 
 class CngItemTypeCodeCompletionProvider : ItemTypeCodeCompletionProvider() {
 

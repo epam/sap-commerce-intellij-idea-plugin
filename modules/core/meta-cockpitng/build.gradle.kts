@@ -41,6 +41,7 @@ idea {
 
 dependencies {
     implementation(project(":shared"))
+    implementation(project(":core-meta-type-system"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
