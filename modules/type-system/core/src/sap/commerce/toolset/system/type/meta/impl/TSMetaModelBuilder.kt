@@ -18,6 +18,7 @@
 package sap.commerce.toolset.system.type.meta.impl
 
 import org.apache.commons.lang3.StringUtils
+import sap.commerce.toolset.CaseInsensitiveMap
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.system.type.meta.TSMetaModel
 import sap.commerce.toolset.system.type.meta.model.*
@@ -214,19 +215,19 @@ class TSMetaModelBuilder(
 
     private fun create(itemTypeDom: ItemType, dom: Attributes): Map<String, TSMetaItem.TSMetaItemAttribute> = dom.attributes
         .mapNotNull { attr -> create(itemTypeDom, attr) }
-        .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
+        .associateByTo(CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
 
     private fun create(dom: CustomProperties): Map<String, TSMetaCustomProperty> = dom.properties
         .mapNotNull { create(it) }
-        .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
+        .associateByTo(CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
 
     private fun create(dom: Indexes): Map<String, TSMetaItem.TSMetaItemIndex> = dom.indexes
         .mapNotNull { create(it) }
-        .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
+        .associateByTo(CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
 
     private fun createEnumValues(dom: EnumType): Map<String, TSMetaEnum.TSMetaEnumValue> = dom.values
         .mapNotNull { create(it) }
-        .associateByTo(CaseInsensitive.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
+        .associateByTo(CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name.trim { it <= ' ' } }
 
     private fun registerReferenceEnd(ownerEnd: TSMetaRelation.TSMetaRelationElement, targetEnd: TSMetaRelation.TSMetaRelationElement) {
         if (!targetEnd.isNavigable) return

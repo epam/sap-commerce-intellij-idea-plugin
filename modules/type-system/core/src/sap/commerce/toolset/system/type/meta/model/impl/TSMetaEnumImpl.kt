@@ -19,8 +19,8 @@ package sap.commerce.toolset.system.type.meta.model.impl
 
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
+import sap.commerce.toolset.CaseInsensitiveMap
 import sap.commerce.toolset.system.type.meta.TSMetaHelper
-import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive
 import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaEnum
 import sap.commerce.toolset.system.type.meta.model.TSMetaEnum
 import sap.commerce.toolset.system.type.meta.model.TSMetaEnum.TSMetaEnumValue
@@ -66,7 +66,7 @@ internal class TSMetaEnumImpl(
 internal class TSGlobalMetaEnumImpl(localMeta: TSMetaEnum)
     : TSMetaSelfMerge<EnumType, TSMetaEnum>(localMeta), TSGlobalMetaEnum {
 
-    override val values = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaEnumValue>()
+    override val values = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, TSMetaEnumValue>()
     override val domAnchor = localMeta.domAnchor
     override val moduleName = localMeta.moduleName
     override val extensionName = localMeta.extensionName

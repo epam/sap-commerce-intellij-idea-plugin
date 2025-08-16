@@ -19,10 +19,10 @@ package sap.commerce.toolset.system.type.meta.model.impl
 
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
+import sap.commerce.toolset.CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap
 import sap.commerce.toolset.system.type.meta.TSGlobalMetaModel
 import sap.commerce.toolset.system.type.meta.TSMetaHelper
 import sap.commerce.toolset.system.type.meta.TSMetaModelException
-import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
 import sap.commerce.toolset.system.type.meta.model.*
 import sap.commerce.toolset.system.type.meta.model.TSMetaItem.TSMetaItemAttribute
 import sap.commerce.toolset.system.type.meta.model.TSMetaItem.TSMetaItemIndex

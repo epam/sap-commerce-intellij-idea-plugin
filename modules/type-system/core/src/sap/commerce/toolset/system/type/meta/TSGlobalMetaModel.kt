@@ -18,8 +18,8 @@
 package sap.commerce.toolset.system.type.meta
 
 import com.intellij.util.xml.DomElement
+import sap.commerce.toolset.CaseInsensitiveMap
 import sap.commerce.toolset.meta.GlobalMetaModel
-import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive
 import sap.commerce.toolset.system.type.meta.model.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
@@ -27,8 +27,8 @@ import java.util.concurrent.ConcurrentMap
 class TSGlobalMetaModel : GlobalMetaModel {
 
     private val myMetaCache: MutableMap<TSMetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
-    private val myReferencesBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
-    private val myDeploymentTables = CaseInsensitive.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>()
+    private val myReferencesBySourceTypeName = CaseInsensitiveMap.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
+    private val myDeploymentTables = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, TSMetaDeployment>()
     private val myDeploymentTypeCodes = ConcurrentHashMap<Int, TSMetaDeployment>()
 
     fun getDeploymentForTable(table: String?): TSMetaDeployment? = if (table != null) myDeploymentTables[table] else null
@@ -37,7 +37,7 @@ class TSGlobalMetaModel : GlobalMetaModel {
 
     @Suppress("UNCHECKED_CAST")
     fun <T : TSGlobalMetaClassifier<*>> getMetaType(metaType: TSMetaType): ConcurrentMap<String, T> =
-        myMetaCache.computeIfAbsent(metaType) { CaseInsensitive.CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
+        myMetaCache.computeIfAbsent(metaType) { CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
 
     fun getMetaAtomic(name: String?) = getMetaType<TSGlobalMetaAtomic>(TSMetaType.META_ATOMIC)[name]
     fun getMetaEnum(name: String?) = getMetaType<TSGlobalMetaEnum>(TSMetaType.META_ENUM)[name]

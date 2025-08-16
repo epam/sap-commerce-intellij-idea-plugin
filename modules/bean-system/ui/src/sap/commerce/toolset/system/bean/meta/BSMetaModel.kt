@@ -15,43 +15,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.system.type.meta
+package sap.commerce.toolset.system.bean.meta
 
 import com.intellij.openapi.Disposable
 import com.intellij.util.containers.MultiMap
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.CaseInsensitiveMap
-import sap.commerce.toolset.system.type.meta.model.TSMetaClassifier
-import sap.commerce.toolset.system.type.meta.model.TSMetaRelation
-import sap.commerce.toolset.system.type.meta.model.TSMetaType
+import sap.commerce.toolset.system.bean.meta.model.BSMetaClassifier
+import sap.commerce.toolset.system.bean.meta.model.BSMetaType
 import java.util.concurrent.ConcurrentHashMap
 
-class TSMetaModel(
+class BSMetaModel(
     val extensionName: String,
     val fileName: String,
     val custom: Boolean
 ) : Disposable {
 
-    private val myMetaCache: MutableMap<TSMetaType, MultiMap<String, TSMetaClassifier<DomElement>>> = ConcurrentHashMap()
-    private val myRelationsBySourceTypeName = CaseInsensitiveMap.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()
+    private val myMetaCache: MutableMap<BSMetaType, MultiMap<String, BSMetaClassifier<DomElement>>> = ConcurrentHashMap()
 
-    fun addMetaModel(meta: TSMetaClassifier<out DomElement>, metaType: TSMetaType) {
+    fun addMetaModel(meta: BSMetaClassifier<out DomElement>, metaType: BSMetaType) {
         // add log why no name
         if (meta.name == null) return
 
-        getMetaType<TSMetaClassifier<out DomElement>>(metaType).putValue(meta.name!!.lowercase(), meta)
+        getMetaType<BSMetaClassifier<out DomElement>>(metaType).putValue(meta.name!!.lowercase(), meta)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : TSMetaClassifier<out DomElement>> getMetaType(metaType: TSMetaType): MultiMap<String, T> =
+    fun <T : BSMetaClassifier<out DomElement>> getMetaType(metaType: BSMetaType): MultiMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { MultiMap.createLinked() } as MultiMap<String, T>
 
     fun getMetaTypes() = myMetaCache
-    fun getRelations() = myRelationsBySourceTypeName
 
     override fun dispose() {
         myMetaCache.clear()
-        myRelationsBySourceTypeName.clear()
     }
 
     override fun toString() = "Module: $extensionName | file: $fileName"
