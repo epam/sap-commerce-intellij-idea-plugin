@@ -147,8 +147,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                     }
 
                     loggers == null -> notify(NotificationType.WARNING, "Unable to retrieve loggers state") {
-                        "<p>No Loggers information returned from the remote server or is in the incorrect format.</p>"
-                        "<p>Server: ${server.shortenConnectionName()}</p>"
+                        "<p>No Loggers information returned from the remote server or is in the incorrect format.</p>" +
+                            "<p>Server: ${server.shortenConnectionName()}</p>"
                     }
 
                     else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
