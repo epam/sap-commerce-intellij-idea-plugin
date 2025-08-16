@@ -37,10 +37,13 @@
             <option value="$PROJECT_DIR$/modules/project/core" />
             <option value="$PROJECT_DIR$/modules/project/import" />
             <option value="$PROJECT_DIR$/modules/shared/core" />
+            <option value="$PROJECT_DIR$/modules/shared/emitter" />
             <option value="$PROJECT_DIR$/modules/shared/ui" />
             <option value="$PROJECT_DIR$/modules/solr/exec" />
             <option value="$PROJECT_DIR$/modules/spring" />
             <option value="$PROJECT_DIR$/modules/terminal" />
+            <option value="$PROJECT_DIR$/modules/type-system/core" />
+            <option value="$PROJECT_DIR$/modules/type-system/ui" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />
