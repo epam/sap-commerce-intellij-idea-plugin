@@ -23,6 +23,7 @@ import com.intellij.psi.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.spring.SpringHelper
 
+@Deprecated("migrate to spring module")
 class SpringReference(
     element: PsiElement,
     val name: String,

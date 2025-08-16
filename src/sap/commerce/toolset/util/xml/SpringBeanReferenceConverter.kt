@@ -19,14 +19,15 @@
 
 package sap.commerce.toolset.util.xml
 
-import sap.commerce.toolset.system.type.psi.reference.SpringReference
 import com.intellij.psi.PsiDocCommentOwner
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolvingHint
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.CustomReferenceConverter
 import com.intellij.util.xml.GenericDomValue
+import sap.commerce.toolset.system.type.psi.reference.SpringReference
 
+@Deprecated("migrate to spring module")
 class SpringBeanReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {
 
     override fun createReferences(

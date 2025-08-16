@@ -43,6 +43,7 @@ import sap.commerce.toolset.HybrisConstants
  * May produce incorrect results.
  */
 @Service(Service.Level.PROJECT)
+@Deprecated("migrate to spring module")
 class SimpleSpringService(val project: Project) {
 
     private val cache = CachedValuesManager.getManager(project).createCachedValue(
