@@ -15,38 +15,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.toolwindow.system.bean.actions
 
-import com.intellij.openapi.actionSystem.ActionPlaces
+package sap.commerce.toolset.system.type.actions
+
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.system.bean.model.Bean
-import sap.commerce.toolset.system.bean.model.Enum
-import sap.commerce.toolset.system.bean.model.EnumValue
-import sap.commerce.toolset.system.bean.model.Property
-import sap.commerce.toolset.toolwindow.system.bean.tree.TreeNode
-import sap.commerce.toolset.toolwindow.system.bean.tree.nodes.BSMetaNode
-import sap.commerce.toolset.toolwindow.system.bean.tree.nodes.BSNode
+import sap.commerce.toolset.system.type.model.*
+import sap.commerce.toolset.system.type.ui.tree.TSTreeNode
+import sap.commerce.toolset.system.type.ui.tree.nodes.TSMetaNode
+import sap.commerce.toolset.system.type.ui.tree.nodes.TSNode
 import sap.commerce.toolset.ui.actions.AbstractGoToDeclarationAction
 import javax.swing.JTree
 
-class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
+class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
 
     init {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")
     }
 
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
     override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
+        val tsNode = getSelectedNode(e)
 
-        val node = getSelectedNode(e)
-
-        if (node == null || node !is BSMetaNode<*>) {
+        if (tsNode == null || tsNode !is TSMetaNode<*>) {
             e.presentation.isEnabledAndVisible = false
             return
         }
@@ -58,13 +55,20 @@ class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val tsNode = getSelectedNode(e) ?: return
         val project = e.project ?: return
-        if (tsNode !is BSMetaNode<*>) return
+        if (tsNode !is TSMetaNode<*>) return
 
         when (val dom = tsNode.meta.retrieveDom()) {
-            is Bean -> navigate(project, dom, dom.clazz.xmlAttributeValue?.startOffset)
-            is Enum -> navigate(project, dom, dom.clazz.xmlAttributeValue?.startOffset)
-            is EnumValue -> navigate(project, dom, dom.xmlElement?.startOffset)
-            is Property -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
+            is AtomicType -> navigate(project, dom, dom.clazz.xmlAttributeValue?.startOffset)
+            is CollectionType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
+            is EnumType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
+            is EnumValue -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
+            is Attribute -> navigate(project, dom, dom.qualifier.xmlAttributeValue?.startOffset)
+            is CustomProperty -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
+            is Index -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
+            is ItemType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
+            is MapType -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
+            is Relation -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
+            is RelationElement -> navigate(project, dom, dom.xmlTag?.startOffset)
         }
     }
 
@@ -73,7 +77,7 @@ class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
         ?.asSafely<JTree>()
         ?.selectionPath
         ?.lastPathComponent
-        ?.asSafely<TreeNode>()
+        ?.asSafely<TSTreeNode>()
         ?.userObject
-        ?.asSafely<BSNode>()
+        ?.asSafely<TSNode>()
 }

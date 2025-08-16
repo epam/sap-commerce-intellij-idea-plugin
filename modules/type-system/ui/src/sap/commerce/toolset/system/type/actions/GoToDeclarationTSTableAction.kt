@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.system.bean.actions
+package sap.commerce.toolset.system.type.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
@@ -24,12 +24,12 @@ import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.system.bean.meta.model.BSMetaClassifier
-import sap.commerce.toolset.system.bean.model.*
+import sap.commerce.toolset.system.type.meta.model.TSMetaClassifier
+import sap.commerce.toolset.system.type.model.*
 import sap.commerce.toolset.ui.AbstractTable
 import sap.commerce.toolset.ui.actions.AbstractGoToDeclarationAction
 
-class GoToDeclarationBSTableAction : AbstractGoToDeclarationAction() {
+class GoToDeclarationTSTableAction : AbstractGoToDeclarationAction() {
 
     init {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")
@@ -38,7 +38,7 @@ class GoToDeclarationBSTableAction : AbstractGoToDeclarationAction() {
     override fun update(e: AnActionEvent) {
         val item = getSelectedItem(e)
 
-        if (item == null || item !is BSMetaClassifier<*>) {
+        if (item == null || item !is TSMetaClassifier<*>) {
             e.presentation.isEnabledAndVisible = false
             return
         }
@@ -50,14 +50,14 @@ class GoToDeclarationBSTableAction : AbstractGoToDeclarationAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val item = getSelectedItem(e) ?: return
         val project = e.project ?: return
-        if (item !is BSMetaClassifier<*>) return
+        if (item !is TSMetaClassifier<*>) return
 
         when (val dom = item.retrieveDom()) {
-            is EnumValue -> navigate(project, dom, dom.xmlElement?.startOffset)
-            is Property -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
-            is Hint -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
-            is Import -> navigate(project, dom, dom.xmlTag?.startOffset)
-            is Annotations -> navigate(project, dom, dom.xmlTag?.startOffset)
+            is EnumValue -> navigate(project, dom, dom.code.xmlAttributeValue?.startOffset)
+            is Attribute -> navigate(project, dom, dom.qualifier.xmlAttributeValue?.startOffset)
+            is CustomProperty -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
+            is Index -> navigate(project, dom, dom.name.xmlAttributeValue?.startOffset)
+            is RelationElement -> navigate(project, dom, dom.xmlTag?.startOffset)
         }
     }
 

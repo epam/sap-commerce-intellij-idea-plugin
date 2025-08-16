@@ -13,6 +13,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/modules/acl/core" />
             <option value="$PROJECT_DIR$/modules/ant/ui" />
+            <option value="$PROJECT_DIR$/modules/bean-system/core" />
+            <option value="$PROJECT_DIR$/modules/bean-system/ui" />
             <option value="$PROJECT_DIR$/modules/ccv2/core" />
             <option value="$PROJECT_DIR$/modules/ccv2/ui" />
             <option value="$PROJECT_DIR$/modules/exec/console" />
@@ -31,7 +33,6 @@
             <option value="$PROJECT_DIR$/modules/meta/bean-system" />
             <option value="$PROJECT_DIR$/modules/meta/cockpitng" />
             <option value="$PROJECT_DIR$/modules/meta/core" />
-            <option value="$PROJECT_DIR$/modules/meta/type-system" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/core" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/exec" />
             <option value="$PROJECT_DIR$/modules/project/core" />

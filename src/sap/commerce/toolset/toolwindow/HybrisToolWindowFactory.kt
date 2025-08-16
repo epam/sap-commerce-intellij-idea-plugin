@@ -17,10 +17,6 @@
  */
 package sap.commerce.toolset.toolwindow
 
-import sap.commerce.toolset.tools.remote.console.view.HybrisConsolesView
-import sap.commerce.toolset.toolwindow.loggers.LoggersView
-import sap.commerce.toolset.toolwindow.system.bean.view.BSView
-import sap.commerce.toolset.toolwindow.system.type.view.TSView
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -31,6 +27,10 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.toolwindow.CCv2View
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.tools.remote.console.view.HybrisConsolesView
+import sap.commerce.toolset.toolwindow.ui.BSView
+import sap.commerce.toolset.toolwindow.ui.LoggersView
+import sap.commerce.toolset.toolwindow.ui.TSView
 
 class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : ToolWindowFactory, DumbAware {
 

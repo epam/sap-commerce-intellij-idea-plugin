@@ -15,23 +15,9 @@
   ~ You should have received a copy of the GNU Lesser General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <idea-plugin>
+
     <extensions defaultExtensionNs="com.intellij">
     </extensions>
-
-    <actions>
-        <group id="TSView.ToolWindow">
-            <group id="TSView.ToolWindow.TreePopup">
-                <action class="sap.commerce.toolset.system.type.actions.GoToDeclarationTSNodeAction"
-                        use-shortcut-of="GotoDeclaration"/>
-            </group>
-
-            <group id="TSView.ToolWindow.TablePopup">
-                <action class="sap.commerce.toolset.system.type.actions.GoToDeclarationTSTableAction"
-                        use-shortcut-of="GotoDeclaration"/>
-            </group>
-        </group>
-    </actions>
 
 </idea-plugin>

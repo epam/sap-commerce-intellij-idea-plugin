@@ -73,6 +73,8 @@
     <depends config-file="sap.commerce.toolset-logging-ui.xml"/>
     <depends config-file="sap.commerce.toolset-type-system-core.xml"/>
     <depends config-file="sap.commerce.toolset-type-system-ui.xml"/>
+    <depends config-file="sap.commerce.toolset-bean-system-core.xml"/>
+    <depends config-file="sap.commerce.toolset-bean-system-ui.xml"/>
 
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-xdebugger.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
