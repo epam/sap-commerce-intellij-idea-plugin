@@ -17,36 +17,20 @@
  */
 package sap.commerce.toolset.system.bean.meta
 
+import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.system.bean.meta.model.BSGlobalMetaClassifier
 import sap.commerce.toolset.system.bean.meta.model.BSMetaType
+import sap.commerce.toolset.system.meta.GlobalMetaModel
 import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive
-import com.intellij.openapi.Disposable
-import com.intellij.openapi.util.ModificationTracker
-import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
-class BSGlobalMetaModel : ModificationTracker, Disposable {
+class BSGlobalMetaModel : GlobalMetaModel {
 
-    private var modificationTracker = 0L
     private val myMetaCache: MutableMap<BSMetaType, Map<String, BSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
-
-    fun clear() {
-        cleanup()
-
-        if (modificationTracker == Long.MAX_VALUE) modificationTracker = 0L
-        modificationTracker++
-    }
 
     @Suppress("UNCHECKED_CAST")
     fun <T : BSGlobalMetaClassifier<*>> getMetaType(metaType: BSMetaType): ConcurrentMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { CaseInsensitive.CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
-
-    override fun getModificationCount() = modificationTracker
-    override fun dispose() = cleanup()
-
-    private fun cleanup() {
-        myMetaCache.clear()
-    }
 
 }

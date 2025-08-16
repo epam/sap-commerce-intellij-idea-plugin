@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,12 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.type.util.xml.converter
+package sap.commerce.toolset.util.xml
 
-import sap.commerce.toolset.system.type.model.Cardinality
-import sap.commerce.toolset.util.xml.converter.FallbackEnumConverter
+import com.intellij.util.xml.Convert
+import com.intellij.util.xml.GenericAttributeValue
+import org.jetbrains.annotations.NotNull
+import sap.commerce.toolset.util.xml.converter.FalseBooleanConverter
 
-class CardinalityEnumConverter : FallbackEnumConverter<Cardinality>(
-    Cardinality::class.java,
-    Cardinality.MANY
-)
+interface FalseAttributeValue : GenericAttributeValue<Boolean> {
+
+    @NotNull
+    @Convert(FalseBooleanConverter::class)
+    override fun getValue(): Boolean
+}
+
+fun FalseAttributeValue.toBoolean() = stringValue?.toBoolean() ?: false

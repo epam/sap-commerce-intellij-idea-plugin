@@ -22,6 +22,7 @@ import sap.commerce.toolset.system.type.meta.model.*
 import sap.commerce.toolset.system.type.model.*
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.system.type.model.Cardinality
 
 object TSMetaHelper {
 

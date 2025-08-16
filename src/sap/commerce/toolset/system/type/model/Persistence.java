@@ -22,7 +22,6 @@
 
 package sap.commerce.toolset.system.type.model;
 
-import sap.commerce.toolset.util.xml.SpringBeanReferenceConverter;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,7 +80,8 @@ public interface Persistence extends DomElement {
      */
     @NotNull
     @com.intellij.util.xml.Attribute(ATTRIBUTE_HANDLER)
-    @Referencing(SpringBeanReferenceConverter.class)
+    // TODO: migrate to ReferenceContributor
+//    @Referencing(SpringBeanReferenceConverter.class)
     GenericAttributeValue<String> getAttributeHandler();
 
 

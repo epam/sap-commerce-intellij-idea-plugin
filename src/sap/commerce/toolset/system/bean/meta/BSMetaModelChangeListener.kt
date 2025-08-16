@@ -1,6 +1,6 @@
 /*
- * This file is part of "hybris integration" plugin for Intellij IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,31 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Generated on Sun Jun 05 01:21:13 EEST 2016
-// DTD/Schema  :    null
+package sap.commerce.toolset.system.bean.meta
 
-package sap.commerce.toolset.system.type.model;
+import com.intellij.util.messages.Topic
+import sap.commerce.toolset.system.meta.MetaModelChangeListener
 
-/**
- * null:cardinalityAttrType enumeration.
- */
-public enum Cardinality implements com.intellij.util.xml.NamedEnum {
-    MANY("many"),
-    ONE("one");
+interface BSMetaModelChangeListener: MetaModelChangeListener<BSGlobalMetaModel> {
 
-    private final String value;
-
-    Cardinality(final String value) {
-        this.value = value;
-    }
-
-    @Override
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return getValue();
+    companion object {
+        val TOPIC = Topic( BSMetaModelChangeListener::class.java)
     }
 }

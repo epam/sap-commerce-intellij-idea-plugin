@@ -16,18 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.util.xml
+package sap.commerce.toolset.system.cockpitng.meta
 
-import sap.commerce.toolset.util.xml.converter.TrueBooleanConverter
-import com.intellij.util.xml.Convert
-import com.intellij.util.xml.GenericAttributeValue
-import org.jetbrains.annotations.NotNull
+import com.intellij.util.messages.Topic
+import sap.commerce.toolset.system.meta.MetaModelChangeListener
 
-interface TrueAttributeValue : GenericAttributeValue<Boolean> {
+interface CngMetaModelChangeListener: MetaModelChangeListener<CngGlobalMetaModel> {
 
-    @NotNull
-    @Convert(TrueBooleanConverter::class)
-    override fun getValue(): Boolean
+    companion object {
+        val TOPIC = Topic( CngMetaModelChangeListener::class.java)
+    }
 }
-
-fun TrueAttributeValue.toBoolean() = stringValue?.toBoolean() ?: true

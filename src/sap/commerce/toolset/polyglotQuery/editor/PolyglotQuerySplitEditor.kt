@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.polyglotQuery.editor
 
-import sap.commerce.toolset.system.meta.MetaModelChangeListener
-import sap.commerce.toolset.system.type.meta.TSGlobalMetaModel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
@@ -39,6 +37,8 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
+import sap.commerce.toolset.system.type.meta.TSGlobalMetaModel
+import sap.commerce.toolset.system.type.meta.TSMetaModelChangeListener
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial
@@ -133,8 +133,8 @@ class PolyglotQuerySplitEditor(internal val textEditor: TextEditor, private val 
 
     init {
         with(project.messageBus.connect(this)) {
-            subscribe(MetaModelChangeListener.TOPIC, object : MetaModelChangeListener {
-                override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
+            subscribe(TSMetaModelChangeListener.TOPIC, object : TSMetaModelChangeListener {
+                override fun onChanged(globalMetaModel: TSGlobalMetaModel) {
                     refreshParameters()
                     reparseTextEditor()
                 }

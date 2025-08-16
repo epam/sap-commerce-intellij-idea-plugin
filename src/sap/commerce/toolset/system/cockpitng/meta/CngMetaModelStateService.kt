@@ -18,15 +18,14 @@
 
 package sap.commerce.toolset.system.cockpitng.meta
 
-import sap.commerce.toolset.system.cockpitng.meta.model.CngMeta
-import sap.commerce.toolset.system.meta.MetaModelChangeListener
-import sap.commerce.toolset.system.meta.MetaModelStateService
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
 import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.system.cockpitng.meta.model.CngMeta
+import sap.commerce.toolset.system.meta.MetaModelStateService
 
 @Service(Service.Level.PROJECT)
 class CngMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<CngGlobalMetaModel, CngMeta<DomElement>, DomElement>(
@@ -36,7 +35,7 @@ class CngMetaModelStateService(project: Project, coroutineScope: CoroutineScope)
 ) {
 
     override fun onCompletion(newState: CngGlobalMetaModel) {
-        project.messageBus.syncPublisher(MetaModelChangeListener.TOPIC).cngSystemChanged(newState)
+        project.messageBus.syncPublisher(CngMetaModelChangeListener.TOPIC).onChanged(newState)
     }
 
     override suspend fun create(metaModelsToMerge: Collection<CngMeta<DomElement>>): CngGlobalMetaModel = CngGlobalMetaModel().also {

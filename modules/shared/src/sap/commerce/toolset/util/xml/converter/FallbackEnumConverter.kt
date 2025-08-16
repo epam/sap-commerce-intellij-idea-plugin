@@ -16,10 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.meta
+package sap.commerce.toolset.util.xml.converter
 
-interface MetaModelChangeListener<T: GlobalMetaModel> {
+import com.intellij.util.xml.ConvertContext
+import com.intellij.util.xml.NamedEnumUtil
+import com.intellij.util.xml.ResolvingConverter
+import com.intellij.util.xml.XmlDomBundle
 
-    fun onChanged(globalMetaModel: T) = Unit
+open class FallbackEnumConverter<T : Enum<*>>(
+    val clazz: Class<T>,
+    private val fallbackValue: T
+) : ResolvingConverter<T>() {
 
+    override fun toString(t: T?, context: ConvertContext) = t?.let { NamedEnumUtil.getEnumValueByElement(it) }
+
+    override fun fromString(s: String?, context: ConvertContext) = NamedEnumUtil.getEnumElementByValue(clazz, s)
+        ?: fallbackValue
+
+    override fun getVariants(context: ConvertContext) = clazz.enumConstants.toList()
+
+    override fun getErrorMessage(s: String?, context: ConvertContext) = XmlDomBundle.message("dom.converter.unknown.enum.value", s)
 }

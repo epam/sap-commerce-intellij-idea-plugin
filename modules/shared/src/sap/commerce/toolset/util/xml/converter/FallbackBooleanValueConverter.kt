@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,21 +19,15 @@
 package sap.commerce.toolset.util.xml.converter
 
 import com.intellij.util.xml.ConvertContext
-import com.intellij.util.xml.NamedEnumUtil
 import com.intellij.util.xml.ResolvingConverter
-import com.intellij.util.xml.XmlDomBundle
 
-open class FallbackEnumConverter<T : Enum<*>>(
-    val clazz: Class<T>,
-    private val fallbackValue: T
-) : ResolvingConverter<T>() {
+open class FallbackBooleanValueConverter(
+    private val fallbackValue: Boolean
+) : ResolvingConverter<Boolean>() {
+    override fun toString(t: Boolean?, context: ConvertContext): String? = t?.toString()
 
-    override fun toString(t: T?, context: ConvertContext) = t?.let { NamedEnumUtil.getEnumValueByElement(it) }
-
-    override fun fromString(s: String?, context: ConvertContext) = NamedEnumUtil.getEnumElementByValue(clazz, s)
+    override fun fromString(stringValue: String?, context: ConvertContext): Boolean = stringValue?.toBoolean()
         ?: fallbackValue
 
-    override fun getVariants(context: ConvertContext) = clazz.enumConstants.toList()
-
-    override fun getErrorMessage(s: String?, context: ConvertContext) = XmlDomBundle.message("dom.converter.unknown.enum.value", s)
+    override fun getVariants(context: ConvertContext) = listOf(true, false)
 }

@@ -16,10 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.meta
+package sap.commerce.toolset.system.type.util.xml.converter
 
-interface MetaModelChangeListener<T: GlobalMetaModel> {
+import sap.commerce.toolset.system.type.model.Cardinality
+import sap.commerce.toolset.util.xml.converter.FallbackEnumConverter
 
-    fun onChanged(globalMetaModel: T) = Unit
-
-}
+class CardinalityEnumConverter : FallbackEnumConverter<Cardinality>(
+    Cardinality::class.java,
+    Cardinality.MANY
+)

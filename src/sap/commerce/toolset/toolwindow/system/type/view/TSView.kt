@@ -21,11 +21,6 @@ package sap.commerce.toolset.toolwindow.system.type.view
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.ActionsBundle
-import sap.commerce.toolset.system.meta.MetaModelChangeListener
-import sap.commerce.toolset.system.type.meta.TSGlobalMetaModel
-import sap.commerce.toolset.system.type.meta.TSMetaModelStateService
-import sap.commerce.toolset.toolwindow.system.type.components.TSTreePanel
-import sap.commerce.toolset.toolwindow.system.type.view.TSViewSettings.TSViewListener
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
@@ -37,6 +32,11 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.system.type.meta.TSGlobalMetaModel
+import sap.commerce.toolset.system.type.meta.TSMetaModelChangeListener
+import sap.commerce.toolset.system.type.meta.TSMetaModelStateService
+import sap.commerce.toolset.toolwindow.system.type.components.TSTreePanel
+import sap.commerce.toolset.toolwindow.system.type.view.TSViewSettings.TSViewListener
 import java.awt.GridBagLayout
 import java.io.Serial
 
@@ -88,8 +88,8 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
                     refreshContent(changeType)
                 }
             })
-            subscribe(MetaModelChangeListener.TOPIC, object : MetaModelChangeListener {
-                override fun typeSystemChanged(globalMetaModel: TSGlobalMetaModel) {
+            subscribe(TSMetaModelChangeListener.TOPIC, object : TSMetaModelChangeListener {
+                override fun onChanged(globalMetaModel: TSGlobalMetaModel) {
                     refreshContent(globalMetaModel, TSViewSettings.ChangeType.FULL)
                 }
             })

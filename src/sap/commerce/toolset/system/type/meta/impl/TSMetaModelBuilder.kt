@@ -23,6 +23,7 @@ import sap.commerce.toolset.system.type.meta.model.impl.*
 import sap.commerce.toolset.system.type.model.*
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.system.type.model.Cardinality
 
 class TSMetaModelBuilder(
     private val moduleName: String,

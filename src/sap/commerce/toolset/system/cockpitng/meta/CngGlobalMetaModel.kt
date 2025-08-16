@@ -21,41 +21,20 @@ import sap.commerce.toolset.system.cockpitng.meta.model.CngMetaActionDefinition
 import sap.commerce.toolset.system.cockpitng.meta.model.CngMetaEditorDefinition
 import sap.commerce.toolset.system.cockpitng.meta.model.CngMetaWidget
 import sap.commerce.toolset.system.cockpitng.meta.model.CngMetaWidgetDefinition
+import sap.commerce.toolset.system.meta.GlobalMetaModel
 import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive.CaseInsensitiveConcurrentHashMap
-import com.intellij.openapi.Disposable
-import com.intellij.openapi.util.ModificationTracker
 
 /**
  * Component can be any string
  * @see <a href="https://help.sap.com/docs/SAP_COMMERCE/5c9ea0c629214e42b727bf08800d8dfa/8c75ec11866910149df9dfb10df17f03.html?locale=en-US&q=editorareaactions%20component#configuration-context">docs</a>
  */
-class CngGlobalMetaModel : ModificationTracker, Disposable {
+class CngGlobalMetaModel : GlobalMetaModel {
 
-    private var modificationTracker = 0L
     val components = mutableSetOf<String>()
     val contextAttributes = mutableMapOf<String, MutableSet<String>>()
     val actionDefinitions = CaseInsensitiveConcurrentHashMap<String, CngMetaActionDefinition>()
     val widgetDefinitions = CaseInsensitiveConcurrentHashMap<String, CngMetaWidgetDefinition>()
     val editorDefinitions = CaseInsensitiveConcurrentHashMap<String, CngMetaEditorDefinition>()
     val widgets = CaseInsensitiveConcurrentHashMap<String, CngMetaWidget>()
-
-    fun clear() {
-        cleanup()
-
-        if (modificationTracker == Long.MAX_VALUE) modificationTracker = 0L
-        modificationTracker++
-    }
-
-    override fun getModificationCount() = modificationTracker
-    override fun dispose() = cleanup()
-
-    private fun cleanup() {
-        components.clear()
-        contextAttributes.clear()
-        actionDefinitions.clear()
-        widgetDefinitions.clear()
-        editorDefinitions.clear()
-        widgets.clear()
-    }
 
 }

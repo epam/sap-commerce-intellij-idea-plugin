@@ -17,13 +17,14 @@
  */
 package sap.commerce.toolset.system.type.meta
 
+import com.intellij.util.xml.DomElement
+import sap.commerce.toolset.system.meta.GlobalMetaModel
 import sap.commerce.toolset.system.type.meta.impl.CaseInsensitive
 import sap.commerce.toolset.system.type.meta.model.*
-import com.intellij.util.xml.DomElement
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
-class TSGlobalMetaModel {
+class TSGlobalMetaModel : GlobalMetaModel {
 
     private val myMetaCache: MutableMap<TSMetaType, Map<String, TSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
     private val myReferencesBySourceTypeName = CaseInsensitive.NoCaseMultiMap<TSMetaRelation.TSMetaRelationElement>()

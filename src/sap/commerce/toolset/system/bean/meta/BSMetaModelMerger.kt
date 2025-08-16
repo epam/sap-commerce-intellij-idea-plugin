@@ -17,16 +17,14 @@
  */
 package sap.commerce.toolset.system.bean.meta
 
+import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.system.bean.meta.model.*
 import sap.commerce.toolset.system.bean.meta.model.impl.BSGlobalMetaBeanImpl
 import sap.commerce.toolset.system.bean.meta.model.impl.BSGlobalMetaEnumImpl
-import com.intellij.util.xml.DomElement
 
 object BSMetaModelMerger {
 
     fun merge(globalMetaModel: BSGlobalMetaModel, localMetaModels: Collection<BSMetaModel>) = with(globalMetaModel) {
-        globalMetaModel.clear()
-
         localMetaModels
             // ideally, we have to get the same dependency order as SAP Commerce
             .sortedBy { !it.custom }

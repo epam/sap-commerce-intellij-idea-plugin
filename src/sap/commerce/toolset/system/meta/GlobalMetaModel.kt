@@ -18,8 +18,4 @@
 
 package sap.commerce.toolset.system.meta
 
-interface MetaModelChangeListener<T: GlobalMetaModel> {
-
-    fun onChanged(globalMetaModel: T) = Unit
-
-}
+interface GlobalMetaModel

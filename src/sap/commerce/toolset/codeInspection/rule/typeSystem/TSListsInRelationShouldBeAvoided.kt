@@ -26,6 +26,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.system.type.model.Cardinality
 
 class TSListsInRelationShouldBeAvoided : AbstractTSInspection() {
 

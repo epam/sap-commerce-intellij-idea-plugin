@@ -18,14 +18,13 @@
 
 package sap.commerce.toolset.system.type.meta
 
-import sap.commerce.toolset.system.meta.MetaModelChangeListener
-import sap.commerce.toolset.system.meta.MetaModelStateService
-import sap.commerce.toolset.system.type.model.Items
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.system.meta.MetaModelStateService
+import sap.commerce.toolset.system.type.model.Items
 
 @Service(Service.Level.PROJECT)
 class TSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) : MetaModelStateService<TSGlobalMetaModel, TSMetaModel, Items>(
@@ -35,7 +34,7 @@ class TSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) 
 ) {
 
     override fun onCompletion(newState: TSGlobalMetaModel) {
-        project.messageBus.syncPublisher(MetaModelChangeListener.TOPIC).typeSystemChanged(newState)
+        project.messageBus.syncPublisher(TSMetaModelChangeListener.TOPIC).onChanged(newState)
     }
 
     override suspend fun create(metaModelsToMerge: Collection<TSMetaModel>): TSGlobalMetaModel = TSGlobalMetaModel().also {

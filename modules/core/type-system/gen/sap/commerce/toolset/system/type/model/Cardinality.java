@@ -1,5 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,18 +17,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.util.xml
+// Generated on Sun Jun 05 01:21:13 EEST 2016
+// DTD/Schema  :    null
 
-import sap.commerce.toolset.util.xml.converter.FalseBooleanConverter
-import com.intellij.util.xml.Convert
-import com.intellij.util.xml.GenericAttributeValue
-import org.jetbrains.annotations.NotNull
+package sap.commerce.toolset.system.type.model;
 
-interface FalseAttributeValue : GenericAttributeValue<Boolean> {
+/**
+ * null:cardinalityAttrType enumeration.
+ */
+public enum Cardinality implements com.intellij.util.xml.NamedEnum {
+    MANY("many"),
+    ONE("one");
 
-    @NotNull
-    @Convert(FalseBooleanConverter::class)
-    override fun getValue(): Boolean
+    private final String value;
+
+    Cardinality(final String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return getValue();
+    }
 }
-
-fun FalseAttributeValue.toBoolean() = stringValue?.toBoolean() ?: false
