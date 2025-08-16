@@ -46,9 +46,9 @@ import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.exec.remote.console.HybrisConsole
 import sap.commerce.toolset.exec.remote.context.ConsoleAwareExecutionResult
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
-import sap.commerce.toolset.solr.remote.execution.SolrCoreData
-import sap.commerce.toolset.solr.remote.execution.SolrExecutionClient
-import sap.commerce.toolset.solr.remote.execution.SolrQueryExecutionContext
+import sap.commerce.toolset.solr.exec.remote.SolrExecutionClient
+import sap.commerce.toolset.solr.exec.remote.context.SolrCoreData
+import sap.commerce.toolset.solr.exec.remote.context.SolrQueryExecutionContext
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.*

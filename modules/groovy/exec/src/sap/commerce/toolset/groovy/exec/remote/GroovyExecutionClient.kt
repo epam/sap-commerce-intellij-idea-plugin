@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy.remote.execution
+package sap.commerce.toolset.groovy.exec.remote
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -37,6 +37,7 @@ import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
 import sap.commerce.toolset.exec.remote.http.HybrisHacHttpClient
 import sap.commerce.toolset.exec.remote.http.RemoteConnectionContext
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.groovy.exec.remote.context.GroovyExecutionContext
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets

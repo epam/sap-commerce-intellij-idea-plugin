@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy.remote.execution
+package sap.commerce.toolset.groovy.exec.remote.context
 
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.remote.context.ExecutionContext

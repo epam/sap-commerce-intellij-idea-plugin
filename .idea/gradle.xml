@@ -20,7 +20,7 @@
             <option value="$PROJECT_DIR$/modules/extensioninfo" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/remote" />
-            <option value="$PROJECT_DIR$/modules/groovy/remote" />
+            <option value="$PROJECT_DIR$/modules/groovy/exec" />
             <option value="$PROJECT_DIR$/modules/impex/core" />
             <option value="$PROJECT_DIR$/modules/impex/exec" />
             <option value="$PROJECT_DIR$/modules/impex/monitoring" />
@@ -33,12 +33,12 @@
             <option value="$PROJECT_DIR$/modules/meta/core" />
             <option value="$PROJECT_DIR$/modules/meta/type-system" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/core" />
-            <option value="$PROJECT_DIR$/modules/polyglotQuery/remote" />
+            <option value="$PROJECT_DIR$/modules/polyglotQuery/exec" />
             <option value="$PROJECT_DIR$/modules/project/core" />
             <option value="$PROJECT_DIR$/modules/project/import" />
             <option value="$PROJECT_DIR$/modules/shared/core" />
             <option value="$PROJECT_DIR$/modules/shared/ui" />
-            <option value="$PROJECT_DIR$/modules/solr/remote" />
+            <option value="$PROJECT_DIR$/modules/solr/exec" />
             <option value="$PROJECT_DIR$/modules/spring" />
             <option value="$PROJECT_DIR$/modules/terminal" />
           </set>

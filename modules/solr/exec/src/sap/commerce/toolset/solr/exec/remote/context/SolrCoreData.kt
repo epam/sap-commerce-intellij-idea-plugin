@@ -16,13 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.solr.remote.execution
+package sap.commerce.toolset.solr.exec.remote.context
 
-import sap.commerce.toolset.exec.remote.context.ExecutionContext
+class SolrCoreData(val core: String, val docs: Int) {
 
-data class SolrQueryExecutionContext(
-    override val executionTitle: String = "Execute HTTP Call to SOLR...",
-    val content: String,
-    val core: String,
-    val rows: Int
-) : ExecutionContext
+    override fun toString() = core
+
+}

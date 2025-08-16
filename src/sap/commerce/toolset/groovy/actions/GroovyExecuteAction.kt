@@ -29,8 +29,8 @@ import sap.commerce.toolset.actions.ExecuteStatementAction
 import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
-import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
-import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionContext
+import sap.commerce.toolset.groovy.exec.remote.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.remote.context.GroovyExecutionContext
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TransactionMode
 import sap.commerce.toolset.tools.remote.console.impl.HybrisGroovyConsole

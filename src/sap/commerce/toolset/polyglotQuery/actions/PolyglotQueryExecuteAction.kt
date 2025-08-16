@@ -18,14 +18,6 @@
 package sap.commerce.toolset.polyglotQuery.actions
 
 import com.intellij.ide.ActivityTracker
-import sap.commerce.toolset.actions.ExecuteStatementAction
-import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
-import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
-import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
-import sap.commerce.toolset.polyglotQuery.editor.polyglotQuerySplitEditor
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypeKeyName
-import sap.commerce.toolset.tools.remote.console.impl.HybrisPolyglotQueryConsole
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.readAction
@@ -37,12 +29,20 @@ import kotlinx.coroutines.launch
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actions.ExecuteStatementAction
+import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
 import sap.commerce.toolset.flexibleSearch.remote.execution.QueryMode
-import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
-import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionContext
+import sap.commerce.toolset.groovy.exec.remote.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.remote.context.GroovyExecutionContext
+import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
+import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
+import sap.commerce.toolset.polyglotQuery.editor.polyglotQuerySplitEditor
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
+import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypeKeyName
+import sap.commerce.toolset.tools.remote.console.impl.HybrisPolyglotQueryConsole
 
 class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryConsole, PolyglotQuerySplitEditor>(
     PolyglotQueryLanguage,

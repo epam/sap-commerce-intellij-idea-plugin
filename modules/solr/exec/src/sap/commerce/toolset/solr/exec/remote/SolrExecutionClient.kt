@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.solr.remote.execution
+package sap.commerce.toolset.solr.exec.remote
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -39,6 +39,8 @@ import sap.commerce.toolset.exec.remote.RemoteConnectionService
 import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.solr.exec.remote.context.SolrCoreData
+import sap.commerce.toolset.solr.exec.remote.context.SolrQueryExecutionContext
 import java.io.Serial
 
 @Service(Service.Level.PROJECT)

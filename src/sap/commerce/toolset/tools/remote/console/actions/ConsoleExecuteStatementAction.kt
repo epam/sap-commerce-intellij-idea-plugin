@@ -26,11 +26,11 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionClient
-import sap.commerce.toolset.groovy.remote.execution.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.remote.GroovyExecutionClient
 import sap.commerce.toolset.impex.exec.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.remote.ImpExExecutionClient
 import sap.commerce.toolset.impex.monitoring.exec.remote.ImpExMonitorExecutionClient
-import sap.commerce.toolset.solr.remote.execution.SolrExecutionClient
+import sap.commerce.toolset.solr.exec.remote.SolrExecutionClient
 import sap.commerce.toolset.tools.remote.console.HybrisConsoleService
 import sap.commerce.toolset.tools.remote.console.impl.*
 
