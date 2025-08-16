@@ -15,31 +15,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.system.type.file
+
+package sap.commerce.toolset.system.bean
 
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.util.Iconable.IconFlags
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.system.type.model.deployment.Model
+import sap.commerce.toolset.system.bean.model.Beans
 import javax.swing.Icon
 
-class TSDeploymentModelDomFileDescription : DomFileDescription<Model>(Model::class.java, HybrisConstants.ROOT_TAG_DEPLOYMENT_MODEL_XML) {
+class BSDomFileDescription : DomFileDescription<Beans>(Beans::class.java, "beans") {
 
-    override fun getFileIcon(@IconFlags flags: Int): Icon = HybrisIcons.TypeSystem.DEPLOYMENT_MODEL
+    override fun getFileIcon(flags: Int): Icon = HybrisIcons.BeanSystem.FILE
 
-    override fun isMyFile(
-        file: XmlFile, module: Module?
-    ) = super.isMyFile(file, module)
-        && HybrisConstants.CORE_ADVANCED_DEPLOYMENT_FILE == file.name
-        && hasName(file)
+    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
+        && file.name.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING)
+        && hasNamespace(file)
         && file.isHybrisProject
 
-    private fun hasName(file: XmlFile) = file.rootTag
-        ?.attributes
-        ?.any { it.localName == "name" && it.value == "hybris" }
-        ?: false
+    private fun hasNamespace(file: XmlFile) = file.rootTag
+            ?.attributes
+            ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "beans.xsd" }
+            ?: false
 }

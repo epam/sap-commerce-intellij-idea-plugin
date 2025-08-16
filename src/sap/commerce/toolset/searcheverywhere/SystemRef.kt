@@ -18,13 +18,13 @@
 
 package sap.commerce.toolset.searcheverywhere
 
-import sap.commerce.toolset.system.bean.BSDomFileDescription
-import sap.commerce.toolset.system.type.file.TSDomFileDescription
 import com.intellij.navigation.NavigationItem
 import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.system.bean.BSDomFileDescription
+import sap.commerce.toolset.system.type.TSDomFileDescription
 import javax.swing.Icon
 
 data class SystemRef(val id: String, val displayName: String, val icon: Icon?) {

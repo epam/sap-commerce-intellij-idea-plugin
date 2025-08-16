@@ -36,7 +36,7 @@ import sap.commerce.toolset.system.bean.BSDomFileDescription
 import sap.commerce.toolset.system.bean.meta.BSModificationTracker
 import sap.commerce.toolset.system.cockpitng.*
 import sap.commerce.toolset.system.cockpitng.meta.CngModificationTracker
-import sap.commerce.toolset.system.type.file.TSDomFileDescription
+import sap.commerce.toolset.system.type.TSDomFileDescription
 import sap.commerce.toolset.system.type.meta.TSModificationTracker
 
 /**

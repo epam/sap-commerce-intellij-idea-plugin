@@ -18,6 +18,24 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <completion.contributor language="XML" order="before javaClassReference"
+                                implementationClass="sap.commerce.toolset.system.bean.codeInsight.completion.BSCompletionContributor"/>
+
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.system.bean.lang.folding.BeansXmlFoldingBuilder"/>
+
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.BeansXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
+
+        <xmlStructureViewBuilderProvider order="first" implementation="sap.commerce.toolset.system.bean.structureView.BSXmlStructureViewBuilderProvider"/>
+
+        <projectConfigurable id="hybris.project.bs.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             bundle="i18n.HybrisBundle" key="hybris.settings.project.bs.title"
+                             order="after hybris.project.ts.settings"
+                             provider="sap.commerce.toolset.system.bean.settings.options.ProjectBeanSystemConfigurableProvider"/>
+
+        <applicationService serviceImplementation="sap.commerce.toolset.system.bean.codeInsight.completion.provider.BSClassCompletionProvider"/>
     </extensions>
 
 </idea-plugin>

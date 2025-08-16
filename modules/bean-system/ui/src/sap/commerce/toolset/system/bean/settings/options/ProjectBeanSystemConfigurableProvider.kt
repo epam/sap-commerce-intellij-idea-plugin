@@ -29,7 +29,7 @@ import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 import javax.swing.JCheckBox
 
-class ProjectBeanSystemConfigurableProvider(val project: Project) : ConfigurableProvider() {
+class ProjectBeanSystemConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
     override fun canCreateConfigurable() = project.isHybrisProject
     override fun createConfigurable() = SettingsConfigurable(project)
