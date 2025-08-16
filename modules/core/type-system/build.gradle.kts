@@ -25,7 +25,7 @@ plugins {
 
 sourceSets {
     main {
-        java.srcDirs("src")
+        java.srcDirs("src", "gen")
         resources.srcDirs("resources")
     }
     test {
@@ -33,7 +33,14 @@ sourceSets {
     }
 }
 
+idea {
+    module {
+        generatedSourceDirs.add(file("gen"))
+    }
+}
+
 dependencies {
+    implementation(libs.dtdparser)
     implementation(project(":shared"))
 
     intellijPlatform {

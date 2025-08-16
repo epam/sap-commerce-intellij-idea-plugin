@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset.impex.lang.documentation.renderer
 
-import sap.commerce.toolset.lang.documentation.renderer.HybrisDocRenderer
+import sap.commerce.toolset.lang.documentation.renderer.DocRenderer
 
-class ImpexDocRenderer : HybrisDocRenderer() {
+class ImpexDocRenderer : DocRenderer() {
 
     fun attributeModifier(name: String) = title("Attribute modifier", name)
     fun headerAbbreviation(name: String) = title("Header abbreviation", name)

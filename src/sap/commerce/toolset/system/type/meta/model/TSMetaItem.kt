@@ -27,7 +27,6 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
-
 interface TSMetaItem : TSMetaClassifier<ItemType> {
     val extendedMetaItemName: String?
     val attributes: Map<String, TSMetaItemAttribute>

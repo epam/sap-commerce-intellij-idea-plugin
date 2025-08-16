@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ package sap.commerce.toolset.lang.documentation.renderer
 import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.util.text.HtmlChunk
 
-open class HybrisDocRenderer {
+open class DocRenderer {
 
     private val entries = mutableListOf<String>()
 
@@ -148,4 +148,4 @@ open class HybrisDocRenderer {
     override fun toString() = entries.joinToString("")
 }
 
-fun hybrisDoc(initializer: HybrisDocRenderer.() -> Unit) = HybrisDocRenderer().apply(initializer)
+fun hybrisDoc(initializer: DocRenderer.() -> Unit) = DocRenderer().apply(initializer)
