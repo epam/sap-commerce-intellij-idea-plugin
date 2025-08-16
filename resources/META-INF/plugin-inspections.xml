@@ -23,425 +23,425 @@
         <localInspection groupPath="SAP Commerce" shortName="ManifestUnknownExtensionInspection" displayName="[y] Unknown extension"
                          groupName="[y] Manifest - Commerce" level="ERROR" language="JSON" enabledByDefault="true"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownExtensionInspection.key"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.manifest.ManifestCommerceExtensionInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.manifest.ManifestCommerceExtensionInspection"/>
         <localInspection groupPath="SAP Commerce" shortName="ManifestUnknownTemplateExtensionInspection" displayName="[y] Unknown template extension"
                          groupName="[y] Manifest - Commerce" level="ERROR" language="JSON" enabledByDefault="true"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownTemplateExtensionInspection.key"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.manifest.ManifestCommerceTemplateExtensionInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.manifest.ManifestCommerceTemplateExtensionInspection"/>
         <localInspection groupPath="SAP Commerce" shortName="ManifestUnknownExtensionPackInspection" displayName="[y] Unknown extension pack"
                          groupName="[y] Manifest - Commerce" level="WEAK WARNING" language="JSON" enabledByDefault="true"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownExtensionPackInspection.key"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.manifest.ManifestCommerceExtensionPackInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.manifest.ManifestCommerceExtensionPackInspection"/>
 
         <!-- Business Process -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Business Process"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
                          shortName="BPDomElementsInspection" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.businessProcess.BPDomElementsInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.businessProcess.BPDomElementsInspection"/>
 
         <!-- Cockpitng -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
                          shortName="CngConfigDomElementsInspection" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngConfigDomInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.cockpitng.CngConfigDomInspection"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
                          shortName="CngActionsDomElementsInspection" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngActionsDomInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.cockpitng.CngActionsDomInspection"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
                          shortName="CngWidgetsDomElementsInspection" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngWidgetsDomInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.cockpitng.CngWidgetsDomInspection"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.cng.ContextMergeByPointToExistingContextAttribute.key"
                          shortName="CngContextMergeByPointToExistingContextAttribute" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngContextMergeByPointToExistingContextAttribute"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.cockpitng.CngContextMergeByPointToExistingContextAttribute"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.cng.ContextParentIsNotValid.key"
                          shortName="CngContextParentIsNotValid" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngContextParentIsNotValid"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.cockpitng.CngContextParentIsNotValid"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.cng.CngContextMergeByTypeParentIsNotValid.key"
                          shortName="CngContextMergeByTypeParentIsNotValid" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.cockpitng.CngContextMergeByTypeParentIsNotValid"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.cockpitng.CngContextMergeByTypeParentIsNotValid"/>
 
         <!-- Impex -->
         <localInspection groupPath="SAP Commerce" shortName="ImpexLanguageIsNotSupportedInspection" displayName="[y] Language is not supported"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexLanguageIsNotSupportedInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexLanguageIsNotSupportedInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexLanguageModifierIsNotAllowedInspection" displayName="[y] Lang modifier is not allowed for non-localized attributes"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexLanguageModifierIsNotAllowedInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexLanguageModifierIsNotAllowedInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexNoUniqueValueInspection" displayName="[y] No unique value in column"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexNoUniqueValueInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexNoUniqueValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownConfigPropertyInspection" displayName="[y] Unknown configuration property"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownConfigPropertyInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexUnknownConfigPropertyInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownMacrosInspection" displayName="[y] Unknown macros"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownMacrosInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexUnknownMacrosInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeAttributeInspection" displayName="[y] Unknown attribute"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeAttributeInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexUnknownTypeAttributeInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExDoubleQuotedStringAsModifierInspection" displayName="[y] Double Quote string as a modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExDoubleQuotedStringAsModifierInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExDoubleQuotedStringAsModifierInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownFunctionTypeInspection" displayName="[y] Unknown type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownFunctionTypeInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexUnknownFunctionTypeInspection"/>
 
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexConfigProcessorInspection" displayName="[y] Incorrect use of $config macros"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexConfigProcessorInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexConfigProcessorInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexFunctionReferenceTypeMismatchInspection" displayName="[y] Mismatch reference attribute inline type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexFunctionReferenceTypeMismatchInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexFunctionReferenceTypeMismatchInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUniqueAttributeWithoutIndex" displayName="[y] Unique attribute without an index"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUniqueAttributeWithoutIndexInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexUniqueAttributeWithoutIndexInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUniqueDocumentId" displayName="[y] Unique document Id in column"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUniqueDocumentIdInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexUniqueDocumentIdInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeNameInspection" displayName="[y] Unknown type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeNameInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexUnknownTypeNameInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidProcessorValueInspection" displayName="[y] Invalid processor modifier value"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidProcessorValueInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExInvalidProcessorValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidTranslatorValueInspection" displayName="[y] Invalid translator modifier value"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidTranslatorValueInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExInvalidTranslatorValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidCellDecoratorValueInspection" displayName="[y] Invalid cellDecorator modifier value"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidCellDecoratorValueInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExInvalidCellDecoratorValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidModeModifierValueInspection" displayName="[y] Invalid mode modifier value"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidModeModifierValueInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExInvalidModeModifierValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidDisableInterceptorTypesModifierValueInspection" displayName="[y] Invalid disable.interceptor.types modifier value"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidDisableInterceptorTypesModifierValueInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExInvalidDisableInterceptorTypesModifierValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExInvalidBooleanModifierValueInspection" displayName="[y] Invalid boolean modifier value"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExInvalidBooleanModifierValueInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExInvalidBooleanModifierValueInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownTypeModifierInspection" displayName="[y] Unknown type modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownTypeModifierInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexUnknownTypeModifierInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexUnknownAttributeModifierInspection" displayName="[y] Unknown attribute modifier"
                          groupName="[y] ImpEx" level="WEAK WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexUnknownAttributeModifierInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexUnknownAttributeModifierInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpexOnlyUpdateAllowedForNonDynamicEnumInspection" displayName="[y] Unknown type"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpexOnlyUpdateAllowedForNonDynamicEnumInspection"/>
 
         <localInspection groupPath="SAP Commerce" shortName="ImpExIncompleteHeaderAbbreviationUsageInspection" displayName="[y] Incomplete header abbreviation usage"
                          groupName="[y] ImpEx" level="ERROR" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExIncompleteHeaderAbbreviationUsageInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExIncompleteHeaderAbbreviationUsageInspection"/>
         <localInspection groupPath="SAP Commerce" shortName="ImpExMissingValueGroupInspection" displayName="[y] Missing value groups"
                          groupName="[y] ImpEx" level="WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExMissingValueGroupInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExMissingValueGroupInspection"/>
         <localInspection groupPath="SAP Commerce" shortName="ImpExMissingHeaderParameterInspection" displayName="[y] Missing header parameter name"
                          groupName="[y] ImpEx" level="WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExMissingHeaderParameterInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExMissingHeaderParameterInspection"/>
         <localInspection groupPath="SAP Commerce" shortName="ImpExOrphanValueGroupInspection" displayName="[y] Orphan value group"
                          groupName="[y] ImpEx" level="WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExOrphanValueGroupInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExOrphanValueGroupInspection"/>
         <localInspection groupPath="SAP Commerce" shortName="ImpExMultilineMacroNameInspection" displayName="[y] Multi-line macro name"
                          groupName="[y] ImpEx" level="WARNING" language="ImpEx" enabledByDefault="true"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.impex.ImpExMultilineMacroNameInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.impex.ImpExMultilineMacroNameInspection"/>
 
         <!-- Extension Info  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiUnknownExtensionDeclaration.key"
                          shortName="EiUnknownExtensionDefinition" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.extensioninfo.EiUnknownExtensionDefinition"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.extensioninfo.EiUnknownExtensionDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiDuplicateExtensionDeclaration.key"
                          shortName="EiDuplicateExtensionDefinition" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.extensioninfo.EiDuplicateExtensionDefinition"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.extensioninfo.EiDuplicateExtensionDefinition"/>
 
         <!-- Local Extensions  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Local Extensions"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.le.LeUnknownExtensionDeclaration.key"
                          shortName="LeUnknownExtensionDefinition" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.localextensions.LeUnknownExtensionDefinition"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.localextensions.LeUnknownExtensionDefinition"/>
 
         <!-- Bean System  -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
                          shortName="BSDomElementsInspection" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDomElementsInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.beanSystem.BSDomElementsInspection"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanDeclaration.key"
                          shortName="DuplicateBeanDefinition" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateBeanDefinition"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.beanSystem.BSDuplicateBeanDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumDeclaration.key"
                          shortName="DuplicateEnumDefinition" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateEnumDefinition"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.beanSystem.BSDuplicateEnumDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanPropertyDeclaration.key"
                          shortName="DuplicateBeanPropertyDefinition" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateBeanPropertyDefinition"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.beanSystem.BSDuplicateBeanPropertyDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumValueDeclaration.key"
                          shortName="DuplicateEnumValueDefinition" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSDuplicateEnumValueDefinition"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.beanSystem.BSDuplicateEnumValueDefinition"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSKeywordIsNotAllowedAsBeanPropertyName.key"
                          shortName="BSKeywordIsNotAllowedAsBeanPropertyName" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSKeywordIsNotAllowedAsBeanPropertyName"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.beanSystem.BSKeywordIsNotAllowedAsBeanPropertyName"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType.key"
                          shortName="BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.beanSystem.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType.key"
                          shortName="BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType" level="WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.beanSystem.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass.key"
                          shortName="BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass" level="WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.beanSystem.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass"/>
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSOmitJavaLangPackageInBeanPropertyType.key"
                          shortName="BSOmitJavaLangPackageInBeanPropertyType" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.beanSystem.BSOmitJavaLangPackageInBeanPropertyType"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.beanSystem.BSOmitJavaLangPackageInBeanPropertyType"/>
 
         <!-- Type System  -->
         <!-- Weak Warnings -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.MandatoryFieldMustHaveInitialValue.key"
                          shortName="MandatoryFieldMustHaveInitialValue" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSMandatoryFieldMustHaveInitialValue"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSMandatoryFieldMustHaveInitialValue"/>
 
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSEnumValueMustBeUppercase.key"
                          shortName="TSEnumValueMustBeUppercase" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSEnumValueMustBeUppercase"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSEnumValueMustBeUppercase"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.ImmutableFieldMustHaveInitialValue.key"
                          shortName="ImmutableFieldMustHaveInitialValue" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSImmutableFieldMustHaveInitialValue"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSImmutableFieldMustHaveInitialValue"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TypeNameMustStartWithUppercaseLetter.key"
                          shortName="TypeNameMustStartWithUppercaseLetter" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSTypeNameMustStartWithUppercaseLetter"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSTypeNameMustStartWithUppercaseLetter"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.QualifierMustStartWithLowercaseLetter.key"
                          shortName="QualifierMustStartWithLowercaseLetter" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSQualifierMustStartWithLowercaseLetter"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSQualifierMustStartWithLowercaseLetter"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.OrderingOfRelationShouldBeAvoided.key"
                          shortName="OrderingOfRelationShouldBeAvoided" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSOrderingOfRelationShouldBeAvoided"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSOrderingOfRelationShouldBeAvoided"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.ListsInRelationShouldBeAvoided.key"
                          shortName="ListsInRelationShouldBeAvoided" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSListsInRelationShouldBeAvoided"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSListsInRelationShouldBeAvoided"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.UseOfUnoptimizedAttributesIsNotRecommended.key"
                          shortName="UseOfUnoptimizedAttributesIsNotRecommended" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSUseOfUnoptimizedAttributesIsNotRecommended"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSUseOfUnoptimizedAttributesIsNotRecommended"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.CollectionsAreOnlyForDynamicAndJalo.key"
                          shortName="CollectionsAreOnlyForDynamicAndJalo" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSCollectionsAreOnlyForDynamicAndJalo"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSCollectionsAreOnlyForDynamicAndJalo"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TypeNameMustNotStartWithGenerated.key"
                          shortName="TypeNameMustNotStartWithGenerated" level="WEAK WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSTypeNameMustNotStartWithGenerated"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSTypeNameMustNotStartWithGenerated"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TypeNameMustPointToExistingType.key"
                          shortName="TypeNameMustPointToExistingType" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSTypeNameMustPointToExistingType"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSTypeNameMustPointToExistingType"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.ItemAttributeMetaTypeNameMustPointToValidMetaType.key"
                          shortName="ItemAttributeMetaTypeNameMustPointToValidMetaType" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSItemAttributeMetaTypeNameMustPointToValidMetaType"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSItemAttributeMetaTypeNameMustPointToValidMetaType"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.ItemMetaTypeNameMustPointToValidMetaType.key"
                          shortName="ItemMetaTypeNameMustPointToValidMetaType" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSItemMetaTypeNameMustPointToValidMetaType"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSItemMetaTypeNameMustPointToValidMetaType"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.RelationElementMetaTypeNameMustPointToValidMetaType.key"
                          shortName="RelationElementMetaTypeNameMustPointToValidMetaType" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSRelationElementMetaTypeNameMustPointToValidMetaType"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSRelationElementMetaTypeNameMustPointToValidMetaType"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.JaloPersistanceTypeIsDeprecated.key"
                          shortName="JaloPersistanceTypeIsDeprecated" level="WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSJaloPersistanceTypeIsDeprecated"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSJaloPersistanceTypeIsDeprecated"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.CmpPersistanceTypeIsDeprecated.key"
                          shortName="CmpPersistanceTypeIsDeprecated" level="WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSCmpPersistanceTypeIsDeprecated"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSCmpPersistanceTypeIsDeprecated"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.DeploymentTableMustExistForItemExtendingGenericItem.key"
                          shortName="DeploymentTableMustExistForItemExtendingGenericItem" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTableMustExistForItemExtendingGenericItem"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTableMustExistForItemExtendingGenericItem"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.DeploymentTableMustNotBeRedeclaredInChildTypes.key"
                          shortName="DeploymentTableMustNotBeRedeclaredInChildTypes" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTableMustNotBeRedeclaredInChildTypes"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTableMustNotBeRedeclaredInChildTypes"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.DeploymentTypeCodeMustBeUnique.key"
                          shortName="DeploymentTypeCodeMustBeUnique" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeMustBeUnique"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTypeCodeMustBeUnique"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.DeploymentTableMustBeUnique.key"
                          shortName="DeploymentTableMustBeUnique" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTableMustBeUnique"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTableMustBeUnique"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass.key"
                          shortName="JaloClassIsNotAllowedWhenAddingFieldsToExistingClass" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSJaloClassIsNotAllowedWhenAddingFieldsToExistingClass"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSJaloClassIsNotAllowedWhenAddingFieldsToExistingClass"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.AttributeHandlerMustBeSetForDynamicAttribute.key"
                          shortName="AttributeHandlerMustBeSetForDynamicAttribute" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSAttributeHandlerMustBeSetForDynamicAttribute"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSAttributeHandlerMustBeSetForDynamicAttribute"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.DeploymentTypeCodeMustBeGreaterThanTenThousand.key"
                          shortName="DeploymentTypeCodeMustBeGreaterThanTenThousand" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeMustBeGreaterThanTenThousand"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTypeCodeMustBeGreaterThanTenThousand"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.DeploymentTableMustExistForManyToManyRelation.key"
                          shortName="DeploymentTableMustExistForManyToManyRelation" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTableMustExistForManyToManyRelation"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTableMustExistForManyToManyRelation"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.DeploymentTypeCodeMustBeGreaterThanTenThousandForRelations.key"
                          shortName="DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodesMustBeGreaterThanTenThousandForRelations"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTypeCodesMustBeGreaterThanTenThousandForRelations"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTypeCodeReservedForCommonsExtension.key"
                          shortName="DeploymentTypeCodeReservedForCommonsExtension" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForCommonsExtension"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForCommonsExtension"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTypeCodeReservedForPrintExtension.key"
                          shortName="DeploymentTypeCodeReservedForPrintExtension" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForPrintExtension"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForPrintExtension"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTypeCodeReservedForProcessingExtension.key"
                          shortName="DeploymentTypeCodeReservedForProcessingExtension" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForProcessingExtension"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForProcessingExtension"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSDeploymentTypeCodeReservedInspection.key"
                          shortName="TSDeploymentTypeCodeReservedInspection" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedInspection"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedInspection"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle"
                          key="hybris.inspections.ts.DeploymentTypeCodeReservedForLegacyXPrintExtension.key"
                          shortName="DeploymentTypeCodeReservedForLegacyXPrintExtension" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForLegacyXPrintExtension"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForLegacyXPrintExtension"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTypeCodeReservedForB2BCommerceExtension.key"
                          shortName="DeploymentTypeCodeReservedForB2BCommerceExtension" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForB2BCommerceExtension"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForB2BCommerceExtension"/>
 
 <!--        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"-->
 <!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.system.type.CatalogAwareTypesMustHaveSpecificConditions.key"-->
 <!--                         shortName="CatalogAwareTypesMustHaveSpecificConditions" level="ERROR"-->
-<!--                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.TSCatalogAwareTypesMustHaveSpecificConditions"/>-->
+<!--                         implementationClass="sap.commerce.toolset.codeInspection.rule.TSCatalogAwareTypesMustHaveSpecificConditions"/>-->
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.CatalogAwareUniqueKeyAttributeQualifier.key"
                          shortName="CatalogAwareUniqueKeyAttributeQualifier" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSCatalogAwareUniqueKeyAttributeQualifier"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSCatalogAwareUniqueKeyAttributeQualifier"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.CatalogAwareCatalogVersionAttributeQualifier.key"
                          shortName="CatalogAwareCatalogVersionAttributeQualifier" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSCatalogAwareCatalogVersionAttributeQualifier"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSCatalogAwareCatalogVersionAttributeQualifier"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DefaultValueForEnumTypeMustBeAssignable.key"
                          shortName="DefaultValueForEnumTypeMustBeAssignable" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDefaultValueForEnumTypeMustBeAssignable"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDefaultValueForEnumTypeMustBeAssignable"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTagMustNotBeDeclaredForO2MRelation.key"
                          shortName="TSDeploymentTagMustNotBeDeclaredForO2MRelation" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTagMustNotBeDeclaredForO2MRelation"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTagMustNotBeDeclaredForO2MRelation"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSDeploymentTableNameLengthShouldBeValid.key"
                          shortName="TSDeploymentTableNameLengthShouldBeValid" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSDeploymentTableNameLengthShouldBeValid"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTableNameLengthShouldBeValid"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse.key"
                          shortName="TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSOnlyOneSideN2mRelationMustBeNotNavigable.key"
                          shortName="TSOnlyOneSideN2mRelationMustBeNotNavigable" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSOnlyOneSideN2mRelationMustBeNotNavigable"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSOnlyOneSideN2mRelationMustBeNotNavigable"/>
 
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSQualifierMustExistForNavigablePartInN2MRelation.key"
                          shortName="TSQualifierMustExistForNavigablePartInN2MRelation" level="ERROR"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.typeSystem.TSQualifierMustExistForNavigablePartInN2MRelation"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSQualifierMustExistForNavigablePartInN2MRelation"/>
 
     </extensions>
 

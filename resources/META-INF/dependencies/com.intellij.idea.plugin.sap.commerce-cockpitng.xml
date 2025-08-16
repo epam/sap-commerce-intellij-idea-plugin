@@ -18,28 +18,28 @@
 
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-        <dom.extender domClass="com.intellij.idea.plugin.hybris.system.cockpitng.model.config.Context"
-                      extenderClass="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomExtender"/>
+        <dom.extender domClass="sap.commerce.toolset.system.cockpitng.model.config.Context"
+                      extenderClass="sap.commerce.toolset.system.cockpitng.CngConfigDomExtender"/>
         <dom.fileMetaData rootTagName="config" stubVersion="3"
-                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngConfigDomFileDescription"/>
+                          implementation="sap.commerce.toolset.system.cockpitng.CngConfigDomFileDescription"/>
         <dom.fileMetaData rootTagName="widgets" stubVersion="4"
-                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngWidgetsDomFileDescription"/>
+                          implementation="sap.commerce.toolset.system.cockpitng.CngWidgetsDomFileDescription"/>
         <dom.fileMetaData rootTagName="action-definition" stubVersion="3"
-                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngActionDefinitionDomFileDescription"/>
+                          implementation="sap.commerce.toolset.system.cockpitng.CngActionDefinitionDomFileDescription"/>
         <dom.fileMetaData rootTagName="widget-definition" stubVersion="4"
-                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngWidgetDefinitionDomFileDescription"/>
+                          implementation="sap.commerce.toolset.system.cockpitng.CngWidgetDefinitionDomFileDescription"/>
         <dom.fileMetaData rootTagName="editor-definition" stubVersion="3"
-                          implementation="com.intellij.idea.plugin.hybris.system.cockpitng.CngEditorDefinitionDomFileDescription"/>
+                          implementation="sap.commerce.toolset.system.cockpitng.CngEditorDefinitionDomFileDescription"/>
 
-        <lang.foldingBuilder language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.cockpitng.lang.folding.CngConfigFoldingBuilder"/>
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.system.cockpitng.lang.folding.CngConfigFoldingBuilder"/>
 
-        <completion.contributor language="XML" implementationClass="com.intellij.idea.plugin.hybris.system.cockpitng.codeInsight.completion.CngCompletionContributor"/>
+        <completion.contributor language="XML" implementationClass="sap.commerce.toolset.system.cockpitng.codeInsight.completion.CngCompletionContributor"/>
 
         <projectConfigurable id="hybris.project.cng.settings" groupId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.cng.title"
                              order="after hybris.project.bp.settings"
-                             provider="com.intellij.idea.plugin.hybris.system.cockpitng.settings.options.ProjectCngSettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.system.cockpitng.settings.options.ProjectCngSettingsConfigurableProvider"/>
 
     </extensions>
 

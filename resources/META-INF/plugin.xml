@@ -29,7 +29,7 @@
 
     <resource-bundle>i18n.HybrisBundle</resource-bundle>
 
-    <incompatible-with>ccom.intellij.idea.plugin.hybris.impex</incompatible-with>
+    <incompatible-with>csap.commerce.toolset.impex</incompatible-with>
     <incompatible-with>ccom.intellij.idea.plugin.commerce.integration</incompatible-with>
 
     <extensions defaultExtensionNs="org.jetbrains.kotlin">
@@ -84,4 +84,5 @@
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-spring.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

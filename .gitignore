@@ -19,6 +19,7 @@
 
 /out/
 /build/
+/modules/**/build
 /buildsrc/build
 /buildsrc/.gradle
 /common/build/
@@ -37,7 +38,7 @@
 /.idea/.gitignore
 /.idea/hybrisProjectSettings.xml
 
-/ccv2
+/modules/ccv2/gen/*
 /src_idea
 
 jflex-*.jar

@@ -21,10 +21,10 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.MavenConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.MavenConfigurator"/>
 
         <dom.fileMetaData rootTagName="project" stubVersion="1" order="first"
-                          implementation="com.intellij.idea.plugin.hybris.system.externalDependencies.EDDomFileDescription"/>
+                          implementation="sap.commerce.toolset.system.externalDependencies.EDDomFileDescription"/>
 
         <!-- ####################################################################################################### -->
         <!--                                            Inspections                                                  -->
@@ -32,7 +32,7 @@
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] External Dependencies"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.ed.EdDependencyIsNotYetDownloaded"
                          shortName="EdDependencyIsNotYetDownloaded" level="WARNING"
-                         implementationClass="com.intellij.idea.plugin.hybris.codeInspection.rule.externalDependencies.EdDependencyIsNotYetDownloaded"/>
+                         implementationClass="sap.commerce.toolset.codeInspection.rule.externalDependencies.EdDependencyIsNotYetDownloaded"/>
     </extensions>
 
 </idea-plugin>

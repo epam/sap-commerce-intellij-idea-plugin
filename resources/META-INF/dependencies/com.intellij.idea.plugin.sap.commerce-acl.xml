@@ -22,37 +22,37 @@
         <internalFileTemplate name="Acl File"/>
 
         <fileType name="Access Control Lists" language="ACL" extensions="acl" fieldName="INSTANCE"
-                  implementationClass="com.intellij.idea.plugin.hybris.acl.file.AclFileType"/>
+                  implementationClass="sap.commerce.toolset.acl.file.AclFileType"/>
 
-        <colorSettingsPage implementation="com.intellij.idea.plugin.hybris.acl.highlighting.AclColorSettingsPage"/>
+        <colorSettingsPage implementation="sap.commerce.toolset.acl.highlighting.AclColorSettingsPage"/>
         <additionalTextAttributes scheme="Default" file="colorSchemes/AclDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/AclDarcula.xml"/>
 
-        <lang.parserDefinition language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.AclParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.highlighting.AclSyntaxHighlighterFactory"/>
-        <lang.commenter language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.AclCommenter"/>
-        <lang.formatter language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.formatting.AclFormattingModelBuilder"/>
-        <lang.foldingBuilder language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.folding.AclFoldingBuilder"/>
+        <lang.parserDefinition language="ACL" implementationClass="sap.commerce.toolset.acl.AclParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="ACL" implementationClass="sap.commerce.toolset.acl.highlighting.AclSyntaxHighlighterFactory"/>
+        <lang.commenter language="ACL" implementationClass="sap.commerce.toolset.acl.lang.AclCommenter"/>
+        <lang.formatter language="ACL" implementationClass="sap.commerce.toolset.acl.formatting.AclFormattingModelBuilder"/>
+        <lang.foldingBuilder language="ACL" implementationClass="sap.commerce.toolset.acl.lang.folding.AclFoldingBuilder"/>
 
-        <annotator language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.lang.annotation.AclAnnotator"/>
+        <annotator language="ACL" implementationClass="sap.commerce.toolset.acl.lang.annotation.AclAnnotator"/>
 
-        <completion.contributor language="ACL" implementationClass="com.intellij.idea.plugin.hybris.acl.completion.AclCompletionContributor"/>
+        <completion.contributor language="ACL" implementationClass="sap.commerce.toolset.acl.completion.AclCompletionContributor"/>
 
-        <editorFactoryListener implementation="com.intellij.idea.plugin.hybris.acl.editor.event.AclLineEditorFactoryListener"/>
-        <vfs.asyncListener implementation="com.intellij.idea.plugin.hybris.acl.vfs.event.AclVfsAsyncListener"/>
+        <editorFactoryListener implementation="sap.commerce.toolset.acl.editor.event.AclLineEditorFactoryListener"/>
+        <vfs.asyncListener implementation="sap.commerce.toolset.acl.vfs.event.AclVfsAsyncListener"/>
 
-        <codeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.acl.formatting.AclCodeStyleSettingsProvider"/>
-        <langCodeStyleSettingsProvider implementation="com.intellij.idea.plugin.hybris.acl.formatting.AclLanguageCodeStyleSettingsProvider"/>
+        <codeStyleSettingsProvider implementation="sap.commerce.toolset.acl.formatting.AclCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.acl.formatting.AclLanguageCodeStyleSettingsProvider"/>
 
         <projectConfigurable id="hybris.project.acl.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.acl.title"
                              order="after hybris.project.impex.settings"
-                             provider="com.intellij.idea.plugin.hybris.acl.settings.options.ProjectAclSettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.acl.settings.options.ProjectAclSettingsConfigurableProvider"/>
     </extensions>
 
     <actions>
-        <action id="Acl.NewAclFile" class="com.intellij.idea.plugin.hybris.acl.file.actions.AclFileCreateAction"
+        <action id="Acl.NewAclFile" class="sap.commerce.toolset.acl.file.actions.AclFileCreateAction"
                 text="Access Control Lists File" description="Create new Access control lists file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
@@ -60,17 +60,17 @@
         <group id="hybris.acl.toolbar.left">
             <reference ref="hybris.impex.executionContextSettings"/>
             <separator/>
-            <action id="hybris.acl.import" class="com.intellij.idea.plugin.hybris.acl.file.actions.AclExecuteAction">
+            <action id="hybris.acl.import" class="sap.commerce.toolset.acl.file.actions.AclExecuteAction">
                 <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
             </action>
-            <action id="hybris.acl.openQuery" class="com.intellij.idea.plugin.hybris.acl.file.actions.AclOpenQueryAction">
+            <action id="hybris.acl.openQuery" class="sap.commerce.toolset.acl.file.actions.AclOpenQueryAction">
                 <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
             </action>
-            <action id="hybris.acl.validate" class="com.intellij.idea.plugin.hybris.acl.file.actions.AclValidateAction">
+            <action id="hybris.acl.validate" class="sap.commerce.toolset.acl.file.actions.AclValidateAction">
                 <keyboard-shortcut first-keystroke="control alt V" keymap="$default"/>
             </action>
             <separator/>
-            <action class="com.intellij.idea.plugin.hybris.acl.actions.AclToggleInEditorResultsAction"/>
+            <action class="sap.commerce.toolset.acl.actions.AclToggleInEditorResultsAction"/>
         </group>
         <group id="hybris.acl.toolbar.right">
             <reference ref="hybris.hac.chooseConnection"/>

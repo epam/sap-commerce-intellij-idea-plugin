@@ -21,9 +21,9 @@
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="liveTemplates/Kotlin.xml"/>
 
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.KotlinCompilerConfigurator"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.KotlinFacetConfigurator"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.flexibleSearch.injection.impl.FlexibleSearchToKotlinInjectorProvider"/>
-        <applicationService serviceImplementation="com.intellij.idea.plugin.hybris.polyglotQuery.injection.impl.PolyglotQueryToKotlinInjectorProvider"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.KotlinCompilerConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.impl.KotlinFacetConfigurator"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.flexibleSearch.injection.impl.FlexibleSearchToKotlinInjectorProvider"/>
+        <applicationService serviceImplementation="sap.commerce.toolset.polyglotQuery.injection.impl.PolyglotQueryToKotlinInjectorProvider"/>
     </extensions>
 </idea-plugin>

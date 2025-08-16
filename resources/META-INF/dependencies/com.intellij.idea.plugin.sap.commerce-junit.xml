@@ -22,7 +22,7 @@
     <extensions defaultExtensionNs="com.intellij">
 
         <runConfigurationExtension
-            implementation="com.intellij.idea.plugin.hybris.runConfigurations.HybrisJUnitExtension"/>
+            implementation="sap.commerce.toolset.runConfigurations.HybrisJUnitExtension"/>
 
     </extensions>
 

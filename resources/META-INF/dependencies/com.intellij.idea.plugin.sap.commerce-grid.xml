@@ -19,8 +19,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <codeInsight.lineMarkerProvider language="ImpEx" implementationClass="com.intellij.idea.plugin.hybris.impex.lang.ImpExLineMarkerProvider"/>
-        <projectService serviceImplementation="com.intellij.idea.plugin.hybris.grid.GridXSVFormatService"/>
+        <codeInsight.lineMarkerProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.ImpExLineMarkerProvider"/>
+        <projectService serviceImplementation="sap.commerce.toolset.grid.GridXSVFormatService"/>
     </extensions>
 
 </idea-plugin>

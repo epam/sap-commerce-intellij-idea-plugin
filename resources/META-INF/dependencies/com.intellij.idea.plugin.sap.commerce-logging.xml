@@ -18,7 +18,7 @@
 
 <idea-plugin>
     <actions>
-        <action id="sap.cx.fetch.loggers.action" class="com.intellij.idea.plugin.hybris.tools.logging.actions.FetchLoggersStateAction"/>
+        <action id="sap.cx.fetch.loggers.action" class="sap.commerce.toolset.tools.logging.actions.FetchLoggersStateAction"/>
 
         <group id="sap.cx.loggers.toolbar.actions" searchable="false">
             <reference ref="hybris.hac.chooseConnection"/>
@@ -32,14 +32,14 @@
             <reference ref="hybris.hac.chooseConnection"/>
 
             <separator text="Log Levels"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.OffLoggerAction"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.AllLoggerAction"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.TraceLoggerAction"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.DebugLoggerAction"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.InfoLoggerAction"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.WarnLoggerAction"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.ErrorLoggerAction"/>
-            <action class="com.intellij.idea.plugin.hybris.tools.logging.actions.FatalLoggerAction"/>
+            <action class="sap.commerce.toolset.tools.logging.actions.OffLoggerAction"/>
+            <action class="sap.commerce.toolset.tools.logging.actions.AllLoggerAction"/>
+            <action class="sap.commerce.toolset.tools.logging.actions.TraceLoggerAction"/>
+            <action class="sap.commerce.toolset.tools.logging.actions.DebugLoggerAction"/>
+            <action class="sap.commerce.toolset.tools.logging.actions.InfoLoggerAction"/>
+            <action class="sap.commerce.toolset.tools.logging.actions.WarnLoggerAction"/>
+            <action class="sap.commerce.toolset.tools.logging.actions.ErrorLoggerAction"/>
+            <action class="sap.commerce.toolset.tools.logging.actions.FatalLoggerAction"/>
         </group>
     </actions>
 </idea-plugin>

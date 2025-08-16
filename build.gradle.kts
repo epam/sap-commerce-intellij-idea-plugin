@@ -21,7 +21,6 @@ import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
-import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -29,19 +28,10 @@ fun environment(key: String) = providers.environmentVariable(key)
 plugins {
     id("java") // Java support
     id("idea") // IDEA support
+    id("org.jetbrains.intellij.platform") // IDEA support
     alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
     alias(libs.plugins.changelog) // Gradle IntelliJ Plugin
     alias(libs.plugins.openAPIGenerator) // openapi Generator
-}
-
-repositories {
-    mavenCentral()
-
-    intellijPlatform {
-        defaultRepositories()
-        jetbrainsRuntime()
-    }
 }
 
 java {
@@ -52,15 +42,12 @@ java {
 }
 
 kotlin {
-    jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-        vendor = JvmVendorSpec.JETBRAINS
-    }
+    jvmToolchain(21)
 }
 
 sourceSets {
     main {
-        java.srcDirs("src", "gen", "ccv2")
+        java.srcDirs("src", "gen")
         resources.srcDirs("resources")
     }
     test {
@@ -71,7 +58,6 @@ sourceSets {
 idea {
     module {
         generatedSourceDirs.add(file("gen"))
-        generatedSourceDirs.add(file("ccv2"))
     }
 }
 
@@ -88,61 +74,6 @@ val projectJvmArguments = mutableListOf<String>().apply {
         add("-Xdock:name=${project.name}")
         // converted via ImageMagick, https://gist.github.com/plroebuck/af19a26c908838c7f9e363c571199deb
         add("-Xdock:icon=${project.rootDir}/macOS_dockIcon.icns")
-    }
-}
-
-// OpenAPI - Gradle plugin
-// https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-gradle-plugin
-// OpenAPI - Kotlin generator
-// https://openapi-generator.tech/docs/generators/kotlin/
-val ccv2OpenApiSpecs = listOf(
-    Triple("ccv1OpenApiGenerate", "commerce-cloud-management-api-v1.yaml", "com.intellij.idea.plugin.hybris.ccv1"),
-    Triple("ccv2OpenApiGenerate", "commerce-cloud-management-api-v2.yaml", "com.intellij.idea.plugin.hybris.ccv2"),
-)
-val ccv2OpenApiTasks = ccv2OpenApiSpecs.mapIndexed { index, (taskName, schema, packagePrefix) ->
-    tasks.register<GenerateTask>(taskName) {
-        group = "openapi tools"
-        generatorName.set("kotlin")
-
-        inputSpec.set("$rootDir/resources/specs/$schema")
-        outputDir.set("$rootDir/ccv2")
-
-        // Custom template required to enable request-specific headers for Authentication
-        // https://openapi-generator.tech/docs/templating
-        // https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator/src/main/resources/kotlin-client/libraries/jvm-okhttp
-        templateDir.set("$rootDir/resources/openapi/templates")
-
-        apiPackage.set("$packagePrefix.api")
-        packageName.set("$packagePrefix.invoker")
-        modelPackage.set("$packagePrefix.model")
-
-        cleanupOutput.set(index == 0)
-        skipOperationExample.set(true)
-        generateApiDocumentation.set(false)
-        generateApiTests.set(false)
-        generateModelTests.set(false)
-
-        globalProperties.set(
-            mapOf(
-                "modelDocs" to "false",
-            )
-        )
-        configOptions.set(
-            mapOf(
-                "useSettingsGradle" to "false",
-                "omitGradlePluginVersions" to "true",
-                "omitGradleWrapper" to "true",
-                "useCoroutines" to "true",
-                "sourceFolder" to "",
-            )
-        )
-
-        if (index > 0) {
-            val previousTaskName = ccv2OpenApiSpecs[index - 1].first
-            dependsOn(previousTaskName)
-        } else {
-            dependsOn("copyChangelog")
-        }
     }
 }
 
@@ -237,14 +168,6 @@ tasks {
         useJUnitPlatform()
     }
 
-    compileJava {
-        dependsOn(ccv2OpenApiTasks)
-    }
-
-    compileKotlin {
-        dependsOn(ccv2OpenApiTasks)
-    }
-
     printProductsReleases {
         channels = listOf(ProductRelease.Channel.EAP, ProductRelease.Channel.RELEASE)
         types = listOf(IntelliJPlatformType.IntellijIdeaCommunity)
@@ -297,12 +220,6 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.dtdparser)
     implementation(libs.maven.model)
-    implementation(libs.solr.solrj) {
-        exclude("org.slf4j", "slf4j-api")
-        exclude("org.apache.httpcomponents", "httpclient")
-        exclude("org.apache.httpcomponents", "httpcore")
-        exclude("org.apache.httpcomponents", "httpmime")
-    }
     testImplementation(kotlin("test"))
     testRuntimeOnly("junit:junit:4.13.2")
 
@@ -314,6 +231,10 @@ dependencies {
         }
 
         pluginVerifier()
+
+        rootProject.childProjects.keys.forEach {
+            pluginComposedModule(implementation(project(it)))
+        }
 
         bundledModules(
             "intellij.grid.impl"
@@ -330,18 +251,15 @@ dependencies {
             "com.intellij.database",
             "com.intellij.diagram",
             "com.intellij.spring",
-            "com.intellij.properties",
             "org.intellij.groovy",
             "com.intellij.gradle",
             "com.intellij.javaee",
             "com.intellij.javaee.el",
             "com.intellij.javaee.web",
             "com.intellij.platform.images",
-            "com.intellij.modules.json",
             "org.jetbrains.idea.maven",
             "org.jetbrains.idea.eclipse",
             "org.jetbrains.kotlin",
-            "org.jetbrains.plugins.terminal",
             "JavaScript",
             "JUnit",
         )

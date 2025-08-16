@@ -20,8 +20,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <applicationService serviceInterface="com.intellij.idea.plugin.hybris.project.configurators.EclipseConfigurator"
-                            serviceImplementation="com.intellij.idea.plugin.hybris.project.configurators.impl.DefaultEclipseConfigurator"/>
+        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.EclipseConfigurator"
+                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultEclipseConfigurator"/>
 
     </extensions>
 
