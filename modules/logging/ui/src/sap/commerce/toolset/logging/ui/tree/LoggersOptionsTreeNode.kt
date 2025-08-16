@@ -16,26 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.loggers.tree.nodes.options
+package sap.commerce.toolset.logging.ui.tree
 
-import com.intellij.ide.projectView.PresentationData
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNode
-import com.intellij.openapi.project.Project
-import com.intellij.ui.SimpleTextAttributes
-import javax.swing.Icon
+import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
+import java.io.Serial
 
-abstract class LoggersOptionsNode(
-    private val text: String,
-    private val icon: Icon,
-    project: Project
-) : LoggersNode(project) {
+class LoggersOptionsTreeNode(private val node: LoggersNode) : javax.swing.tree.DefaultMutableTreeNode(node) {
 
-    override fun getName() = text
+    override fun toString(): String = node.toString()
 
-    override fun update(presentation: PresentationData) {
-        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        presentation.setIcon(icon)
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 1489184180280379316L
     }
 
 }
-

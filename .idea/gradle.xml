@@ -27,6 +27,7 @@
             <option value="$PROJECT_DIR$/modules/localextensions" />
             <option value="$PROJECT_DIR$/modules/logging/core" />
             <option value="$PROJECT_DIR$/modules/logging/exec" />
+            <option value="$PROJECT_DIR$/modules/logging/ui" />
             <option value="$PROJECT_DIR$/modules/meta/bean-system" />
             <option value="$PROJECT_DIR$/modules/meta/cockpitng" />
             <option value="$PROJECT_DIR$/modules/meta/core" />

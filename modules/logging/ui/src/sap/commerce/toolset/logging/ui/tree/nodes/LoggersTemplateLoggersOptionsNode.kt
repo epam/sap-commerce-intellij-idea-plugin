@@ -16,10 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.loggers.tree.nodes.options.templates
+package sap.commerce.toolset.logging.ui.tree.nodes
 
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNodeParameters
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.options.LoggersOptionsNode
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
 
@@ -30,6 +28,3 @@ class LoggersTemplateLoggersOptionsNode(project: Project) : LoggersOptionsNode("
         CustomLoggersTemplateLoggersOptionsNode(project)
     ).associateBy { it.name }
 }
-
-class BundledLoggersTemplateLoggersOptionsNode(project: Project) : LoggersOptionsNode("Bundled", HybrisIcons.Log.Template.BUNDLED, project)
-class CustomLoggersTemplateLoggersOptionsNode(project: Project) : LoggersOptionsNode("Custom", HybrisIcons.Log.Template.CUSTOM, project)

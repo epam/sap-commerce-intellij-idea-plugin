@@ -16,10 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.loggers.tree.nodes
+package sap.commerce.toolset.logging.ui.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.options.remote.RemoteHacInstancesLoggersOptionsNode
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 

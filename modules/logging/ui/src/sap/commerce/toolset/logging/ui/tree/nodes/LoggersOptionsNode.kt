@@ -16,18 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.loggers.tree.nodes.options.remote
+package sap.commerce.toolset.logging.ui.tree.nodes
 
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersHacConnectionNode
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNodeParameters
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.options.LoggersOptionsNode
+import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisIcons
+import com.intellij.ui.SimpleTextAttributes
+import javax.swing.Icon
 
-class RemoteHacInstancesLoggersOptionsNode(project: Project) : LoggersOptionsNode("Remote hAC Instances", HybrisIcons.Y.REMOTES, project) {
+abstract class LoggersOptionsNode(
+    private val text: String,
+    private val icon: Icon,
+    project: Project
+) : LoggersNode(project) {
 
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersHacConnectionNode> = nodeParameters.connections
-        .filter { it.value } // only active connections
-        .map { (connection, active) -> LoggersHacConnectionNode(connection, active, project) }
-        .associateBy { "${it.connectionSettings.uuid}_|_${it.activeConnection}" }
+    override fun getName() = text
+
+    override fun update(presentation: PresentationData) {
+        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        presentation.setIcon(icon)
+    }
+
 }

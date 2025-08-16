@@ -16,19 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.loggers.tree
+package sap.commerce.toolset.logging.ui.tree.nodes
 
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNode
-import java.io.Serial
-import javax.swing.tree.DefaultMutableTreeNode
+import com.intellij.openapi.project.Project
+import sap.commerce.toolset.HybrisIcons
 
-class LoggersOptionsTreeNode(private val node: LoggersNode) : DefaultMutableTreeNode(node) {
-
-    override fun toString(): String = node.toString()
-
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = 1489184180280379316L
-    }
-
-}
+class BundledLoggersTemplateLoggersOptionsNode(project: Project) : LoggersOptionsNode("Bundled", HybrisIcons.Log.Template.BUNDLED, project)

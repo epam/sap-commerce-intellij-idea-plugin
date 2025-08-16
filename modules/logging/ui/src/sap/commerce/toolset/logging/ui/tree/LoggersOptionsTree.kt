@@ -16,17 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.loggers.tree
+package sap.commerce.toolset.logging.ui.tree
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
-import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNode
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersRootNode
+import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
+import sap.commerce.toolset.logging.ui.tree.nodes.LoggersRootNode
 import java.io.Serial
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
@@ -34,7 +33,7 @@ import javax.swing.tree.TreePath
 private const val SHOW_LOADING_NODE = true
 private const val SEARCH_CAN_EXPAND = true
 
-class LoggersOptionsTree(myProject: Project) : Tree(), Disposable {
+class LoggersOptionsTree(myProject: Project) : com.intellij.ui.treeStructure.Tree(), Disposable {
 
     private val myTreeModel = LoggersOptionsModel(LoggersOptionsTreeNode(LoggersRootNode(myProject)))
 
@@ -60,4 +59,3 @@ class LoggersOptionsTree(myProject: Project) : Tree(), Disposable {
         private const val serialVersionUID: Long = -8893365004297012022L
     }
 }
-

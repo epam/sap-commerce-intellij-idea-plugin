@@ -16,21 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.loggers.tree
+package sap.commerce.toolset.logging.ui.tree
 
 import com.intellij.openapi.Disposable
-import com.intellij.ui.tree.BaseTreeModel
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNode
-import sap.commerce.toolset.toolwindow.loggers.tree.nodes.LoggersNodeParameters
+import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
+import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNodeParameters
 import javax.swing.tree.TreePath
 
 class LoggersOptionsModel(
     private val rootTreeNode: LoggersOptionsTreeNode
-) : BaseTreeModel<LoggersOptionsTreeNode>(), Disposable, InvokerSupplier {
+) : com.intellij.ui.tree.BaseTreeModel<LoggersOptionsTreeNode>(), Disposable, InvokerSupplier {
 
     private var connections: Map<RemoteConnectionSettingsState, Boolean>? = null
     private val nodes = mutableMapOf<LoggersNode, LoggersOptionsTreeNode>()

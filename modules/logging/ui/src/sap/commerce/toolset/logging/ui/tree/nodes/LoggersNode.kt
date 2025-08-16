@@ -16,14 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.loggers.tree.nodes
+package sap.commerce.toolset.logging.ui.tree.nodes
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.tree.LeafState
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
 
 abstract class LoggersNode : PresentableNodeDescriptor<LoggersNode>, LeafState.Supplier, Disposable {
 
@@ -64,5 +63,3 @@ abstract class LoggersNode : PresentableNodeDescriptor<LoggersNode>, LeafState.S
     open fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> = emptyMap()
     open fun update(existingNode: LoggersNode, newNode: LoggersNode) = Unit
 }
-
-data class LoggersNodeParameters(val connections: Map<RemoteConnectionSettingsState, Boolean>)
