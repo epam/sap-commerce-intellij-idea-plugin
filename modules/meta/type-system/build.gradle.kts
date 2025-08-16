@@ -42,8 +42,8 @@ idea {
 dependencies {
     implementation(libs.dtdparser)
     implementation(project(":shared-core"))
-    implementation(project(":core-meta"))
-    implementation(project(":project-core"))
+    implementation(project(":shared-ui"))
+    implementation(project(":meta-core"))
     implementation(project(":project-core"))
 
     intellijPlatform {

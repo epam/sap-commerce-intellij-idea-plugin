@@ -32,7 +32,7 @@ import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.CCv2SettingsListener
+import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory

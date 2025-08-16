@@ -16,30 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.ui.event
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-    }
+interface KeyListener : KeyListener {
+    override fun keyTyped(e: KeyEvent) = Unit
+    override fun keyPressed(e: KeyEvent) = Unit
+    override fun keyReleased(e: KeyEvent) = Unit
 }

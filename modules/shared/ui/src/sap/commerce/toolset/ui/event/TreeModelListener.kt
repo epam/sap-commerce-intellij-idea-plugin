@@ -18,13 +18,12 @@
 
 package sap.commerce.toolset.ui.event
 
-import java.awt.event.MouseEvent
-import java.awt.event.MouseListener
+import javax.swing.event.TreeModelEvent
+import javax.swing.event.TreeModelListener
 
-internal interface MouseListener : MouseListener {
-    override fun mouseClicked(e: MouseEvent) = Unit
-    override fun mousePressed(e: MouseEvent) = Unit
-    override fun mouseReleased(e: MouseEvent) = Unit
-    override fun mouseEntered(e: MouseEvent) = Unit
-    override fun mouseExited(e: MouseEvent) = Unit
+interface TreeModelListener : TreeModelListener {
+    override fun treeNodesChanged(e: TreeModelEvent) = Unit
+    override fun treeNodesInserted(e: TreeModelEvent) = Unit
+    override fun treeNodesRemoved(e: TreeModelEvent) = Unit
+    override fun treeStructureChanged(e: TreeModelEvent) = Unit
 }

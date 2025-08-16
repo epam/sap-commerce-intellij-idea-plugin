@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.ui
 
 import com.intellij.openapi.ui.InputValidatorEx
@@ -61,8 +62,8 @@ class CRUDListPanel(
                 && (myListModel.contains(inputString).not() || initialValue == inputString)
 
             override fun getErrorText(inputString: String): String? {
-                if (checkInput(inputString).not()) return "directory/file name string cannot be empty"
-                if (canClose(inputString).not()) return "duplicities are not allowed (nor make any sense)"
+                if (checkInput(inputString).not()) return "Directory/file name string cannot be empty"
+                if (canClose(inputString).not()) return "Duplicities are not allowed (nor make any sense)"
 
                 return null
             }

@@ -16,16 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.event
+package sap.commerce.toolset.ui
 
-import com.intellij.util.messages.Topic
-import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import java.io.Serial
+import javax.swing.AbstractListModel
+import javax.swing.ComboBoxModel
 
-interface CCv2SettingsListener {
-    fun onSubscriptionsChanged(subscriptions: List<CCv2Subscription>) = Unit
-    fun onActiveSubscriptionChanged(subscription: CCv2Subscription?) = Unit
+class GroupedComboBoxModel(private val items: List<GroupedComboBoxItem>) : AbstractListModel<GroupedComboBoxItem>(), ComboBoxModel<GroupedComboBoxItem> {
+    private var selectedItem: GroupedComboBoxItem? = items.find { it is GroupedComboBoxItem.Option }
+
+    override fun getSize() = items.size
+    override fun getElementAt(index: Int): GroupedComboBoxItem = items[index]
+    override fun getSelectedItem(): Any? = selectedItem
+    override fun setSelectedItem(anItem: Any?) {
+        if (anItem is GroupedComboBoxItem.Option) {
+            selectedItem = anItem
+            fireContentsChanged(this, -1, -1)
+        }
+    }
 
     companion object {
-        val TOPIC = Topic(CCv2SettingsListener::class.java)
+        @Serial
+        private const val serialVersionUID: Long = 2077395530355235512L
     }
 }

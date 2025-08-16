@@ -16,14 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ui.event
+package sap.commerce.toolset.ui
 
-import javax.swing.event.TreeModelEvent
-import javax.swing.event.TreeModelListener
-
-internal interface TreeModelListener : TreeModelListener {
-    override fun treeNodesChanged(e: TreeModelEvent) = Unit
-    override fun treeNodesInserted(e: TreeModelEvent) = Unit
-    override fun treeNodesRemoved(e: TreeModelEvent) = Unit
-    override fun treeStructureChanged(e: TreeModelEvent) = Unit
+sealed class GroupedComboBoxItem {
+    data class Group(val label: String) : GroupedComboBoxItem()
+    data class Option(val value: String) : GroupedComboBoxItem()
 }

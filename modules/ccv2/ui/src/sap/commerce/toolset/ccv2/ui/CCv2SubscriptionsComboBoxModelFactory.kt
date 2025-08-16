@@ -20,7 +20,7 @@ package sap.commerce.toolset.ccv2.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.ccv2.CCv2SettingsListener
+import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription

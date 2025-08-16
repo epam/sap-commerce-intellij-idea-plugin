@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2
+package sap.commerce.toolset.ccv2.event
 
 import sap.commerce.toolset.ccv2.dto.CCv2Dto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription

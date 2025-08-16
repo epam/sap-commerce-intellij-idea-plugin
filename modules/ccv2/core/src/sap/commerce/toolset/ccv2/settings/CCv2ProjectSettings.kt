@@ -29,7 +29,7 @@ import com.intellij.util.application
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.ccv2.CCv2Constants
-import sap.commerce.toolset.ccv2.CCv2SettingsListener
+import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.state.ApplicationSettingsState
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto

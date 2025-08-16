@@ -20,32 +20,29 @@ package sap.commerce.toolset.ui
 
 import com.intellij.ui.components.JBLabel
 import java.awt.Component
-import java.io.Serial
-import javax.swing.AbstractListModel
-import javax.swing.ComboBoxModel
 import javax.swing.JList
 import javax.swing.ListCellRenderer
 
-class GroupedRenderer : ListCellRenderer<ComboItem?> {
+class GroupedComboBoxRenderer : ListCellRenderer<GroupedComboBoxItem?> {
     private val label = JBLabel()
 
     override fun getListCellRendererComponent(
-        list: JList<out ComboItem>,
-        value: ComboItem?,
+        list: JList<out GroupedComboBoxItem>,
+        value: GroupedComboBoxItem?,
         index: Int,
         isSelected: Boolean,
         cellHasFocus: Boolean
     ): Component {
         label.isOpaque = true
         when (value) {
-            is ComboItem.Group -> {
+            is GroupedComboBoxItem.Group -> {
                 label.text = "-- ${value.label} --"
                 label.isEnabled = false
                 label.background = list.background
                 label.foreground = list.foreground
             }
 
-            is ComboItem.Option -> {
+            is GroupedComboBoxItem.Option -> {
                 label.text = value.value
                 label.isEnabled = true
                 label.background = if (isSelected) list.selectionBackground else list.background
@@ -58,28 +55,4 @@ class GroupedRenderer : ListCellRenderer<ComboItem?> {
         }
         return label
     }
-}
-
-class GroupedComboBoxModel(private val items: List<ComboItem>) : AbstractListModel<ComboItem>(), ComboBoxModel<ComboItem> {
-    private var selectedItem: ComboItem? = items.find { it is ComboItem.Option }
-
-    override fun getSize() = items.size
-    override fun getElementAt(index: Int): ComboItem = items[index]
-    override fun getSelectedItem(): Any? = selectedItem
-    override fun setSelectedItem(anItem: Any?) {
-        if (anItem is ComboItem.Option) {
-            selectedItem = anItem
-            fireContentsChanged(this, -1, -1)
-        }
-    }
-
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = 2077395530355235512L
-    }
-}
-
-sealed class ComboItem {
-    data class Group(val label: String) : ComboItem()
-    data class Option(val value: String) : ComboItem()
 }

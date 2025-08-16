@@ -20,9 +20,9 @@ package sap.commerce.toolset.flexibleSearch.actions
 import sap.commerce.toolset.actions.ExecutionContextSettingsAction
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
-import sap.commerce.toolset.ui.ComboItem
+import sap.commerce.toolset.ui.GroupedComboBoxItem
 import sap.commerce.toolset.ui.GroupedComboBoxModel
-import sap.commerce.toolset.ui.GroupedRenderer
+import sap.commerce.toolset.ui.GroupedComboBoxRenderer
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -105,11 +105,11 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
             row {
                 comboBox(
                     model = GroupedComboBoxModel(computeLocales(project)),
-                    renderer = GroupedRenderer()
+                    renderer = GroupedComboBoxRenderer()
                 )
                     .label("Locale:")
                     .align(AlignX.FILL)
-                    .bindItem({ ComboItem.Option(settings.locale) }, { value -> settings.locale = value.asSafely<ComboItem.Option>()?.value ?: "en" })
+                    .bindItem({ GroupedComboBoxItem.Option(settings.locale) }, { value -> settings.locale = value.asSafely<GroupedComboBoxItem.Option>()?.value ?: "en" })
             }.layout(RowLayout.PARENT_GRID)
 
             row {
@@ -129,18 +129,18 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
             }
     }
 
-    private fun computeLocales(project: Project): List<ComboItem> {
+    private fun computeLocales(project: Project): List<GroupedComboBoxItem> {
         val langPacks = application.runReadAction<Collection<String>> {
             PropertyService.getInstance(project).getLanguages()
         }
-            .map { ComboItem.Option(it) }
+            .map { GroupedComboBoxItem.Option(it) }
         val locales = HybrisConstants.Locales.LOCALES_CODES
-            .map { ComboItem.Option(it) }
+            .map { GroupedComboBoxItem.Option(it) }
 
         return listOf(
-            listOf(ComboItem.Group("Language Packs")),
+            listOf(GroupedComboBoxItem.Group("Language Packs")),
             langPacks,
-            listOf(ComboItem.Group("All Locales")),
+            listOf(GroupedComboBoxItem.Group("All Locales")),
             locales
         )
             .flatten()

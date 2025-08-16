@@ -15,10 +15,6 @@
             <option value="$PROJECT_DIR$/modules/ant/ui" />
             <option value="$PROJECT_DIR$/modules/ccv2/core" />
             <option value="$PROJECT_DIR$/modules/ccv2/ui" />
-            <option value="$PROJECT_DIR$/modules/core/meta" />
-            <option value="$PROJECT_DIR$/modules/core/meta-bean-system" />
-            <option value="$PROJECT_DIR$/modules/core/meta-cockpitng" />
-            <option value="$PROJECT_DIR$/modules/core/meta-type-system" />
             <option value="$PROJECT_DIR$/modules/extensioninfo" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/remote" />
@@ -28,6 +24,10 @@
             <option value="$PROJECT_DIR$/modules/impex/remote" />
             <option value="$PROJECT_DIR$/modules/localextensions" />
             <option value="$PROJECT_DIR$/modules/logging/remote" />
+            <option value="$PROJECT_DIR$/modules/meta/bean-system" />
+            <option value="$PROJECT_DIR$/modules/meta/cockpitng" />
+            <option value="$PROJECT_DIR$/modules/meta/core" />
+            <option value="$PROJECT_DIR$/modules/meta/type-system" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/core" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/remote" />
             <option value="$PROJECT_DIR$/modules/project/core" />
@@ -39,7 +39,6 @@
             <option value="$PROJECT_DIR$/modules/solr/remote" />
             <option value="$PROJECT_DIR$/modules/spring" />
             <option value="$PROJECT_DIR$/modules/terminal" />
-            <option value="$PROJECT_DIR$/modules/ui" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />

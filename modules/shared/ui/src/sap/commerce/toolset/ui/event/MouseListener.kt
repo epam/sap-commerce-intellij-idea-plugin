@@ -18,11 +18,13 @@
 
 package sap.commerce.toolset.ui.event
 
-import java.awt.event.KeyEvent
-import java.awt.event.KeyListener
+import java.awt.event.MouseEvent
+import java.awt.event.MouseListener
 
-internal interface KeyListener : KeyListener {
-    override fun keyTyped(e: KeyEvent) = Unit
-    override fun keyPressed(e: KeyEvent) = Unit
-    override fun keyReleased(e: KeyEvent) = Unit
+interface MouseListener : MouseListener {
+    override fun mouseClicked(e: MouseEvent) = Unit
+    override fun mousePressed(e: MouseEvent) = Unit
+    override fun mouseReleased(e: MouseEvent) = Unit
+    override fun mouseEntered(e: MouseEvent) = Unit
+    override fun mouseExited(e: MouseEvent) = Unit
 }
