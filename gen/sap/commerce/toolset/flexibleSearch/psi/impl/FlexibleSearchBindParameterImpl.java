@@ -31,8 +31,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*;
 import sap.commerce.toolset.flexibleSearch.psi.*;
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaClassifier;
-import com.intellij.util.xml.DomElement;
 
 public class FlexibleSearchBindParameterImpl extends FlexibleSearchBindParameterMixin implements FlexibleSearchBindParameter {
 

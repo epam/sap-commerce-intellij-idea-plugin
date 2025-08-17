@@ -20,11 +20,6 @@
 package sap.commerce.toolset.impex.psi.references
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdDec
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
-import sap.commerce.toolset.impex.psi.ImpexValue
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -33,6 +28,11 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
+import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
+import sap.commerce.toolset.impex.psi.ImpexDocumentIdDec
+import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
+import sap.commerce.toolset.impex.psi.ImpexValue
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
 class ImpExDocumentIdUsageReference(
     private val impexValue: ImpexValue,

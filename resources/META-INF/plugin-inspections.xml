@@ -399,7 +399,7 @@
                          implementationClass="sap.commerce.toolset.codeInspection.rule.typeSystem.TSDeploymentTypeCodeReservedForB2BCommerceExtension"/>
 
 <!--        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"-->
-<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.system.type.CatalogAwareTypesMustHaveSpecificConditions.key"-->
+<!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typeSystem.CatalogAwareTypesMustHaveSpecificConditions.key"-->
 <!--                         shortName="CatalogAwareTypesMustHaveSpecificConditions" level="ERROR"-->
 <!--                         implementationClass="sap.commerce.toolset.codeInspection.rule.TSCatalogAwareTypesMustHaveSpecificConditions"/>-->
 

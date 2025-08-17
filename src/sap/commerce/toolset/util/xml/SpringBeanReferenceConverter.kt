@@ -25,7 +25,7 @@ import com.intellij.psi.ResolvingHint
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.CustomReferenceConverter
 import com.intellij.util.xml.GenericDomValue
-import sap.commerce.toolset.system.type.psi.reference.SpringReference
+import sap.commerce.toolset.typeSystem.psi.reference.SpringReference
 
 @Deprecated("migrate to spring module")
 class SpringBeanReferenceConverter : CustomReferenceConverter<String>, ResolvingHint {

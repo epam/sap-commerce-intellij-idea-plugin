@@ -19,17 +19,17 @@
 package sap.commerce.toolset.polyglotQuery.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryBindParameter
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryExprAtom
-import sap.commerce.toolset.polyglotQuery.psi.reference.PolyglotQueryAttributeKeyNameReference
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.system.type.meta.model.TSMetaRelation
-import sap.commerce.toolset.system.type.psi.reference.result.TSResolveResult
 import com.intellij.lang.ASTNode
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
+import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryBindParameter
+import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryExprAtom
+import sap.commerce.toolset.polyglotQuery.psi.reference.PolyglotQueryAttributeKeyNameReference
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaRelation
+import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResult
 import java.io.Serial
 
 abstract class PolyglotQueryBindParameterMixin(node: ASTNode) : ASTWrapperPsiElement(node), PolyglotQueryBindParameter {

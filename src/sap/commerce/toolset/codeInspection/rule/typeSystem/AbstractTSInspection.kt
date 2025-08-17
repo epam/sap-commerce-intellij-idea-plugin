@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,11 +18,11 @@
 
 package sap.commerce.toolset.codeInspection.rule.typeSystem
 
-import sap.commerce.toolset.codeInspection.rule.AbstractInspection
-import sap.commerce.toolset.system.type.model.Items
-import sap.commerce.toolset.system.type.util.TSUtils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
+import sap.commerce.toolset.codeInspection.rule.AbstractInspection
+import sap.commerce.toolset.typeSystem.model.Items
+import sap.commerce.toolset.typeSystem.util.TSUtils
 
 abstract class AbstractTSInspection : AbstractInspection<Items>(Items::class.java) {
 

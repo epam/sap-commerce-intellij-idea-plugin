@@ -25,6 +25,8 @@ import com.intellij.psi.PsiTreeChangeEvent
 import com.intellij.psi.PsiTreeChangeListener
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
+import sap.commerce.toolset.beanSystem.BSDomFileDescription
+import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFile
 import sap.commerce.toolset.impex.editor.ImpExSplitEditor
@@ -32,12 +34,10 @@ import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
-import sap.commerce.toolset.system.bean.BSDomFileDescription
-import sap.commerce.toolset.system.bean.meta.BSModificationTracker
 import sap.commerce.toolset.system.cockpitng.*
 import sap.commerce.toolset.system.cockpitng.meta.CngModificationTracker
-import sap.commerce.toolset.system.type.TSDomFileDescription
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.TSDomFileDescription
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 
 /**
  * Psi Tree Change Listener is required to reset Meta Cache before invocation of the Inspections.

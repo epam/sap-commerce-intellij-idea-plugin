@@ -28,10 +28,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.system.bean.meta.BSMetaModelAccess
-import sap.commerce.toolset.system.bean.model.Beans
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.model.*
+import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
+import sap.commerce.toolset.beanSystem.model.Beans
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.model.*
 import javax.swing.ListCellRenderer
 
 class SearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSEContributor(event), SearchEverywherePreviewProvider {

@@ -20,11 +20,11 @@ package sap.commerce.toolset.diagram.typeSystem.node
 
 import com.intellij.diagram.DiagramNodeBase
 import com.intellij.diagram.DiagramProvider
-import sap.commerce.toolset.diagram.typeSystem.node.graph.TSGraphNode
-import sap.commerce.toolset.diagram.typeSystem.node.graph.TSGraphNodeClassifier
-import sap.commerce.toolset.system.type.meta.model.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.diagram.typeSystem.node.graph.TSGraphNode
+import sap.commerce.toolset.diagram.typeSystem.node.graph.TSGraphNodeClassifier
+import sap.commerce.toolset.typeSystem.meta.model.*
 import java.io.Serial
 import javax.swing.Icon
 

@@ -17,9 +17,6 @@
  */
 package sap.commerce.toolset.psi.injector
 
-import sap.commerce.toolset.impex.psi.ImpexGroovyScriptBody
-import sap.commerce.toolset.impex.psi.ImpexString
-import sap.commerce.toolset.system.type.ScriptType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
@@ -28,6 +25,9 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.xml.XmlFile
 import org.jetbrains.plugins.groovy.GroovyLanguage
+import sap.commerce.toolset.impex.psi.ImpexGroovyScriptBody
+import sap.commerce.toolset.impex.psi.ImpexString
+import sap.commerce.toolset.typeSystem.ScriptType
 
 class GroovyLanguageInjector : LanguageInjector {
 

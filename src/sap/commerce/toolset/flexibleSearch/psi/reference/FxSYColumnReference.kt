@@ -19,22 +19,6 @@
 package sap.commerce.toolset.flexibleSearch.psi.reference
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
-import sap.commerce.toolset.flexibleSearch.FxSUtils
-import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTableAliasName
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
-import sap.commerce.toolset.psi.util.PsiTreeUtilExt
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.meta.model.TSMetaType
-import sap.commerce.toolset.system.type.psi.reference.result.AttributeResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.OrderingAttributeResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -44,7 +28,23 @@ import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_SOURCE
 import sap.commerce.toolset.HybrisConstants.ATTRIBUTE_TARGET
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
+import sap.commerce.toolset.flexibleSearch.FxSUtils
+import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTableAliasName
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
+import sap.commerce.toolset.psi.util.PsiTreeUtilExt
+import sap.commerce.toolset.psi.util.PsiUtils
 import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.OrderingAttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.RelationEndResolveResult
 
 class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.Poly<FlexibleSearchYColumnName>(owner) {
 

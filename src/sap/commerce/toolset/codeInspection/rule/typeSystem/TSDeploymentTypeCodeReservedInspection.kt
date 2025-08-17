@@ -17,10 +17,10 @@
  */
 package sap.commerce.toolset.codeInspection.rule.typeSystem
 
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.model.Deployment
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.model.Deployment
 
 class TSDeploymentTypeCodeReservedInspection : AbstractTSDeploymentTypeCodeInspection() {
 

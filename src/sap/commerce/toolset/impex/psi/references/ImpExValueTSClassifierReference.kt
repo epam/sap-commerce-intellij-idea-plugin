@@ -19,20 +19,20 @@ package sap.commerce.toolset.impex.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import sap.commerce.toolset.impex.psi.ImpexValue
-import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.meta.model.*
-import sap.commerce.toolset.system.type.psi.reference.result.*
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import sap.commerce.toolset.impex.psi.ImpexValue
+import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.*
+import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
+import sap.commerce.toolset.typeSystem.psi.reference.result.*
 
 class ImpExValueTSClassifierReference(
     owner: ImpexValue,

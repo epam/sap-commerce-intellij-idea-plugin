@@ -18,21 +18,21 @@
 
 package sap.commerce.toolset.polyglotQuery.psi.reference
 
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypeKeyName
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaEnum
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.system.type.meta.model.TSMetaType
-import sap.commerce.toolset.system.type.psi.reference.result.EnumResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypeKeyName
+import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+import sap.commerce.toolset.typeSystem.psi.reference.result.EnumResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.ItemResolveResult
 
 class PolyglotQueryDefinedTableReference(owner: PolyglotQueryTypeKeyName) : PsiReferenceBase.Poly<PolyglotQueryTypeKeyName>(owner) {
 

@@ -23,8 +23,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.system.bean.BSDomFileDescription
-import sap.commerce.toolset.system.type.TSDomFileDescription
+import sap.commerce.toolset.beanSystem.BSDomFileDescription
+import sap.commerce.toolset.typeSystem.TSDomFileDescription
 import javax.swing.Icon
 
 data class SystemRef(val id: String, val displayName: String, val icon: Icon?) {

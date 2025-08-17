@@ -18,15 +18,15 @@
 
 package sap.commerce.toolset.system.cockpitng.psi.reference
 
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.cockpitng.psi.CngPsiHelper
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.system.cockpitng.psi.CngPsiHelper
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 
 class CngFlowTSItemReference(element: PsiElement) : CngTSItemReference(element) {
 

@@ -20,13 +20,13 @@ package sap.commerce.toolset.diagram.typeSystem
 
 import com.intellij.diagram.AbstractDiagramElementManager
 import com.intellij.diagram.DiagramBuilder
-import sap.commerce.toolset.diagram.typeSystem.node.graph.*
-import sap.commerce.toolset.system.type.meta.model.TSMetaRelation
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.diagram.typeSystem.node.graph.*
 import sap.commerce.toolset.ifHybrisProject
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaRelation
 
 class TSDiagramElementManager : AbstractDiagramElementManager<TSGraphNode>() {
 

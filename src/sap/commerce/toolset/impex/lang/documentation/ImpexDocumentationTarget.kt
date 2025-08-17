@@ -18,12 +18,6 @@
 
 package sap.commerce.toolset.impex.lang.documentation
 
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.constants.modifier.TypeModifier
-import sap.commerce.toolset.impex.lang.documentation.renderer.impexDoc
-import sap.commerce.toolset.impex.psi.ImpexTypes
-import sap.commerce.toolset.impex.psi.references.ImpExHeaderAbbreviationReference
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
 import com.intellij.model.Pointer
 import com.intellij.platform.backend.documentation.DocumentationResult
 import com.intellij.platform.backend.documentation.DocumentationTarget
@@ -34,6 +28,12 @@ import com.intellij.psi.createSmartPointer
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
+import sap.commerce.toolset.impex.constants.modifier.TypeModifier
+import sap.commerce.toolset.impex.lang.documentation.renderer.impexDoc
+import sap.commerce.toolset.impex.psi.ImpexTypes
+import sap.commerce.toolset.impex.psi.references.ImpExHeaderAbbreviationReference
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
 class ImpexDocumentationTarget(val element: PsiElement, private val originalElement: PsiElement?) : DocumentationTarget {
 

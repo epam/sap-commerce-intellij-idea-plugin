@@ -28,8 +28,8 @@ import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.system.type.codeInsight.daemon.AbstractItemsXmlLineMarkerProvider
-import sap.commerce.toolset.system.type.model.ItemType
+import sap.commerce.toolset.typeSystem.codeInsight.daemon.AbstractItemsXmlLineMarkerProvider
+import sap.commerce.toolset.typeSystem.model.ItemType
 import javax.swing.Icon
 
 class ItemsXmlInterceptorLineMarkerProvider : AbstractItemsXmlLineMarkerProvider<XmlAttributeValue>() {

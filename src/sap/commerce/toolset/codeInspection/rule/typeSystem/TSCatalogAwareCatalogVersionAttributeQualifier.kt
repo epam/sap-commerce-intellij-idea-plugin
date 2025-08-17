@@ -18,17 +18,17 @@
 
 package sap.commerce.toolset.codeInspection.rule.typeSystem
 
-import sap.commerce.toolset.system.type.meta.TSMetaHelper
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSMetaModelStateService
-import sap.commerce.toolset.system.type.model.ItemType
-import sap.commerce.toolset.system.type.model.Items
-import sap.commerce.toolset.system.type.model.all
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.meta.TSMetaHelper
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
+import sap.commerce.toolset.typeSystem.model.ItemType
+import sap.commerce.toolset.typeSystem.model.Items
+import sap.commerce.toolset.typeSystem.model.all
 
 class TSCatalogAwareCatalogVersionAttributeQualifier : AbstractTSInspection() {
 

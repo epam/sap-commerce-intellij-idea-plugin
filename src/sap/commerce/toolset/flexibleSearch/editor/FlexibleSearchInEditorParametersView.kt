@@ -18,9 +18,6 @@
 
 package sap.commerce.toolset.flexibleSearch.editor
 
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchBindParameter
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
-import sap.commerce.toolset.system.type.meta.TSMetaModelStateService
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.application.readAction
@@ -43,6 +40,9 @@ import com.intellij.util.ui.JBUI
 import com.michaelbaranov.microba.calendar.DatePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchBindParameter
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import java.beans.PropertyChangeListener

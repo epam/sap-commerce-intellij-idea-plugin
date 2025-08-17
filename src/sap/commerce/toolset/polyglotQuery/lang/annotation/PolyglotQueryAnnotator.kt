@@ -17,18 +17,18 @@
  */
 package sap.commerce.toolset.polyglotQuery.lang.annotation
 
-import sap.commerce.toolset.lang.annotation.AbstractAnnotator
-import sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryAttributeKeyName
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypes.*
-import sap.commerce.toolset.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.lang.annotation.AbstractAnnotator
+import sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter
+import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryAttributeKeyName
+import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypes.*
 import sap.commerce.toolset.project.PropertyService
+import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
 class PolyglotQueryAnnotator : AbstractAnnotator(PolyglotQuerySyntaxHighlighter.getInstance()) {
 

@@ -32,11 +32,11 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.system.bean.meta.BSGlobalMetaModel
-import sap.commerce.toolset.system.bean.meta.BSMetaModelStateService
-import sap.commerce.toolset.system.bean.meta.event.BSMetaModelChangeListener
-import sap.commerce.toolset.toolwindow.system.bean.components.BSTreePanel
-import sap.commerce.toolset.toolwindow.system.bean.view.*
+import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
+import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
+import sap.commerce.toolset.beanSystem.meta.event.BSMetaModelChangeListener
+import sap.commerce.toolset.toolwindow.beanSystem.components.BSTreePanel
+import sap.commerce.toolset.toolwindow.beanSystem.view.*
 import java.awt.GridBagLayout
 import java.io.Serial
 

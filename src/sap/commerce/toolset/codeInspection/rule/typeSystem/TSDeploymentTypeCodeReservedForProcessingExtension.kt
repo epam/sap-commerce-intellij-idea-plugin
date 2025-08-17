@@ -17,9 +17,9 @@
  */
 package sap.commerce.toolset.codeInspection.rule.typeSystem
 
-import sap.commerce.toolset.system.type.model.Deployment
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.model.Deployment
 
 class TSDeploymentTypeCodeReservedForProcessingExtension : AbstractTSDeploymentTypeCodeInspection() {
 

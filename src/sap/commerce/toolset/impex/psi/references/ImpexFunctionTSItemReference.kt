@@ -28,13 +28,13 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 import sap.commerce.toolset.impex.psi.ImpexParameter
-import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
 import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.meta.model.*
-import sap.commerce.toolset.system.type.psi.reference.result.*
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.*
+import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
+import sap.commerce.toolset.typeSystem.psi.reference.result.*
 
 class ImpexFunctionTSItemReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner), HighlightedReference {
 

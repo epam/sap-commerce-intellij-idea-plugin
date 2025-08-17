@@ -17,16 +17,16 @@
  */
 package sap.commerce.toolset.codeInspection.rule.beanSystem
 
-import sap.commerce.toolset.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
-import sap.commerce.toolset.system.bean.meta.BSMetaHelper
-import sap.commerce.toolset.system.bean.model.Bean
-import sap.commerce.toolset.system.bean.model.Beans
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
+import sap.commerce.toolset.beanSystem.model.Bean
+import sap.commerce.toolset.beanSystem.model.Beans
+import sap.commerce.toolset.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
 
 class BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass : AbstractBSInspection() {
 

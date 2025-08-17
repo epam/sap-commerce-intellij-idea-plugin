@@ -22,16 +22,16 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
 import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec
 import sap.commerce.toolset.impex.psi.ImpexParameter
 import sap.commerce.toolset.impex.psi.ImpexVisitor
 import sap.commerce.toolset.impex.psi.references.ImpexFunctionTSItemReference
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.model.*
-import com.intellij.psi.PsiElementVisitor
-import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.model.*
 
 class ImpexFunctionReferenceTypeMismatchInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR

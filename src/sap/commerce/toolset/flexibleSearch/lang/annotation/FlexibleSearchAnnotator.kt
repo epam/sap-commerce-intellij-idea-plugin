@@ -18,12 +18,6 @@
 package sap.commerce.toolset.flexibleSearch.lang.annotation
 
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
-import sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
-import sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
-import sap.commerce.toolset.lang.annotation.AbstractAnnotator
-import sap.commerce.toolset.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.Editor
@@ -37,7 +31,13 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
+import sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
+import sap.commerce.toolset.lang.annotation.AbstractAnnotator
 import sap.commerce.toolset.project.PropertyService
+import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
 class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighter.getInstance()) {
 

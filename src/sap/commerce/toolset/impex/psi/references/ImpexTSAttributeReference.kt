@@ -17,14 +17,6 @@
  */
 package sap.commerce.toolset.impex.psi.references
 
-import sap.commerce.toolset.impex.psi.ImpexAnyHeaderParameterName
-import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.psi.reference.result.AttributeResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.OrderingAttributeResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.ResolveResult
@@ -33,6 +25,14 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.impex.psi.ImpexAnyHeaderParameterName
+import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
+import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.OrderingAttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.RelationEndResolveResult
 
 internal class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterName) : TSReferenceBase<ImpexAnyHeaderParameterName>(owner) {
 

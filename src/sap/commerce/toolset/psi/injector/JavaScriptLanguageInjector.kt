@@ -17,8 +17,6 @@
  */
 package sap.commerce.toolset.psi.injector
 
-import sap.commerce.toolset.impex.psi.ImpexString
-import sap.commerce.toolset.system.type.ScriptType
 import com.intellij.lang.javascript.JavascriptLanguage
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange
@@ -26,6 +24,8 @@ import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.xml.XmlFile
+import sap.commerce.toolset.impex.psi.ImpexString
+import sap.commerce.toolset.typeSystem.ScriptType
 
 class JavaScriptLanguageInjector : LanguageInjector {
 

@@ -39,8 +39,8 @@ dependencies {
     implementation(project(":meta-core"))
     implementation(project(":project-core"))
     implementation(project(":occ-core"))
-    implementation(project(":bean-system-core"))
-    implementation(project(":bean-system-ui"))
+    implementation(project(":beanSystem-core"))
+    implementation(project(":beanSystem-ui"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

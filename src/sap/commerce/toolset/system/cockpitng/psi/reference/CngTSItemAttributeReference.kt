@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,12 +18,12 @@
 
 package sap.commerce.toolset.system.cockpitng.psi.reference
 
-import sap.commerce.toolset.system.cockpitng.psi.CngPsiHelper
-import sap.commerce.toolset.system.type.psi.reference.AbstractAttributeDeclarationReference
-import sap.commerce.toolset.system.type.psi.reference.result.AttributeResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import sap.commerce.toolset.system.cockpitng.psi.CngPsiHelper
+import sap.commerce.toolset.typeSystem.psi.reference.AbstractAttributeDeclarationReference
+import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.RelationEndResolveResult
 
 class CngTSItemAttributeReference(
     element: PsiElement,

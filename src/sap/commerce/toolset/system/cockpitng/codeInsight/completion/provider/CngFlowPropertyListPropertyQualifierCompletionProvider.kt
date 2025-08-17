@@ -20,15 +20,15 @@ package sap.commerce.toolset.system.cockpitng.codeInsight.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.JavaLookupElementBuilder
-import sap.commerce.toolset.java.psi.JavaPsiHelper
-import sap.commerce.toolset.system.cockpitng.psi.CngPsiHelper
-import sap.commerce.toolset.system.type.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
 import com.intellij.openapi.project.Project
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.java.psi.JavaPsiHelper
+import sap.commerce.toolset.system.cockpitng.psi.CngPsiHelper
+import sap.commerce.toolset.typeSystem.codeInsight.completion.provider.AttributeDeclarationCompletionProvider
 
 class CngFlowPropertyListPropertyQualifierCompletionProvider : AttributeDeclarationCompletionProvider() {
 

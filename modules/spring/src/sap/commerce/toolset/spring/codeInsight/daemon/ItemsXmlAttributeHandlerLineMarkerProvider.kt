@@ -28,11 +28,11 @@ import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.spring.SpringHelper
-import sap.commerce.toolset.system.type.codeInsight.daemon.AbstractItemsXmlLineMarkerProvider
-import sap.commerce.toolset.system.type.model.Attribute
-import sap.commerce.toolset.system.type.model.Persistence
-import sap.commerce.toolset.system.type.model.PersistenceType
-import sap.commerce.toolset.system.type.psi.TSPsiHelper
+import sap.commerce.toolset.typeSystem.codeInsight.daemon.AbstractItemsXmlLineMarkerProvider
+import sap.commerce.toolset.typeSystem.model.Attribute
+import sap.commerce.toolset.typeSystem.model.Persistence
+import sap.commerce.toolset.typeSystem.model.PersistenceType
+import sap.commerce.toolset.typeSystem.psi.TSPsiHelper
 import javax.swing.Icon
 
 class ItemsXmlAttributeHandlerLineMarkerProvider : AbstractItemsXmlLineMarkerProvider<XmlTag>() {

@@ -18,16 +18,16 @@
 
 package sap.commerce.toolset.codeInspection.rule.typeSystem
 
-import sap.commerce.toolset.codeInspection.fix.PsiNavigateToDomFix
-import sap.commerce.toolset.system.type.meta.TSMetaModelStateService
-import sap.commerce.toolset.system.type.model.Deployment
-import sap.commerce.toolset.system.type.model.Items
-import sap.commerce.toolset.system.type.model.deployments
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.codeInspection.fix.PsiNavigateToDomFix
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
+import sap.commerce.toolset.typeSystem.model.Deployment
+import sap.commerce.toolset.typeSystem.model.Items
+import sap.commerce.toolset.typeSystem.model.deployments
 
 class TSDeploymentTableMustBeUnique : AbstractTSInspection() {
 

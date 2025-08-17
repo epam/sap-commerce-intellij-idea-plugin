@@ -19,6 +19,11 @@
 package sap.commerce.toolset.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.openapi.util.removeUserData
+import com.intellij.psi.PsiReference
+import com.intellij.psi.util.parentOfType
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier.*
 import sap.commerce.toolset.impex.constants.modifier.TypeModifier
@@ -28,12 +33,7 @@ import sap.commerce.toolset.impex.psi.references.ImpExJavaClassReference
 import sap.commerce.toolset.impex.psi.references.ImpExJavaEnumValueReference
 import sap.commerce.toolset.impex.psi.references.ImpexTSItemReference
 import sap.commerce.toolset.psi.reference.LanguageReference
-import sap.commerce.toolset.system.type.psi.reference.SpringReference
-import com.intellij.lang.ASTNode
-import com.intellij.openapi.util.removeUserData
-import com.intellij.psi.PsiReference
-import com.intellij.psi.util.parentOfType
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.psi.reference.SpringReference
 import java.io.Serial
 import javax.lang.model.SourceVersion
 

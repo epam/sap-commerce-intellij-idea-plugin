@@ -18,13 +18,13 @@
 
 package sap.commerce.toolset.codeInspection.rule.beanSystem
 
-import sap.commerce.toolset.system.bean.meta.BSMetaModelAccess
-import sap.commerce.toolset.system.bean.model.Bean
-import sap.commerce.toolset.system.bean.model.Beans
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
+import sap.commerce.toolset.beanSystem.model.Bean
+import sap.commerce.toolset.beanSystem.model.Beans
 
 class BSDuplicateBeanDefinition : AbstractBSInspection() {
 

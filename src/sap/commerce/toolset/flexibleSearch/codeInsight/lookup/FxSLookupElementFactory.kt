@@ -21,16 +21,16 @@ package sap.commerce.toolset.flexibleSearch.codeInsight.lookup
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import sap.commerce.toolset.codeInsight.completion.AutoPopupInsertHandler
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnAliasName
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTableAliasName
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
-import sap.commerce.toolset.system.type.psi.reference.result.TSResolveResultUtil
 import com.intellij.psi.ResolveResult
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.codeInsight.completion.AutoPopupInsertHandler
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnAliasName
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTableAliasName
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
 import sap.commerce.toolset.settings.state.FlexibleSearchSettingsState
+import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
 object FxSLookupElementFactory {
 

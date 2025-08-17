@@ -19,16 +19,16 @@
 package sap.commerce.toolset.flexibleSearch.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import sap.commerce.toolset.flexibleSearch.psi.*
-import sap.commerce.toolset.flexibleSearch.psi.reference.FxSYColumnReference
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.system.type.meta.model.TSMetaRelation
-import sap.commerce.toolset.system.type.psi.reference.result.TSResolveResult
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
+import sap.commerce.toolset.flexibleSearch.psi.*
+import sap.commerce.toolset.flexibleSearch.psi.reference.FxSYColumnReference
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaRelation
+import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResult
 import java.io.Serial
 import java.util.function.Function
 import java.util.function.Predicate

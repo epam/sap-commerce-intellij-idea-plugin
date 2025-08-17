@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,7 +17,7 @@
  */
 package sap.commerce.toolset.codeInspection.rule.beanSystem
 
-import sap.commerce.toolset.system.bean.model.Beans
 import com.intellij.util.xml.highlighting.BasicDomElementsInspection
+import sap.commerce.toolset.beanSystem.model.Beans
 
 class BSDomElementsInspection : BasicDomElementsInspection<Beans>(Beans::class.java)

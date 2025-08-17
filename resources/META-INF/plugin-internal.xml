@@ -74,7 +74,7 @@
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </group>
         <!--        <action id="GenerateDomModel"-->
-        <!--                class="sap.commerce.toolset.system.type.model.generator.GenerateDomModelAction"-->
+        <!--                class="sap.commerce.toolset.typeSystem.model.generator.GenerateDomModelAction"-->
         <!--                text="Generate DOM Model...">-->
         <!--            <add-to-group group-id="ToolsMenu" anchor="last"/>-->
         <!--        </action>-->

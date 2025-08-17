@@ -17,15 +17,15 @@
  */
 package sap.commerce.toolset.startup
 
-import sap.commerce.toolset.system.bean.meta.BSMetaModelStateService
-import sap.commerce.toolset.system.cockpitng.meta.CngMetaModelStateService
-import sap.commerce.toolset.system.spring.SimpleSpringService
-import sap.commerce.toolset.system.type.meta.TSMetaModelStateService
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.PropertyService
+import sap.commerce.toolset.system.cockpitng.meta.CngMetaModelStateService
+import sap.commerce.toolset.system.spring.SimpleSpringService
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 
 class PreLoadSystemsStartupActivity : ProjectActivity {
 

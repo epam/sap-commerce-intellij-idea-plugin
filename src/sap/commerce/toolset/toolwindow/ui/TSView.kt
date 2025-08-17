@@ -32,12 +32,12 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.system.type.actions.*
-import sap.commerce.toolset.system.type.meta.TSGlobalMetaModel
-import sap.commerce.toolset.system.type.meta.TSMetaModelStateService
-import sap.commerce.toolset.system.type.meta.event.TSMetaModelChangeListener
-import sap.commerce.toolset.system.type.settings.TSViewSettings
-import sap.commerce.toolset.system.type.ui.components.TSTreePanel
+import sap.commerce.toolset.typeSystem.actions.*
+import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
+import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
+import sap.commerce.toolset.typeSystem.settings.TSViewSettings
+import sap.commerce.toolset.typeSystem.ui.components.TSTreePanel
 import java.awt.GridBagLayout
 import java.io.Serial
 

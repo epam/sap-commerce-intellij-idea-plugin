@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.type.psi.reference
+package sap.commerce.toolset.typeSystem.psi.reference
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*

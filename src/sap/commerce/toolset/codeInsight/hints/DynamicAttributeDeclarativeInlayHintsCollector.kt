@@ -21,14 +21,14 @@ package sap.commerce.toolset.codeInsight.hints
 import com.intellij.codeInsight.completion.CompletionMemory
 import com.intellij.codeInsight.completion.JavaMethodCallElement
 import com.intellij.codeInsight.hints.declarative.*
-import sap.commerce.toolset.spring.SpringHelper
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.model.Attribute
-import sap.commerce.toolset.system.type.model.PersistenceType
-import sap.commerce.toolset.system.type.util.TSUtils
 import com.intellij.psi.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.spring.SpringHelper
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.model.Attribute
+import sap.commerce.toolset.typeSystem.model.PersistenceType
+import sap.commerce.toolset.typeSystem.util.TSUtils
 
 class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
 

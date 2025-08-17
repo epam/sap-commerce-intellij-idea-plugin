@@ -27,12 +27,12 @@ import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
+import sap.commerce.toolset.beanSystem.psi.BSConstants
 import sap.commerce.toolset.occ.psi.OccPropertyMapping
 import sap.commerce.toolset.occ.psi.reference.OccBSBeanPropertyReference
 import sap.commerce.toolset.occ.psi.reference.OccLevelMappingReference
-import sap.commerce.toolset.system.bean.meta.BSMetaModelAccess
-import sap.commerce.toolset.system.bean.meta.model.BSGlobalMetaBean
-import sap.commerce.toolset.system.bean.psi.BSConstants
 import java.util.*
 
 class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {

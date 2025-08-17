@@ -1,0 +1,50 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<idea-plugin>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <completion.contributor language="XML" order="before javaClassReference"
+                                implementationClass="sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionContributor"/>
+
+        <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.beanSystem.psi.contributor.BSReferenceContributor"/>
+
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.beanSystem.lang.folding.BeansXmlFoldingBuilder"/>
+
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
+
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoBeanLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoEnumLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoEnumValueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoBeanPropertyLineMarkerProvider"/>
+
+        <codeInsight.inlayProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.hints.BeansXmlInlayHintsProvider"/>
+
+        <xmlStructureViewBuilderProvider order="first" implementation="sap.commerce.toolset.beanSystem.structureView.BSXmlStructureViewBuilderProvider"/>
+
+        <projectConfigurable id="hybris.project.bs.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             bundle="i18n.HybrisBundle" key="hybris.settings.project.bs.title"
+                             order="after hybris.project.ts.settings"
+                             provider="sap.commerce.toolset.beanSystem.settings.options.ProjectBeanSystemConfigurableProvider"/>
+
+        <applicationService serviceImplementation="sap.commerce.toolset.beanSystem.codeInsight.completion.provider.BSClassCompletionProvider"/>
+    </extensions>
+
+</idea-plugin>

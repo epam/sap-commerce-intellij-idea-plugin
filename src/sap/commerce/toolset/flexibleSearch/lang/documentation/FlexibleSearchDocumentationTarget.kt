@@ -18,9 +18,6 @@
 
 package sap.commerce.toolset.flexibleSearch.lang.documentation
 
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
 import com.intellij.model.Pointer
 import com.intellij.platform.backend.documentation.DocumentationResult
 import com.intellij.platform.backend.documentation.DocumentationTarget
@@ -30,6 +27,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.createSmartPointer
 import com.intellij.psi.util.elementType
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
 class FlexibleSearchDocumentationTarget(val element: PsiElement, private val originalElement: PsiElement?) : DocumentationTarget {
 

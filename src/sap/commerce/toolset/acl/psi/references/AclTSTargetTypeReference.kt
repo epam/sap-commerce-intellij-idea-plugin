@@ -19,18 +19,6 @@ package sap.commerce.toolset.acl.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaEnum
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaRelation
-import sap.commerce.toolset.system.type.meta.model.TSMetaType
-import sap.commerce.toolset.system.type.psi.reference.result.EnumResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.ItemResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.RelationResolveResult
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -40,6 +28,18 @@ import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
+import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaRelation
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
+import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
+import sap.commerce.toolset.typeSystem.psi.reference.result.EnumResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.ItemResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.RelationResolveResult
 
 class AclTSTargetTypeReference(owner: PsiElement, soft: Boolean = false, rangeInElement: TextRange? = null) :
     TSReferenceBase<PsiElement>(owner, soft, rangeInElement), HighlightedReference {

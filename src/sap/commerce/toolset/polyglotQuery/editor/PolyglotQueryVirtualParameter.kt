@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.polyglotQuery.editor
 
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryBindParameter
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.util.text.StringUtil
@@ -27,6 +25,8 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
+import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryBindParameter
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*

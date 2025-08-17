@@ -1,0 +1,125 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package sap.commerce.toolset.beanSystem.meta.model.impl
+
+import com.intellij.util.xml.DomAnchor
+import com.intellij.util.xml.DomService
+import sap.commerce.toolset.CaseInsensitiveMap
+import sap.commerce.toolset.beanSystem.model.Bean
+import sap.commerce.toolset.beanSystem.model.BeanType
+import sap.commerce.toolset.xml.toBoolean
+
+internal class BSMetaBeanImpl(
+    dom: Bean,
+    override val moduleName: String,
+    override val extensionName: String,
+    override val name: String,
+    override val isCustom: Boolean,
+    override val imports: List<sap.commerce.toolset.beanSystem.meta.model.BSMetaImport>,
+    override val annotations: List<sap.commerce.toolset.beanSystem.meta.model.BSMetaAnnotations>,
+    override val properties: Map<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty>,
+    override val hints: Map<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaHint>,
+) : sap.commerce.toolset.beanSystem.meta.model.BSMetaBean {
+
+    override val domAnchor: DomAnchor<Bean> = DomService.getInstance().createAnchor(dom)
+    override val description = dom.description.stringValue
+    override val template = dom.template.stringValue
+    override val genericName = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getGenericName(dom.clazz.stringValue)
+    override val extends = dom.extends.stringValue
+        ?.let { _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getBeanName(it) }
+    override val extendsGenericName = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getGenericName(dom.extends.stringValue)
+    override val type = dom.type.value ?: BeanType.BEAN
+    override val shortName = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getShortName(name)
+    override val fullName = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getNameWithGeneric(name, genericName)
+    override val fullExtends = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getNameWithGeneric(extends, extendsGenericName)
+    override val deprecatedSince = dom.deprecatedSince.stringValue
+    override val isDeprecated = dom.deprecated.toBoolean()
+    override val isAbstract = dom.abstract.toBoolean()
+    override val isSuperEquals = dom.superEquals.toBoolean()
+
+    override fun toString() = "Bean(module=$extensionName, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
+
+}
+
+internal class BSGlobalMetaBeanImpl(localMeta: sap.commerce.toolset.beanSystem.meta.model.BSMetaBean) : sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBeanSelfMerge<Bean, sap.commerce.toolset.beanSystem.meta.model.BSMetaBean>(localMeta),
+    sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean {
+
+    override val hints = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaHint>()
+    override val properties = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty>()
+    override val domAnchor = localMeta.domAnchor
+    override val type = localMeta.type
+    override val shortName = localMeta.shortName
+    override var genericName = localMeta.genericName
+    override val moduleName = localMeta.moduleName
+    override val extensionName = localMeta.extensionName
+    override var template = localMeta.template
+    override var description = localMeta.description
+    override var deprecatedSince = localMeta.deprecatedSince
+    override var extends = localMeta.extends
+    override var extendsGenericName = localMeta.extendsGenericName
+    override var fullName = localMeta.fullName
+    override var fullExtends = localMeta.fullExtends
+    override val imports = ArrayList<sap.commerce.toolset.beanSystem.meta.model.BSMetaImport>()
+    override val annotations = ArrayList<sap.commerce.toolset.beanSystem.meta.model.BSMetaAnnotations>()
+    override var isDeprecated = localMeta.isDeprecated
+    override var isAbstract = localMeta.isAbstract
+    override var isSuperEquals = localMeta.isSuperEquals
+    override var flattenType: String? = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.flattenType(this)
+
+    override val allProperties = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty>()
+    override val allExtends = LinkedHashSet<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>()
+    override var metaType = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN
+
+    override fun postMerge(globalMetaModel: sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel) {
+        val extends = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getAllExtends(globalMetaModel, this)
+
+        allExtends.addAll(extends)
+        extends.forEach {
+            allProperties.putAll(it.allProperties)
+        }
+    }
+
+    override fun mergeInternally(localMeta: sap.commerce.toolset.beanSystem.meta.model.BSMetaBean) {
+        template ?: let { template = localMeta.template }
+        extends ?: let { extends = localMeta.extends }
+        description ?: let { description = localMeta.description }
+        deprecatedSince ?: let { deprecatedSince = localMeta.deprecatedSince }
+        extendsGenericName ?: let { extendsGenericName = localMeta.extendsGenericName }
+        genericName ?: let { genericName = localMeta.genericName }
+        fullName ?: let { fullName = localMeta.fullName }
+        fullExtends ?: let { fullExtends = localMeta.fullExtends }
+
+        if (localMeta.isDeprecated) isDeprecated = localMeta.isDeprecated
+        if (localMeta.isAbstract) isAbstract = localMeta.isAbstract
+        if (localMeta.isSuperEquals) isSuperEquals = localMeta.isSuperEquals
+
+        localMeta.hints.values
+            .filterNot { hints.contains(it.name) }
+            .forEach { hints[it.name] = it }
+
+        localMeta.properties.values
+            .filterNot { properties.contains(it.name) }
+            .forEach { properties[it.name] = it }
+
+        allProperties.putAll(localMeta.properties)
+        imports.addAll(localMeta.imports)
+        annotations.addAll(localMeta.annotations)
+    }
+
+    override fun toString() = "Bean(module=$extensionName, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
+}

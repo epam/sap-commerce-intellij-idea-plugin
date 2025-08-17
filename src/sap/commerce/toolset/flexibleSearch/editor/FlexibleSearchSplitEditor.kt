@@ -40,8 +40,8 @@ import kotlinx.coroutines.*
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
-import sap.commerce.toolset.system.type.meta.TSGlobalMetaModel
-import sap.commerce.toolset.system.type.meta.event.TSMetaModelChangeListener
+import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
+import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener
 import java.io.Serial

@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.diagram.typeSystem.actions
 
-import sap.commerce.toolset.system.type.settings.options.ProjectTypeSystemConfigurableProvider
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
@@ -26,6 +25,7 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.typeSystem.settings.options.ProjectTypeSystemConfigurableProvider
 
 class OpenSettingsDiagramAction : AnAction() {
 

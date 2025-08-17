@@ -26,12 +26,12 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionService
+import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
+import sap.commerce.toolset.beanSystem.psi.reference.result.BeanPropertyResolveResult
 import sap.commerce.toolset.occ.psi.OccPropertyMapping
 import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.bean.codeInsight.completion.BSCompletionService
-import sap.commerce.toolset.system.bean.meta.BSModificationTracker
-import sap.commerce.toolset.system.bean.meta.model.BSGlobalMetaBean
-import sap.commerce.toolset.system.bean.psi.reference.result.BeanPropertyResolveResult
 
 class OccBSBeanPropertyReference(
     private val meta: BSGlobalMetaBean,

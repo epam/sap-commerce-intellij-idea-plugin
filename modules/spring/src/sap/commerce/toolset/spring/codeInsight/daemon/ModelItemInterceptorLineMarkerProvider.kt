@@ -28,7 +28,7 @@ import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
-import sap.commerce.toolset.system.type.util.TSUtils
+import sap.commerce.toolset.typeSystem.util.TSUtils
 import javax.swing.Icon
 
 class ModelItemInterceptorLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiField>() {

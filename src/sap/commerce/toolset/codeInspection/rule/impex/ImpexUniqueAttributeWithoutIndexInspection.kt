@@ -21,14 +21,14 @@ package sap.commerce.toolset.codeInspection.rule.impex
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine
-import sap.commerce.toolset.impex.psi.ImpexVisitor
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpexHeaderLine
+import sap.commerce.toolset.impex.psi.ImpexVisitor
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
 class ImpexUniqueAttributeWithoutIndexInspection : LocalInspectionTool() {
 

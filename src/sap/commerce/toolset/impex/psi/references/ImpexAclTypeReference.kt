@@ -18,13 +18,6 @@
 package sap.commerce.toolset.impex.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.type.codeInsight.lookup.TSLookupElementFactory
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
@@ -34,6 +27,13 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.typeSystem.codeInsight.lookup.TSLookupElementFactory
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
+import sap.commerce.toolset.typeSystem.psi.reference.result.ItemResolveResult
 
 class ImpexAclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), HighlightedReference {
 

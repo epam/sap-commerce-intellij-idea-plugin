@@ -32,21 +32,21 @@ import com.intellij.psi.util.ParameterizedCachedValueProvider
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpexParameter
 import sap.commerce.toolset.impex.psi.ImpexTypes
-import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
 import sap.commerce.toolset.psi.util.PsiTreeUtilExt
 import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaCollection
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaEnum
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaMap
-import sap.commerce.toolset.system.type.model.MapType
-import sap.commerce.toolset.system.type.psi.reference.result.AttributeResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.MapResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.OrderingAttributeResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.RelationEndResolveResult
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaCollection
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaMap
+import sap.commerce.toolset.typeSystem.model.MapType
+import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
+import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.MapResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.OrderingAttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.RelationEndResolveResult
 
 class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase<ImpexParameter>(owner) {
 

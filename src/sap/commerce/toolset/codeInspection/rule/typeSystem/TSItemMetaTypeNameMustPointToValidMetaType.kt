@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.codeInspection.rule.typeSystem
 
-import sap.commerce.toolset.system.type.meta.TSMetaHelper
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.system.type.model.Items
-import sap.commerce.toolset.system.type.model.all
+import sap.commerce.toolset.typeSystem.meta.TSMetaHelper
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.model.Items
+import sap.commerce.toolset.typeSystem.model.all
 
 class TSItemMetaTypeNameMustPointToValidMetaType : AbstractTSMetaTypeInspection(
     "hybris.inspections.ts.ItemMetaTypeNameMustPointToValidMetaType.details.key"

@@ -18,16 +18,16 @@
 
 package sap.commerce.toolset.codeInspection.rule.typeSystem
 
-import sap.commerce.toolset.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
-import sap.commerce.toolset.system.type.model.EnumType
-import sap.commerce.toolset.system.type.model.EnumValue
-import sap.commerce.toolset.system.type.model.Items
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
+import sap.commerce.toolset.typeSystem.model.EnumType
+import sap.commerce.toolset.typeSystem.model.EnumValue
+import sap.commerce.toolset.typeSystem.model.Items
 import java.util.*
 
 class TSEnumValueMustBeUppercase : AbstractTSInspection() {

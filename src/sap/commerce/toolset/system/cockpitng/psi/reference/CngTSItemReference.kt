@@ -19,16 +19,6 @@
 package sap.commerce.toolset.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaEnum
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.system.type.meta.model.TSGlobalMetaRelation
-import sap.commerce.toolset.system.type.psi.reference.result.EnumResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.ItemResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.RelationResolveResult
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -36,6 +26,16 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
+import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaRelation
+import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
+import sap.commerce.toolset.typeSystem.psi.reference.result.EnumResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.ItemResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.RelationResolveResult
 
 /**
  * see, standard-editors-spring.xml

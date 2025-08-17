@@ -21,14 +21,14 @@ package sap.commerce.toolset.diagram.typeSystem.node
 import com.intellij.diagram.DiagramElementManager
 import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.diagram.presentation.DiagramLineType
-import sap.commerce.toolset.diagram.typeSystem.node.graph.*
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.model.*
-import sap.commerce.toolset.system.type.model.Cardinality
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.diagram.typeSystem.node.graph.*
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TypeSystemDiagramSettingsState
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.model.*
+import sap.commerce.toolset.typeSystem.model.Cardinality
 import java.awt.Shape
 
 object TSDiagramRefresher {

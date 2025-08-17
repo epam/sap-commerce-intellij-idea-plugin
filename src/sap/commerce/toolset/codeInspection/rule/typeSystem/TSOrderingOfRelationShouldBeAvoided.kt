@@ -18,16 +18,16 @@
 
 package sap.commerce.toolset.codeInspection.rule.typeSystem
 
-import sap.commerce.toolset.codeInspection.fix.xml.XmlDeleteAttributeQuickFix
-import sap.commerce.toolset.system.type.model.Cardinality
-import sap.commerce.toolset.system.type.model.Items
-import sap.commerce.toolset.system.type.model.RelationElement
-import sap.commerce.toolset.system.type.model.elements
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.codeInspection.fix.xml.XmlDeleteAttributeQuickFix
+import sap.commerce.toolset.typeSystem.model.Cardinality
+import sap.commerce.toolset.typeSystem.model.Items
+import sap.commerce.toolset.typeSystem.model.RelationElement
+import sap.commerce.toolset.typeSystem.model.elements
 
 class TSOrderingOfRelationShouldBeAvoided : AbstractTSInspection() {
 

@@ -18,18 +18,18 @@
 
 package sap.commerce.toolset.impex.psi.impl
 
-import sap.commerce.toolset.impex.psi.ImpexSubTypeName
-import sap.commerce.toolset.impex.psi.ImpexValueLine
-import sap.commerce.toolset.impex.psi.references.ImpexTSItemReference
-import sap.commerce.toolset.impex.psi.references.ImpexTSSubTypeItemReference
-import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
-import sap.commerce.toolset.system.type.psi.reference.result.ItemResolveResult
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.impex.psi.ImpexSubTypeName
+import sap.commerce.toolset.impex.psi.ImpexValueLine
+import sap.commerce.toolset.impex.psi.references.ImpexTSItemReference
+import sap.commerce.toolset.impex.psi.references.ImpexTSSubTypeItemReference
+import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
+import sap.commerce.toolset.typeSystem.psi.reference.result.ItemResolveResult
 import java.io.Serial
 
 abstract class ImpexSubTypeNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), ImpexSubTypeName {

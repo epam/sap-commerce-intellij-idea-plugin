@@ -19,18 +19,6 @@
 package sap.commerce.toolset.impex.psi.impl
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexTypes
-import sap.commerce.toolset.impex.psi.ImpexValue
-import sap.commerce.toolset.impex.psi.references.*
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.TSModificationTracker
-import sap.commerce.toolset.system.type.meta.model.*
-import sap.commerce.toolset.system.type.model.Cardinality
-import sap.commerce.toolset.system.type.psi.reference.result.AttributeResolveResult
-import sap.commerce.toolset.system.type.psi.reference.result.RelationEndResolveResult
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
@@ -45,6 +33,18 @@ import com.intellij.util.asSafely
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
+import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
+import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpexTypes
+import sap.commerce.toolset.impex.psi.ImpexValue
+import sap.commerce.toolset.impex.psi.references.*
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
+import sap.commerce.toolset.typeSystem.meta.model.*
+import sap.commerce.toolset.typeSystem.model.Cardinality
+import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
+import sap.commerce.toolset.typeSystem.psi.reference.result.RelationEndResolveResult
 import java.io.Serial
 
 abstract class ImpexValueMixin(node: ASTNode) : ASTWrapperPsiElement(node), PsiLanguageInjectionHost, ImpexValue {

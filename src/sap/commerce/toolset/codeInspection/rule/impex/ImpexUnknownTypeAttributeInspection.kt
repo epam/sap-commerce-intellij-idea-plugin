@@ -22,14 +22,14 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import sap.commerce.toolset.impex.psi.*
-import sap.commerce.toolset.impex.psi.references.ImpexFunctionTSAttributeReference
-import sap.commerce.toolset.impex.psi.references.ImpexTSAttributeReference
-import sap.commerce.toolset.system.type.psi.reference.TSReferenceBase
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.psi.references.ImpexFunctionTSAttributeReference
+import sap.commerce.toolset.impex.psi.references.ImpexTSAttributeReference
+import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
 
 class ImpexUnknownTypeAttributeInspection : LocalInspectionTool() {
 

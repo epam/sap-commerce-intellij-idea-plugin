@@ -20,8 +20,6 @@
 
 package sap.commerce.toolset.impex.psi
 
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.system.type.psi.reference.result.*
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -29,7 +27,9 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.*
 import com.intellij.util.asSafely
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.project.PropertyService
+import sap.commerce.toolset.typeSystem.psi.reference.result.*
 
 fun getHeaderLine(element: ImpexFullHeaderParameter): ImpexHeaderLine? = PsiTreeUtil
     .getParentOfType(element, ImpexHeaderLine::class.java)

@@ -21,17 +21,17 @@ package sap.commerce.toolset.codeInspection.rule.impex
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiPolyVariantReference
+import com.intellij.psi.util.parentOfType
+import com.intellij.util.asSafely
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.codeInspection.fix.impex.ImpexDeleteModifierFix
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeName
 import sap.commerce.toolset.impex.psi.ImpexAttribute
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpexVisitor
-import sap.commerce.toolset.system.type.psi.reference.result.AttributeResolveResult
-import com.intellij.psi.PsiPolyVariantReference
-import com.intellij.psi.util.parentOfType
-import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
 
 class ImpexLanguageModifierIsNotAllowedInspection : LocalInspectionTool() {
 

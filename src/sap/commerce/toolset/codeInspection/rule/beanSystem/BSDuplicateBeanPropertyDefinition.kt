@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,15 +18,15 @@
 
 package sap.commerce.toolset.codeInspection.rule.beanSystem
 
-import sap.commerce.toolset.codeInspection.fix.xml.XmlDeleteTagQuickFix
-import sap.commerce.toolset.system.bean.meta.BSMetaModelAccess
-import sap.commerce.toolset.system.bean.model.Bean
-import sap.commerce.toolset.system.bean.model.Beans
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.system.bean.model.Property
+import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
+import sap.commerce.toolset.beanSystem.model.Bean
+import sap.commerce.toolset.beanSystem.model.Beans
+import sap.commerce.toolset.beanSystem.model.Property
+import sap.commerce.toolset.codeInspection.fix.xml.XmlDeleteTagQuickFix
 
 class BSDuplicateBeanPropertyDefinition : AbstractBSInspection() {
 

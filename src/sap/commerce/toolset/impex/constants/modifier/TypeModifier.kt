@@ -19,19 +19,19 @@
 package sap.commerce.toolset.impex.constants.modifier
 
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.project.Project
+import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.search.GlobalSearchScope
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 import sap.commerce.toolset.impex.constants.InterceptorType
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeName
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
 import sap.commerce.toolset.java.completion.JavaClassCompletionService
 import sap.commerce.toolset.spring.SpringHelper
-import sap.commerce.toolset.system.type.codeInsight.completion.TSCompletionService
-import sap.commerce.toolset.system.type.meta.model.TSMetaType
-import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.search.GlobalSearchScope
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
 /**
  * https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US

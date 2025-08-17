@@ -18,16 +18,16 @@
 
 package sap.commerce.toolset.diagram.typeSystem.node.graph
 
-import sap.commerce.toolset.system.type.meta.TSMetaDetailsGenerator
-import sap.commerce.toolset.system.type.meta.TSMetaModelAccess
-import sap.commerce.toolset.system.type.meta.model.*
-import sap.commerce.toolset.system.type.model.CollectionType
-import sap.commerce.toolset.system.type.model.Deployment
-import sap.commerce.toolset.system.type.model.MapType
-import sap.commerce.toolset.system.type.model.Relation
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.meta.TSMetaDetailsGenerator
+import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
+import sap.commerce.toolset.typeSystem.meta.model.*
+import sap.commerce.toolset.typeSystem.model.CollectionType
+import sap.commerce.toolset.typeSystem.model.Deployment
+import sap.commerce.toolset.typeSystem.model.MapType
+import sap.commerce.toolset.typeSystem.model.Relation
 
 object TSGraphFactory {
 

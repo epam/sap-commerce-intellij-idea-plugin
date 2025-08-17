@@ -18,11 +18,6 @@
 
 package sap.commerce.toolset.psi.injector
 
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
-import sap.commerce.toolset.impex.psi.ImpexParameters
-import sap.commerce.toolset.impex.psi.ImpexString
-import sap.commerce.toolset.system.businessProcess.BpDomFileDescription
-import sap.commerce.toolset.system.type.ScriptType
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
@@ -30,6 +25,11 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
+import sap.commerce.toolset.impex.psi.ImpexParameters
+import sap.commerce.toolset.impex.psi.ImpexString
+import sap.commerce.toolset.system.businessProcess.BpDomFileDescription
+import sap.commerce.toolset.typeSystem.ScriptType
 
 object LanguageInjectionUtil {
 

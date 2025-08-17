@@ -20,8 +20,8 @@ package sap.commerce.toolset.codeInspection.rule.typeSystem
 
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.Strings
-import sap.commerce.toolset.system.type.meta.model.TSMetaDeployment
-import sap.commerce.toolset.system.type.model.Deployment
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaDeployment
+import sap.commerce.toolset.typeSystem.model.Deployment
 
 class TSDeploymentTypeCodeMustBeUnique : AbstractTSDeploymentTypeCodeInspection() {
 
