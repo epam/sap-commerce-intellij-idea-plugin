@@ -62,11 +62,6 @@
                             serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.codeInsight.daemon.PopulatorsLineMarkerProvider"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.DtoBeanLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.DtoEnumLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.DtoEnumValueLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.system.bean.codeInsight.daemon.DtoBeanPropertyLineMarkerProvider"/>
-
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.flexibleSearch.codeInsight.daemon.FlexibleSearchQueryLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.polyglotQuery.codeInsight.daemon.PolyglotQueryLineMarkerProvider"/>
 
@@ -80,10 +75,6 @@
                                               descriptionKey="hybris.editor.java.inlay_provider.dynamic_attribute.description"/>
         <codeInsight.inlayActionHandler handlerId="inlay.hybris.dynamic.attribute"
                                         implementationClass="sap.commerce.toolset.codeInsight.hints.DynamicAttributeDeclarativeInlayActionHandler"/>
-
-        <codeInsight.inlayProvider language="XML"
-                                   implementationClass="sap.commerce.toolset.system.bean.codeInsight.hints.BeansXmlInlayHintsProvider"/>
-
     </extensions>
 
 </idea-plugin>

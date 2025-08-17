@@ -30,8 +30,6 @@
         <projectViewNodeDecorator order="last" implementation="sap.commerce.toolset.project.view.HybrisProjectViewNodeDecorator"/>
 
         <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.system.cockpitng.psi.contributor.CngReferenceContributor"/>
-        <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.system.bean.psi.contributor.BSReferenceContributor"/>
-        <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.system.type.psi.contributor.TSReferenceContributor"/>
 
         <projectService serviceInterface="com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper"
                         serviceImplementation="sap.commerce.toolset.project.view.impl.HybrisProjectViewDirectoryHelper"
