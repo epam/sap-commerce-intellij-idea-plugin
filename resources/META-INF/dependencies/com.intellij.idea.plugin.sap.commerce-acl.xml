@@ -18,12 +18,6 @@
 
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-
-        <internalFileTemplate name="Acl File"/>
-
-        <fileType name="Access Control Lists" language="ACL" extensions="acl" fieldName="INSTANCE"
-                  implementationClass="sap.commerce.toolset.acl.file.AclFileType"/>
-
         <colorSettingsPage implementation="sap.commerce.toolset.acl.highlighting.AclColorSettingsPage"/>
         <additionalTextAttributes scheme="Default" file="colorSchemes/AclDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/AclDarcula.xml"/>

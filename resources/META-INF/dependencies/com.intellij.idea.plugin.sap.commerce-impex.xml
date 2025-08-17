@@ -18,9 +18,6 @@
 
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-
-        <internalFileTemplate name="ImpEx File"/>
-
         <treeStructureProvider order="after hybris.project.root.tree.structure.provider"
                                implementation="sap.commerce.toolset.impex.project.view.ImpExTreeStructureProvider"/>
 
@@ -32,9 +29,6 @@
                                               bundle="i18n.HybrisBundle"
                                               nameKey="hybris.impex.editor.parameter.name"
                                               descriptionKey="hybris.impex.editor.parameter.description"/>
-
-        <fileType name="ImpEx" language="ImpEx" extensions="impex" fieldName="INSTANCE"
-                  implementationClass="sap.commerce.toolset.impex.file.ImpexFileType"/>
 
         <colorSettingsPage implementation="sap.commerce.toolset.impex.highlighting.ImpexColorSettingsPage"/>
 

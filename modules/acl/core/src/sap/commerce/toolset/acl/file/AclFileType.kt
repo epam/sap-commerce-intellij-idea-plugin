@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,20 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.file
+
+package sap.commerce.toolset.acl.file
 
 import com.intellij.openapi.fileTypes.LanguageFileType
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.ImpExConstants
-import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.acl.AclLanguage
 import javax.swing.Icon
 
-object ImpexFileType : LanguageFileType(ImpExLanguage) {
+object AclFileType : LanguageFileType(AclLanguage) {
 
-    override fun getName() = ImpExConstants.IMPEX
-    override fun getDescription() = "ImpEx language file"
-    override fun getDefaultExtension() = ImpExConstants.IMPEX_FILE_EXTENSION
-
-    override fun getIcon(): Icon = HybrisIcons.ImpEx.FILE
+    override fun getName() = HybrisConstants.ACL
+    override fun getDescription() = "Access Control Lists language file"
+    override fun getDefaultExtension() = HybrisConstants.ACL_FILE_EXTENSION
+    override fun getIcon(): Icon = HybrisIcons.Acl.FILE
 
 }

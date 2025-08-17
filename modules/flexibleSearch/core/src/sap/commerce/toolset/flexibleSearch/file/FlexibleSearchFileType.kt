@@ -16,18 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.polyglotQuery.file
+package sap.commerce.toolset.flexibleSearch.file
 
-import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.openapi.fileTypes.LanguageFileType
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import javax.swing.Icon
 
-object PolyglotQueryFileType : LanguageFileType(PolyglotQueryLanguage) {
+object FlexibleSearchFileType : LanguageFileType(FlexibleSearchLanguage) {
 
-    override fun getName() = "Polyglot Query File"
-    override fun getDescription() = "Polyglot Query language file"
-    override fun getDefaultExtension() = "pgq"
-    override fun getIcon(): Icon = HybrisIcons.PolyglotQuery.FILE
+    override fun getName() = "FlexibleSearch file"
+    override fun getDescription() = "FlexibleSearch language file"
+    override fun getDefaultExtension() = "fxs"
+    override fun getIcon(): Icon = HybrisIcons.FlexibleSearch.FILE
 
 }

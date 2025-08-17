@@ -18,9 +18,6 @@
 
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-
-        <internalFileTemplate name="Polyglot Query File"/>
-
         <codeInsight.declarativeInlayProvider language="Polyglot Query"
                                               implementationClass="sap.commerce.toolset.polyglotQuery.codeInsight.hints.PolyglotQueryParameterInlayHintProvider"
                                               isEnabledByDefault="true"
@@ -41,9 +38,6 @@
         <lang.commenter language="Polyglot Query" implementationClass="sap.commerce.toolset.impex.lang.PolyglotQueryCommenter"/>
         <lang.braceMatcher language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
         <lang.foldingBuilder language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.folding.PolyglotQueryFoldingBuilder"/>
-
-        <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="INSTANCE"
-                  implementationClass="sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType"/>
 
         <lang.parserDefinition language="Polyglot Query"
                                implementationClass="sap.commerce.toolset.polyglotQuery.PolyglotQueryParserDefinition"/>

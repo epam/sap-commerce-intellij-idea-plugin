@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.acl.file
+
+package sap.commerce.toolset.polyglotQuery.file
 
 import com.intellij.openapi.fileTypes.LanguageFileType
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.acl.AclLanguage
+import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import javax.swing.Icon
 
-object AclFileType : LanguageFileType(AclLanguage) {
+object PolyglotQueryFileType : LanguageFileType(PolyglotQueryLanguage) {
 
-    override fun getName() = HybrisConstants.ACL
-    override fun getDescription() = "Access Control Lists language file"
-    override fun getDefaultExtension() = HybrisConstants.ACL_FILE_EXTENSION
-    override fun getIcon(): Icon = HybrisIcons.Acl.FILE
+    override fun getName() = "Polyglot Query File"
+    override fun getDescription() = "Polyglot Query language file"
+    override fun getDefaultExtension() = "pgq"
+    override fun getIcon(): Icon = HybrisIcons.PolyglotQuery.FILE
 
 }

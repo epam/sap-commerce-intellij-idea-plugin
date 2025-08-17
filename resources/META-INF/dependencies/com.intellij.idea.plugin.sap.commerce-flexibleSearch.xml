@@ -18,9 +18,6 @@
 
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
-
-        <internalFileTemplate name="FlexibleSearch File"/>
-
         <codeInsight.declarativeInlayProvider language="FlexibleSearch"
                                               implementationClass="sap.commerce.toolset.flexibleSearch.codeInsight.hints.FlexibleSearchParameterInlayHintProvider"
                                               isEnabledByDefault="true"
@@ -29,9 +26,6 @@
                                               bundle="i18n.HybrisBundle"
                                               nameKey="hybris.fxs.editor.parameter.name"
                                               descriptionKey="hybris.fxs.editor.parameter.description"/>
-
-        <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="INSTANCE"
-                  implementationClass="sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType"/>
 
         <additionalTextAttributes scheme="Default" file="colorSchemes/FlexibleSearchDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/FlexibleSearchDarcula.xml"/>
