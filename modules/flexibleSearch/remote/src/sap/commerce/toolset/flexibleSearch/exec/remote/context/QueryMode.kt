@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.remote.context
+package sap.commerce.toolset.flexibleSearch.exec.remote.context
 
 enum class QueryMode(val title: String) {
     SQL("SQL"),

@@ -51,7 +51,6 @@ import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.*
 
-@Deprecated("Move to own module")
 class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<SolrQueryExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH,

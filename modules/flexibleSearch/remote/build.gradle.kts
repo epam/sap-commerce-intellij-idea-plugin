@@ -43,5 +43,10 @@ dependencies {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+
+        // printBundledPlugins for bundled plugins
+        bundledPlugins(
+            "com.intellij.database",
+        )
     }
 }

@@ -19,6 +19,7 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <consoleProvider implementation="sap.commerce.toolset.flexibleSearch.exec.console.FlexibleSearchConsoleProvider"/>
+        <consoleProvider implementation="sap.commerce.toolset.flexibleSearch.exec.console.SQLConsoleProvider"/>
     </extensions>
 
 </idea-plugin>

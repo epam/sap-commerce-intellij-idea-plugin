@@ -31,10 +31,10 @@ import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actions.ExecuteStatementAction
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
-import sap.commerce.toolset.flexibleSearch.remote.FlexibleSearchExecutionClient
-import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionContext
-import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionResult
-import sap.commerce.toolset.flexibleSearch.remote.context.QueryMode
+import sap.commerce.toolset.flexibleSearch.exec.remote.FlexibleSearchExecutionClient
+import sap.commerce.toolset.flexibleSearch.exec.remote.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.remote.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.exec.remote.context.QueryMode
 import sap.commerce.toolset.groovy.exec.remote.GroovyExecutionClient
 import sap.commerce.toolset.groovy.exec.remote.context.GroovyExecutionContext
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage

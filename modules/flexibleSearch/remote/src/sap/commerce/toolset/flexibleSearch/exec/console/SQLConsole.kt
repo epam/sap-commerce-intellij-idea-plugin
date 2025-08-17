@@ -16,59 +16,59 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.tools.remote.console.impl
+package sap.commerce.toolset.flexibleSearch.exec.console
 
 import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.project.Project
 import com.intellij.sql.psi.SqlLanguage
+import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBLabel
-import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
+import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.exec.remote.console.HybrisConsole
-import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionContext
-import sap.commerce.toolset.flexibleSearch.remote.context.QueryMode
+import sap.commerce.toolset.flexibleSearch.exec.remote.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.remote.context.QueryMode
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.Icon
-import javax.swing.JPanel
-import javax.swing.JSpinner
-import javax.swing.SpinnerNumberModel
 
-@Deprecated("Move to own module")
-class HybrisSQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
+class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_SQL,
     if (Plugin.DATABASE.isActive()) SqlLanguage.INSTANCE else PlainTextLanguage.INSTANCE,
     coroutineScope
 ) {
 
-    private val panel = JPanel(WrappedFlowLayout(0, 0))
-
-    private val commitCheckbox = JBCheckBox("Commit mode")
-        .also { it.border = borders10 }
-    private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
-        .also { it.border = borders5 }
+    private lateinit var commitCheckbox: JBCheckBox
+    private lateinit var maxRowsSpinner: JBIntSpinner
 
     init {
         isEditable = true
 
-        panel.add(commitCheckbox)
-        panel.add(JBLabel("Rows:").also { it.border = bordersLabel })
-        panel.add(maxRowsSpinner)
+        val myPanel = panel {
+            row {
+                commitCheckbox = checkBox("Commit mode")
+                    .component
+                maxRowsSpinner = spinner(1..Int.MAX_VALUE)
+                    .label("Rows:")
+                    .component
+                    .also { it.value = 200 }
 
-        add(panel, BorderLayout.NORTH)
+            }
+        }
+
+        add(myPanel, BorderLayout.NORTH)
     }
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
         content = content,
         transactionMode = if (commitCheckbox.isSelected) TransactionMode.COMMIT else TransactionMode.ROLLBACK,
         queryMode = QueryMode.SQL,
-        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
+        settings = FlexibleSearchExecutionContext.Companion.defaultSettings(project).modifiable()
             .apply {
                 maxCount = maxRowsSpinner.value.toString().toInt()
             }

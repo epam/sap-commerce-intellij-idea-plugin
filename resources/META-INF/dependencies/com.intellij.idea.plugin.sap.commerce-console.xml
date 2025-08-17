@@ -23,7 +23,6 @@
         <consoleProvider implementation="sap.commerce.toolset.tools.remote.console.impl.ImpexMonitorConsoleProvider"/>
         <consoleProvider implementation="sap.commerce.toolset.tools.remote.console.impl.PolyglotQueryConsoleProvider"/>
         <consoleProvider implementation="sap.commerce.toolset.tools.remote.console.impl.SolrSearchConsoleProvider"/>
-        <consoleProvider implementation="sap.commerce.toolset.tools.remote.console.impl.SQLConsoleProvider"/>
     </extensions>
 
     <actions>

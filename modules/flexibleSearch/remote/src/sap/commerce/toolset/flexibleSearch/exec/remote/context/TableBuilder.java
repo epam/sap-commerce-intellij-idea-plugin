@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.remote.context;
+package sap.commerce.toolset.flexibleSearch.exec.remote.context;
 
 import org.apache.commons.lang3.StringUtils;
 import sap.commerce.toolset.HybrisConstants;

@@ -32,7 +32,7 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.editor.InEditorResultsView
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSimplifiedTableView
-import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.exec.remote.context.FlexibleSearchExecutionResult
 import sap.commerce.toolset.grid.GridXSVFormatService
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
