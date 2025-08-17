@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.manifest.jsonSchema.providers
+package sap.commerce.toolset.ccv2.manifest.jsonSchema.providers
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -29,16 +29,16 @@ import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.isHybrisProject
 
 @Service(Service.Level.PROJECT)
-class ManifestJavascriptStorefrontJsonSchemaFileProvider(val project: Project) : JsonSchemaFileProvider {
+class ManifestDataHubJsonSchemaFileProvider(val project: Project) : JsonSchemaFileProvider {
     override fun isAvailable(file: VirtualFile) = CCv2Constants.MANIFEST_NAME == file.name
-            && CCv2Constants.JS_STOREFRONT_NAME == file.parent?.name
+            && CCv2Constants.DATAHUB_NAME == file.parent?.name
             && project.isHybrisProject
 
-    override fun getName() = "SAP Javascript Storefront Manifest"
-    override fun getSchemaFile() = JsonSchemaProviderFactory.getResourceFile(javaClass, "/schemas/manifest-js-storefront.schema.json")
+    override fun getName() = "SAP DataHub Manifest"
+    override fun getSchemaFile() = JsonSchemaProviderFactory.getResourceFile(javaClass, "/schemas/manifest-datahub.schema.json")
     override fun getSchemaType() = SchemaType.embeddedSchema
 
     companion object {
-        fun instance(project: Project): ManifestJavascriptStorefrontJsonSchemaFileProvider = project.service()
+        fun instance(project: Project): ManifestDataHubJsonSchemaFileProvider = project.service()
     }
 }

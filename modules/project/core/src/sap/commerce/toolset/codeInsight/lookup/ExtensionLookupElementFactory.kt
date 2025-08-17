@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.extensioninfo.codeInsight.lookup
+package sap.commerce.toolset.codeInsight.lookup
 
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
@@ -24,7 +24,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 
-object EiSLookupElementFactory {
+object ExtensionLookupElementFactory {
 
     fun build(ed: ExtensionDescriptor) = LookupElementBuilder.create(ed.name)
         .withTailText(tail(ed), true)

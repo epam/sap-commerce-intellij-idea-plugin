@@ -16,28 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.codeInsight.completion.provider
+package sap.commerce.toolset.ccv2.manifest.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionResultSet
-import sap.commerce.toolset.system.extensioninfo.codeInsight.lookup.EiSLookupElementFactory
 import com.intellij.openapi.project.Project
-import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.codeInsight.completion.provider.ExtensionNameCompletionProvider
 import sap.commerce.toolset.project.settings.ProjectSettings
 
-open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+class TemplateExtensionNameCompletionProvider : ExtensionNameCompletionProvider() {
 
-    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        val project = parameters.originalFile.project
-        getExtensionDescriptors(parameters, project)
-            .map { EiSLookupElementFactory.build(it) }
-            .forEach { result.addElement(it) }
-    }
-
-    open fun getExtensionDescriptors(parameters: CompletionParameters, project: Project): Collection<ExtensionDescriptor> = ProjectSettings.getInstance(project)
+    override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project) = ProjectSettings.Companion.getInstance(project)
         .getAvailableExtensions()
         .values
+        .filter { it.extGenTemplateExtension }
+        .toList()
 
 }

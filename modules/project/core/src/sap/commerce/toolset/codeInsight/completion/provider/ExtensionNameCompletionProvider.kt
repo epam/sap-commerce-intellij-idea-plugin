@@ -16,20 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.manifest.codeInsight.completion.provider
+package sap.commerce.toolset.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.project.Project
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.ccv2.CCv2Constants
+import sap.commerce.toolset.codeInsight.lookup.ExtensionLookupElementFactory
+import sap.commerce.toolset.project.ExtensionDescriptor
+import sap.commerce.toolset.project.settings.ProjectSettings
 
-class ExtensionPackNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+open class ExtensionNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        CCv2Constants.COMMERCE_EXTENSION_PACKS
-            .map { LookupElementBuilder.create(it) }
+        val project = parameters.originalFile.project
+        getExtensionDescriptors(parameters, project)
+            .map { ExtensionLookupElementFactory.build(it) }
             .forEach { result.addElement(it) }
     }
+
+    open fun getExtensionDescriptors(parameters: CompletionParameters, project: Project): Collection<ExtensionDescriptor> = ProjectSettings.Companion.getInstance(project)
+        .getAvailableExtensions()
+        .values
+
 }

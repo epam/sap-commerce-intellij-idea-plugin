@@ -21,7 +21,6 @@ package sap.commerce.toolset.codeInspection.rule.manifest
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalInspectionToolSession
 import com.intellij.codeInspection.ProblemsHolder
-import sap.commerce.toolset.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
 import com.intellij.json.psi.JsonElementVisitor
 import com.intellij.json.psi.JsonProperty
 import com.intellij.json.psi.JsonPsiUtil
@@ -30,6 +29,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
 import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.ccv2.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 class ManifestCommerceTemplateExtensionInspection : LocalInspectionTool() {

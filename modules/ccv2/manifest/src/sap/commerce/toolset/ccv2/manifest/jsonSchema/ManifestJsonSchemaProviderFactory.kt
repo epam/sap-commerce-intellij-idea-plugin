@@ -16,20 +16,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.manifest.jsonSchema
+package sap.commerce.toolset.ccv2.manifest.jsonSchema
 
-import sap.commerce.toolset.system.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
-import sap.commerce.toolset.system.manifest.jsonSchema.providers.ManifestDataHubJsonSchemaFileProvider
-import sap.commerce.toolset.system.manifest.jsonSchema.providers.ManifestJavascriptStorefrontJsonSchemaFileProvider
 import com.intellij.openapi.project.Project
 import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
+import sap.commerce.toolset.ccv2.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
+import sap.commerce.toolset.ccv2.manifest.jsonSchema.providers.ManifestDataHubJsonSchemaFileProvider
+import sap.commerce.toolset.ccv2.manifest.jsonSchema.providers.ManifestJavascriptStorefrontJsonSchemaFileProvider
 
 class ManifestJsonSchemaProviderFactory : JsonSchemaProviderFactory {
 
     override fun getProviders(project: Project) = listOf(
-        ManifestCommerceJsonSchemaFileProvider.instance(project),
-        ManifestDataHubJsonSchemaFileProvider.instance(project),
-        ManifestJavascriptStorefrontJsonSchemaFileProvider.instance(project)
+        ManifestCommerceJsonSchemaFileProvider.Companion.instance(project),
+        ManifestDataHubJsonSchemaFileProvider.Companion.instance(project),
+        ManifestJavascriptStorefrontJsonSchemaFileProvider.Companion.instance(project)
     )
 
 }

@@ -16,19 +16,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.manifest.codeInsight.completion.provider
+fun properties(key: String) = providers.gradleProperty(key)
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import sap.commerce.toolset.codeInsight.completion.provider.ExtensionNameCompletionProvider
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.settings.ProjectSettings
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-class TemplateExtensionNameCompletionProvider : ExtensionNameCompletionProvider() {
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-    override fun getExtensionDescriptors(parameters: CompletionParameters, project: Project) = ProjectSettings.getInstance(project)
-        .getAvailableExtensions()
-        .values
-        .filter { it.extGenTemplateExtension }
-        .toList()
+dependencies {
+    implementation(project(":shared-core"))
+    implementation(project(":shared-ui"))
+    implementation(project(":project-core"))
+    implementation(project(":ccv2-core"))
 
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+
+        bundledModules(
+            "com.intellij.modules.json"
+        )
+    }
 }

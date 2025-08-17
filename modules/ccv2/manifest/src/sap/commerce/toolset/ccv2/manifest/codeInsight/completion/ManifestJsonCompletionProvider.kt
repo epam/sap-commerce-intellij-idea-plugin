@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,14 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.manifest.codeInsight.completion
+package sap.commerce.toolset.ccv2.manifest.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
+import sap.commerce.toolset.ccv2.manifest.codeInsight.completion.provider.ExtensionPackNameCompletionProvider
+import sap.commerce.toolset.ccv2.manifest.codeInsight.completion.provider.TemplateExtensionNameCompletionProvider
+import sap.commerce.toolset.ccv2.manifest.psi.ManifestPatterns
 import sap.commerce.toolset.codeInsight.completion.provider.ExtensionNameCompletionProvider
-import sap.commerce.toolset.system.manifest.codeInsight.completion.provider.ExtensionPackNameCompletionProvider
-import sap.commerce.toolset.system.manifest.codeInsight.completion.provider.TemplateExtensionNameCompletionProvider
-import sap.commerce.toolset.system.manifest.psi.ManifestPatterns
 
 class ManifestJsonCompletionProvider : CompletionContributor() {
 
@@ -31,17 +31,17 @@ class ManifestJsonCompletionProvider : CompletionContributor() {
         extend(
                 CompletionType.BASIC,
                 ManifestPatterns.EXTENSION_NAME,
-                ExtensionNameCompletionProvider()
+            ExtensionNameCompletionProvider()
         )
         extend(
                 CompletionType.BASIC,
                 ManifestPatterns.TEMPLATE_EXTENSION_NAME,
-                TemplateExtensionNameCompletionProvider()
+            TemplateExtensionNameCompletionProvider()
         )
         extend(
                 CompletionType.BASIC,
                 ManifestPatterns.EXTENSION_PACK_NAME,
-                ExtensionPackNameCompletionProvider()
+            ExtensionPackNameCompletionProvider()
         )
     }
 

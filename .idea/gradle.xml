@@ -16,6 +16,7 @@
             <option value="$PROJECT_DIR$/modules/bean-system/core" />
             <option value="$PROJECT_DIR$/modules/bean-system/ui" />
             <option value="$PROJECT_DIR$/modules/ccv2/core" />
+            <option value="$PROJECT_DIR$/modules/ccv2/manifest" />
             <option value="$PROJECT_DIR$/modules/ccv2/ui" />
             <option value="$PROJECT_DIR$/modules/exec/console" />
             <option value="$PROJECT_DIR$/modules/exec/remote" />
