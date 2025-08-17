@@ -32,11 +32,15 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.beanSystem.actions.ShowMetaBeanPropertiesAction
+import sap.commerce.toolset.beanSystem.actions.ShowMetaEnumValuesAction
+import sap.commerce.toolset.beanSystem.actions.ShowOnlyCustomAction
+import sap.commerce.toolset.beanSystem.actions.ShowOnlyDeprecatedAction
 import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
 import sap.commerce.toolset.beanSystem.meta.event.BSMetaModelChangeListener
-import sap.commerce.toolset.toolwindow.beanSystem.components.BSTreePanel
-import sap.commerce.toolset.toolwindow.beanSystem.view.*
+import sap.commerce.toolset.beanSystem.settings.BSViewSettings
+import sap.commerce.toolset.beanSystem.ui.components.BSTreePanel
 import java.awt.GridBagLayout
 import java.io.Serial
 

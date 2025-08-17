@@ -18,26 +18,24 @@
 
 package sap.commerce.toolset.beanSystem
 
-import com.intellij.openapi.module.Module
-import com.intellij.psi.xml.XmlFile
-import com.intellij.util.xml.DomFileDescription
+import com.intellij.psi.PsiClass
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.beanSystem.model.Beans
-import sap.commerce.toolset.isHybrisProject
-import javax.swing.Icon
 
-class BSDomFileDescription : DomFileDescription<Beans>(Beans::class.java, "beans") {
+fun isGeneratedFile(psiClass: PsiClass): Boolean {
+    val virtualFile = psiClass.containingFile.virtualFile
 
-    override fun getFileIcon(flags: Int): Icon = HybrisIcons.BeanSystem.FILE
+    if (virtualFile?.extension == null) return false
 
-    override fun isMyFile(file: XmlFile, module: Module?) = super.isMyFile(file, module)
-        && file.name.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING)
-        && hasNamespace(file)
-        && file.isHybrisProject
+    return (virtualFile.extension == "class" && virtualFile.path.contains(HybrisConstants.JAR_MODELS))
+            || (virtualFile.extension == "java" && virtualFile.path.contains("${HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY}/${HybrisConstants.GEN_SRC_DIRECTORY}"))
+}
 
-    private fun hasNamespace(file: XmlFile) = file.rootTag
-        ?.attributes
-        ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "beans.xsd" }
-        ?: false
+fun isBeanFile(psiClass: PsiClass): Boolean {
+    return !psiClass.isEnum && isGeneratedFile(psiClass)
+}
+
+fun isEnumFile(psiClass: PsiClass): Boolean {
+    if (!psiClass.isEnum) return false
+
+    return isGeneratedFile(psiClass)
 }

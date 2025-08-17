@@ -24,7 +24,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.beanSystem.BeansUtils
+import sap.commerce.toolset.beanSystem.isBeanFile
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
 import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
 import javax.swing.Icon
@@ -33,7 +33,7 @@ class DtoBeanLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass
 
     override fun getName() = message("hybris.editor.gutter.bs.dto.bean.name")
     override fun getIcon(): Icon = HybrisIcons.BeanSystem.BEAN
-    override fun canProcess(psi: PsiClass) = BeansUtils.isBeanFile(psi)
+    override fun canProcess(psi: PsiClass) = isBeanFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiClass)
         ?.takeIf { it.qualifiedName != null }
         ?.takeIf { it.nameIdentifier != null }

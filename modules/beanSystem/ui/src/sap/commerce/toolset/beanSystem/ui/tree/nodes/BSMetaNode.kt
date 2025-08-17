@@ -16,42 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.beanSystem.ui.tree.nodes
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.util.xml.DomElement
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+@Suppress("UNCHECKED_CAST")
+abstract class BSMetaNode<T : BSMetaClassifier<out DomElement>>(parent: BSNode, var meta: T) : BSNode(parent) {
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":meta-core"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.properties",
-        )
+    override fun update(existingNode: BSNode, newNode: BSNode) {
+        val current = existingNode as? BSMetaNode<BSMetaClassifier<out DomElement>> ?: return
+        val new = newNode as? BSMetaNode<*> ?: return
+        current.meta = new.meta
     }
 }

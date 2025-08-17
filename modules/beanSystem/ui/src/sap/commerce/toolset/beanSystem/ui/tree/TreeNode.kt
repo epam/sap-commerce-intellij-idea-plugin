@@ -16,42 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.beanSystem.ui.tree
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSNode
+import java.io.Serial
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+class TreeNode(private val node: BSNode) : javax.swing.tree.DefaultMutableTreeNode(node) {
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
+    override fun toString() = node.toString()
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":meta-core"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.properties",
-        )
+    companion object {
+        @Serial
+        private val serialVersionUID: Long = 4923860443745132518L
     }
 }

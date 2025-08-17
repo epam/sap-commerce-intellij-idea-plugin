@@ -39,7 +39,7 @@ class TSDomFileDescription : DomFileDescription<Items>(Items::class.java, Hybris
         && file.isHybrisProject
 
     private fun hasNamespace(file: XmlFile) = file.rootTag
-            ?.attributes
-            ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "items.xsd" }
-            ?: false
+        ?.attributes
+        ?.any { it.localName == "noNamespaceSchemaLocation" && it.value == "items.xsd" }
+        ?: false
 }

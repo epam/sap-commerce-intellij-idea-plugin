@@ -16,42 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.beanSystem.ui.tree.nodes
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.ide.projectView.PresentationData
+import com.intellij.openapi.project.Project
+import com.intellij.ui.SimpleTextAttributes
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
+class BSMetaPropertyNode(val parent: BSMetaBeanNode, meta: BSMetaProperty) : BSMetaNode<BSMetaProperty>(parent, meta) {
+
+    override fun getName() = meta.name ?: "-- no name --"
+
+    override fun update(project: Project, presentation: PresentationData) {
+        presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
+        presentation.setIcon(HybrisIcons.BeanSystem.PROPERTY)
     }
-    test {
-        java.srcDirs("tests")
-    }
-}
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":meta-core"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.properties",
-        )
-    }
 }

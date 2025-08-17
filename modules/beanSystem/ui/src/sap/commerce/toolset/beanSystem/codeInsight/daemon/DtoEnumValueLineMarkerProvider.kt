@@ -25,7 +25,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiEnumConstant
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.beanSystem.BeansUtils
+import sap.commerce.toolset.beanSystem.isEnumFile
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
 import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
 import javax.swing.Icon
@@ -34,7 +34,7 @@ class DtoEnumValueLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<Psi
 
     override fun getName() = message("hybris.editor.gutter.bs.dto.enum.value.name")
     override fun getIcon(): Icon = HybrisIcons.BeanSystem.ENUM_VALUE
-    override fun canProcess(psi: PsiClass) = BeansUtils.isEnumFile(psi)
+    override fun canProcess(psi: PsiClass) = isEnumFile(psi)
         && psi.qualifiedName != null
 
     override fun tryCast(psi: PsiElement) = psi as? PsiEnumConstant
