@@ -16,23 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.bean.psi.reference
+package sap.commerce.toolset.occ.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiPolyVariantReference
+import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import com.intellij.psi.xml.XmlAttribute
-import com.intellij.psi.xml.XmlTag
+import sap.commerce.toolset.occ.psi.OccPropertyMapping
 import sap.commerce.toolset.psi.util.PsiUtils
 import sap.commerce.toolset.system.bean.codeInsight.completion.BSCompletionService
 import sap.commerce.toolset.system.bean.meta.BSModificationTracker
 import sap.commerce.toolset.system.bean.meta.model.BSGlobalMetaBean
-import sap.commerce.toolset.system.bean.psi.BSConstants
-import sap.commerce.toolset.system.bean.psi.OccPropertyMapping
+import sap.commerce.toolset.system.bean.psi.reference.result.BeanPropertyResolveResult
 
-class OccLevelMappingReference(
+class OccBSBeanPropertyReference(
     private val meta: BSGlobalMetaBean,
     element: PsiElement,
     mapping: OccPropertyMapping
@@ -47,23 +48,15 @@ class OccLevelMappingReference(
         .let { PsiUtils.getValidResults(it) }
 
     companion object {
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, Pair<OccLevelMappingReference, BSGlobalMetaBean>> { param ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, Pair<OccBSBeanPropertyReference, BSGlobalMetaBean>> { param ->
             val ref = param.first
+            val meta = param.second
             val element = ref.element
-            val levelMapping = ref.value
+            val propertyName = ref.value
 
-            val result = element.parents(false)
-                .mapNotNull { it as? XmlTag }
-                .filter { it.localName == "bean" }
-                .firstOrNull()
-                ?.childrenOfType<XmlTag>()
-                ?.filter { it.localName == "property" }
-                ?.firstOrNull { it.getAttributeValue("name") == BSConstants.ATTRIBUTE_VALUE_LEVEL_MAPPING }
-                ?.let { PsiTreeUtil.collectElements(it) { element -> element is XmlAttribute && element.localName == "key" } }
-                ?.map { it as XmlAttribute }
-                ?.mapNotNull { it.valueElement }
-                ?.filter { it.value == levelMapping }
-                ?.let { PsiElementResolveResult.createResults(it) }
+            val result = meta.allProperties[propertyName]
+                ?.let { BeanPropertyResolveResult(it) }
+                ?.let { arrayOf(it) }
                 ?.let { PsiUtils.getValidResults(it) }
                 ?: emptyArray()
 
@@ -75,5 +68,5 @@ class OccLevelMappingReference(
         }
     }
 
-    private fun cacheKey(range: TextRange) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, Pair<OccLevelMappingReference, BSGlobalMetaBean>>>("HYBRIS_OCCLEVELMAPPINGREFERENCE_" + range)
+    private fun cacheKey(range: TextRange) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, Pair<OccBSBeanPropertyReference, BSGlobalMetaBean>>>("HYBRIS_OCCBSBEANPROPERTYREFERENCE_" + range)
 }

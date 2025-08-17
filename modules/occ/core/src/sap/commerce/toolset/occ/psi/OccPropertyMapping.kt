@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.bean.psi
+package sap.commerce.toolset.occ.psi
 
 import com.intellij.openapi.util.TextRange
 

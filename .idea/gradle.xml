@@ -30,8 +30,9 @@
             <option value="$PROJECT_DIR$/modules/logging/core" />
             <option value="$PROJECT_DIR$/modules/logging/exec" />
             <option value="$PROJECT_DIR$/modules/logging/ui" />
-            <option value="$PROJECT_DIR$/modules/meta/cockpitng" />
             <option value="$PROJECT_DIR$/modules/meta/core" />
+            <option value="$PROJECT_DIR$/modules/occ/core" />
+            <option value="$PROJECT_DIR$/modules/occ/ui" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/core" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/exec" />
             <option value="$PROJECT_DIR$/modules/project/core" />

@@ -67,15 +67,6 @@
     <depends optional="true" config-file="sap.commerce.toolset-terminal.xml">org.jetbrains.plugins.terminal</depends>
     <depends optional="true" config-file="sap.commerce.toolset-ant-ui.xml">AntSupport</depends>
 
-    <depends config-file="sap.commerce.toolset-spring.xml"/>
-    <depends config-file="sap.commerce.toolset-ccv2-core.xml"/>
-    <depends config-file="sap.commerce.toolset-ccv2-ui.xml"/>
-    <depends config-file="sap.commerce.toolset-logging-ui.xml"/>
-    <depends config-file="sap.commerce.toolset-type-system-core.xml"/>
-    <depends config-file="sap.commerce.toolset-type-system-ui.xml"/>
-    <depends config-file="sap.commerce.toolset-bean-system-core.xml"/>
-    <depends config-file="sap.commerce.toolset-bean-system-ui.xml"/>
-
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-xdebugger.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-beanSystem.xml" xpointer="xpointer(/idea-plugin/*)"/>
@@ -94,4 +85,14 @@
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
+    <xi:include href="/META-INF/sap.commerce.toolset-type-system-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-spring.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-ccv2-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-ccv2-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-logging-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-type-system-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-bean-system-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-bean-system-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-occ-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

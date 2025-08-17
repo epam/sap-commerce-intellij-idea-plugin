@@ -33,24 +33,6 @@ object BSPatterns {
     private val beansXmlFile = PlatformPatterns.psiFile()
         .withName(StandardPatterns.string().endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING))
 
-    val OCC_LEVEL_MAPPING_PROPERTY: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue("value")
-        .withSuperParent(
-            4,
-            XmlPatterns.xmlTag()
-                .withLocalName("property")
-                .withAttributeValue("name", BSConstants.ATTRIBUTE_VALUE_LEVEL_MAPPING)
-                .withParent(
-                    XmlPatterns.xmlTag()
-                        .withLocalName("bean")
-                        .withChild(
-                            XmlPatterns.xmlTag()
-                                .withLocalName("property")
-                                .withAttributeValue("name", BSConstants.ATTRIBUTE_VALUE_DTO_CLASS)
-                        )
-                )
-        )
-        .inside(springBeansXmlFile)
-
     val BEAN_EXTENDS: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue(Bean.EXTENDS)
         .withParent(
             XmlPatterns.xmlAttribute()

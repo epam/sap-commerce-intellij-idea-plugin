@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.system.bean.psi.provider
+
+package sap.commerce.toolset.occ.psi.provider
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -26,12 +27,12 @@ import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.occ.psi.OccPropertyMapping
+import sap.commerce.toolset.occ.psi.reference.OccBSBeanPropertyReference
+import sap.commerce.toolset.occ.psi.reference.OccLevelMappingReference
 import sap.commerce.toolset.system.bean.meta.BSMetaModelAccess
 import sap.commerce.toolset.system.bean.meta.model.BSGlobalMetaBean
 import sap.commerce.toolset.system.bean.psi.BSConstants
-import sap.commerce.toolset.system.bean.psi.OccPropertyMapping
-import sap.commerce.toolset.system.bean.psi.reference.OccBSBeanPropertyReference
-import sap.commerce.toolset.system.bean.psi.reference.OccLevelMappingReference
 import java.util.*
 
 class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
@@ -174,4 +175,3 @@ class OccBeanPropertyReferenceProvider : PsiReferenceProvider() {
     }
 
 }
-

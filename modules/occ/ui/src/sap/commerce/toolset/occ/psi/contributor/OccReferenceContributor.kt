@@ -15,25 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.system.bean.psi.contributor
+package sap.commerce.toolset.occ.psi.contributor
 
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
-import sap.commerce.toolset.system.bean.psi.BSPatterns
-import sap.commerce.toolset.system.bean.psi.provider.BSBeanReferenceProvider
+import sap.commerce.toolset.occ.psi.OccPatterns
+import sap.commerce.toolset.occ.psi.provider.OccBeanPropertyReferenceProvider
 
-class BSReferenceContributor : PsiReferenceContributor() {
+class OccReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        val bsBeanReferenceProvider = BSBeanReferenceProvider()
-
         registrar.registerReferenceProvider(
-            BSPatterns.BEAN_EXTENDS,
-            bsBeanReferenceProvider
-        )
-        registrar.registerReferenceProvider(
-            BSPatterns.BEAN_PROPERTY_TYPE,
-            bsBeanReferenceProvider
+            OccPatterns.OCC_LEVEL_MAPPING_PROPERTY,
+            OccBeanPropertyReferenceProvider()
         )
     }
 }

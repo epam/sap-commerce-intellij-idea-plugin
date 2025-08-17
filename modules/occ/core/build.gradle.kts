@@ -15,25 +15,38 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.system.bean.psi.contributor
 
-import com.intellij.psi.PsiReferenceContributor
-import com.intellij.psi.PsiReferenceRegistrar
-import sap.commerce.toolset.system.bean.psi.BSPatterns
-import sap.commerce.toolset.system.bean.psi.provider.BSBeanReferenceProvider
+fun properties(key: String) = providers.gradleProperty(key)
 
-class BSReferenceContributor : PsiReferenceContributor() {
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-    override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        val bsBeanReferenceProvider = BSBeanReferenceProvider()
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-        registrar.registerReferenceProvider(
-            BSPatterns.BEAN_EXTENDS,
-            bsBeanReferenceProvider
-        )
-        registrar.registerReferenceProvider(
-            BSPatterns.BEAN_PROPERTY_TYPE,
-            bsBeanReferenceProvider
+dependencies {
+    implementation(project(":shared-core"))
+    implementation(project(":shared-ui"))
+    implementation(project(":meta-core"))
+    implementation(project(":project-core"))
+    implementation(project(":bean-system-core"))
+
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+        bundledPlugins(
+            "com.intellij.java",
+            "com.intellij.properties",
         )
     }
 }
