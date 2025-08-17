@@ -144,6 +144,8 @@ class BSView(private val project: Project) : SimpleToolWindowPanel(false, true),
     companion object {
         @Serial
         private val serialVersionUID: Long = 5943815445616586522L
+
+        const val ID = "Bean System"
     }
 
 }

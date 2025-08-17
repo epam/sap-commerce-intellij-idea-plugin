@@ -62,5 +62,7 @@ class LoggersView(
     companion object {
         @Serial
         private const val serialVersionUID: Long = -7345745538412361349L
+
+        const val ID = "Loggers"
     }
 }

@@ -18,6 +18,14 @@
 
 <idea-plugin>
 
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <consoleProvider implementation="sap.commerce.toolset.tools.remote.console.impl.GroovyConsoleProvider"/>
+        <consoleProvider implementation="sap.commerce.toolset.tools.remote.console.impl.ImpexMonitorConsoleProvider"/>
+        <consoleProvider implementation="sap.commerce.toolset.tools.remote.console.impl.PolyglotQueryConsoleProvider"/>
+        <consoleProvider implementation="sap.commerce.toolset.tools.remote.console.impl.SolrSearchConsoleProvider"/>
+        <consoleProvider implementation="sap.commerce.toolset.tools.remote.console.impl.SQLConsoleProvider"/>
+    </extensions>
+
     <actions>
         <group id="hybris.console.actionGroup">
             <reference ref="hybris.hac.chooseConnection"/>

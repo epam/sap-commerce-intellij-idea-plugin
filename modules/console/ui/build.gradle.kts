@@ -34,14 +34,17 @@ sourceSets {
 }
 
 dependencies {
-    implementation(libs.jsoup)
     implementation(project(":shared-core"))
     implementation(project(":project-core"))
+    implementation(project(":console-core"))
     implementation(project(":exec-remote"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+        bundledPlugins(
+            "org.jetbrains.kotlin",
+        )
     }
 }

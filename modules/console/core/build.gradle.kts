@@ -34,7 +34,6 @@ sourceSets {
 }
 
 dependencies {
-    implementation(libs.jsoup)
     implementation(project(":shared-core"))
     implementation(project(":project-core"))
     implementation(project(":exec-remote"))

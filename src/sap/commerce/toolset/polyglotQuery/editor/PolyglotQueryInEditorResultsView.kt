@@ -19,11 +19,6 @@
 package sap.commerce.toolset.polyglotQuery.editor
 
 import com.intellij.database.editor.CsvTableFileEditor
-import sap.commerce.toolset.editor.InEditorResultsView
-import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSimplifiedTableView
-import sap.commerce.toolset.grid.GridXSVFormatService
-import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -35,7 +30,12 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
+import sap.commerce.toolset.editor.InEditorResultsView
+import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSimplifiedTableView
+import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.grid.GridXSVFormatService
+import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 import javax.swing.JComponent
 
 @Service(Service.Level.PROJECT)

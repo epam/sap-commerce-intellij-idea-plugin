@@ -150,6 +150,8 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
     companion object {
         @Serial
         private val serialVersionUID: Long = 74100584202830949L
+
+        const val ID = "Type System"
     }
 
 }

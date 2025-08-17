@@ -40,6 +40,11 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>, F
     private val icon: Icon
 ) : AnAction(), DumbAware {
 
+    abstract fun actionPerformed(e: AnActionEvent, project: Project, content: String)
+    abstract fun fileEditor(e: AnActionEvent): F?
+
+    open fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project) = content
+
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -51,8 +56,6 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>, F
         actionPerformed(e, project, content)
     }
 
-    abstract fun actionPerformed(e: AnActionEvent, project: Project, content: String)
-
     protected fun openConsole(project: Project, content: String): C? {
         val console = HybrisConsoleService.getInstance(project).openConsole(consoleClass) ?: return null
 
@@ -61,10 +64,6 @@ abstract class ExecuteStatementAction<C : HybrisConsole<out ExecutionContext>, F
 
         return console
     }
-
-    open fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project) = content
-
-    abstract fun fileEditor(e: AnActionEvent): F?
 
     override fun update(e: AnActionEvent) {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place

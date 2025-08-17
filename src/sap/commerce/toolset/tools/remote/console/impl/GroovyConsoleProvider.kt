@@ -15,33 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.tools.remote.console.impl
 
-fun properties(key: String) = providers.gradleProperty(key)
+import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.exec.remote.console.HybrisConsoleProvider
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
-
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    implementation(libs.jsoup)
-    implementation(project(":shared-core"))
-    implementation(project(":project-core"))
-    implementation(project(":exec-remote"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-    }
+class GroovyConsoleProvider : HybrisConsoleProvider<HybrisGroovyConsole> {
+    override fun console(project: Project, coroutineScope: CoroutineScope) = Plugin.GROOVY
+        .ifActive { HybrisGroovyConsole(project, coroutineScope) }
 }

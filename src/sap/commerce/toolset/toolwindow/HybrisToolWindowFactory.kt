@@ -49,7 +49,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
     override suspend fun isApplicableAsync(project: Project) = project.isHybrisProject
     override fun shouldBeAvailable(project: Project) = project.isHybrisProject
 
-    private fun createTSContent(toolWindow: ToolWindow, panel: TSView) = with(toolWindow.contentManager.factory.createContent(panel, TS_ID, true)) {
+    private fun createTSContent(toolWindow: ToolWindow, panel: TSView) = with(toolWindow.contentManager.factory.createContent(panel, TSView.ID, true)) {
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false
@@ -59,7 +59,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
         this
     }
 
-    private fun createBSContent(toolWindow: ToolWindow, panel: BSView) = with(toolWindow.contentManager.factory.createContent(panel, BS_ID, true)) {
+    private fun createBSContent(toolWindow: ToolWindow, panel: BSView) = with(toolWindow.contentManager.factory.createContent(panel, BSView.ID, true)) {
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false
@@ -69,7 +69,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
     }
 
     private fun createConsolesContent(toolWindow: ToolWindow, project: Project, panel: HybrisConsolesView) =
-        with(toolWindow.contentManager.factory.createContent(panel, CONSOLES_ID, true)) {
+        with(toolWindow.contentManager.factory.createContent(panel, HybrisConsolesView.ID, true)) {
             Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
             Disposer.register(toolWindow.disposable, panel)
 
@@ -90,7 +90,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
         this
     }
 
-    private fun createLoggersContent(toolWindow: ToolWindow, panel: LoggersView) = with(toolWindow.contentManager.factory.createContent(panel, LOGGERS, true)) {
+    private fun createLoggersContent(toolWindow: ToolWindow, panel: LoggersView) = with(toolWindow.contentManager.factory.createContent(panel, LoggersView.ID, true)) {
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false
@@ -98,12 +98,5 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
         putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
 
         this
-    }
-
-    companion object {
-        const val CONSOLES_ID = "Consoles"
-        const val TS_ID = "Type System"
-        const val BS_ID = "Bean System"
-        const val LOGGERS = "Loggers"
     }
 }

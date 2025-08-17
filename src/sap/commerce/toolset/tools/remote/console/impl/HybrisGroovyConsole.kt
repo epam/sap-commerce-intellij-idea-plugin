@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.tools.remote.console.impl
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
@@ -37,7 +35,7 @@ import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
-@Service(Service.Level.PROJECT)
+@Deprecated("Move to own module")
 class HybrisGroovyConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<GroovyExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_GROOVY,
@@ -72,8 +70,6 @@ class HybrisGroovyConsole(project: Project, coroutineScope: CoroutineScope) : Hy
 
     companion object {
         @Serial
-        private val serialVersionUID: Long = -3858827004057439840L
-
-        fun getInstance(project: Project): HybrisGroovyConsole = project.service()
+        private const val serialVersionUID: Long = -3858827004057439840L
     }
 }

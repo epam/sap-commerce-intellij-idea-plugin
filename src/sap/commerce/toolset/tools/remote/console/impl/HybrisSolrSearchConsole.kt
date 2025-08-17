@@ -22,8 +22,6 @@ import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.json.JsonFileType
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.progress.ProgressIndicator
@@ -53,7 +51,7 @@ import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.*
 
-@Service(Service.Level.PROJECT)
+@Deprecated("Move to own module")
 class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<SolrQueryExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH,
@@ -177,8 +175,6 @@ class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) 
 
     companion object {
         @Serial
-        private val serialVersionUID: Long = -2047695844446905788L
-
-        fun getInstance(project: Project): HybrisSolrSearchConsole = project.service()
+        private const val serialVersionUID: Long = -2047695844446905788L
     }
 }

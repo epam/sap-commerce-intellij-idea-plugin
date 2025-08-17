@@ -38,7 +38,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":impex-core"))
     implementation(project(":exec-remote"))
-    implementation(project(":exec-console"))
+    implementation(project(":console-ui"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

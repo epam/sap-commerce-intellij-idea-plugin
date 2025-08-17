@@ -16,10 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.remote.console
+package sap.commerce.toolset.flexibleSearch.exec.console
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.dsl.builder.panel
@@ -27,13 +25,12 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exec.remote.console.HybrisConsole
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
-import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
-import sap.commerce.toolset.flexibleSearch.remote.execution.QueryMode
+import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.remote.context.QueryMode
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
 
-@Service(Service.Level.PROJECT)
 class FlexibleSearchConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
@@ -75,7 +72,5 @@ class FlexibleSearchConsole(project: Project, coroutineScope: CoroutineScope) : 
     companion object {
         @Serial
         private val serialVersionUID: Long = -112651125533211607L
-
-        fun getInstance(project: Project): FlexibleSearchConsole = project.service()
     }
 }

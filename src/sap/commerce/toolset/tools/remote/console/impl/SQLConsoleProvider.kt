@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.tools.remote.console.impl
 
-package sap.commerce.toolset.flexibleSearch.remote.execution
+import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.exec.remote.console.HybrisConsoleProvider
 
-enum class QueryMode(val title: String) {
-    SQL("SQL"),
-    FlexibleSearch("FlexibleSearch"),
-    PolyglotQuery("Polyglot Query")
+class SQLConsoleProvider : HybrisConsoleProvider<HybrisSQLConsole> {
+    override fun console(project: Project, coroutineScope: CoroutineScope) = HybrisSQLConsole(project, coroutineScope)
 }

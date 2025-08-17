@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.impex.exec.console
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.EnumComboBoxModel
@@ -37,7 +35,6 @@ import sap.commerce.toolset.impex.exec.remote.context.ImpExExecutionContext
 import java.awt.BorderLayout
 import java.io.Serial
 
-@Service(Service.Level.PROJECT)
 class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX,
@@ -104,7 +101,5 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
     companion object {
         @Serial
         private val serialVersionUID: Long = -8798339041999147739L
-
-        fun getInstance(project: Project): ImpExConsole = project.service()
     }
 }

@@ -19,10 +19,6 @@
 package sap.commerce.toolset.flexibleSearch.actions
 
 import com.intellij.ide.ActivityTracker
-import sap.commerce.toolset.actions.ExecuteStatementAction
-import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
-import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
-import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
@@ -30,10 +26,14 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actions.ExecuteStatementAction
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
-import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
-import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionClient
-import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
+import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
+import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
+import sap.commerce.toolset.flexibleSearch.exec.console.FlexibleSearchConsole
+import sap.commerce.toolset.flexibleSearch.remote.FlexibleSearchExecutionClient
+import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionContext
 
 class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole, FlexibleSearchSplitEditor>(
     FlexibleSearchLanguage,

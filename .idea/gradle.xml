@@ -13,11 +13,13 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/modules/acl/core" />
             <option value="$PROJECT_DIR$/modules/ant/ui" />
-            <option value="$PROJECT_DIR$/modules/bean-system/core" />
-            <option value="$PROJECT_DIR$/modules/bean-system/ui" />
+            <option value="$PROJECT_DIR$/modules/beanSystem/core" />
+            <option value="$PROJECT_DIR$/modules/beanSystem/ui" />
             <option value="$PROJECT_DIR$/modules/ccv2/core" />
             <option value="$PROJECT_DIR$/modules/ccv2/manifest" />
             <option value="$PROJECT_DIR$/modules/ccv2/ui" />
+            <option value="$PROJECT_DIR$/modules/console/core" />
+            <option value="$PROJECT_DIR$/modules/console/ui" />
             <option value="$PROJECT_DIR$/modules/exec/console" />
             <option value="$PROJECT_DIR$/modules/exec/remote" />
             <option value="$PROJECT_DIR$/modules/extensioninfo" />
@@ -44,8 +46,8 @@
             <option value="$PROJECT_DIR$/modules/solr/exec" />
             <option value="$PROJECT_DIR$/modules/spring" />
             <option value="$PROJECT_DIR$/modules/terminal" />
-            <option value="$PROJECT_DIR$/modules/type-system/core" />
-            <option value="$PROJECT_DIR$/modules/type-system/ui" />
+            <option value="$PROJECT_DIR$/modules/typeSystem/core" />
+            <option value="$PROJECT_DIR$/modules/typeSystem/ui" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="true" />

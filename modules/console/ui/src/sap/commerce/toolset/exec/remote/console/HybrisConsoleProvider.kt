@@ -16,32 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.exec.remote.console
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.exec.remote.context.ExecutionContext
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+interface HybrisConsoleProvider<T : HybrisConsole<out ExecutionContext>> {
 
-dependencies {
-    implementation(libs.jsoup)
-    implementation(project(":shared-core"))
-    implementation(project(":project-core"))
-    implementation(project(":exec-remote"))
+    fun console(project : Project, coroutineScope: CoroutineScope): T?
 
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
+    companion object {
+        val EP = ExtensionPointName
+            .create<HybrisConsoleProvider<HybrisConsole<out ExecutionContext>>>("sap.commerce.toolset.consoleProvider")
     }
 }

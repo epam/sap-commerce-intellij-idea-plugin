@@ -19,8 +19,6 @@
 package sap.commerce.toolset.tools.remote.console.impl
 
 import com.intellij.execution.impl.ConsoleViewUtil
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil
@@ -44,7 +42,7 @@ import java.io.Serial
 import java.util.concurrent.TimeUnit
 import javax.swing.JPanel
 
-@Service(Service.Level.PROJECT)
+@Deprecated("Move to own module")
 class HybrisImpexMonitorConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExMonitorExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_IMPEX_MONITOR,
@@ -110,8 +108,7 @@ class HybrisImpexMonitorConsole(project: Project, coroutineScope: CoroutineScope
 
     companion object {
         @Serial
-        private val serialVersionUID: Long = 4809264328611290133L
-
-        fun getInstance(project: Project): HybrisImpexMonitorConsole = project.service()
+        private const val serialVersionUID: Long = -590295893051058799L
     }
+
 }

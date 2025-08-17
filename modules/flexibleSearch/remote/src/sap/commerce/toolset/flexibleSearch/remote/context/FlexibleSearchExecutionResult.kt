@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.remote.execution
+package sap.commerce.toolset.flexibleSearch.remote.context
 
 import org.apache.http.HttpStatus
 import sap.commerce.toolset.exec.remote.context.ConsoleAwareExecutionResult

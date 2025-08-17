@@ -27,7 +27,6 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exec.remote.console.HybrisConsole
 import sap.commerce.toolset.exec.remote.context.ExecutionContext
 import sap.commerce.toolset.tools.remote.console.view.HybrisConsolesView
-import sap.commerce.toolset.toolwindow.HybrisToolWindowFactory
 import kotlin.reflect.KClass
 
 @Service(Service.Level.PROJECT)
@@ -59,13 +58,13 @@ class HybrisConsoleService(private val project: Project) {
         ?.contentManager
         ?.let { contentManager ->
             contentManager
-                .findContent(HybrisToolWindowFactory.CONSOLES_ID)
+                .findContent(HybrisConsolesView.ID)
                 ?.let { contentManager.setSelectedContent(it) }
         }
 
     private fun findConsolesView() = hybrisToolWindow()
         ?.contentManager
-        ?.findContent(HybrisToolWindowFactory.CONSOLES_ID)
+        ?.findContent(HybrisConsolesView.ID)
         ?.component
         ?.asSafely<HybrisConsolesView>()
 

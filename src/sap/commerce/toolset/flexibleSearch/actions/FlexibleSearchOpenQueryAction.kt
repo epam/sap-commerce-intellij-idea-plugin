@@ -17,14 +17,14 @@
  */
 package sap.commerce.toolset.flexibleSearch.actions
 
-import sap.commerce.toolset.actions.OpenInHybrisConsoleService
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
+import sap.commerce.toolset.actions.OpenInHybrisConsoleService
+import sap.commerce.toolset.flexibleSearch.exec.console.FlexibleSearchConsole
+import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 
 class FlexibleSearchOpenQueryAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

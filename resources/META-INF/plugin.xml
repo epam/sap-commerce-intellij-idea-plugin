@@ -85,6 +85,7 @@
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
+    <xi:include href="/META-INF/sap.commerce.toolset-console-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-acl-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-impex-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-polyglotQuery-core.xml" xpointer="xpointer(/idea-plugin/*)"/>

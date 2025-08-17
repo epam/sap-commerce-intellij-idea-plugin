@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.tools.remote.console.impl
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.project.Project
 import com.intellij.sql.psi.SqlLanguage
@@ -31,8 +29,8 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.exec.remote.console.HybrisConsole
-import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
-import sap.commerce.toolset.flexibleSearch.remote.execution.QueryMode
+import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.remote.context.QueryMode
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
@@ -41,7 +39,7 @@ import javax.swing.JPanel
 import javax.swing.JSpinner
 import javax.swing.SpinnerNumberModel
 
-@Service(Service.Level.PROJECT)
+@Deprecated("Move to own module")
 class HybrisSQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
     project,
     HybrisConstants.CONSOLE_TITLE_SQL,
@@ -83,8 +81,6 @@ class HybrisSQLConsole(project: Project, coroutineScope: CoroutineScope) : Hybri
 
     companion object {
         @Serial
-        private val serialVersionUID: Long = -112651125533211607L
-
-        fun getInstance(project: Project): HybrisSQLConsole = project.service()
+        private const val serialVersionUID: Long = -112651125533211607L
     }
 }

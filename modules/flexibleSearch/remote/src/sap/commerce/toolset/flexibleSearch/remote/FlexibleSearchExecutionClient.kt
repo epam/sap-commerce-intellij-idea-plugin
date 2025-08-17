@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.remote.execution
+package sap.commerce.toolset.flexibleSearch.remote
 
 import com.google.gson.Gson
 import com.intellij.openapi.components.Service
@@ -30,6 +30,9 @@ import sap.commerce.toolset.exec.remote.ExecutionClient
 import sap.commerce.toolset.exec.remote.RemoteConnectionService
 import sap.commerce.toolset.exec.remote.http.HybrisHacHttpClient
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.remote.context.TableBuilder
 import java.io.Serial
 import java.nio.charset.StandardCharsets
 
@@ -45,7 +48,7 @@ class FlexibleSearchExecutionClient(
     )
 
     override suspend fun execute(context: FlexibleSearchExecutionContext): FlexibleSearchExecutionResult {
-        val settings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
+        val settings = RemoteConnectionService.Companion.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val actionUrl = "${settings.generatedURL}/console/flexsearch/execute"
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }

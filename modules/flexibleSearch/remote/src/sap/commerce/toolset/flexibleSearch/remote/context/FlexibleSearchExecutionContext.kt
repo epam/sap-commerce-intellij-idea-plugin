@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.remote.execution
+package sap.commerce.toolset.flexibleSearch.remote.context
 
 import com.intellij.openapi.project.Project
 import org.apache.commons.lang3.BooleanUtils

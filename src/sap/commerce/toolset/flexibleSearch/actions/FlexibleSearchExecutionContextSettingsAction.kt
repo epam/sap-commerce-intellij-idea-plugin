@@ -17,12 +17,6 @@
  */
 package sap.commerce.toolset.flexibleSearch.actions
 
-import sap.commerce.toolset.actions.ExecutionContextSettingsAction
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
-import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
-import sap.commerce.toolset.ui.GroupedComboBoxItem
-import sap.commerce.toolset.ui.GroupedComboBoxModel
-import sap.commerce.toolset.ui.GroupedComboBoxRenderer
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -34,8 +28,14 @@ import com.intellij.util.application
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionContext
+import sap.commerce.toolset.actions.ExecutionContextSettingsAction
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
+import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
+import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.project.PropertyService
+import sap.commerce.toolset.ui.GroupedComboBoxItem
+import sap.commerce.toolset.ui.GroupedComboBoxModel
+import sap.commerce.toolset.ui.GroupedComboBoxRenderer
 import javax.swing.LayoutFocusTraversalPolicy
 
 class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAction<FlexibleSearchExecutionContext.ModifiableSettings>() {

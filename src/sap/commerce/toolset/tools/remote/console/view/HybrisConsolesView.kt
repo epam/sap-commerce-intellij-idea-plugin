@@ -30,12 +30,10 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
-import sap.commerce.toolset.Plugin
+import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.exec.remote.console.HybrisConsole
+import sap.commerce.toolset.exec.remote.console.HybrisConsoleProvider
 import sap.commerce.toolset.exec.remote.context.ExecutionContext
-import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
-import sap.commerce.toolset.impex.exec.console.ImpExConsole
-import sap.commerce.toolset.tools.remote.console.impl.*
 import sap.commerce.toolset.ui.actions.HybrisActionPlaces
 import java.awt.BorderLayout
 import java.io.Serial
@@ -45,7 +43,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
 @Service(Service.Level.PROJECT)
-class HybrisConsolesView(project: Project) : SimpleToolWindowPanel(true), Disposable {
+class HybrisConsolesView(project: Project, coroutineScope: CoroutineScope) : SimpleToolWindowPanel(true), Disposable {
 
     override fun dispose() {
         //NOP
@@ -53,15 +51,10 @@ class HybrisConsolesView(project: Project) : SimpleToolWindowPanel(true), Dispos
 
     private val actionToolbar: ActionToolbar
     private val tabsPanel = JBTabsPaneImpl(project, SwingConstants.TOP, this)
-    private val consoles = listOfNotNull(
-        ImpExConsole.getInstance(project),
-        Plugin.GROOVY.ifActive { HybrisGroovyConsole.getInstance(project) },
-        FlexibleSearchConsole.getInstance(project),
-        HybrisPolyglotQueryConsole.getInstance(project),
-        HybrisSQLConsole.getInstance(project),
-        HybrisSolrSearchConsole.getInstance(project),
-        HybrisImpexMonitorConsole.getInstance(project)
-    )
+
+    // TODO: refresh on plugin reloads, f.e. Groovy
+    private val consoles = HybrisConsoleProvider.EP.extensionList
+        .mapNotNull { it.console(project, coroutineScope) }
 
     init {
         layout = BorderLayout()
@@ -108,6 +101,8 @@ class HybrisConsolesView(project: Project) : SimpleToolWindowPanel(true), Dispos
     companion object {
         @Serial
         private val serialVersionUID: Long = 5761094275961283320L
+
+        const val ID = "Consoles"
 
         fun getInstance(project: Project): HybrisConsolesView = project.service()
     }

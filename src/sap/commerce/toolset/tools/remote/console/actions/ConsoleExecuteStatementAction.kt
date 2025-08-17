@@ -24,8 +24,8 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.flexibleSearch.remote.console.FlexibleSearchConsole
-import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionClient
+import sap.commerce.toolset.flexibleSearch.exec.console.FlexibleSearchConsole
+import sap.commerce.toolset.flexibleSearch.remote.FlexibleSearchExecutionClient
 import sap.commerce.toolset.groovy.exec.remote.GroovyExecutionClient
 import sap.commerce.toolset.impex.exec.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.remote.ImpExExecutionClient

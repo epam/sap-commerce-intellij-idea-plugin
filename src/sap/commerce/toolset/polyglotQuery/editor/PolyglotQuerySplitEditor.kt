@@ -36,7 +36,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
-import sap.commerce.toolset.flexibleSearch.remote.execution.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.remote.context.FlexibleSearchExecutionResult
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import java.awt.BorderLayout
