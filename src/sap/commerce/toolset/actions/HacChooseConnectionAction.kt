@@ -29,6 +29,7 @@ import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
 import sap.commerce.toolset.settings.options.ProjectIntegrationsSettingsConfigurableProvider
 import sap.commerce.toolset.toolwindow.RemoteHacConnectionDialog
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
+import sap.commerce.toolset.ui.actions.HybrisActionPlaces
 import java.awt.Component
 import java.awt.event.InputEvent
 import javax.swing.Icon

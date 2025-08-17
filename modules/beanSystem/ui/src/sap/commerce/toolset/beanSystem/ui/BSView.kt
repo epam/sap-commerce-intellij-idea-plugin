@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.ui
+package sap.commerce.toolset.beanSystem.ui
 
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.actions
+package sap.commerce.toolset.ui.actions
 
 object HybrisActionPlaces {
     const val CONSOLE_TOOLBAR = "Hybris.Consoles.ContextMenu"

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow.ui
+package sap.commerce.toolset.logging.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionManager
@@ -25,8 +25,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.actions.HybrisActionPlaces
-import sap.commerce.toolset.logging.ui.LoggersSplitView
+import sap.commerce.toolset.ui.actions.HybrisActionPlaces
 import java.io.Serial
 
 class LoggersView(
