@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.flexibleSearch.psi.impl
 
+import com.intellij.lang.ASTNode
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
 import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
 import sap.commerce.toolset.psi.reference.LanguageReference
-import com.intellij.lang.ASTNode
 import java.io.Serial
 
 abstract class FlexibleSearchColumnLocalizedNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), FlexibleSearchColumnLocalizedName {
