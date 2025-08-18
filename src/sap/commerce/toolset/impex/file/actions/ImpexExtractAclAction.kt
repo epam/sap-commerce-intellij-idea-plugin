@@ -17,9 +17,6 @@
  */
 package sap.commerce.toolset.impex.file.actions
 
-import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.impex.psi.ImpexFile
-import sap.commerce.toolset.impex.psi.ImpexUserRights
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.readAction
@@ -38,6 +35,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.acl.AclLanguage
+import sap.commerce.toolset.acl.fileTypes.AclFileType
+import sap.commerce.toolset.impex.psi.ImpexFile
+import sap.commerce.toolset.impex.psi.ImpexUserRights
 
 class ImpexExtractAclAction : AnAction() {
 

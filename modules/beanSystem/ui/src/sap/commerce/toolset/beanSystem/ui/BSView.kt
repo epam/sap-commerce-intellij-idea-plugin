@@ -32,10 +32,10 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.beanSystem.actions.ShowMetaBeanPropertiesAction
-import sap.commerce.toolset.beanSystem.actions.ShowMetaEnumValuesAction
-import sap.commerce.toolset.beanSystem.actions.ShowOnlyCustomAction
-import sap.commerce.toolset.beanSystem.actions.ShowOnlyDeprecatedAction
+import sap.commerce.toolset.beanSystem.actions.BSShowMetaBeanPropertiesAction
+import sap.commerce.toolset.beanSystem.actions.BSShowMetaEnumValuesAction
+import sap.commerce.toolset.beanSystem.actions.BSShowOnlyCustomAction
+import sap.commerce.toolset.beanSystem.actions.BSShowOnlyDeprecatedAction
 import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
 import sap.commerce.toolset.beanSystem.meta.event.BSMetaModelChangeListener
@@ -132,12 +132,12 @@ class BSView(private val project: Project) : SimpleToolWindowPanel(false, true),
         templatePresentation.icon = HybrisIcons.BeanSystem.Preview.SHOW
 
         addSeparator(ActionsBundle.message("separator.show"))
-        add(ShowOnlyCustomAction(mySettings))
-        add(ShowOnlyDeprecatedAction(mySettings))
+        add(BSShowOnlyCustomAction(mySettings))
+        add(BSShowOnlyDeprecatedAction(mySettings))
         addSeparator("-- Enum --")
-        add(ShowMetaEnumValuesAction(mySettings))
+        add(BSShowMetaEnumValuesAction(mySettings))
         addSeparator("-- Bean --")
-        add(ShowMetaBeanPropertiesAction(mySettings))
+        add(BSShowMetaBeanPropertiesAction(mySettings))
         this
     }
 

@@ -21,7 +21,7 @@ package sap.commerce.toolset.occ.psi
 import com.intellij.patterns.XmlAttributeValuePattern
 import com.intellij.patterns.XmlPatterns
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.beanSystem.psi.BSConstants
+import sap.commerce.toolset.beanSystem.BSConstants
 
 object OccPatterns {
 

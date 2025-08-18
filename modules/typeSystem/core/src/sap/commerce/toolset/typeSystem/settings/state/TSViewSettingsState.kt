@@ -16,13 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.solr.exec.remote.context
+package sap.commerce.toolset.typeSystem.settings.state
 
-import sap.commerce.toolset.exec.remote.context.ExecutionContext
+import com.intellij.util.xmlb.annotations.Tag
 
-data class SolrQueryExecutionContext(
-    override val executionTitle: String = "Execute HTTP Call to SOLR...",
-    val content: String,
-    val core: String,
-    val rows: Int
-) : ExecutionContext
+@Tag("Settings")
+class TSViewSettingsState {
+    var showOnlyCustom = false
+    var showMetaItems = true
+    var showMetaRelations = true
+    var showMetaEnums = true
+    var showMetaCollections = true
+    var showMetaAtomics = true
+    var showMetaMaps = true
+    var showMetaEnumValues = true
+    var showMetaItemIndexes = true
+    var showMetaItemAttributes = true
+    var showMetaItemCustomProperties = true
+    var groupItemByParent = false
+}

@@ -18,23 +18,23 @@
 
 package sap.commerce.toolset.editor.event
 
-import sap.commerce.toolset.acl.file.AclFileToolbarInstaller
-import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileToolbarInstaller
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
-import sap.commerce.toolset.groovy.file.GroovyFileToolbarInstaller
-import sap.commerce.toolset.impex.file.ImpExFileToolbarInstaller
-import sap.commerce.toolset.impex.file.ImpexFileType
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileToolbarInstaller
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
-import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.isHybrisProject
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.psi.SingleRootFileViewProvider
 import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyFileType
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.acl.file.AclFileToolbarInstaller
+import sap.commerce.toolset.acl.fileTypes.AclFileType
+import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileToolbarInstaller
+import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
+import sap.commerce.toolset.groovy.file.GroovyFileToolbarInstaller
+import sap.commerce.toolset.impex.file.ImpExFileToolbarInstaller
+import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileToolbarInstaller
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
 class HybrisEditorFactoryListener : EditorFactoryListener {
 

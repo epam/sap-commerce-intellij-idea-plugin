@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.settings.options
+package sap.commerce.toolset.typeSystem.options
 
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -43,7 +43,7 @@ class ProjectTypeSystemConfigurableProvider(private val project: Project) : Conf
         HybrisI18NBundleUtils.message("hybris.settings.project.ts.title"), "[y] SAP CX Type System configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
         private val tsMutableSettings = developerSettings.typeSystemSettings.mutable()
         private val tsDiagramMutableSettings = developerSettings.typeSystemDiagramSettings.mutable()
 
@@ -140,7 +140,7 @@ class ProjectTypeSystemConfigurableProvider(private val project: Project) : Conf
                         .onApply { tsDiagramMutableSettings.excludedTypeNames = getNewTypeNames() }
                         .onReset { excludedTypeNamesTable.updateModel(tsDiagramMutableSettings) }
                         .onIsModified { tsDiagramMutableSettings.excludedTypeNames != getNewTypeNames() }
-                        .align(Align.FILL)
+                        .align(Align.Companion.FILL)
                 }
             }
         }

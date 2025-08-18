@@ -16,19 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.acl.file
+package sap.commerce.toolset.solr.exec.context
 
-import com.intellij.openapi.fileTypes.LanguageFileType
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.acl.AclLanguage
-import javax.swing.Icon
+class SolrCoreData(val core: String, val docs: Int) {
 
-object AclFileType : LanguageFileType(AclLanguage) {
-
-    override fun getName() = HybrisConstants.ACL
-    override fun getDescription() = "Access Control Lists language file"
-    override fun getDefaultExtension() = HybrisConstants.ACL_FILE_EXTENSION
-    override fun getIcon(): Icon = HybrisIcons.Acl.FILE
+    override fun toString() = core
 
 }

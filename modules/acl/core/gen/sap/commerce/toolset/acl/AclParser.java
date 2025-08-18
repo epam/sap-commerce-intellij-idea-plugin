@@ -26,7 +26,7 @@ package sap.commerce.toolset.acl;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import static sap.commerce.toolset.acl.psi.AclTypes.*;
-import static sap.commerce.toolset.acl.utils.AclParserUtils.*;
+import static sap.commerce.toolset.acl.parser.AclParserUtils.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.PsiParser;

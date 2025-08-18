@@ -25,7 +25,7 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.typeSystem.settings.options.ProjectTypeSystemConfigurableProvider
+import sap.commerce.toolset.typeSystem.options.ProjectTypeSystemConfigurableProvider
 
 class OpenSettingsDiagramAction : AnAction() {
 

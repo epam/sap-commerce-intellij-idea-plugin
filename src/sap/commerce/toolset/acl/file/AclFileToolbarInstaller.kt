@@ -18,10 +18,11 @@
 
 package sap.commerce.toolset.acl.file
 
-import sap.commerce.toolset.startup.event.AbstractHybrisFileToolbarInstaller
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
+import sap.commerce.toolset.acl.fileTypes.AclFileType
+import sap.commerce.toolset.startup.event.AbstractHybrisFileToolbarInstaller
 
 @Service
 class AclFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(

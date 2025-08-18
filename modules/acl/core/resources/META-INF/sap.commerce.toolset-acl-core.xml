@@ -21,7 +21,7 @@
         <internalFileTemplate name="Acl File"/>
 
         <fileType name="Access Control Lists" language="ACL" extensions="acl" fieldName="INSTANCE"
-                  implementationClass="sap.commerce.toolset.acl.file.AclFileType"/>
+                  implementationClass="sap.commerce.toolset.acl.fileTypes.AclFileType"/>
     </extensions>
 
 </idea-plugin>

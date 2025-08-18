@@ -16,8 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.acl.utils
+package sap.commerce.toolset.beanSystem
 
-import com.intellij.lang.parser.GeneratedParserUtilBase
+object BSConstants {
 
-class AclParserUtils : GeneratedParserUtilBase()
+    const val ATTRIBUTE_VALUE_LEVEL_MAPPING = "levelMapping"
+    const val ATTRIBUTE_VALUE_DTO_CLASS = "dtoClass"
+}

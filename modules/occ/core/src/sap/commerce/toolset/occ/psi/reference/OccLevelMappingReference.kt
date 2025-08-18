@@ -25,10 +25,10 @@ import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlTag
+import sap.commerce.toolset.beanSystem.BSConstants
 import sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionService
 import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
-import sap.commerce.toolset.beanSystem.psi.BSConstants
 import sap.commerce.toolset.occ.psi.OccPropertyMapping
 import sap.commerce.toolset.psi.PsiUtils
 

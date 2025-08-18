@@ -29,7 +29,7 @@ import sap.commerce.toolset.typeSystem.model.*
 import sap.commerce.toolset.ui.AbstractTable
 import sap.commerce.toolset.ui.actions.AbstractGoToDeclarationAction
 
-class GoToDeclarationTSTableAction : AbstractGoToDeclarationAction() {
+class TSGoToDeclarationTableAction : AbstractGoToDeclarationAction() {
 
     init {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")

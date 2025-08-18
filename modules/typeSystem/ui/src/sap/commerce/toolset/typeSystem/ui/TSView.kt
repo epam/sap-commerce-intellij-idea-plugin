@@ -37,6 +37,7 @@ import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import sap.commerce.toolset.typeSystem.settings.TSViewSettings
+import sap.commerce.toolset.typeSystem.settings.event.TSViewListener
 import sap.commerce.toolset.typeSystem.ui.components.TSTreePanel
 import java.awt.GridBagLayout
 import java.io.Serial
@@ -84,7 +85,7 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
     private fun installSettingsListener() {
         with(project.messageBus.connect(this)) {
-            subscribe(TSViewSettings.TSViewListener.Companion.TOPIC, object : TSViewSettings.TSViewListener {
+            subscribe(TSViewListener.Companion.TOPIC, object : TSViewListener {
                 override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
                     refreshContent(changeType)
                 }
@@ -129,21 +130,21 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
         templatePresentation.icon = HybrisIcons.TypeSystem.Preview.Actions.SHOW
 
         addSeparator(ActionsBundle.message("separator.show"))
-        add(ShowOnlyCustomAction(mySettings))
+        add(TSShowOnlyCustomAction(mySettings))
         addSeparator("-- Types --")
-        add(ShowMetaAtomicsAction(mySettings))
-        add(ShowMetaEnumsAction(mySettings))
-        add(ShowMetaCollectionsAction(mySettings))
-        add(ShowMetaMapsAction(mySettings))
-        add(ShowMetaRelationsAction(mySettings))
-        add(ShowMetaItemsAction(mySettings))
+        add(TSShowMetaAtomicsAction(mySettings))
+        add(TSShowMetaEnumsAction(mySettings))
+        add(TSShowMetaCollectionsAction(mySettings))
+        add(TSShowMetaMapsAction(mySettings))
+        add(TSShowMetaRelationsAction(mySettings))
+        add(TSShowMetaItemsAction(mySettings))
         addSeparator("-- Enum --")
-        add(ShowMetaEnumValuesAction(mySettings))
+        add(TSShowMetaEnumValuesAction(mySettings))
         addSeparator("-- Item --")
-        add(ShowMetaItemIndexesAction(mySettings))
-        add(ShowMetaItemAttributesAction(mySettings))
-        add(ShowMetaItemCustomPropertiesAction(mySettings))
-        add(GroupItemByParentAction(mySettings))
+        add(TSShowMetaItemIndexesAction(mySettings))
+        add(TSShowMetaItemAttributesAction(mySettings))
+        add(TSShowMetaItemCustomPropertiesAction(mySettings))
+        add(TSGroupItemByParentAction(mySettings))
         this
     }
 

@@ -23,7 +23,7 @@
 
         <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.beanSystem.psi.contributor.BSReferenceContributor"/>
 
-        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.beanSystem.lang.folding.BeansXmlFoldingBuilder"/>
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.beanSystem.folding.BeansXmlFoldingBuilder"/>
 
         <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
         <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
@@ -42,7 +42,7 @@
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.bs.title"
                              order="after hybris.project.ts.settings"
-                             provider="sap.commerce.toolset.beanSystem.settings.options.ProjectBeanSystemConfigurableProvider"/>
+                             provider="sap.commerce.toolset.beanSystem.settings.ProjectBeanSystemConfigurableProvider"/>
 
         <applicationService serviceImplementation="sap.commerce.toolset.beanSystem.codeInsight.completion.provider.BSClassCompletionProvider"/>
     </extensions>

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.beanSystem.settings.options
+package sap.commerce.toolset.beanSystem.settings
 
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
@@ -38,7 +38,7 @@ class ProjectBeanSystemConfigurableProvider(private val project: Project) : Conf
         HybrisI18NBundleUtils.message("hybris.settings.project.bs.title"), "[y] SAP CX Bean System configuration."
     ) {
 
-        private val developerSettings = DeveloperSettings.getInstance(project)
+        private val developerSettings = DeveloperSettings.Companion.getInstance(project)
         private val mutableSettings = developerSettings.beanSystemSettings.mutable()
 
         private lateinit var foldingEnableCheckBox: JCheckBox

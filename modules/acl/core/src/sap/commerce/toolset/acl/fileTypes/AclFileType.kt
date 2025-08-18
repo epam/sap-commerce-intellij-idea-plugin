@@ -15,23 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.acl.psi
 
-import com.intellij.extapi.psi.PsiFileBase
-import com.intellij.psi.FileViewProvider
+package sap.commerce.toolset.acl.fileTypes
+
+import com.intellij.openapi.fileTypes.LanguageFileType
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.acl.AclLanguage
-import sap.commerce.toolset.acl.fileTypes.AclFileType
-import java.io.Serial
+import javax.swing.Icon
 
-class AclFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, AclLanguage) {
+object AclFileType : LanguageFileType(AclLanguage) {
 
-    override fun getFileType() = AclFileType
-    override fun toString() = "Access Control Lists File"
-    override fun getIcon(flags: Int) = super.getIcon(flags)
-
-    companion object {
-        @Serial
-        private const val serialVersionUID: Long = 7387072988176205146L
-    }
+    override fun getName() = HybrisConstants.ACL
+    override fun getDescription() = "Access Control Lists language file"
+    override fun getDefaultExtension() = HybrisConstants.ACL_FILE_EXTENSION
+    override fun getIcon(): Icon = HybrisIcons.Acl.FILE
 
 }

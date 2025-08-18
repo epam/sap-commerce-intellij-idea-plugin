@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.ToggleAction
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.beanSystem.settings.BSViewSettings
 
-class ShowOnlyCustomAction(val settings: BSViewSettings) : ToggleAction(
+class BSShowOnlyCustomAction(val settings: BSViewSettings) : ToggleAction(
     message("hybris.toolwindow.action.only_custom.text"),
     message("hybris.toolwindow.bs.action.only_custom.description"),
     null
@@ -40,7 +40,7 @@ class ShowOnlyCustomAction(val settings: BSViewSettings) : ToggleAction(
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowOnlyDeprecatedAction(val settings: BSViewSettings) : ToggleAction(
+class BSShowOnlyDeprecatedAction(val settings: BSViewSettings) : ToggleAction(
     message("hybris.toolwindow.bs.action.only_deprecated.text"),
     message("hybris.toolwindow.bs.action.only_deprecated.description"),
     null
@@ -56,7 +56,7 @@ class ShowOnlyDeprecatedAction(val settings: BSViewSettings) : ToggleAction(
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaEnumValuesAction(val settings: BSViewSettings) : ToggleAction(
+class BSShowMetaEnumValuesAction(val settings: BSViewSettings) : ToggleAction(
     message("hybris.toolwindow.bs.action.enum.values.text"), null, null
 ) {
 
@@ -70,7 +70,7 @@ class ShowMetaEnumValuesAction(val settings: BSViewSettings) : ToggleAction(
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class ShowMetaBeanPropertiesAction(val settings: BSViewSettings) : ToggleAction(
+class BSShowMetaBeanPropertiesAction(val settings: BSViewSettings) : ToggleAction(
     message("hybris.toolwindow.bs.action.bean.properties.text"), null, null
 ) {
 

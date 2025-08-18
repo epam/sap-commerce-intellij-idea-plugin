@@ -15,23 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.acl.psi
 
-import com.intellij.extapi.psi.PsiFileBase
-import com.intellij.psi.FileViewProvider
-import sap.commerce.toolset.acl.AclLanguage
-import sap.commerce.toolset.acl.fileTypes.AclFileType
-import java.io.Serial
+package sap.commerce.toolset.typeSystem.settings.event
 
-class AclFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, AclLanguage) {
+import com.intellij.util.messages.Topic
+import sap.commerce.toolset.typeSystem.settings.TSViewSettings
 
-    override fun getFileType() = AclFileType
-    override fun toString() = "Access Control Lists File"
-    override fun getIcon(flags: Int) = super.getIcon(flags)
+interface TSViewListener {
+    fun settingsChanged(changeType: TSViewSettings.ChangeType)
 
     companion object {
-        @Serial
-        private const val serialVersionUID: Long = 7387072988176205146L
+        val TOPIC = Topic(TSViewListener::class.java)
     }
-
 }

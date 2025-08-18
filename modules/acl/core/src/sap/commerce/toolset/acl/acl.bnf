@@ -23,7 +23,7 @@
  */
 {
   parserClass="sap.commerce.toolset.acl.AclParser"
-  parserUtilClass="sap.commerce.toolset.acl.utils.AclParserUtils"
+  parserUtilClass="sap.commerce.toolset.acl.parser.AclParserUtils"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 

@@ -30,7 +30,7 @@ import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.acl.editor.AclSplitEditor
-import sap.commerce.toolset.acl.file.AclFileType
+import sap.commerce.toolset.acl.fileTypes.AclFileType
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor

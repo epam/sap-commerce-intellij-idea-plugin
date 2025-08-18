@@ -21,20 +21,21 @@ package sap.commerce.toolset.typeSystem.settings
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import com.intellij.util.messages.MessageBus
-import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.typeSystem.settings.event.TSViewListener
+import sap.commerce.toolset.typeSystem.settings.state.TSViewSettingsState
 
 @State(name = "[y] Type System View settings", category = SettingsCategory.PLUGINS)
 @Storage(value = HybrisConstants.STORAGE_HYBRIS_TS_VIEW, roamingType = RoamingType.DISABLED)
 @Service(Service.Level.PROJECT)
-class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettings.Settings> {
+class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettingsState> {
 
     private val myMessageBus: MessageBus
-    private val mySettings: Settings
+    private val mySettings: TSViewSettingsState
 
     init {
-        mySettings = Settings()
+        mySettings = TSViewSettingsState()
         myMessageBus = myProject.messageBus
     }
 
@@ -76,34 +77,11 @@ class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettin
     fun isGroupItemByParent(): Boolean = mySettings.groupItemByParent
     fun setGroupItemByParent(state: Boolean) = state.also { mySettings.groupItemByParent = state }
 
-    override fun getState(): Settings = mySettings
-    override fun loadState(settings: Settings) = XmlSerializerUtil.copyBean(settings, mySettings)
-
-    class Settings {
-        var showOnlyCustom = false
-        var showMetaItems = true
-        var showMetaRelations = true
-        var showMetaEnums = true
-        var showMetaCollections = true
-        var showMetaAtomics = true
-        var showMetaMaps = true
-        var showMetaEnumValues = true
-        var showMetaItemIndexes = true
-        var showMetaItemAttributes = true
-        var showMetaItemCustomProperties = true
-        var groupItemByParent = false
-    }
+    override fun getState(): TSViewSettingsState = mySettings
+    override fun loadState(settings: TSViewSettingsState) = XmlSerializerUtil.copyBean(settings, mySettings)
 
     enum class ChangeType {
         FULL,UPDATE
-    }
-
-    interface TSViewListener {
-        fun settingsChanged(changeType: ChangeType)
-
-        companion object {
-            val TOPIC = Topic(TSViewListener::class.java)
-        }
     }
 
     companion object {

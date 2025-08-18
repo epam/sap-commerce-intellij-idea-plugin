@@ -23,12 +23,12 @@
     <actions>
         <group id="TSView.ToolWindow">
             <group id="TSView.ToolWindow.TreePopup">
-                <action class="sap.commerce.toolset.typeSystem.actions.GoToDeclarationTSNodeAction"
+                <action class="sap.commerce.toolset.typeSystem.actions.TSGoToDeclarationNodeAction"
                         use-shortcut-of="GotoDeclaration"/>
             </group>
 
             <group id="TSView.ToolWindow.TablePopup">
-                <action class="sap.commerce.toolset.typeSystem.actions.GoToDeclarationTSTableAction"
+                <action class="sap.commerce.toolset.typeSystem.actions.TSGoToDeclarationTableAction"
                         use-shortcut-of="GotoDeclaration"/>
             </group>
         </group>

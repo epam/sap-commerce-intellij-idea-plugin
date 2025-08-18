@@ -32,7 +32,7 @@ import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
 import sap.commerce.toolset.impex.exec.console.ImpExConsole
 import sap.commerce.toolset.impex.monitoring.exec.remote.ImpExMonitorExecutionClient
-import sap.commerce.toolset.solr.exec.remote.SolrExecutionClient
+import sap.commerce.toolset.solr.exec.SolrExecutionClient
 import sap.commerce.toolset.tools.remote.console.impl.HybrisGroovyConsole
 import sap.commerce.toolset.tools.remote.console.impl.HybrisImpexMonitorConsole
 import sap.commerce.toolset.tools.remote.console.impl.HybrisPolyglotQueryConsole

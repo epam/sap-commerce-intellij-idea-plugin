@@ -32,7 +32,7 @@ import sap.commerce.toolset.typeSystem.ui.tree.nodes.TSNode
 import sap.commerce.toolset.ui.actions.AbstractGoToDeclarationAction
 import javax.swing.JTree
 
-class GoToDeclarationTSNodeAction : AbstractGoToDeclarationAction() {
+class TSGoToDeclarationNodeAction : AbstractGoToDeclarationAction() {
 
     init {
         ActionUtil.copyFrom(this, "GotoDeclarationOnly")

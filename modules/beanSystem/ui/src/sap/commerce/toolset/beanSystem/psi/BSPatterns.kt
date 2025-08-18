@@ -21,6 +21,7 @@ package sap.commerce.toolset.beanSystem.psi
 import com.intellij.patterns.*
 import com.intellij.psi.xml.XmlAttributeValue
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.beanSystem.BSConstants
 import sap.commerce.toolset.beanSystem.model.*
 import sap.commerce.toolset.beanSystem.model.Enum
 

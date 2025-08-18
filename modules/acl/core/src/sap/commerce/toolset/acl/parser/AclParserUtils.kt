@@ -16,10 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.solr.exec.remote.context
+package sap.commerce.toolset.acl.parser
 
-class SolrCoreData(val core: String, val docs: Int) {
+import com.intellij.lang.parser.GeneratedParserUtilBase
 
-    override fun toString() = core
-
-}
+class AclParserUtils : GeneratedParserUtilBase()
