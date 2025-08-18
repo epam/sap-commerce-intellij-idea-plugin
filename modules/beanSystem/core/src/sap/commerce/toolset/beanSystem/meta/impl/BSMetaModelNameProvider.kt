@@ -26,7 +26,7 @@ object BSMetaModelNameProvider {
     fun extract(dom: EnumValue): String? = dom.stringValue?.takeIf { it.isNotBlank() }
     fun extract(dom: Bean): String? = dom.clazz.stringValue
         ?.takeIf { it.isNotBlank() }
-        ?.let { _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getBeanName(it) }
+        ?.let { sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getBeanName(it) }
 
     fun extract(dom: Hint): String? = dom.name.stringValue?.takeIf { it.isNotBlank() }
     fun extract(dom: Property): String? = dom.name.stringValue?.takeIf { it.isNotBlank() }

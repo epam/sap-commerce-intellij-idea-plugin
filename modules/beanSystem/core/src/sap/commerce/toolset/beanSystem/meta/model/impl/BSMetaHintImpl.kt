@@ -20,6 +20,7 @@ package sap.commerce.toolset.beanSystem.meta.model.impl
 
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaHint
 import sap.commerce.toolset.beanSystem.model.Hint
 
 internal class BSMetaHintImpl(
@@ -28,7 +29,7 @@ internal class BSMetaHintImpl(
     override val extensionName: String,
     override val isCustom: Boolean,
     override val name: String?,
-) : sap.commerce.toolset.beanSystem.meta.model.BSMetaHint {
+) : BSMetaHint {
 
     override val domAnchor: DomAnchor<Hint> = DomService.getInstance().createAnchor(dom)
     override val value = dom.stringValue

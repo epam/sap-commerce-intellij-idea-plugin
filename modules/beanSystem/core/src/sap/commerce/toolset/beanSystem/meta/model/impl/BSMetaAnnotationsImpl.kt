@@ -20,6 +20,7 @@ package sap.commerce.toolset.beanSystem.meta.model.impl
 
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaAnnotations
 import sap.commerce.toolset.beanSystem.model.Annotations
 import sap.commerce.toolset.beanSystem.model.Scope
 
@@ -29,7 +30,7 @@ internal class BSMetaAnnotationsImpl(
     override val extensionName: String,
     override val isCustom: Boolean,
     override val name: String?,
-) : sap.commerce.toolset.beanSystem.meta.model.BSMetaAnnotations {
+) : BSMetaAnnotations {
 
     override val domAnchor: DomAnchor<Annotations> = DomService.getInstance().createAnchor(dom)
     override val value = dom.value

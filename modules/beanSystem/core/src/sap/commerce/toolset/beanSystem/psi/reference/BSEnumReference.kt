@@ -26,15 +26,17 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
-import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionService
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
+import sap.commerce.toolset.psi.PsiUtils
 
 class BSEnumReference(
     element: PsiElement,
     range: TextRange
 ) : PsiReferenceBase.Poly<PsiElement>(element, range, false), PsiPolyVariantReference, HighlightedReference {
 
-    override fun getVariants() = _root_ide_package_.sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionService.Companion.getInstance(element.project)
-        .getCompletions(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_ENUM)
+    override fun getVariants() = BSCompletionService.Companion.getInstance(element.project)
+        .getCompletions(BSMetaType.META_ENUM)
         .toTypedArray()
 
     override fun multiResolve(p0: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
@@ -46,7 +48,7 @@ class BSEnumReference(
 
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, BSEnumReference> { ref ->
             val project = ref.element.project
-            val metaModelAccess = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess.Companion.getInstance(project)
+            val metaModelAccess = sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess.Companion.getInstance(project)
             val classFQN = ref.value
             val result: Array<ResolveResult> = metaModelAccess.findMetaEnumByName(classFQN)
                 ?.let { _root_ide_package_.sap.commerce.toolset.beanSystem.psi.reference.result.EnumResolveResult(it) }
@@ -55,7 +57,7 @@ class BSEnumReference(
 
             CachedValueProvider.Result.create(
                 result,
-                _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSModificationTracker.Companion.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
+                sap.commerce.toolset.beanSystem.meta.BSModificationTracker.Companion.getInstance(project), PsiModificationTracker.MODIFICATION_COUNT
             )
         }
     }

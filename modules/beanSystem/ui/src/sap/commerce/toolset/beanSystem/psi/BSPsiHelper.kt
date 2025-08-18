@@ -28,25 +28,25 @@ import sap.commerce.toolset.beanSystem.meta.model.*
 
 object BSPsiHelper {
 
-    fun delete(project: Project, owner: sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean, meta: BSMetaAnnotations) = delete(
+    fun delete(project: Project, owner: BSGlobalMetaBean, meta: BSMetaAnnotations) = delete(
         project, owner.shortName, meta,
         "hybris.bs.wizard.bean.modified.title",
         "hybris.bs.wizard.bean.annotations.delete.content"
     )
 
-    fun delete(project: Project, owner: sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean, meta: BSMetaHint) = delete(
+    fun delete(project: Project, owner: BSGlobalMetaBean, meta: BSMetaHint) = delete(
         project, owner.shortName, meta,
         "hybris.bs.wizard.bean.modified.title",
         "hybris.bs.wizard.bean.hint.delete.content"
     )
 
-    fun delete(project: Project, owner: sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean, meta: BSMetaImport) = delete(
+    fun delete(project: Project, owner: BSGlobalMetaBean, meta: BSMetaImport) = delete(
         project, owner.shortName, meta,
         "hybris.bs.wizard.bean.modified.title",
         "hybris.bs.wizard.bean.import.delete.content"
     )
 
-    fun delete(project: Project, owner: sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean, meta: BSMetaProperty) = delete(
+    fun delete(project: Project, owner: BSGlobalMetaBean, meta: BSMetaProperty) = delete(
         project, owner.shortName, meta,
         "hybris.bs.wizard.bean.modified.title",
         "hybris.bs.wizard.bean.property.delete.content"

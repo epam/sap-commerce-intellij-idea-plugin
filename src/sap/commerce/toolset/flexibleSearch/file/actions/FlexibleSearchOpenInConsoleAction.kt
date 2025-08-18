@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisConstants.FLEXIBLE_SEARCH_FILE_EXTENSION
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.actions.OpenInHybrisConsoleService
+import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
 import sap.commerce.toolset.flexibleSearch.exec.console.FlexibleSearchConsole
 import sap.commerce.toolset.isHybrisProject
 

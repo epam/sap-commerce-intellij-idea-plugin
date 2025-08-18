@@ -20,6 +20,8 @@ package sap.commerce.toolset.beanSystem.meta
 import com.intellij.openapi.Disposable
 import com.intellij.util.containers.MultiMap
 import com.intellij.util.xml.DomElement
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
 import java.util.concurrent.ConcurrentHashMap
 
 class BSMetaModel(
@@ -28,17 +30,17 @@ class BSMetaModel(
     val custom: Boolean
 ) : Disposable {
 
-    private val myMetaCache: MutableMap<sap.commerce.toolset.beanSystem.meta.model.BSMetaType, MultiMap<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier<DomElement>>> = ConcurrentHashMap()
+    private val myMetaCache: MutableMap<BSMetaType, MultiMap<String, BSMetaClassifier<DomElement>>> = ConcurrentHashMap()
 
-    fun addMetaModel(meta: sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier<out DomElement>, metaType: sap.commerce.toolset.beanSystem.meta.model.BSMetaType) {
+    fun addMetaModel(meta: BSMetaClassifier<out DomElement>, metaType: BSMetaType) {
         // add log why no name
         if (meta.name == null) return
 
-        getMetaType<sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier<out com.intellij.util.xml.DomElement>>(metaType).putValue(meta.name!!.lowercase(), meta)
+        getMetaType<BSMetaClassifier<out DomElement>>(metaType).putValue(meta.name!!.lowercase(), meta)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier<out DomElement>> getMetaType(metaType: sap.commerce.toolset.beanSystem.meta.model.BSMetaType): MultiMap<String, T> =
+    fun <T : BSMetaClassifier<out DomElement>> getMetaType(metaType: BSMetaType): MultiMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { MultiMap.createLinked() } as MultiMap<String, T>
 
     fun getMetaTypes() = myMetaCache

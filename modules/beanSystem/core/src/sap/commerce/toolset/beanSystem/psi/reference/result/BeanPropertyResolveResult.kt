@@ -19,9 +19,10 @@
 package sap.commerce.toolset.beanSystem.psi.reference.result
 
 import com.intellij.psi.ResolveResult
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty
 
 class BeanPropertyResolveResult(
-    val meta: sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty
+    val meta: BSMetaProperty
 ) : ResolveResult {
     override fun getElement() = meta.retrieveDom()?.name?.xmlAttributeValue
     override fun isValidResult() = element != null && (meta.retrieveDom()?.isValid ?: false)

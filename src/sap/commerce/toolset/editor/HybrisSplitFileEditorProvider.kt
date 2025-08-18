@@ -18,15 +18,6 @@
 
 package sap.commerce.toolset.editor
 
-import sap.commerce.toolset.acl.editor.AclSplitEditor
-import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
-import sap.commerce.toolset.groovy.editor.GroovySplitEditor
-import sap.commerce.toolset.impex.editor.ImpExSplitEditor
-import sap.commerce.toolset.impex.file.ImpexFileType
-import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorPolicy
 import com.intellij.openapi.fileEditor.FileEditorProvider
@@ -38,6 +29,15 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.acl.editor.AclSplitEditor
+import sap.commerce.toolset.acl.file.AclFileType
+import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
+import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
+import sap.commerce.toolset.groovy.editor.GroovySplitEditor
+import sap.commerce.toolset.impex.editor.ImpExSplitEditorBase
+import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
 class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
 
@@ -47,7 +47,7 @@ class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
                 when (file.fileType) {
                     is FlexibleSearchFileType -> FlexibleSearchSplitEditor(it, project)
                     is PolyglotQueryFileType -> PolyglotQuerySplitEditor(it, project)
-                    is ImpexFileType -> ImpExSplitEditor(it, project)
+                    is ImpexFileType -> ImpExSplitEditorBase(it, project)
                     is AclFileType -> AclSplitEditor(it, project)
                     else -> if (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType) GroovySplitEditor(it, project)
                     else null

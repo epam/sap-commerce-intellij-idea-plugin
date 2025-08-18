@@ -19,9 +19,10 @@
 package sap.commerce.toolset.beanSystem.psi.reference.result
 
 import com.intellij.psi.ResolveResult
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum
 
 class EnumResolveResult(
-    val meta: sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum
+    val meta: BSMetaEnum
 ) : ResolveResult {
     override fun getElement() = meta.retrieveDom()?.clazz?.xmlAttributeValue
     override fun isValidResult() = element != null && (meta.retrieveDom()?.isValid ?: false)

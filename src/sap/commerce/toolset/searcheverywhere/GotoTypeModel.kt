@@ -19,14 +19,14 @@
 package sap.commerce.toolset.searcheverywhere
 
 import com.intellij.ide.IdeBundle
-import com.intellij.ide.util.gotoByName.*
+import com.intellij.ide.util.gotoByName.FilteringGotoByModel
 import com.intellij.navigation.ChooseByNameContributor
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.IdeUICustomization
 
-class GotoTypeModel(project: Project, contributors: List<ChooseByNameContributor>) : com.intellij.ide.util.gotoByName.FilteringGotoByModel<SystemRef>(project, contributors) {
+class GotoTypeModel(project: Project, contributors: List<ChooseByNameContributor>) : FilteringGotoByModel<SystemRef>(project, contributors) {
 
     override fun getPromptText(): String = "Enter SAP CX type name:"
     override fun getNotInMessage() = IdeUICustomization.getInstance().projectMessage("label.no.matches.found.in.project")

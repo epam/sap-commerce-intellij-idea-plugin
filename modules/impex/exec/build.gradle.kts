@@ -37,7 +37,8 @@ dependencies {
     implementation(libs.jsoup)
     implementation(project(":shared-core"))
     implementation(project(":impex-core"))
-    implementation(project(":exec-remote"))
+    implementation(project(":exec-core"))
+    implementation(project(":console-core"))
     implementation(project(":console-ui"))
 
     intellijPlatform {

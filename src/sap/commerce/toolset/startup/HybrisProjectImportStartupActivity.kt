@@ -18,10 +18,6 @@
 package sap.commerce.toolset.startup
 
 import com.intellij.ide.util.RunOnceUtil
-import sap.commerce.toolset.common.services.CommonIdeaService
-import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurators.PostImportConfigurator
-import sap.commerce.toolset.tools.remote.console.HybrisConsoleService
 import com.intellij.openapi.application.ex.ApplicationEx
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
@@ -30,7 +26,11 @@ import com.intellij.openapi.util.removeUserData
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.common.services.CommonIdeaService
+import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.project.ProjectConstants
+import sap.commerce.toolset.project.configurators.PostImportConfigurator
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
 

@@ -23,6 +23,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.beanSystem.meta.event.BSMetaModelChangeListener
 import sap.commerce.toolset.beanSystem.model.Beans
 import sap.commerce.toolset.meta.MetaModelStateService
 
@@ -34,7 +35,7 @@ class BSMetaModelStateService(project: Project, coroutineScope: CoroutineScope) 
 ) {
 
     override fun onCompletion(newState: BSGlobalMetaModel) {
-        project.messageBus.syncPublisher(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.event.BSMetaModelChangeListener.Companion.TOPIC).onChanged(newState)
+        project.messageBus.syncPublisher(BSMetaModelChangeListener.Companion.TOPIC).onChanged(newState)
     }
 
     override suspend fun create(metaModelsToMerge: Collection<BSMetaModel>): BSGlobalMetaModel = BSGlobalMetaModel().also {

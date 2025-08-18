@@ -42,7 +42,7 @@ import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ccv2.ui.tree.CCv2TreeTable
 import sap.commerce.toolset.exec.remote.context.ReplicaContext
 import sap.commerce.toolset.exec.remote.http.RemoteConnectionContext
-import sap.commerce.toolset.groovy.exec.remote.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import java.awt.BorderLayout
 import java.awt.Component
 import javax.swing.JComponent

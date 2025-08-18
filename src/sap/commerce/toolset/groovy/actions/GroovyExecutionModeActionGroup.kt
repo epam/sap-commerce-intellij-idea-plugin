@@ -22,7 +22,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import sap.commerce.toolset.exec.remote.context.ReplicaSelectionMode
-import sap.commerce.toolset.groovy.exec.remote.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 
 class GroovyExecutionModeActionGroup : DefaultActionGroup() {

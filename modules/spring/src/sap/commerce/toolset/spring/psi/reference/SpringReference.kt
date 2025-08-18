@@ -23,14 +23,17 @@ import com.intellij.psi.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.spring.SpringHelper
 
-class SpringReference(element: PsiElement) : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
+class SpringReference(
+    element: PsiElement,
+    private val name: String
+) : PsiReferenceBase<PsiElement>(element, true), PsiPolyVariantReference {
 
     override fun calculateDefaultRangeInElement() = if (element.text.startsWith("\"") || element.text.startsWith("'"))
         TextRange.from(1, element.textLength - HybrisConstants.QUOTE_LENGTH)
     else
         TextRange.from(0, element.textLength)
 
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = SpringHelper.resolveBeanClass(element, value)
+    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = SpringHelper.resolveBeanClass(element, name)
         ?.let { PsiElementResolveResult.createResults(it) }
         ?: ResolveResult.EMPTY_ARRAY
 

@@ -19,11 +19,9 @@
 
 package sap.commerce.toolset.impex;
 
-import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import sap.commerce.toolset.impex.psi.ImpexTypes;
 import com.intellij.psi.TokenType;
-import com.intellij.psi.CustomHighlighterTokenType;
 
 %%
 

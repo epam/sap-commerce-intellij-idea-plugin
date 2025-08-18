@@ -33,8 +33,8 @@ import sap.commerce.toolset.exec.remote.settings.event.RemoteConnectionListener
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
 import sap.commerce.toolset.extensions.ExtensionsService
-import sap.commerce.toolset.groovy.exec.remote.GroovyExecutionClient
-import sap.commerce.toolset.groovy.exec.remote.context.GroovyExecutionContext
+import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
 import sap.commerce.toolset.logging.exec.remote.LoggingExecutionClient
 import sap.commerce.toolset.logging.exec.remote.context.LoggingExecutionContext
 import sap.commerce.toolset.logging.exec.remote.context.LoggingExecutionResult

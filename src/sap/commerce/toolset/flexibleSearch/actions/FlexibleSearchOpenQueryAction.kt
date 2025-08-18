@@ -22,7 +22,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.actions.OpenInHybrisConsoleService
+import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
 import sap.commerce.toolset.flexibleSearch.exec.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 

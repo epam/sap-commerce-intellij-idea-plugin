@@ -18,17 +18,17 @@
 
 package sap.commerce.toolset.flexibleSearch.psi.reference
 
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
-import sap.commerce.toolset.flexibleSearch.FxSUtils
-import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchSelectedTableName
-import sap.commerce.toolset.flexibleSearch.psi.reference.result.FxSTableAliasNameResolveResult
-import sap.commerce.toolset.psi.util.PsiUtils
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
+import sap.commerce.toolset.flexibleSearch.FxSUtils
+import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchSelectedTableName
+import sap.commerce.toolset.flexibleSearch.psi.reference.result.FxSTableAliasNameResolveResult
+import sap.commerce.toolset.psi.PsiUtils
 
 class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : PsiReferenceBase.Poly<FlexibleSearchSelectedTableName>(owner) {
 

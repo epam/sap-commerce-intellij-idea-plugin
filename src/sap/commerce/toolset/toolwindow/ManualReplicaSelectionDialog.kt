@@ -28,7 +28,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import sap.commerce.toolset.exec.remote.context.ReplicaContext
 import sap.commerce.toolset.exec.remote.http.RemoteConnectionContext
-import sap.commerce.toolset.groovy.exec.remote.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import java.awt.Component
 import javax.swing.JComponent
 

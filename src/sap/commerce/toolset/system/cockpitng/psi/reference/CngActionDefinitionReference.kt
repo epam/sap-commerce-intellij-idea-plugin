@@ -19,16 +19,16 @@
 package sap.commerce.toolset.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.cockpitng.meta.CngMetaModelStateService
-import sap.commerce.toolset.system.cockpitng.meta.CngModificationTracker
-import sap.commerce.toolset.system.cockpitng.psi.reference.result.ActionDefinitionResolveResult
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
+import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.system.cockpitng.meta.CngMetaModelStateService
+import sap.commerce.toolset.system.cockpitng.meta.CngModificationTracker
+import sap.commerce.toolset.system.cockpitng.psi.reference.result.ActionDefinitionResolveResult
 
 class CngActionDefinitionReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element),
     PsiPolyVariantReference, HighlightedReference {

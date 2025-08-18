@@ -18,8 +18,6 @@
  */
 package sap.commerce.toolset.impex
 
-import sap.commerce.toolset.impex.psi.ImpexFile
-import sap.commerce.toolset.impex.psi.ImpexTypes
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.lexer.FlexAdapter
@@ -27,7 +25,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
-import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.psi.ImpexFile
+import sap.commerce.toolset.impex.psi.ImpexTypes
 
 class ImpexParserDefinition : ParserDefinition {
 

@@ -34,7 +34,7 @@ class SpringReferenceProvider : PsiReferenceProvider() {
         context: ProcessingContext
     ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
         CachedValueProvider.Result.createSingleDependency(
-            arrayOf(SpringReference(element)),
+            arrayOf(SpringReference(element, element.text)),
             PsiModificationTracker.MODIFICATION_COUNT,
         )
     }

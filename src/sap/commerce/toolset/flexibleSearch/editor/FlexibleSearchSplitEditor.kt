@@ -38,8 +38,8 @@ import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
-import sap.commerce.toolset.flexibleSearch.exec.remote.context.FlexibleSearchExecutionContext
-import sap.commerce.toolset.flexibleSearch.exec.remote.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import java.awt.BorderLayout

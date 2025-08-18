@@ -22,23 +22,27 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
 import sap.commerce.toolset.beanSystem.model.Bean
 import sap.commerce.toolset.beanSystem.model.Enum
 import javax.swing.Icon
 
 object BSLookupElementFactory {
 
-    fun build(meta: sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum) = meta.name
+    fun build(meta: BSGlobalMetaEnum) = meta.name
         ?.let { LookupElementBuilder.create(it) }
-        ?.withPresentableText(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getShortName(meta.name) ?: "?")
+        ?.withPresentableText(BSMetaHelper.getShortName(meta.name) ?: "?")
         ?.withTailText(if (meta.isDeprecated) " deprecated" else null)
         ?.withTypeText(meta.name, true)
         ?.withIcon(HybrisIcons.BeanSystem.ENUM)
         ?.withCaseSensitivity(true)
 
-    fun build(meta: BSGlobalMetaBean, metaType: sap.commerce.toolset.beanSystem.meta.model.BSMetaType) = meta.fullName
-        ?.let { LookupElementBuilder.create(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getEscapedName(it)) }
+    fun build(meta: BSGlobalMetaBean, metaType: BSMetaType) = meta.fullName
+        ?.let { LookupElementBuilder.create(BSMetaHelper.getEscapedName(it)) }
         ?.withPresentableText(meta.flattenType ?: "?")
         ?.withTailText(
             listOfNotNull(
@@ -49,15 +53,15 @@ object BSLookupElementFactory {
         ?.withTypeText(meta.name, true)
         ?.withIcon(
             when (metaType) {
-                _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN -> HybrisIcons.BeanSystem.BEAN
-                _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_WS_BEAN -> HybrisIcons.BeanSystem.WS_BEAN
-                _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT -> HybrisIcons.BeanSystem.EVENT_BEAN
+                BSMetaType.META_BEAN -> HybrisIcons.BeanSystem.BEAN
+                BSMetaType.META_WS_BEAN -> HybrisIcons.BeanSystem.WS_BEAN
+                BSMetaType.META_EVENT -> HybrisIcons.BeanSystem.EVENT_BEAN
                 else -> HybrisIcons.BeanSystem.BEAN
             }
         )
         ?.withCaseSensitivity(false)
 
-    fun build(meta: sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty) = meta.name
+    fun build(meta: BSMetaProperty) = meta.name
         ?.let { LookupElementBuilder.create(it) }
         ?.withTypeText(meta.flattenType, true)
         ?.withIcon(HybrisIcons.BeanSystem.PROPERTY)
@@ -76,7 +80,7 @@ object BSLookupElementFactory {
             if (bean.abstract.value) "abstract" else null,
             if (bean.deprecated.value) "deprecated" else null
         ).joinToString(",", " ")
-        val lookupElement = LookupElementBuilder.create(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getEscapedName(clazz))
+        val lookupElement = LookupElementBuilder.create(BSMetaHelper.getEscapedName(clazz))
             .withPresentableText(clazz.substringAfterLast("."))
             .withTailText(tail, true)
             .withTypeText(clazz, true)

@@ -20,7 +20,7 @@ package sap.commerce.toolset.tools.remote.console.impl
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.exec.remote.console.HybrisConsoleProvider
+import sap.commerce.toolset.console.HybrisConsoleProvider
 
 class GroovyConsoleProvider : HybrisConsoleProvider<HybrisGroovyConsole> {
     override fun console(project: Project, coroutineScope: CoroutineScope) = Plugin.GROOVY

@@ -39,8 +39,8 @@ internal class TSMetaItemImpl(
     override val extensionName: String,
     override val name: String?,
     override var isCustom: Boolean,
-    override val attributes: Map<String, TSMetaItem.TSMetaItemAttribute>,
-    override val indexes: Map<String, TSMetaItem.TSMetaItemIndex>,
+    override val attributes: Map<String, TSMetaItemAttribute>,
+    override val indexes: Map<String, TSMetaItemIndex>,
     override val customProperties: Map<String, TSMetaCustomProperty>,
     override val deployment: TSMetaDeployment?
 ) : TSMetaItem {
@@ -64,7 +64,7 @@ internal class TSMetaItemImpl(
         override val extensionName: String,
         override val name: String,
         override var isCustom: Boolean
-    ) : TSMetaItem.TSMetaItemIndex {
+    ) : TSMetaItemIndex {
 
         override val domAnchor: DomAnchor<Index> = DomService.getInstance().createAnchor(dom)
         override val isRemove = dom.remove.toBoolean()
@@ -90,7 +90,7 @@ internal class TSMetaItemImpl(
         override val persistence: TSMetaPersistence,
         override val modifiers: TSMetaModifiers,
         override val customProperties: Map<String, TSMetaCustomProperty>
-    ) : TSMetaItem.TSMetaItemAttribute {
+    ) : TSMetaItemAttribute {
 
         override val domAnchor: DomAnchor<Attribute> = DomService.getInstance().createAnchor(dom)
 
@@ -215,7 +215,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
         mergeCustomProperties(localMeta)
     }
 
-    internal class TSGlobalMetaItemIndexImpl(localMeta: TSMetaItem.TSMetaItemIndex) : TSMetaSelfMerge<Index, TSMetaItemIndex>(localMeta), TSGlobalMetaItem.TSGlobalMetaItemIndex {
+    internal class TSGlobalMetaItemIndexImpl(localMeta: TSMetaItemIndex) : TSMetaSelfMerge<Index, TSMetaItemIndex>(localMeta), TSGlobalMetaItem.TSGlobalMetaItemIndex {
 
         override val name: String = localMeta.name
         override var domAnchor = localMeta.domAnchor
@@ -228,7 +228,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
         override var keys = localMeta.keys
         override var includes = localMeta.includes
 
-        override fun mergeInternally(localMeta: TSMetaItem.TSMetaItemIndex) {
+        override fun mergeInternally(localMeta: TSMetaItemIndex) {
             if (localMeta.isReplace) {
                 isRemove = localMeta.isRemove
                 isReplace = localMeta.isReplace
@@ -244,7 +244,7 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
 
     internal class TSGlobalMetaItemAttributeImpl(
         override val owner: TSGlobalMetaItem,
-        localMeta: TSMetaItem.TSMetaItemAttribute
+        localMeta: TSMetaItemAttribute
     ) : TSMetaSelfMerge<Attribute, TSMetaItemAttribute>(localMeta),
         TSGlobalMetaItem.TSGlobalMetaItemAttribute {
 
@@ -273,9 +273,9 @@ internal class TSGlobalMetaItemImpl(localMeta: TSMetaItem) : TSGlobalMetaItemSel
             mergeCustomProperties(localMeta)
         }
 
-        private fun mergeCustomProperties(localMeta: TSMetaItem.TSMetaItemAttribute) = customProperties.putAll(localMeta.customProperties)
+        private fun mergeCustomProperties(localMeta: TSMetaItemAttribute) = customProperties.putAll(localMeta.customProperties)
 
-        override fun mergeInternally(localMeta: TSMetaItem.TSMetaItemAttribute) {
+        override fun mergeInternally(localMeta: TSMetaItemAttribute) {
             if (localMeta.isRedeclare) {
                 domAnchor = localMeta.domAnchor
                 type = localMeta.type

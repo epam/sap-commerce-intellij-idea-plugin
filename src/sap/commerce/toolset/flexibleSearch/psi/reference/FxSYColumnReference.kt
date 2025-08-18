@@ -35,8 +35,8 @@ import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTableAliasName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
+import sap.commerce.toolset.psi.PsiUtils
 import sap.commerce.toolset.psi.util.PsiTreeUtilExt
-import sap.commerce.toolset.psi.util.PsiUtils
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess

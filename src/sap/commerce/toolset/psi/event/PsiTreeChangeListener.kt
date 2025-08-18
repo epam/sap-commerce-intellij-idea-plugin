@@ -29,7 +29,7 @@ import sap.commerce.toolset.beanSystem.BSDomFileDescription
 import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFile
-import sap.commerce.toolset.impex.editor.ImpExSplitEditor
+import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
 import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
@@ -80,7 +80,7 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
                 .forEach { it.refreshParameters() }
 
             is ImpexFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
-                .filterIsInstance<ImpExSplitEditor>()
+                .filterIsInstance<ImpExSplitEditorEx>()
                 .forEach { it.refreshParameters() }
 
             is XmlFile -> {

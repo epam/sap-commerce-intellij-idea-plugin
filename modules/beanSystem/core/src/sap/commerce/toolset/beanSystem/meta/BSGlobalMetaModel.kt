@@ -19,16 +19,18 @@ package sap.commerce.toolset.beanSystem.meta
 
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.CaseInsensitiveMap
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
 import sap.commerce.toolset.meta.GlobalMetaModel
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
 class BSGlobalMetaModel : GlobalMetaModel {
 
-    private val myMetaCache: MutableMap<sap.commerce.toolset.beanSystem.meta.model.BSMetaType, Map<String, sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
+    private val myMetaCache: MutableMap<BSMetaType, Map<String, BSGlobalMetaClassifier<out DomElement>>> = ConcurrentHashMap()
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier<*>> getMetaType(metaType: sap.commerce.toolset.beanSystem.meta.model.BSMetaType): ConcurrentMap<String, T> =
+    fun <T : BSGlobalMetaClassifier<*>> getMetaType(metaType: BSMetaType): ConcurrentMap<String, T> =
         myMetaCache.computeIfAbsent(metaType) { CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap() } as ConcurrentMap<String, T>
 
 }

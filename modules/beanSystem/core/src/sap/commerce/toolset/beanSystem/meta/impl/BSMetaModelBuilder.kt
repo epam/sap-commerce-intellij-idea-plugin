@@ -22,6 +22,14 @@ import sap.commerce.toolset.beanSystem.meta.model.*
 import sap.commerce.toolset.beanSystem.meta.model.impl.*
 import sap.commerce.toolset.beanSystem.model.*
 import sap.commerce.toolset.beanSystem.model.Enum
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.associateByTo
+import kotlin.collections.filter
+import kotlin.collections.forEach
+import kotlin.collections.map
+import kotlin.collections.mapNotNull
+import kotlin.text.trim
 
 class BSMetaModelBuilder(
     private val moduleName: String,
@@ -37,16 +45,16 @@ class BSMetaModelBuilder(
     fun withEnumTypes(types: List<Enum>): BSMetaModelBuilder {
         types
             .mapNotNull { create(it) }
-            .forEach { myMetaModel.addMetaModel(it, _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_ENUM) }
+            .forEach { myMetaModel.addMetaModel(it, BSMetaType.META_ENUM) }
 
         return this
     }
 
-    fun withBeanTypes(types: List<Bean>) = withBeanTypes(types, BeanType.BEAN, _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN)
+    fun withBeanTypes(types: List<Bean>) = withBeanTypes(types, BeanType.BEAN, BSMetaType.META_BEAN)
 
-    fun withEventTypes(types: List<Bean>) = withBeanTypes(types, BeanType.EVENT, _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT)
+    fun withEventTypes(types: List<Bean>) = withBeanTypes(types, BeanType.EVENT, BSMetaType.META_EVENT)
 
-    private fun withBeanTypes(types: List<Bean>, type: BeanType, targetType: sap.commerce.toolset.beanSystem.meta.model.BSMetaType): BSMetaModelBuilder {
+    private fun withBeanTypes(types: List<Bean>, type: BeanType, targetType: BSMetaType): BSMetaModelBuilder {
         types
             .filter { (it.type.value ?: BeanType.BEAN) == type }
             .mapNotNull { create(it) }
@@ -55,17 +63,17 @@ class BSMetaModelBuilder(
         return this
     }
 
-    private fun create(dom: Enum): sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum? {
+    private fun create(dom: Enum): BSMetaEnum? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null
-        return _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSMetaEnumImpl(
+        return BSMetaEnumImpl(
             dom, moduleName, extensionName, name, custom,
             values = createEnumValues(dom)
         )
     }
 
-    private fun create(dom: Bean): sap.commerce.toolset.beanSystem.meta.model.BSMetaBean? {
+    private fun create(dom: Bean): BSMetaBean? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null
-        return _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSMetaBeanImpl(
+        return BSMetaBeanImpl(
             dom, moduleName, extensionName, name, custom,
             imports = createImports(dom.imports),
             annotations = createAnnotations(dom.annotationses),
@@ -74,11 +82,11 @@ class BSMetaModelBuilder(
         )
     }
 
-    private fun createHints(dom: Hints): Map<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaHint> = dom.hints
+    private fun createHints(dom: Hints): Map<String, BSMetaHint> = dom.hints
         .mapNotNull { create(it) }
         .associateByTo(CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap()) { hint -> hint.name?.trim { it <= ' ' } }
 
-    private fun createProperties(dom: List<Property>): Map<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty> = dom
+    private fun createProperties(dom: List<Property>): Map<String, BSMetaProperty> = dom
         .mapNotNull { create(it) }
         .associateByTo(CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap()) { property -> property.name?.trim { it <= ' ' } }
 
@@ -88,31 +96,31 @@ class BSMetaModelBuilder(
     private fun createImports(dom: List<Import>) = dom
         .map { create(it) }
 
-    private fun createEnumValues(dom: Enum): Map<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum.BSMetaEnumValue> = dom.values
+    private fun createEnumValues(dom: Enum): Map<String, BSMetaEnum.BSMetaEnumValue> = dom.values
         .mapNotNull { create(it) }
         .associateByTo(CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap()) { attr -> attr.name?.trim { it <= ' ' } }
 
-    private fun create(dom: EnumValue): sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum.BSMetaEnumValue? {
+    private fun create(dom: EnumValue): BSMetaEnum.BSMetaEnumValue? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null
-        return _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSMetaEnumImpl.BSMetaEnumValueImpl(dom, moduleName, extensionName, custom, name)
+        return BSMetaEnumImpl.BSMetaEnumValueImpl(dom, moduleName, extensionName, custom, name)
     }
 
-    private fun create(dom: Annotations) = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSMetaAnnotationsImpl(dom, moduleName, extensionName, custom, null)
+    private fun create(dom: Annotations) = BSMetaAnnotationsImpl(dom, moduleName, extensionName, custom, null)
 
-    private fun create(dom: Import) = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSMetaImportImpl(dom, moduleName, extensionName, custom)
+    private fun create(dom: Import) = BSMetaImportImpl(dom, moduleName, extensionName, custom)
 
-    private fun create(dom: Property): sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty? {
+    private fun create(dom: Property): BSMetaProperty? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null
-        return _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSMetaPropertyImpl(
+        return BSMetaPropertyImpl(
             dom, moduleName, extensionName, custom, name,
             createAnnotations(dom.annotationses),
             createHints(dom.hints)
         )
     }
 
-    private fun create(dom: Hint): sap.commerce.toolset.beanSystem.meta.model.BSMetaHint? {
+    private fun create(dom: Hint): BSMetaHint? {
         val name = BSMetaModelNameProvider.extract(dom) ?: return null
-        return _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSMetaHintImpl(dom, moduleName, extensionName, custom, name)
+        return BSMetaHintImpl(dom, moduleName, extensionName, custom, name)
     }
 
 }

@@ -18,6 +18,7 @@
 package sap.commerce.toolset.beanSystem.meta.model
 
 import com.intellij.util.xml.DomElement
+import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
 
 abstract class BSMetaSelfMerge<DOM : DomElement, T : BSMetaClassifier<DOM>>(localMeta: T) : BSGlobalMetaClassifier<DOM> {
 
@@ -39,6 +40,6 @@ abstract class BSMetaSelfMerge<DOM : DomElement, T : BSMetaClassifier<DOM>>(loca
 
 abstract class BSGlobalMetaBeanSelfMerge<DOM : DomElement, T : BSMetaClassifier<DOM>>(localMeta: T) : BSMetaSelfMerge<DOM, T>(localMeta) {
 
-    abstract fun postMerge(globalMetaModel: sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel)
+    abstract fun postMerge(globalMetaModel: BSGlobalMetaModel)
 
 }

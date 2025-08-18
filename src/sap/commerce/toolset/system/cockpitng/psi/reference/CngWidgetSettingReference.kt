@@ -18,10 +18,6 @@
 
 package sap.commerce.toolset.system.cockpitng.psi.reference
 
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.cockpitng.meta.CngMetaModelStateService
-import sap.commerce.toolset.system.cockpitng.meta.CngModificationTracker
-import sap.commerce.toolset.system.cockpitng.psi.reference.result.WidgetSettingResolveResult
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
@@ -29,6 +25,10 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlTag
+import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.system.cockpitng.meta.CngMetaModelStateService
+import sap.commerce.toolset.system.cockpitng.meta.CngModificationTracker
+import sap.commerce.toolset.system.cockpitng.psi.reference.result.WidgetSettingResolveResult
 
 /**
  * See https://help.sap.com/docs/SAP_COMMERCE/5c9ea0c629214e42b727bf08800d8dfa/76d2195f994a47f593a2732ef99c91d3.html?locale=en-US&q=socket

@@ -42,7 +42,7 @@ dependencies {
         exclude("org.apache.httpcomponents", "httpmime")
     }
     implementation(project(":shared-core"))
-    implementation(project(":exec-remote"))
+    implementation(project(":exec-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

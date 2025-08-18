@@ -24,9 +24,9 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.exec.remote.console.HybrisConsole
-import sap.commerce.toolset.flexibleSearch.exec.remote.context.FlexibleSearchExecutionContext
-import sap.commerce.toolset.flexibleSearch.exec.remote.context.QueryMode
+import sap.commerce.toolset.console.HybrisConsole
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import java.awt.BorderLayout

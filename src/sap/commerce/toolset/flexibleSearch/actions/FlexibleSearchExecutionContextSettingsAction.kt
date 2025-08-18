@@ -31,7 +31,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.actions.ExecutionContextSettingsAction
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
-import sap.commerce.toolset.flexibleSearch.exec.remote.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.ui.GroupedComboBoxItem
 import sap.commerce.toolset.ui.GroupedComboBoxModel

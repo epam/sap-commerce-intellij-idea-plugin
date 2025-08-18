@@ -23,38 +23,42 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.beanSystem.codeInsight.lookup.BSLookupElementFactory
+import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
 
 @Service(Service.Level.PROJECT)
 class BSCompletionService(private val project: Project) {
 
     fun getCompletions(meta: BSGlobalMetaBean): List<LookupElement> {
         val properties = meta.allProperties.values
-            .mapNotNull { _root_ide_package_.sap.commerce.toolset.beanSystem.codeInsight.lookup.BSLookupElementFactory.build(it) }
+            .mapNotNull { BSLookupElementFactory.build(it) }
         val levelMappings = HybrisConstants.OCC_DEFAULT_LEVEL_MAPPINGS
-            .map { _root_ide_package_.sap.commerce.toolset.beanSystem.codeInsight.lookup.BSLookupElementFactory.buildLevelMapping(it) }
+            .map { BSLookupElementFactory.buildLevelMapping(it) }
         return properties + levelMappings
     }
 
-    fun getCompletions(vararg types: sap.commerce.toolset.beanSystem.meta.model.BSMetaType) = with(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess.Companion.getInstance(project)) {
+    fun getCompletions(vararg types: BSMetaType) = with(BSMetaModelAccess.Companion.getInstance(project)) {
         types
             .map { metaType ->
                 when (metaType) {
-                    _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_ENUM -> this
-                        .getAll<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum>(metaType)
-                        .mapNotNull { _root_ide_package_.sap.commerce.toolset.beanSystem.codeInsight.lookup.BSLookupElementFactory.build(it) }
+                    BSMetaType.META_ENUM -> this
+                        .getAll<BSGlobalMetaEnum>(metaType)
+                        .mapNotNull { BSLookupElementFactory.build(it) }
 
-                    _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN -> this
-                        .getAll<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(metaType)
-                        .mapNotNull { _root_ide_package_.sap.commerce.toolset.beanSystem.codeInsight.lookup.BSLookupElementFactory.build(it, metaType) }
+                    BSMetaType.META_BEAN -> this
+                        .getAll<BSGlobalMetaBean>(metaType)
+                        .mapNotNull { BSLookupElementFactory.build(it, metaType) }
 
-                    _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_WS_BEAN -> this
-                        .getAll<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(metaType)
-                        .mapNotNull { _root_ide_package_.sap.commerce.toolset.beanSystem.codeInsight.lookup.BSLookupElementFactory.build(it, metaType) }
+                    BSMetaType.META_WS_BEAN -> this
+                        .getAll<BSGlobalMetaBean>(metaType)
+                        .mapNotNull { BSLookupElementFactory.build(it, metaType) }
 
-                    _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT -> this
-                        .getAll<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(metaType)
-                        .mapNotNull { _root_ide_package_.sap.commerce.toolset.beanSystem.codeInsight.lookup.BSLookupElementFactory.build(it, metaType) }
+                    BSMetaType.META_EVENT -> this
+                        .getAll<BSGlobalMetaBean>(metaType)
+                        .mapNotNull { BSLookupElementFactory.build(it, metaType) }
                 }
             }
             .flatten()

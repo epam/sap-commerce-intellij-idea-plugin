@@ -25,11 +25,17 @@ plugins {
 
 sourceSets {
     main {
-        java.srcDirs("src")
+        java.srcDirs("src", "gen")
         resources.srcDirs("resources")
     }
     test {
         java.srcDirs("tests")
+    }
+}
+
+idea {
+    module {
+        generatedSourceDirs.add(file("gen"))
     }
 }
 

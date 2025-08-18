@@ -20,6 +20,7 @@ package sap.commerce.toolset.beanSystem.meta.model.impl
 
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaImport
 import sap.commerce.toolset.beanSystem.model.Import
 import sap.commerce.toolset.xml.toBoolean
 
@@ -29,7 +30,7 @@ internal class BSMetaImportImpl(
     override val extensionName: String,
     override val isCustom: Boolean,
     override val name: String? = dom.type.stringValue,
-) : sap.commerce.toolset.beanSystem.meta.model.BSMetaImport {
+) : BSMetaImport {
 
     override val domAnchor: DomAnchor<Import> = DomService.getInstance().createAnchor(dom)
     override val type = dom.type.stringValue

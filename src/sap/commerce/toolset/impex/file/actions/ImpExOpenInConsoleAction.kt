@@ -23,7 +23,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.actions.OpenInHybrisConsoleService
+import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.exec.console.ImpExConsole
 import sap.commerce.toolset.isHybrisProject

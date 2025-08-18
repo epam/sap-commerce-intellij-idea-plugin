@@ -20,7 +20,7 @@ package sap.commerce.toolset.impex.exec.console
 
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.exec.remote.console.HybrisConsoleProvider
+import sap.commerce.toolset.console.HybrisConsoleProvider
 
 class ImpExConsoleProvider : HybrisConsoleProvider<ImpExConsole> {
     override fun console(project: Project, coroutineScope: CoroutineScope) = ImpExConsole(project, coroutineScope)

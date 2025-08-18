@@ -17,14 +17,14 @@
  */
 package sap.commerce.toolset.polyglotQuery.actions
 
-import sap.commerce.toolset.actions.OpenInHybrisConsoleService
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
-import sap.commerce.toolset.tools.remote.console.impl.HybrisPolyglotQueryConsole
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
+import sap.commerce.toolset.tools.remote.console.impl.HybrisPolyglotQueryConsole
 
 class PolyglotQueryOpenQueryAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

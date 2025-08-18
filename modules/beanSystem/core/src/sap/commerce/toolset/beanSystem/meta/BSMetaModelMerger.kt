@@ -28,44 +28,44 @@ object BSMetaModelMerger {
             .sortedBy { !it.custom }
             .forEach { merge(this, it) }
 
-        val beans = getMetaType<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN)
+        val beans = getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN)
         val wsBeans = beans.filter { it.value.hints.containsKey("wsRelated") }
 
-        getMetaType<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_WS_BEAN).putAll(wsBeans)
+        getMetaType<BSGlobalMetaBean>(BSMetaType.META_WS_BEAN).putAll(wsBeans)
         beans.keys.removeAll(wsBeans.keys)
 
         // after merging all different declarations of the same bean we need to process properties which were declared via extends
         val allBeans = wsBeans.values +
-            getMetaType<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT).values +
-            getMetaType<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN).values
+            getMetaType<BSGlobalMetaBean>(BSMetaType.META_EVENT).values +
+            getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN).values
         allBeans
-            .forEach { (it as? sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBeanSelfMerge<*, *>)?.postMerge(this) }
+            .forEach { (it as? BSGlobalMetaBeanSelfMerge<*, *>)?.postMerge(this) }
 
-        wsBeans.values.forEach { it.metaType = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_WS_BEAN }
-        getMetaType<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT).values.forEach { it.metaType = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT }
+        wsBeans.values.forEach { it.metaType = BSMetaType.META_WS_BEAN }
+        getMetaType<BSGlobalMetaBean>(BSMetaType.META_EVENT).values.forEach { it.metaType = BSMetaType.META_EVENT }
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun merge(globalMetaModel: BSGlobalMetaModel, localMetaModel: BSMetaModel) {
         localMetaModel.getMetaTypes().forEach { (metaType, localMetas) ->
             run {
-                val globalCache = globalMetaModel.getMetaType<sap.commerce.toolset.beanSystem.meta.model.BSMetaSelfMerge<out DomElement, out sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier<out DomElement>>>(metaType)
+                val globalCache = globalMetaModel.getMetaType<BSMetaSelfMerge<out DomElement, out BSMetaClassifier<out DomElement>>>(metaType)
 
                 localMetas.entrySet().forEach { (key, localMetaClassifiers) ->
                     localMetaClassifiers.forEach { localMetaClassifier ->
                         val globalMetaClassifier = globalCache.computeIfAbsent(key) {
                             when (localMetaClassifier) {
-                                is sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum -> _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSGlobalMetaEnumImpl(
+                                is BSMetaEnum -> _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSGlobalMetaEnumImpl(
                                     localMetaClassifier
                                 )
-                                is sap.commerce.toolset.beanSystem.meta.model.BSMetaBean -> _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSGlobalMetaBeanImpl(
+                                is BSMetaBean -> _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.impl.BSGlobalMetaBeanImpl(
                                     localMetaClassifier
                                 )
                                 else -> null
                             }
                         }
 
-                        (globalMetaClassifier as sap.commerce.toolset.beanSystem.meta.model.BSMetaSelfMerge<DomElement, sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier<DomElement>>).merge(localMetaClassifier)
+                        (globalMetaClassifier as BSMetaSelfMerge<DomElement, BSMetaClassifier<DomElement>>).merge(localMetaClassifier)
                     }
                 }
             }

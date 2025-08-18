@@ -24,6 +24,7 @@ import kotlinx.html.div
 import kotlinx.html.p
 import kotlinx.html.stream.createHTML
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.console.ui.ConsoleConstants
 import sap.commerce.toolset.exec.remote.RemoteConnectionService
 import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
 import sap.commerce.toolset.settings.options.ProjectIntegrationsSettingsConfigurableProvider
@@ -71,11 +72,11 @@ class HacChooseConnectionAction : DefaultActionGroup() {
         val hacSettings = RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris)
         presentation.text = when (e.place) {
             ActionPlaces.EDITOR_TOOLBAR -> hacSettings.toString()
-            HybrisActionPlaces.CONSOLE_TOOLBAR -> null
+            ConsoleConstants.PLACE_TOOLBAR -> null
             HybrisActionPlaces.LOGGERS_TOOLBAR -> null
             else -> hacSettings.shortenConnectionName()
         }
-        if (e.place == HybrisActionPlaces.CONSOLE_TOOLBAR || e.place == HybrisActionPlaces.LOGGERS_TOOLBAR) {
+        if (e.place == ConsoleConstants.PLACE_TOOLBAR || e.place == HybrisActionPlaces.LOGGERS_TOOLBAR) {
             presentation.putClientProperty(ActionUtil.HIDE_DROPDOWN_ICON, true)
         }
         presentation.isEnabledAndVisible = true

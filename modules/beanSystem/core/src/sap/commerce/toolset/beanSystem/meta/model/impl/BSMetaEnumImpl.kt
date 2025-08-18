@@ -20,6 +20,9 @@ package sap.commerce.toolset.beanSystem.meta.model.impl
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 import sap.commerce.toolset.CaseInsensitiveMap
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaSelfMerge
 import sap.commerce.toolset.beanSystem.model.Enum
 import sap.commerce.toolset.beanSystem.model.EnumValue
 import sap.commerce.toolset.xml.toBoolean
@@ -30,14 +33,14 @@ internal class BSMetaEnumImpl(
     override val extensionName: String,
     override val name: String?,
     override val isCustom: Boolean,
-    override val values: Map<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum.BSMetaEnumValue>
-) : sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum {
+    override val values: Map<String, BSMetaEnum.BSMetaEnumValue>
+) : BSMetaEnum {
 
     override val domAnchor: DomAnchor<Enum> = DomService.getInstance().createAnchor(dom)
     override val description = dom.description.stringValue
     override val template = dom.template.stringValue
     override val deprecatedSince = dom.deprecatedSince.stringValue
-    override val shortName = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getShortName(name)
+    override val shortName = sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getShortName(name)
     override val isDeprecated = dom.deprecated.toBoolean()
 
     override fun toString() = "Enum(module=$extensionName, name=$name, isDeprecated=$isDeprecated, isCustom=$isCustom)"
@@ -48,7 +51,7 @@ internal class BSMetaEnumImpl(
         override val extensionName: String,
         override val isCustom: Boolean,
         override val name: String?
-    ) : sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum.BSMetaEnumValue {
+    ) : BSMetaEnum.BSMetaEnumValue {
 
         override val domAnchor: DomAnchor<EnumValue> = DomService.getInstance().createAnchor(dom)
 
@@ -56,11 +59,9 @@ internal class BSMetaEnumImpl(
     }
 }
 
-internal class BSGlobalMetaEnumImpl(localMeta: sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum)
-    : sap.commerce.toolset.beanSystem.meta.model.BSMetaSelfMerge<Enum, sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum>(localMeta),
-    sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum {
+internal class BSGlobalMetaEnumImpl(localMeta: BSMetaEnum) : BSMetaSelfMerge<Enum, BSMetaEnum>(localMeta), BSGlobalMetaEnum {
 
-    override val values = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum.BSMetaEnumValue>()
+    override val values = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, BSMetaEnum.BSMetaEnumValue>()
     override val domAnchor = localMeta.domAnchor
     override val shortName = localMeta.shortName
     override val moduleName = localMeta.moduleName
@@ -70,7 +71,7 @@ internal class BSGlobalMetaEnumImpl(localMeta: sap.commerce.toolset.beanSystem.m
     override var deprecatedSince = localMeta.deprecatedSince
     override var isDeprecated = localMeta.isDeprecated
 
-    override fun mergeInternally(localMeta: sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum) {
+    override fun mergeInternally(localMeta: BSMetaEnum) {
         description?:let { description = localMeta.description }
 
         if (localMeta.isDeprecated) isDeprecated = localMeta.isDeprecated

@@ -21,7 +21,7 @@ package sap.commerce.toolset.flexibleSearch
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.openapi.util.Key
 import com.intellij.psi.tree.IFileElementType
-import sap.commerce.toolset.flexibleSearch.exec.remote.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 
 object FlexibleSearchConstants {

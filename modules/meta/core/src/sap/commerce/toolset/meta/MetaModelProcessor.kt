@@ -17,11 +17,11 @@
  */
 package sap.commerce.toolset.meta
 
-import sap.commerce.toolset.psi.util.PsiUtils
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
 import kotlinx.coroutines.coroutineScope
+import sap.commerce.toolset.project.ModuleUtil
 
 abstract class MetaModelProcessor<D : DomElement, M>(private val project: Project) {
 
@@ -31,7 +31,7 @@ abstract class MetaModelProcessor<D : DomElement, M>(private val project: Projec
                 meta.container,
                 meta.yContainer,
                 meta.name,
-                PsiUtils.isCustomExtensionFile(meta.virtualFile, project),
+                ModuleUtil.isCustomExtensionFile(meta.virtualFile, project),
                 meta.rootElement
             )
         }

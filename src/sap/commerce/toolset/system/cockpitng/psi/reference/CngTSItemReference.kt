@@ -26,7 +26,7 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.psi.PsiUtils
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum

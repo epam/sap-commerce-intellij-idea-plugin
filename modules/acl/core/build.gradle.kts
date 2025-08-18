@@ -25,7 +25,7 @@ plugins {
 
 sourceSets {
     main {
-        java.srcDirs("src")
+        java.srcDirs("src", "gen")
         resources.srcDirs("resources")
     }
     test {
@@ -33,12 +33,23 @@ sourceSets {
     }
 }
 
+idea {
+    module {
+        generatedSourceDirs.add(file("gen"))
+    }
+}
+
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":typeSystem-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+
+        bundledPlugins(
+            "com.intellij.java",
+        )
     }
 }

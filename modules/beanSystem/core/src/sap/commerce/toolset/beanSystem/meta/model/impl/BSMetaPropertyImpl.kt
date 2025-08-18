@@ -20,6 +20,10 @@ package sap.commerce.toolset.beanSystem.meta.model.impl
 
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
+import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaAnnotations
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaHint
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty
 import sap.commerce.toolset.beanSystem.model.Property
 import sap.commerce.toolset.xml.toBoolean
 
@@ -29,17 +33,17 @@ internal class BSMetaPropertyImpl(
     override val extensionName: String,
     override val isCustom: Boolean,
     override val name: String?,
-    override val annotations: List<sap.commerce.toolset.beanSystem.meta.model.BSMetaAnnotations>,
-    override val hints: Map<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaHint>,
-) : sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty {
+    override val annotations: List<BSMetaAnnotations>,
+    override val hints: Map<String, BSMetaHint>,
+) : BSMetaProperty {
 
     override val domAnchor: DomAnchor<Property> = DomService.getInstance().createAnchor(dom)
     override val type = dom.type.stringValue
     override val description = dom.description.stringValue
     override val isEquals = dom.equals.toBoolean()
     override val isDeprecated = dom.deprecated.toBoolean()
-    override var flattenType: String? = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.flattenType(this)
-    override var referencedType: String? = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.referencedType(this)
+    override var flattenType: String? = BSMetaHelper.flattenType(this)
+    override var referencedType: String? = BSMetaHelper.referencedType(this)
 
     override fun toString() = "Property(module=$extensionName, name=$name, isCustom=$isCustom)"
 }

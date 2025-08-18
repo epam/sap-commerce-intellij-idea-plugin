@@ -31,9 +31,9 @@ import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
+import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.exec.console.FlexibleSearchConsole
-import sap.commerce.toolset.flexibleSearch.exec.remote.FlexibleSearchExecutionClient
-import sap.commerce.toolset.flexibleSearch.exec.remote.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 
 class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole, FlexibleSearchSplitEditor>(
     FlexibleSearchLanguage,

@@ -24,7 +24,7 @@ import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
 @State(name = "GotoTypeConfiguration", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
-class GotoTypeConfiguration(private val project: Project) : com.intellij.ide.util.gotoByName.ChooseByNameFilterConfiguration<SystemRef>() {
+class GotoTypeConfiguration(private val project: Project) : ChooseByNameFilterConfiguration<SystemRef>() {
 
     override fun nameForElement(type: SystemRef) = type.id
 

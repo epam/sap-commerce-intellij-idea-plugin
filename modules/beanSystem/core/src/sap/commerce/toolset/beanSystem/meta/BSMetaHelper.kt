@@ -25,13 +25,14 @@ import sap.commerce.toolset.HybrisConstants.BS_SIGN_GREATER_THAN
 import sap.commerce.toolset.HybrisConstants.BS_SIGN_GREATER_THAN_ESCAPED
 import sap.commerce.toolset.HybrisConstants.BS_SIGN_LESS_THAN
 import sap.commerce.toolset.HybrisConstants.BS_SIGN_LESS_THAN_ESCAPED
+import sap.commerce.toolset.beanSystem.meta.model.*
 
 object BSMetaHelper {
     private val flattenTypeRegex = Regex("""\w+\.""")
 
-    fun flattenType(meta: sap.commerce.toolset.beanSystem.meta.model.BSMetaBean) = flattenType(meta.fullName)
-    fun flattenType(meta: sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty) = flattenType(meta.type)
-    fun referencedType(meta: sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty) = meta.type
+    fun flattenType(meta: BSMetaBean) = flattenType(meta.fullName)
+    fun flattenType(meta: BSMetaProperty) = flattenType(meta.type)
+    fun referencedType(meta: BSMetaProperty) = meta.type
         ?.replace(BS_SIGN_LESS_THAN_ESCAPED, BS_SIGN_LESS_THAN)
         ?.replace(BS_SIGN_GREATER_THAN_ESCAPED, BS_SIGN_GREATER_THAN)
         ?.replace(" ", "")
@@ -41,9 +42,9 @@ object BSMetaHelper {
     fun getShortName(name: String?) = name?.split(".")?.lastOrNull()
     fun getNameWithGeneric(name: String?, generic: String?) = (name ?: "") + (generic?.let { "<$it>" } ?: "")
 
-    fun isDeprecated(it: sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier<DomElement>) = when (it) {
-        is sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum -> it.isDeprecated
-        is sap.commerce.toolset.beanSystem.meta.model.BSMetaBean -> it.isDeprecated
+    fun isDeprecated(it: BSGlobalMetaClassifier<DomElement>) = when (it) {
+        is BSMetaEnum -> it.isDeprecated
+        is BSMetaBean -> it.isDeprecated
         else -> false
     }
 
@@ -65,8 +66,8 @@ object BSMetaHelper {
     fun getBeanName(name: String) = getUnescapedName(name)
         .substringBefore(BS_SIGN_LESS_THAN)
 
-    fun getAllExtends(metaModel: BSGlobalMetaModel, meta: sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean): Set<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean> {
-        val tempParents = LinkedHashSet<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>()
+    fun getAllExtends(metaModel: BSGlobalMetaModel, meta: BSGlobalMetaBean): Set<BSGlobalMetaBean> {
+        val tempParents = LinkedHashSet<BSGlobalMetaBean>()
         var metaItem = getExtendsMetaItem(metaModel, meta)
 
         while (metaItem != null) {
@@ -80,15 +81,15 @@ object BSMetaHelper {
         .replace(BS_SIGN_LESS_THAN, BS_SIGN_LESS_THAN_ESCAPED)
         .replace(BS_SIGN_GREATER_THAN, BS_SIGN_GREATER_THAN_ESCAPED)
 
-    private fun getExtendsMetaItem(metaModel: BSGlobalMetaModel, meta: sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean): sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean? {
+    private fun getExtendsMetaItem(metaModel: BSGlobalMetaModel, meta: BSGlobalMetaBean): BSGlobalMetaBean? {
         val extendsName = meta.extends
             // prevent deadlock when type extends itself
             ?.takeIf { it != meta.name }
             ?: HybrisConstants.BS_TYPE_OBJECT
 
-        return metaModel.getMetaType<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN)[extendsName]
-            ?: metaModel.getMetaType<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT)[extendsName]
-            ?: metaModel.getMetaType<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_WS_BEAN)[extendsName]
+        return metaModel.getMetaType<BSGlobalMetaBean>(BSMetaType.META_BEAN)[extendsName]
+            ?: metaModel.getMetaType<BSGlobalMetaBean>(BSMetaType.META_EVENT)[extendsName]
+            ?: metaModel.getMetaType<BSGlobalMetaBean>(BSMetaType.META_WS_BEAN)[extendsName]
     }
 
     private fun getUnescapedName(name: String) = name

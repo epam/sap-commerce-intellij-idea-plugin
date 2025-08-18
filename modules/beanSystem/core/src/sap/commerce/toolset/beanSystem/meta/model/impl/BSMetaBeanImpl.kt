@@ -20,6 +20,9 @@ package sap.commerce.toolset.beanSystem.meta.model.impl
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomService
 import sap.commerce.toolset.CaseInsensitiveMap
+import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
+import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
+import sap.commerce.toolset.beanSystem.meta.model.*
 import sap.commerce.toolset.beanSystem.model.Bean
 import sap.commerce.toolset.beanSystem.model.BeanType
 import sap.commerce.toolset.xml.toBoolean
@@ -30,23 +33,23 @@ internal class BSMetaBeanImpl(
     override val extensionName: String,
     override val name: String,
     override val isCustom: Boolean,
-    override val imports: List<sap.commerce.toolset.beanSystem.meta.model.BSMetaImport>,
-    override val annotations: List<sap.commerce.toolset.beanSystem.meta.model.BSMetaAnnotations>,
-    override val properties: Map<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty>,
-    override val hints: Map<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaHint>,
-) : sap.commerce.toolset.beanSystem.meta.model.BSMetaBean {
+    override val imports: List<BSMetaImport>,
+    override val annotations: List<BSMetaAnnotations>,
+    override val properties: Map<String, BSMetaProperty>,
+    override val hints: Map<String, BSMetaHint>,
+) : BSMetaBean {
 
     override val domAnchor: DomAnchor<Bean> = DomService.getInstance().createAnchor(dom)
     override val description = dom.description.stringValue
     override val template = dom.template.stringValue
-    override val genericName = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getGenericName(dom.clazz.stringValue)
+    override val genericName = BSMetaHelper.getGenericName(dom.clazz.stringValue)
     override val extends = dom.extends.stringValue
-        ?.let { _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getBeanName(it) }
-    override val extendsGenericName = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getGenericName(dom.extends.stringValue)
+        ?.let { BSMetaHelper.getBeanName(it) }
+    override val extendsGenericName = BSMetaHelper.getGenericName(dom.extends.stringValue)
     override val type = dom.type.value ?: BeanType.BEAN
-    override val shortName = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getShortName(name)
-    override val fullName = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getNameWithGeneric(name, genericName)
-    override val fullExtends = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getNameWithGeneric(extends, extendsGenericName)
+    override val shortName = BSMetaHelper.getShortName(name)
+    override val fullName = BSMetaHelper.getNameWithGeneric(name, genericName)
+    override val fullExtends = BSMetaHelper.getNameWithGeneric(extends, extendsGenericName)
     override val deprecatedSince = dom.deprecatedSince.stringValue
     override val isDeprecated = dom.deprecated.toBoolean()
     override val isAbstract = dom.abstract.toBoolean()
@@ -56,11 +59,11 @@ internal class BSMetaBeanImpl(
 
 }
 
-internal class BSGlobalMetaBeanImpl(localMeta: sap.commerce.toolset.beanSystem.meta.model.BSMetaBean) : sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBeanSelfMerge<Bean, sap.commerce.toolset.beanSystem.meta.model.BSMetaBean>(localMeta),
+internal class BSGlobalMetaBeanImpl(localMeta: BSMetaBean) : BSGlobalMetaBeanSelfMerge<Bean, BSMetaBean>(localMeta),
     sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean {
 
-    override val hints = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaHint>()
-    override val properties = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty>()
+    override val hints = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, BSMetaHint>()
+    override val properties = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, BSMetaProperty>()
     override val domAnchor = localMeta.domAnchor
     override val type = localMeta.type
     override val shortName = localMeta.shortName
@@ -74,19 +77,19 @@ internal class BSGlobalMetaBeanImpl(localMeta: sap.commerce.toolset.beanSystem.m
     override var extendsGenericName = localMeta.extendsGenericName
     override var fullName = localMeta.fullName
     override var fullExtends = localMeta.fullExtends
-    override val imports = ArrayList<sap.commerce.toolset.beanSystem.meta.model.BSMetaImport>()
-    override val annotations = ArrayList<sap.commerce.toolset.beanSystem.meta.model.BSMetaAnnotations>()
+    override val imports = ArrayList<BSMetaImport>()
+    override val annotations = ArrayList<BSMetaAnnotations>()
     override var isDeprecated = localMeta.isDeprecated
     override var isAbstract = localMeta.isAbstract
     override var isSuperEquals = localMeta.isSuperEquals
-    override var flattenType: String? = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.flattenType(this)
+    override var flattenType: String? = BSMetaHelper.flattenType(this)
 
-    override val allProperties = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, sap.commerce.toolset.beanSystem.meta.model.BSMetaProperty>()
-    override val allExtends = LinkedHashSet<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>()
-    override var metaType = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN
+    override val allProperties = CaseInsensitiveMap.CaseInsensitiveConcurrentHashMap<String, BSMetaProperty>()
+    override val allExtends = LinkedHashSet<BSGlobalMetaBean>()
+    override var metaType = BSMetaType.META_BEAN
 
-    override fun postMerge(globalMetaModel: sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel) {
-        val extends = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.BSMetaHelper.getAllExtends(globalMetaModel, this)
+    override fun postMerge(globalMetaModel: BSGlobalMetaModel) {
+        val extends = BSMetaHelper.getAllExtends(globalMetaModel, this)
 
         allExtends.addAll(extends)
         extends.forEach {
@@ -94,7 +97,7 @@ internal class BSGlobalMetaBeanImpl(localMeta: sap.commerce.toolset.beanSystem.m
         }
     }
 
-    override fun mergeInternally(localMeta: sap.commerce.toolset.beanSystem.meta.model.BSMetaBean) {
+    override fun mergeInternally(localMeta: BSMetaBean) {
         template ?: let { template = localMeta.template }
         extends ?: let { extends = localMeta.extends }
         description ?: let { description = localMeta.description }

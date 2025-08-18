@@ -31,7 +31,7 @@ import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
 import sap.commerce.toolset.beanSystem.psi.reference.result.BeanPropertyResolveResult
 import sap.commerce.toolset.occ.psi.OccPropertyMapping
-import sap.commerce.toolset.psi.util.PsiUtils
+import sap.commerce.toolset.psi.PsiUtils
 
 class OccBSBeanPropertyReference(
     private val meta: BSGlobalMetaBean,

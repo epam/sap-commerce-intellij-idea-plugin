@@ -25,7 +25,6 @@ package sap.commerce.toolset.polyglotQuery.psi;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
 import sap.commerce.toolset.psi.FoldablePsiElement;
 
 public interface PolyglotQueryOrderBy extends FoldablePsiElement {

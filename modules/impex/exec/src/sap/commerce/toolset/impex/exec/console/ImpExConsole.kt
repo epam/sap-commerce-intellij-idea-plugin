@@ -28,10 +28,10 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.exec.remote.console.HybrisConsole
+import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.ImpExLanguage
-import sap.commerce.toolset.impex.exec.remote.context.ImpExExecutionContext
+import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 import java.awt.BorderLayout
 import java.io.Serial
 

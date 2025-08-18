@@ -17,7 +17,6 @@
  */
 package sap.commerce.toolset.common.services
 
-import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.module.ModuleManager
@@ -34,16 +33,6 @@ import sap.commerce.toolset.project.yExtensionName
 
 @Service
 class CommonIdeaService {
-    private val commandProcessor: CommandProcessor = CommandProcessor.getInstance()
-    fun isTypingActionInProgress(): Boolean {
-        val currentCommandName = commandProcessor.currentCommandName ?: return false
-
-        return HybrisConstants.TYPING_EDITOR_ACTIONS.any {
-            currentCommandName.equals(it, true)
-        } || HybrisConstants.UNDO_REDO_EDITOR_ACTIONS.any {
-            currentCommandName.startsWith(it)
-        }
-    }
 
     fun isPotentiallyHybrisProject(project: Project): Boolean {
         val modules = ModuleManager.getInstance(project).modules

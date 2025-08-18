@@ -38,7 +38,7 @@ dependencies {
     implementation(project(":shared-ui"))
     implementation(project(":logging-core"))
     implementation(project(":logging-exec"))
-    implementation(project(":exec-remote"))
+    implementation(project(":exec-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

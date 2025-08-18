@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,14 +19,14 @@
 package sap.commerce.toolset.system.cockpitng.psi.reference
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
-import sap.commerce.toolset.psi.util.PsiUtils
-import sap.commerce.toolset.system.cockpitng.codeInsight.completion.CngCompletionService
-import sap.commerce.toolset.system.cockpitng.psi.CngPsiHelper
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlTag
+import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.system.cockpitng.codeInsight.completion.CngCompletionService
+import sap.commerce.toolset.system.cockpitng.psi.CngPsiHelper
 
 class CngInitializePropertyReference : PsiReferenceBase.Poly<PsiElement>, PsiPolyVariantReference, HighlightedReference {
 

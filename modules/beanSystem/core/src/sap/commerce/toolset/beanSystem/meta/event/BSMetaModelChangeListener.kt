@@ -19,9 +19,10 @@
 package sap.commerce.toolset.beanSystem.meta.event
 
 import com.intellij.util.messages.Topic
+import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
 import sap.commerce.toolset.meta.event.MetaModelChangeListener
 
-interface BSMetaModelChangeListener: MetaModelChangeListener<sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel> {
+interface BSMetaModelChangeListener: MetaModelChangeListener<BSGlobalMetaModel> {
 
     companion object {
         val TOPIC = Topic(BSMetaModelChangeListener::class.java)

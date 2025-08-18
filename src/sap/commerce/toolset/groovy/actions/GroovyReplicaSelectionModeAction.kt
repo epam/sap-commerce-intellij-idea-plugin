@@ -26,7 +26,7 @@ import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.exec.remote.context.ReplicaSelectionMode
 import sap.commerce.toolset.exec.remote.http.RemoteConnectionContext
-import sap.commerce.toolset.groovy.exec.remote.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.toolwindow.CCv2ReplicaSelectionDialog
 import sap.commerce.toolset.toolwindow.ManualReplicaSelectionDialog
 import java.awt.Component

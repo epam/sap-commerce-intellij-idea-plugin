@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.searcheverywhere
 
+import com.intellij.ide.actions.SearchEverywherePsiRenderer
 import com.intellij.ide.actions.searcheverywhere.*
 import com.intellij.ide.util.gotoByName.FilteringGotoByModel
 import com.intellij.navigation.ChooseByNameContributor
@@ -51,7 +52,7 @@ class SearchEverywhereContributor(event: AnActionEvent) : AbstractGotoSEContribu
     override fun getSortWeight() = 2000
     override fun getActions(onChanged: Runnable) = doGetActions(filter, null, onChanged)
 
-    override fun getElementsRenderer(): ListCellRenderer<in Any?> = object : com.intellij.ide.actions.SearchEverywherePsiRenderer(this) {
+    override fun getElementsRenderer(): ListCellRenderer<in Any?> = object : SearchEverywherePsiRenderer(this) {
         override fun getIcon(element: PsiElement?) = when (element?.parentOfType<XmlTag>()?.localName) {
             ItemTypes.ITEMTYPE -> HybrisIcons.TypeSystem.Types.ITEM
             CollectionTypes.COLLECTIONTYPE -> HybrisIcons.TypeSystem.Types.COLLECTION

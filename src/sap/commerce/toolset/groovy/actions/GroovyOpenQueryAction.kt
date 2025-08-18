@@ -17,14 +17,14 @@
  */
 package sap.commerce.toolset.groovy.actions
 
-import sap.commerce.toolset.actions.OpenInHybrisConsoleService
-import sap.commerce.toolset.tools.remote.console.impl.HybrisGroovyConsole
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.SingleRootFileViewProvider
 import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
+import sap.commerce.toolset.tools.remote.console.impl.HybrisGroovyConsole
 
 class GroovyOpenQueryAction : AnAction() {
 

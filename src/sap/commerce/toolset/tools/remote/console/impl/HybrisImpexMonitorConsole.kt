@@ -27,7 +27,7 @@ import com.intellij.ui.components.JBLabel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.exec.remote.console.HybrisConsole
+import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.remote.context.ConsoleAwareExecutionResult
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.file.ImpexFileType

@@ -20,50 +20,54 @@ package sap.commerce.toolset.beanSystem.meta
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.beanSystem.meta.impl.BSMetaModelNameProvider
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
 import sap.commerce.toolset.beanSystem.model.Bean
 import sap.commerce.toolset.beanSystem.model.Enum
 
 @Service(Service.Level.PROJECT)
 class BSMetaModelAccess(private val project: Project) {
 
-    fun getAllBeans() = getAll<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN) +
-        getAll(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_WS_BEAN) +
-        getAll(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT)
+    fun getAllBeans() = getAll<BSGlobalMetaBean>(BSMetaType.META_BEAN) +
+        getAll(BSMetaType.META_WS_BEAN) +
+        getAll(BSMetaType.META_EVENT)
 
-    fun getAllEnums() = getAll<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_ENUM)
+    fun getAllEnums() = getAll<BSGlobalMetaEnum>(BSMetaType.META_ENUM)
 
-    fun <T : sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier<*>> getAll(metaType: sap.commerce.toolset.beanSystem.meta.model.BSMetaType): Collection<T> = BSMetaModelStateService.state(project).getMetaType<T>(metaType).values
+    fun <T : BSGlobalMetaClassifier<*>> getAll(metaType: BSMetaType): Collection<T> = BSMetaModelStateService.state(project).getMetaType<T>(metaType).values
 
-    fun findMetaForDom(dom: Enum) = findMetaEnumByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.impl.BSMetaModelNameProvider.extract(dom))
-    fun findMetasForDom(dom: Bean): List<BSGlobalMetaBean> = _root_ide_package_.sap.commerce.toolset.beanSystem.meta.impl.BSMetaModelNameProvider.extract(dom)
+    fun findMetaForDom(dom: Enum) = findMetaEnumByName(BSMetaModelNameProvider.extract(dom))
+    fun findMetasForDom(dom: Bean): List<BSGlobalMetaBean> = BSMetaModelNameProvider.extract(dom)
         ?.let { findMetaBeansByName(it) }
         ?: emptyList()
 
     fun findMetaBeanByName(name: String?) = listOfNotNull(
-        findMetaByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN, name),
-        findMetaByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_WS_BEAN, name),
-        findMetaByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT, name)
+        findMetaByName(BSMetaType.META_BEAN, name),
+        findMetaByName(BSMetaType.META_WS_BEAN, name),
+        findMetaByName(BSMetaType.META_EVENT, name)
     )
         .map { it as? BSGlobalMetaBean }
         .firstOrNull()
 
     fun findMetaBeansByName(name: String?): List<BSGlobalMetaBean> = listOfNotNull(
-        findMetaByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN, name),
-        findMetaByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_WS_BEAN, name),
-        findMetaByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT, name)
+        findMetaByName(BSMetaType.META_BEAN, name),
+        findMetaByName(BSMetaType.META_WS_BEAN, name),
+        findMetaByName(BSMetaType.META_EVENT, name)
     )
 
-    fun findMetasByName(name: String): List<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier<*>> = listOfNotNull(
-        findMetaByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_ENUM, name),
-        findMetaByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_BEAN, name),
-        findMetaByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_WS_BEAN, name),
-        findMetaByName(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_EVENT, name)
+    fun findMetasByName(name: String): List<BSGlobalMetaClassifier<*>> = listOfNotNull(
+        findMetaByName(BSMetaType.META_ENUM, name),
+        findMetaByName(BSMetaType.META_BEAN, name),
+        findMetaByName(BSMetaType.META_WS_BEAN, name),
+        findMetaByName(BSMetaType.META_EVENT, name)
     )
 
-    fun findMetaEnumByName(name: String?) = findMetaByName<sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum>(_root_ide_package_.sap.commerce.toolset.beanSystem.meta.model.BSMetaType.META_ENUM, name)
+    fun findMetaEnumByName(name: String?) = findMetaByName<BSGlobalMetaEnum>(BSMetaType.META_ENUM, name)
 
-    private fun <T : sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier<*>> findMetaByName(metaType: sap.commerce.toolset.beanSystem.meta.model.BSMetaType, name: String?): T? = BSMetaModelStateService.state(project)
+    private fun <T : BSGlobalMetaClassifier<*>> findMetaByName(metaType: BSMetaType, name: String?): T? = BSMetaModelStateService.state(project)
         .getMetaType<T>(metaType)[name]
 
     companion object {

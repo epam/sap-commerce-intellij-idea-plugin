@@ -29,8 +29,8 @@ import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.editor.InEditorResultsView
 import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
+import sap.commerce.toolset.ui.editor.InEditorResultsView
 
 @Service(Service.Level.PROJECT)
 class AclInEditorResultsView(project: Project, coroutineScope: CoroutineScope) : InEditorResultsView<AclSplitEditor, DefaultExecutionResult>(project, coroutineScope) {

@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.beanSystem.model.Beans;
-import sap.commerce.toolset.psi.util.PsiUtils;
+import sap.commerce.toolset.project.ModuleUtil;
 
 public final class BSUtils {
 
@@ -41,7 +41,7 @@ public final class BSUtils {
             return null;
         }
 
-        return PsiUtils.getModule(file);
+        return ModuleUtil.getModule(file);
     }
 
 
@@ -63,7 +63,7 @@ public final class BSUtils {
 
 
             final VirtualFile vFile = file.getVirtualFile();
-            return CachedValueProvider.Result.create(vFile != null && PsiUtils.isCustomExtensionFile(vFile, file.getProject()), file);
+            return CachedValueProvider.Result.create(vFile != null && ModuleUtil.isCustomExtensionFile(vFile, file.getProject()), file);
         });
     }
 
