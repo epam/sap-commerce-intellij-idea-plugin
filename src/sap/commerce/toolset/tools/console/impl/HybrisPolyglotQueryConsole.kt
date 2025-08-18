@@ -20,8 +20,8 @@ package sap.commerce.toolset.tools.console.impl
 
 import com.intellij.execution.ui.ConsoleViewContentType.*
 import com.intellij.openapi.project.Project
-import com.intellij.ui.components.JBLabel
-import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
+import com.intellij.ui.JBIntSpinner
+import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
@@ -30,29 +30,25 @@ import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import java.awt.BorderLayout
 import java.io.Serial
-import javax.swing.JPanel
-import javax.swing.JSpinner
-import javax.swing.SpinnerNumberModel
 
 @Deprecated("Move to own module")
-class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
-    project,
-    "[y] PolyglotQuery",
-    PolyglotQueryLanguage,
-    coroutineScope
-) {
+class HybrisPolyglotQueryConsole(
+    project: Project,
+    coroutineScope: CoroutineScope
+) : HybrisConsole<FlexibleSearchExecutionContext>(project, "[y] PolyglotQuery", PolyglotQueryLanguage, coroutineScope) {
 
-    private val maxRowsSpinner = JSpinner(SpinnerNumberModel(200, 1, Integer.MAX_VALUE, 1))
-        .also { it.border = borders5 }
+    private lateinit var maxRowsSpinner: JBIntSpinner
 
     init {
-        isEditable = true
+        val myPanel = panel {
+            row {
+                maxRowsSpinner = spinner(1..Integer.MAX_VALUE)
+                    .component
+                    .apply { value = 200 }
+            }
+        }
 
-        val panel = JPanel(WrappedFlowLayout(0, 0))
-        panel.add(JBLabel("Rows:").also { it.border = bordersLabel })
-        panel.add(maxRowsSpinner)
-
-        add(panel, BorderLayout.NORTH)
+        add(myPanel, BorderLayout.NORTH)
     }
 
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(

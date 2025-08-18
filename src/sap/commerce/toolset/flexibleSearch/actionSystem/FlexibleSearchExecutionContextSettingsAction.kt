@@ -29,7 +29,6 @@ import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.actionSystem.ExecutionContextSettingsAction
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.project.PropertyService
@@ -65,7 +64,7 @@ class FlexibleSearchExecutionContextSettingsAction : ExecutionContextSettingsAct
     }
 
     override fun applySettings(editor: Editor, settings: FlexibleSearchExecutionContext.ModifiableSettings) {
-        editor.putUserData(FlexibleSearchConstants.KEY_EXECUTION_SETTINGS, settings.immutable())
+        editor.putUserData(FlexibleSearchExecutionContext.KEY_EXECUTION_SETTINGS, settings.immutable())
     }
 
     override fun settingsPanel(e: AnActionEvent, project: Project, settings: FlexibleSearchExecutionContext.ModifiableSettings): DialogPanel {

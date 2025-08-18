@@ -39,7 +39,7 @@ import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryConstants
-import sap.commerce.toolset.polyglotQuery.fileTypes.PolyglotQueryFileType
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.PolyglotQuerySettingsState
 import sap.commerce.toolset.settings.state.ReservedWordsCase

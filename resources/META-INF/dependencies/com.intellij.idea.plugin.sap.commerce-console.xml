@@ -20,7 +20,6 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <consoleProvider implementation="sap.commerce.toolset.tools.console.impl.ImpexMonitorConsoleProvider"/>
-        <consoleProvider implementation="sap.commerce.toolset.tools.console.impl.PolyglotQueryConsoleProvider"/>
     </extensions>
 
     <actions>

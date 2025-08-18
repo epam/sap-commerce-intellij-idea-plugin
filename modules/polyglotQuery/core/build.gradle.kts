@@ -41,10 +41,16 @@ idea {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":typeSystem-core"))
+    implementation(project(":project-core"))
+    implementation(project(":flexibleSearch-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+        bundledPlugins(
+            "com.intellij.java",
+        )
     }
 }

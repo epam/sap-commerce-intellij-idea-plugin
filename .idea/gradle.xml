@@ -12,6 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/modules/acl/core" />
+            <option value="$PROJECT_DIR$/modules/acl/ui" />
             <option value="$PROJECT_DIR$/modules/ant/ui" />
             <option value="$PROJECT_DIR$/modules/beanSystem/core" />
             <option value="$PROJECT_DIR$/modules/beanSystem/ui" />
@@ -25,6 +26,7 @@
             <option value="$PROJECT_DIR$/modules/extensioninfo" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/exec" />
+            <option value="$PROJECT_DIR$/modules/flexibleSearch/ui" />
             <option value="$PROJECT_DIR$/modules/groovy/exec" />
             <option value="$PROJECT_DIR$/modules/groovy/ui" />
             <option value="$PROJECT_DIR$/modules/impex/core" />
@@ -40,6 +42,7 @@
             <option value="$PROJECT_DIR$/modules/occ/ui" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/core" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/exec" />
+            <option value="$PROJECT_DIR$/modules/polyglotQuery/ui" />
             <option value="$PROJECT_DIR$/modules/project/core" />
             <option value="$PROJECT_DIR$/modules/project/import" />
             <option value="$PROJECT_DIR$/modules/shared/core" />

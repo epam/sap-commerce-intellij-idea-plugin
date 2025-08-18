@@ -38,8 +38,6 @@ class FlexibleSearchConsole(
     private lateinit var maxRowsSpinner: JBIntSpinner
 
     init {
-        isEditable = true
-
         val myPanel = panel {
             row {
                 maxRowsSpinner = spinner(1..Integer.MAX_VALUE)

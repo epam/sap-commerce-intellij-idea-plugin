@@ -47,17 +47,11 @@ kotlin {
 
 sourceSets {
     main {
-        java.srcDirs("src", "gen")
+        java.srcDirs("src")
         resources.srcDirs("resources")
     }
     test {
         java.srcDirs("tests")
-    }
-}
-
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
     }
 }
 

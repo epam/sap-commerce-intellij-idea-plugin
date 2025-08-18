@@ -37,7 +37,6 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
@@ -54,7 +53,7 @@ fun AnActionEvent.flexibleSearchSplitEditor() = this.getData(PlatformDataKeys.FI
     ?.asSafely<FlexibleSearchSplitEditor>()
 
 fun AnActionEvent.flexibleSearchExecutionContextSettings(fallback: () -> FlexibleSearchExecutionContext.Settings) = this.getData(CommonDataKeys.EDITOR)
-    ?.getUserData(FlexibleSearchConstants.KEY_EXECUTION_SETTINGS)
+    ?.getUserData(FlexibleSearchExecutionContext.KEY_EXECUTION_SETTINGS)
     ?: fallback()
 
 class FlexibleSearchSplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {

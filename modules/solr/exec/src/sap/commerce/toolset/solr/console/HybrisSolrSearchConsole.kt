@@ -63,7 +63,6 @@ class HybrisSolrSearchConsole(
     private lateinit var maxRowsSpinner: JBIntSpinner
 
     init {
-        isEditable = true
         prompt = "q="
 
         val myPanel = panel {

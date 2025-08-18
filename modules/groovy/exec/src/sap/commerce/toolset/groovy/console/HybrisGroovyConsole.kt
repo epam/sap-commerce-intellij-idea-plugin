@@ -40,8 +40,6 @@ class HybrisGroovyConsole(
     private lateinit var timeoutSpinner: JBIntSpinner
 
     init {
-        isEditable = true
-
         val myPanel = panel {
             row {
                 commitCheckbox = checkBox("Commit mode")

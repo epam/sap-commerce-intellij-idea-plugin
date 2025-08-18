@@ -30,14 +30,14 @@ import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.acl.editor.AclSplitEditor
-import sap.commerce.toolset.acl.fileTypes.AclFileType
+import sap.commerce.toolset.acl.file.AclFileType
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorBase
 import sap.commerce.toolset.impex.file.ImpexFileType
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
-import sap.commerce.toolset.polyglotQuery.fileTypes.PolyglotQueryFileType
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
 class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
 

@@ -35,7 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import sap.commerce.toolset.acl.AclLanguage
-import sap.commerce.toolset.acl.fileTypes.AclFileType
+import sap.commerce.toolset.acl.file.AclFileType
 import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.impex.psi.ImpexUserRights
 

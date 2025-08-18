@@ -21,7 +21,7 @@ package sap.commerce.toolset.acl.actionSystem
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
-import sap.commerce.toolset.acl.fileTypes.AclFileType
+import sap.commerce.toolset.acl.file.AclFileType
 import sap.commerce.toolset.actionSystem.AbstractHybrisFileToolbarInstaller
 
 @Service

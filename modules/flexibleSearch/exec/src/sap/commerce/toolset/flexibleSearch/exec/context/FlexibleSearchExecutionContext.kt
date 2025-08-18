@@ -19,6 +19,7 @@
 package sap.commerce.toolset.flexibleSearch.exec.context
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.context.ExecutionContext
@@ -73,6 +74,7 @@ data class FlexibleSearchExecutionContext(
     }
 
     companion object {
+        val KEY_EXECUTION_SETTINGS = Key.create<Settings>("sap.cx.fxs.execution.settings")
         val DEFAULT_SETTINGS by lazy {
             Settings(
                 maxCount = 200,

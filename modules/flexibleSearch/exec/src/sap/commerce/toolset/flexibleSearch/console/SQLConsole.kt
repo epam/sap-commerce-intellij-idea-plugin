@@ -46,8 +46,6 @@ class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConso
     private lateinit var maxRowsSpinner: JBIntSpinner
 
     init {
-        isEditable = true
-
         val myPanel = panel {
             row {
                 commitCheckbox = checkBox("Commit mode")

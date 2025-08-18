@@ -63,7 +63,6 @@ class HybrisImpexMonitorConsole(
         .also { it.border = bordersLabel }
 
     init {
-        isEditable = true
         isConsoleEditorEnabled = false
 
         val panel = JPanel()

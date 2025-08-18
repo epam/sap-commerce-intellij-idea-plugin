@@ -22,7 +22,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
 import sap.commerce.toolset.actionSystem.AbstractHybrisFileToolbarInstaller
-import sap.commerce.toolset.polyglotQuery.fileTypes.PolyglotQueryFileType
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
 @Service
 class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(

@@ -20,7 +20,7 @@ package sap.commerce.toolset.acl.psi
 import com.intellij.extapi.psi.PsiFileBase
 import com.intellij.psi.FileViewProvider
 import sap.commerce.toolset.acl.AclLanguage
-import sap.commerce.toolset.acl.fileTypes.AclFileType
+import sap.commerce.toolset.acl.file.AclFileType
 import java.io.Serial
 
 class AclFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, AclLanguage) {
