@@ -24,7 +24,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.settings.options.ApplicationCCv2SettingsConfigurableProvider
+import sap.commerce.toolset.ccv2.options.ApplicationCCv2SettingsConfigurableProvider
 
 class CCv2OpenSettingsAction : AnAction() {
 

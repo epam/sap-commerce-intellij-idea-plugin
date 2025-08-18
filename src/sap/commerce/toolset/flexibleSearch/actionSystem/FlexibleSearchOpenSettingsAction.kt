@@ -26,7 +26,7 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.flexibleSearch.settings.options.ProjectFlexibleSearchSettingsConfigurableProvider
+import sap.commerce.toolset.flexibleSearch.options.ProjectFlexibleSearchSettingsConfigurableProvider
 
 class FlexibleSearchOpenSettingsAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

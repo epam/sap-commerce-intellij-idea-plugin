@@ -27,6 +27,6 @@
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.bp.title"
                              order="after hybris.project.bs.settings"
-                             provider="sap.commerce.toolset.system.businessProcess.settings.options.ProjectBusinessProcessConfigurableProvider"/>
+                             provider="sap.commerce.toolset.system.businessProcess.options.ProjectBusinessProcessConfigurableProvider"/>
     </extensions>
 </idea-plugin>

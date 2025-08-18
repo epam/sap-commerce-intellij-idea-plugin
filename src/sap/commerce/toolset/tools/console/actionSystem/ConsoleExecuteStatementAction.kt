@@ -32,7 +32,7 @@ import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
-import sap.commerce.toolset.impex.monitoring.console.HybrisImpexMonitorConsole
+import sap.commerce.toolset.impex.monitoring.console.HybrisImpExMonitorConsole
 import sap.commerce.toolset.impex.monitoring.exec.ImpExMonitorExecutionClient
 import sap.commerce.toolset.polyglotQuery.console.HybrisPolyglotQueryConsole
 import sap.commerce.toolset.solr.console.HybrisSolrSearchConsole
@@ -78,7 +78,7 @@ class ConsoleExecuteStatementAction : AnAction() {
                 resultCallback = { _, result -> console.print(result) }
             )
 
-            is HybrisImpexMonitorConsole -> ImpExMonitorExecutionClient.getInstance(project).execute(
+            is HybrisImpExMonitorConsole -> ImpExMonitorExecutionClient.getInstance(project).execute(
                 context = console.context,
                 beforeCallback = { _ -> console.beforeExecution() },
                 resultCallback = { _, result -> console.print(result) }

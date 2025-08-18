@@ -1,6 +1,5 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
-  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
   ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -16,16 +15,6 @@
   ~ You should have received a copy of the GNU Lesser General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <idea-plugin>
-
-    <extensions defaultExtensionNs="com.intellij">
-        <projectConfigurable id="hybris.project.jsp.settings" parentId="hybris.project.settings"
-                             nonDefaultProject="true" dynamic="true"
-                             bundle="i18n.HybrisBundle" key="hybris.settings.project.jsp.title"
-                             provider="sap.commerce.toolset.jsp.options.ProjectJspSettingsConfigurableProvider"/>
-
-        <lang.foldingBuilder language="JSP" implementationClass="sap.commerce.toolset.jsp.JspPropertyFoldingBuilder"/>
-    </extensions>
 
 </idea-plugin>

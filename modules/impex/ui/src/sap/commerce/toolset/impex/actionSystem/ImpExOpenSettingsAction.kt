@@ -26,7 +26,7 @@ import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.impex.settings.options.ProjectImpExSettingsConfigurableProvider
+import sap.commerce.toolset.impex.options.ProjectImpExSettingsConfigurableProvider
 
 class ImpExOpenSettingsAction : AnAction() {
 

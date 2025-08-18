@@ -19,7 +19,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable id="hybris.settings.ccv2" parentId="hybris.settings" displayName="CCv2"
-                                 provider="sap.commerce.toolset.ccv2.settings.options.ApplicationCCv2SettingsConfigurableProvider"/>
+                                 provider="sap.commerce.toolset.ccv2.options.ApplicationCCv2SettingsConfigurableProvider"/>
         <webHelpProvider implementation="sap.commerce.toolset.ccv2.help.CCv2WebHelpProvider"/>
     </extensions>
 
