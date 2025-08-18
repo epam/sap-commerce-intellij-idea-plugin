@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
     implementation(project(":exec-core"))
+    implementation(project(":exec-ui"))
     implementation(project(":console-core"))
     implementation(project(":groovy-exec"))
 

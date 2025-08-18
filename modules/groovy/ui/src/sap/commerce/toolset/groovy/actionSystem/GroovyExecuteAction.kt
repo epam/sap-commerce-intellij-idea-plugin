@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -50,12 +50,12 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
         val fileName = e.getData(CommonDataKeys.PSI_FILE)?.name
         val prefix = fileName ?: "script"
 
-        val transactionMode = DeveloperSettings.getInstance(project).groovySettings.txMode
-        val executionClient = GroovyExecutionClient.getInstance(project)
+        val transactionMode = DeveloperSettings.Companion.getInstance(project).groovySettings.txMode
+        val executionClient = GroovyExecutionClient.Companion.getInstance(project)
         val contexts = executionClient.connectionContext.replicaContexts
             .map {
                 GroovyExecutionContext(
-                    executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecutionContext.DEFAULT_TITLE}",
+                    executionTitle = "$prefix | ${it.replicaId} | ${GroovyExecutionContext.Companion.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = transactionMode,
                     replicaContext = it
@@ -64,7 +64,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
             .takeIf { it.isNotEmpty() }
             ?: listOf(
                 GroovyExecutionContext(
-                    executionTitle = "$prefix | ${GroovyExecutionContext.DEFAULT_TITLE}",
+                    executionTitle = "$prefix | ${GroovyExecutionContext.Companion.DEFAULT_TITLE}",
                     content = content,
                     transactionMode = transactionMode
                 )
@@ -72,14 +72,14 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
         if (fileEditor.inEditorResults) {
             fileEditor.putUserData(KEY_QUERY_EXECUTING, true)
-            fileEditor.showLoader("$prefix | 1 of ${contexts.size} | ${GroovyExecutionContext.DEFAULT_TITLE}")
+            fileEditor.showLoader("$prefix | 1 of ${contexts.size} | ${GroovyExecutionContext.Companion.DEFAULT_TITLE}")
             var completed = 0
 
             executionClient.execute(
                 contexts = contexts,
                 resultCallback = { _, _ ->
                     completed++
-                    fileEditor.showLoader("$prefix | $completed of ${contexts.size} | ${GroovyExecutionContext.DEFAULT_TITLE}")
+                    fileEditor.showLoader("$prefix | $completed of ${contexts.size} | ${GroovyExecutionContext.Companion.DEFAULT_TITLE}")
                 },
                 afterCallback = { _, results ->
                     fileEditor.renderExecutionResults(results)
@@ -111,7 +111,7 @@ class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySp
 
         val project = e.project ?: return
 
-        when (DeveloperSettings.getInstance(project).groovySettings.txMode) {
+        when (DeveloperSettings.Companion.getInstance(project).groovySettings.txMode) {
             TransactionMode.ROLLBACK -> {
                 e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE_ROLLBACK
                 e.presentation.text = "Execute Groovy Script<br/>Commit Mode <strong><font color='#C75450'>OFF</font></strong>"

@@ -17,40 +17,14 @@
  */
 package sap.commerce.toolset.acl.actionSystem
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
-import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
+import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
 import sap.commerce.toolset.impex.console.ImpExConsole
 
-class AclOpenQueryAction : AnAction() {
-
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        e.presentation.text = message("hybris.acl.actions.open_query")
-        e.presentation.description = message("hybris.acl.actions.open_query.description")
-        e.presentation.icon = HybrisIcons.Console.Actions.OPEN
-    }
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-        val content = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
-            ?.firstOrNull()
-            ?.takeIf { it.fileType is AclFileType }
-            ?.takeUnless { SingleRootFileViewProvider.isTooLargeForIntelligence(it) }
-            ?.let { FileDocumentManager.getInstance().getDocument(it) }
-            ?.text
-            ?: return
-
-        OpenInHybrisConsoleService.getInstance(project)
-            .openInConsole(ImpExConsole::class, content)
-    }
-
-}
+class AclOpenQueryAction : OpenInConsoleAction(
+    AclFileType,
+    ImpExConsole::class,
+    message("hybris.acl.actions.open_query"),
+    message("hybris.acl.actions.open_query.description"),
+)

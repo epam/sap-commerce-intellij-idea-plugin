@@ -17,39 +17,14 @@
  */
 package sap.commerce.toolset.flexibleSearch.actionSystem
 
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisI18NBundleUtils
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
+import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
 import sap.commerce.toolset.flexibleSearch.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 
-class FlexibleSearchOpenQueryAction : AnAction() {
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        e.presentation.text = HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query")
-        e.presentation.description = HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query.description")
-        e.presentation.icon = HybrisIcons.Console.Actions.OPEN
-    }
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-        val content = e.getData(CommonDataKeys.VIRTUAL_FILE_ARRAY)
-            ?.firstOrNull()
-            ?.takeIf { it.fileType is FlexibleSearchFileType }
-            ?.takeUnless { SingleRootFileViewProvider.isTooLargeForIntelligence(it) }
-            ?.let { FileDocumentManager.getInstance().getDocument(it) }
-            ?.text
-            ?: return
-
-        OpenInHybrisConsoleService.getInstance(project)
-            .openInConsole(FlexibleSearchConsole::class, content)
-    }
-
-}
+class FlexibleSearchOpenQueryAction : OpenInConsoleAction(
+    FlexibleSearchFileType,
+    FlexibleSearchConsole::class,
+    HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query"),
+    HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query.description"),
+)

@@ -22,6 +22,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.SingleRootFileViewProvider
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
 import sap.commerce.toolset.exec.context.ExecutionContext
@@ -31,16 +32,20 @@ import kotlin.reflect.KClass
 abstract class OpenInConsoleAction(
     private val fileType: FileType,
     private val consoleClass: KClass<out HybrisConsole<out ExecutionContext>>,
-    text: String,
-    description: String,
-    icon: Icon? = null
-) : AnAction(text, description, icon) {
+    private val text: String,
+    private val description: String,
+    private val icon: Icon? = HybrisIcons.Console.Actions.OPEN
+) : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
+
+        e.presentation.text = text
+        e.presentation.description = description
+        e.presentation.icon = icon
     }
 
     override fun actionPerformed(e: AnActionEvent) {
