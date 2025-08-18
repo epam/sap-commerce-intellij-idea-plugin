@@ -21,11 +21,11 @@ package sap.commerce.toolset.flexibleSearch.actionSystem
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
-import sap.commerce.toolset.actionSystem.AbstractHybrisFileToolbarInstaller
+import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 
 @Service
-class FlexibleSearchFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
+class FlexibleSearchFileToolbarInstaller : HybrisFileToolbarInstaller(
     "hybris.fxs.console",
     "hybris.fxs.toolbar.left",
     "hybris.fxs.toolbar.right",

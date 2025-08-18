@@ -15,17 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import sap.commerce.toolset.exec.context.ReplicaSelectionMode
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 
-class GroovyExecutionModeActionGroup : DefaultActionGroup() {
+class GroovyTransactionModeActionGroup : DefaultActionGroup() {
 
     init {
         templatePresentation.putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true)
@@ -36,14 +37,10 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
 
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
-        val connectionContext = GroovyExecutionClient.getInstance(project).connectionContext
-        val text = when (connectionContext.replicaSelectionMode) {
-            ReplicaSelectionMode.AUTO -> "Auto-Discover Replica"
-            else -> "Execute on ${connectionContext.replicaContexts.size} replica(s)"
-        }
+        val mode = DeveloperSettings.Companion.getInstance(project).groovySettings.txMode
+            .let { HybrisI18NBundleUtils.message("hybris.groovy.actions.transaction.${it.name.lowercase()}") }
 
-        e.presentation.icon = connectionContext.replicaSelectionMode.icon
-        e.presentation.text = text
-        e.presentation.description = connectionContext.description
+        e.presentation.text = HybrisI18NBundleUtils.message("hybris.groovy.actions.transaction.mode", mode)
     }
+
 }

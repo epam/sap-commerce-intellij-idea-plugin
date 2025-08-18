@@ -15,19 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
 
 class GroovyToggleInEditorResultsAction : ToggleAction(
-    message("hybris.actions.in_editor.results"),
-    message("hybris.actions.in_editor.results.description"),
+    HybrisI18NBundleUtils.message("hybris.actions.in_editor.results"),
+    HybrisI18NBundleUtils.message("hybris.actions.in_editor.results.description"),
     HybrisIcons.Actions.TOGGLE_IN_EDITOR_RESULTS
 ) {
 

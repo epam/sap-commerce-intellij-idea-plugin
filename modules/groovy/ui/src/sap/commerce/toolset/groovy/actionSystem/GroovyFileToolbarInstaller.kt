@@ -25,10 +25,10 @@ import com.intellij.util.application
 import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.actionSystem.AbstractHybrisFileToolbarInstaller
+import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
 import sap.commerce.toolset.settings.DeveloperSettings
 
-class GroovyFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
+class GroovyFileToolbarInstaller : HybrisFileToolbarInstaller(
     "hybris.groovy.console",
     "hybris.groovy.toolbar.left",
     "hybris.groovy.toolbar.right",

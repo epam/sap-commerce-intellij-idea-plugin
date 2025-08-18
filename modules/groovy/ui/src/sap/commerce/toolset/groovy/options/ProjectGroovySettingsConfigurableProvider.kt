@@ -26,6 +26,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.groovy.actionSystem.GroovyFileToolbarInstaller
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
@@ -33,7 +34,7 @@ import javax.swing.JCheckBox
 
 class ProjectGroovySettingsConfigurableProvider(private val project: Project) : ConfigurableProvider() {
 
-    override fun canCreateConfigurable() = project.isHybrisProject
+    override fun canCreateConfigurable() = project.isHybrisProject && Plugin.GROOVY.isActive()
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
@@ -50,7 +51,7 @@ class ProjectGroovySettingsConfigurableProvider(private val project: Project) : 
                     enableActionToolbar = checkBox("Enable actions toolbar for each Groovy file")
                         .bindSelected(mutableSettings::enableActionsToolbar)
                         .comment("Actions toolbar enables possibility to change current remote SAP Commerce session and perform operations on current file, such as `Execute on remote server`")
-                        .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }
+                        .onApply { GroovyFileToolbarInstaller.getInstance().toggleToolbarForAllEditors(project) }
                         .component
                 }
                 row {
@@ -58,14 +59,14 @@ class ProjectGroovySettingsConfigurableProvider(private val project: Project) : 
                         .bindSelected(mutableSettings::enableActionsToolbarForGroovyTest)
                         .comment("Enables Actions toolbar for the groovy files located in the <strong>${HybrisConstants.TEST_SRC_DIRECTORY}</strong> or <strong>${HybrisConstants.GROOVY_TEST_SRC_DIRECTORY}</strong> directory.")
                         .enabledIf(enableActionToolbar.selected)
-                        .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }
+                        .onApply { GroovyFileToolbarInstaller.getInstance().toggleToolbarForAllEditors(project) }
                 }
                 row {
                     checkBox("Enable actions toolbar for a IDE Groovy scripts")
                         .bindSelected(mutableSettings::enableActionsToolbarForGroovyIdeConsole)
                         .comment("Enables Actions toolbar for the groovy files located in the <strong>${HybrisConstants.IDE_CONSOLES_PATH}</strong> (In Project View, Scratches and Consoles -> IDE Consoles).")
                         .enabledIf(enableActionToolbar.selected)
-                        .onApply { GroovyFileToolbarInstaller.getInstance()?.toggleToolbarForAllEditors(project) }
+                        .onApply { GroovyFileToolbarInstaller.getInstance().toggleToolbarForAllEditors(project) }
                 }
             }
         }

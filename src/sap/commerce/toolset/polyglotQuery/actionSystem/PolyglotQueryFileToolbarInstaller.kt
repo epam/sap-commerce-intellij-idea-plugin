@@ -21,11 +21,11 @@ package sap.commerce.toolset.polyglotQuery.actionSystem
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
-import sap.commerce.toolset.actionSystem.AbstractHybrisFileToolbarInstaller
+import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
 @Service
-class PolyglotQueryFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
+class PolyglotQueryFileToolbarInstaller : HybrisFileToolbarInstaller(
     "hybris.pgq.console",
     "hybris.pgq.toolbar.left",
     "hybris.pgq.toolbar.right",

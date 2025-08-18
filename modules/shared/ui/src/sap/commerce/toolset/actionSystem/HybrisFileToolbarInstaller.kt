@@ -31,11 +31,11 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
 import com.intellij.util.containers.JBIterable
 
-abstract class AbstractHybrisFileToolbarInstaller(
+abstract class HybrisFileToolbarInstaller(
     private val toolbarId: String,
     private val leftGroupId: String,
     private val rightGroupId: String,
-    internal val fileType: FileType
+    val fileType: FileType
 ) {
 
     protected open fun isToolbarEnabled(project: Project, editor: EditorEx): Boolean = true

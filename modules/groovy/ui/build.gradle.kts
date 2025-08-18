@@ -36,8 +36,10 @@ sourceSets {
 dependencies {
     implementation(libs.jsoup)
     implementation(project(":shared-core"))
+    implementation(project(":shared-ui"))
     implementation(project(":exec-core"))
     implementation(project(":console-core"))
+    implementation(project(":groovy-exec"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

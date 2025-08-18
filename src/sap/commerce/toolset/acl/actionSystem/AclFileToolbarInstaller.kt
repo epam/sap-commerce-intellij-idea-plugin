@@ -22,10 +22,10 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.util.application
 import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.actionSystem.AbstractHybrisFileToolbarInstaller
+import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
 
 @Service
-class AclFileToolbarInstaller : AbstractHybrisFileToolbarInstaller(
+class AclFileToolbarInstaller : HybrisFileToolbarInstaller(
     "hybris.acl.console",
     "hybris.acl.toolbar.left",
     "hybris.acl.toolbar.right",
