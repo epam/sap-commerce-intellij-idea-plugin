@@ -15,16 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.groovy.actionSystem
 
-import org.jetbrains.plugins.groovy.GroovyFileType
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
-import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
-import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.actionSystem.OpenSettingsAction
+import sap.commerce.toolset.groovy.options.ProjectGroovySettingsConfigurableProvider
 
-class GroovyOpenQueryAction : OpenInConsoleAction(
-    GroovyFileType.GROOVY_FILE_TYPE,
-    HybrisGroovyConsole::class,
-    message("hybris.groovy.actions.open_query"),
-    message("hybris.groovy.actions.open_query.description"),
+class GroovyOpenSettingsAction : OpenSettingsAction(
+    configurableClass = ProjectGroovySettingsConfigurableProvider.SettingsConfigurable::class.java,
+    text = HybrisI18NBundleUtils.message("hybris.groovy.actions.open_settings"),
+    description = HybrisI18NBundleUtils.message("hybris.groovy.actions.open_settings.description")
 )

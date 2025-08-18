@@ -16,14 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.actionSystem
+package sap.commerce.toolset.groovy.actionSystem
 
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
-import sap.commerce.toolset.actionSystem.OpenSettingsAction
-import sap.commerce.toolset.flexibleSearch.options.ProjectFlexibleSearchSettingsConfigurableProvider
+import com.intellij.openapi.actionSystem.AnAction
+import org.jetbrains.plugins.groovy.GroovyFileType
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
 
-class FlexibleSearchOpenSettingsAction : OpenSettingsAction(
-    configurableClass = ProjectFlexibleSearchSettingsConfigurableProvider.SettingsConfigurable::class.java,
-    text = message("hybris.fxs.actions.open_settings"),
-    description = message("hybris.fxs.actions.open_settings.description"),
+class GroovyOpenQueryAction : AnAction(
+    GroovyFileType.GROOVY_FILE_TYPE,
+    HybrisGroovyConsole::class,
+    HybrisI18NBundleUtils.message("hybris.groovy.actions.open_query"),
+    HybrisI18NBundleUtils.message("hybris.groovy.actions.open_query.description"),
 )

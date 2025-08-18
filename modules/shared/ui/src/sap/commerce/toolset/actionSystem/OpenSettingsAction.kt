@@ -16,34 +16,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy.actionSystem
+package sap.commerce.toolset.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.invokeLater
+import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.ShowSettingsUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.groovy.options.ProjectGroovySettingsConfigurableProvider
+import javax.swing.Icon
 
-class GroovyOpenSettingsAction : AnAction() {
+abstract class OpenSettingsAction(
+    private val configurableClass: Class<out Configurable>,
+    private val text: String,
+    private val description: String? = null,
+    private val icon: Icon = HybrisIcons.SETTINGS
+) : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
 
-        e.presentation.text = message("hybris.groovy.actions.open_settings")
-        e.presentation.description = message("hybris.groovy.actions.open_settings.description")
-        e.presentation.icon = HybrisIcons.SETTINGS
+        e.presentation.text = text
+        e.presentation.description = description
+        e.presentation.icon = icon
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         invokeLater {
-            ShowSettingsUtil.getInstance().showSettingsDialog(project, ProjectGroovySettingsConfigurableProvider.SettingsConfigurable::class.java)
+            ShowSettingsUtil.getInstance().showSettingsDialog(project, configurableClass)
         }
     }
 }

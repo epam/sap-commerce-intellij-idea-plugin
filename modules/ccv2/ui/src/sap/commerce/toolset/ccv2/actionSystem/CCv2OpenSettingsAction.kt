@@ -17,32 +17,10 @@
  */
 package sap.commerce.toolset.ccv2.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.options.ShowSettingsUtil
-import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.actionSystem.OpenSettingsAction
 import sap.commerce.toolset.ccv2.options.ApplicationCCv2SettingsConfigurableProvider
 
-class CCv2OpenSettingsAction : AnAction() {
-
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        e.presentation.text = "Open CCv2 Settings"
-        e.presentation.icon = HybrisIcons.SETTINGS
-    }
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-        invokeLater {
-            ShowSettingsUtil.getInstance().showSettingsDialog(project, ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java)
-        }
-    }
-}
-
+class CCv2OpenSettingsAction : OpenSettingsAction(
+    configurableClass = ApplicationCCv2SettingsConfigurableProvider.SettingsConfigurable::class.java,
+    text = "Open CCv2 Settings"
+)
