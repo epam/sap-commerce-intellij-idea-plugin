@@ -27,7 +27,7 @@ import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
 import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
-import sap.commerce.toolset.beanSystem.settings.BSViewSettings
+import sap.commerce.toolset.beanSystem.settings.state.ChangeType
 import sap.commerce.toolset.beanSystem.ui.forms.BSMetaBeanView
 import sap.commerce.toolset.beanSystem.ui.forms.BSMetaEnumView
 import sap.commerce.toolset.beanSystem.ui.tree.BSTree
@@ -57,7 +57,7 @@ class BSTreePanel(
         Disposer.register(this, tree)
     }
 
-    fun update(globalMetaModel: BSGlobalMetaModel, changeType: BSViewSettings.ChangeType) {
+    fun update(globalMetaModel: BSGlobalMetaModel, changeType: ChangeType) {
         tree.update(globalMetaModel, changeType)
     }
 

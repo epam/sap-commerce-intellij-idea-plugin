@@ -37,7 +37,7 @@ class BSMetaEnumNode(val parent: BSNode, meta: BSGlobalMetaEnum) : BSMetaNode<BS
         }
     }
 
-    override fun getNewChildren(): Map<String, BSNode> = if (BSViewSettings.getInstance(project).isShowEnumValues()) meta.values.values
+    override fun getNewChildren(): Map<String, BSNode> = if (BSViewSettings.getInstance(project).showEnumValues) meta.values.values
         .filter { it.isCustom }
         .map { BSMetaEnumValueNode(this, it) }
         .associateBy { it.name }

@@ -44,7 +44,7 @@ class BSMetaBeanNode(val parent: BSNode,  meta: BSGlobalMetaBean) : BSMetaNode<B
         }
     }
 
-    override fun getNewChildren(): Map<String, BSNode> = if (BSViewSettings.getInstance(project).isShowBeanProperties()) meta.properties.values
+    override fun getNewChildren(): Map<String, BSNode> = if (BSViewSettings.getInstance(project).showBeanProperties) meta.properties.values
         .filter { it.isCustom }
         .map { BSMetaPropertyNode(this, it) }
         .associateBy { it.name }

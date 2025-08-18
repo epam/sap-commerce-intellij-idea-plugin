@@ -37,7 +37,7 @@ import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import sap.commerce.toolset.typeSystem.settings.TSViewSettings
-import sap.commerce.toolset.typeSystem.settings.event.TSViewListener
+import sap.commerce.toolset.typeSystem.settings.event.TSViewSettingsListener
 import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.ui.components.TSTreePanel
 import java.awt.GridBagLayout
@@ -86,7 +86,7 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
     private fun installSettingsListener() {
         with(project.messageBus.connect(this)) {
-            subscribe(TSViewListener.Companion.TOPIC, object : TSViewListener {
+            subscribe(TSViewSettingsListener.Companion.TOPIC, object : TSViewSettingsListener {
                 override fun settingsChanged(changeType: ChangeType) {
                     refreshContent(changeType)
                 }

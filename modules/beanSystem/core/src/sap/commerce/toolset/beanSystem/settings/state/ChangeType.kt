@@ -16,15 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.typeSystem.settings.event
+package sap.commerce.toolset.beanSystem.settings.state
 
-import com.intellij.util.messages.Topic
-import sap.commerce.toolset.typeSystem.settings.state.ChangeType
-
-interface TSViewListener {
-    fun settingsChanged(changeType: ChangeType)
-
-    companion object {
-        val TOPIC = Topic(TSViewListener::class.java)
-    }
+enum class ChangeType {
+    FULL
 }

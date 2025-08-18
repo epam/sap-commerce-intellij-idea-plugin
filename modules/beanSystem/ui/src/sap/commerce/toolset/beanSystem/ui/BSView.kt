@@ -40,6 +40,8 @@ import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
 import sap.commerce.toolset.beanSystem.meta.event.BSMetaModelChangeListener
 import sap.commerce.toolset.beanSystem.settings.BSViewSettings
+import sap.commerce.toolset.beanSystem.settings.event.BSViewSettingsListener
+import sap.commerce.toolset.beanSystem.settings.state.ChangeType
 import sap.commerce.toolset.beanSystem.ui.components.BSTreePanel
 import java.awt.GridBagLayout
 import java.io.Serial
@@ -65,7 +67,7 @@ class BSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
             !BSMetaModelStateService.Companion.getInstance(project).initialized() -> setContentInitializing()
 
-            else -> refreshContent(BSViewSettings.ChangeType.FULL)
+            else -> refreshContent(ChangeType.FULL)
         }
 
         Disposer.register(this, myTreePane)
@@ -87,20 +89,20 @@ class BSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
     private fun installSettingsListener() {
         with(project.messageBus.connect(this)) {
-            subscribe(BSViewSettings.BSViewListener.TOPIC, object : BSViewSettings.BSViewListener {
-                override fun settingsChanged(changeType: BSViewSettings.ChangeType) {
+            subscribe(BSViewSettingsListener.TOPIC, object : BSViewSettingsListener {
+                override fun settingsChanged(changeType: ChangeType) {
                     refreshContent(changeType)
                 }
             })
             subscribe(BSMetaModelChangeListener.Companion.TOPIC, object : BSMetaModelChangeListener {
                 override fun onChanged(globalMetaModel: BSGlobalMetaModel) {
-                    refreshContent(globalMetaModel, BSViewSettings.ChangeType.FULL)
+                    refreshContent(globalMetaModel, ChangeType.FULL)
                 }
             })
         }
     }
 
-    private fun refreshContent(changeType: BSViewSettings.ChangeType) {
+    private fun refreshContent(changeType: ChangeType) {
         try {
             refreshContent(BSMetaModelStateService.Companion.state(project), changeType)
         } catch (_: Throwable) {
@@ -108,7 +110,7 @@ class BSView(private val project: Project) : SimpleToolWindowPanel(false, true),
         }
     }
 
-    private fun refreshContent(globalMetaModel: BSGlobalMetaModel, changeType: BSViewSettings.ChangeType) {
+    private fun refreshContent(globalMetaModel: BSGlobalMetaModel, changeType: ChangeType) {
         myTreePane.update(globalMetaModel, changeType)
 
         if (content != myTreePane) {

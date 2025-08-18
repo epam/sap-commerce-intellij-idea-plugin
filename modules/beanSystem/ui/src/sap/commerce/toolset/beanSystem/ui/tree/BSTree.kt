@@ -25,7 +25,7 @@ import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
 import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
-import sap.commerce.toolset.beanSystem.settings.BSViewSettings
+import sap.commerce.toolset.beanSystem.settings.state.ChangeType
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSNode
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSRootNode
 import java.io.Serial
@@ -55,8 +55,8 @@ class BSTree(val myProject: Project) : Tree(), Disposable {
 
     override fun dispose() = Unit
 
-    fun update(globalMetaModel: BSGlobalMetaModel, changeType: BSViewSettings.ChangeType) {
-        if (changeType == BSViewSettings.ChangeType.FULL) {
+    fun update(globalMetaModel: BSGlobalMetaModel, changeType: ChangeType) {
+        if (changeType == ChangeType.FULL) {
             previousSelection = lastSelectedPathComponent as? TreeNode
 
             myTreeModel.reload(globalMetaModel)

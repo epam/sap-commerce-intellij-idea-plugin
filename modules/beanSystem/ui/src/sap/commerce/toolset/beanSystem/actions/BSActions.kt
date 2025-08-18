@@ -23,6 +23,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.beanSystem.settings.BSViewSettings
+import sap.commerce.toolset.beanSystem.settings.state.ChangeType
 
 class BSShowOnlyCustomAction(val settings: BSViewSettings) : ToggleAction(
     message("hybris.toolwindow.action.only_custom.text"),
@@ -30,11 +31,11 @@ class BSShowOnlyCustomAction(val settings: BSViewSettings) : ToggleAction(
     null
 ) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowOnlyCustom()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showCustomOnly
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowOnlyCustom(state)
-        settings.fireSettingsChanged(BSViewSettings.ChangeType.FULL)
+        settings.showCustomOnly = state
+        settings.fireSettingsChanged(ChangeType.FULL)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -46,11 +47,11 @@ class BSShowOnlyDeprecatedAction(val settings: BSViewSettings) : ToggleAction(
     null
 ) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowOnlyDeprecated()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showDeprecatedOnly
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowOnlyDeprecated(state)
-        settings.fireSettingsChanged(BSViewSettings.ChangeType.FULL)
+        settings.showDeprecatedOnly = state
+        settings.fireSettingsChanged(ChangeType.FULL)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -60,11 +61,11 @@ class BSShowMetaEnumValuesAction(val settings: BSViewSettings) : ToggleAction(
     message("hybris.toolwindow.bs.action.enum.values.text"), null, null
 ) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowEnumValues()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showEnumValues
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowEnumValues(state)
-        settings.fireSettingsChanged(BSViewSettings.ChangeType.FULL)
+        settings.showEnumValues = state
+        settings.fireSettingsChanged(ChangeType.FULL)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -74,11 +75,11 @@ class BSShowMetaBeanPropertiesAction(val settings: BSViewSettings) : ToggleActio
     message("hybris.toolwindow.bs.action.bean.properties.text"), null, null
 ) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowBeanProperties()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showBeanProperties
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowBeanProperties(state)
-        settings.fireSettingsChanged(BSViewSettings.ChangeType.FULL)
+        settings.showBeanProperties = state
+        settings.fireSettingsChanged(ChangeType.FULL)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT

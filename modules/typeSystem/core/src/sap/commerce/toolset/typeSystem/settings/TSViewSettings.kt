@@ -21,7 +21,7 @@ package sap.commerce.toolset.typeSystem.settings
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.typeSystem.settings.event.TSViewListener
+import sap.commerce.toolset.typeSystem.settings.event.TSViewSettingsListener
 import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.settings.state.TSViewSettingsState
 
@@ -30,7 +30,7 @@ import sap.commerce.toolset.typeSystem.settings.state.TSViewSettingsState
 @Service(Service.Level.PROJECT)
 class TSViewSettings(private val project: Project) : SerializablePersistentStateComponent<TSViewSettingsState>(TSViewSettingsState()) {
 
-    fun fireSettingsChanged(changeType: ChangeType) = changeType.also { project.messageBus.syncPublisher(TSViewListener.TOPIC).settingsChanged(changeType) }
+    fun fireSettingsChanged(changeType: ChangeType) = changeType.also { project.messageBus.syncPublisher(TSViewSettingsListener.TOPIC).settingsChanged(changeType) }
 
     var showOnlyCustom: Boolean
         get() = state.showOnlyCustom

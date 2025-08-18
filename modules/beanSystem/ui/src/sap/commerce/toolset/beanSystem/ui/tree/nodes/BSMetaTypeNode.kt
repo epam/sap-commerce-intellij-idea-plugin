@@ -55,8 +55,8 @@ class BSMetaTypeNode(parent: BSNode, private val metaType: BSMetaType) : BSNode(
         val entries = globalMetaModel
             ?.getMetaType<BSGlobalMetaClassifier<DomElement>>(metaType)
             ?.values
-            ?.filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
-            ?.filter { if (settings.isShowOnlyDeprecated()) BSMetaHelper.isDeprecated(it) else true }
+            ?.filter { if (settings.showCustomOnly) it.isCustom else true }
+            ?.filter { if (settings.showDeprecatedOnly) BSMetaHelper.isDeprecated(it) else true }
             ?.size
             ?: 0
         if (entries > 0) {
@@ -70,8 +70,8 @@ class BSMetaTypeNode(parent: BSNode, private val metaType: BSMetaType) : BSNode(
         return globalMetaModel
             ?.getMetaType<BSGlobalMetaClassifier<DomElement>>(metaType)
             ?.values
-            ?.filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
-            ?.filter { if (settings.isShowOnlyDeprecated()) BSMetaHelper.isDeprecated(it) else true }
+            ?.filter { if (settings.showCustomOnly) it.isCustom else true }
+            ?.filter { if (settings.showDeprecatedOnly) BSMetaHelper.isDeprecated(it) else true }
             ?.mapNotNull {
                 when (it) {
                     is BSGlobalMetaEnum -> BSMetaEnumNode(this, it)

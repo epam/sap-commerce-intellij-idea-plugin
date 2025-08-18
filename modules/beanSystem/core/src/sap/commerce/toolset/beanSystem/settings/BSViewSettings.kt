@@ -20,59 +20,38 @@ package sap.commerce.toolset.beanSystem.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
-import com.intellij.util.messages.MessageBus
-import com.intellij.util.messages.Topic
-import com.intellij.util.xmlb.XmlSerializerUtil
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.beanSystem.settings.event.BSViewSettingsListener
+import sap.commerce.toolset.beanSystem.settings.state.BSViewSettingsState
+import sap.commerce.toolset.beanSystem.settings.state.ChangeType
 
 @State(name = "[y] Bean System View settings", category = SettingsCategory.PLUGINS)
 @Storage(value = HybrisConstants.STORAGE_HYBRIS_BS_VIEW, roamingType = RoamingType.DISABLED)
 @Service(Service.Level.PROJECT)
-class BSViewSettings(myProject: Project) : PersistentStateComponent<BSViewSettings.Settings> {
+class BSViewSettings(private val project: Project) : SerializablePersistentStateComponent<BSViewSettingsState>(BSViewSettingsState()) {
 
-    private val myMessageBus: MessageBus
-    private val mySettings: Settings
+    fun fireSettingsChanged(changeType: ChangeType) = changeType.also { project.messageBus.syncPublisher(BSViewSettingsListener.TOPIC).settingsChanged(changeType) }
 
-    init {
-        mySettings = Settings()
-        myMessageBus = myProject.messageBus
-    }
-
-    fun fireSettingsChanged(changeType: ChangeType) = changeType.also { myMessageBus.syncPublisher(BSViewListener.TOPIC).settingsChanged(changeType) }
-
-    fun isShowOnlyCustom(): Boolean = mySettings.showCustomOnly
-    fun setShowOnlyCustom(state: Boolean) = state.also { mySettings.showCustomOnly = state }
-
-    fun isShowOnlyDeprecated(): Boolean = mySettings.showDeprecatedOnly
-    fun setShowOnlyDeprecated(state: Boolean) = state.also { mySettings.showDeprecatedOnly = state }
-
-    fun isShowEnumValues(): Boolean = mySettings.showEnumValues
-    fun setShowEnumValues(state: Boolean) = state.also { mySettings.showEnumValues = state }
-
-    fun isShowBeanProperties(): Boolean = mySettings.showBeanProperties
-    fun setShowBeanProperties(state: Boolean) = state.also { mySettings.showBeanProperties = state }
-
-    override fun getState(): Settings = mySettings
-    override fun loadState(settings: Settings) = XmlSerializerUtil.copyBean(settings, mySettings)
-
-    class Settings {
-        var showCustomOnly = false
-        var showDeprecatedOnly = false
-        var showEnumValues = true
-        var showBeanProperties = true
-    }
-
-    enum class ChangeType {
-        FULL
-    }
-
-    interface BSViewListener {
-        fun settingsChanged(changeType: ChangeType)
-
-        companion object {
-            val TOPIC = Topic(BSViewListener::class.java)
+    var showCustomOnly
+        get() = state.showCustomOnly
+        set(value) {
+            updateState { it.copy(showCustomOnly = value) }
         }
-    }
+    var showDeprecatedOnly
+        get() = state.showDeprecatedOnly
+        set(value) {
+            updateState { it.copy(showDeprecatedOnly = value) }
+        }
+    var showEnumValues
+        get() = state.showEnumValues
+        set(value) {
+            updateState { it.copy(showEnumValues = value) }
+        }
+    var showBeanProperties
+        get() = state.showBeanProperties
+        set(value) {
+            updateState { it.copy(showBeanProperties = value) }
+        }
 
     companion object {
         fun getInstance(project: Project): BSViewSettings = project.service()
