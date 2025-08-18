@@ -23,7 +23,6 @@
             <option value="$PROJECT_DIR$/modules/console/ui" />
             <option value="$PROJECT_DIR$/modules/exec/core" />
             <option value="$PROJECT_DIR$/modules/exec/ui" />
-            <option value="$PROJECT_DIR$/modules/extensioninfo" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/exec" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/ui" />
@@ -33,7 +32,6 @@
             <option value="$PROJECT_DIR$/modules/impex/exec" />
             <option value="$PROJECT_DIR$/modules/impex/monitoring" />
             <option value="$PROJECT_DIR$/modules/impex/ui" />
-            <option value="$PROJECT_DIR$/modules/localextensions" />
             <option value="$PROJECT_DIR$/modules/logging/core" />
             <option value="$PROJECT_DIR$/modules/logging/exec" />
             <option value="$PROJECT_DIR$/modules/logging/ui" />
@@ -44,7 +42,10 @@
             <option value="$PROJECT_DIR$/modules/polyglotQuery/exec" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/ui" />
             <option value="$PROJECT_DIR$/modules/project/core" />
+            <option value="$PROJECT_DIR$/modules/project/extensioninfo" />
             <option value="$PROJECT_DIR$/modules/project/import" />
+            <option value="$PROJECT_DIR$/modules/project/localextensions" />
+            <option value="$PROJECT_DIR$/modules/project/ui" />
             <option value="$PROJECT_DIR$/modules/shared/core" />
             <option value="$PROJECT_DIR$/modules/shared/emitter" />
             <option value="$PROJECT_DIR$/modules/shared/ui" />

@@ -36,7 +36,7 @@ sourceSets {
 dependencies {
     implementation(libs.bundles.commons)
     implementation(project(":shared-core"))
-    implementation(project(":extensioninfo"))
+    implementation(project(":project-extensioninfo"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

@@ -34,17 +34,13 @@ sourceSets {
 }
 
 dependencies {
-    implementation(libs.bundles.commons)
     implementation(project(":shared-core"))
-    implementation(project(":project-extensioninfo"))
-    implementation(project(":project-core"))
+    implementation(project(":shared-ui"))
+    implementation(project(":acl-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
-        bundledPlugins(
-            "com.intellij.java",
-        )
     }
 }
