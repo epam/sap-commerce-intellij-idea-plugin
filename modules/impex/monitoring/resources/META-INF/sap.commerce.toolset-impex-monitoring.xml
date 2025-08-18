@@ -18,7 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <consoleProvider implementation="sap.commerce.toolset.impex.monitoring.console.ImpexMonitorConsoleProvider"/>
+        <consoleProvider order="last" implementation="sap.commerce.toolset.impex.monitoring.console.ImpexMonitorConsoleProvider"/>
     </extensions>
 
 </idea-plugin>
