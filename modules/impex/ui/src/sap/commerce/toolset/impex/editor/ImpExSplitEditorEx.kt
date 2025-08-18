@@ -19,7 +19,7 @@
 package sap.commerce.toolset.impex.editor
 
 import com.intellij.psi.SmartPsiElementPointer
-import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.context.DefaultExecutionResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
 import kotlin.time.Duration

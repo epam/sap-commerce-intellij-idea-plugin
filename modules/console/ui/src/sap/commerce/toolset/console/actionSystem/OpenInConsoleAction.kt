@@ -24,7 +24,7 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
-import sap.commerce.toolset.exec.remote.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecutionContext
 import javax.swing.Icon
 import kotlin.reflect.KClass
 

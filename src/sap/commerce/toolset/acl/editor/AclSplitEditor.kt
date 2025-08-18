@@ -34,7 +34,7 @@ import com.intellij.pom.Navigatable
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.context.DefaultExecutionResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 import java.awt.BorderLayout
 import java.beans.PropertyChangeListener

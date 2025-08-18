@@ -24,7 +24,7 @@ import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
-import sap.commerce.toolset.tools.remote.console.impl.HybrisGroovyConsole
+import sap.commerce.toolset.tools.console.impl.HybrisGroovyConsole
 
 class GroovyOpenQueryAction : AnAction() {
 

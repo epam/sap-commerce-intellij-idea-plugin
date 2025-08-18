@@ -24,7 +24,7 @@ import com.intellij.ui.TreeUIHelper
 import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersRootNode
 import java.io.Serial

@@ -42,7 +42,7 @@ import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
 import sap.commerce.toolset.polyglotQuery.editor.polyglotQuerySplitEditor
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypeKeyName
-import sap.commerce.toolset.tools.remote.console.impl.HybrisPolyglotQueryConsole
+import sap.commerce.toolset.tools.console.impl.HybrisPolyglotQueryConsole
 
 class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryConsole, PolyglotQuerySplitEditor>(
     PolyglotQueryLanguage,

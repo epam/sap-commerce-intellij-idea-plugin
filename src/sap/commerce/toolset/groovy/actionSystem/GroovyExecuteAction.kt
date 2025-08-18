@@ -26,14 +26,14 @@ import org.jetbrains.plugins.groovy.GroovyLanguage
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.ExecuteStatementAction
-import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.context.DefaultExecutionResult
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TransactionMode
-import sap.commerce.toolset.tools.remote.console.impl.HybrisGroovyConsole
+import sap.commerce.toolset.tools.console.impl.HybrisGroovyConsole
 
 class GroovyExecuteAction : ExecuteStatementAction<HybrisGroovyConsole, GroovySplitEditor>(
     GroovyLanguage,

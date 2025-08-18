@@ -33,7 +33,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleService
-import sap.commerce.toolset.exec.remote.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecutionContext
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 import kotlin.reflect.KClass

@@ -40,8 +40,8 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.exec.remote.RemoteConnectionService
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.RemoteConnectionService
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 import java.awt.Component
 import java.awt.event.ActionEvent
 import java.io.Serial
@@ -168,7 +168,7 @@ abstract class AbstractRemoteConnectionDialog(
     override fun getStyle() = DialogStyle.COMPACT
     override fun getPreferredFocusedComponent() = connectionNameTextField
 
-    protected fun generateUrl() = sap.commerce.toolset.exec.remote.generateUrl(
+    protected fun generateUrl() = sap.commerce.toolset.exec.generateUrl(
         sslProtocolCheckBox.isSelected,
         hostTextField.text,
         portTextField.text,

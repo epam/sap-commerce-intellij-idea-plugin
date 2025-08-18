@@ -23,9 +23,9 @@ import com.intellij.ui.AddEditDeleteListPanel;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.util.ui.JBEmptyBorder;
 import org.jetbrains.annotations.Nullable;
-import sap.commerce.toolset.exec.remote.RemoteConnectionService;
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState;
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType;
+import sap.commerce.toolset.exec.RemoteConnectionService;
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState;
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionType;
 
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;

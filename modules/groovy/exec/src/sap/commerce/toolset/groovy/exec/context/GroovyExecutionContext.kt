@@ -19,9 +19,9 @@
 package sap.commerce.toolset.groovy.exec.context
 
 import org.apache.commons.lang3.BooleanUtils
-import sap.commerce.toolset.exec.remote.context.ExecutionContext
-import sap.commerce.toolset.exec.remote.context.ReplicaContext
-import sap.commerce.toolset.exec.remote.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ReplicaContext
+import sap.commerce.toolset.exec.http.HybrisHacHttpClient
 import sap.commerce.toolset.settings.state.TransactionMode
 
 data class GroovyExecutionContext(

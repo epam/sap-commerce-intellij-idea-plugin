@@ -25,8 +25,8 @@ import kotlinx.html.p
 import kotlinx.html.stream.createHTML
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.ui.ConsoleConstants
-import sap.commerce.toolset.exec.remote.RemoteConnectionService
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.RemoteConnectionService
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.settings.options.ProjectIntegrationsSettingsConfigurableProvider
 import sap.commerce.toolset.toolwindow.RemoteHacConnectionDialog
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription

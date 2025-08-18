@@ -19,10 +19,10 @@
 package sap.commerce.toolset.flexibleSearch.exec.context
 
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.exec.remote.context.ConsoleAwareExecutionResult
-import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
-import sap.commerce.toolset.exec.remote.context.ReplicaContext
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
+import sap.commerce.toolset.exec.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.context.ReplicaContext
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 
 data class FlexibleSearchExecutionResult(
     override val remoteConnectionType: RemoteConnectionType = RemoteConnectionType.Hybris,

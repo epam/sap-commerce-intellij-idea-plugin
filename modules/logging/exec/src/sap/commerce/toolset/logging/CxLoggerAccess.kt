@@ -28,17 +28,17 @@ import com.intellij.psi.PsiDocumentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.exec.remote.RemoteConnectionService
-import sap.commerce.toolset.exec.remote.settings.event.RemoteConnectionListener
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.RemoteConnectionService
+import sap.commerce.toolset.exec.settings.event.RemoteConnectionListener
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.extensions.ExtensionsService
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
-import sap.commerce.toolset.logging.exec.remote.LoggingExecutionClient
-import sap.commerce.toolset.logging.exec.remote.context.LoggingExecutionContext
-import sap.commerce.toolset.logging.exec.remote.context.LoggingExecutionResult
-import sap.commerce.toolset.logging.exec.remote.event.CxLoggersStateListener
+import sap.commerce.toolset.logging.exec.LoggingExecutionClient
+import sap.commerce.toolset.logging.exec.context.LoggingExecutionContext
+import sap.commerce.toolset.logging.exec.context.LoggingExecutionResult
+import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.util.*
 

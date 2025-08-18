@@ -26,7 +26,7 @@ import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.console.ui.HybrisConsolesView
-import sap.commerce.toolset.exec.remote.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecutionContext
 import kotlin.reflect.KClass
 
 @Service(Service.Level.PROJECT)

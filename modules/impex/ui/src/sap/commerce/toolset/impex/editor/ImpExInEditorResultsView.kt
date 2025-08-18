@@ -28,7 +28,7 @@ import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.context.DefaultExecutionResult
 import sap.commerce.toolset.ui.editor.InEditorResultsView
 import javax.swing.JComponent
 

@@ -24,8 +24,8 @@ import com.intellij.openapi.actionSystem.ex.CheckboxAction
 import com.intellij.openapi.util.Disposer
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
-import sap.commerce.toolset.exec.remote.context.ReplicaSelectionMode
-import sap.commerce.toolset.exec.remote.http.RemoteConnectionContext
+import sap.commerce.toolset.exec.context.ReplicaSelectionMode
+import sap.commerce.toolset.exec.http.RemoteConnectionContext
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.toolwindow.CCv2ReplicaSelectionDialog
 import sap.commerce.toolset.toolwindow.ManualReplicaSelectionDialog

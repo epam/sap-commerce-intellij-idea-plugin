@@ -33,7 +33,7 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleProvider
-import sap.commerce.toolset.exec.remote.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecutionContext
 import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.JPanel

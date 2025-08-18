@@ -26,12 +26,12 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.remote.RemoteConnectionService
-import sap.commerce.toolset.exec.remote.settings.event.RemoteConnectionListener
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.RemoteConnectionService
+import sap.commerce.toolset.exec.settings.event.RemoteConnectionListener
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.logging.CxLoggerAccess
-import sap.commerce.toolset.logging.exec.remote.event.CxLoggersStateListener
+import sap.commerce.toolset.logging.exec.event.CxLoggersStateListener
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTree
 import sap.commerce.toolset.logging.ui.tree.LoggersOptionsTreeNode
 import sap.commerce.toolset.logging.ui.tree.nodes.BundledLoggersTemplateLoggersOptionsNode

@@ -23,10 +23,10 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.exec.remote.RemoteConnectionService
-import sap.commerce.toolset.exec.remote.RemoteConstants
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.RemoteConnectionService
+import sap.commerce.toolset.exec.RemoteConstants
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor
 import sap.commerce.toolset.project.yExtensionName

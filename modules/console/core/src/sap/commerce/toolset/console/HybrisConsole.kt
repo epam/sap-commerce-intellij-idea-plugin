@@ -31,11 +31,11 @@ import com.intellij.ui.AnimatedIcon
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.remote.RemoteConnectionService
-import sap.commerce.toolset.exec.remote.context.ConsoleAwareExecutionResult
-import sap.commerce.toolset.exec.remote.context.ExecutionContext
-import sap.commerce.toolset.exec.remote.context.ReplicaContext
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.RemoteConnectionService
+import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
+import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ReplicaContext
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import java.io.Serial
 import javax.swing.Icon
 

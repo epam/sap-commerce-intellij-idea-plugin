@@ -32,7 +32,7 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.exec.remote.context.ExecutionResult
+import sap.commerce.toolset.exec.context.ExecutionResult
 import sap.commerce.toolset.ui.scrollPanel
 import java.awt.Dimension
 import java.lang.Boolean

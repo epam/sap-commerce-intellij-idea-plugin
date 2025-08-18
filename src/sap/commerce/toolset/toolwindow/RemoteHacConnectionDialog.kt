@@ -26,11 +26,11 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
-import sap.commerce.toolset.exec.remote.RemoteConstants
-import sap.commerce.toolset.exec.remote.http.HybrisHacHttpClient
-import sap.commerce.toolset.exec.remote.settings.event.RemoteConnectionListener
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionScope
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.RemoteConstants
+import sap.commerce.toolset.exec.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.settings.event.RemoteConnectionListener
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionScope
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 import java.awt.Component
 
 class RemoteHacConnectionDialog(

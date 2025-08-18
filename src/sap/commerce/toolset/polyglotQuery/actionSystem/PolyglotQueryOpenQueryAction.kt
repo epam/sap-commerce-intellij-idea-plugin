@@ -24,7 +24,7 @@ import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
 import sap.commerce.toolset.polyglotQuery.fileTypes.PolyglotQueryFileType
-import sap.commerce.toolset.tools.remote.console.impl.HybrisPolyglotQueryConsole
+import sap.commerce.toolset.tools.console.impl.HybrisPolyglotQueryConsole
 
 class PolyglotQueryOpenQueryAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

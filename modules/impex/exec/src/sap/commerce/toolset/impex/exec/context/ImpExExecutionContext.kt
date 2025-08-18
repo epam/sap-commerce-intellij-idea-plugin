@@ -20,8 +20,8 @@ package sap.commerce.toolset.impex.exec.context
 
 import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
-import sap.commerce.toolset.exec.remote.context.ExecutionContext
-import sap.commerce.toolset.exec.remote.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.exec.http.HybrisHacHttpClient
 import java.nio.charset.StandardCharsets
 
 data class ImpExExecutionContext(

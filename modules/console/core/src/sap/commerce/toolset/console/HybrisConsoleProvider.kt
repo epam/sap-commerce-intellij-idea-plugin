@@ -21,7 +21,7 @@ package sap.commerce.toolset.console
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.exec.remote.context.ExecutionContext
+import sap.commerce.toolset.exec.context.ExecutionContext
 
 interface HybrisConsoleProvider<T : HybrisConsole<out ExecutionContext>> {
 

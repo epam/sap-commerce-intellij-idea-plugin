@@ -22,7 +22,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.Invoker
 import com.intellij.util.concurrency.InvokerSupplier
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNode
 import sap.commerce.toolset.logging.ui.tree.nodes.LoggersNodeParameters
 import javax.swing.tree.TreePath

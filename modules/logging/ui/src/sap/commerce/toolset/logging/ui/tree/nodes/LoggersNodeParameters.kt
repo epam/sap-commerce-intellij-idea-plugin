@@ -18,6 +18,6 @@
 
 package sap.commerce.toolset.logging.ui.tree.nodes
 
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 
 data class LoggersNodeParameters(val connections: Map<RemoteConnectionSettingsState, Boolean>)

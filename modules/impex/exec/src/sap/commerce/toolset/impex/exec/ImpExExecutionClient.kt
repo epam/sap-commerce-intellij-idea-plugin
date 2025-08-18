@@ -28,11 +28,11 @@ import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import sap.commerce.toolset.exec.remote.DefaultExecutionClient
-import sap.commerce.toolset.exec.remote.RemoteConnectionService
-import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
-import sap.commerce.toolset.exec.remote.http.HybrisHacHttpClient
-import sap.commerce.toolset.exec.remote.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.DefaultExecutionClient
+import sap.commerce.toolset.exec.RemoteConnectionService
+import sap.commerce.toolset.exec.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 import java.io.IOException
 import java.io.Serial

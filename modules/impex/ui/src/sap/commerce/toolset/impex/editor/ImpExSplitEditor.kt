@@ -37,7 +37,7 @@ import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.asSafely
 import kotlinx.coroutines.*
-import sap.commerce.toolset.exec.remote.context.DefaultExecutionResult
+import sap.commerce.toolset.exec.context.DefaultExecutionResult
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
 import java.awt.BorderLayout
