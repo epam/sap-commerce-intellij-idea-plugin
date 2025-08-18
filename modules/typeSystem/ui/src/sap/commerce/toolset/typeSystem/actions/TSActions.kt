@@ -24,26 +24,29 @@ import com.intellij.openapi.actionSystem.ToggleAction
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.typeSystem.settings.TSViewSettings
+import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 
-class TSShowOnlyCustomAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.action.only_custom.text"), message("hybris.toolwindow.ts.action.only_custom.description"), null) {
+class TSShowOnlyCustomAction(val settings: TSViewSettings) :
+    ToggleAction(message("hybris.toolwindow.action.only_custom.text"), message("hybris.toolwindow.ts.action.only_custom.description"), null) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowOnlyCustom()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showOnlyCustom
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowOnlyCustom(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.FULL)
+        settings.showOnlyCustom = state
+        settings.fireSettingsChanged(ChangeType.FULL)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.items.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_ITEMS) {
+class TSShowMetaItemsAction(val settings: TSViewSettings) :
+    ToggleAction(message("hybris.toolwindow.ts.action.items.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_ITEMS) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItems()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaItems
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowMetaItems(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.showMetaItems = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -51,35 +54,37 @@ class TSShowMetaItemsAction(val settings: TSViewSettings) : ToggleAction(message
 
 class TSShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.maps.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_MAPS) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaMaps()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaMaps
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowMetaMaps(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.showMetaMaps = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSShowMetaEnumsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.enums.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_ENUMS) {
+class TSShowMetaEnumsAction(val settings: TSViewSettings) :
+    ToggleAction(message("hybris.toolwindow.ts.action.enums.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_ENUMS) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaEnums()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaEnums
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowMetaEnums(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.showMetaEnums = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.collections.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_COLLECTIONS) {
+class TSShowMetaCollectionsAction(val settings: TSViewSettings) :
+    ToggleAction(message("hybris.toolwindow.ts.action.collections.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_COLLECTIONS) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaCollections()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaCollections
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowMetaCollections(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.showMetaCollections = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -87,11 +92,11 @@ class TSShowMetaCollectionsAction(val settings: TSViewSettings) : ToggleAction(m
 
 class TSShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.relations.text"), null, HybrisIcons.TypeSystem.Types.RELATION) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaRelations()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaRelations
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowMetaRelations(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.showMetaRelations = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -99,11 +104,11 @@ class TSShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(mes
 
 class TSShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.atomics.text"), null, HybrisIcons.TypeSystem.Types.ATOMIC) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaAtomics()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaAtomics
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowMetaAtomics(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.showMetaAtomics = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -111,11 +116,11 @@ class TSShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(messa
 
 class TSShowMetaEnumValuesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.enum.values.text"), null, null) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaEnumValues()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaEnumValues
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowMetaEnumValues(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.showMetaEnumValues = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -123,11 +128,11 @@ class TSShowMetaEnumValuesAction(val settings: TSViewSettings) : ToggleAction(me
 
 class TSShowMetaItemIndexesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.indexes.text"), null, null) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItemIndexes()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaItemIndexes
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowMetaItemIndexes(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.showMetaItemIndexes = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -135,11 +140,11 @@ class TSShowMetaItemIndexesAction(val settings: TSViewSettings) : ToggleAction(m
 
 class TSShowMetaItemAttributesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.attributes.text"), null, null) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItemAttributes()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaItemAttributes
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowMetaItemAttributes(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.showMetaItemAttributes = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -147,11 +152,11 @@ class TSShowMetaItemAttributesAction(val settings: TSViewSettings) : ToggleActio
 
 class TSShowMetaItemCustomPropertiesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.custom_properties.text"), null, null) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isShowMetaItemCustomProperties()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaItemCustomProperties
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setShowMetaItemCustomProperties(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.showMetaItemCustomProperties = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -159,11 +164,11 @@ class TSShowMetaItemCustomPropertiesAction(val settings: TSViewSettings) : Toggl
 
 class TSGroupItemByParentAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.group_by_parent.text"), null, null) {
 
-    override fun isSelected(e: AnActionEvent): Boolean = settings.isGroupItemByParent()
+    override fun isSelected(e: AnActionEvent): Boolean = settings.groupItemByParent
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        settings.setGroupItemByParent(state)
-        settings.fireSettingsChanged(TSViewSettings.ChangeType.UPDATE)
+        settings.groupItemByParent = state
+        settings.fireSettingsChanged(ChangeType.UPDATE)
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT

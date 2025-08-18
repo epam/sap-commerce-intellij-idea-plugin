@@ -43,24 +43,24 @@ class TSMetaItemNode(
 
     override fun getNewChildren(): Map<String, TSNode> {
         val settings = TSViewSettings.getInstance(myProject)
-        val showOnlyCustom = settings.isShowOnlyCustom()
+        val showOnlyCustom = settings.showOnlyCustom
 
         val childrenItems = groupedByExtends[meta.name]
             ?.map { TSMetaItemNode(this, it) }
             ?.associateBy { "0_extends_${it.name}" }
             ?: emptyMap()
 
-        val indexes = if (!settings.isShowMetaItemIndexes()) emptyMap() else meta.indexes.values
+        val indexes = if (!settings.showMetaItemIndexes) emptyMap() else meta.indexes.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemIndexNode(this, it) }
             .associateBy { "1_index_${it.name}" }
 
-        val customProperties = if (!settings.isShowMetaItemCustomProperties()) emptyMap() else meta.customProperties.values
+        val customProperties = if (!settings.showMetaItemCustomProperties) emptyMap() else meta.customProperties.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemCustomPropertyNode(this, it) }
             .associateBy { "2_customProperty_${it.name}" }
 
-        val attributes = if (!settings.isShowMetaItemAttributes()) emptyMap() else meta.attributes.values
+        val attributes = if (!settings.showMetaItemAttributes) emptyMap() else meta.attributes.values
             .filter { if (showOnlyCustom) it.isCustom else true }
             .map { TSMetaItemAttributeNode(this, it) }
             .associateBy { "3_attribute_${it.name}" }

@@ -19,10 +19,10 @@
 package sap.commerce.toolset.typeSystem.settings.event
 
 import com.intellij.util.messages.Topic
-import sap.commerce.toolset.typeSystem.settings.TSViewSettings
+import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 
 interface TSViewListener {
-    fun settingsChanged(changeType: TSViewSettings.ChangeType)
+    fun settingsChanged(changeType: ChangeType)
 
     companion object {
         val TOPIC = Topic(TSViewListener::class.java)

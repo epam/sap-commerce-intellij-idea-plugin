@@ -27,7 +27,7 @@ import com.intellij.ui.PopupHandler
 import com.intellij.ui.components.JBPanelWithEmptyText
 import com.intellij.ui.components.JBScrollPane
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
-import sap.commerce.toolset.typeSystem.settings.TSViewSettings
+import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.ui.forms.*
 import sap.commerce.toolset.typeSystem.ui.tree.TSTree
 import sap.commerce.toolset.typeSystem.ui.tree.nodes.*
@@ -60,7 +60,7 @@ class TSTreePanel(
         Disposer.register(this, tree)
     }
 
-    fun update(globalMetaModel: TSGlobalMetaModel, changeType: TSViewSettings.ChangeType) {
+    fun update(globalMetaModel: TSGlobalMetaModel, changeType: ChangeType) {
         tree.update(globalMetaModel, changeType)
     }
 

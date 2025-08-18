@@ -20,69 +20,78 @@ package sap.commerce.toolset.typeSystem.settings
 
 import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
-import com.intellij.util.messages.MessageBus
-import com.intellij.util.xmlb.XmlSerializerUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.typeSystem.settings.event.TSViewListener
+import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.settings.state.TSViewSettingsState
 
 @State(name = "[y] Type System View settings", category = SettingsCategory.PLUGINS)
 @Storage(value = HybrisConstants.STORAGE_HYBRIS_TS_VIEW, roamingType = RoamingType.DISABLED)
 @Service(Service.Level.PROJECT)
-class TSViewSettings(myProject: Project) : PersistentStateComponent<TSViewSettingsState> {
+class TSViewSettings(private val project: Project) : SerializablePersistentStateComponent<TSViewSettingsState>(TSViewSettingsState()) {
 
-    private val myMessageBus: MessageBus
-    private val mySettings: TSViewSettingsState
+    fun fireSettingsChanged(changeType: ChangeType) = changeType.also { project.messageBus.syncPublisher(TSViewListener.TOPIC).settingsChanged(changeType) }
 
-    init {
-        mySettings = TSViewSettingsState()
-        myMessageBus = myProject.messageBus
-    }
-
-    fun fireSettingsChanged(changeType: ChangeType) = changeType.also { myMessageBus.syncPublisher(TSViewListener.TOPIC).settingsChanged(changeType) }
-
-    fun isShowOnlyCustom(): Boolean = mySettings.showOnlyCustom
-    fun setShowOnlyCustom(state: Boolean) = state.also { mySettings.showOnlyCustom = state }
-
-    fun isShowMetaItems(): Boolean = mySettings.showMetaItems
-    fun setShowMetaItems(state: Boolean) = state.also { mySettings.showMetaItems = state }
-
-    fun isShowMetaMaps(): Boolean = mySettings.showMetaMaps
-    fun setShowMetaMaps(state: Boolean) = state.also { mySettings.showMetaMaps = state }
-
-    fun isShowMetaRelations(): Boolean = mySettings.showMetaRelations
-    fun setShowMetaRelations(state: Boolean) = state.also { mySettings.showMetaRelations = state }
-
-    fun isShowMetaEnums(): Boolean = mySettings.showMetaEnums
-    fun setShowMetaEnums(state: Boolean) = state.also { mySettings.showMetaEnums = state }
-
-    fun isShowMetaCollections(): Boolean = mySettings.showMetaCollections
-    fun setShowMetaCollections(state: Boolean) = state.also { mySettings.showMetaCollections = state }
-
-    fun isShowMetaAtomics(): Boolean = mySettings.showMetaAtomics
-    fun setShowMetaAtomics(state: Boolean) = state.also { mySettings.showMetaAtomics = it }
-
-    fun isShowMetaEnumValues(): Boolean = mySettings.showMetaEnumValues
-    fun setShowMetaEnumValues(state: Boolean) = state.also { mySettings.showMetaEnumValues = state }
-
-    fun isShowMetaItemIndexes(): Boolean = mySettings.showMetaItemIndexes
-    fun setShowMetaItemIndexes(state: Boolean) = state.also { mySettings.showMetaItemIndexes = state }
-
-    fun isShowMetaItemAttributes(): Boolean = mySettings.showMetaItemAttributes
-    fun setShowMetaItemAttributes(state: Boolean) = state.also { mySettings.showMetaItemAttributes = state }
-
-    fun isShowMetaItemCustomProperties(): Boolean = mySettings.showMetaItemCustomProperties
-    fun setShowMetaItemCustomProperties(state: Boolean) = state.also { mySettings.showMetaItemCustomProperties = state }
-
-    fun isGroupItemByParent(): Boolean = mySettings.groupItemByParent
-    fun setGroupItemByParent(state: Boolean) = state.also { mySettings.groupItemByParent = state }
-
-    override fun getState(): TSViewSettingsState = mySettings
-    override fun loadState(settings: TSViewSettingsState) = XmlSerializerUtil.copyBean(settings, mySettings)
-
-    enum class ChangeType {
-        FULL,UPDATE
-    }
+    var showOnlyCustom: Boolean
+        get() = state.showOnlyCustom
+        set(value) {
+            updateState { it }
+        }
+    var showMetaItems: Boolean
+        get() = state.showMetaItems
+        set(value) {
+            updateState { it.copy(showOnlyCustom = value) }
+        }
+    var showMetaRelations: Boolean
+        get() = state.showMetaRelations
+        set(value) {
+            updateState { it.copy(showMetaItems = value) }
+        }
+    var showMetaEnums: Boolean
+        get() = state.showMetaEnums
+        set(value) {
+            updateState { it.copy(showMetaRelations = value) }
+        }
+    var showMetaCollections: Boolean
+        get() = state.showMetaCollections
+        set(value) {
+            updateState { it.copy(showMetaEnums = value) }
+        }
+    var showMetaAtomics: Boolean
+        get() = state.showMetaAtomics
+        set(value) {
+            updateState { it.copy(showMetaCollections = value) }
+        }
+    var showMetaMaps: Boolean
+        get() = state.showMetaMaps
+        set(value) {
+            updateState { it.copy(showMetaAtomics = value) }
+        }
+    var showMetaEnumValues: Boolean
+        get() = state.showMetaEnumValues
+        set(value) {
+            updateState { it.copy(showMetaMaps = value) }
+        }
+    var showMetaItemIndexes: Boolean
+        get() = state.showMetaItemIndexes
+        set(value) {
+            updateState { it.copy(showMetaEnumValues = value) }
+        }
+    var showMetaItemAttributes: Boolean
+        get() = state.showMetaItemAttributes
+        set(value) {
+            updateState { it.copy(showMetaItemIndexes = value) }
+        }
+    var showMetaItemCustomProperties: Boolean
+        get() = state.showMetaItemCustomProperties
+        set(value) {
+            updateState { it.copy(showMetaItemAttributes = value) }
+        }
+    var groupItemByParent: Boolean
+        get() = state.groupItemByParent
+        set(value) {
+            updateState { it.copy(showMetaItemCustomProperties = value) }
+        }
 
     companion object {
         fun getInstance(project: Project): TSViewSettings = project.service()

@@ -18,20 +18,6 @@
 
 package sap.commerce.toolset.typeSystem.settings.state
 
-import com.intellij.util.xmlb.annotations.Tag
-
-@Tag("Settings")
-data class TSViewSettingsState(
-    val showOnlyCustom: Boolean = false,
-    val showMetaItems: Boolean = true,
-    val showMetaRelations: Boolean = true,
-    val showMetaEnums: Boolean = true,
-    val showMetaCollections: Boolean = true,
-    val showMetaAtomics: Boolean = true,
-    val showMetaMaps: Boolean = true,
-    val showMetaEnumValues: Boolean = true,
-    val showMetaItemIndexes: Boolean = true,
-    val showMetaItemAttributes: Boolean = true,
-    val showMetaItemCustomProperties: Boolean = true,
-    val groupItemByParent: Boolean = false,
-)
+enum class ChangeType {
+    FULL,UPDATE
+}

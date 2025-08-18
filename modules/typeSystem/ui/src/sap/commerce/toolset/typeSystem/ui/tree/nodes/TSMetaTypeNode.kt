@@ -50,7 +50,7 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
         }
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
 
-        val showOnlyCustom = TSViewSettings.getInstance(myProject).isShowOnlyCustom()
+        val showOnlyCustom = TSViewSettings.getInstance(myProject).showOnlyCustom
         val entries = globalMetaModel
             ?.getMetaType<TSGlobalMetaClassifier<DomElement>>(metaType)
             ?.values
@@ -68,7 +68,7 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
         if (metaType == TSMetaType.META_ITEM) {
             TSMetaItemNode.groupedByExtends = emptyMap()
 
-            if (settings.isGroupItemByParent()) {
+            if (settings.groupItemByParent) {
                 return getGroupedByParentMetaItemChildren(settings)
             }
         }
@@ -76,12 +76,12 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
     }
 
     private fun getGroupedByParentMetaItemChildren(settings: TSViewSettings): Map<String, TSNode> {
-        if (!settings.isShowMetaItems()) return emptyMap()
+        if (!settings.showMetaItems) return emptyMap()
 
         val items = globalMetaModel
             ?.getMetaType<TSGlobalMetaItem>(TSMetaType.META_ITEM)
             ?.values
-            ?.filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
+            ?.filter { if (settings.showOnlyCustom) it.isCustom else true }
             ?: emptyList()
 
         val groupedByName = items.associateBy { it.name }
@@ -101,15 +101,15 @@ class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(
     private fun getChildren(metaType: TSMetaType, settings: TSViewSettings): Map<String, TSNode> = globalMetaModel
         ?.getMetaType<TSGlobalMetaClassifier<DomElement>>(metaType)
         ?.values
-        ?.filter { if (settings.isShowOnlyCustom()) it.isCustom else true }
+        ?.filter { if (settings.showOnlyCustom) it.isCustom else true }
         ?.mapNotNull {
             when (it) {
-                is TSGlobalMetaItem -> if (settings.isShowMetaItems()) TSMetaItemNode(this, it) else null
-                is TSGlobalMetaEnum -> if (settings.isShowMetaEnums()) TSMetaEnumNode(this, it) else null
-                is TSGlobalMetaRelation -> if (settings.isShowMetaRelations()) TSMetaRelationNode(this, it) else null
-                is TSGlobalMetaCollection -> if (settings.isShowMetaCollections()) TSMetaCollectionNode(this, it) else null
-                is TSGlobalMetaAtomic -> if (settings.isShowMetaAtomics()) TSMetaAtomicNode(this, it) else null
-                is TSGlobalMetaMap -> if (settings.isShowMetaMaps()) TSMetaMapNode(this, it) else null
+                is TSGlobalMetaItem -> if (settings.showMetaItems) TSMetaItemNode(this, it) else null
+                is TSGlobalMetaEnum -> if (settings.showMetaEnums) TSMetaEnumNode(this, it) else null
+                is TSGlobalMetaRelation -> if (settings.showMetaRelations) TSMetaRelationNode(this, it) else null
+                is TSGlobalMetaCollection -> if (settings.showMetaCollections) TSMetaCollectionNode(this, it) else null
+                is TSGlobalMetaAtomic -> if (settings.showMetaAtomics) TSMetaAtomicNode(this, it) else null
+                is TSGlobalMetaMap -> if (settings.showMetaMaps) TSMetaMapNode(this, it) else null
                 else -> null
             }
         }

@@ -25,7 +25,7 @@ import com.intellij.ui.tree.AsyncTreeModel
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.containers.Convertor
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
-import sap.commerce.toolset.typeSystem.settings.TSViewSettings
+import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.ui.tree.nodes.TSNode
 import sap.commerce.toolset.typeSystem.ui.tree.nodes.TSRootNode
 import java.io.Serial
@@ -54,8 +54,8 @@ class TSTree(val myProject: Project) : Tree(), Disposable {
 
     override fun dispose() = Unit
 
-    fun update(globalMetaModel: TSGlobalMetaModel, changeType: TSViewSettings.ChangeType) {
-        if (changeType == TSViewSettings.ChangeType.FULL || changeType == TSViewSettings.ChangeType.UPDATE) {
+    fun update(globalMetaModel: TSGlobalMetaModel, changeType: ChangeType) {
+        if (changeType == ChangeType.FULL || changeType == ChangeType.UPDATE) {
             previousSelection = lastSelectedPathComponent as? TSTreeNode
 
             myTreeModel.reload(globalMetaModel)

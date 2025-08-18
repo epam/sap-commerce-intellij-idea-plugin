@@ -38,6 +38,7 @@ import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener
 import sap.commerce.toolset.typeSystem.settings.TSViewSettings
 import sap.commerce.toolset.typeSystem.settings.event.TSViewListener
+import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 import sap.commerce.toolset.typeSystem.ui.components.TSTreePanel
 import java.awt.GridBagLayout
 import java.io.Serial
@@ -63,7 +64,7 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
             !TSMetaModelStateService.Companion.getInstance(project).initialized() -> setContentInitializing()
 
-            else -> refreshContent(TSViewSettings.ChangeType.FULL)
+            else -> refreshContent(ChangeType.FULL)
         }
 
         Disposer.register(this, myTreePane)
@@ -86,19 +87,19 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
     private fun installSettingsListener() {
         with(project.messageBus.connect(this)) {
             subscribe(TSViewListener.Companion.TOPIC, object : TSViewListener {
-                override fun settingsChanged(changeType: TSViewSettings.ChangeType) {
+                override fun settingsChanged(changeType: ChangeType) {
                     refreshContent(changeType)
                 }
             })
             subscribe(TSMetaModelChangeListener.Companion.TOPIC, object : TSMetaModelChangeListener {
                 override fun onChanged(globalMetaModel: TSGlobalMetaModel) {
-                    refreshContent(globalMetaModel, TSViewSettings.ChangeType.FULL)
+                    refreshContent(globalMetaModel, ChangeType.FULL)
                 }
             })
         }
     }
 
-    private fun refreshContent(changeType: TSViewSettings.ChangeType) {
+    private fun refreshContent(changeType: ChangeType) {
         try {
             refreshContent(TSMetaModelStateService.Companion.state(project), changeType)
         } catch (_: Throwable) {
@@ -106,7 +107,7 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
         }
     }
 
-    private fun refreshContent(globalMetaModel: TSGlobalMetaModel, changeType: TSViewSettings.ChangeType) {
+    private fun refreshContent(globalMetaModel: TSGlobalMetaModel, changeType: ChangeType) {
         myTreePane.update(globalMetaModel, changeType)
 
         if (content != myTreePane) {
