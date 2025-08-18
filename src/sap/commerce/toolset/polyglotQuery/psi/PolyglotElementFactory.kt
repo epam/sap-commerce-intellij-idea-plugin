@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,10 +18,10 @@
 
 package sap.commerce.toolset.polyglotQuery.psi
 
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFileFactory
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
+import sap.commerce.toolset.polyglotQuery.fileTypes.PolyglotQueryFileType
 
 object PolyglotElementFactory {
 

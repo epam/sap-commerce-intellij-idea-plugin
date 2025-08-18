@@ -34,7 +34,7 @@ import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSimplifiedTableV
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
 import sap.commerce.toolset.grid.GridXSVFormatService
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
+import sap.commerce.toolset.polyglotQuery.fileTypes.PolyglotQueryFileType
 import sap.commerce.toolset.ui.editor.InEditorResultsView
 import javax.swing.JComponent
 

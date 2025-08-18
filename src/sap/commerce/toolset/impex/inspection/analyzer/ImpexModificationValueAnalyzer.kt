@@ -20,14 +20,14 @@ package sap.commerce.toolset.impex.inspection.analyzer
 
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpexHeaderLine
 import sap.commerce.toolset.impex.psi.ImpexTypes
-import sap.commerce.toolset.psi.util.PsiTreeUtilExt
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.psi.PsiTreeUtilExt
 
 fun notKeyAttributesList(fullParametersList: List<ImpexFullHeaderParameter>) = fullParametersList.filterNot { keyAttrPredicate(it) }
 

@@ -1,7 +1,7 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
   ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
-  ~ Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -51,16 +51,16 @@
 
     <actions>
         <action id="ShowBusinessProcessDiagram"
-                class="sap.commerce.toolset.diagram.businessProcess.actions.ShowBusinessProcessDiagramAction"
+                class="sap.commerce.toolset.diagram.businessProcess.actionSystem.ShowBusinessProcessDiagramAction"
                 text="Show Business Process Diagram">
         </action>
         <action id="ShowTypeSystemDiagram"
-                class="sap.commerce.toolset.diagram.typeSystem.actions.ShowTypeSystemDiagramAction"
+                class="sap.commerce.toolset.diagram.typeSystem.actionSystem.ShowTypeSystemDiagramAction"
                 text="Show Type System Diagram">
             <add-to-group group-id="HybrisToolsActions"/>
         </action>
         <action id="ShowModuleDependencyDiagram"
-                class="sap.commerce.toolset.diagram.module.actions.ShowModuleDependencyDiagramAction"
+                class="sap.commerce.toolset.diagram.module.actionSystem.ShowModuleDependencyDiagramAction"
                 text="Show Module Dependency Diagram"
                 icon="AllIcons.FileTypes.Diagram">
             <add-to-group group-id="HybrisToolsActions"/>
@@ -68,19 +68,19 @@
 
         <group id="Diagram.Hybris.TypeSystem.Actions">
             <action id="Diagram.Hybris.TypeSystem.Actions.OpenSettings"
-                    class="sap.commerce.toolset.diagram.typeSystem.actions.OpenSettingsDiagramAction"/>
+                    class="sap.commerce.toolset.diagram.typeSystem.actionSystem.OpenSettingsDiagramAction"/>
             <separator/>
             <action id="Diagram.Hybris.TypeSystem.Actions.RestoreRemovedNodes"
-                    class="sap.commerce.toolset.diagram.typeSystem.actions.RestoreRemovedNodesDiagramAction"/>
+                    class="sap.commerce.toolset.diagram.typeSystem.actionSystem.RestoreRemovedNodesDiagramAction"/>
             <action id="Diagram.Hybris.TypeSystem.Actions.ExpandAll"
-                    class="sap.commerce.toolset.diagram.typeSystem.actions.ExpandAllDiagramAction"/>
+                    class="sap.commerce.toolset.diagram.typeSystem.actionSystem.ExpandAllDiagramAction"/>
             <action id="Diagram.Hybris.TypeSystem.Actions.CollapseAll"
-                    class="sap.commerce.toolset.diagram.typeSystem.actions.CollapseAllDiagramAction"/>
+                    class="sap.commerce.toolset.diagram.typeSystem.actionSystem.CollapseAllDiagramAction"/>
         </group>
 
         <group id="Diagram.Hybris.TypeSystem.Node.Actions">
             <action id="Diagram.Hybris.TypeSystem.Node.Actions.ExcludeTypeName"
-                    class="sap.commerce.toolset.diagram.typeSystem.actions.ExcludeTypeNameDiagramAction">
+                    class="sap.commerce.toolset.diagram.typeSystem.actionSystem.ExcludeTypeNameDiagramAction">
                 <keyboard-shortcut first-keystroke="ctrl meta pressed E" keymap="$default"/>
             </action>
         </group>

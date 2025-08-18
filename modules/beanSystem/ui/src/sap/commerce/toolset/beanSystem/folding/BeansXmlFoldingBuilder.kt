@@ -27,7 +27,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
 import sap.commerce.toolset.beanSystem.model.*
 import sap.commerce.toolset.beanSystem.model.Enum
-import sap.commerce.toolset.lang.folding.XmlFoldingBuilderEx
+import sap.commerce.toolset.folding.XmlFoldingBuilderEx
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.BeanSystemFoldingSettingsState
 

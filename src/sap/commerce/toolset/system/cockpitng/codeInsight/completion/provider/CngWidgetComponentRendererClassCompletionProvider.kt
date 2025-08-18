@@ -20,9 +20,9 @@ package sap.commerce.toolset.system.cockpitng.codeInsight.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import sap.commerce.toolset.java.completion.JavaClassCompletionService
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.codeInsight.completion.JavaClassCompletionService
 
 class CngWidgetComponentRendererClassCompletionProvider : CompletionProvider<CompletionParameters>() {
 

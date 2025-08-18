@@ -19,7 +19,7 @@ package sap.commerce.toolset.occ.psi.contributor
 
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
-import sap.commerce.toolset.occ.psi.OccPatterns
+import sap.commerce.toolset.occ.OccPatterns
 import sap.commerce.toolset.occ.psi.provider.OccBeanPropertyReferenceProvider
 
 class OccReferenceContributor : PsiReferenceContributor() {

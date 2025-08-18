@@ -19,7 +19,6 @@
 package sap.commerce.toolset.system.cockpitng.util.xml
 
 import com.intellij.codeInsight.lookup.LookupElement
-import sap.commerce.toolset.java.completion.JavaClassCompletionService
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.impl.PsiClassImplUtil
@@ -27,6 +26,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.ResolvingConverter
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.codeInsight.completion.JavaClassCompletionService
 
 class CngMoldClassConverter : ResolvingConverter<PsiClass>() {
 

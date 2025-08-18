@@ -23,12 +23,12 @@
     <actions>
         <group id="BSView.ToolWindow">
             <group id="BSView.ToolWindow.TreePopup">
-                <action class="sap.commerce.toolset.beanSystem.actions.GoToDeclarationBSNodeAction"
+                <action class="sap.commerce.toolset.beanSystem.actionSystem.GoToDeclarationBSNodeAction"
                         use-shortcut-of="GotoDeclaration"/>
             </group>
 
             <group id="BSView.ToolWindow.TablePopup">
-                <action class="sap.commerce.toolset.beanSystem.actions.GoToDeclarationBSTableAction"
+                <action class="sap.commerce.toolset.beanSystem.actionSystem.GoToDeclarationBSTableAction"
                         use-shortcut-of="GotoDeclaration"/>
             </group>
         </group>

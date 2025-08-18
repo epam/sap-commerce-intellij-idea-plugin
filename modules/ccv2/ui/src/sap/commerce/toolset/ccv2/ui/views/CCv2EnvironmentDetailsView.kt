@@ -38,8 +38,8 @@ import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.actions.CCv2FetchEnvironmentAction
-import sap.commerce.toolset.ccv2.actions.CCv2ShowServiceDetailsAction
+import sap.commerce.toolset.ccv2.actionSystem.CCv2FetchEnvironmentAction
+import sap.commerce.toolset.ccv2.actionSystem.CCv2ShowServiceDetailsAction
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.dto.CCv2DataBackupDto
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto

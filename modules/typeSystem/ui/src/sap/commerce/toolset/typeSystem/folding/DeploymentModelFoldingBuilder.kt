@@ -22,7 +22,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
-import sap.commerce.toolset.lang.folding.XmlFoldingBuilderEx
+import sap.commerce.toolset.folding.XmlFoldingBuilderEx
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TypeSystemFoldingSettingsState
 import sap.commerce.toolset.typeSystem.model.deployment.DatabaseSchema

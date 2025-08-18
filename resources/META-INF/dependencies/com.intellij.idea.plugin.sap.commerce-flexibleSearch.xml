@@ -76,15 +76,15 @@
     <actions>
 
         <action id="hybris.fxs.openFileInConsole"
-                class="sap.commerce.toolset.flexibleSearch.file.actions.FlexibleSearchOpenInConsoleAction"/>
+                class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchOpenInConsoleAction"/>
         <action id="FlexibleSearch.NewFlexibleSearchFile"
-                class="sap.commerce.toolset.flexibleSearch.file.actions.FlexibleSearchFileCreateAction"
+                class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchFileCreateAction"
                 text="FlexibleSearch File" description="Create new FlexibleSearch file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <group id="FSRemoteControl.Actions" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchActionsGroup">
-            <action id="hybris.fxs.execute" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchExecuteAction">
+        <group id="FSRemoteControl.Actions" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchActionsGroup">
+            <action id="hybris.fxs.execute" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchExecuteAction">
                 <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
             </action>
 
@@ -92,12 +92,12 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
 
-        <action id="hybris.fxs.openQuery" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchOpenQueryAction"/>
-        <action id="hybris.fxs.openSettings" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchOpenSettingsAction"/>
-        <action id="hybris.fxs.toggleParameters" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchToggleInEditorParametersAction"/>
-        <action id="hybris.fxs.toggleInEditorResults" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchToggleInEditorResultsAction"/>
-        <action id="hybris.fxs.copyToClipboard" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchCopyToClipboardAction"/>
-        <action id="hybris.fxs.executionContextSettings" class="sap.commerce.toolset.flexibleSearch.actions.FlexibleSearchExecutionContextSettingsAction"/>
+        <action id="hybris.fxs.openQuery" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchOpenQueryAction"/>
+        <action id="hybris.fxs.openSettings" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchOpenSettingsAction"/>
+        <action id="hybris.fxs.toggleParameters" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchToggleInEditorParametersAction"/>
+        <action id="hybris.fxs.toggleInEditorResults" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchToggleInEditorResultsAction"/>
+        <action id="hybris.fxs.copyToClipboard" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchCopyToClipboardAction"/>
+        <action id="hybris.fxs.executionContextSettings" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchExecutionContextSettingsAction"/>
 
         <group id="hybris.fxs.toolbar.left">
             <reference ref="hybris.fxs.executionContextSettings"/>

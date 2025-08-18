@@ -43,7 +43,7 @@ import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
 import sap.commerce.toolset.impex.utils.ImpexPsiUtils
-import sap.commerce.toolset.ui.actions.isTypingActionInProgress
+import sap.commerce.toolset.ui.actionSystem.isTypingActionInProgress
 
 @Service
 class ImpexHighlightingCaretListener : CaretListener {

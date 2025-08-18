@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -18,12 +18,11 @@
 
 package sap.commerce.toolset.flexibleSearch.psi
 
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFile
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 
 object FlexibleSearchElementFactory {
 
@@ -33,9 +32,9 @@ object FlexibleSearchElementFactory {
         .let { PsiTreeUtil.findChildOfType(it, FlexibleSearchColumnSeparator::class.java) }
         ?.firstChild
 
-    fun createFile(project: Project, text: String): FlexibleSearchFile = PsiFileFactory.getInstance(project)
+    fun createFile(project: Project, text: String): FlexibleSearchPsiFile = PsiFileFactory.getInstance(project)
         .createFileFromText(
             "dummy." + FlexibleSearchFileType.defaultExtension,
             FlexibleSearchFileType, text
-        ) as FlexibleSearchFile
+        ) as FlexibleSearchPsiFile
 }

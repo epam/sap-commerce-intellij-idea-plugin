@@ -101,49 +101,49 @@
     </extensions>
 
     <actions>
-        <action id="ImpEx.NewImpExFile" class="sap.commerce.toolset.impex.file.actions.ImpexFileCreateAction"
+        <action id="ImpEx.NewImpExFile" class="sap.commerce.toolset.impex.actionSystem.ImpexFileCreateAction"
                 text="ImpEx File" description="Create new ImpEx file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <action id="hybris.impex.extractAcl" class="sap.commerce.toolset.impex.file.actions.ImpexExtractAclAction"/>
-        <action id="hybris.impex.learnMoreAcl" class="sap.commerce.toolset.impex.file.actions.ImpexLearnMoreAboutAclAction"/>
-        <action id="hybris.impex.openFileInConsole" class="sap.commerce.toolset.impex.file.actions.ImpExOpenInConsoleAction"/>
-        <action id="hybris.impex.openQuery" class="sap.commerce.toolset.impex.actions.ImpExOpenInConsoleAction">
+        <action id="hybris.impex.extractAcl" class="sap.commerce.toolset.impex.actionSystem.ImpexExtractAclAction"/>
+        <action id="hybris.impex.learnMoreAcl" class="sap.commerce.toolset.impex.actionSystem.ImpexLearnMoreAboutAclAction"/>
+        <action id="hybris.impex.openFileInConsole" class="sap.commerce.toolset.impex.actionSystem.ImpExOpenInConsoleAction"/>
+        <action id="hybris.impex.openQuery" class="sap.commerce.toolset.impex.actionSystem.ImpExOpenInConsoleAction">
             <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
         </action>
-        <action id="hybris.impex.openSettings" class="sap.commerce.toolset.impex.actions.ImpExOpenSettingsAction"/>
-        <action id="hybris.impex.validate" class="sap.commerce.toolset.impex.actions.ImpExValidateAction">
+        <action id="hybris.impex.openSettings" class="sap.commerce.toolset.impex.actionSystem.ImpExOpenSettingsAction"/>
+        <action id="hybris.impex.validate" class="sap.commerce.toolset.impex.actionSystem.ImpExValidateAction">
             <keyboard-shortcut first-keystroke="control alt V" keymap="$default"/>
         </action>
-        <action id="hybris.impex.import" class="sap.commerce.toolset.impex.actions.ImpExExecuteAction">
+        <action id="hybris.impex.import" class="sap.commerce.toolset.impex.actionSystem.ImpExExecuteAction">
             <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
         </action>
-        <action id="hybris.impex.table.select" class="sap.commerce.toolset.impex.actions.ImpExTableSelectAction">
+        <action id="hybris.impex.table.select" class="sap.commerce.toolset.impex.actionSystem.ImpExTableSelectAction">
             <keyboard-shortcut first-keystroke="control shift s" keymap="$default"/>
         </action>
-        <action id="hybris.impex.executionContextSettings" class="sap.commerce.toolset.impex.actions.ImpExExecutionContextSettingsAction"/>
+        <action id="hybris.impex.executionContextSettings" class="sap.commerce.toolset.impex.actionSystem.ImpExExecutionContextSettingsAction"/>
 
         <group id="hybris.impex.table.actions">
             <reference ref="hybris.impex.table.select"/>
             <separator/>
-            <action id="hybris.impex.table.column.move.left" class="sap.commerce.toolset.impex.actions.ImpExTableColumnMoveLeftAction">
+            <action id="hybris.impex.table.column.move.left" class="sap.commerce.toolset.impex.actionSystem.ImpExTableColumnMoveLeftAction">
                 <keyboard-shortcut first-keystroke="control shift alt COMMA" keymap="$default"/>
             </action>
-            <action id="hybris.impex.table.column.move.right" class="sap.commerce.toolset.impex.actions.ImpExTableColumnMoveRightAction">
+            <action id="hybris.impex.table.column.move.right" class="sap.commerce.toolset.impex.actionSystem.ImpExTableColumnMoveRightAction">
                 <keyboard-shortcut first-keystroke="control shift alt PERIOD" keymap="$default"/>
             </action>
             <separator/>
-            <action id="hybris.impex.table.column.add.left" class="sap.commerce.toolset.impex.actions.ImpExTableColumnInsertLeftAction"/>
-            <action id="hybris.impex.table.column.add.right" class="sap.commerce.toolset.impex.actions.ImpExTableColumnInsertRightAction"/>
+            <action id="hybris.impex.table.column.add.left" class="sap.commerce.toolset.impex.actionSystem.ImpExTableColumnInsertLeftAction"/>
+            <action id="hybris.impex.table.column.add.right" class="sap.commerce.toolset.impex.actionSystem.ImpExTableColumnInsertRightAction"/>
             <separator/>
-            <action id="hybris.impex.table.column.remove" class="sap.commerce.toolset.impex.actions.ImpExTableColumnRemoveAction">
+            <action id="hybris.impex.table.column.remove" class="sap.commerce.toolset.impex.actionSystem.ImpExTableColumnRemoveAction">
                 <keyboard-shortcut first-keystroke="control alt BACK_SPACE" keymap="$default"/>
             </action>
-            <action id="hybris.impex.table.remove" class="sap.commerce.toolset.impex.actions.ImpExTableRemoveAction">
+            <action id="hybris.impex.table.remove" class="sap.commerce.toolset.impex.actionSystem.ImpExTableRemoveAction">
                 <keyboard-shortcut first-keystroke="control shift alt BACK_SPACE" keymap="$default"/>
             </action>
-            <action id="hybris.impex.table.split" class="sap.commerce.toolset.impex.actions.ImpExTableSplitVerticallyAction">
+            <action id="hybris.impex.table.split" class="sap.commerce.toolset.impex.actionSystem.ImpExTableSplitVerticallyAction">
                 <keyboard-shortcut first-keystroke="control shift alt BACK_SLASH" keymap="$default"/>
             </action>
         </group>
@@ -157,8 +157,8 @@
             <separator/>
             <reference ref="hybris.impex.table.actions"/>
             <separator/>
-            <action class="sap.commerce.toolset.impex.actions.ImpExToggleInEditorResultsAction"/>
-            <action class="sap.commerce.toolset.impex.actions.ImpExToggleInEditorParametersAction"/>
+            <action class="sap.commerce.toolset.impex.actionSystem.ImpExToggleInEditorResultsAction"/>
+            <action class="sap.commerce.toolset.impex.actionSystem.ImpExToggleInEditorParametersAction"/>
             <separator/>
             <reference ref="hybris.impex.openSettings"/>
         </group>

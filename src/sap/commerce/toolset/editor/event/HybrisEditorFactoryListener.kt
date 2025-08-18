@@ -25,16 +25,16 @@ import com.intellij.psi.SingleRootFileViewProvider
 import com.intellij.util.asSafely
 import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.acl.file.AclFileToolbarInstaller
+import sap.commerce.toolset.acl.actionSystem.AclFileToolbarInstaller
 import sap.commerce.toolset.acl.fileTypes.AclFileType
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileToolbarInstaller
+import sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchFileToolbarInstaller
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
-import sap.commerce.toolset.groovy.file.GroovyFileToolbarInstaller
-import sap.commerce.toolset.impex.file.ImpExFileToolbarInstaller
+import sap.commerce.toolset.groovy.actionSystem.GroovyFileToolbarInstaller
+import sap.commerce.toolset.impex.actionSystem.ImpExFileToolbarInstaller
 import sap.commerce.toolset.impex.file.ImpexFileType
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileToolbarInstaller
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
+import sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryFileToolbarInstaller
+import sap.commerce.toolset.polyglotQuery.fileTypes.PolyglotQueryFileType
 
 class HybrisEditorFactoryListener : EditorFactoryListener {
 

@@ -70,7 +70,7 @@
         <group id="HybrisToolsActions"
                text="[y] SAP Commerce"
                popup="true"
-               class="sap.commerce.toolset.actions.HybrisToolsActionGroup">
+               class="sap.commerce.toolset.actionSystem.HybrisToolsActionGroup">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </group>
         <!--        <action id="GenerateDomModel"-->

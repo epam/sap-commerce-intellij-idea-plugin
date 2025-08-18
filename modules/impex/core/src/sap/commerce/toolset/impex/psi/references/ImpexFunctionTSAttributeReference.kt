@@ -32,8 +32,8 @@ import com.intellij.psi.util.ParameterizedCachedValueProvider
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpexParameter
 import sap.commerce.toolset.impex.psi.ImpexTypes
+import sap.commerce.toolset.psi.PsiTreeUtilExt
 import sap.commerce.toolset.psi.PsiUtils
-import sap.commerce.toolset.psi.util.PsiTreeUtilExt
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker

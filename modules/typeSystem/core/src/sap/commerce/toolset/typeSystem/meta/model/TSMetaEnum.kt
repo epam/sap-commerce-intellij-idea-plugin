@@ -19,7 +19,7 @@
 package sap.commerce.toolset.typeSystem.meta.model
 
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.lang.documentation.renderer.hybrisDoc
+import sap.commerce.toolset.documentation.renderer.hybrisDoc
 import sap.commerce.toolset.typeSystem.model.EnumType
 import sap.commerce.toolset.typeSystem.model.EnumValue
 import javax.swing.Icon

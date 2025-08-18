@@ -20,11 +20,6 @@
 package sap.commerce.toolset.flexibleSearch.formatting
 
 import com.intellij.formatting.*
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchExpression
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchJoinOperator
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchWhereClause
-import sap.commerce.toolset.psi.util.PsiTreeUtilExt
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.Key
 import com.intellij.psi.TokenType
@@ -34,6 +29,11 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchExpression
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchJoinOperator
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchWhereClause
+import sap.commerce.toolset.psi.PsiTreeUtilExt
 
 class FxSBlock internal constructor(
     private val node: ASTNode,

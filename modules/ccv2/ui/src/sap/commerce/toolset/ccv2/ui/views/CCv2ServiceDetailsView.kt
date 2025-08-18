@@ -34,8 +34,8 @@ import com.intellij.ui.components.JBPanel
 import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.actions.CCv2FetchEnvironmentServiceAction
-import sap.commerce.toolset.ccv2.actions.CCv2ServiceRestartReplicaAction
+import sap.commerce.toolset.ccv2.actionSystem.CCv2FetchEnvironmentServiceAction
+import sap.commerce.toolset.ccv2.actionSystem.CCv2ServiceRestartReplicaAction
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceProperties

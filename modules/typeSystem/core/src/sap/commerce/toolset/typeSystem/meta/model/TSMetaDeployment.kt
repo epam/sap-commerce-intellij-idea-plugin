@@ -17,7 +17,7 @@
  */
 package sap.commerce.toolset.typeSystem.meta.model
 
-import sap.commerce.toolset.lang.documentation.renderer.hybrisDoc
+import sap.commerce.toolset.documentation.renderer.hybrisDoc
 import sap.commerce.toolset.typeSystem.model.Deployment
 
 interface TSMetaDeployment : TSMetaClassifier<Deployment> {

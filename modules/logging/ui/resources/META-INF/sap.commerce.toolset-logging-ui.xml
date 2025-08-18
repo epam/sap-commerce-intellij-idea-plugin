@@ -23,7 +23,7 @@
     </extensions>
 
     <actions>
-        <action id="sap.cx.fetch.loggers.action" class="sap.commerce.toolset.logging.actions.FetchLoggersStateAction"/>
+        <action id="sap.cx.fetch.loggers.action" class="sap.commerce.toolset.logging.actionSystem.FetchLoggersStateAction"/>
 
         <group id="sap.cx.loggers.toolbar.actions" searchable="false">
             <reference ref="hybris.hac.chooseConnection"/>
@@ -37,14 +37,14 @@
             <reference ref="hybris.hac.chooseConnection"/>
 
             <separator text="Log Levels"/>
-            <action class="sap.commerce.toolset.logging.actions.OffLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actions.AllLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actions.TraceLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actions.DebugLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actions.InfoLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actions.WarnLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actions.ErrorLoggerAction"/>
-            <action class="sap.commerce.toolset.logging.actions.FatalLoggerAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.OffLoggerAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.AllLoggerAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.TraceLoggerAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.DebugLoggerAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.InfoLoggerAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.WarnLoggerAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.ErrorLoggerAction"/>
+            <action class="sap.commerce.toolset.logging.actionSystem.FatalLoggerAction"/>
         </group>
     </actions>
 </idea-plugin>

@@ -23,7 +23,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.actions.CCv2TrackDeploymentAction
+import sap.commerce.toolset.ccv2.actionSystem.CCv2TrackDeploymentAction
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab

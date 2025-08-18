@@ -21,10 +21,10 @@ package sap.commerce.toolset.impex.constants.modifier
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.codeInsight.completion.JavaClassCompletionService
 import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeName
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
-import sap.commerce.toolset.java.completion.JavaClassCompletionService
 
 /**
  * https://help.sap.com/docs/SAP_COMMERCE/d0224eca81e249cb821f2cdf45a82ace/1c8f5bebdc6e434782ff0cfdb0ca1847.html?locale=en-US

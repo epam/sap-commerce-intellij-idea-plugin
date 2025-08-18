@@ -37,7 +37,7 @@ import sap.commerce.toolset.groovy.editor.GroovySplitEditor
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorBase
 import sap.commerce.toolset.impex.file.ImpexFileType
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
+import sap.commerce.toolset.polyglotQuery.fileTypes.PolyglotQueryFileType
 
 class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
 

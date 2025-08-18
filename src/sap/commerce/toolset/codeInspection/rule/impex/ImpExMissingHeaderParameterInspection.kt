@@ -22,15 +22,15 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.elementType
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.codeInspection.fix.impex.ImpExDeleteParametersSeparatorFix
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpexHeaderLine
 import sap.commerce.toolset.impex.psi.ImpexTypes
 import sap.commerce.toolset.impex.psi.ImpexVisitor
-import sap.commerce.toolset.psi.util.PsiTreeUtilExt
-import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.util.elementType
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.psi.PsiTreeUtilExt
 
 class ImpExMissingHeaderParameterInspection : LocalInspectionTool() {
 

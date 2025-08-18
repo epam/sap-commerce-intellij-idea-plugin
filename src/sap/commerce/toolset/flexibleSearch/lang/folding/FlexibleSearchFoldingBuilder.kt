@@ -17,8 +17,6 @@
  */
 package sap.commerce.toolset.flexibleSearch.lang.folding
 
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFile
-import sap.commerce.toolset.flexibleSearch.psi.*
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -33,6 +31,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.flexibleSearch.psi.*
 import sap.commerce.toolset.settings.DeveloperSettings
 
 class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
@@ -147,7 +146,7 @@ class FlexibleSearchFoldingBuilder : FoldingBuilderEx(), DumbAware {
         return alias + columnName + language
     }
 
-    override fun isCollapsedByDefault(node: ASTNode) = node.psi.parent.parent !is FlexibleSearchFile
+    override fun isCollapsedByDefault(node: ASTNode) = node.psi.parent.parent !is FlexibleSearchPsiFile
 
     companion object {
         private const val GROUP_NAME = "FlexibleSearch"

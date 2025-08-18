@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.groovy.settings.options
 
-import sap.commerce.toolset.groovy.file.GroovyFileToolbarInstaller
 import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
@@ -27,6 +26,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.groovy.actionSystem.GroovyFileToolbarInstaller
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 import javax.swing.JCheckBox

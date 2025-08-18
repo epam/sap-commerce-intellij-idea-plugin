@@ -183,7 +183,7 @@ object ModuleDescriptorFactory {
     private fun unmarshalExtensionInfo(hybrisProjectFile: File): ExtensionInfo {
         return try {
             JAXBContext.newInstance(
-                "sap.commerce.toolset.project.settings.jaxb.extensioninfo",
+                ObjectFactory::class.java.packageName,
                 ObjectFactory::class.java.classLoader
             )
                 .createUnmarshaller()

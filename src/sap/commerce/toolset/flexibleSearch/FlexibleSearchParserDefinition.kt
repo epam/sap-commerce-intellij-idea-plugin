@@ -18,8 +18,6 @@
  */
 package sap.commerce.toolset.flexibleSearch
 
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFile
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.openapi.project.Project
@@ -27,13 +25,15 @@ import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 
 class FlexibleSearchParserDefinition : ParserDefinition {
 
     override fun createLexer(project: Project) = FlexibleSearchLexer()
     override fun createParser(project: Project) = FlexibleSearchParser()
     override fun createElement(node: ASTNode): PsiElement = FlexibleSearchTypes.Factory.createElement(node)
-    override fun createFile(viewProvider: FileViewProvider) = FlexibleSearchFile(viewProvider)
+    override fun createFile(viewProvider: FileViewProvider) = FlexibleSearchPsiFile(viewProvider)
 
     override fun getFileNodeType(): IFileElementType = FlexibleSearchConstants.FILE_NODE_TYPE
     override fun getWhitespaceTokens(): TokenSet = TokenSet.WHITE_SPACE

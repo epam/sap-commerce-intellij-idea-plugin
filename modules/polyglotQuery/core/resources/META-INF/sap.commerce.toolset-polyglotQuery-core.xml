@@ -21,7 +21,7 @@
         <internalFileTemplate name="Polyglot Query File"/>
 
         <fileType language="Polyglot Query" extensions="pgq" name="Polyglot Query File" fieldName="INSTANCE"
-                  implementationClass="sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType"/>
+                  implementationClass="sap.commerce.toolset.polyglotQuery.fileTypes.PolyglotQueryFileType"/>
     </extensions>
 
 </idea-plugin>

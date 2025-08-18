@@ -26,7 +26,7 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.xml.XmlTag
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.lang.folding.XmlFoldingBuilderEx
+import sap.commerce.toolset.folding.XmlFoldingBuilderEx
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TypeSystemFoldingSettingsState
 import sap.commerce.toolset.typeSystem.model.*

@@ -29,13 +29,13 @@
         <group id="hybris.console.actionGroup">
             <reference ref="hybris.hac.chooseConnection"/>
             <action id="hybris.hac.console.executeStatement"
-                    class="sap.commerce.toolset.tools.remote.console.actions.ConsoleExecuteStatementAction">
+                    class="sap.commerce.toolset.tools.remote.console.actionSystem.ConsoleExecuteStatementAction">
                 <keyboard-shortcut keymap="$default" first-keystroke="alt ENTER"/>
             </action>
             <action id="hybris.hac.console.impex.validate"
-                    class="sap.commerce.toolset.tools.remote.console.actions.ConsoleImpExValidateAction"/>
+                    class="sap.commerce.toolset.tools.remote.console.actionSystem.ConsoleImpExValidateAction"/>
             <action id="hybris.hac.console.clearAll"
-                    class="sap.commerce.toolset.tools.remote.console.actions.ConsoleClearAllAction"/>
+                    class="sap.commerce.toolset.tools.remote.console.actionSystem.ConsoleClearAllAction"/>
         </group>
     </actions>
 </idea-plugin>

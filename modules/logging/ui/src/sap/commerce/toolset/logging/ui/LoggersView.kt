@@ -25,7 +25,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.ui.actions.HybrisActionPlaces
+import sap.commerce.toolset.ui.actionSystem.HybrisActionPlaces
 import java.io.Serial
 
 class LoggersView(

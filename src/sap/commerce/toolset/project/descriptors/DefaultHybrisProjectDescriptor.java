@@ -374,7 +374,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
 
         try {
             return (Hybrisconfig) JAXBContext.newInstance(
-                    "sap.commerce.toolset.project.settings.jaxb.localextensions",
+                    ObjectFactory.class.getPackageName(),
                     ObjectFactory.class.getClassLoader())
                 .createUnmarshaller()
                 .unmarshal(file);

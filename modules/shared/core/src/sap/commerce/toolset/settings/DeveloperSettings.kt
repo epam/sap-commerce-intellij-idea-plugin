@@ -29,6 +29,7 @@ import sap.commerce.toolset.settings.state.DeveloperSettingsState
     storages = [Storage(value = HybrisConstants.STORAGE_HYBRIS_DEVELOPER_SPECIFIC_PROJECT_SETTINGS, roamingType = RoamingType.DISABLED)]
 )
 @Service(Service.Level.PROJECT)
+@Deprecated("Split to scope specific settings")
 class DeveloperSettings : SerializablePersistentStateComponent<DeveloperSettingsState>(DeveloperSettingsState()), ModificationTracker {
 
     var typeSystemDiagramSettings

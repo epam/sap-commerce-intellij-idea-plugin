@@ -20,7 +20,7 @@ package sap.commerce.toolset.typeSystem.meta.model
 
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.lang.documentation.renderer.hybrisDoc
+import sap.commerce.toolset.documentation.renderer.hybrisDoc
 import sap.commerce.toolset.typeSystem.model.Attribute
 import sap.commerce.toolset.typeSystem.model.CreationMode
 import sap.commerce.toolset.typeSystem.model.Index

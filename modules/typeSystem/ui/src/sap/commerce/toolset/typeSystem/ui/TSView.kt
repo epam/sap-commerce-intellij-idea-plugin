@@ -32,7 +32,7 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.typeSystem.actions.*
+import sap.commerce.toolset.typeSystem.actionSystem.*
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.event.TSMetaModelChangeListener

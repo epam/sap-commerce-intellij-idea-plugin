@@ -18,21 +18,21 @@
 
 package sap.commerce.toolset.flexibleSearch.lang.documentation
 
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFile
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.DocumentationTargetProvider
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchDefinedTableName
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 
 class FlexibleSearchDocumentationTargetProvider : DocumentationTargetProvider {
 
     override fun documentationTargets(file: PsiFile, offset: Int): List<DocumentationTarget> {
-        if (file !is FlexibleSearchFile) return emptyList()
+        if (file !is FlexibleSearchPsiFile) return emptyList()
 
         val element = file.findElementAt(offset) ?: return emptyList()
 

@@ -18,18 +18,6 @@
 package sap.commerce.toolset.flexibleSearch.completion
 
 import com.intellij.codeInsight.completion.*
-import sap.commerce.toolset.codeInsight.patterns.CaseInsensitiveContainsPatternCondition
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
-import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
-import sap.commerce.toolset.flexibleSearch.completion.provider.FxSHybrisColumnCompletionProvider
-import sap.commerce.toolset.flexibleSearch.completion.provider.FxSKeywordsCompletionProvider
-import sap.commerce.toolset.flexibleSearch.completion.provider.FxSRootCompletionProvider
-import sap.commerce.toolset.flexibleSearch.completion.provider.FxSTablesAliasCompletionProvider
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFile
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnRefExpression
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnRefYExpression
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchExpression
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns
@@ -37,7 +25,19 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.TokenType
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.codeInsight.patterns.CaseInsensitiveContainsPatternCondition
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
+import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
+import sap.commerce.toolset.flexibleSearch.completion.provider.FxSHybrisColumnCompletionProvider
+import sap.commerce.toolset.flexibleSearch.completion.provider.FxSKeywordsCompletionProvider
+import sap.commerce.toolset.flexibleSearch.completion.provider.FxSRootCompletionProvider
+import sap.commerce.toolset.flexibleSearch.completion.provider.FxSTablesAliasCompletionProvider
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnRefExpression
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnRefYExpression
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchExpression
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*
 
 class FlexibleSearchCompletionContributor : CompletionContributor() {
 
@@ -50,7 +50,7 @@ class FlexibleSearchCompletionContributor : CompletionContributor() {
     )
 
     override fun beforeCompletion(context: CompletionInitializationContext) {
-        if (context.file !is FlexibleSearchFile) return
+        if (context.file !is FlexibleSearchPsiFile) return
 
         context.dummyIdentifier = FlexibleSearchConstants.DUMMY_IDENTIFIER
     }

@@ -28,7 +28,7 @@ import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.beanSystem.BSDomFileDescription
 import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
-import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFile
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
 import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.isNotHybrisProject
@@ -71,7 +71,7 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
         val file = event.file ?: return
 
         when (file) {
-            is FlexibleSearchFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
+            is FlexibleSearchPsiFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
                 .filterIsInstance<FlexibleSearchSplitEditor>()
                 .forEach { it.refreshParameters() }
 

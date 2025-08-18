@@ -17,7 +17,14 @@
  */
 package sap.commerce.toolset.system.cockpitng.lang.folding
 
-import sap.commerce.toolset.lang.folding.XmlFoldingBuilderEx
+import com.intellij.lang.ASTNode
+import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
+import com.intellij.psi.util.PsiElementFilter
+import com.intellij.psi.xml.XmlTag
+import sap.commerce.toolset.folding.XmlFoldingBuilderEx
+import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.settings.state.CngFoldingSettingsState
 import sap.commerce.toolset.system.cockpitng.model.advancedSearch.Field
 import sap.commerce.toolset.system.cockpitng.model.advancedSearch.FieldList
 import sap.commerce.toolset.system.cockpitng.model.collectionBrowser.Mold
@@ -33,13 +40,6 @@ import sap.commerce.toolset.system.cockpitng.model.wizardConfig.AdditionalParam
 import sap.commerce.toolset.system.cockpitng.model.wizardConfig.ComposedHandler
 import sap.commerce.toolset.system.cockpitng.model.wizardConfig.Property
 import sap.commerce.toolset.system.cockpitng.model.wizardConfig.PropertyList
-import com.intellij.lang.ASTNode
-import com.intellij.openapi.project.DumbAware
-import com.intellij.openapi.project.Project
-import com.intellij.psi.util.PsiElementFilter
-import com.intellij.psi.xml.XmlTag
-import sap.commerce.toolset.settings.DeveloperSettings
-import sap.commerce.toolset.settings.state.CngFoldingSettingsState
 import java.util.*
 
 class CngConfigFoldingBuilder : XmlFoldingBuilderEx<CngFoldingSettingsState, Config>(Config::class.java), DumbAware {

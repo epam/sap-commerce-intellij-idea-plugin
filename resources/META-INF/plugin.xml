@@ -85,6 +85,11 @@
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
+    <xi:include href="/META-INF/sap.commerce.toolset-typeSystem-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-typeSystem-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-beanSystem-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-beanSystem-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
     <xi:include href="/META-INF/sap.commerce.toolset-console-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-acl-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-impex-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
@@ -97,9 +102,5 @@
     <xi:include href="/META-INF/sap.commerce.toolset-ccv2-manifest.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-ccv2-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-logging-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/sap.commerce.toolset-typeSystem-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/sap.commerce.toolset-typeSystem-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/sap.commerce.toolset-beanSystem-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/sap.commerce.toolset-beanSystem-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-occ-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

@@ -32,7 +32,7 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Service
-import sap.commerce.toolset.ccv2.actions.*
+import sap.commerce.toolset.ccv2.actionSystem.*
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.dto.CCv2BuildStatus
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto

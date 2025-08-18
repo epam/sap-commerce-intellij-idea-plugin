@@ -25,7 +25,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.actions.CCv2ShowEnvironmentDetailsAction
+import sap.commerce.toolset.ccv2.actionSystem.CCv2ShowEnvironmentDetailsAction
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentStatusEnum
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription

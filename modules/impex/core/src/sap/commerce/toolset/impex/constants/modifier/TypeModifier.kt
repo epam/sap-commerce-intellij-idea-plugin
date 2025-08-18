@@ -22,11 +22,11 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.codeInsight.completion.JavaClassCompletionService
 import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 import sap.commerce.toolset.impex.constants.InterceptorType
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeName
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
-import sap.commerce.toolset.java.completion.JavaClassCompletionService
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 

@@ -17,8 +17,6 @@
  */
 package sap.commerce.toolset.polyglotQuery.ui
 
-import sap.commerce.toolset.polyglotQuery.PolyglotQueryConstants
-import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.command.WriteCommandAction
@@ -40,6 +38,8 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.polyglotQuery.PolyglotQueryConstants
+import sap.commerce.toolset.polyglotQuery.fileTypes.PolyglotQueryFileType
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.PolyglotQuerySettingsState
 import sap.commerce.toolset.settings.state.ReservedWordsCase
