@@ -84,7 +84,7 @@ data class PolyglotQueryVirtualParameter(
         else -> rawValue?.asSafely<String>()
             ?.let {
                 project.get()?.takeUnless { it.isDisposed }
-                    ?.let { TSMetaModelAccess.getInstance(it) }
+                    ?.let { TSMetaModelAccess.Companion.getInstance(it) }
                     ?.findMetaItemByName(rawType)
                     ?.let { "de.hybris.platform.core.PK.parse(\"$rawValue\")" }
                     ?: it

@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.tools.console.impl
 
-import com.intellij.execution.ui.ConsoleViewContentType.*
+import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.dsl.builder.panel
@@ -31,7 +31,6 @@ import sap.commerce.toolset.polyglotQuery.editor.PolyglotQueryVirtualParameter
 import java.awt.BorderLayout
 import java.io.Serial
 
-@Deprecated("Move to own module")
 class HybrisPolyglotQueryConsole(
     project: Project,
     coroutineScope: CoroutineScope
@@ -54,7 +53,7 @@ class HybrisPolyglotQueryConsole(
     override fun currentExecutionContext(content: String) = FlexibleSearchExecutionContext(
         content = content,
         queryMode = QueryMode.PolyglotQuery,
-        settings = FlexibleSearchExecutionContext.defaultSettings(project).modifiable()
+        settings = FlexibleSearchExecutionContext.Companion.defaultSettings(project).modifiable()
             .apply {
                 maxCount = maxRowsSpinner.value.toString().toInt()
             }
@@ -64,15 +63,15 @@ class HybrisPolyglotQueryConsole(
     fun print(values: Collection<PolyglotQueryVirtualParameter>?) {
         if (values == null) return
 
-        print(" Parameters:\n", SYSTEM_OUTPUT)
+        print(" Parameters:\n", ConsoleViewContentType.SYSTEM_OUTPUT)
 
         values.forEachIndexed { index, param ->
-            print("  | ", LOG_VERBOSE_OUTPUT)
-            print(param.name, NORMAL_OUTPUT)
-            print(" : ", LOG_VERBOSE_OUTPUT)
-            print(param.presentationValue, USER_INPUT)
+            print("  | ", ConsoleViewContentType.LOG_VERBOSE_OUTPUT)
+            print(param.name, ConsoleViewContentType.NORMAL_OUTPUT)
+            print(" : ", ConsoleViewContentType.LOG_VERBOSE_OUTPUT)
+            print(param.presentationValue, ConsoleViewContentType.USER_INPUT)
 
-            if (index < values.size) print("\n", SYSTEM_OUTPUT)
+            if (index < values.size) print("\n", ConsoleViewContentType.SYSTEM_OUTPUT)
         }
     }
 

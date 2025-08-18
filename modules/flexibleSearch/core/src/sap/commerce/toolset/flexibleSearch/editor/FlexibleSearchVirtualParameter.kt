@@ -18,14 +18,14 @@
 
 package sap.commerce.toolset.flexibleSearch.editor
 
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchBindParameter
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.openapi.util.ClearableLazyValue
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
 import org.apache.commons.lang3.BooleanUtils
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchBindParameter
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.reflect.KClass
