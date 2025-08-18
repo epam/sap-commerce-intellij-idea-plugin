@@ -15,43 +15,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.KeepPopupOnPerform
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
-import sap.commerce.toolset.settings.DeveloperSettings
-import sap.commerce.toolset.settings.state.TransactionMode
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.exec.context.ReplicaSelectionMode
+import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 
-abstract class GroovyTransactionAction(text: String, description: String, private val transactionMode: TransactionMode) : CheckboxAction(
-    text, description, null
+abstract class GroovyReplicaSelectionModeAction(private val replicaSelectionMode: ReplicaSelectionMode) : CheckboxAction(
+    HybrisI18NBundleUtils.message("hybris.groovy.actions.executionMode.${replicaSelectionMode.name.lowercase()}"),
+    HybrisI18NBundleUtils.message("hybris.groovy.actions.executionMode.${replicaSelectionMode.name.lowercase()}.description"),
+    null
 ) {
+
+    override fun update(e: AnActionEvent) {
+        super.update(e)
+
+        e.presentation.keepPopupOnPerform = KeepPopupOnPerform.Never
+    }
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun isSelected(e: AnActionEvent): Boolean {
         val project = e.project ?: return false
-        return DeveloperSettings.getInstance(project).groovySettings.txMode == transactionMode
-    }
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) {
-        val project = e.project ?: return
-
-        with(DeveloperSettings.getInstance(project)) {
-            groovySettings = groovySettings.copy(txMode = transactionMode)
-        }
+        return GroovyExecutionClient.Companion.getInstance(project)
+            .connectionContext
+            .replicaSelectionMode == replicaSelectionMode
     }
 }
-
-class GroovyRollbackTransactionAction : GroovyTransactionAction(
-    message("hybris.groovy.actions.transaction.rollback"),
-    message("hybris.groovy.actions.transaction.rollback.description"),
-    TransactionMode.ROLLBACK
-)
-
-class GroovyCommitTransactionAction : GroovyTransactionAction(
-    message("hybris.groovy.actions.transaction.commit"),
-    message("hybris.groovy.actions.transaction.commit.description"),
-    TransactionMode.COMMIT
-)

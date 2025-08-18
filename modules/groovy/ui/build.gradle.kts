@@ -40,6 +40,7 @@ dependencies {
     implementation(project(":exec-core"))
     implementation(project(":exec-ui"))
     implementation(project(":console-core"))
+    implementation(project(":console-ui"))
     implementation(project(":groovy-exec"))
 
     intellijPlatform {

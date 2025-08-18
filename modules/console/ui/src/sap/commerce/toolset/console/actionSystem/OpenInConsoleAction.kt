@@ -18,9 +18,13 @@
 
 package sap.commerce.toolset.console.actionSystem
 
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileTypes.FileType
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
@@ -35,7 +39,7 @@ abstract class OpenInConsoleAction(
     private val text: String,
     private val description: String,
     private val icon: Icon? = HybrisIcons.Console.Actions.OPEN
-) : AnAction() {
+) : DumbAwareAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 

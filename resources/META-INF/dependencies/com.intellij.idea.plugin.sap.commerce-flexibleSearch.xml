@@ -74,9 +74,6 @@
     </extensions>
 
     <actions>
-
-        <action id="hybris.fxs.openFileInConsole"
-                class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchOpenInConsoleAction"/>
         <action id="FlexibleSearch.NewFlexibleSearchFile"
                 class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchFileCreateAction"
                 text="FlexibleSearch File" description="Create new FlexibleSearch file">
@@ -92,7 +89,7 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
 
-        <action id="hybris.fxs.openQuery" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchOpenQueryAction"/>
+        <action id="hybris.fxs.openQuery" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchOpenInConsoleAction"/>
         <action id="hybris.fxs.openSettings" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchOpenSettingsAction"/>
         <action id="hybris.fxs.toggleParameters" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchToggleInEditorParametersAction"/>
         <action id="hybris.fxs.toggleInEditorResults" class="sap.commerce.toolset.flexibleSearch.actionSystem.FlexibleSearchToggleInEditorResultsAction"/>

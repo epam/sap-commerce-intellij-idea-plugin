@@ -15,39 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package sap.commerce.toolset.flexibleSearch.actionSystem
 
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.DumbAwareAction
-import sap.commerce.toolset.HybrisConstants.FLEXIBLE_SEARCH_FILE_EXTENSION
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
+import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
 import sap.commerce.toolset.flexibleSearch.console.FlexibleSearchConsole
-import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 
-class FlexibleSearchOpenInConsoleAction : DumbAwareAction() {
-
-    override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
-    override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
-        if (!e.presentation.isVisible) return
-
-        val project = e.project ?: return
-
-        e.presentation.text = "Copy to FlexibleSearch Console"
-        e.presentation.description = "Copy FlexibleSearch file to SAP Commerce console"
-        e.presentation.icon = HybrisIcons.Console.Actions.OPEN
-        e.presentation.isEnabledAndVisible = project.isHybrisProject && OpenInHybrisConsoleService.getInstance(project)
-            .isRequiredSingleFileExtension(FLEXIBLE_SEARCH_FILE_EXTENSION)
-    }
-
-    override fun actionPerformed(event: AnActionEvent) {
-        val project = event.project ?: return
-        OpenInHybrisConsoleService.getInstance(project)
-            .openSelectedFilesInConsole(FlexibleSearchConsole::class, FLEXIBLE_SEARCH_FILE_EXTENSION)
-    }
-}
+class FlexibleSearchOpenInConsoleAction : OpenInConsoleAction(
+    FlexibleSearchFileType,
+    FlexibleSearchConsole::class,
+    HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query"),
+    HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query.description"),
+)

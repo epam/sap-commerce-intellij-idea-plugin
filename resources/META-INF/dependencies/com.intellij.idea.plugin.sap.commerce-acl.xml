@@ -57,7 +57,7 @@
             <action id="hybris.acl.import" class="sap.commerce.toolset.acl.actionSystem.AclExecuteAction">
                 <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
             </action>
-            <action id="hybris.acl.openQuery" class="sap.commerce.toolset.acl.actionSystem.AclOpenQueryAction">
+            <action id="hybris.acl.openQuery" class="sap.commerce.toolset.acl.actionSystem.AclOpenInConsoleAction">
                 <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
             </action>
             <action id="hybris.acl.validate" class="sap.commerce.toolset.acl.actionSystem.AclValidateAction">

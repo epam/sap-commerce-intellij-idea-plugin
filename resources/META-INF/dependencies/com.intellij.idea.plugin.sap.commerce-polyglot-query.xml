@@ -68,7 +68,7 @@
             <action id="hybris.pgq.execute" class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryExecuteAction">
                 <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
             </action>
-            <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryOpenQueryAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotOpenInConsoleAction"/>
             <separator/>
             <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryToggleRetrieveAllDataAction"/>
             <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryToggleInEditorResultsAction"/>

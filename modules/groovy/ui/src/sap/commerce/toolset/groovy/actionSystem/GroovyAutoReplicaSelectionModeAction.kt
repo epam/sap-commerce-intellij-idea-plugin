@@ -15,16 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.acl.actionSystem
 
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
-import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
-import sap.commerce.toolset.impex.console.ImpExConsole
+package sap.commerce.toolset.groovy.actionSystem
 
-class AclOpenQueryAction : OpenInConsoleAction(
-    AclFileType,
-    ImpExConsole::class,
-    message("hybris.acl.actions.open_query"),
-    message("hybris.acl.actions.open_query.description"),
-)
+import com.intellij.openapi.actionSystem.AnActionEvent
+import sap.commerce.toolset.exec.context.ReplicaSelectionMode
+import sap.commerce.toolset.exec.http.RemoteConnectionContext
+import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+
+class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(ReplicaSelectionMode.AUTO) {
+
+    override fun setSelected(e: AnActionEvent, state: Boolean) {
+        val project = e.project ?: return
+
+        GroovyExecutionClient.Companion.getInstance(project).connectionContext = RemoteConnectionContext.Companion.auto()
+    }
+}

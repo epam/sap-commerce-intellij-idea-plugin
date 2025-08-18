@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow
+package sap.commerce.toolset.groovy.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
@@ -66,7 +66,7 @@ class ManualReplicaSelectionDialog(
                         .showCloseButton(false)
                 )
                     .customize(UnscaledGaps(12, 12, 12, 12))
-                    .align(Align.CENTER)
+                    .align(Align.Companion.CENTER)
             }
 
             row {
@@ -94,6 +94,6 @@ class ManualReplicaSelectionDialog(
 
         val replicaContext = ReplicaContext(manualReplicaId.text, manualCookieName.text)
 
-        GroovyExecutionClient.getInstance(project).connectionContext = RemoteConnectionContext.manual(listOf(replicaContext))
+        GroovyExecutionClient.Companion.getInstance(project).connectionContext = RemoteConnectionContext.Companion.manual(listOf(replicaContext))
     }
 }
