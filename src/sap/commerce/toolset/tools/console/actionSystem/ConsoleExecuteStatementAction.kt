@@ -28,16 +28,17 @@ import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.flexibleSearch.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.console.SQLConsole
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
+import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
 import sap.commerce.toolset.impex.monitoring.exec.ImpExMonitorExecutionClient
 import sap.commerce.toolset.solr.exec.SolrExecutionClient
-import sap.commerce.toolset.tools.console.impl.HybrisGroovyConsole
 import sap.commerce.toolset.tools.console.impl.HybrisImpexMonitorConsole
 import sap.commerce.toolset.tools.console.impl.HybrisPolyglotQueryConsole
 import sap.commerce.toolset.tools.console.impl.HybrisSolrSearchConsole
 
+@Deprecated("make ui module specific")
 class ConsoleExecuteStatementAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -53,34 +54,34 @@ class ConsoleExecuteStatementAction : AnAction() {
         when (console) {
             is HybrisGroovyConsole -> GroovyExecutionClient.getInstance(project).execute(
                 context = console.context,
-                beforeCallback = { coroutineScope -> console.beforeExecution() },
-                resultCallback = { coroutineScope, result -> console.print(result) }
+                beforeCallback = { _ -> console.beforeExecution() },
+                resultCallback = { _, result -> console.print(result) }
             )
 
             is ImpExConsole -> ImpExExecutionClient.getInstance(project).execute(
                 context = console.context,
-                beforeCallback = { coroutineScope -> console.beforeExecution() },
-                resultCallback = { coroutineScope, result -> console.print(result) }
+                beforeCallback = { _ -> console.beforeExecution() },
+                resultCallback = { _, result -> console.print(result) }
             )
 
             is HybrisPolyglotQueryConsole,
             is FlexibleSearchConsole,
             is SQLConsole -> FlexibleSearchExecutionClient.getInstance(project).execute(
                 context = console.context,
-                beforeCallback = { coroutineScope -> console.beforeExecution() },
-                resultCallback = { coroutineScope, result -> console.print(result) }
+                beforeCallback = { _ -> console.beforeExecution() },
+                resultCallback = { _, result -> console.print(result) }
             )
 
             is HybrisSolrSearchConsole -> SolrExecutionClient.getInstance(project).execute(
                 context = console.context,
-                beforeCallback = { coroutineScope -> console.beforeExecution() },
-                resultCallback = { coroutineScope, result -> console.print(result) }
+                beforeCallback = { _ -> console.beforeExecution() },
+                resultCallback = { _, result -> console.print(result) }
             )
 
             is HybrisImpexMonitorConsole -> ImpExMonitorExecutionClient.getInstance(project).execute(
                 context = console.context,
-                beforeCallback = { coroutineScope -> console.beforeExecution() },
-                resultCallback = { coroutineScope, result -> console.print(result) }
+                beforeCallback = { _ -> console.beforeExecution() },
+                resultCallback = { _, result -> console.print(result) }
             )
 
             else -> throw NotImplementedError("This action cannot be used with the ${console::class.qualifiedName}")

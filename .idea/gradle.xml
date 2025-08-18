@@ -26,6 +26,7 @@
             <option value="$PROJECT_DIR$/modules/flexibleSearch/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/exec" />
             <option value="$PROJECT_DIR$/modules/groovy/exec" />
+            <option value="$PROJECT_DIR$/modules/groovy/ui" />
             <option value="$PROJECT_DIR$/modules/impex/core" />
             <option value="$PROJECT_DIR$/modules/impex/exec" />
             <option value="$PROJECT_DIR$/modules/impex/monitoring" />

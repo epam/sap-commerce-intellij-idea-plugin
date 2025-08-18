@@ -23,7 +23,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBLabel
 import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
@@ -38,7 +37,7 @@ import javax.swing.SpinnerNumberModel
 @Deprecated("Move to own module")
 class HybrisPolyglotQueryConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
     project,
-    HybrisConstants.CONSOLE_TITLE_POLYGLOT_QUERY,
+    "[y] PolyglotQuery",
     PolyglotQueryLanguage,
     coroutineScope
 ) {

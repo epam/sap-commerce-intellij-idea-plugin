@@ -27,7 +27,6 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.ImpExLanguage
@@ -37,7 +36,7 @@ import java.io.Serial
 
 class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExExecutionContext>(
     project,
-    HybrisConstants.CONSOLE_TITLE_IMPEX,
+    "[y] ImpEx Console",
     ImpExLanguage,
     coroutineScope
 ) {

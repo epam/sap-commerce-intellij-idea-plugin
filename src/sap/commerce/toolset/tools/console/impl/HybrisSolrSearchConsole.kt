@@ -37,7 +37,6 @@ import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
 import com.jetbrains.rd.swing.selectedItemProperty
 import com.jetbrains.rd.util.reactive.adviseEternal
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
@@ -51,12 +50,10 @@ import java.awt.BorderLayout
 import java.io.Serial
 import javax.swing.*
 
-class HybrisSolrSearchConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<SolrQueryExecutionContext>(
-    project,
-    HybrisConstants.CONSOLE_TITLE_SOLR_SEARCH,
-    PlainTextLanguage.INSTANCE,
-    coroutineScope
-) {
+class HybrisSolrSearchConsole(
+    project: Project,
+    coroutineScope: CoroutineScope
+) : HybrisConsole<SolrQueryExecutionContext>(project, "[y] Solr search", PlainTextLanguage.INSTANCE, coroutineScope) {
 
     val docs = "Docs: "
     val coresComboBoxModel = CollectionComboBoxModel(ArrayList<SolrCoreData>())

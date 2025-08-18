@@ -22,8 +22,10 @@ import com.intellij.execution.console.ConsoleHistoryController
 import com.intellij.execution.console.ConsoleRootType
 import com.intellij.execution.console.LanguageConsoleImpl
 import com.intellij.execution.ui.ConsoleViewContentType
+import com.intellij.ide.ActivityTracker
 import com.intellij.lang.Language
 import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
@@ -94,7 +96,10 @@ abstract class HybrisConsole<E : ExecutionContext>(
     }
 
     fun afterExecution() {
-        isEditable = true
+        coroutineScope.launch {
+            edtWriteAction { isEditable = true }
+            readAction { ActivityTracker.getInstance().inc() }
+        }
     }
 
     fun print(result: ConsoleAwareExecutionResult, isEditable: Boolean = true) {

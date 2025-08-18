@@ -22,7 +22,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
@@ -31,12 +30,10 @@ import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
 
-class FlexibleSearchConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<FlexibleSearchExecutionContext>(
-    project,
-    HybrisConstants.CONSOLE_TITLE_FLEXIBLE_SEARCH,
-    FlexibleSearchLanguage,
-    coroutineScope
-) {
+class FlexibleSearchConsole(
+    project: Project,
+    coroutineScope: CoroutineScope
+) : HybrisConsole<FlexibleSearchExecutionContext>(project, "[y] FxS Console", FlexibleSearchLanguage, coroutineScope) {
 
     private lateinit var maxRowsSpinner: JBIntSpinner
 

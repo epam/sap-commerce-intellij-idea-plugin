@@ -16,35 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.groovy.console
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.console.HybrisConsoleProvider
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    implementation(libs.jsoup)
-    implementation(project(":shared-core"))
-    implementation(project(":exec-core"))
-    implementation(project(":console-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "org.intellij.groovy",
-        )
-    }
+class GroovyConsoleProvider : HybrisConsoleProvider<HybrisGroovyConsole> {
+    override fun console(project: Project, coroutineScope: CoroutineScope) = Plugin.GROOVY
+        .ifActive { HybrisGroovyConsole(project, coroutineScope) }
 }

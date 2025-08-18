@@ -16,47 +16,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.tools.console.impl
+package sap.commerce.toolset.groovy.console
 
 import com.intellij.openapi.project.Project
+import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBLabel
-import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
+import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.groovy.GroovyLanguage
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.http.HybrisHacHttpClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
 import java.io.Serial
-import javax.swing.JPanel
-import javax.swing.JSpinner
-import javax.swing.SpinnerNumberModel
 
-@Deprecated("Move to own module")
-class HybrisGroovyConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<GroovyExecutionContext>(
-    project,
-    HybrisConstants.CONSOLE_TITLE_GROOVY,
-    GroovyLanguage,
-    coroutineScope
-) {
+class HybrisGroovyConsole(
+    project: Project,
+    coroutineScope: CoroutineScope
+) : HybrisConsole<GroovyExecutionContext>(project, "[y] Groovy Console", GroovyLanguage, coroutineScope) {
 
-    private val commitCheckbox = JBCheckBox("Commit mode")
-        .also { it.border = borders10 }
-    private val timeoutSpinner = JSpinner(SpinnerNumberModel(HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000, 1, 3600, 10))
-        .also { it.border = borders5 }
+    private lateinit var commitCheckbox: JBCheckBox
+    private lateinit var timeoutSpinner: JBIntSpinner
 
     init {
         isEditable = true
 
-        val panel = JPanel(WrappedFlowLayout(0, 0))
-        panel.add(commitCheckbox)
-        panel.add(JBLabel("Timeout (seconds):").also { it.border = bordersLabel })
-        panel.add(timeoutSpinner)
+        val myPanel = panel {
+            row {
+                commitCheckbox = checkBox("Commit mode")
+                    .component
+                timeoutSpinner = spinner(1..3600, 10)
+                    .label("Timeout (seconds):")
+                    .component
+                    .apply { value = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT / 1000 }
+            }
+        }
 
-        add(panel, BorderLayout.NORTH)
+        add(myPanel, BorderLayout.NORTH)
     }
 
     override fun currentExecutionContext(content: String) = GroovyExecutionContext(

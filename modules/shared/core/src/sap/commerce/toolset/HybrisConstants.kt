@@ -52,14 +52,6 @@ object HybrisConstants {
     const val ACL = "Access Control Lists"
     const val ACL_FILE_EXTENSION = "acl"
 
-    const val CONSOLE_TITLE_IMPEX = "[y] ImpEx Console"
-    const val CONSOLE_TITLE_IMPEX_MONITOR = "[y] Monitor Console"
-    const val CONSOLE_TITLE_GROOVY = "[y] Groovy Console"
-    const val CONSOLE_TITLE_FLEXIBLE_SEARCH = "[y] FxS Console"
-    const val CONSOLE_TITLE_SQL = "[y] SQL Console"
-    const val CONSOLE_TITLE_SOLR_SEARCH = "[y] Solr search"
-    const val CONSOLE_TITLE_POLYGLOT_QUERY = "[y] PolyglotQuery"
-
     const val ROOT_TAG_BUSINESS_PROCESS_XML = "process"
     const val ROOT_TAG_ITEMS_XML = "items"
     const val ROOT_TAG_DEPLOYMENT_MODEL_XML = "model"

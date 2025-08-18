@@ -43,12 +43,10 @@ import java.util.concurrent.TimeUnit
 import javax.swing.JPanel
 
 @Deprecated("Move to own module")
-class HybrisImpexMonitorConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConsole<ImpExMonitorExecutionContext>(
-    project,
-    HybrisConstants.CONSOLE_TITLE_IMPEX_MONITOR,
-    ImpExLanguage,
-    coroutineScope
-) {
+class HybrisImpexMonitorConsole(
+    project: Project,
+    coroutineScope: CoroutineScope
+) : HybrisConsole<ImpExMonitorExecutionContext>(project, "[y] Monitor Console", ImpExLanguage, coroutineScope) {
 
     private val timeComboBox = ComboBox(
         arrayOf(
