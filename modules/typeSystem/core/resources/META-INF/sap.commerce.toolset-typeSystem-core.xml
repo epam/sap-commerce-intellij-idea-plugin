@@ -18,8 +18,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <dom.fileMetaData rootTagName="items" stubVersion="23" implementation="sap.commerce.toolset.typeSystem.TSDomFileDescription"/>
-        <dom.fileMetaData rootTagName="model" stubVersion="2" implementation="sap.commerce.toolset.typeSystem.TSDeploymentModelDomFileDescription"/>
+        <dom.fileMetaData rootTagName="items" stubVersion="24" implementation="sap.commerce.toolset.typeSystem.TSDomFileDescription"/>
+        <dom.fileMetaData rootTagName="model" stubVersion="3" implementation="sap.commerce.toolset.typeSystem.TSDeploymentModelDomFileDescription"/>
     </extensions>
 
 </idea-plugin>

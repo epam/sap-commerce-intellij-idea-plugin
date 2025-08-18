@@ -20,15 +20,15 @@
     <extensions defaultExtensionNs="com.intellij">
         <dom.extender domClass="sap.commerce.toolset.system.cockpitng.model.config.Context"
                       extenderClass="sap.commerce.toolset.system.cockpitng.CngConfigDomExtender"/>
-        <dom.fileMetaData rootTagName="config" stubVersion="3"
+        <dom.fileMetaData rootTagName="config" stubVersion="4"
                           implementation="sap.commerce.toolset.system.cockpitng.CngConfigDomFileDescription"/>
-        <dom.fileMetaData rootTagName="widgets" stubVersion="4"
+        <dom.fileMetaData rootTagName="widgets" stubVersion="5"
                           implementation="sap.commerce.toolset.system.cockpitng.CngWidgetsDomFileDescription"/>
-        <dom.fileMetaData rootTagName="action-definition" stubVersion="3"
+        <dom.fileMetaData rootTagName="action-definition" stubVersion="4"
                           implementation="sap.commerce.toolset.system.cockpitng.CngActionDefinitionDomFileDescription"/>
-        <dom.fileMetaData rootTagName="widget-definition" stubVersion="4"
+        <dom.fileMetaData rootTagName="widget-definition" stubVersion="5"
                           implementation="sap.commerce.toolset.system.cockpitng.CngWidgetDefinitionDomFileDescription"/>
-        <dom.fileMetaData rootTagName="editor-definition" stubVersion="3"
+        <dom.fileMetaData rootTagName="editor-definition" stubVersion="4"
                           implementation="sap.commerce.toolset.system.cockpitng.CngEditorDefinitionDomFileDescription"/>
 
         <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.system.cockpitng.lang.folding.CngConfigFoldingBuilder"/>

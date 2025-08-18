@@ -18,7 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <dom.fileMetaData rootTagName="beans" stubVersion="9"
+        <dom.fileMetaData rootTagName="beans" stubVersion="10"
                           implementation="sap.commerce.toolset.beanSystem.BSDomFileDescription"/>
     </extensions>
 
