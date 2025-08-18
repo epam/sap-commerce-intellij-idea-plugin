@@ -16,12 +16,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.exec.console
+package sap.commerce.toolset.flexibleSearch.console
 
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsoleProvider
 
-class ImpExConsoleProvider : HybrisConsoleProvider<ImpExConsole> {
-    override fun console(project: Project, coroutineScope: CoroutineScope) = ImpExConsole(project, coroutineScope)
+class FlexibleSearchConsoleProvider : HybrisConsoleProvider<FlexibleSearchConsole> {
+    override fun console(project: Project, coroutineScope: CoroutineScope) = FlexibleSearchConsole(project, coroutineScope)
 }

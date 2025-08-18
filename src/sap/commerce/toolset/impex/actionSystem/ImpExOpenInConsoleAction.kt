@@ -25,7 +25,7 @@ import com.intellij.openapi.project.DumbAwareAction
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
 import sap.commerce.toolset.impex.ImpExConstants
-import sap.commerce.toolset.impex.exec.console.ImpExConsole
+import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.isHybrisProject
 
 class ImpExOpenInConsoleAction : DumbAwareAction() {

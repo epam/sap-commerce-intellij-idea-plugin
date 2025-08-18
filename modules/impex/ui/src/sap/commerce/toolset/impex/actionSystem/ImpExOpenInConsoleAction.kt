@@ -20,7 +20,7 @@ package sap.commerce.toolset.impex.actionSystem
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
-import sap.commerce.toolset.impex.exec.console.ImpExConsole
+import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.file.ImpexFileType
 
 class ImpExOpenInConsoleAction : OpenInConsoleAction(

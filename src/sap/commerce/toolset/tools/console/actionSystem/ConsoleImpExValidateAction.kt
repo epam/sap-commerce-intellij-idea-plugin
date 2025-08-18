@@ -26,8 +26,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.ui.AnimatedIcon
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
+import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
-import sap.commerce.toolset.impex.exec.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 
 class ConsoleImpExValidateAction : AnAction() {

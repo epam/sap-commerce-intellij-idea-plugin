@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.exec.console
+package sap.commerce.toolset.impex.console
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox

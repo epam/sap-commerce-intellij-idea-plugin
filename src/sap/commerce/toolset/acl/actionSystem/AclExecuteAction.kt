@@ -29,9 +29,9 @@ import sap.commerce.toolset.acl.AclLanguage
 import sap.commerce.toolset.acl.editor.AclSplitEditor
 import sap.commerce.toolset.acl.editor.aclSplitEditor
 import sap.commerce.toolset.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
-import sap.commerce.toolset.impex.exec.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 
 class AclExecuteAction : ExecuteStatementAction<ImpExConsole, AclSplitEditor>(

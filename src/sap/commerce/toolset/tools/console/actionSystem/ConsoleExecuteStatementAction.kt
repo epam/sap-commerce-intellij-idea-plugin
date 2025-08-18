@@ -25,12 +25,12 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
+import sap.commerce.toolset.flexibleSearch.console.FlexibleSearchConsole
+import sap.commerce.toolset.flexibleSearch.console.SQLConsole
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
-import sap.commerce.toolset.flexibleSearch.exec.console.FlexibleSearchConsole
-import sap.commerce.toolset.flexibleSearch.exec.console.SQLConsole
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
-import sap.commerce.toolset.impex.exec.console.ImpExConsole
 import sap.commerce.toolset.impex.monitoring.exec.ImpExMonitorExecutionClient
 import sap.commerce.toolset.solr.exec.SolrExecutionClient
 import sap.commerce.toolset.tools.console.impl.HybrisGroovyConsole

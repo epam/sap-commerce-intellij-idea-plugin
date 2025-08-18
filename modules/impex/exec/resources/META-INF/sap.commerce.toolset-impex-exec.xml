@@ -18,7 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <consoleProvider implementation="sap.commerce.toolset.impex.exec.console.ImpExConsoleProvider"/>
+        <consoleProvider implementation="sap.commerce.toolset.impex.console.ImpExConsoleProvider"/>
     </extensions>
 
 </idea-plugin>

@@ -27,11 +27,11 @@ import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.editor.impexSplitEditorEx
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
-import sap.commerce.toolset.impex.exec.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 
 class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditorEx>(

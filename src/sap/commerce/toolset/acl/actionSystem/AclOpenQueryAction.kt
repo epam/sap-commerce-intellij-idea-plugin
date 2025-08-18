@@ -24,7 +24,7 @@ import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.acl.fileTypes.AclFileType
 import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
-import sap.commerce.toolset.impex.exec.console.ImpExConsole
+import sap.commerce.toolset.impex.console.ImpExConsole
 
 class AclOpenQueryAction : AnAction() {
 
