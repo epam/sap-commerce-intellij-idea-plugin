@@ -34,10 +34,11 @@ sourceSets {
 }
 
 dependencies {
-    implementation(libs.jsoup)
     implementation(project(":impex-core"))
     implementation(project(":shared-core"))
     implementation(project(":exec-core"))
+    implementation(project(":console-core"))
+    implementation(project(":project-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

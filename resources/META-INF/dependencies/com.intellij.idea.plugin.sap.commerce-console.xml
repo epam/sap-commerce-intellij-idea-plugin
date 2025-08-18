@@ -18,10 +18,6 @@
 
 <idea-plugin>
 
-    <extensions defaultExtensionNs="sap.commerce.toolset">
-        <consoleProvider implementation="sap.commerce.toolset.tools.console.impl.ImpexMonitorConsoleProvider"/>
-    </extensions>
-
     <actions>
         <group id="hybris.console.actionGroup">
             <reference ref="hybris.hac.chooseConnection"/>

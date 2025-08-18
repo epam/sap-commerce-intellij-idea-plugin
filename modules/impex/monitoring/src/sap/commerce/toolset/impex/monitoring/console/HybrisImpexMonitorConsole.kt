@@ -16,14 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.tools.console.impl
+package sap.commerce.toolset.impex.monitoring.console
 
 import com.intellij.execution.impl.ConsoleViewUtil
+import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.components.JBLabel
+import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
@@ -35,64 +36,60 @@ import sap.commerce.toolset.impex.monitoring.exec.context.ImpExMonitorExecutionC
 import sap.commerce.toolset.impex.monitoring.exec.context.TimeOption
 import sap.commerce.toolset.project.settings.ProjectSettings
 import java.awt.BorderLayout
-import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
 import java.io.File
 import java.io.Serial
 import java.util.concurrent.TimeUnit
-import javax.swing.JPanel
 
-@Deprecated("Move to own module")
 class HybrisImpexMonitorConsole(
     project: Project,
     coroutineScope: CoroutineScope
 ) : HybrisConsole<ImpExMonitorExecutionContext>(project, "[y] Monitor Console", ImpExLanguage, coroutineScope) {
 
-    private val timeComboBox = ComboBox(
-        arrayOf(
-            TimeOption("in the last 5 minutes", 5, TimeUnit.MINUTES),
-            TimeOption("in the last 10 minutes", 10, TimeUnit.MINUTES),
-            TimeOption("in the last 15 minutes", 15, TimeUnit.MINUTES),
-            TimeOption("in the last 30 minutes", 30, TimeUnit.MINUTES),
-            TimeOption("in the last 1 hour", 1, TimeUnit.HOURS)
-        )
-    )
-        .also { it.renderer = SimpleListCellRenderer.create("...") { cell -> cell.name } }
-
-    private val workingDirLabel = JBLabel("Data folder: ${obtainDataFolder(project)}")
-        .also { it.border = bordersLabel }
+    private lateinit var timeComboBox: ComboBox<TimeOption>
 
     init {
         isConsoleEditorEnabled = false
 
-        val panel = JPanel()
-            .also { it.layout = GridBagLayout() }
+        val myPanel = panel {
+            row {
+                timeComboBox = comboBox(
+                    items = listOf(
+                        TimeOption("in the last 5 minutes", 5, TimeUnit.MINUTES),
+                        TimeOption("in the last 10 minutes", 10, TimeUnit.MINUTES),
+                        TimeOption("in the last 15 minutes", 15, TimeUnit.MINUTES),
+                        TimeOption("in the last 30 minutes", 30, TimeUnit.MINUTES),
+                        TimeOption("in the last 1 hour", 1, TimeUnit.HOURS)
+                    ),
+                    renderer = SimpleListCellRenderer.create("...") { cell -> cell.name }
+                )
+                    .label("Show last:")
+                    .component
 
-        val constraints = GridBagConstraints()
-        constraints.weightx = 0.0
+                label("Data folder: ${obtainDataFolder(project)}")
+            }
+        }
 
-        panel.add(JBLabel("Imported ImpEx:").also { it.border = bordersLabel })
-        panel.add(timeComboBox, constraints)
-
-        constraints.weightx = 1.0
-        constraints.fill = GridBagConstraints.HORIZONTAL
-
-        panel.add(workingDirLabel, constraints)
-
-        add(panel, BorderLayout.NORTH)
+        add(myPanel, BorderLayout.NORTH)
     }
 
     override fun icon() = HybrisIcons.MONITORING
 
+    @Deprecated("Resolve DATA_DIRECTORY by property")
     private fun obtainDataFolder(project: Project): String {
-        val settings = ProjectSettings.getInstance(project)
+        val settings = ProjectSettings.Companion.getInstance(project)
         return FileUtil.toCanonicalPath("${project.basePath}${File.separatorChar}${settings.hybrisDirectory}${File.separatorChar}${HybrisConstants.HYBRIS_DATA_DIRECTORY}")
     }
 
     override fun printResult(result: ConsoleAwareExecutionResult) {
         clear()
-        val text = result.output ?: return
-        ConsoleViewUtil.printAsFileType(this, text, ImpexFileType)
+        when {
+            result.output != null -> ConsoleViewUtil.printAsFileType(this, text, ImpexFileType)
+            else -> {
+                val timeOption = timeComboBox.selectedItem as TimeOption
+                ConsoleViewUtil.printAsFileType(this, "No imported ImpEx files found ${timeOption.name}.", PlainTextFileType.INSTANCE)
+            }
+        }
+
     }
 
     override fun currentExecutionContext(content: String) = ImpExMonitorExecutionContext(

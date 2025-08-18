@@ -32,11 +32,11 @@ import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
+import sap.commerce.toolset.impex.monitoring.console.HybrisImpexMonitorConsole
 import sap.commerce.toolset.impex.monitoring.exec.ImpExMonitorExecutionClient
+import sap.commerce.toolset.polyglotQuery.console.HybrisPolyglotQueryConsole
 import sap.commerce.toolset.solr.console.HybrisSolrSearchConsole
 import sap.commerce.toolset.solr.exec.SolrExecutionClient
-import sap.commerce.toolset.tools.console.impl.HybrisImpexMonitorConsole
-import sap.commerce.toolset.tools.console.impl.HybrisPolyglotQueryConsole
 
 @Deprecated("make ui module specific")
 class ConsoleExecuteStatementAction : AnAction() {

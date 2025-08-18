@@ -38,11 +38,11 @@ import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
+import sap.commerce.toolset.polyglotQuery.console.HybrisPolyglotQueryConsole
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
 import sap.commerce.toolset.polyglotQuery.editor.polyglotQuerySplitEditor
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypeKeyName
-import sap.commerce.toolset.tools.console.impl.HybrisPolyglotQueryConsole
 
 class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryConsole, PolyglotQuerySplitEditor>(
     PolyglotQueryLanguage,
