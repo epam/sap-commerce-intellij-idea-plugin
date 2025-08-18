@@ -36,8 +36,9 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":exec-core"))
-    implementation(project(":flexibleSearch-exec"))
     implementation(project(":console-core"))
+    implementation(project(":flexibleSearch-exec"))
+    implementation(project(":polyglotQuery-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

@@ -35,10 +35,10 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
-    implementation(project(":flexibleSearch-core"))
     implementation(project(":exec-core"))
     implementation(project(":console-core"))
     implementation(project(":console-ui"))
+    implementation(project(":flexibleSearch-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
