@@ -43,10 +43,15 @@ dependencies {
     }
     implementation(project(":shared-core"))
     implementation(project(":exec-core"))
+    implementation(project(":console-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+
+        bundledModules(
+            "com.intellij.modules.json"
+        )
     }
 }

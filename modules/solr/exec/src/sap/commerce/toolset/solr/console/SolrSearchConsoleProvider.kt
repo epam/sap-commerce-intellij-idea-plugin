@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.tools.console.impl
+
+package sap.commerce.toolset.solr.console
 
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope

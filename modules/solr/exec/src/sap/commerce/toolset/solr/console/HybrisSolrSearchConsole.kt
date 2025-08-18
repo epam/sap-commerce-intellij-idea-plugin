@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.tools.console.impl
+package sap.commerce.toolset.solr.console
 
 import com.intellij.execution.impl.ConsoleViewUtil
 import com.intellij.json.JsonFileType
@@ -29,15 +29,14 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.ui.CollectionComboBoxModel
+import com.intellij.ui.JBIntSpinner
+import com.intellij.ui.MutableCollectionComboBoxModel
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.components.JBLabel
+import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.whenItemSelectedFromUi
 import com.intellij.util.asSafely
-import com.intellij.vcs.log.ui.frame.WrappedFlowLayout
-import com.jetbrains.rd.swing.selectedItemProperty
-import com.jetbrains.rd.util.reactive.adviseEternal
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.console.HybrisConsole
@@ -48,7 +47,8 @@ import sap.commerce.toolset.solr.exec.context.SolrCoreData
 import sap.commerce.toolset.solr.exec.context.SolrQueryExecutionContext
 import java.awt.BorderLayout
 import java.io.Serial
-import javax.swing.*
+import javax.swing.Icon
+import javax.swing.JLabel
 
 class HybrisSolrSearchConsole(
     project: Project,
@@ -56,41 +56,39 @@ class HybrisSolrSearchConsole(
 ) : HybrisConsole<SolrQueryExecutionContext>(project, "[y] Solr search", PlainTextLanguage.INSTANCE, coroutineScope) {
 
     val docs = "Docs: "
-    val coresComboBoxModel = CollectionComboBoxModel(ArrayList<SolrCoreData>())
+    val coresComboBoxModel = MutableCollectionComboBoxModel<SolrCoreData>()
 
-    private val docsLabel = JBLabel(docs)
-        .also { it.border = bordersLabel }
-    private val coresComboBox = ComboBox(coresComboBoxModel, 270)
-        .also {
-            it.border = borders5
-            it.renderer = SimpleListCellRenderer.create("...") { cell -> cell.core }
-            it.selectedItemProperty().adviseEternal { data -> setDocsLabelCount(data) }
-        }
-    private val reloadCoresButton = JButton("Reload")
-        .also {
-            it.icon = HybrisIcons.Actions.FORCE_REFRESH
-            it.isOpaque = true
-            it.toolTipText = message("hybris.solr.search.console.reload.cores.button.tooltip")
-            it.addActionListener { reloadCores() }
-        }
-    private val maxRowsSpinner = JSpinner(SpinnerNumberModel(10, 1, 500, 1))
-        .also {
-            it.border = borders5
-        }
+    private lateinit var docsLabel: JLabel
+    private lateinit var coresComboBox: ComboBox<SolrCoreData>
+    private lateinit var maxRowsSpinner: JBIntSpinner
 
     init {
         isEditable = true
         prompt = "q="
 
-        val panel = JPanel(WrappedFlowLayout(0, 0))
-        panel.add(JBLabel("Select core: ").also { it.border = bordersLabel })
-        panel.add(coresComboBox)
-        panel.add(reloadCoresButton)
-        panel.add(docsLabel)
-        panel.add(JBLabel("Rows (max 500):").also { it.border = bordersLabel })
-        panel.add(maxRowsSpinner)
+        val myPanel = panel {
+            row {
+                coresComboBox = comboBox(
+                    model = coresComboBoxModel,
+                    renderer = SimpleListCellRenderer.create("...") { cell -> cell.core }
+                )
+                    .label("Select core: ")
+                    .whenItemSelectedFromUi(this@HybrisSolrSearchConsole) { setDocsLabelCount(it) }
+                    .component
 
-        add(panel, BorderLayout.NORTH)
+                button("Reload") { reloadCores() }
+
+                docsLabel = label("Docs: ")
+                    .component
+
+                spinner(1..500)
+                    .label("Rows (max 500):")
+                    .component
+                    .apply { value = 10 }
+            }
+        }
+
+        add(myPanel, BorderLayout.NORTH)
     }
 
     override fun icon() = HybrisIcons.Console.SOLR
@@ -146,12 +144,12 @@ class HybrisSolrSearchConsole(
     }
 
     private fun retrieveListOfCores() = try {
-        SolrExecutionClient.getInstance(project).coresData().toList()
+        SolrExecutionClient.Companion.getInstance(project).coresData().toList()
     } catch (e: Exception) {
-        Notifications.create(
+        Notifications.Companion.create(
             NotificationType.WARNING,
-            message("hybris.notification.toolwindow.hac.test.connection.title"),
-            message("hybris.notification.toolwindow.solr.test.connection.fail.content", e.localizedMessage)
+            HybrisI18NBundleUtils.message("hybris.notification.toolwindow.hac.test.connection.title"),
+            HybrisI18NBundleUtils.message("hybris.notification.toolwindow.solr.test.connection.fail.content", e.localizedMessage)
         )
             .notify(project)
         emptyList()
