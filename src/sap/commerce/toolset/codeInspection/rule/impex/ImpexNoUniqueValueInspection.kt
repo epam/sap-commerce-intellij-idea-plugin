@@ -21,11 +21,11 @@ package sap.commerce.toolset.codeInspection.rule.impex
 import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
-import sap.commerce.toolset.impex.inspection.analyzer.*
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.impex.codeInspection.*
+import sap.commerce.toolset.impex.psi.ImpexHeaderLine
 
 class ImpexNoUniqueValueInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.WARNING
