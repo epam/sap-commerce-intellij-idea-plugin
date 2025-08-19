@@ -51,9 +51,14 @@ dependencies {
             useInstaller = false
         }
 
+        bundledModules(
+            "intellij.grid.impl"
+        )
+
         bundledPlugins(
             "com.intellij.java",
             "com.intellij.properties",
+            "com.intellij.database",
         )
     }
 }

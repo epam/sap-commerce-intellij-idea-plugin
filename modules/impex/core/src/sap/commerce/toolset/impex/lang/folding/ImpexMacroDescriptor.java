@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,25 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.lang.folding.util
 
-import sap.commerce.toolset.impex.lang.folding.ImpexFoldingPlaceholderBuilder
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.psi.PsiElement
-import com.intellij.util.application
+package sap.commerce.toolset.impex.lang.folding;
 
-@Service
-class ImpExSimpleFoldingPlaceholderBuilder : ImpexFoldingPlaceholderBuilder {
+import com.intellij.psi.PsiElement;
 
-    override fun getPlaceholder(psiElement: PsiElement): String = with(psiElement.text) {
-        if (this.length < 2) {
-            psiElement.text
-        } else this[0].toString() + this[this.length - 1]
+public record ImpexMacroDescriptor(String macroName, String resolvedValue, PsiElement psiElement) {
+
+    public ImpexMacroDescriptor(final String macroName, final String resolvedValue, final PsiElement psiElement) {
+        this.psiElement = psiElement;
+        this.macroName = macroName;
+        this.resolvedValue = resolvedValue == null || resolvedValue.isEmpty()
+            ? "<blank>"
+            : resolvedValue;
     }
-
-    companion object {
-        fun getInstance(): ImpExSimpleFoldingPlaceholderBuilder = application.service()
-    }
-
 }

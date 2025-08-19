@@ -18,14 +18,14 @@
  */
 package sap.commerce.toolset.impex.lang.folding.util
 
+import com.intellij.openapi.components.Service
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.impex.psi.ImpexAttribute
 import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec
 import sap.commerce.toolset.impex.psi.ImpexParameters
 import sap.commerce.toolset.impex.psi.ImpexUserRightsPermissionValue
 import sap.commerce.toolset.impex.utils.ImpexPsiUtils
-import com.intellij.openapi.components.Service
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
 
 @Service
 class ImpExSmartFoldingBlocksFilter : AbstractImpExFoldingFilter() {

@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,17 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.lang.folding;
+package sap.commerce.toolset.polyglotQuery.lang
 
-import com.intellij.psi.PsiElement;
+import com.intellij.lang.Commenter
 
-public record ImpexMacroDescriptor(String macroName, String resolvedValue, PsiElement psiElement) {
+class PolyglotQueryCommenter : Commenter {
 
-    public ImpexMacroDescriptor(final String macroName, final String resolvedValue, final PsiElement psiElement) {
-        this.psiElement = psiElement;
-        this.macroName = macroName;
-        this.resolvedValue = resolvedValue == null || resolvedValue.isEmpty()
-            ? "<blank>"
-            : resolvedValue;
-    }
+    override fun getLineCommentPrefix() = "-- "
+    override fun getBlockCommentPrefix() = "/*"
+    override fun getBlockCommentSuffix() = "*/"
+    override fun getCommentedBlockCommentPrefix() = null
+    override fun getCommentedBlockCommentSuffix() = null
 }

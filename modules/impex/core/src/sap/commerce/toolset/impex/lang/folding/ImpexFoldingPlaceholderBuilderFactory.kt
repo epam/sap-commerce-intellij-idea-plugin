@@ -17,28 +17,18 @@
  */
 package sap.commerce.toolset.impex.lang.folding
 
-import sap.commerce.toolset.impex.lang.folding.util.ImpExSimpleFoldingBlocksFilter
-import sap.commerce.toolset.impex.lang.folding.util.ImpExSmartFoldingBlocksFilter
 import com.intellij.openapi.project.Project
-import com.intellij.psi.util.PsiElementFilter
-import com.intellij.util.application
+import sap.commerce.toolset.impex.lang.folding.util.ImpExSimpleFoldingPlaceholderBuilder
+import sap.commerce.toolset.impex.lang.folding.util.ImpExSmartFoldingPlaceholderBuilder
 import sap.commerce.toolset.settings.DeveloperSettings
 
-class ImpExPsiElementFilterFactory private constructor() {
-    init {
-        throw IllegalAccessException("Should never be accessed.")
-    }
+object ImpexFoldingPlaceholderBuilderFactory {
 
-    companion object {
-        fun getPsiElementFilter(project: Project): PsiElementFilter = if (isUseSmartFolding(project))
-            application.getService(ImpExSmartFoldingBlocksFilter::class.java)
-        else
-            application.getService(ImpExSimpleFoldingBlocksFilter::class.java)
+    fun getPlaceholderBuilder(project: Project) = if (isUseSmartFolding(project)) ImpExSmartFoldingPlaceholderBuilder.getInstance()
+    else ImpExSimpleFoldingPlaceholderBuilder.getInstance()
 
-        private fun isUseSmartFolding(project: Project) = DeveloperSettings.getInstance(project)
-            .impexSettings
-            .folding
-            .useSmartFolding
-
-    }
+    private fun isUseSmartFolding(project: Project) = DeveloperSettings.getInstance(project)
+        .impexSettings
+        .folding
+        .useSmartFolding
 }

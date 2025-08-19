@@ -17,13 +17,13 @@
  */
 package sap.commerce.toolset.impex.lang.folding
 
-import sap.commerce.toolset.impex.utils.ImpexPsiUtils
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.FoldingGroup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SyntaxTraverser
+import sap.commerce.toolset.impex.utils.ImpexPsiUtils
 
 class ImpExFoldingBuilder : AbstractImpExFoldingBuilder() {
 

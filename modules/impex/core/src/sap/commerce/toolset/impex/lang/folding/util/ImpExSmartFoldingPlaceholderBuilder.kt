@@ -18,11 +18,6 @@
  */
 package sap.commerce.toolset.impex.lang.folding.util
 
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.constants.modifier.ImpexModifier
-import sap.commerce.toolset.impex.constants.modifier.TypeModifier
-import sap.commerce.toolset.impex.lang.folding.ImpexFoldingPlaceholderBuilder
-import sap.commerce.toolset.impex.psi.*
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.psi.PsiElement
@@ -30,6 +25,11 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.firstLeaf
 import com.intellij.util.application
 import org.apache.commons.lang3.StringUtils
+import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
+import sap.commerce.toolset.impex.constants.modifier.ImpexModifier
+import sap.commerce.toolset.impex.constants.modifier.TypeModifier
+import sap.commerce.toolset.impex.lang.folding.ImpexFoldingPlaceholderBuilder
+import sap.commerce.toolset.impex.psi.*
 import java.util.regex.Pattern
 
 @Service

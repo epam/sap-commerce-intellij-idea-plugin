@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+@Deprecated(since = "Convert to kotlin and move to psi package")
 public final class ImpexPsiUtils {
 
     private ImpexPsiUtils() throws IllegalAccessException {

@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.impex.lang.folding
 
-import sap.commerce.toolset.impex.psi.ImpexFile
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
@@ -28,6 +27,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
 import com.intellij.util.asSafely
+import sap.commerce.toolset.impex.psi.ImpexFile
 
 class ImpExFoldingLinesBuilder : AbstractImpExFoldingBuilder() {
 

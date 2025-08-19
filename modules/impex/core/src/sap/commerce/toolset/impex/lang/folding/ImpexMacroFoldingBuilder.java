@@ -18,9 +18,6 @@
 
 package sap.commerce.toolset.impex.lang.folding;
 
-import sap.commerce.toolset.impex.psi.ImpexFile;
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine;
-import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
@@ -32,6 +29,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.impex.ImpExConstants;
+import sap.commerce.toolset.impex.psi.ImpexFile;
+import sap.commerce.toolset.impex.psi.ImpexHeaderLine;
+import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec;
 import sap.commerce.toolset.settings.DeveloperSettings;
 
 import java.util.HashSet;

@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.find.findUsages
+package sap.commerce.toolset.impex.lang.findUsages
 
-import sap.commerce.toolset.impex.ImpexLexerAdapter
-import sap.commerce.toolset.impex.psi.ImpexTypes
-import sap.commerce.toolset.impex.utils.ImpexPsiUtils
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner
 import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.tree.TokenSet
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.ImpexLexerAdapter
+import sap.commerce.toolset.impex.psi.ImpexTypes
+import sap.commerce.toolset.impex.utils.ImpexPsiUtils
 
 class ImpexFindUsagesProvider : FindUsagesProvider {
 

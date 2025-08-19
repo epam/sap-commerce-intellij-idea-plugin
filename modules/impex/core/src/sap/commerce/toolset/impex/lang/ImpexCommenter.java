@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,7 +20,6 @@ package sap.commerce.toolset.impex.lang;
 
 import com.intellij.codeInsight.generation.CommenterDataHolder;
 import com.intellij.codeInsight.generation.SelfManagingCommenter;
-import sap.commerce.toolset.impex.psi.ImpexTypes;
 import com.intellij.lang.CodeDocumentationAwareCommenter;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.TextRange;
@@ -30,6 +29,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.text.CharArrayUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sap.commerce.toolset.impex.psi.ImpexTypes;
 
 public class ImpexCommenter implements CodeDocumentationAwareCommenter, SelfManagingCommenter<CommenterDataHolder> {
 

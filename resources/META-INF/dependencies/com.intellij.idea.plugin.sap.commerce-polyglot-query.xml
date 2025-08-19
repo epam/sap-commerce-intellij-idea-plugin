@@ -35,7 +35,7 @@
         <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.polyglotQuery.formatting.PgQLanguageCodeStyleSettingsProvider"/>
 
         <lang.formatter language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.formatting.PgQFormattingModelBuilder"/>
-        <lang.commenter language="Polyglot Query" implementationClass="sap.commerce.toolset.impex.lang.PolyglotQueryCommenter"/>
+        <lang.commenter language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.PolyglotQueryCommenter"/>
         <lang.braceMatcher language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
         <lang.foldingBuilder language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.folding.PolyglotQueryFoldingBuilder"/>
 

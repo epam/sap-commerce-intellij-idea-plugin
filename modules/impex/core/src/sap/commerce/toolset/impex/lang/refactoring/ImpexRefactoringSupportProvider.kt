@@ -15,20 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.lang.folding
+package sap.commerce.toolset.impex.lang.refactoring
 
-import sap.commerce.toolset.impex.lang.folding.util.ImpExSimpleFoldingPlaceholderBuilder
-import sap.commerce.toolset.impex.lang.folding.util.ImpExSmartFoldingPlaceholderBuilder
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.settings.DeveloperSettings
+import com.intellij.lang.refactoring.RefactoringSupportProvider
+import com.intellij.psi.PsiElement
+import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.psi.ImpexPsiNamedElement
 
-object ImpexFoldingPlaceholderBuilderFactory {
+class ImpexRefactoringSupportProvider : RefactoringSupportProvider() {
 
-    fun getPlaceholderBuilder(project: Project) = if (isUseSmartFolding(project)) ImpExSmartFoldingPlaceholderBuilder.getInstance()
-    else ImpExSimpleFoldingPlaceholderBuilder.getInstance()
-
-    private fun isUseSmartFolding(project: Project) = DeveloperSettings.getInstance(project)
-        .impexSettings
-        .folding
-        .useSmartFolding
+    override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?) = element is ImpexPsiNamedElement
+        && !element.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
 }

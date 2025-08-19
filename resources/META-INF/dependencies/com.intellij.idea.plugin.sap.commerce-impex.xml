@@ -79,7 +79,7 @@
         <highlightUsagesHandlerFactory
                 implementation="sap.commerce.toolset.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
 
-        <lang.findUsagesProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.find.findUsages.ImpexFindUsagesProvider"/>
+        <lang.findUsagesProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.findUsages.ImpexFindUsagesProvider"/>
 
         <annotator language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.annotation.ImpexAnnotator"/>
 

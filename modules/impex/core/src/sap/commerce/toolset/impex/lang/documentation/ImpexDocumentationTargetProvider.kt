@@ -18,13 +18,13 @@
 
 package sap.commerce.toolset.impex.lang.documentation
 
-import sap.commerce.toolset.impex.psi.ImpexFile
-import sap.commerce.toolset.impex.psi.ImpexTypes
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.DocumentationTargetProvider
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
+import sap.commerce.toolset.impex.psi.ImpexFile
+import sap.commerce.toolset.impex.psi.ImpexTypes
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 

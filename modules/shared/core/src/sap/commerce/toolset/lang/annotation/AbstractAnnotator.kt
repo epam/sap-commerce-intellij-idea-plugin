@@ -31,7 +31,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 
 abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : Annotator {
 
@@ -69,7 +69,7 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
         if (resolved) {
             highlight(tokenType, holder, element)
         } else {
-            highlightError(holder, element, message(messageKey, element.text))
+            highlightError(holder, element, i18n(messageKey, element.text))
         }
     }
 
@@ -82,7 +82,7 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
         .asSafely<PsiReferenceBase.Poly<*>>()
         ?.multiResolve(true)
         ?.takeIf { it.isEmpty() }
-        ?.let { highlightError(holder, element, message(messageKey, element.text)) }
+        ?.let { highlightError(holder, element, i18n(messageKey, element.text)) }
 
     fun highlightReference(
         holder: AnnotationHolder,
@@ -97,7 +97,7 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
             ?: (reference.resolve() != null)
 
         if (!isValid) {
-            highlightError(holder, element, message(messageKey, reference.canonicalText), range = range)
+            highlightError(holder, element, i18n(messageKey, reference.canonicalText), range = range)
         }
     }
 
@@ -117,7 +117,7 @@ abstract class AbstractAnnotator(private val highlighter: SyntaxHighlighter) : A
         if (isValid) {
             highlight(textAttributesKey, holder, element, range = range)
         } else {
-            highlightError(holder, element, message(messageKey, reference.canonicalText), range = range)
+            highlightError(holder, element, i18n(messageKey, reference.canonicalText), range = range)
         }
     }
 

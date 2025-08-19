@@ -1,5 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,15 +16,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.lang.refactoring
+package sap.commerce.toolset.impex.lang.folding.util
 
-import sap.commerce.toolset.impex.psi.ImpexPsiNamedElement
-import com.intellij.lang.refactoring.RefactoringSupportProvider
+import com.intellij.openapi.components.Service
 import com.intellij.psi.PsiElement
-import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.psi.ImpexModifiers
+import sap.commerce.toolset.impex.psi.ImpexParameters
+import sap.commerce.toolset.impex.utils.ImpexPsiUtils
 
-class ImpexRefactoringSupportProvider : RefactoringSupportProvider() {
+@Service
+class ImpExSimpleFoldingBlocksFilter : AbstractImpExFoldingFilter() {
 
-    override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?) = element is ImpexPsiNamedElement
-        && !element.text.startsWith(ImpExConstants.IMPEX_CONFIG_COMPLETE_PREFIX)
+    override fun isFoldable(element: PsiElement) = element is ImpexModifiers
+        || element is ImpexParameters
+        || ImpexPsiUtils.isLineBreak(element)
+
 }

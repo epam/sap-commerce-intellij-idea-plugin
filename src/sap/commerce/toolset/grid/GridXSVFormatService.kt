@@ -20,20 +20,17 @@ package sap.commerce.toolset.grid
 
 import com.intellij.database.csv.CsvFormat
 import com.intellij.database.csv.CsvRecordFormat
-import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.lang.Language
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
-import sap.commerce.toolset.impex.ImpExLanguage
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import java.util.*
 
 class GridXSVFormatService(private val project: Project) : Disposable {
 
-    private val valueSeparator = ";"
     private val quotationPolicy = CsvRecordFormat.QuotationPolicy.NEVER
     private val impExFormats = mutableMapOf<BitSet, CsvFormat>()
     private val fxsFormat by lazy { xsvFlexibleSearchFormat() }
@@ -41,37 +38,12 @@ class GridXSVFormatService(private val project: Project) : Disposable {
     override fun dispose() = impExFormats.clear()
 
     fun getFormat(language: Language): CsvFormat = when (language) {
-        is ImpExLanguage -> getImpExFormat()
         is FlexibleSearchLanguage -> getFlexibleSearchFormat()
         is PolyglotQueryLanguage -> getFlexibleSearchFormat()
         else -> throw IllegalArgumentException("Unsupported language $language")
     }
 
     private fun getFlexibleSearchFormat() = fxsFormat
-
-    private fun getImpExFormat(): CsvFormat {
-        val editModeSettings = DeveloperSettings.getInstance(project).impexSettings.editMode
-
-        val key = BitSet(2).also {
-            it.set(0, editModeSettings.firstRowIsHeader)
-            it.set(1, editModeSettings.trimWhitespace)
-        }
-
-        return impExFormats.computeIfAbsent(key) {
-            xsvImpExFormat(
-                firstRowIsHeader = key.get(0),
-                trimWhitespace = key.get(1)
-            )
-        }
-    }
-
-    private fun xsvImpExFormat(firstRowIsHeader: Boolean, trimWhitespace: Boolean): CsvFormat {
-        val headerFormat = if (firstRowIsHeader) CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", trimWhitespace)
-        else null
-        val dataFormat = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, valueSeparator, "\n", trimWhitespace)
-
-        return CsvFormat("ImpEx", dataFormat, headerFormat, "ImpEx", false)
-    }
 
     private fun xsvFlexibleSearchFormat(): CsvFormat {
         val format = CsvRecordFormat("", "", null, emptyList(), quotationPolicy, HybrisConstants.FXS_TABLE_RESULT_SEPARATOR, "\n", true)

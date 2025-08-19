@@ -17,10 +17,6 @@
  */
 package sap.commerce.toolset.impex.lang.refactoring
 
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdDec
-import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
-import sap.commerce.toolset.impex.psi.ImpexMacroNameDec
-import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec
 import com.intellij.patterns.ElementPattern
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
@@ -28,6 +24,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.RenameInputValidator
 import com.intellij.util.ProcessingContext
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.psi.ImpexDocumentIdDec
+import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
+import sap.commerce.toolset.impex.psi.ImpexMacroNameDec
+import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec
 
 class ImpExRenameInputValidator : RenameInputValidator {
 
