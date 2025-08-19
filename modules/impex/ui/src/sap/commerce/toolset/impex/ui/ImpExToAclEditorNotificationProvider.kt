@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.impex.ui
 
-import sap.commerce.toolset.impex.file.ImpexFileType
-import sap.commerce.toolset.impex.psi.ImpexUserRights
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.project.Project
@@ -30,6 +29,8 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.impex.psi.ImpexUserRights
 import sap.commerce.toolset.isHybrisProject
 import java.util.function.Function
 

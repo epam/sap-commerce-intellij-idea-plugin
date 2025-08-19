@@ -28,6 +28,9 @@
 
         <fileType name="ImpEx" language="ImpEx" extensions="impex" fieldName="INSTANCE"
                   implementationClass="sap.commerce.toolset.impex.file.ImpexFileType"/>
+
+        <defaultLiveTemplates file="liveTemplates/ImpEx.xml"/>
+        <liveTemplateContext contextId="IMPEX" implementation="sap.commerce.toolset.impex.liveTemplates.ImpexContextType"/>
     </extensions>
 
 </idea-plugin>
