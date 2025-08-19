@@ -44,6 +44,8 @@ dependencies {
     implementation(project(":shared-ui"))
     implementation(project(":typeSystem-core"))
     implementation(project(":project-core"))
+    implementation(project(":acl-core"))
+    implementation(project(":acl-ui"))
     implementation(project(":impex-core"))
     implementation(project(":impex-exec"))
     implementation(project(":exec-core"))
