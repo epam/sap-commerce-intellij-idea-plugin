@@ -17,8 +17,6 @@
  */
 package sap.commerce.toolset.acl.highlighting
 
-import sap.commerce.toolset.acl.AclLexer
-import sap.commerce.toolset.acl.psi.AclTypes
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.HighlighterColors
@@ -27,6 +25,8 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.application
+import sap.commerce.toolset.acl.AclLexer
+import sap.commerce.toolset.acl.psi.AclTypes
 
 @Service
 class AclSyntaxHighlighter : SyntaxHighlighterBase() {

@@ -68,7 +68,7 @@ class AclExecuteAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>(
         } else {
             val console = openConsole(project, content) ?: return
 
-            ImpExExecutionClient.getInstance(project).execute(context) { coroutineScope, result ->
+            ImpExExecutionClient.getInstance(project).execute(context) { _, result ->
                 console.print(result)
             }
         }

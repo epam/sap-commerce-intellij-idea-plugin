@@ -30,7 +30,7 @@
 
         <annotator language="ACL" implementationClass="sap.commerce.toolset.acl.lang.annotation.AclAnnotator"/>
 
-        <completion.contributor language="ACL" implementationClass="sap.commerce.toolset.acl.completion.AclCompletionContributor"/>
+        <completion.contributor language="ACL" implementationClass="sap.commerce.toolset.acl.codeInsight.completion.AclCompletionContributor"/>
 
         <editorFactoryListener implementation="sap.commerce.toolset.acl.editor.event.AclLineEditorFactoryListener"/>
         <vfs.asyncListener implementation="sap.commerce.toolset.acl.vfs.event.AclVfsAsyncListener"/>

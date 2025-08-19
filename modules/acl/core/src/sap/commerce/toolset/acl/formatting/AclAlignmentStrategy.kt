@@ -19,9 +19,9 @@
 package sap.commerce.toolset.acl.formatting
 
 import com.intellij.formatting.Alignment
+import com.intellij.lang.ASTNode
 import sap.commerce.toolset.acl.psi.AclFile
 import sap.commerce.toolset.acl.psi.AclTypes
-import com.intellij.lang.ASTNode
 
 class AclAlignmentStrategy {
 

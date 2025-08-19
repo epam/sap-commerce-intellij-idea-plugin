@@ -17,14 +17,14 @@
  */
 package sap.commerce.toolset.acl.lang.annotation
 
+import com.intellij.lang.annotation.AnnotationHolder
+import com.intellij.psi.PsiElement
+import com.intellij.psi.util.elementType
 import sap.commerce.toolset.acl.highlighting.AclSyntaxHighlighter
 import sap.commerce.toolset.acl.psi.AclTypes
 import sap.commerce.toolset.acl.psi.references.AclTSTargetAttributeReference
 import sap.commerce.toolset.acl.psi.references.AclTSTargetTypeReference
 import sap.commerce.toolset.lang.annotation.AbstractAnnotator
-import com.intellij.lang.annotation.AnnotationHolder
-import com.intellij.psi.PsiElement
-import com.intellij.psi.util.elementType
 
 class AclAnnotator : AbstractAnnotator(AclSyntaxHighlighter.getInstance()) {
 

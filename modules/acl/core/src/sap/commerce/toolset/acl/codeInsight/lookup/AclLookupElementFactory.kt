@@ -21,8 +21,8 @@ package sap.commerce.toolset.acl.codeInsight.lookup
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import sap.commerce.toolset.codeInsight.completion.AutoPopupInsertHandler
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.codeInsight.completion.AutoPopupInsertHandler
 import javax.swing.Icon
 
 object AclLookupElementFactory {

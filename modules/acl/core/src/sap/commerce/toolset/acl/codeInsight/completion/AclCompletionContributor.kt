@@ -15,16 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.acl.completion
+package sap.commerce.toolset.acl.codeInsight.completion
 
 import com.intellij.codeInsight.completion.*
-import sap.commerce.toolset.acl.codeInsight.lookup.AclLookupElementFactory
-import sap.commerce.toolset.acl.psi.AclFile
-import sap.commerce.toolset.acl.psi.AclTypes
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.TokenType
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.acl.codeInsight.lookup.AclLookupElementFactory
+import sap.commerce.toolset.acl.psi.AclFile
+import sap.commerce.toolset.acl.psi.AclTypes
 
 class AclCompletionContributor : CompletionContributor() {
 

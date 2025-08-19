@@ -36,8 +36,14 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
+    implementation(project(":exec-core"))
+    implementation(project(":exec-ui"))
+    implementation(project(":console-core"))
+    implementation(project(":console-ui"))
     implementation(project(":acl-core"))
     implementation(project(":impex-core"))
+    implementation(project(":impex-exec"))
+    implementation(project(":impex-ui"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

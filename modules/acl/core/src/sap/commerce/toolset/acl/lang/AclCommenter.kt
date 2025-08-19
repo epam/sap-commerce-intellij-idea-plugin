@@ -19,7 +19,6 @@ package sap.commerce.toolset.acl.lang
 
 import com.intellij.codeInsight.generation.CommenterDataHolder
 import com.intellij.codeInsight.generation.SelfManagingCommenter
-import sap.commerce.toolset.acl.psi.AclTypes
 import com.intellij.lang.CodeDocumentationAwareCommenter
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.TextRange
@@ -27,6 +26,7 @@ import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.text.CharArrayUtil
+import sap.commerce.toolset.acl.psi.AclTypes
 
 class AclCommenter : CodeDocumentationAwareCommenter, SelfManagingCommenter<CommenterDataHolder?> {
 

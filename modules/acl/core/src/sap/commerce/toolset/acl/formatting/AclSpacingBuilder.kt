@@ -19,10 +19,10 @@
 package sap.commerce.toolset.acl.formatting
 
 import com.intellij.formatting.SpacingBuilder
-import sap.commerce.toolset.acl.psi.AclTypes
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
 import sap.commerce.toolset.acl.AclLanguage
+import sap.commerce.toolset.acl.psi.AclTypes
 
 class AclSpacingBuilder(
     settings: CodeStyleSettings,

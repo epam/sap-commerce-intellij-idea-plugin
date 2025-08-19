@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset.acl.editor
 
-import sap.commerce.toolset.acl.highlighting.AclHighlighterColors
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.markup.HighlighterLayer
+import sap.commerce.toolset.acl.highlighting.AclHighlighterColors
 
 object AclEditorMarkupModelHelper {
 

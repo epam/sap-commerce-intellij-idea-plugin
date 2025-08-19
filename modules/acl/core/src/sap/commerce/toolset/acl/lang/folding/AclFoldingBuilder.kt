@@ -17,11 +17,6 @@
  */
 package sap.commerce.toolset.acl.lang.folding
 
-import sap.commerce.toolset.acl.psi.AclTypes
-import sap.commerce.toolset.acl.psi.AclUserRights
-import sap.commerce.toolset.acl.psi.AclUserRightsBody
-import sap.commerce.toolset.acl.psi.AclUserRightsValueLines
-import sap.commerce.toolset.psi.FoldablePsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
@@ -34,6 +29,11 @@ import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.*
+import sap.commerce.toolset.acl.psi.AclTypes
+import sap.commerce.toolset.acl.psi.AclUserRights
+import sap.commerce.toolset.acl.psi.AclUserRightsBody
+import sap.commerce.toolset.acl.psi.AclUserRightsValueLines
+import sap.commerce.toolset.psi.FoldablePsiElement
 import sap.commerce.toolset.settings.DeveloperSettings
 
 class AclFoldingBuilder : FoldingBuilderEx(), DumbAware {

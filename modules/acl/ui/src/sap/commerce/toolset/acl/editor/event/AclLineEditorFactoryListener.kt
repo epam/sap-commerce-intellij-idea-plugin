@@ -17,9 +17,6 @@
  */
 package sap.commerce.toolset.acl.editor.event
 
-import sap.commerce.toolset.acl.editor.AclEditorMarkupModelHelper
-import sap.commerce.toolset.acl.psi.AclFile
-import sap.commerce.toolset.acl.psi.AclUserRightsValueLineType
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -32,6 +29,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.acl.editor.AclEditorMarkupModelHelper
+import sap.commerce.toolset.acl.psi.AclFile
+import sap.commerce.toolset.acl.psi.AclUserRightsValueLineType
 
 class AclLineEditorFactoryListener : EditorFactoryListener {
     override fun editorCreated(event: EditorFactoryEvent) {

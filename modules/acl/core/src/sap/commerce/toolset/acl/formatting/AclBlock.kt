@@ -19,11 +19,11 @@
 package sap.commerce.toolset.acl.formatting
 
 import com.intellij.formatting.*
-import sap.commerce.toolset.acl.psi.AclTypes
 import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
+import sap.commerce.toolset.acl.psi.AclTypes
 
 class AclBlock(
     node: ASTNode,

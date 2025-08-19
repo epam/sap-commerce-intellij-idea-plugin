@@ -17,9 +17,6 @@
  */
 package sap.commerce.toolset.acl.vfs.event
 
-import sap.commerce.toolset.acl.editor.AclEditorMarkupModelHelper
-import sap.commerce.toolset.acl.psi.AclFile
-import sap.commerce.toolset.acl.psi.AclUserRightsValueLineType
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.AsyncFileListener.ChangeApplier
@@ -28,6 +25,9 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.acl.editor.AclEditorMarkupModelHelper
+import sap.commerce.toolset.acl.psi.AclFile
+import sap.commerce.toolset.acl.psi.AclUserRightsValueLineType
 
 class AclVfsAsyncListener : AsyncFileListener {
 
