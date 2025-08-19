@@ -17,11 +17,12 @@
  */
 package sap.commerce.toolset.polyglotQuery.injection
 
-import sap.commerce.toolset.polyglotQuery.injection.impl.PolyglotQueryToImpexInjectorProvider
-import sap.commerce.toolset.polyglotQuery.injection.impl.PolyglotQueryToKotlinInjectorProvider
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.polyglotQuery.injection.impl.PolyglotQueryToImpexInjectorProvider
+import sap.commerce.toolset.polyglotQuery.injection.impl.PolyglotQueryToKotlinInjectorProvider
 
 class PolyglotQueryLanguageInjector : LanguageInjector {
 
@@ -30,8 +31,8 @@ class PolyglotQueryLanguageInjector : LanguageInjector {
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
         PolyglotQueryToImpexInjectorProvider.getInstance()
-            ?.inject(host, injectionPlacesRegistrar)
-            ?: PolyglotQueryToKotlinInjectorProvider.getInstance()
+            .inject(host, injectionPlacesRegistrar)
+            ?: Plugin.KOTLIN.service(PolyglotQueryToKotlinInjectorProvider::class.java)
                 ?.inject(host, injectionPlacesRegistrar)
     }
 }

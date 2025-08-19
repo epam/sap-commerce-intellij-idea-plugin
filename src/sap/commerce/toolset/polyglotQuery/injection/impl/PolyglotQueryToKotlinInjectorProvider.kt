@@ -18,12 +18,14 @@
 
 package sap.commerce.toolset.polyglotQuery.injection.impl
 
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.util.application
 import sap.commerce.toolset.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryUtils
-import com.intellij.openapi.components.service
-import com.intellij.util.application
 
+@Service
 class PolyglotQueryToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(PolyglotQueryLanguage) {
 
     override fun canProcess(expression: String) = PolyglotQueryUtils.isPolyglotQuery(expression)

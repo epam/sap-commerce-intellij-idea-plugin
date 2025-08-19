@@ -18,8 +18,8 @@
 package sap.commerce.toolset.project.configurators.impl
 
 import com.intellij.facet.ModifiableFacetModel
-import sap.commerce.toolset.project.configurators.FacetConfigurator
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -27,6 +27,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.configurators.FacetConfigurator
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor
@@ -35,6 +36,7 @@ import sap.commerce.toolset.project.descriptors.impl.YBackofficeSubModuleDescrip
 import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor
 import java.io.File
 
+@Service
 class SpringFacetConfigurator : FacetConfigurator {
 
     override fun configure(

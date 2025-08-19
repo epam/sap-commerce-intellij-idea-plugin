@@ -20,7 +20,6 @@ package sap.commerce.toolset.spring.psi
 
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
-import com.intellij.patterns.XmlAttributeValuePattern
 import com.intellij.patterns.XmlPatterns
 import sap.commerce.toolset.HybrisConstants
 
@@ -29,14 +28,25 @@ object SpringPatterns {
     private val itemsXmlFile = PlatformPatterns.psiFile()
         .withName(StandardPatterns.string().endsWith(HybrisConstants.HYBRIS_ITEMS_XML_FILE_ENDING))
 
-    private val ITEMS_XML_ATTRIBUTE_HANDLER: XmlAttributeValuePattern = XmlPatterns.xmlAttributeValue("attributeHandler")
+    private val ITEMS_XML_ATTRIBUTE_HANDLER = XmlPatterns.xmlAttributeValue("attributeHandler")
         .inside(
             XmlPatterns.xmlTag()
                 .withLocalName("persistence")
         )
         .inFile(itemsXmlFile)
 
+    private val BP_ACTION_BEAN = XmlPatterns.xmlAttributeValue("bean")
+        .inside(
+            XmlPatterns.xmlTag().withLocalName("action")
+                .inside(
+                    XmlPatterns.xmlTag()
+                        .withLocalName(HybrisConstants.ROOT_TAG_BUSINESS_PROCESS_XML)
+                        .withNamespace(HybrisConstants.SCHEMA_BUSINESS_PROCESS)
+                )
+        )
+
     val SPRING_MULTI_PATTERN = XmlPatterns.or(
         ITEMS_XML_ATTRIBUTE_HANDLER,
+        BP_ACTION_BEAN
     )
 }

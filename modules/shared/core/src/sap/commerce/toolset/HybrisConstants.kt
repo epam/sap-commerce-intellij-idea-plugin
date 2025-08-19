@@ -361,6 +361,8 @@ object HybrisConstants {
     const val SCHEMA_COCKPIT_NG_WIDGETS = "http://www.hybris.com/schema/cockpitng/widgets.xsd"
     const val SCHEMA_COCKPIT_NG_CONFIG = "http://www.hybris.com/cockpit/config"
 
+    const val SCHEMA_BUSINESS_PROCESS = "http://www.hybris.de/xsd/processdefinition"
+
     const val ANT_TARGET_UPDATE_MAVEN_DEPENDENCIES = "updateMavenDependencies"
 
     val DEFAULT_JUNK_FILE_NAMES = listOf(

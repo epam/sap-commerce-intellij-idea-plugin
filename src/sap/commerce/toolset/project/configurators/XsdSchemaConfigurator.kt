@@ -17,15 +17,17 @@
  */
 package sap.commerce.toolset.project.configurators
 
-import sap.commerce.toolset.system.cockpitng.CngConfigDomFileDescription
 import com.intellij.javaee.ExternalResourceManagerEx
 import com.intellij.openapi.application.runWriteAction
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.system.cockpitng.CngConfigDomFileDescription
 import java.nio.file.Path
 import kotlin.io.path.exists
 
+@Service
 class XsdSchemaConfigurator {
 
     fun configureAfterImport(

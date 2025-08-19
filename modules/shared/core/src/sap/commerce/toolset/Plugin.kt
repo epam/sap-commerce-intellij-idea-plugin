@@ -21,6 +21,8 @@ package sap.commerce.toolset
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.extensions.PluginId
+import com.intellij.openapi.project.Project
+import com.intellij.util.application
 import org.jetbrains.annotations.Nullable
 
 enum class Plugin(val id: String, val url: String? = null) {
@@ -62,4 +64,12 @@ enum class Plugin(val id: String, val url: String? = null) {
     fun <T> ifDisabled(operation: () -> T): T? = if (isDisabled()) operation() else null
 
     fun isDisabled() = !isActive()
+
+    fun <T> service(clazz: Class<T>): T? = ifActive { application.getService(clazz) }
+    fun <T> service(project: Project, clazz: Class<T>): T? = ifActive { project.getService(clazz) }
+
+    /**
+     * Support annotation to indicate dependencies in the code, ensure correct instantiation and access in the runtime
+     */
+    annotation class DependsOn(vararg val plugins: Plugin)
 }

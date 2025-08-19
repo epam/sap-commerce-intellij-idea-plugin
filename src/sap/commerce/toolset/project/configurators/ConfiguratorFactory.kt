@@ -18,24 +18,24 @@
  */
 package sap.commerce.toolset.project.configurators
 
-import sap.commerce.toolset.project.configurators.impl.*
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.components.serviceOrNull
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.project.configurators.impl.*
 
 @Service
 class ConfiguratorFactory {
 
     fun getFacetConfigurators() = listOfNotNull(
-        serviceOrNull<YFacetConfigurator>(),
-        serviceOrNull<SpringFacetConfigurator>(),
-        serviceOrNull<KotlinFacetConfigurator>(),
+        service<YFacetConfigurator>(),
+        Plugin.SPRING.service(SpringFacetConfigurator::class.java),
+        Plugin.KOTLIN.service(KotlinFacetConfigurator::class.java),
         serviceOrNull<WebFacetConfigurator>()
     )
 
-    fun getSpringConfigurator() = serviceOrNull<DefaultSpringConfigurator>()
-        ?: service<DummySpringConfigurator>()
+    fun getSpringConfigurator() = Plugin.SPRING.service(DefaultSpringConfigurator::class.java)
+        ?: DummySpringConfigurator.getInstance()
 
     fun getContentRootConfigurator() = service<DefaultContentRootConfigurator>()
     fun getModuleDependenciesConfigurator() = service<ModuleDependenciesConfigurator>()
@@ -55,12 +55,12 @@ class ConfiguratorFactory {
     fun getAngularConfigurator() = serviceOrNull<AngularConfigurator>()
     fun getLoadedConfigurator() = service<LoadedConfigurator>()
 
-    fun getAntConfigurator() = Plugin.ANT_SUPPORT.ifActive { serviceOrNull<AntConfigurator>() }
+    fun getAntConfigurator() = Plugin.ANT_SUPPORT.service(AntConfigurator::class.java)
 
-    fun getDataSourcesConfigurator() = serviceOrNull<DataSourcesConfigurator>()
-    fun getJRebelConfigurator() = serviceOrNull<JRebelConfigurator>()
-    fun getXsdSchemaConfigurator() = serviceOrNull<XsdSchemaConfigurator>()
-    fun getKotlinCompilerConfigurator() = serviceOrNull<KotlinCompilerConfigurator>()
+    fun getDataSourcesConfigurator() = Plugin.DATABASE.service(DataSourcesConfigurator::class.java)
+    fun getJRebelConfigurator() = Plugin.JREBEL.service(JRebelConfigurator::class.java)
+    fun getXsdSchemaConfigurator() = Plugin.JAVAEE.service(XsdSchemaConfigurator::class.java)
+    fun getKotlinCompilerConfigurator() = Plugin.KOTLIN.service(KotlinCompilerConfigurator::class.java)
 
     companion object {
         fun getInstance() = service<ConfiguratorFactory>()

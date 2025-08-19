@@ -25,6 +25,8 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.xml.XmlFile
 import sap.commerce.toolset.impex.psi.ImpexString
+import sap.commerce.toolset.impex.psi.getScriptType
+import sap.commerce.toolset.system.businessProcess.psi.tryInject
 import sap.commerce.toolset.typeSystem.ScriptType
 
 class JavaScriptLanguageInjector : LanguageInjector {
@@ -41,14 +43,14 @@ class JavaScriptLanguageInjector : LanguageInjector {
         val xmlFile = host.containingFile as? XmlFile
             ?: return
 
-        LanguageInjectionUtil.tryInject(xmlFile, host, ScriptType.JAVASCRIPT) { length, offset -> injectLanguage(injectionPlacesRegistrar, length, offset) }
+        tryInject(xmlFile, host, ScriptType.JAVASCRIPT) { length, offset -> injectLanguage(injectionPlacesRegistrar, length, offset) }
     }
 
     private fun handleImpex(host: PsiLanguageInjectionHost, injectionPlacesRegistrar: InjectedLanguagePlaces) {
         val impexString = host as? ImpexString
             ?: return
 
-        if (LanguageInjectionUtil.getScriptType(impexString) == ScriptType.JAVASCRIPT) {
+        if (getScriptType(impexString) == ScriptType.JAVASCRIPT) {
             injectLanguage(
                 injectionPlacesRegistrar, impexString.textLength - QUOTE_SYMBOL_LENGTH - 1, QUOTE_SYMBOL_LENGTH
             )

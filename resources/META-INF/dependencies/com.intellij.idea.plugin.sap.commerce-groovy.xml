@@ -21,13 +21,6 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <languageInjector implementation="sap.commerce.toolset.psi.injector.GroovyLanguageInjector"/>
-
-        <projectConfigurable id="hybris.project.groovy.settings" parentId="hybris.project.settings"
-                             nonDefaultProject="true" dynamic="true"
-                             bundle="i18n.HybrisBundle" key="hybris.settings.project.groovy.title"
-                             provider="sap.commerce.toolset.groovy.options.ProjectGroovySettingsConfigurableProvider"/>
-
-        <applicationService serviceImplementation="sap.commerce.toolset.groovy.actionSystem.GroovyFileToolbarInstaller"/>
     </extensions>
 
 </idea-plugin>

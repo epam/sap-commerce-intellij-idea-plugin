@@ -17,11 +17,12 @@
  */
 package sap.commerce.toolset.flexibleSearch.injection
 
-import sap.commerce.toolset.flexibleSearch.injection.impl.FlexibleSearchToImpexInjectorProvider
-import sap.commerce.toolset.flexibleSearch.injection.impl.FlexibleSearchToKotlinInjectorProvider
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.flexibleSearch.injection.impl.FlexibleSearchToImpexInjectorProvider
+import sap.commerce.toolset.flexibleSearch.injection.impl.FlexibleSearchToKotlinInjectorProvider
 
 class FlexibleSearchLanguageInjector : LanguageInjector {
 
@@ -30,8 +31,8 @@ class FlexibleSearchLanguageInjector : LanguageInjector {
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
         FlexibleSearchToImpexInjectorProvider.getInstance()
-            ?.inject(host, injectionPlacesRegistrar)
-            ?: FlexibleSearchToKotlinInjectorProvider.getInstance()
+            .inject(host, injectionPlacesRegistrar)
+            ?: Plugin.KOTLIN.service(FlexibleSearchToKotlinInjectorProvider::class.java)
                 ?.inject(host, injectionPlacesRegistrar)
     }
 

@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.spring.psi.provider
 
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
@@ -34,7 +35,7 @@ class SpringReferenceProvider : PsiReferenceProvider() {
         context: ProcessingContext
     ): Array<out PsiReference> = CachedValuesManager.getManager(element.project).getCachedValue(element) {
         CachedValueProvider.Result.createSingleDependency(
-            arrayOf(SpringReference(element, element.text)),
+            arrayOf(SpringReference(element, StringUtil.unquoteString(element.text))),
             PsiModificationTracker.MODIFICATION_COUNT,
         )
     }

@@ -30,12 +30,14 @@ import com.intellij.lang.ant.config.impl.AntBuildFileImpl.*
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.descriptors.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
@@ -51,6 +53,8 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.regex.Pattern
 
+@Plugin.DependsOn(Plugin.ANT_SUPPORT)
+@Service
 class AntConfigurator {
 
     private val desirablePlatformTargets = listOf(
@@ -284,7 +288,7 @@ class AntConfigurator {
                         }
                     }
                 } catch (e: IOException) {
-                    LOG.error("Cannot read ", HybrisConstants.IMPORT_OVERRIDE_FILENAME)
+                    thisLogger().error("Cannot read ", HybrisConstants.IMPORT_OVERRIDE_FILENAME)
                 }
             }
         }
@@ -375,7 +379,6 @@ class AntConfigurator {
     }
 
     companion object {
-        private val LOG = Logger.getInstance(AntConfigurator::class.java)
         private val PATTERN_APACHE_ANT: Pattern = Pattern.compile("apache-ant.*")
     }
 }

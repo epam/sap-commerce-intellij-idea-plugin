@@ -17,11 +17,12 @@
  */
 package sap.commerce.toolset.project.configurators.impl
 
-import sap.commerce.toolset.project.configurators.SpringConfigurator
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
+import sap.commerce.toolset.project.configurators.SpringConfigurator
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 
@@ -43,4 +44,7 @@ class DummySpringConfigurator : SpringConfigurator {
 
     override fun resetSpringGeneralSettings(project: Project) = Unit
 
+    companion object {
+        fun getInstance(): DummySpringConfigurator = service()
+    }
 }

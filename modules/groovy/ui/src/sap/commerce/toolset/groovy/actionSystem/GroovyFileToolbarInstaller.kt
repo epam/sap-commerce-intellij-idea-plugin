@@ -18,6 +18,7 @@
 
 package sap.commerce.toolset.groovy.actionSystem
 
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.project.Project
@@ -28,6 +29,7 @@ import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
 import sap.commerce.toolset.settings.DeveloperSettings
 
+@Service
 class GroovyFileToolbarInstaller : HybrisFileToolbarInstaller(
     "hybris.groovy.console",
     "hybris.groovy.toolbar.left",

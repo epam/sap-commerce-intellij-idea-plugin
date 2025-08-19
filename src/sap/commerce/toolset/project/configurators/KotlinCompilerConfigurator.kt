@@ -20,6 +20,7 @@ package sap.commerce.toolset.project.configurators
 import com.intellij.facet.FacetManager
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.openapi.application.runWriteAction
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
@@ -39,6 +40,7 @@ import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.yExtensionName
 
+@Service
 class KotlinCompilerConfigurator {
 
     fun configure(descriptor: HybrisProjectDescriptor, project: Project) {

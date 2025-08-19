@@ -18,13 +18,14 @@
 package sap.commerce.toolset.project.configurators.impl
 
 import com.intellij.facet.ModifiableFacetModel
-import sap.commerce.toolset.project.configurators.FacetConfigurator
 import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.configurators.FacetConfigurator
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.YModuleDescriptor
@@ -33,6 +34,7 @@ import java.io.File
 /**
  * Kotlin Facets will be configured only if `kotlinnature` extension is available and
  */
+@Service
 class KotlinFacetConfigurator : FacetConfigurator {
 
     override fun configure(

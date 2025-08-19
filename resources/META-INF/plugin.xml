@@ -45,22 +45,18 @@
     <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-java.xml">com.intellij.modules.java</depends>
 
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-junit.xml">JUnit</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-ant.xml">AntSupport</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-maven.xml">org.jetbrains.idea.maven</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-eclipse.xml">org.jetbrains.idea.eclipse</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-angular.xml">AngularJS</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-gradle.xml">com.intellij.gradle</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-spring.xml">com.intellij.spring</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javaee.xml">com.intellij.javaee</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javaee-web.xml">com.intellij.javaee.web</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-diagram.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-groovy.xml">org.intellij.groovy</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javascript.xml">JavaScript</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-copyright.xml">com.intellij.copyright</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-kotlin.xml">org.jetbrains.kotlin</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-database.xml">com.intellij.database</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-intelliLang.xml">org.intellij.intelliLang</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-jrebel.xml">JRebelPlugin</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-cron.xml">com.intellij.cron</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-grid.xml">intellij.grid.plugin</depends>
 
@@ -109,6 +105,10 @@
     <xi:include href="/META-INF/sap.commerce.toolset-polyglotQuery-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-polyglotQuery-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
+    <xi:include href="/META-INF/sap.commerce.toolset-businessProcess-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-businessProcess-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
+    <xi:include href="/META-INF/sap.commerce.toolset-groovy-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-groovy-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-groovy-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 

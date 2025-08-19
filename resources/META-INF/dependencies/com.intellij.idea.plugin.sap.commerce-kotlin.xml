@@ -1,6 +1,6 @@
 <!--
-  ~ This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
-  ~ Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Lesser General Public License as
@@ -20,10 +20,5 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="liveTemplates/Kotlin.xml"/>
-
-        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.KotlinCompilerConfigurator"/>
-        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.impl.KotlinFacetConfigurator"/>
-        <applicationService serviceImplementation="sap.commerce.toolset.flexibleSearch.injection.impl.FlexibleSearchToKotlinInjectorProvider"/>
-        <applicationService serviceImplementation="sap.commerce.toolset.polyglotQuery.injection.impl.PolyglotQueryToKotlinInjectorProvider"/>
     </extensions>
 </idea-plugin>

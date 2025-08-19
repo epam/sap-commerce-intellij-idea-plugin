@@ -18,18 +18,14 @@
 
 package sap.commerce.toolset.flexibleSearch.injection.impl
 
+import com.intellij.openapi.components.Service
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.FxSUtils
 import sap.commerce.toolset.lang.injection.impl.AbstractLanguageToKotlinInjectorProvider
-import com.intellij.openapi.components.service
-import com.intellij.util.application
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 
+@Service
 class FlexibleSearchToKotlinInjectorProvider : AbstractLanguageToKotlinInjectorProvider(FlexibleSearchLanguage) {
 
     override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
-
-    companion object {
-        fun getInstance(): FlexibleSearchToKotlinInjectorProvider = application.service()
-    }
 
 }

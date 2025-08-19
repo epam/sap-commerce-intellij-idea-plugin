@@ -19,8 +19,8 @@
 package sap.commerce.toolset.project.configurators.impl
 
 import com.intellij.facet.ModifiableFacetModel
-import sap.commerce.toolset.project.configurators.SpringConfigurator
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
@@ -34,6 +34,7 @@ import org.jdom.Element
 import org.jdom.JDOMException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.project.configurators.SpringConfigurator
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.YRegularModuleDescriptor
@@ -48,6 +49,7 @@ import java.util.regex.Pattern
 import java.util.zip.ZipFile
 import kotlin.io.path.exists
 
+@Service
 class DefaultSpringConfigurator : SpringConfigurator {
 
     override fun process(
@@ -63,7 +65,7 @@ class DefaultSpringConfigurator : SpringConfigurator {
                     is YRegularModuleDescriptor -> process(moduleDescriptors, moduleDescriptor)
                 }
             } catch (e: Exception) {
-                LOG.error("Unable to parse Spring context for module " + moduleDescriptor.name, e)
+                thisLogger().error("Unable to parse Spring context for module " + moduleDescriptor.name, e)
             }
         }
 
@@ -136,7 +138,7 @@ class DefaultSpringConfigurator : SpringConfigurator {
         } catch (e: FileNotFoundException) {
             return
         } catch (e: IOException) {
-            LOG.error("", e)
+            thisLogger().error("", e)
             return
         }
 
@@ -282,7 +284,7 @@ class DefaultSpringConfigurator : SpringConfigurator {
             }
             return true
         } catch (e: Exception) {
-            LOG.error("unable scan file for spring imports " + springFile.name)
+            thisLogger().error("unable scan file for spring imports " + springFile.name)
         }
         return false
     }
@@ -359,7 +361,6 @@ class DefaultSpringConfigurator : SpringConfigurator {
         ?: false
 
     companion object {
-        private val LOG = Logger.getInstance(DefaultSpringConfigurator::class.java)
         private val SPLIT_PATTERN = Pattern.compile(" ,")
     }
 }

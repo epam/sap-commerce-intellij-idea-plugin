@@ -16,6 +16,8 @@
             <option value="$PROJECT_DIR$/modules/ant/ui" />
             <option value="$PROJECT_DIR$/modules/beanSystem/core" />
             <option value="$PROJECT_DIR$/modules/beanSystem/ui" />
+            <option value="$PROJECT_DIR$/modules/businessProcess/core" />
+            <option value="$PROJECT_DIR$/modules/businessProcess/ui" />
             <option value="$PROJECT_DIR$/modules/ccv2/core" />
             <option value="$PROJECT_DIR$/modules/ccv2/exec" />
             <option value="$PROJECT_DIR$/modules/ccv2/manifest" />
@@ -27,6 +29,7 @@
             <option value="$PROJECT_DIR$/modules/flexibleSearch/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/exec" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/ui" />
+            <option value="$PROJECT_DIR$/modules/groovy/core" />
             <option value="$PROJECT_DIR$/modules/groovy/exec" />
             <option value="$PROJECT_DIR$/modules/groovy/ui" />
             <option value="$PROJECT_DIR$/modules/impex/core" />

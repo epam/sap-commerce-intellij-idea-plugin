@@ -27,6 +27,8 @@ import com.intellij.psi.xml.XmlFile
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.impex.psi.ImpexGroovyScriptBody
 import sap.commerce.toolset.impex.psi.ImpexString
+import sap.commerce.toolset.impex.psi.getScriptType
+import sap.commerce.toolset.system.businessProcess.psi.tryInject
 import sap.commerce.toolset.typeSystem.ScriptType
 
 class GroovyLanguageInjector : LanguageInjector {
@@ -47,7 +49,7 @@ class GroovyLanguageInjector : LanguageInjector {
         val xmlFile = host.containingFile as? XmlFile
             ?: return
 
-        LanguageInjectionUtil.tryInject(xmlFile, host, ScriptType.GROOVY) { length, offset ->
+        tryInject(xmlFile, host, ScriptType.GROOVY) { length, offset ->
             injectLanguage(injectionPlacesRegistrar, length, offset)
         }
     }
@@ -64,7 +66,7 @@ class GroovyLanguageInjector : LanguageInjector {
                         ?: offset
 
                     injectLanguage(injectionPlacesRegistrar, host.textLength - markerOffset - quoteSymbolLength, markerOffset)
-                } else if (LanguageInjectionUtil.getScriptType(host) == ScriptType.GROOVY) {
+                } else if (getScriptType(host) == ScriptType.GROOVY) {
                     injectLanguage(injectionPlacesRegistrar, host.textLength - quoteSymbolLength - 1, quoteSymbolLength)
                 }
             }

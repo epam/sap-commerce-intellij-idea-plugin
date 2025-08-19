@@ -19,7 +19,8 @@
 package sap.commerce.toolset.project.configurators
 
 import com.intellij.facet.FacetType
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleType
@@ -43,9 +44,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
+@Service
 class JRebelConfigurator {
-
-    private val logger = Logger.getInstance(JRebelConfigurator::class.java)
 
     fun configureAfterImport(project: Project, moduleDescriptors: List<ModuleDescriptor>): List<() -> Unit> = moduleDescriptors
         .filter {
@@ -68,7 +68,7 @@ class JRebelConfigurator {
         var content = try {
             IOUtils.toString(FileInputStream(compilingXml), StandardCharsets.UTF_8)
         } catch (e: IOException) {
-            logger.error(e)
+            thisLogger().error(e)
             return
         }
         if (!content.contains("excludes=\"**/rebel.xml\"")) {
@@ -78,7 +78,7 @@ class JRebelConfigurator {
         try {
             IOUtils.write(content, FileOutputStream(compilingXml), StandardCharsets.UTF_8)
         } catch (e: IOException) {
-            logger.error(e)
+            thisLogger().error(e)
         }
     }
 
