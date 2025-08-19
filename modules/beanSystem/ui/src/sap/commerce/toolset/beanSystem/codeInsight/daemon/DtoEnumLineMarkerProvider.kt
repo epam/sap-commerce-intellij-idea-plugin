@@ -25,11 +25,11 @@ import com.intellij.psi.PsiElement
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.isEnumFile
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
-import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.codeInsight.daemon.HybrisClassLineMarkerProvider
 import javax.swing.Icon
 
-class DtoEnumLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass>() {
+class DtoEnumLineMarkerProvider : HybrisClassLineMarkerProvider<PsiClass>() {
 
     override fun getName() = i18n("hybris.editor.gutter.bs.dto.enum.name")
     override fun getIcon(): Icon = HybrisIcons.BeanSystem.ENUM

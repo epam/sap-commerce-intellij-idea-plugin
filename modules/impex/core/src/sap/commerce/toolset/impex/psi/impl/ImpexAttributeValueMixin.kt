@@ -33,7 +33,7 @@ import sap.commerce.toolset.impex.psi.ImpexAttribute
 import sap.commerce.toolset.impex.psi.references.ImpExJavaClassReference
 import sap.commerce.toolset.impex.psi.references.ImpExJavaEnumValueReference
 import sap.commerce.toolset.impex.psi.references.ImpexTSItemReference
-import sap.commerce.toolset.psi.reference.LanguageReference
+import sap.commerce.toolset.project.psi.reference.LanguageReference
 import java.io.Serial
 import javax.lang.model.SourceVersion
 

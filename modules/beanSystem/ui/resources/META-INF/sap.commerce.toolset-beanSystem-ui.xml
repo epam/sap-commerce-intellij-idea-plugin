@@ -47,4 +47,18 @@
         <applicationService serviceImplementation="sap.commerce.toolset.beanSystem.codeInsight.completion.provider.BSClassCompletionProvider"/>
     </extensions>
 
+    <actions>
+        <group id="BSView.ToolWindow">
+            <group id="BSView.ToolWindow.TreePopup">
+                <action class="sap.commerce.toolset.beanSystem.actionSystem.GoToDeclarationBSNodeAction"
+                        use-shortcut-of="GotoDeclaration"/>
+            </group>
+
+            <group id="BSView.ToolWindow.TablePopup">
+                <action class="sap.commerce.toolset.beanSystem.actionSystem.GoToDeclarationBSTableAction"
+                        use-shortcut-of="GotoDeclaration"/>
+            </group>
+        </group>
+    </actions>
+
 </idea-plugin>

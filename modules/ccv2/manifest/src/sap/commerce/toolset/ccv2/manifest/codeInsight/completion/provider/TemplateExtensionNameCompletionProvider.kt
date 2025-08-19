@@ -20,7 +20,7 @@ package sap.commerce.toolset.ccv2.manifest.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.codeInsight.completion.provider.ExtensionNameCompletionProvider
+import sap.commerce.toolset.project.codeInsight.completion.provider.ExtensionNameCompletionProvider
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 class TemplateExtensionNameCompletionProvider : ExtensionNameCompletionProvider() {

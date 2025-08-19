@@ -25,7 +25,7 @@ import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.typeSystem.model.Attribute
 
-class ModelItemAttributeMethodLineMarkerProvider : AbstractModelAttributeLineMarkerProvider<PsiMethod>() {
+class ModelItemAttributeMethodLineMarkerProvider : ModelAttributeLineMarkerProvider<PsiMethod>() {
 
     override fun getName() = message("hybris.editor.gutter.ts.model.item.attribute.method.name")
     override fun tryCast(psi: PsiElement) = psi as? PsiMethod

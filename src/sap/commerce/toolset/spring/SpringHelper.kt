@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.spring
 
-import sap.commerce.toolset.system.spring.SimpleSpringService
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleUtilCore

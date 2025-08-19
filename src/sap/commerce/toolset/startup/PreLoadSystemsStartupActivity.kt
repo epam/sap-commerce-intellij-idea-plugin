@@ -23,8 +23,8 @@ import com.intellij.openapi.startup.ProjectActivity
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelStateService
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.PropertyService
+import sap.commerce.toolset.spring.SimpleSpringService
 import sap.commerce.toolset.system.cockpitng.meta.CngMetaModelStateService
-import sap.commerce.toolset.system.spring.SimpleSpringService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 
 class PreLoadSystemsStartupActivity : ProjectActivity {

@@ -21,9 +21,6 @@ package sap.commerce.toolset.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
-import sap.commerce.toolset.HybrisIcons
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
@@ -31,9 +28,12 @@ import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ClassInheritorsSearch
 import org.apache.commons.lang3.StringUtils
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
-class PopulatorsLineMarkerProvider : AbstractHybrisLineMarkerProvider<PsiClass>() {
+class PopulatorsLineMarkerProvider : HybrisLineMarkerProvider<PsiClass>() {
 
     override fun getName() = "Java - Populators"
     override fun getIcon(): Icon = HybrisIcons.GUTTER_POPULATOR

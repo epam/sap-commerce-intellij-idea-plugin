@@ -20,10 +20,10 @@ package sap.commerce.toolset.typeSystem.codeInsight.daemon
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisLineMarkerProvider
+import sap.commerce.toolset.codeInsight.daemon.HybrisLineMarkerProvider
 import sap.commerce.toolset.typeSystem.util.TSUtils
 
-abstract class AbstractItemsXmlLineMarkerProvider<T : PsiElement> : AbstractHybrisLineMarkerProvider<T>() {
+abstract class AbstractItemsXmlLineMarkerProvider<T : PsiElement> : HybrisLineMarkerProvider<T>() {
 
     final override fun canProcess(psi: PsiFile) = TSUtils.isTypeSystemFile(psi)
 

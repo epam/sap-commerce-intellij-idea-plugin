@@ -32,7 +32,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 
-class ModelItemAttributeFieldLineMarkerProvider : AbstractModelAttributeLineMarkerProvider<PsiField>() {
+class ModelItemAttributeFieldLineMarkerProvider : ModelAttributeLineMarkerProvider<PsiField>() {
 
     override fun getName() = message("hybris.editor.gutter.ts.model.item.attribute.field.name")
     override fun tryCast(psi: PsiElement) = (psi as? PsiField)

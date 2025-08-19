@@ -20,8 +20,8 @@ package sap.commerce.toolset.polyglotQuery.psi.impl
 
 import com.intellij.lang.ASTNode
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryLocalizedName
+import sap.commerce.toolset.project.psi.reference.LanguageReference
 import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
-import sap.commerce.toolset.psi.reference.LanguageReference
 import java.io.Serial
 
 abstract class PolyglotQueryLocalizedNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), PolyglotQueryLocalizedName {

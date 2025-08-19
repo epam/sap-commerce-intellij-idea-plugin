@@ -18,14 +18,14 @@
 
 package sap.commerce.toolset.codeInspection.rule.localextensions
 
-import sap.commerce.toolset.codeInspection.fix.xml.XmlDeleteTagQuickFix
-import sap.commerce.toolset.system.localextensions.model.Extension
-import sap.commerce.toolset.system.localextensions.model.Hybrisconfig
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.codeInspection.fix.xml.XmlDeleteTagQuickFix
+import sap.commerce.toolset.localextensions.model.Extension
+import sap.commerce.toolset.localextensions.model.Hybrisconfig
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 class LeUnknownExtensionDefinition : AbstractLeInspection() {

@@ -20,8 +20,8 @@ package sap.commerce.toolset.flexibleSearch.psi.impl
 
 import com.intellij.lang.ASTNode
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnLocalizedName
+import sap.commerce.toolset.project.psi.reference.LanguageReference
 import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
-import sap.commerce.toolset.psi.reference.LanguageReference
 import java.io.Serial
 
 abstract class FlexibleSearchColumnLocalizedNameMixin(node: ASTNode) : ASTWrapperReferencePsiElement(node), FlexibleSearchColumnLocalizedName {

@@ -26,12 +26,12 @@ import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.codeInsight.daemon.HybrisClassLineMarkerProvider
 import sap.commerce.toolset.typeSystem.util.TSUtils
 import javax.swing.Icon
 
-class ModelItemInterceptorLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiField>() {
+class ModelItemInterceptorLineMarkerProvider : HybrisClassLineMarkerProvider<PsiField>() {
 
     override fun canProcess(elements: MutableList<out PsiElement>): Boolean = super.canProcess(elements)
         && Plugin.SPRING.isActive()

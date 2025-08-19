@@ -17,7 +17,7 @@
  */
 package sap.commerce.toolset.project.descriptors.impl
 
-import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
+import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import java.io.File

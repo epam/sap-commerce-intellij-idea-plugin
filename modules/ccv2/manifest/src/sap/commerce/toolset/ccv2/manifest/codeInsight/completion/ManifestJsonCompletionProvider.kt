@@ -23,7 +23,7 @@ import com.intellij.codeInsight.completion.CompletionType
 import sap.commerce.toolset.ccv2.manifest.codeInsight.completion.provider.ExtensionPackNameCompletionProvider
 import sap.commerce.toolset.ccv2.manifest.codeInsight.completion.provider.TemplateExtensionNameCompletionProvider
 import sap.commerce.toolset.ccv2.manifest.psi.ManifestPatterns
-import sap.commerce.toolset.codeInsight.completion.provider.ExtensionNameCompletionProvider
+import sap.commerce.toolset.project.codeInsight.completion.provider.ExtensionNameCompletionProvider
 
 class ManifestJsonCompletionProvider : CompletionContributor() {
 

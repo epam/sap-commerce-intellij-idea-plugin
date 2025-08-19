@@ -25,12 +25,12 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiJavaFile
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
+import sap.commerce.toolset.project.codeInsight.daemon.HybrisClassLineMarkerProvider
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.util.TSUtils
 import javax.swing.Icon
 
-class JaloItemLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass>() {
+class JaloItemLineMarkerProvider : HybrisClassLineMarkerProvider<PsiClass>() {
 
     override fun getName() = "Jalo - Item declaration(s)"
     override fun getIcon(): Icon = HybrisIcons.TypeSystem.Types.ITEM

@@ -25,12 +25,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiField
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
+import sap.commerce.toolset.project.codeInsight.daemon.HybrisClassLineMarkerProvider
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.util.TSUtils
 import javax.swing.Icon
 
-class ModelEnumValueLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiField>() {
+class ModelEnumValueLineMarkerProvider : HybrisClassLineMarkerProvider<PsiField>() {
 
     override fun getName() = message("hybris.editor.gutter.ts.model.enum.value.name")
     override fun getIcon(): Icon = HybrisIcons.TypeSystem.ENUM_VALUE

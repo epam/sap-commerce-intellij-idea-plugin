@@ -36,7 +36,7 @@ import sap.commerce.toolset.beanSystem.model.Bean
 import sap.commerce.toolset.i18n
 import javax.swing.Icon
 
-class BeansXmlBeanSiblingsLineMarkerProvider : AbstractBeansXmlLineMarkerProvider<XmlAttributeValue>() {
+class BeansXmlBeanSiblingsLineMarkerProvider : BeansXmlLineMarkerProvider<XmlAttributeValue>() {
 
     override fun getName() = i18n("hybris.editor.gutter.bs.beans.bean.siblings.name")
     override fun getIcon(): Icon = HybrisIcons.BeanSystem.SIBLING

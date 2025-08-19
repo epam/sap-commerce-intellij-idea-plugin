@@ -18,10 +18,6 @@
 package sap.commerce.toolset.execution.lineMarker
 
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
-import sap.commerce.toolset.system.extensioninfo.model.Extension
-import sap.commerce.toolset.system.extensioninfo.model.ExtensionInfo
-import sap.commerce.toolset.system.localextensions.model.Extensions
-import sap.commerce.toolset.system.localextensions.model.Hybrisconfig
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.project.modules
 import com.intellij.psi.PsiElement
@@ -30,6 +26,10 @@ import com.intellij.psi.xml.*
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.extensioninfo.model.Extension
+import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
+import sap.commerce.toolset.localextensions.model.Extensions
+import sap.commerce.toolset.localextensions.model.Hybrisconfig
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.yExtensionName
@@ -54,7 +54,8 @@ class RefreshProjectRunLineMarkerContributor : RunLineMarkerContributor() {
         if (module != null) return null
 
         if ((parentTagName == Extension.REQUIRES_EXTENSION && domManager.getFileElement(xmlFile, ExtensionInfo::class.java) != null)
-            || (parentTagName == Extensions.EXTENSION && domManager.getFileElement(xmlFile, Hybrisconfig::class.java) != null)) {
+            || (parentTagName == Extensions.EXTENSION && domManager.getFileElement(xmlFile, Hybrisconfig::class.java) != null)
+        ) {
 
             val action = ActionManager.getInstance().getAction("File.yRefresh") ?: return null
             return Info(HybrisIcons.Actions.FORCE_REFRESH, arrayOf(action)) { action.templateText }

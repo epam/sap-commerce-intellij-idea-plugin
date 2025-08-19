@@ -16,64 +16,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Generated on Thu Jan 12 19:15:30 CET 2023
+// DTD/Schema  :    null
+
 package sap.commerce.toolset.localextensions.model;
 
-import jakarta.xml.bind.annotation.*;
-
+import com.intellij.util.xml.DomElement;
+import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTag;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Configures the installed extensions for the hybris platform.
- * 
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * null:hybrisconfigElemType interface.
  * <pre>
- * &lt;complexType>
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="extensions" type="{}extensionsType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * <h3>Type null:hybrisconfigElemType documentation</h3>
+ * Configures the installed extensions for the hybris platform.
  * </pre>
- * 
- * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "extensions"
-})
-@XmlRootElement(name = "hybrisconfig")
-public class Hybrisconfig {
+public interface Hybrisconfig extends DomElement {
 
-    @XmlElement(required = true)
-    protected ExtensionsType extensions;
+	String EXTENSIONS = "extensions";
 
-    /**
-     * Gets the value of the extensions property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ExtensionsType }
-     *     
-     */
-    public ExtensionsType getExtensions() {
-        return extensions;
-    }
+	/**
+	 * Returns the value of the extensions child.
+	 * <pre>
+	 * <h3>Element null:extensions documentation</h3>
+	 * Configures the installed extensions for the hybris platform..
+	 * </pre>
+	 * @return the value of the extensions child.
+	 */
+	@NotNull
+	@SubTag(EXTENSIONS)
+	@Required
+	Extensions getExtensions();
 
-    /**
-     * Sets the value of the extensions property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ExtensionsType }
-     *     
-     */
-    public void setExtensions(ExtensionsType value) {
-        this.extensions = value;
-    }
 
 }

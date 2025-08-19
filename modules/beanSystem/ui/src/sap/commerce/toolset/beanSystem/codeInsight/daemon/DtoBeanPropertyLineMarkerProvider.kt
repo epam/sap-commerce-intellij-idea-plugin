@@ -27,11 +27,11 @@ import com.intellij.psi.PsiField
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.isBeanFile
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
-import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.codeInsight.daemon.HybrisClassLineMarkerProvider
 import javax.swing.Icon
 
-class DtoBeanPropertyLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiField>() {
+class DtoBeanPropertyLineMarkerProvider : HybrisClassLineMarkerProvider<PsiField>() {
 
     override fun getName() = i18n("hybris.editor.gutter.bs.dto.bean.property.name")
     override fun getIcon(): Icon = HybrisIcons.BeanSystem.PROPERTY

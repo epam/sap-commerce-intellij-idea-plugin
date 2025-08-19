@@ -18,7 +18,7 @@
 
 package sap.commerce.toolset.project.descriptors
 
-import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
+import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
 
 interface YModuleDescriptor : ModuleDescriptor {
 

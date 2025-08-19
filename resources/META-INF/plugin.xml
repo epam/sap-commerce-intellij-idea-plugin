@@ -65,14 +65,10 @@
 
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-xdebugger.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-beanSystem.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-businessProcess.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-cockpitng.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-extensioninfo.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-flexibleSearch.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-impex.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-acl.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-localextensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-polyglot-query.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-typeSystem.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-console.xml" xpointer="xpointer(/idea-plugin/*)"/>
@@ -86,6 +82,11 @@
 
     <xi:include href="/META-INF/sap.commerce.toolset-beanSystem-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-beanSystem-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
+    <xi:include href="/META-INF/sap.commerce.toolset-project-extensioninfo.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-project-localextensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-project-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-project-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/sap.commerce.toolset-console-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-console-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>

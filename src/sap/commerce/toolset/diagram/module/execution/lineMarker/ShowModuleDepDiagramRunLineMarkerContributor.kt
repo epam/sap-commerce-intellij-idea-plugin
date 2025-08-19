@@ -18,7 +18,6 @@
 package sap.commerce.toolset.diagram.module.execution.lineMarker
 
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
-import sap.commerce.toolset.system.extensioninfo.model.ExtensionInfo
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlFile
@@ -28,6 +27,7 @@ import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
 
 class ShowModuleDepDiagramRunLineMarkerContributor : RunLineMarkerContributor() {
 

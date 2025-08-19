@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,58 +16,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Generated on Mon Jan 09 16:31:21 CET 2023
+// DTD/Schema  :    null
 package sap.commerce.toolset.extensioninfo.model;
 
-import jakarta.xml.bind.annotation.*;
-
+import com.intellij.util.xml.*;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * Configures the available modules of the extension.
- * <p/>
- * <p>Java class for anonymous complex type.
- * <p/>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p/>
+ * null:extensioninfoElemType interface.
  * <pre>
- * &lt;complexType>
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="extension" type="{}extensionType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * <h3>Type null:extensioninfoElemType documentation</h3>
+ * Configures the available modules of the extension.
  * </pre>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "extension"
-})
-@XmlRootElement(name = "extensioninfo")
-public class ExtensionInfo {
+@Stubbed
+@StubbedOccurrence
+public interface ExtensionInfo extends DomElement {
 
-    @XmlElement(required = true)
-    protected ExtensionType extension;
+	String EXTENSION = "extension";
 
-    /**
-     * Gets the value of the extension property.
-     *
-     * @return possible object is
-     * {@link ExtensionType }
-     */
-    public ExtensionType getExtension() {
-        return extension;
-    }
-
-    /**
-     * Sets the value of the extension property.
-     *
-     * @param value allowed object is
-     *              {@link ExtensionType }
-     */
-    public void setExtension(ExtensionType value) {
-        this.extension = value;
-    }
+	/**
+	 * Returns the value of the extension child.
+	 * @return the value of the extension child.
+	 */
+	@NotNull
+	@SubTag(EXTENSION)
+	@Required
+	Extension getExtension();
 
 }

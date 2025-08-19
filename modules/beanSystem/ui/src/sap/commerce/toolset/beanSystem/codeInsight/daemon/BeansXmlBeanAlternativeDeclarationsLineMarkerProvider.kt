@@ -34,7 +34,7 @@ import sap.commerce.toolset.beanSystem.model.Bean
 import sap.commerce.toolset.i18n
 import javax.swing.Icon
 
-class BeansXmlBeanAlternativeDeclarationsLineMarkerProvider : AbstractBeansXmlLineMarkerProvider<XmlAttributeValue>() {
+class BeansXmlBeanAlternativeDeclarationsLineMarkerProvider : BeansXmlLineMarkerProvider<XmlAttributeValue>() {
 
     override fun getName() = i18n("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.name")
     override fun getIcon(): Icon = HybrisIcons.Actions.FORWARD

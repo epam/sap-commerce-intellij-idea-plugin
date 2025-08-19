@@ -40,8 +40,8 @@ idea {
 }
 
 dependencies {
-    implementation(project(":shared-core"))
     implementation(libs.bundles.jaxb)
+    implementation(project(":shared-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
