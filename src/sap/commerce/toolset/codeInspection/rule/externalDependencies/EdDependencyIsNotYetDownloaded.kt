@@ -25,7 +25,7 @@ import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import org.jetbrains.idea.maven.dom.model.MavenDomProjectModel
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 
 class EdDependencyIsNotYetDownloaded : AbstractEdInspection() {
 
@@ -55,7 +55,7 @@ class EdDependencyIsNotYetDownloaded : AbstractEdInspection() {
                     holder.createProblem(
                         it,
                         severity,
-                        message("hybris.inspections.ed.EdDependencyIsNotYetDownloaded.problem", library),
+                        i18n("hybris.inspections.ed.EdDependencyIsNotYetDownloaded.problem", library),
                         TextRange.from(0, it.xmlTag?.textLength!! - 1)
                     )
                 }

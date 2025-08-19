@@ -23,8 +23,8 @@ import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.equalsIgnoreOrder
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.ui.CRUDListPanel
@@ -36,7 +36,7 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.title"), "hybris.project.settings"
+        i18n("hybris.settings.project.title"), "hybris.project.settings"
     ) {
 
         private val projectSettings = ProjectSettings.getInstance(project)
@@ -50,20 +50,20 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
         )
 
         override fun createPanel() = panel {
-            group(message("hybris.settings.project.details.title")) {
-                row(message("hybris.settings.project.details.platform_version.title")) {
+            group(i18n("hybris.settings.project.details.title")) {
+                row(i18n("hybris.settings.project.details.platform_version.title")) {
                     textField()
                         .enabled(false)
                         .text(projectSettings.hybrisVersion ?: "")
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
-                row(message("hybris.import.wizard.hybris.distribution.directory.label")) {
+                row(i18n("hybris.import.wizard.hybris.distribution.directory.label")) {
                     textField()
                         .enabled(false)
                         .text(projectSettings.hybrisDirectory ?: "")
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
-                row(message("hybris.import.wizard.javadoc.url.label")) {
+                row(i18n("hybris.import.wizard.javadoc.url.label")) {
                     textField()
                         .enabled(false)
                         .text(projectSettings.javadocUrl ?: "")
@@ -71,7 +71,7 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                 }.layout(RowLayout.PARENT_GRID)
             }
 
-            group(message("hybris.settings.project.build.title")) {
+            group(i18n("hybris.settings.project.build.title")) {
                 row {
                     generateCodeOnRebuildCheckBox = checkBox("Generate code before the Rebuild Project action")
                         .comment(
@@ -97,7 +97,7 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                 }
             }
 
-            group(message("hybris.settings.project.common.title")) {
+            group(i18n("hybris.settings.project.common.title")) {
                 row {
                     checkBox("Show full Module name in the Project View")
                         .comment("If checked, complete module name will be represented as <code>[Platform.core]</code> instead of <code>core</code>.")
@@ -105,7 +105,7 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                 }
             }
 
-            group(message("hybris.settings.project.refresh.title")) {
+            group(i18n("hybris.settings.project.refresh.title")) {
                 row {
                     checkBox("Remove external modules")
                         .comment("If checked, non SAP Commerce external modules will be removed during the project refresh.")
@@ -117,24 +117,24 @@ class ProjectSettingsConfigurableProvider(private val project: Project) : Config
                         .bindSelected(projectSettings::useFakeOutputPathForCustomExtensions)
                 }
                 row {
-                    checkBox(message("hybris.import.wizard.import.ootb.modules.read.only.label"))
-                        .comment(message("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
+                    checkBox(i18n("hybris.import.wizard.import.ootb.modules.read.only.label"))
+                        .comment(i18n("hybris.import.wizard.import.ootb.modules.read.only.tooltip"))
                         .bindSelected(projectSettings::importOotbModulesInReadOnlyMode)
                 }
                 row {
-                    checkBox(message("hybris.import.wizard.exclude.test.sources.label"))
+                    checkBox(i18n("hybris.import.wizard.exclude.test.sources.label"))
                         .bindSelected(projectSettings::excludeTestSources)
                 }
                 row {
-                    checkBox(message("hybris.project.import.followSymlink"))
+                    checkBox(i18n("hybris.project.import.followSymlink"))
                         .bindSelected(projectSettings::followSymlink)
                 }
                 row {
-                    checkBox(message("hybris.project.import.scanExternalModules"))
+                    checkBox(i18n("hybris.project.import.scanExternalModules"))
                         .bindSelected(projectSettings::scanThroughExternalModule)
                 }
                 row {
-                    checkBox(message("hybris.project.import.importCustomAntBuildFiles"))
+                    checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
                         .bindSelected(projectSettings::importCustomAntBuildFiles)
                 }
             }

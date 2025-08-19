@@ -22,8 +22,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.codeInspection.fix.XmlDeleteSubTagQuickFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.model.ItemType
 import sap.commerce.toolset.typeSystem.model.Items
@@ -59,7 +59,7 @@ class TSDeploymentTableMustNotBeRedeclaredInChildTypes : TSInspection() {
             .firstOrNull { it?.deployment?.typeCode?.isNotBlank() ?: false }
             ?: return
 
-        val message = message(
+        val message = i18n(
             "hybris.inspections.ts.DeploymentTableMustNotBeRedeclaredInChildTypes.problem.key",
             metaItem.name ?: "?",
             currentMetaTypeCode,

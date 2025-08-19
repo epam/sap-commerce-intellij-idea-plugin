@@ -24,12 +24,12 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.psi.navigate
 
 class XmlAddAttributeQuickFix(private val attributeName: String) : LocalQuickFix {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.xml.AddAttribute", attributeName)
+    override fun getFamilyName() = i18n("hybris.inspections.fix.xml.AddAttribute", attributeName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         descriptor.psiElement

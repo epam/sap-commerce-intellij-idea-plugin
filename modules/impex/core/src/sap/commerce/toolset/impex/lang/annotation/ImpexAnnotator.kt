@@ -23,7 +23,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.highlighting.ImpExSyntaxHighlighter
@@ -101,7 +101,7 @@ class ImpexAnnotator : AbstractAnnotator(ImpExSyntaxHighlighter.getInstance()) {
                         val expectedColumnName = userRightsParameterNames[actualColumnNumber] ?: return
 
                         highlightError(
-                            holder, element, message(
+                            holder, element, i18n(
                                 "hybris.inspections.impex.userRights.header.mandatory.expected",
                                 expectedColumnName,
                                 actualColumnNumber + 1 - noPasswordColumn,
@@ -115,7 +115,7 @@ class ImpexAnnotator : AbstractAnnotator(ImpExSyntaxHighlighter.getInstance()) {
 
                         if (actualColumnNumber == expectedColumnNumber - noPasswordColumn) return
                         highlightError(
-                            holder, element, message(
+                            holder, element, i18n(
                                 "hybris.inspections.impex.userRights.header.mandatory.order",
                                 headerParameter.text,
                                 expectedColumnNumber + 1 - noPasswordColumn,

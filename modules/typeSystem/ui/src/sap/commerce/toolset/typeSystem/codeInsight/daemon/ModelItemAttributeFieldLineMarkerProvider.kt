@@ -27,14 +27,14 @@ import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 
 class ModelItemAttributeFieldLineMarkerProvider : ModelAttributeLineMarkerProvider<PsiField>() {
 
-    override fun getName() = message("hybris.editor.gutter.ts.model.item.attribute.field.name")
+    override fun getName() = i18n("hybris.editor.gutter.ts.model.item.attribute.field.name")
     override fun tryCast(psi: PsiElement) = (psi as? PsiField)
         ?.takeIf { it.name != HybrisConstants.TYPECODE_FIELD_NAME }
         ?.takeIf { (it.type as? PsiClassReferenceType)?.name == String::class.java.simpleName }
@@ -63,7 +63,7 @@ class ModelItemAttributeFieldLineMarkerProvider : ModelAttributeLineMarkerProvid
             NavigationGutterIconBuilder
                 .create(HybrisIcons.TypeSystem.ORDERING_ATTRIBUTE)
                 .setTargets(it)
-                .setTooltipText(message("hybris.editor.gutter.ts.model.item.orderingAttribute.tooltip.text"))
+                .setTooltipText(i18n("hybris.editor.gutter.ts.model.item.orderingAttribute.tooltip.text"))
                 .setAlignment(GutterIconRenderer.Alignment.LEFT)
                 .createLineMarkerInfo(nameIdentifier)
         }
@@ -79,7 +79,7 @@ class ModelItemAttributeFieldLineMarkerProvider : ModelAttributeLineMarkerProvid
             NavigationGutterIconBuilder
                 .create(HybrisIcons.TypeSystem.Types.RELATION)
                 .setTargets(it)
-                .setTooltipText(message("hybris.editor.gutter.ts.model.item.attribute.field.relation.tooltip.text"))
+                .setTooltipText(i18n("hybris.editor.gutter.ts.model.item.attribute.field.relation.tooltip.text"))
                 .setAlignment(GutterIconRenderer.Alignment.LEFT)
                 .createLineMarkerInfo(nameIdentifier)
         }

@@ -26,7 +26,7 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.impl.PsiClassImplUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.constants.modifier.ImpexModifier
 import sap.commerce.toolset.impex.constants.modifier.TypeModifier
@@ -66,7 +66,7 @@ abstract class AbstractImpExInvalidClassReferenceModifierInspection(
 
                 holder.registerProblem(
                     element,
-                    message(
+                    i18n(
                         "hybris.inspections.impex.ImpExUnresolvedClassReferenceInspection.wrongImplementation",
                         modifier.modifierName,
                         element.text,
@@ -80,7 +80,7 @@ abstract class AbstractImpExInvalidClassReferenceModifierInspection(
         private fun unresolvedReference(element: ImpexAnyAttributeValue) {
             holder.registerProblem(
                 element,
-                message("hybris.inspections.impex.ImpExUnresolvedClassReferenceInspection.unresolved", modifier.modifierName, element.text),
+                i18n("hybris.inspections.impex.ImpExUnresolvedClassReferenceInspection.unresolved", modifier.modifierName, element.text),
                 ProblemHighlightType.ERROR
             )
         }

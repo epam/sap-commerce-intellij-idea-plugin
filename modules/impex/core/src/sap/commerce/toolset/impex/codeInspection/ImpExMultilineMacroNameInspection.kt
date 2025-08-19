@@ -23,7 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.codeInspection.fix.ImpexChangeMacroNameQuickFix
 import sap.commerce.toolset.impex.psi.ImpexMacroNameDec
 import sap.commerce.toolset.impex.psi.ImpexVisitor
@@ -43,7 +43,7 @@ class ImpExMultilineMacroNameInspection : LocalInspectionTool() {
                     .replace(" ", "")
                 holder.registerProblem(
                     element,
-                    message("hybris.inspections.impex.ImpExMultilineMacroNameInspection.key"),
+                    i18n("hybris.inspections.impex.ImpExMultilineMacroNameInspection.key"),
                     ProblemHighlightType.WARNING,
                     ImpexChangeMacroNameQuickFix(element, newMacroName)
                 )

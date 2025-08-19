@@ -23,7 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.InterceptorType
 import sap.commerce.toolset.impex.constants.modifier.TypeModifier
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
@@ -45,7 +45,7 @@ class ImpExInvalidDisableInterceptorTypesModifierValueInspection : LocalInspecti
 
             holder.registerProblem(
                 element,
-                message(
+                i18n(
                     "hybris.inspections.impex.ImpExInvalidDisableInterceptorTypesModifierValueInspection.key",
                     text,
                     allowedValues.joinToString { "'$it'" },

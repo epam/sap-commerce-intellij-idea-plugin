@@ -23,7 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.codeInspection.fix.ImpExAddFieldValueGroupsQuickFix
 import sap.commerce.toolset.impex.psi.ImpexValueLine
 import sap.commerce.toolset.impex.psi.ImpexVisitor
@@ -44,7 +44,7 @@ class ImpExMissingValueGroupInspection : LocalInspectionTool() {
             if (missingValueGroups > 0) {
                 holder.registerProblem(
                     valueLine,
-                    message("hybris.inspections.impex.ImpExMissingValueGroupInspection.key", missingValueGroups),
+                    i18n("hybris.inspections.impex.ImpExMissingValueGroupInspection.key", missingValueGroups),
                     ProblemHighlightType.WARNING,
                     ImpExAddFieldValueGroupsQuickFix(valueLine, missingValueGroups)
                 )

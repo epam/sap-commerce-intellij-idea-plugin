@@ -26,7 +26,7 @@ import com.intellij.psi.impl.source.xml.XmlTagImpl
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlTokenType
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.psi.navigate
 
 class XmlAddTagQuickFix(
@@ -38,8 +38,8 @@ class XmlAddTagQuickFix(
 
     override fun getFamilyName() = attributes
         ?.let { attributes.entries.joinToString(", ") { "'${it.key}'='${it.value}'" } }
-        ?.let { message("hybris.inspections.fix.xml.AddTagWithAttributes", tagName, it) }
-        ?: message("hybris.inspections.fix.xml.AddTag", tagName)
+        ?.let { i18n("hybris.inspections.fix.xml.AddTagWithAttributes", tagName, it) }
+        ?: i18n("hybris.inspections.fix.xml.AddTag", tagName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         val currentElement = descriptor.psiElement as? XmlTag ?: return

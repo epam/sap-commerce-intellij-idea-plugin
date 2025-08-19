@@ -23,7 +23,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.system.cockpitng.model.config.Config
 import sap.commerce.toolset.system.cockpitng.model.config.Context
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
@@ -70,7 +70,7 @@ class CngContextMergeByTypeParentIsNotValid : AbstractCngConfigInspection() {
         holder.createProblem(
             dom.parentAttribute,
             severity,
-            message("hybris.inspections.fix.cng.CngContextMergeByTypeParentIsNotValid.key", type, parentType)
+            i18n("hybris.inspections.fix.cng.CngContextMergeByTypeParentIsNotValid.key", type, parentType)
         )
     }
 }

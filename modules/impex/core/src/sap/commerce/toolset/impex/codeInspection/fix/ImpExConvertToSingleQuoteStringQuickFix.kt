@@ -22,7 +22,7 @@ import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpExElementFactory
 import sap.commerce.toolset.impex.psi.ImpexString
 
@@ -30,8 +30,8 @@ class ImpExConvertToSingleQuoteStringQuickFix(
     element: ImpexString,
 ) : LocalQuickFixOnPsiElement(element) {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.impex.ConvertToSingleQuoteString")
-    override fun getText() = message("hybris.inspections.fix.impex.ConvertToSingleQuoteString.text")
+    override fun getFamilyName() = i18n("hybris.inspections.fix.impex.ConvertToSingleQuoteString")
+    override fun getText() = i18n("hybris.inspections.fix.impex.ConvertToSingleQuoteString.text")
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
         ImpExElementFactory.createSingleQuotedString(project, startElement.text.replace("\"", ""))

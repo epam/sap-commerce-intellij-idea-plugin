@@ -24,7 +24,7 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.elementType
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.codeInspection.fix.ImpExDeleteParametersSeparatorFix
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpexHeaderLine
@@ -54,7 +54,7 @@ class ImpExMissingHeaderParameterInspection : LocalInspectionTool() {
                 .forEach {
                     holder.registerProblem(
                         it,
-                        message("hybris.inspections.impex.ImpExMissingHeaderParameterInspection.key"),
+                        i18n("hybris.inspections.impex.ImpExMissingHeaderParameterInspection.key"),
                         ProblemHighlightType.WARNING,
                         ImpExDeleteParametersSeparatorFix(it)
                     )

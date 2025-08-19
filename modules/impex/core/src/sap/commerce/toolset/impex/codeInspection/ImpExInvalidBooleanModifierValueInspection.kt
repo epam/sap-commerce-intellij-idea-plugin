@@ -24,7 +24,7 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.constants.modifier.TypeModifier
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
@@ -59,7 +59,7 @@ class ImpExInvalidBooleanModifierValueInspection : LocalInspectionTool() {
 
             holder.registerProblem(
                 element,
-                message(
+                i18n(
                     "hybris.inspections.impex.ImpExInvalidBooleanModifierValueInspection.key",
                     modifierName,
                     text,

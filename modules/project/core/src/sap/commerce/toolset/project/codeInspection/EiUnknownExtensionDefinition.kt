@@ -22,10 +22,10 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.codeInspection.fix.XmlDeleteTagQuickFix
 import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
 import sap.commerce.toolset.extensioninfo.model.RequiresExtension
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 class EiUnknownExtensionDefinition : EiInspection() {
@@ -57,7 +57,7 @@ class EiUnknownExtensionDefinition : EiInspection() {
             holder.createProblem(
                 dom.name,
                 severity,
-                message("hybris.inspections.fix.ei.EiUnknownExtensionDeclaration.message", extensionName),
+                i18n("hybris.inspections.fix.ei.EiUnknownExtensionDeclaration.message", extensionName),
                 XmlDeleteTagQuickFix()
             )
         }

@@ -17,14 +17,14 @@
  */
 package sap.commerce.toolset.acl.actionSystem
 
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.acl.file.AclFileType
 import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.console.ImpExConsole
 
 class AclOpenInConsoleAction : OpenInConsoleAction(
     AclFileType,
     ImpExConsole::class,
-    message("hybris.acl.actions.open_query"),
-    message("hybris.acl.actions.open_query.description"),
+    i18n("hybris.acl.actions.open_query"),
+    i18n("hybris.acl.actions.open_query.description"),
 )

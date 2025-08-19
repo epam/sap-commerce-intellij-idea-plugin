@@ -24,7 +24,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.codeInspection.fix.ImpexDeleteModifierFix
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeName
@@ -55,7 +55,7 @@ class ImpexLanguageModifierIsNotAllowedInspection : LocalInspectionTool() {
 
             holder.registerProblem(
                 psi,
-                message("hybris.inspections.impex.ImpexLanguageModifierIsNotAllowedInspection.key", meta.name),
+                i18n("hybris.inspections.impex.ImpexLanguageModifierIsNotAllowedInspection.key", meta.name),
                 ImpexDeleteModifierFix(attribute)
             )
         }

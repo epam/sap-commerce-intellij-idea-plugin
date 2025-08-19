@@ -21,13 +21,13 @@ package sap.commerce.toolset.typeSystem.actionSystem
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.settings.TSViewSettings
 import sap.commerce.toolset.typeSystem.settings.state.ChangeType
 
 class TSShowOnlyCustomAction(val settings: TSViewSettings) :
-    ToggleAction(message("hybris.toolwindow.action.only_custom.text"), message("hybris.toolwindow.ts.action.only_custom.description"), null) {
+    ToggleAction(i18n("hybris.toolwindow.action.only_custom.text"), i18n("hybris.toolwindow.ts.action.only_custom.description"), null) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showOnlyCustom
 
@@ -40,7 +40,7 @@ class TSShowOnlyCustomAction(val settings: TSViewSettings) :
 }
 
 class TSShowMetaItemsAction(val settings: TSViewSettings) :
-    ToggleAction(message("hybris.toolwindow.ts.action.items.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_ITEMS) {
+    ToggleAction(i18n("hybris.toolwindow.ts.action.items.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_ITEMS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaItems
 
@@ -52,7 +52,7 @@ class TSShowMetaItemsAction(val settings: TSViewSettings) :
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.maps.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_MAPS) {
+class TSShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(i18n("hybris.toolwindow.ts.action.maps.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_MAPS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaMaps
 
@@ -65,7 +65,7 @@ class TSShowMetaMapsAction(val settings: TSViewSettings) : ToggleAction(message(
 }
 
 class TSShowMetaEnumsAction(val settings: TSViewSettings) :
-    ToggleAction(message("hybris.toolwindow.ts.action.enums.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_ENUMS) {
+    ToggleAction(i18n("hybris.toolwindow.ts.action.enums.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_ENUMS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaEnums
 
@@ -78,7 +78,7 @@ class TSShowMetaEnumsAction(val settings: TSViewSettings) :
 }
 
 class TSShowMetaCollectionsAction(val settings: TSViewSettings) :
-    ToggleAction(message("hybris.toolwindow.ts.action.collections.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_COLLECTIONS) {
+    ToggleAction(i18n("hybris.toolwindow.ts.action.collections.text"), null, HybrisIcons.TypeSystem.Preview.Actions.SHOW_COLLECTIONS) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaCollections
 
@@ -90,7 +90,7 @@ class TSShowMetaCollectionsAction(val settings: TSViewSettings) :
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.relations.text"), null, HybrisIcons.TypeSystem.Types.RELATION) {
+class TSShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(i18n("hybris.toolwindow.ts.action.relations.text"), null, HybrisIcons.TypeSystem.Types.RELATION) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaRelations
 
@@ -102,7 +102,7 @@ class TSShowMetaRelationsAction(val settings: TSViewSettings) : ToggleAction(mes
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.atomics.text"), null, HybrisIcons.TypeSystem.Types.ATOMIC) {
+class TSShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(i18n("hybris.toolwindow.ts.action.atomics.text"), null, HybrisIcons.TypeSystem.Types.ATOMIC) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaAtomics
 
@@ -114,7 +114,7 @@ class TSShowMetaAtomicsAction(val settings: TSViewSettings) : ToggleAction(messa
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSShowMetaEnumValuesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.enum.values.text"), null, null) {
+class TSShowMetaEnumValuesAction(val settings: TSViewSettings) : ToggleAction(i18n("hybris.toolwindow.ts.action.enum.values.text"), null, null) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaEnumValues
 
@@ -126,7 +126,7 @@ class TSShowMetaEnumValuesAction(val settings: TSViewSettings) : ToggleAction(me
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSShowMetaItemIndexesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.indexes.text"), null, null) {
+class TSShowMetaItemIndexesAction(val settings: TSViewSettings) : ToggleAction(i18n("hybris.toolwindow.ts.action.item.indexes.text"), null, null) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaItemIndexes
 
@@ -138,7 +138,7 @@ class TSShowMetaItemIndexesAction(val settings: TSViewSettings) : ToggleAction(m
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSShowMetaItemAttributesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.attributes.text"), null, null) {
+class TSShowMetaItemAttributesAction(val settings: TSViewSettings) : ToggleAction(i18n("hybris.toolwindow.ts.action.item.attributes.text"), null, null) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaItemAttributes
 
@@ -150,7 +150,7 @@ class TSShowMetaItemAttributesAction(val settings: TSViewSettings) : ToggleActio
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSShowMetaItemCustomPropertiesAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.custom_properties.text"), null, null) {
+class TSShowMetaItemCustomPropertiesAction(val settings: TSViewSettings) : ToggleAction(i18n("hybris.toolwindow.ts.action.item.custom_properties.text"), null, null) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showMetaItemCustomProperties
 
@@ -162,7 +162,7 @@ class TSShowMetaItemCustomPropertiesAction(val settings: TSViewSettings) : Toggl
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 }
 
-class TSGroupItemByParentAction(val settings: TSViewSettings) : ToggleAction(message("hybris.toolwindow.ts.action.item.group_by_parent.text"), null, null) {
+class TSGroupItemByParentAction(val settings: TSViewSettings) : ToggleAction(i18n("hybris.toolwindow.ts.action.item.group_by_parent.text"), null, null) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.groupItemByParent
 

@@ -24,16 +24,16 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpexAttribute
 import sap.commerce.toolset.impex.psi.ImpexTypes
 
 class ImpexDeleteModifierFix(
     modifier: ImpexAttribute,
-    private val name: String = message("hybris.inspections.fix.impex.DeleteModifier.text", modifier.anyAttributeName.text)
+    private val name: String = i18n("hybris.inspections.fix.impex.DeleteModifier.text", modifier.anyAttributeName.text)
 ) : LocalQuickFixOnPsiElement(modifier) {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.impex.DeleteModifier")
+    override fun getFamilyName() = i18n("hybris.inspections.fix.impex.DeleteModifier")
     override fun getText() = name
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {

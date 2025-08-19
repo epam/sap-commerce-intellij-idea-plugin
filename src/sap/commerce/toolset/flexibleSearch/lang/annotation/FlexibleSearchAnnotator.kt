@@ -30,11 +30,11 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlighterColors
 import sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighter
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes.*
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.lang.annotation.AbstractAnnotator
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
@@ -95,7 +95,7 @@ class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighte
                     holder = holder,
                     element = element,
                     highlightSeverity = HighlightSeverity.ERROR,
-                    message = message("hybris.inspections.fxs.element.separator.colon.notAllowed"),
+                    message = i18n("hybris.inspections.fxs.element.separator.colon.notAllowed"),
                     fix = object : BaseIntentionAction() {
 
                         override fun getFamilyName() = "[y] FlexibleSearch"
@@ -126,7 +126,7 @@ class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighte
                 if (!propertyService.containsLanguage(language, supportedLanguages)) {
                     highlightError(
                         holder, element,
-                        message(
+                        i18n(
                             "hybris.inspections.language.unsupported",
                             language,
                             supportedLanguages.joinToString()
@@ -145,7 +145,7 @@ class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighte
                             ?.let {
                                 highlightError(
                                     holder, element,
-                                    message("hybris.inspections.language.unexpected", featureName)
+                                    i18n("hybris.inspections.language.unexpected", featureName)
                                 )
                             }
                     }
@@ -155,7 +155,7 @@ class FlexibleSearchAnnotator : AbstractAnnotator(FlexibleSearchSyntaxHighlighte
                 COLUMN_LOCALIZED_NAME ->
                     highlightError(
                         holder, element,
-                        message("hybris.inspections.fxs.element.language.missing")
+                        i18n("hybris.inspections.fxs.element.language.missing")
                     )
             }
         }

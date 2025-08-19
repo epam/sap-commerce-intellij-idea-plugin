@@ -19,12 +19,12 @@
 package sap.commerce.toolset.diagram.typeSystem
 
 import com.intellij.diagram.DiagramScopeManager
-import sap.commerce.toolset.diagram.typeSystem.node.graph.TSGraphNode
-import sap.commerce.toolset.diagram.typeSystem.node.graph.TSGraphNodeClassifier
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.scope.packageSet.NamedScope
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.diagram.typeSystem.node.graph.TSGraphNode
+import sap.commerce.toolset.diagram.typeSystem.node.graph.TSGraphNodeClassifier
+import sap.commerce.toolset.i18n
 
 class TSDiagramScopeManager(project: Project) : DiagramScopeManager<TSGraphNode>(project) {
 
@@ -52,9 +52,9 @@ class TSDiagramScopeManager(project: Project) : DiagramScopeManager<TSGraphNode>
         private const val SCOPE_ID_OOTB = "OOTB"
         private const val SCOPE_ID_ALL = "All"
 
-        private val scopeCustom = NamedScope(SCOPE_ID_CUSTOM, { message("hybris.diagram.ts.provider.scope.custom.only_custom") }, HybrisIcons.Extension.CUSTOM, null)
-        private val scopeCustomExtends = NamedScope(SCOPE_ID_CUSTOM_WITH_EXTENDS, { message("hybris.diagram.ts.provider.scope.custom.custom_with_extends") }, HybrisIcons.Extension.CUSTOM, null)
-        private val scopeOOTB = NamedScope(SCOPE_ID_OOTB, { message("hybris.diagram.ts.provider.scope.custom.ootb") }, HybrisIcons.Extension.OOTB, null)
+        private val scopeCustom = NamedScope(SCOPE_ID_CUSTOM, { i18n("hybris.diagram.ts.provider.scope.custom.only_custom") }, HybrisIcons.Extension.CUSTOM, null)
+        private val scopeCustomExtends = NamedScope(SCOPE_ID_CUSTOM_WITH_EXTENDS, { i18n("hybris.diagram.ts.provider.scope.custom.custom_with_extends") }, HybrisIcons.Extension.CUSTOM, null)
+        private val scopeOOTB = NamedScope(SCOPE_ID_OOTB, { i18n("hybris.diagram.ts.provider.scope.custom.ootb") }, HybrisIcons.Extension.OOTB, null)
         private val scopeAll = NamedScope(SCOPE_ID_ALL, HybrisIcons.TypeSystem.FILE, null)
 
         private val allowedScopes = arrayOf(

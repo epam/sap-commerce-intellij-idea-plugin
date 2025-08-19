@@ -18,14 +18,14 @@
 
 package sap.commerce.toolset.codeInspection.rule.cockpitng
 
-import sap.commerce.toolset.system.cockpitng.model.config.Config
-import sap.commerce.toolset.system.cockpitng.util.CngUtils
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.system.cockpitng.model.config.Config
+import sap.commerce.toolset.system.cockpitng.util.CngUtils
 
 class CngContextMergeByPointToExistingContextAttribute : AbstractCngConfigInspection() {
 
@@ -53,7 +53,7 @@ class CngContextMergeByPointToExistingContextAttribute : AbstractCngConfigInspec
             holder.createProblem(
                 dom,
                 severity,
-                message("hybris.inspections.fix.cng.ContextMergeByPointToExistingContextAttribute.message", mergeByValue)
+                i18n("hybris.inspections.fix.cng.ContextMergeByPointToExistingContextAttribute.message", mergeByValue)
             )
         }
     }

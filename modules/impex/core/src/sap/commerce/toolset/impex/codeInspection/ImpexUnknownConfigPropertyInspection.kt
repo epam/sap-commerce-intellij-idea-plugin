@@ -25,7 +25,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.lang.properties.PropertiesImplUtil
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
 import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec
@@ -52,7 +52,7 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
             if (isDeclarationExists != null && isDeclarationExists == false) {
                 problemsHolder.registerProblem(
                     usage,
-                    message("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.param.key", propertyName),
+                    i18n("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.param.key", propertyName),
                     ProblemHighlightType.ERROR
                 )
             } else {
@@ -62,7 +62,7 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
                     cachedProperties[propertyName] = false
                     problemsHolder.registerProblem(
                         usage,
-                        message("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.param.key", propertyName),
+                        i18n("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.param.key", propertyName),
                         ProblemHighlightType.ERROR
                     )
                 } else {
@@ -82,7 +82,7 @@ private class UnknownConfigPropertyVisitor(private val problemsHolder: ProblemsH
                 if (properties.isEmpty()) {
                     problemsHolder.registerProblem(
                         macroValue,
-                        message("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.key", key),
+                        i18n("hybris.inspections.impex.ImpexUnknownConfigPropertyInspection.key", key),
                         ProblemHighlightType.ERROR
                     )
                 }

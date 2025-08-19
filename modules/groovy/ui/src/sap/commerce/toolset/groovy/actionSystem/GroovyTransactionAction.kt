@@ -20,7 +20,7 @@ package sap.commerce.toolset.groovy.actionSystem
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.CheckboxAction
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TransactionMode
 
@@ -45,13 +45,13 @@ abstract class GroovyTransactionAction(text: String, description: String, privat
 }
 
 class GroovyRollbackTransactionAction : GroovyTransactionAction(
-    message("hybris.groovy.actions.transaction.rollback"),
-    message("hybris.groovy.actions.transaction.rollback.description"),
+    i18n("hybris.groovy.actions.transaction.rollback"),
+    i18n("hybris.groovy.actions.transaction.rollback.description"),
     TransactionMode.ROLLBACK
 )
 
 class GroovyCommitTransactionAction : GroovyTransactionAction(
-    message("hybris.groovy.actions.transaction.commit"),
-    message("hybris.groovy.actions.transaction.commit.description"),
+    i18n("hybris.groovy.actions.transaction.commit"),
+    i18n("hybris.groovy.actions.transaction.commit.description"),
     TransactionMode.COMMIT
 )

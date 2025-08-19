@@ -25,7 +25,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.impex.psi.references.ImpexFunctionTSAttributeReference
 import sap.commerce.toolset.impex.psi.references.ImpexTSAttributeReference
@@ -71,7 +71,7 @@ class ImpexUnknownTypeAttributeInspection : LocalInspectionTool() {
             problemsHolder.registerProblemForReference(
                 reference,
                 ProblemHighlightType.ERROR,
-                message("hybris.inspections.UnknownTypeAttributeInspection.key", reference.value, typeName),
+                i18n("hybris.inspections.UnknownTypeAttributeInspection.key", reference.value, typeName),
             )
         }
     }

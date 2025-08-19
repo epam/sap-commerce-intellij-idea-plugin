@@ -23,7 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.codeInspection.fix.ImpExDeleteValueGroupFix
 import sap.commerce.toolset.impex.psi.ImpexValueLine
 import sap.commerce.toolset.impex.psi.ImpexVisitor
@@ -54,7 +54,7 @@ class ImpExOrphanValueGroupInspection : LocalInspectionTool() {
 
                         holder.registerProblem(
                             valueGroup,
-                            message("hybris.inspections.impex.ImpExOrphanValueGroupInspection.key", previewText),
+                            i18n("hybris.inspections.impex.ImpExOrphanValueGroupInspection.key", previewText),
                             ProblemHighlightType.WARNING,
                             ImpExDeleteValueGroupFix(valueGroup, previewText)
                         )

@@ -24,7 +24,6 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
@@ -34,12 +33,13 @@ import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
+import sap.commerce.toolset.i18n
 
 class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole, FlexibleSearchSplitEditor>(
     FlexibleSearchLanguage,
     FlexibleSearchConsole::class,
-    message("hybris.fxs.actions.execute_query"),
-    message("hybris.fxs.actions.execute_query.description"),
+    i18n("hybris.fxs.actions.execute_query"),
+    i18n("hybris.fxs.actions.execute_query.description"),
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 

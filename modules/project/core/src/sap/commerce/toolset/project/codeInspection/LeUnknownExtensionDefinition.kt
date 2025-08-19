@@ -22,8 +22,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.codeInspection.fix.XmlDeleteTagQuickFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.localextensions.model.Extension
 import sap.commerce.toolset.localextensions.model.Hybrisconfig
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -57,7 +57,7 @@ class LeUnknownExtensionDefinition : LeInspection() {
             holder.createProblem(
                 dom.name,
                 severity,
-                message("hybris.inspections.fix.le.LeUnknownExtensionDeclaration.message", extensionName),
+                i18n("hybris.inspections.fix.le.LeUnknownExtensionDeclaration.message", extensionName),
                 XmlDeleteTagQuickFix()
             )
         }

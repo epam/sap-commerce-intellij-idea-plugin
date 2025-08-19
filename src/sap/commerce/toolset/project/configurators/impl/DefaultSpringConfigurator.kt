@@ -33,7 +33,7 @@ import org.apache.commons.lang3.StringUtils
 import org.jdom.Element
 import org.jdom.JDOMException
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurators.SpringConfigurator
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
@@ -57,7 +57,7 @@ class DefaultSpringConfigurator : SpringConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>
     ) {
-        indicator.text = message("hybris.project.import.spring")
+        indicator.text = i18n("hybris.project.import.spring")
         for (moduleDescriptor in moduleDescriptors.values) {
             try {
                 when (moduleDescriptor) {

@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.project.configurators
 
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
-import sap.commerce.toolset.Notifications
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
@@ -27,6 +25,8 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.util.concurrency.AppExecutorUtil
+import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 
@@ -83,10 +83,10 @@ class PostImportConfigurator(val project: Project) {
     }
 
     private fun notifyImportFinished(project: Project, refresh: Boolean) {
-        val notificationContent = if (refresh) message("hybris.notification.project.refresh.finished.content")
-        else message("hybris.notification.project.import.finished.content")
-        val notificationTitle = if (refresh) message("hybris.notification.project.refresh.title")
-        else message("hybris.notification.project.import.title")
+        val notificationContent = if (refresh) i18n("hybris.notification.project.refresh.finished.content")
+        else i18n("hybris.notification.project.import.finished.content")
+        val notificationTitle = if (refresh) i18n("hybris.notification.project.refresh.title")
+        else i18n("hybris.notification.project.import.title")
 
         with(Notifications) {
             create(NotificationType.INFORMATION, notificationTitle, notificationContent).notify(project)

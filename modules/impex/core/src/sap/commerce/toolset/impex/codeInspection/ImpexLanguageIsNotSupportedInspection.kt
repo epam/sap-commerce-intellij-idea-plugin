@@ -22,7 +22,7 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.util.PsiTreeUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.project.PropertyService
@@ -54,7 +54,7 @@ class ImpexLanguageIsNotSupportedInspection : LocalInspectionTool() {
 
             holder.registerProblem(
                 psi,
-                message(
+                i18n(
                     "hybris.inspections.language.unsupported",
                     language,
                     supportedLanguages.joinToString()

@@ -22,8 +22,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.codeInspection.fix.XmlUpdateAttributeQuickFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.typeSystem.model.Deployment
 import sap.commerce.toolset.typeSystem.model.Items
@@ -58,7 +58,7 @@ class TSDeploymentTableNameLengthShouldBeValid : CustomOnlyTSInspection() {
             holder.createProblem(
                 dom.table,
                 severity,
-                message("hybris.inspections.fix.ts.TSDeploymentTableNameLengthShouldBeValid.key", tableName, tableName.length, maxLength),
+                i18n("hybris.inspections.fix.ts.TSDeploymentTableNameLengthShouldBeValid.key", tableName, tableName.length, maxLength),
                 XmlUpdateAttributeQuickFix(Deployment.TABLE, tableName.substring(0, maxLength))
             )
         }

@@ -21,13 +21,13 @@ package sap.commerce.toolset.typeSystem.codeInsight.daemon
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiMethod
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.typeSystem.model.Attribute
 
 class ModelItemAttributeMethodLineMarkerProvider : ModelAttributeLineMarkerProvider<PsiMethod>() {
 
-    override fun getName() = message("hybris.editor.gutter.ts.model.item.attribute.method.name")
+    override fun getName() = i18n("hybris.editor.gutter.ts.model.item.attribute.method.name")
     override fun tryCast(psi: PsiElement) = psi as? PsiMethod
 
     override fun collect(meta: TSGlobalMetaItem, psi: PsiMethod) = psi.getAnnotation(HybrisConstants.CLASS_FQN_ANNOTATION_ACCESSOR)

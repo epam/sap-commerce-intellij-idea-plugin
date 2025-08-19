@@ -22,11 +22,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
 import sap.commerce.toolset.beanSystem.model.Bean
 import sap.commerce.toolset.beanSystem.model.Beans
 import sap.commerce.toolset.codeInspection.fix.XmlUpdateAttributeQuickFix
+import sap.commerce.toolset.i18n
 
 class BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass : BSInspection() {
 
@@ -54,7 +54,7 @@ class BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass : BSInspection() {
         holder.createProblem(
             dom.clazz,
             severity,
-            message("hybris.inspections.bs.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass.message", BSMetaHelper.getBeanName(fqn)),
+            i18n("hybris.inspections.bs.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass.message", BSMetaHelper.getBeanName(fqn)),
             XmlUpdateAttributeQuickFix(
                 Bean.CLASS,
                 fqn

@@ -23,8 +23,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.codeInspection.fix.XmlUpdateAttributeQuickFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.model.EnumType
 import sap.commerce.toolset.typeSystem.model.EnumValue
 import sap.commerce.toolset.typeSystem.model.Items
@@ -62,7 +62,7 @@ class TSEnumValueMustBeUppercase : TSInspection() {
         holder.createProblem(
             enumValue.code,
             severity,
-            message("hybris.inspections.fix.ts.TSEnumValueMustBeUppercase.key", enumName, code),
+            i18n("hybris.inspections.fix.ts.TSEnumValueMustBeUppercase.key", enumName, code),
             XmlUpdateAttributeQuickFix(EnumType.CODE, code.uppercase(Locale.ROOT))
         )
     }

@@ -18,12 +18,12 @@
 
 package sap.commerce.toolset.flexibleSearch.actionSystem
 
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.actionSystem.OpenSettingsAction
 import sap.commerce.toolset.flexibleSearch.options.ProjectFlexibleSearchSettingsConfigurableProvider
+import sap.commerce.toolset.i18n
 
 class FlexibleSearchOpenSettingsAction : OpenSettingsAction(
     configurableClass = ProjectFlexibleSearchSettingsConfigurableProvider.SettingsConfigurable::class.java,
-    text = message("hybris.fxs.actions.open_settings"),
-    description = message("hybris.fxs.actions.open_settings.description"),
+    text = i18n("hybris.fxs.actions.open_settings"),
+    description = i18n("hybris.fxs.actions.open_settings.description"),
 )

@@ -18,7 +18,7 @@
 package sap.commerce.toolset.typeSystem.codeInspection
 
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.model.Deployment
 
@@ -36,6 +36,6 @@ class TSDeploymentTypeCodeReservedInspection : TSDeploymentTypeCodeInspection() 
             ?: return null
         val reservedType = TSMetaModelAccess.getInstance(project).getReservedTypeCodes()[typeCodeInt]
             ?: return null
-        return message("hybris.inspections.ts.TSDeploymentTypeCodeReservedInspection.details.key", typeCode, reservedType)
+        return i18n("hybris.inspections.ts.TSDeploymentTypeCodeReservedInspection.details.key", typeCode, reservedType)
     }
 }

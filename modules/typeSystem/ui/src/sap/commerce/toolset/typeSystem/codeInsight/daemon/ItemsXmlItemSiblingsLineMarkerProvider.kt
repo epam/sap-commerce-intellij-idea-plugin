@@ -27,8 +27,8 @@ import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
@@ -37,7 +37,7 @@ import javax.swing.Icon
 
 class ItemsXmlItemSiblingsLineMarkerProvider : AbstractItemsXmlLineMarkerProvider<XmlAttributeValue>() {
 
-    override fun getName() = message("hybris.editor.gutter.ts.items.item.siblings.name")
+    override fun getName() = i18n("hybris.editor.gutter.ts.items.item.siblings.name")
     override fun getIcon(): Icon = HybrisIcons.TypeSystem.SIBLING
     override fun tryCast(psi: PsiElement) = (psi as? XmlAttributeValue)
         ?.takeIf {
@@ -64,8 +64,8 @@ class ItemsXmlItemSiblingsLineMarkerProvider : AbstractItemsXmlLineMarkerProvide
                 NavigationGutterIconBuilder
                     .create(icon)
                     .setTargets(targets)
-                    .setPopupTitle(message("hybris.editor.gutter.ts.items.item.siblings.popup.title"))
-                    .setTooltipText(message("hybris.editor.gutter.ts.items.item.siblings.tooltip.text", psi.value))
+                    .setPopupTitle(i18n("hybris.editor.gutter.ts.items.item.siblings.popup.title"))
+                    .setTooltipText(i18n("hybris.editor.gutter.ts.items.item.siblings.tooltip.text", psi.value))
                     .setAlignment(GutterIconRenderer.Alignment.CENTER)
                     .createLineMarkerInfo(leaf)
             }

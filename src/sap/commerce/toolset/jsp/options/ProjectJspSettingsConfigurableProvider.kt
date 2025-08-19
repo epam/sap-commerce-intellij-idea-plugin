@@ -23,7 +23,7 @@ import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 
@@ -33,7 +33,7 @@ class ProjectJspSettingsConfigurableProvider(private val project: Project) : Con
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        message("hybris.settings.project.jsp.title"), "hybris.jsp.settings"
+        i18n("hybris.settings.project.jsp.title"), "hybris.jsp.settings"
     ) {
 
         private val developerSettings = DeveloperSettings.getInstance(project)

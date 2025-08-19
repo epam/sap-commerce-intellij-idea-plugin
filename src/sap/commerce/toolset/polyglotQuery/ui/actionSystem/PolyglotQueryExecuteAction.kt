@@ -27,7 +27,6 @@ import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.apache.http.HttpStatus
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
@@ -37,6 +36,7 @@ import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionR
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.console.HybrisPolyglotQueryConsole
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
@@ -47,8 +47,8 @@ import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypeKeyName
 class PolyglotQueryExecuteAction : ExecuteStatementAction<HybrisPolyglotQueryConsole, PolyglotQuerySplitEditor>(
     PolyglotQueryLanguage,
     HybrisPolyglotQueryConsole::class,
-    message("hybris.pgq.actions.execute_query"),
-    message("hybris.pgq.actions.execute_query.description"),
+    i18n("hybris.pgq.actions.execute_query"),
+    i18n("hybris.pgq.actions.execute_query.description"),
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 

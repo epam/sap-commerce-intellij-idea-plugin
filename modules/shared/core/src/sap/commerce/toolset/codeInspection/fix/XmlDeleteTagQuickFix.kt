@@ -22,11 +22,11 @@ import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 
 class XmlDeleteTagQuickFix : LocalQuickFix {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.xml.DeleteTag")
+    override fun getFamilyName() = i18n("hybris.inspections.fix.xml.DeleteTag")
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         val currentElement = descriptor.psiElement

@@ -24,7 +24,7 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.codeInspection.fix.ImpexChangeHeaderModeQuickFix
 import sap.commerce.toolset.impex.constants.HeaderMode
 import sap.commerce.toolset.impex.psi.ImpexHeaderLine
@@ -65,7 +65,7 @@ class ImpexOnlyUpdateAllowedForNonDynamicEnumInspection : LocalInspectionTool() 
 
             problemsHolder.registerProblem(
                 mode,
-                message("hybris.inspections.impex.ImpexOnlyUpdateOrRemoveAllowedForNonDynamicEnumInspection.key", modeName, impexModeUpdate),
+                i18n("hybris.inspections.impex.ImpexOnlyUpdateOrRemoveAllowedForNonDynamicEnumInspection.key", modeName, impexModeUpdate),
                 ProblemHighlightType.ERROR,
                 ImpexChangeHeaderModeQuickFix(
                     headerMode = mode,

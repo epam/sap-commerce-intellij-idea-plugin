@@ -23,8 +23,8 @@ import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.ApplicationSettings
 
 class ExternalProjectViewNode(
@@ -45,7 +45,7 @@ class ExternalProjectViewNode(
             setIcon(HybrisIcons.Module.EXTERNAL_GROUP)
             val groupNameExternalModules = ApplicationSettings.getInstance().groupNameExternalModules
                 .takeIf { it.isNotBlank() }
-                ?: message("hybris.project.view.external.module.directory.name")
+                ?: i18n("hybris.project.view.external.module.directory.name")
             addText(groupNameExternalModules, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         }
     }

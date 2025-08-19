@@ -17,14 +17,14 @@
  */
 package sap.commerce.toolset.impex.actionSystem
 
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.file.ImpexFileType
 
 class ImpExOpenInConsoleAction : OpenInConsoleAction(
     ImpexFileType,
     ImpExConsole::class,
-    message("hybris.impex.actions.open_query"),
-    message("hybris.impex.actions.open_query.description"),
+    i18n("hybris.impex.actions.open_query"),
+    i18n("hybris.impex.actions.open_query.description"),
 )

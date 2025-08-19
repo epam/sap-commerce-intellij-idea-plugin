@@ -24,11 +24,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.PsiNavigateUtil
 import com.intellij.util.xml.DomAnchor
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 
 class PsiNavigateToDomFix<D : DomElement>(private val domAnchor: DomAnchor<D>) : LocalQuickFix {
 
-    override fun getFamilyName() = HybrisI18NBundleUtils.message("hybris.inspections.fix.psi.NavigateToAnchor")
+    override fun getFamilyName() = i18n("hybris.inspections.fix.psi.NavigateToAnchor")
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         PsiNavigateUtil.navigate(domAnchor.psiElement)

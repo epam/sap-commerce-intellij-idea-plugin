@@ -23,9 +23,9 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
@@ -37,8 +37,8 @@ import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 class ImpExExecuteAction : ExecuteStatementAction<ImpExConsole, ImpExSplitEditorEx>(
     ImpExLanguage,
     ImpExConsole::class,
-    message("hybris.impex.actions.execute_query"),
-    message("hybris.impex.actions.execute_query.description"),
+    i18n("hybris.impex.actions.execute_query"),
+    i18n("hybris.impex.actions.execute_query.description"),
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 

@@ -18,11 +18,11 @@
  */
 package sap.commerce.toolset.polyglotQuery.formatting
 
-import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 
 class PgQLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 
@@ -40,7 +40,7 @@ class PgQLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
                     consumer.showCustomOption(
                         PgQCodeStyleSettings::class.java,
                         fieldName,
-                        message("hybris.style.settings.project.pgq.$fieldName.name"),
+                        i18n("hybris.style.settings.project.pgq.$fieldName.name"),
                         group
                     )
                 }
@@ -52,7 +52,7 @@ class PgQLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
                     consumer.showCustomOption(
                         PgQCodeStyleSettings::class.java,
                         fieldName,
-                        message("hybris.style.settings.project.pgq.$fieldName.name"),
+                        i18n("hybris.style.settings.project.pgq.$fieldName.name"),
                         group
                     )
                 }

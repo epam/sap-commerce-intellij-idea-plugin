@@ -23,8 +23,8 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiField
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.codeInsight.daemon.HybrisClassLineMarkerProvider
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.util.TSUtils
@@ -32,7 +32,7 @@ import javax.swing.Icon
 
 class ModelEnumValueLineMarkerProvider : HybrisClassLineMarkerProvider<PsiField>() {
 
-    override fun getName() = message("hybris.editor.gutter.ts.model.enum.value.name")
+    override fun getName() = i18n("hybris.editor.gutter.ts.model.enum.value.name")
     override fun getIcon(): Icon = HybrisIcons.TypeSystem.ENUM_VALUE
     override fun canProcess(psi: PsiClass) = TSUtils.isEnumFile(psi)
     override fun tryCast(psi: PsiElement) = psi as? PsiField
@@ -46,7 +46,7 @@ class ModelEnumValueLineMarkerProvider : HybrisClassLineMarkerProvider<PsiField>
             NavigationGutterIconBuilder
                 .create(icon)
                 .setTargets(it)
-                .setTooltipText(message("hybris.editor.gutter.ts.model.enum.value.tooltip.text"))
+                .setTooltipText(i18n("hybris.editor.gutter.ts.model.enum.value.tooltip.text"))
                 .setAlignment(GutterIconRenderer.Alignment.LEFT)
                 .createLineMarkerInfo(psi.nameIdentifier)
         }

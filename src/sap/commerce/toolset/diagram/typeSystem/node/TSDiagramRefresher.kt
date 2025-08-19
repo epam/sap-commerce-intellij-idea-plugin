@@ -22,8 +22,8 @@ import com.intellij.diagram.DiagramElementManager
 import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.diagram.presentation.DiagramLineType
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.diagram.typeSystem.node.graph.*
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.TypeSystemDiagramSettingsState
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
@@ -197,7 +197,7 @@ object TSDiagramRefresher {
 
                     val targetNode = nodesMap[type] ?: return@mapNotNull null
                     val relationship = TSDiagramRelationship(
-                        upperCenterLabel = message("hybris.diagram.ts.provider.edge.part_of", name),
+                        upperCenterLabel = i18n("hybris.diagram.ts.provider.edge.part_of", name),
                         lineType = DiagramLineType.DOTTED,
                         targetArrow = DiagramRelationshipInfo.CONVEX,
                         sourceArrow = DiagramRelationshipInfo.CONCAVE
@@ -284,7 +284,7 @@ object TSDiagramRefresher {
     }
 
     private fun collectEdgesExtends(nodesMap: MutableMap<String, TSDiagramNode>, edges: MutableCollection<TSDiagramEdge>) {
-        val label: String by lazy { message("hybris.diagram.ts.provider.edge.extends") }
+        val label: String by lazy { i18n("hybris.diagram.ts.provider.edge.extends") }
         nodesMap.values.forEach { sourceNode ->
             val graphNode = sourceNode.graphNode as? TSGraphNodeClassifier ?: return@forEach
             val meta = graphNode.meta as? TSGlobalMetaItem ?: return@forEach

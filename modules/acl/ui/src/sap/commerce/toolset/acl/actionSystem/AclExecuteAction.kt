@@ -23,12 +23,12 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.acl.AclLanguage
 import sap.commerce.toolset.acl.editor.AclSplitEditorEx
 import sap.commerce.toolset.acl.editor.aclSplitEditor
 import sap.commerce.toolset.actionSystem.ExecuteStatementAction
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.editor.impexExecutionContextSettings
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
@@ -37,8 +37,8 @@ import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 class AclExecuteAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>(
     AclLanguage,
     ImpExConsole::class,
-    message("hybris.acl.actions.execute_query"),
-    message("hybris.acl.actions.execute_query.description"),
+    i18n("hybris.acl.actions.execute_query"),
+    i18n("hybris.acl.actions.execute_query.description"),
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 

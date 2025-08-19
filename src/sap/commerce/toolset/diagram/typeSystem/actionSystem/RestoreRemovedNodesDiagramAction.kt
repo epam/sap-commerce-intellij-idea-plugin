@@ -22,13 +22,13 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil
 import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.diagram.typeSystem.node.TSDiagramDataModel
+import sap.commerce.toolset.i18n
 
 class RestoreRemovedNodesDiagramAction : DiagramAction(
-    message("hybris.diagram.ts.provider.actions.restore_removed_nodes"),
-    message("hybris.diagram.ts.provider.actions.restore_removed_nodes.description"),
+    i18n("hybris.diagram.ts.provider.actions.restore_removed_nodes"),
+    i18n("hybris.diagram.ts.provider.actions.restore_removed_nodes.description"),
     HybrisIcons.TypeSystem.Diagram.Actions.RESET_VIEW
 ) {
 
@@ -43,5 +43,5 @@ class RestoreRemovedNodesDiagramAction : DiagramAction(
             }
     }
 
-    override fun getActionName() = message("hybris.diagram.ts.provider.actions.restore_removed_nodes")
+    override fun getActionName() = i18n("hybris.diagram.ts.provider.actions.restore_removed_nodes")
 }

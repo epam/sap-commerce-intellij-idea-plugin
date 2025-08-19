@@ -27,7 +27,7 @@ import com.intellij.lang.properties.IProperty
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpexAnyHeaderParameterName
 import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
 import sap.commerce.toolset.impex.psi.ImpexVisitor
@@ -70,7 +70,7 @@ class ImpExIncompleteHeaderAbbreviationUsageInspection : LocalInspectionTool() {
             problemsHolder.registerProblemForReference(
                 reference,
                 ProblemHighlightType.ERROR,
-                message("hybris.inspections.impex.ImpExIncompleteHeaderAbbreviationUsageInspection.key", parameter.text, missingExpectedMacros.joinToString()),
+                i18n("hybris.inspections.impex.ImpExIncompleteHeaderAbbreviationUsageInspection.key", parameter.text, missingExpectedMacros.joinToString()),
             )
         }
     }

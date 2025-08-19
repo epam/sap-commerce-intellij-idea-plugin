@@ -29,8 +29,8 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ClassInheritorsSearch
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import javax.swing.Icon
 
 class PopulatorsLineMarkerProvider : HybrisLineMarkerProvider<PsiClass>() {
@@ -93,9 +93,9 @@ class PopulatorsLineMarkerProvider : HybrisLineMarkerProvider<PsiClass>() {
     private fun createTargetsWithGutterIcon(psiElement: PsiElement, targets: Collection<PsiElement>) = NavigationGutterIconBuilder
         .create(icon)
         .setTargets(targets)
-        .setEmptyPopupText(message("hybris.editor.gutter.populator.class.empty.popup.text"))
-        .setPopupTitle(message("hybris.editor.gutter.populator.class.popup.text"))
-        .setTooltipText(message("hybris.editor.gutter.populator.class.tooltip.text"))
+        .setEmptyPopupText(i18n("hybris.editor.gutter.populator.class.empty.popup.text"))
+        .setPopupTitle(i18n("hybris.editor.gutter.populator.class.popup.text"))
+        .setTooltipText(i18n("hybris.editor.gutter.populator.class.tooltip.text"))
         .setAlignment(GutterIconRenderer.Alignment.LEFT)
         .createLineMarkerInfo(psiElement)
 

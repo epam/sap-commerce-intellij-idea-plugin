@@ -24,12 +24,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlAttribute
 import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlTag
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.psi.navigate
 
 class XmlDeleteAttributeQuickFix(private val attributeName: String) : LocalQuickFix {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.xml.DeleteAttribute", attributeName)
+    override fun getFamilyName() = i18n("hybris.inspections.fix.xml.DeleteAttribute", attributeName)
 
     override fun applyFix(project: Project, descriptor: ProblemDescriptor) {
         when (val currentElement = descriptor.psiElement) {

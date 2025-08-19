@@ -19,10 +19,6 @@
 package sap.commerce.toolset.project.wizard
 
 import com.intellij.ide.util.projectWizard.WizardContext
-import sap.commerce.toolset.project.AbstractHybrisProjectImportBuilder
-import sap.commerce.toolset.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
-import sap.commerce.toolset.project.utils.FileUtils
-import sap.commerce.toolset.ui.CRUDListPanel
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
@@ -43,10 +39,14 @@ import com.intellij.ui.scale.JBUIScale
 import org.apache.commons.lang3.StringUtils
 import org.intellij.images.fileTypes.impl.SvgFileType
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.AbstractHybrisProjectImportBuilder
 import sap.commerce.toolset.project.settings.ProjectSettings
+import sap.commerce.toolset.project.tasks.SearchHybrisDistributionDirectoryTaskModalWindow
+import sap.commerce.toolset.project.utils.FileUtils
 import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.ui.CRUDListPanel
 import java.awt.Dimension
 import java.io.File
 import java.io.FileInputStream
@@ -127,7 +127,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                 textFieldWithBrowseButton(
                     null,
                     FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                        .withTitle(message("hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"))
+                        .withTitle(i18n("hybris.project.import.select.directory.where.new.idea.module.files.will.be.stored"))
                 )
             )
                 .enabledIf(storeModuleFilesInCheckBox.selected)
@@ -190,7 +190,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     textFieldWithBrowseButton(
                         null,
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(message("hybris.import.label.select.hybris.distribution.directory"))
+                            .withTitle(i18n("hybris.import.label.select.hybris.distribution.directory"))
                     )
                 )
                     .align(AlignX.FILL)
@@ -210,7 +210,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     textFieldWithBrowseButton(
                         null,
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(message("hybris.import.label.select.hybris.src.file"))
+                            .withTitle(i18n("hybris.import.label.select.hybris.src.file"))
                     )
                 )
                     .align(AlignX.FILL)
@@ -260,7 +260,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     textFieldWithBrowseButton(
                         null,
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(message("hybris.import.label.select.custom.extensions.directory"))
+                            .withTitle(i18n("hybris.import.label.select.custom.extensions.directory"))
                     )
                 )
                     .align(AlignX.FILL)
@@ -281,7 +281,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     textFieldWithBrowseButton(
                         null,
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(message("hybris.import.label.select.config.extensions.directory"))
+                            .withTitle(i18n("hybris.import.label.select.config.extensions.directory"))
                     )
                 )
                     .align(AlignX.FILL)
@@ -297,7 +297,7 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
                     textFieldWithBrowseButton(
                         null,
                         FileChooserDescriptorFactory.createSingleFolderDescriptor()
-                            .withTitle(message("hybris.import.label.select.dbdriver.extensions.directory"))
+                            .withTitle(i18n("hybris.import.label.select.dbdriver.extensions.directory"))
                     )
                 )
                     .align(AlignX.FILL)
@@ -545,23 +545,23 @@ class ProjectImportWizardRootStep(context: WizardContext) : ProjectImportWizardS
         }
 
         if (overrideCustomDirChooser.isEnabled && !File(overrideCustomDirChooser.getText()).isDirectory()) {
-            throw ConfigurationException(message("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"))
+            throw ConfigurationException(i18n("hybris.import.wizard.validation.custom.extensions.directory.does.not.exist"))
         }
 
         if (overrideConfigDirChooser.isEnabled && !File(overrideConfigDirChooser.getText()).isDirectory()) {
-            throw ConfigurationException(message("hybris.import.wizard.validation.config.directory.does.not.exist"))
+            throw ConfigurationException(i18n("hybris.import.wizard.validation.config.directory.does.not.exist"))
         }
 
         if (overrideDBDriverDirChooser.isEnabled && !File(overrideDBDriverDirChooser.getText()).isDirectory()) {
-            throw ConfigurationException(message("hybris.import.wizard.validation.dbdriver.directory.does.not.exist"))
+            throw ConfigurationException(i18n("hybris.import.wizard.validation.dbdriver.directory.does.not.exist"))
         }
 
         if (hybrisDistributionDirectoryFilesInChooser.text.isBlank()) {
-            throw ConfigurationException(message("hybris.import.wizard.validation.hybris.distribution.directory.empty"))
+            throw ConfigurationException(i18n("hybris.import.wizard.validation.hybris.distribution.directory.empty"))
         }
 
         if (!File(hybrisDistributionDirectoryFilesInChooser.text).isDirectory) {
-            throw ConfigurationException(message("hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"))
+            throw ConfigurationException(i18n("hybris.import.wizard.validation.hybris.distribution.directory.does.not.exist"))
         }
 
         return true

@@ -17,8 +17,6 @@
  */
 package sap.commerce.toolset.flexibleSearch.refactoring.rename.processor
 
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiNamedElement
-import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.PsiTreeUtil
@@ -27,7 +25,9 @@ import com.intellij.refactoring.listeners.RefactoringElementListener
 import com.intellij.refactoring.rename.RenamePsiElementProcessor
 import com.intellij.refactoring.rename.UnresolvableCollisionUsageInfo
 import com.intellij.usageView.UsageInfo
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiNamedElement
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
+import sap.commerce.toolset.i18n
 
 class FlexibleSearchRenameProcessor : RenamePsiElementProcessor() {
 
@@ -70,12 +70,12 @@ class FlexibleSearchRenameProcessor : RenamePsiElementProcessor() {
                         result.add(object : UnresolvableCollisionUsageInfo(it, element) {
                             override fun getDescription() = when (element.elementType) {
                                 FlexibleSearchTypes.TABLE_ALIAS_NAME,
-                                FlexibleSearchTypes.SELECTED_TABLE_NAME -> message("hybris.fxs.refactoring.rename.existing.tableAlias.conflict", newName)
+                                FlexibleSearchTypes.SELECTED_TABLE_NAME -> i18n("hybris.fxs.refactoring.rename.existing.tableAlias.conflict", newName)
 
                                 FlexibleSearchTypes.COLUMN_ALIAS_NAME,
-                                FlexibleSearchTypes.COLUMN_NAME -> message("hybris.fxs.refactoring.rename.existing.columnAlias.conflict", newName)
+                                FlexibleSearchTypes.COLUMN_NAME -> i18n("hybris.fxs.refactoring.rename.existing.columnAlias.conflict", newName)
 
-                                else -> message("hybris.fxs.refactoring.rename.existing.conflict", newName)
+                                else -> i18n("hybris.fxs.refactoring.rename.existing.conflict", newName)
                             }
                         })
                     }

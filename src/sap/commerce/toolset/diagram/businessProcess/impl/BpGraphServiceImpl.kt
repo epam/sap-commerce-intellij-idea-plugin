@@ -18,11 +18,11 @@
  */
 package sap.commerce.toolset.diagram.businessProcess.impl
 
+import org.apache.commons.collections4.CollectionUtils
 import sap.commerce.toolset.diagram.businessProcess.BpGraphService
 import sap.commerce.toolset.diagram.businessProcess.node.graph.*
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.system.businessProcess.model.*
-import org.apache.commons.collections4.CollectionUtils
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 
 class BpGraphServiceImpl : BpGraphService {
 
@@ -108,7 +108,7 @@ class BpGraphServiceImpl : BpGraphService {
                     .forEach { transitions[it.getId().stringValue!!] = it.then.stringValue }
             }
             if (navigableElement.timeout.isValid) {
-                transitions["${message("hybris.diagram.bp.provider.edge.timeout")} ${navigableElement.timeout.delay}"] = navigableElement.timeout.then.stringValue
+                transitions["${i18n("hybris.diagram.bp.provider.edge.timeout")} ${navigableElement.timeout.delay}"] = navigableElement.timeout.then.stringValue
             }
             transitions
         }

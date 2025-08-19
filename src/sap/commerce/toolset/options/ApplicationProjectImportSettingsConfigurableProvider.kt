@@ -21,9 +21,9 @@ import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.equalsIgnoreOrder
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.ApplicationSettings
 import sap.commerce.toolset.ui.CRUDListPanel
 import javax.swing.JCheckBox
@@ -33,7 +33,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
     override fun createConfigurable() = SettingsConfigurable()
 
     class SettingsConfigurable : BoundSearchableConfigurable(
-        message("hybris.settings.application.project_import.title"), "[y] SAP CX project import configuration."
+        i18n("hybris.settings.application.project_import.title"), "[y] SAP CX project import configuration."
     ) {
 
         private val applicationSettings = ApplicationSettings.getInstance()
@@ -64,7 +64,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
         override fun createPanel() = panel {
             group("Modules Grouping") {
                 row {
-                    groupModulesCheckBox = checkBox(message("hybris.import.settings.group.modules"))
+                    groupModulesCheckBox = checkBox(i18n("hybris.import.settings.group.modules"))
                         .bindSelected(applicationSettings::groupModules)
                         .component
                 }
@@ -72,41 +72,41 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                     row {
                         icon(HybrisIcons.Extension.OOTB)
                         textField()
-                            .label(message("hybris.import.settings.group.hybris"))
+                            .label(i18n("hybris.import.settings.group.hybris"))
                             .bindText(applicationSettings::groupHybris)
                         textField()
-                            .label(message("hybris.import.settings.group.unused"))
+                            .label(i18n("hybris.import.settings.group.unused"))
                             .bindText(applicationSettings::groupOtherHybris)
                     }.layout(RowLayout.PARENT_GRID)
                     row {
                         icon(HybrisIcons.Extension.CUSTOM)
                         textField()
-                            .label(message("hybris.import.settings.group.custom"))
+                            .label(i18n("hybris.import.settings.group.custom"))
                             .bindText(applicationSettings::groupCustom)
                         textField()
-                            .label(message("hybris.import.settings.group.unused"))
+                            .label(i18n("hybris.import.settings.group.unused"))
                             .bindText(applicationSettings::groupOtherCustom)
                     }.layout(RowLayout.PARENT_GRID)
                     row {
                         icon(HybrisIcons.Extension.PLATFORM)
                         textField()
-                            .label(message("hybris.import.settings.group.platform"))
+                            .label(i18n("hybris.import.settings.group.platform"))
                             .bindText(applicationSettings::groupPlatform)
                         textField()
-                            .label(message("hybris.import.settings.group.nonhybris"))
+                            .label(i18n("hybris.import.settings.group.nonhybris"))
                             .bindText(applicationSettings::groupNonHybris)
                     }.layout(RowLayout.PARENT_GRID)
                     row {
                         icon(HybrisIcons.Module.CCV2_GROUP)
                         textField()
-                            .label(message("hybris.import.settings.group.ccv2"))
+                            .label(i18n("hybris.import.settings.group.ccv2"))
                             .bindText(applicationSettings::groupCCv2)
                     }.layout(RowLayout.PARENT_GRID)
                 }.visibleIf(groupModulesCheckBox.selected)
                 row {
                     externalModulesCheckBox = checkBox("Group external modules")
                         .bindSelected(applicationSettings::groupExternalModules)
-                        .comment(message("hybris.project.view.external.module.tooltip"))
+                        .comment(i18n("hybris.project.view.external.module.tooltip"))
                         .component
 
                 }
@@ -122,7 +122,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                 }
             }
 
-            group(message("hybris.import.settings.junk.directory.name"), false) {
+            group(i18n("hybris.import.settings.junk.directory.name"), false) {
                 row {
                     cell(junkList)
                         .align(AlignX.FILL)
@@ -132,7 +132,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                 }
             }
 
-            group(message("hybris.import.settings.exclude.resources.name"), false) {
+            group(i18n("hybris.import.settings.exclude.resources.name"), false) {
                 row {
                     comment("Use SAP Commerce extension name, not fully qualified IDEA module name.")
                 }
@@ -145,7 +145,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
                 }
             }
 
-            group(message("hybris.import.settings.excludedFromIndex.directory.name"), false) {
+            group(i18n("hybris.import.settings.excludedFromIndex.directory.name"), false) {
                 row {
                     cell(excludeFromIndex)
                         .align(AlignX.FILL)

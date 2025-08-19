@@ -23,7 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeValue
 import sap.commerce.toolset.impex.psi.ImpexVisitor
@@ -44,7 +44,7 @@ class ImpExInvalidModeModifierValueInspection : LocalInspectionTool() {
 
             holder.registerProblem(
                 element,
-                message(
+                i18n(
                     "hybris.inspections.impex.ImpExInvalidModeValueInspection.key",
                     text,
                 ),

@@ -18,12 +18,12 @@
 
 package sap.commerce.toolset.impex.actionSystem
 
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.actionSystem.OpenSettingsAction
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.options.ProjectImpExSettingsConfigurableProvider
 
 class ImpExOpenSettingsAction : OpenSettingsAction(
     configurableClass = ProjectImpExSettingsConfigurableProvider.SettingsConfigurable::class.java,
-    text = message("hybris.impex.actions.open_settings"),
-    description = message("hybris.impex.actions.open_settings.description"),
+    text = i18n("hybris.impex.actions.open_settings"),
+    description = i18n("hybris.impex.actions.open_settings.description"),
 )

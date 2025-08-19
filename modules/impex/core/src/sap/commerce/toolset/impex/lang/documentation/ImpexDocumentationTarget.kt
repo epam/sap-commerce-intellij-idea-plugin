@@ -27,7 +27,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.createSmartPointer
 import com.intellij.psi.util.elementType
 import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
 import sap.commerce.toolset.impex.constants.modifier.TypeModifier
 import sap.commerce.toolset.impex.lang.documentation.renderer.impexDoc
@@ -67,7 +67,7 @@ class ImpexDocumentationTarget(val element: PsiElement, private val originalElem
                 TSMetaModelAccess.getInstance(element.project).findMetaClassifierByName(element.text)
                     ?.documentation()
             } catch (_: Throwable) {
-                message("hybris.documentation.not.available.during.indexing")
+                i18n("hybris.documentation.not.available.during.indexing")
             }
         }
 

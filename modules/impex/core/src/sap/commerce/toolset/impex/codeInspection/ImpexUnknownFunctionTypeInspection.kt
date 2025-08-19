@@ -24,7 +24,7 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.util.asSafely
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
 import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec
 import sap.commerce.toolset.impex.psi.ImpexParameter
@@ -48,7 +48,7 @@ class ImpexUnknownFunctionTypeInspection : LocalInspectionTool() {
                     problemsHolder.registerProblemForReference(
                         it,
                         ProblemHighlightType.ERROR,
-                        message("hybris.inspections.UnknownTypeNameInspection.key", it.value),
+                        i18n("hybris.inspections.UnknownTypeNameInspection.key", it.value),
                     )
                 }
         }

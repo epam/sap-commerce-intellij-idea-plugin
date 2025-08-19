@@ -23,8 +23,8 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.options.ShowSettingsUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.options.ProjectTypeSystemConfigurableProvider
 
 class OpenSettingsDiagramAction : AnAction() {
@@ -35,8 +35,8 @@ class OpenSettingsDiagramAction : AnAction() {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
 
-        e.presentation.text = message("hybris.diagram.ts.provider.actions.open_settings")
-        e.presentation.description = message("hybris.diagram.ts.provider.actions.open_settings.description")
+        e.presentation.text = i18n("hybris.diagram.ts.provider.actions.open_settings")
+        e.presentation.description = i18n("hybris.diagram.ts.provider.actions.open_settings.description")
         e.presentation.icon = HybrisIcons.TypeSystem.Diagram.Actions.OPEN_SETTINGS
     }
 

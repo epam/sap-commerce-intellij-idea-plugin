@@ -24,7 +24,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpexHeaderLine
 import sap.commerce.toolset.impex.psi.ImpexVisitor
@@ -67,7 +67,7 @@ class ImpexUniqueAttributeWithoutIndexInspection : LocalInspectionTool() {
 
             holder.registerProblem(
                 param,
-                message("hybris.inspections.impex.ImpexUniqueAttributeWithoutIndexInspection.key", attribute, typeName)
+                i18n("hybris.inspections.impex.ImpexUniqueAttributeWithoutIndexInspection.key", attribute, typeName)
             )
         }
     }

@@ -22,7 +22,7 @@ import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.HeaderMode
 import sap.commerce.toolset.impex.psi.ImpExElementFactory
 import sap.commerce.toolset.impex.psi.ImpexAnyHeaderMode
@@ -31,10 +31,10 @@ class ImpexChangeHeaderModeQuickFix(
     headerMode: ImpexAnyHeaderMode,
     private val elementName: String,
     private val headerModeReplacement: HeaderMode,
-    private val message: String = message("hybris.inspections.fix.impex.ChangeHeaderMode.text", headerMode.firstChild.text, headerModeReplacement, elementName)
+    private val message: String = i18n("hybris.inspections.fix.impex.ChangeHeaderMode.text", headerMode.firstChild.text, headerModeReplacement, elementName)
 ) : LocalQuickFixOnPsiElement(headerMode) {
 
-    override fun getFamilyName() = message("hybris.inspections.fix.impex.ChangeHeaderMode")
+    override fun getFamilyName() = i18n("hybris.inspections.fix.impex.ChangeHeaderMode")
 
     override fun getText() = message
 

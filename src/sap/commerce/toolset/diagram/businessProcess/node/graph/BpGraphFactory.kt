@@ -20,18 +20,18 @@ package sap.commerce.toolset.diagram.businessProcess.node.graph
 
 import com.intellij.diagram.DiagramRelationshipInfo
 import com.intellij.diagram.presentation.DiagramLineType
-import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramEdge
-import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramEdgeType
-import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramNode
-import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramRelationship
-import sap.commerce.toolset.system.businessProcess.model.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomManager
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramEdge
+import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramEdgeType
+import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramNode
+import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramRelationship
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.system.businessProcess.model.*
 
 object BpGraphFactory {
 
@@ -111,7 +111,7 @@ object BpGraphFactory {
                 source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.OK
             )
 
-            transitionName.startsWith(message("hybris.diagram.bp.provider.edge.timeout")) -> BpDiagramEdge(
+            transitionName.startsWith(i18n("hybris.diagram.bp.provider.edge.timeout")) -> BpDiagramEdge(
                 source, target, buildRelationship(transitionName, source, target), BpDiagramEdgeType.TIMEOUT
             )
 

@@ -24,10 +24,10 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.project.DumbAwareAction
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
+import sap.commerce.toolset.i18n
 import java.awt.datatransfer.StringSelection
 
 class FlexibleSearchCopyToClipboardAction : DumbAwareAction() {
@@ -38,8 +38,8 @@ class FlexibleSearchCopyToClipboardAction : DumbAwareAction() {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
 
-        e.presentation.text = message("hybris.fxs.actions.copy_query_to_clipboard")
-        e.presentation.description = message("hybris.fxs.actions.copy_query_to_clipboard.description")
+        e.presentation.text = i18n("hybris.fxs.actions.copy_query_to_clipboard")
+        e.presentation.description = i18n("hybris.fxs.actions.copy_query_to_clipboard.description")
         e.presentation.icon = HybrisIcons.FlexibleSearch.COPY_TO_CLIPBOARD
         e.presentation.isEnabled = e.flexibleSearchSplitEditor()?.inEditorParameters
             ?: false
@@ -53,7 +53,7 @@ class FlexibleSearchCopyToClipboardAction : DumbAwareAction() {
 
         CopyPasteManager.getInstance().setContents(StringSelection(textToCopy))
 
-        Notifications.create(NotificationType.INFORMATION, message("hybris.editor.gutter.fsq.notification.title"), textToCopy)
+        Notifications.create(NotificationType.INFORMATION, i18n("hybris.editor.gutter.fsq.notification.title"), textToCopy)
             .hideAfter(10)
             .notify(project)
     }

@@ -27,7 +27,6 @@ import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.RowLayout
 import com.intellij.ui.dsl.builder.panel
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
@@ -36,6 +35,7 @@ import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.ui.RemoteHacInstancesListPanel
@@ -124,7 +124,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
                         activeHacServerModel,
                         renderer = SimpleListCellRenderer.create("?") { it.toString() }
                     )
-                        .label(message("hybris.settings.project.remote_instances.hac.active.title"))
+                        .label(i18n("hybris.settings.project.remote_instances.hac.active.title"))
                         .onApply {
                             (activeHacServerModel.selectedItem as RemoteConnectionSettingsState?)
                                 ?.let { settings -> RemoteConnectionService.getInstance(project).setActiveRemoteConnectionSettings(settings) }
@@ -143,7 +143,7 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
                         activeSolrServerModel,
                         renderer = SimpleListCellRenderer.create("?") { it.toString() }
                     )
-                        .label(message("hybris.settings.project.remote_instances.solr.active.title"))
+                        .label(i18n("hybris.settings.project.remote_instances.solr.active.title"))
                         .onApply {
                             (activeSolrServerModel.selectedItem as RemoteConnectionSettingsState?)
                                 ?.let { settings -> RemoteConnectionService.getInstance(project).setActiveRemoteConnectionSettings(settings) }
@@ -156,14 +156,14 @@ class ProjectIntegrationsSettingsConfigurableProvider(private val project: Proje
                         .align(AlignX.FILL)
                 }.layout(RowLayout.PARENT_GRID)
 
-                group(message("hybris.settings.project.remote_instances.hac.title"), false) {
+                group(i18n("hybris.settings.project.remote_instances.hac.title"), false) {
                     row {
                         cell(hacInstances)
                             .align(AlignX.FILL)
                     }
                 }
 
-                group(message("hybris.settings.project.remote_instances.solr.title"), false) {
+                group(i18n("hybris.settings.project.remote_instances.solr.title"), false) {
                     row {
                         cell(solrInstances)
                             .align(AlignX.FILL)

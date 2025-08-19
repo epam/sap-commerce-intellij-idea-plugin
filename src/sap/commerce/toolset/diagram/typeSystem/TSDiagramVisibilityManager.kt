@@ -19,9 +19,9 @@ package sap.commerce.toolset.diagram.typeSystem
 
 import com.intellij.diagram.AbstractUmlVisibilityManager
 import com.intellij.diagram.VisibilityLevel
-import sap.commerce.toolset.diagram.typeSystem.node.graph.*
 import com.intellij.util.ArrayUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.diagram.typeSystem.node.graph.*
+import sap.commerce.toolset.i18n
 
 class TSDiagramVisibilityManager : AbstractUmlVisibilityManager() {
 
@@ -47,8 +47,8 @@ class TSDiagramVisibilityManager : AbstractUmlVisibilityManager() {
         private const val ONLY_CUSTOM_FIELDS = "ONLY_CUSTOM_FIELDS"
         private const val ALL_FIELDS = "ALL_FIELDS"
 
-        private val LEVEL_ONLY_CUSTOM_FIELDS = VisibilityLevel(ONLY_CUSTOM_FIELDS, message("hybris.diagram.ts.provider.visibility.only_custom_fields"))
-        private val LEVEL_ALL_FIELDS = VisibilityLevel(ALL_FIELDS, message("hybris.diagram.ts.provider.visibility.all_fields"))
+        private val LEVEL_ONLY_CUSTOM_FIELDS = VisibilityLevel(ONLY_CUSTOM_FIELDS, i18n("hybris.diagram.ts.provider.visibility.only_custom_fields"))
+        private val LEVEL_ALL_FIELDS = VisibilityLevel(ALL_FIELDS, i18n("hybris.diagram.ts.provider.visibility.all_fields"))
         private val LEVELS = arrayOf(LEVEL_ONLY_CUSTOM_FIELDS, LEVEL_ALL_FIELDS)
         private val COMPARATOR = Comparator.comparingInt { level: VisibilityLevel? -> ArrayUtil.indexOf(LEVELS, level) }
     }

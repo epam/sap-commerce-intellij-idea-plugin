@@ -21,8 +21,6 @@ package sap.commerce.toolset.polyglotQuery.codeInsight.daemon
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor
 import com.intellij.codeInsight.daemon.MergeableLineMarkerInfo
-import sap.commerce.toolset.polyglotQuery.PolyglotQueryUtils
-import sap.commerce.toolset.polyglotQuery.psi.PolyglotElementFactory
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.MarkupEditorFilter
@@ -33,17 +31,19 @@ import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.PsiPolyadicExpression
 import com.intellij.psi.PsiVariable
 import com.intellij.psi.codeStyle.CodeStyleManager
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.polyglotQuery.PolyglotQueryUtils
+import sap.commerce.toolset.polyglotQuery.psi.PolyglotElementFactory
 import java.awt.datatransfer.StringSelection
 import java.util.function.Supplier
 import javax.swing.Icon
 
 class PolyglotQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
 
-    override fun getName() = message("hybris.editor.gutter.pgq.name")
+    override fun getName() = i18n("hybris.editor.gutter.pgq.name")
     override fun getIcon(): Icon = HybrisIcons.PolyglotQuery.FILE
 
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
@@ -79,7 +79,7 @@ class PolyglotQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
 
         CopyPasteManager.getInstance().setContents(StringSelection(formattedExpression))
 
-        Notifications.create(NotificationType.INFORMATION, message("hybris.editor.gutter.pgq.notification.title"), formattedExpression)
+        Notifications.create(NotificationType.INFORMATION, i18n("hybris.editor.gutter.pgq.notification.title"), formattedExpression)
             .hideAfter(10)
             .notify(project)
     }
@@ -90,10 +90,10 @@ class PolyglotQueryLineMarkerProvider : LineMarkerProviderDescriptor() {
         expression: String
     ) : MergeableLineMarkerInfo<PsiElement?>(
         element, element.textRange, icon,
-        { _ -> message("hybris.editor.gutter.pgq.tooltip") },
+        { _ -> i18n("hybris.editor.gutter.pgq.tooltip") },
         { _, e -> copyToClipboard(e, expression) },
         GutterIconRenderer.Alignment.CENTER,
-        Supplier { message("hybris.editor.gutter.pgq.tooltip") }
+        Supplier { i18n("hybris.editor.gutter.pgq.tooltip") }
     ) {
         override fun getEditorFilter(): MarkupEditorFilter = MarkupEditorFilterFactory.createIsNotDiffFilter()
         override fun canMergeWith(info: MergeableLineMarkerInfo<*>) = info is PolyglotQueryLineMarkerInfo && info.icon === icon

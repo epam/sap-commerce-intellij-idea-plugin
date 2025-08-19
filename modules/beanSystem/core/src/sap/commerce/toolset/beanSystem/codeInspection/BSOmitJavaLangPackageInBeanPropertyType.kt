@@ -23,10 +23,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.beanSystem.model.Beans
 import sap.commerce.toolset.beanSystem.model.Property
 import sap.commerce.toolset.codeInspection.fix.XmlUpdateAttributeQuickFix
+import sap.commerce.toolset.i18n
 
 class BSOmitJavaLangPackageInBeanPropertyType : BSInspection() {
 
@@ -56,7 +56,7 @@ class BSOmitJavaLangPackageInBeanPropertyType : BSInspection() {
         holder.createProblem(
             dom.type,
             severity,
-            message("hybris.inspections.bs.BSOmitJavaLangPackageInBeanPropertyType.message", propertyName),
+            i18n("hybris.inspections.bs.BSOmitJavaLangPackageInBeanPropertyType.message", propertyName),
             XmlUpdateAttributeQuickFix(
                 Property.TYPE,
                 propertyType.replace(HybrisConstants.BS_JAVA_LANG_PREFIX, "")

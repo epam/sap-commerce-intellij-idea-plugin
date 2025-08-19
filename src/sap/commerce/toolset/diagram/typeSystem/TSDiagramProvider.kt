@@ -19,14 +19,14 @@ package sap.commerce.toolset.diagram.typeSystem
 
 import com.intellij.diagram.BaseDiagramProvider
 import com.intellij.diagram.DiagramPresentationModel
-import sap.commerce.toolset.diagram.typeSystem.node.TSDiagramColorManager
-import sap.commerce.toolset.diagram.typeSystem.node.TSDiagramDataModel
-import sap.commerce.toolset.diagram.typeSystem.node.graph.TSGraphNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.intellij.lang.annotations.Pattern
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.diagram.typeSystem.node.TSDiagramColorManager
+import sap.commerce.toolset.diagram.typeSystem.node.TSDiagramDataModel
+import sap.commerce.toolset.diagram.typeSystem.node.graph.TSGraphNode
+import sap.commerce.toolset.i18n
 import javax.swing.Icon
 
 class TSDiagramProvider : BaseDiagramProvider<TSGraphNode>() {
@@ -35,7 +35,7 @@ class TSDiagramProvider : BaseDiagramProvider<TSGraphNode>() {
 
     @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisTypeSystemDependencies"
-    override fun getPresentableName() = message("hybris.diagram.ts.provider.name")
+    override fun getPresentableName() = i18n("hybris.diagram.ts.provider.name")
     override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.TypeSystem.FILE
 
     override fun createDataModel(

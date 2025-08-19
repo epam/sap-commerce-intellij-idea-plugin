@@ -35,8 +35,8 @@ import com.intellij.ui.EditorNotificationProvider
 import com.intellij.ui.EditorNotifications
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryConstants
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
@@ -64,11 +64,11 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
         return Function { fileEditor ->
             val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
             panel.icon(HybrisIcons.Y.LOGO_BLUE)
-            panel.text = message(
+            panel.text = i18n(
                 "hybris.pgq.notification.provider.keywords.text",
-                message("hybris.pgq.notification.provider.keywords.case.${pgqSettings.defaultCaseForReservedWords}")
+                i18n("hybris.pgq.notification.provider.keywords.case.${pgqSettings.defaultCaseForReservedWords}")
             )
-            panel.createActionLabel(message("hybris.pgq.notification.provider.keywords.action.unify")) {
+            panel.createActionLabel(i18n("hybris.pgq.notification.provider.keywords.action.unify")) {
                 ReadAction
                     .nonBlocking<Collection<LeafPsiElement>> { collect(pgqSettings, psiFile).distinct().reversed() }
                     .finishOnUiThread(ModalityState.defaultModalityState()) {
@@ -85,7 +85,7 @@ class PolyglotQueryEditorNotificationProvider : EditorNotificationProvider, Dumb
                     }
                     .submit(AppExecutorUtil.getAppExecutorService())
             }
-            panel.createActionLabel(message("hybris.pgq.notification.provider.keywords.action.settings"), "hybris.pgq.openSettings")
+            panel.createActionLabel(i18n("hybris.pgq.notification.provider.keywords.action.settings"), "hybris.pgq.openSettings")
             panel
         }
     }

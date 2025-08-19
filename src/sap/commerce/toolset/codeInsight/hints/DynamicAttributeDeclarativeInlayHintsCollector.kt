@@ -23,7 +23,7 @@ import com.intellij.codeInsight.completion.JavaMethodCallElement
 import com.intellij.codeInsight.hints.declarative.*
 import com.intellij.psi.*
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.spring.SpringHelper
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.model.Attribute
@@ -77,7 +77,7 @@ class DynamicAttributeDeclarativeInlayHintsCollector : SharedBypassCollector {
             tooltip = "Navigate to the ${meta.name}.${attribute.name} dynamic attribute handler",
             hintFormat = HintFormat.default,
         ) {
-            text(message("hybris.ts.type.dynamic") + (inlayActionData?.let { "⌝" } ?: ""), inlayActionData)
+            text(i18n("hybris.ts.type.dynamic") + (inlayActionData?.let { "⌝" } ?: ""), inlayActionData)
         }
     }
 

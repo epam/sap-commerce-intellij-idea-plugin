@@ -24,17 +24,17 @@ import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.execution.remote.RemoteConfiguration
 import com.intellij.execution.remote.RemoteConfigurationType
-import sap.commerce.toolset.common.services.CommonIdeaService
-import sap.commerce.toolset.runConfigurations.LocalSapCXConfigurationType
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.common.services.CommonIdeaService
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.runConfigurations.LocalSapCXConfigurationType
 import java.io.File
 
 @Service(Service.Level.APP)
@@ -44,7 +44,7 @@ class RunConfigurationConfigurator {
         if (refresh) return emptyList()
 
         return listOf {
-            val debugConfiguration = message("hybris.project.run.configuration.remote.debug")
+            val debugConfiguration = i18n("hybris.project.run.configuration.remote.debug")
             val runManager = RunManager.getInstance(project)
 
             runManager.findConfigurationByName(debugConfiguration)
@@ -58,13 +58,13 @@ class RunConfigurationConfigurator {
         project: Project,
         cache: HybrisConfiguratorCache
     ) {
-        indicator.text = message("hybris.project.import.runconfiguration")
+        indicator.text = i18n("hybris.project.import.runconfiguration")
         val runManager = RunManager.getInstance(project)
 
         createRunConfiguration(
             runManager,
             RemoteConfigurationType::class.java,
-            message("hybris.project.run.configuration.remote.debug")
+            i18n("hybris.project.run.configuration.remote.debug")
         ) {
             val remoteConfiguration = it.configuration as RemoteConfiguration
             remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, cache)
@@ -73,7 +73,7 @@ class RunConfigurationConfigurator {
         createRunConfiguration(
             runManager,
             LocalSapCXConfigurationType::class.java,
-            message("hybris.project.run.configuration.localserver")
+            i18n("hybris.project.run.configuration.localserver")
         )
     }
 

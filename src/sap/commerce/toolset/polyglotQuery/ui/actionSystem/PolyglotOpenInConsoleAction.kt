@@ -17,14 +17,14 @@
  */
 package sap.commerce.toolset.polyglotQuery.ui.actionSystem
 
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.polyglotQuery.console.HybrisPolyglotQueryConsole
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
 class PolyglotOpenInConsoleAction : OpenInConsoleAction(
     PolyglotQueryFileType,
     HybrisPolyglotQueryConsole::class,
-    message("hybris.pgq.actions.open_query"),
-    message("hybris.pgq.actions.open_query.description"),
+    i18n("hybris.pgq.actions.open_query"),
+    i18n("hybris.pgq.actions.open_query.description"),
 )

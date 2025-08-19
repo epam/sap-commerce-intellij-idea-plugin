@@ -23,7 +23,7 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.psi.ImpexMacroUsageDec
 import sap.commerce.toolset.impex.psi.ImpexVisitor
@@ -48,7 +48,7 @@ private class UnknownMacrosVisitor(private val problemsHolder: ProblemsHolder) :
             ?: return
         problemsHolder.registerProblem(
             usage,
-            message("hybris.inspections.impex.ImpexUnknownMacrosInspection.key", macroName),
+            i18n("hybris.inspections.impex.ImpexUnknownMacrosInspection.key", macroName),
             ProblemHighlightType.ERROR
         )
     }

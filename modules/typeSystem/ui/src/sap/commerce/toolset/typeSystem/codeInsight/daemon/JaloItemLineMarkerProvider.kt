@@ -23,8 +23,8 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiJavaFile
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.codeInsight.daemon.HybrisClassLineMarkerProvider
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.util.TSUtils
@@ -48,8 +48,8 @@ class JaloItemLineMarkerProvider : HybrisClassLineMarkerProvider<PsiClass>() {
             NavigationGutterIconBuilder
                 .create(icon)
                 .setTargets(it)
-                .setPopupTitle(message("hybris.editor.gutter.ts.model.item.popup.title"))
-                .setTooltipText(message("hybris.editor.gutter.ts.model.item.tooltip.text"))
+                .setPopupTitle(i18n("hybris.editor.gutter.ts.model.item.popup.title"))
+                .setTooltipText(i18n("hybris.editor.gutter.ts.model.item.tooltip.text"))
                 .setAlignment(GutterIconRenderer.Alignment.LEFT)
                 .createLineMarkerInfo(psi.nameIdentifier!!)
         }

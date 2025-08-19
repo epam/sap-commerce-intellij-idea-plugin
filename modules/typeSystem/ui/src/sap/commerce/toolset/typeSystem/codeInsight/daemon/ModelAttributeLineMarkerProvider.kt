@@ -25,8 +25,8 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiIdentifier
 import com.intellij.psi.xml.XmlElement
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.codeInsight.daemon.HybrisClassLineMarkerProvider
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
@@ -57,8 +57,8 @@ abstract class ModelAttributeLineMarkerProvider<T : PsiElement> : HybrisClassLin
                 nameIdentifier,
                 this,
                 HybrisIcons.TypeSystem.ATTRIBUTE,
-                message("hybris.editor.gutter.ts.model.item.attribute.popup.title"),
-                message("hybris.editor.gutter.ts.model.item.attribute.tooltip.text")
+                i18n("hybris.editor.gutter.ts.model.item.attribute.popup.title"),
+                i18n("hybris.editor.gutter.ts.model.item.attribute.tooltip.text")
             )
         }
     }
@@ -86,8 +86,8 @@ abstract class ModelAttributeLineMarkerProvider<T : PsiElement> : HybrisClassLin
                 nameIdentifier,
                 it,
                 icon,
-                message("hybris.editor.gutter.ts.model.item.relationEnd.popup.title"),
-                message("hybris.editor.gutter.ts.model.item.relationEnd.tooltip.text"),
+                i18n("hybris.editor.gutter.ts.model.item.relationEnd.popup.title"),
+                i18n("hybris.editor.gutter.ts.model.item.relationEnd.tooltip.text"),
             )
         }
 

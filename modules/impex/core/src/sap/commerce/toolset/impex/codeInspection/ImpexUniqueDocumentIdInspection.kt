@@ -24,7 +24,7 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.psi.ImpexDocumentIdDec
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpexValueGroup
@@ -48,7 +48,7 @@ class ImpexUniqueDocumentIdInspection : LocalInspectionTool() {
 
                         holder.registerProblem(
                             it,
-                            message("hybris.inspections.impex.ImpexUniqueDocumentIdInspection.key", qualifier, parameter.text),
+                            i18n("hybris.inspections.impex.ImpexUniqueDocumentIdInspection.key", qualifier, parameter.text),
                             ProblemHighlightType.ERROR
                         )
                     }

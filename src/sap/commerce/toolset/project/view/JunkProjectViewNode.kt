@@ -26,8 +26,8 @@ import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 
 class JunkProjectViewNode(
     project: Project,
@@ -44,7 +44,7 @@ class JunkProjectViewNode(
             setIcon(HybrisIcons.ProjectView.NODE_JUNK)
             addText(
                 ColoredFragment(
-                    message("hybris.project.view.junk.directory.name"),
+                    i18n("hybris.project.view.junk.directory.name"),
                     SimpleTextAttributes.EXCLUDED_ATTRIBUTES
                 )
             )

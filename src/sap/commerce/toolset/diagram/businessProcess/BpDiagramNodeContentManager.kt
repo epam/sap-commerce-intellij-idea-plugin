@@ -21,10 +21,10 @@ package sap.commerce.toolset.diagram.businessProcess
 import com.intellij.diagram.AbstractDiagramNodeContentManager
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramCategory
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.diagram.businessProcess.node.graph.BpGraphFieldContextParameter
 import sap.commerce.toolset.diagram.businessProcess.node.graph.BpGraphFieldParameter
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
-import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 
 class BpDiagramNodeContentManager : AbstractDiagramNodeContentManager() {
 
@@ -37,7 +37,7 @@ class BpDiagramNodeContentManager : AbstractDiagramNodeContentManager() {
     }
 
     companion object {
-        val PARAMETERS = DiagramCategory({ message("hybris.diagram.bp.provider.category.parameters") }, HybrisIcons.BusinessProcess.Diagram.PROPERTIES, true, false)
+        val PARAMETERS = DiagramCategory({ i18n("hybris.diagram.bp.provider.category.parameters") }, HybrisIcons.BusinessProcess.Diagram.PROPERTIES, true, false)
         val CATEGORIES = arrayOf(PARAMETERS)
     }
 

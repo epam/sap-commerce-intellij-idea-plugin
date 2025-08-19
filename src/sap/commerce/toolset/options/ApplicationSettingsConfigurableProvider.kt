@@ -21,7 +21,7 @@ import com.intellij.openapi.options.BoundSearchableConfigurable
 import com.intellij.openapi.options.ConfigurableProvider
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.ApplicationSettings
 
 class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
@@ -36,40 +36,40 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
 
         override fun createPanel() = panel {
             row {
-                checkBox(message("hybris.import.settings.import.ootb.modules.read.only.label"))
-                    .comment(message("hybris.import.settings.import.ootb.modules.read.only.tooltip"))
+                checkBox(i18n("hybris.import.settings.import.ootb.modules.read.only.label"))
+                    .comment(i18n("hybris.import.settings.import.ootb.modules.read.only.tooltip"))
                     .bindSelected(applicationSettings::defaultPlatformInReadOnly)
             }
             row {
-                checkBox(message("hybris.project.import.scanExternalModules"))
+                checkBox(i18n("hybris.project.import.scanExternalModules"))
                     .bindSelected(applicationSettings::scanThroughExternalModule)
             }
             row {
-                checkBox(message("hybris.project.import.followSymlink"))
+                checkBox(i18n("hybris.project.import.followSymlink"))
                     .bindSelected(applicationSettings::followSymlink)
             }
             row {
-                checkBox(message("hybris.project.view.tree.hide.empty.middle.folders"))
+                checkBox(i18n("hybris.project.view.tree.hide.empty.middle.folders"))
                     .bindSelected(applicationSettings::hideEmptyMiddleFolders)
             }
             row {
-                checkBox(message("hybris.project.import.ignore.non.existing.sources"))
+                checkBox(i18n("hybris.project.import.ignore.non.existing.sources"))
                     .bindSelected(applicationSettings::ignoreNonExistingSourceDirectories)
             }
             row {
-                checkBox(message("hybris.project.attach.standard.sources"))
+                checkBox(i18n("hybris.project.attach.standard.sources"))
                     .bindSelected(applicationSettings::withStandardProvidedSources)
             }
             row {
-                checkBox(message("hybris.project.import.excludeTestSources"))
+                checkBox(i18n("hybris.project.import.excludeTestSources"))
                     .bindSelected(applicationSettings::excludeTestSources)
             }
             row {
-                checkBox(message("hybris.project.import.importCustomAntBuildFiles"))
+                checkBox(i18n("hybris.project.import.importCustomAntBuildFiles"))
                     .bindSelected(applicationSettings::importCustomAntBuildFiles)
             }
             row {
-                checkBox(message("hybris.ts.items.validation.settings.enabled"))
+                checkBox(i18n("hybris.ts.items.validation.settings.enabled"))
                     .bindSelected(applicationSettings::warnIfGeneratedItemsAreOutOfDate)
             }
         }

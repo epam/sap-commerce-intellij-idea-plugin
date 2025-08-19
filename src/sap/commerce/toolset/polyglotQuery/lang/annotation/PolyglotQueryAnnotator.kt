@@ -22,7 +22,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.lang.annotation.AbstractAnnotator
 import sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighter
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryAttributeKeyName
@@ -49,7 +49,7 @@ class PolyglotQueryAnnotator : AbstractAnnotator(PolyglotQuerySyntaxHighlighter.
                     } else {
                         highlightError(
                             holder, element,
-                            message(
+                            i18n(
                                 "hybris.inspections.language.unsupported",
                                 language,
                                 supportedLanguages.joinToString()
@@ -75,7 +75,7 @@ class PolyglotQueryAnnotator : AbstractAnnotator(PolyglotQuerySyntaxHighlighter.
                             ?.let {
                                 highlightError(
                                     holder, element,
-                                    message("hybris.inspections.language.unexpected", featureName)
+                                    i18n("hybris.inspections.language.unexpected", featureName)
                                 )
                             }
                     }

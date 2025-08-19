@@ -21,8 +21,8 @@ package sap.commerce.toolset.typeSystem.ui.tree.nodes
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
 
 class TSMetaEnumNode(val parent: TSNode, meta: TSGlobalMetaEnum) : TSMetaNode<TSGlobalMetaEnum>(parent, meta) {
@@ -33,7 +33,7 @@ class TSMetaEnumNode(val parent: TSNode, meta: TSGlobalMetaEnum) : TSMetaNode<TS
         presentation.addText(name, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         presentation.setIcon(HybrisIcons.TypeSystem.Types.ENUM)
         if (meta.isDynamic) {
-            presentation.locationString = message("hybris.ts.type.dynamic")
+            presentation.locationString = i18n("hybris.ts.type.dynamic")
         }
     }
 

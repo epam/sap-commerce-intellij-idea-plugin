@@ -21,13 +21,13 @@ import com.intellij.diagram.DiagramAction
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.diagram.typeSystem.node.TSDiagramNode
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.DeveloperSettings
 
 class ExcludeTypeNameDiagramAction : DiagramAction(
-    message("hybris.diagram.ts.provider.actions.exclude_type_name"),
+    i18n("hybris.diagram.ts.provider.actions.exclude_type_name"),
     null,
     HybrisIcons.Actions.REMOVE
 ) {
@@ -50,5 +50,5 @@ class ExcludeTypeNameDiagramAction : DiagramAction(
         }
     }
 
-    override fun getActionName() = message("hybris.diagram.ts.provider.actions.exclude_type_name")
+    override fun getActionName() = i18n("hybris.diagram.ts.provider.actions.exclude_type_name")
 }
