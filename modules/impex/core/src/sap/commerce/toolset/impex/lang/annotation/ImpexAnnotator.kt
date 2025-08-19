@@ -17,12 +17,6 @@
  */
 package sap.commerce.toolset.impex.lang.annotation
 
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.highlighting.ImpExSyntaxHighlighter
-import sap.commerce.toolset.impex.highlighting.ImpexHighlighterColors
-import sap.commerce.toolset.impex.psi.*
-import sap.commerce.toolset.impex.psi.references.*
-import sap.commerce.toolset.lang.annotation.AbstractAnnotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -31,6 +25,12 @@ import com.intellij.psi.util.parentOfType
 import com.intellij.psi.util.startOffset
 import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
+import sap.commerce.toolset.impex.highlighting.ImpExSyntaxHighlighter
+import sap.commerce.toolset.impex.highlighting.ImpexHighlighterColors
+import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.psi.references.*
+import sap.commerce.toolset.lang.annotation.AbstractAnnotator
 
 class ImpexAnnotator : AbstractAnnotator(ImpExSyntaxHighlighter.getInstance()) {
 
