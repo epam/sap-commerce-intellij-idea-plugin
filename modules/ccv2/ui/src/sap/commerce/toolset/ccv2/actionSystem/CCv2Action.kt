@@ -27,7 +27,7 @@ import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 import sap.commerce.toolset.ccv2.toolwindow.CCv2View
 import javax.swing.Icon
 
-abstract class AbstractCCv2Action(
+abstract class CCv2Action(
     val tab: CCv2Tab,
     text: String,
     description: String? = null,

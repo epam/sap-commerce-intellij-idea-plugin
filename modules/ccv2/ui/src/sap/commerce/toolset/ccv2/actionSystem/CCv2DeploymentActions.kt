@@ -25,7 +25,7 @@ import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 
-class CCv2FetchDeploymentsAction : AbstractCCv2FetchAction<CCv2DeploymentDto>(
+class CCv2FetchDeploymentsAction : CCv2FetchAction<CCv2DeploymentDto>(
     tab = CCv2Tab.DEPLOYMENTS,
     text = "Fetch Deployments",
     icon = HybrisIcons.CCv2.Actions.FETCH,
@@ -37,7 +37,7 @@ class CCv2FetchDeploymentsAction : AbstractCCv2FetchAction<CCv2DeploymentDto>(
 class CCv2TrackDeploymentAction(
     private val subscription: CCv2Subscription,
     private val deployment: CCv2DeploymentDto
-) : AbstractCCv2Action(
+) : CCv2Action(
     tab = CCv2Tab.DEPLOYMENTS,
     text = "Track Deployment",
     icon = HybrisIcons.CCv2.Deployment.Actions.WATCH

@@ -22,7 +22,6 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import sap.commerce.toolset.exec.context.ReplicaSelectionMode
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 
@@ -38,13 +37,9 @@ class GroovyExecutionModeActionGroup : DefaultActionGroup() {
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
         val connectionContext = GroovyExecutionClient.Companion.getInstance(project).connectionContext
-        val text = when (connectionContext.replicaSelectionMode) {
-            ReplicaSelectionMode.AUTO -> "Auto-Discover Replica"
-            else -> "Execute on ${connectionContext.replicaContexts.size} replica(s)"
-        }
 
         e.presentation.icon = connectionContext.replicaSelectionMode.icon
-        e.presentation.text = text
+        e.presentation.text = connectionContext.previewText
         e.presentation.description = connectionContext.description
     }
 }

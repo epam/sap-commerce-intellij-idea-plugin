@@ -16,24 +16,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy.actionSystem
+package sap.commerce.toolset.ccv2.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.util.Disposer
 import com.intellij.util.asSafely
-import sap.commerce.toolset.exec.context.ReplicaSelectionMode
+import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.ccv2.CCv2ExecConstants
+import sap.commerce.toolset.ccv2.ui.CCv2ReplicaSelectionDialog
+import sap.commerce.toolset.groovy.actionSystem.GroovyReplicaSelectionModeAction
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
-import sap.commerce.toolset.toolwindow.CCv2ReplicaSelectionDialog
 import java.awt.Component
 
-class GroovyCCv2ReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(ReplicaSelectionMode.CCV2) {
+class CCv2GroovyReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(CCv2ExecConstants.ccv2) {
+
+    override fun update(e: AnActionEvent) {
+        e.presentation.isEnabledAndVisible = Plugin.GROOVY.isActive()
+        super.update(e)
+    }
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
         val replicaContexts = GroovyExecutionClient.Companion.getInstance(project).connectionContext
-            .takeIf { it.replicaSelectionMode == ReplicaSelectionMode.CCV2 }
+            .takeIf { it.replicaSelectionMode == CCv2ExecConstants.ccv2 }
             ?.replicaContexts
             ?: emptyList()
 

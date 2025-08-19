@@ -16,35 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.groovy.exec.context
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import javax.swing.Icon
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":exec-core"))
-    implementation(project(":ccv2-core"))
-    implementation(project(":ccv2-exec"))
-    implementation(project(":groovy-exec"))
-    implementation(project(":groovy-ui"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-    }
-}
+data class ReplicaSelectionMode(
+    val title: String,
+    val description: String,
+    val icon: Icon,
+    val presentationText: String,
+    val presentationDescription: String,
+    val previewText: (GroovyReplicaAwareContext) -> String = { context ->
+        "Execute on ${context.replicaContexts.size} replica(s)"
+    },
+    val previewDescription: (GroovyReplicaAwareContext) -> String? = { _ -> null },
+)

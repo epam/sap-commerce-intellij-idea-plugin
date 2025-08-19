@@ -16,26 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.exec.context
+package sap.commerce.toolset.groovy.exec
 
-import com.intellij.icons.AllIcons
-import sap.commerce.toolset.HybrisIcons
-import javax.swing.Icon
+import com.intellij.openapi.extensions.ExtensionPointName
+import sap.commerce.toolset.groovy.exec.context.ReplicaSelectionMode
 
-enum class ReplicaSelectionMode(val tooltip: String, val title: String, val icon: Icon) {
-    AUTO(
-        "Automatically discover replica",
-        "Auto-discover",
-        AllIcons.Actions.Lightning
-    ),
-    CCV2(
-        "Select id of the CCv2 service specific replica",
-        "CCv2",
-        HybrisIcons.CCv2.DESCRIPTOR
-    ),
-    MANUAL(
-        "Manually specify replica id and corresponding cookie name",
-        "Manual",
-        AllIcons.Actions.Edit
-    )
+interface ReplicaSelectionModeProvider {
+    companion object {
+        val EP = ExtensionPointName.Companion.create<ReplicaSelectionMode>("sap.commerce.toolset.groovy.exec.replicaSelectionModeProvider")
+    }
 }

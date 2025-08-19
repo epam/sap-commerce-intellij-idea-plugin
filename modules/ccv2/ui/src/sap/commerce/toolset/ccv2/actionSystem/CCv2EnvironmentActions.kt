@@ -41,7 +41,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 import sap.commerce.toolset.ccv2.ui.views.CCv2EnvironmentDetailsView
 
-class CCv2FetchEnvironmentsAction : AbstractCCv2FetchAction<CCv2EnvironmentDto>(
+class CCv2FetchEnvironmentsAction : CCv2FetchAction<CCv2EnvironmentDto>(
     tab = CCv2Tab.ENVIRONMENTS,
     text = "Fetch Environments",
     icon = HybrisIcons.CCv2.Actions.FETCH,

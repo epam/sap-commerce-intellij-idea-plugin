@@ -20,19 +20,19 @@ package sap.commerce.toolset.groovy.actionSystem
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.util.asSafely
-import sap.commerce.toolset.exec.context.ReplicaSelectionMode
+import sap.commerce.toolset.groovy.GroovyExecConstants
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.groovy.ui.ManualReplicaSelectionDialog
 import java.awt.Component
 
-class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(ReplicaSelectionMode.MANUAL) {
+class GroovyManualReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(GroovyExecConstants.manual) {
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
         val project = e.project ?: return
         val component = e.inputEvent?.source?.asSafely<Component>()
             ?: return
         val replicaContexts = GroovyExecutionClient.Companion.getInstance(project).connectionContext
-            .takeIf { it.replicaSelectionMode == ReplicaSelectionMode.MANUAL }
+            .takeIf { it.replicaSelectionMode == GroovyExecConstants.manual }
             ?.replicaContexts
             ?: emptyList()
 

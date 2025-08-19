@@ -16,35 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.ccv2
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.groovy.exec.context.ReplicaSelectionMode
+import sap.commerce.toolset.i18n
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
+object CCv2ExecConstants {
+
+    val ccv2 by lazy {
+        ReplicaSelectionMode(
+            title = "CCv2",
+            description = "Select id of the CCv2 service specific replica",
+            icon = HybrisIcons.CCv2.DESCRIPTOR,
+            presentationText = i18n("hybris.groovy.actions.executionMode.ccv2"),
+            presentationDescription = i18n("hybris.groovy.actions.executionMode.ccv2.description"),
+            previewText = { _ -> "Auto-Discover Replica" },
+            previewDescription = { context -> "- CCv2 ${context.replicaContexts.size} replica(s) -" }
+        )
     }
-    test {
-        java.srcDirs("tests")
-    }
-}
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
-    implementation(project(":exec-core"))
-    implementation(project(":ccv2-core"))
-    implementation(project(":ccv2-exec"))
-    implementation(project(":groovy-exec"))
-    implementation(project(":groovy-ui"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-    }
 }

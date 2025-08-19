@@ -35,9 +35,9 @@ import sap.commerce.toolset.exec.DefaultExecutionClient
 import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.context.DefaultExecutionResult
 import sap.commerce.toolset.exec.http.HybrisHacHttpClient
-import sap.commerce.toolset.exec.http.RemoteConnectionContext
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
+import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
 import java.io.IOException
 import java.io.Serial
 import java.nio.charset.StandardCharsets
@@ -45,8 +45,8 @@ import java.nio.charset.StandardCharsets
 @Service(Service.Level.PROJECT)
 class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : DefaultExecutionClient<GroovyExecutionContext>(project, coroutineScope) {
 
-    var connectionContext: RemoteConnectionContext
-        get() = putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, RemoteConnectionContext.Companion.auto())
+    var connectionContext: GroovyReplicaAwareContext
+        get() = putUserDataIfAbsent(KEY_REMOTE_CONNECTION_CONTEXT, GroovyReplicaAwareContext.Companion.auto())
         set(value) {
             putUserData(KEY_REMOTE_CONNECTION_CONTEXT, value)
         }
@@ -110,7 +110,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
     companion object {
         @Serial
         private const val serialVersionUID: Long = 3297887080603991051L
-        val KEY_REMOTE_CONNECTION_CONTEXT = Key.create<RemoteConnectionContext>("hybris.http.remote.connection.context")
+        val KEY_REMOTE_CONNECTION_CONTEXT = Key.create<GroovyReplicaAwareContext>("hybris.http.remote.connection.context")
 
         fun getInstance(project: Project): GroovyExecutionClient = project.service()
     }

@@ -29,13 +29,13 @@ import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 import java.util.*
 import javax.swing.Icon
 
-abstract class AbstractCCv2FetchAction<T : CCv2Dto>(
+abstract class CCv2FetchAction<T : CCv2Dto>(
     tab: CCv2Tab,
     private val text: String,
     description: String? = null,
     private val icon: Icon,
     private val fetch: (Project, List<CCv2Subscription>, (SortedMap<CCv2Subscription, Collection<T>>) -> Unit) -> Unit
-) : AbstractCCv2Action(tab, text, description, icon) {
+) : CCv2Action(tab, text, description, icon) {
 
     private var fetching = false
 

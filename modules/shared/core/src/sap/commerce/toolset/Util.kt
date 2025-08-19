@@ -23,6 +23,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import org.jetbrains.annotations.PropertyKey
 import sap.commerce.toolset.settings.WorkspaceSettings
 
 val PsiElement.isHybrisProject: Boolean
@@ -48,3 +49,8 @@ fun <T> DataContext.ifHybrisProject(operation: () -> T): T? = if (isHybrisProjec
 fun <T> Project.ifHybrisProject(operation: () -> T): T? = if (isHybrisProject) operation() else null
 
 infix fun <T> List<T>.equalsIgnoreOrder(other: List<T>) = this.size == other.size && this.toSet() == other.toSet()
+
+fun i18n(
+    @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
+    vararg params: Any
+) = HybrisI18NBundleUtils.message(key, *params)

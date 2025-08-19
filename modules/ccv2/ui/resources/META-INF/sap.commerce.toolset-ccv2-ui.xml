@@ -70,4 +70,10 @@
         </group>
     </actions>
 
+    <actions>
+        <action class="sap.commerce.toolset.ccv2.actionSystem.CCv2GroovyReplicaSelectionModeAction">
+            <add-to-group group-id="hybris.groovy.toolbar.mode"/>
+        </action>
+    </actions>
+
 </idea-plugin>

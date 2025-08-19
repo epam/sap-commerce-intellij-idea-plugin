@@ -21,4 +21,35 @@
 
     </extensions>
 
+    <actions>
+        <group id="hybris.groovy.toolbar.left">
+            <action id="hybris.groovy.execute" class="sap.commerce.toolset.groovy.actionSystem.GroovyExecuteAction">
+                <keyboard-shortcut first-keystroke="control shift alt ENTER" keymap="$default"/>
+            </action>
+            <action id="hybris.groovy.openQuery" class="sap.commerce.toolset.groovy.actionSystem.GroovyOpenInConsoleAction"/>
+            <separator/>
+            <action class="sap.commerce.toolset.groovy.actionSystem.GroovyToggleInEditorResultsAction"/>
+            <separator/>
+            <action id="hybris.groovy.openSettings" class="sap.commerce.toolset.groovy.actionSystem.GroovyOpenSettingsAction"/>
+            <separator/>
+
+            <group id="hybris.groovy.toolbar.tx" popup="true"
+                   class="sap.commerce.toolset.groovy.actionSystem.GroovyTransactionModeActionGroup">
+                <separator key="hybris.groovy.actions.transaction.mode.separator"/>
+                <action id="hybris.groovy.tx.commit" class="sap.commerce.toolset.groovy.actionSystem.GroovyCommitTransactionAction"/>
+                <action id="hybris.groovy.tx.execute" class="sap.commerce.toolset.groovy.actionSystem.GroovyRollbackTransactionAction"/>
+            </group>
+
+            <group id="hybris.groovy.toolbar.mode" popup="true"
+                   class="sap.commerce.toolset.groovy.actionSystem.GroovyExecutionModeActionGroup">
+                <separator key="hybris.groovy.actions.executionMode.separator"/>
+                <action class="sap.commerce.toolset.groovy.actionSystem.GroovyAutoReplicaSelectionModeAction"/>
+                <action class="sap.commerce.toolset.groovy.actionSystem.GroovyManualReplicaSelectionModeAction"/>
+            </group>
+        </group>
+        <group id="hybris.groovy.toolbar.right">
+            <reference ref="hybris.hac.chooseConnection"/>
+        </group>
+    </actions>
+
 </idea-plugin>

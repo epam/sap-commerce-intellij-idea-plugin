@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow
+package sap.commerce.toolset.ccv2.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -36,13 +36,13 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.asSafely
 import com.intellij.util.ui.JBUI
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.CCv2ExecConstants
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ccv2.ui.tree.CCv2TreeTable
 import sap.commerce.toolset.exec.context.ReplicaContext
-import sap.commerce.toolset.exec.http.RemoteConnectionContext
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
+import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
 import java.awt.BorderLayout
 import java.awt.Component
 import javax.swing.JComponent
@@ -112,7 +112,7 @@ class CCv2ReplicaSelectionDialog(
                     .showCloseButton(false)
             )
                 .customize(UnscaledGaps(12, 12, 12, 12))
-                .align(Align.CENTER)
+                .align(Align.Companion.CENTER)
         }
 
         row {
@@ -141,7 +141,7 @@ class CCv2ReplicaSelectionDialog(
                 override fun actionPerformed(e: AnActionEvent) {
                     ccv2SubscriptionsComboBoxModel.refresh()
                     ccv2TreeTable.resetTree()
-                    CCv2Service.getInstance(project).resetCache()
+                    CCv2Service.Companion.getInstance(project).resetCache()
                 }
             })
                 .enabledIf(editable)
@@ -149,14 +149,14 @@ class CCv2ReplicaSelectionDialog(
 
         row {
             scrollCell(ccv2TreeTable)
-                .align(Align.FILL)
+                .align(Align.Companion.FILL)
         }
             .resizableRow()
     }
 
     override fun applyFields() {
-        GroovyExecutionClient.getInstance(project).connectionContext = if (selectedReplicaIds.isEmpty()) RemoteConnectionContext.auto()
-        else RemoteConnectionContext.ccv2(selectedReplicaIds)
+        GroovyExecutionClient.getInstance(project).connectionContext = if (selectedReplicaIds.isEmpty()) GroovyReplicaAwareContext.auto()
+        else GroovyReplicaAwareContext(CCv2ExecConstants.ccv2, selectedReplicaIds.map { ReplicaContext(it) })
     }
 
     override fun dispose() {

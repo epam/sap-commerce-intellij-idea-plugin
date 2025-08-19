@@ -35,12 +35,8 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
-    implementation(project(":shared-ui"))
     implementation(project(":exec-core"))
-    implementation(project(":ccv2-core"))
-    implementation(project(":ccv2-exec"))
     implementation(project(":groovy-exec"))
-    implementation(project(":groovy-ui"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

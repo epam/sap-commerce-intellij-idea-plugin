@@ -16,18 +16,29 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.groovy.actionSystem
+package sap.commerce.toolset.groovy.exec.context
 
-import com.intellij.openapi.actionSystem.AnActionEvent
+import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.groovy.GroovyExecConstants
-import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
-import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
 
-class GroovyAutoReplicaSelectionModeAction : GroovyReplicaSelectionModeAction(GroovyExecConstants.auto) {
+data class GroovyReplicaAwareContext(
+    val replicaSelectionMode: ReplicaSelectionMode,
+    val replicaContexts: Collection<ReplicaContext> = emptyList(),
+) {
+    override fun toString() = replicaSelectionMode.previewText.invoke(this)
 
-    override fun setSelected(e: AnActionEvent, state: Boolean) {
-        val project = e.project ?: return
+    val previewText
+        get() = replicaSelectionMode.previewText.invoke(this)
 
-        GroovyExecutionClient.Companion.getInstance(project).connectionContext = GroovyReplicaAwareContext.Companion.auto()
+    val description
+        get() = replicaSelectionMode.previewDescription.invoke(this)
+
+    companion object {
+        fun auto() = GroovyReplicaAwareContext(GroovyExecConstants.auto)
+
+        fun manual(executionContexts: Collection<ReplicaContext> = emptyList()) = GroovyReplicaAwareContext(
+            GroovyExecConstants.manual,
+            executionContexts
+        )
     }
 }
