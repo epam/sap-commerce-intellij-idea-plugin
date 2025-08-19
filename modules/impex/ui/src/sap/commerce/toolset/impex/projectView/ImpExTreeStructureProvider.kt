@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.project.view
+package sap.commerce.toolset.impex.projectView
 
 import com.intellij.ide.projectView.TreeStructureProvider
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.nodes.PsiFileNode
 import com.intellij.ide.util.treeView.AbstractTreeNode
-import sap.commerce.toolset.impex.psi.ImpexFile
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import org.jetbrains.annotations.Unmodifiable
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.settings.DeveloperSettings
 
 /**

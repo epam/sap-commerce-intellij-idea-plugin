@@ -19,7 +19,7 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
         <treeStructureProvider order="after hybris.project.root.tree.structure.provider"
-                               implementation="sap.commerce.toolset.impex.project.view.ImpExTreeStructureProvider"/>
+                               implementation="sap.commerce.toolset.impex.projectView.ImpExTreeStructureProvider"/>
 
         <codeInsight.declarativeInlayProvider language="ImpEx"
                                               implementationClass="sap.commerce.toolset.impex.codeInsight.hints.ImpExParameterInlayHintProvider"

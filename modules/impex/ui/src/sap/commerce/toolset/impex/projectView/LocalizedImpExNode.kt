@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.project.view
+package sap.commerce.toolset.impex.projectView
 
 import com.intellij.ide.projectView.PresentationData
 import com.intellij.ide.projectView.ProjectViewNode
 import com.intellij.ide.projectView.ViewSettings
 import com.intellij.ide.projectView.impl.ProjectViewPane
 import com.intellij.ide.util.treeView.AbstractTreeNode
-import sap.commerce.toolset.impex.file.ImpexFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.SimpleTextAttributes
 import org.jetbrains.annotations.Unmodifiable
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.impex.file.ImpexFileType
 
 class LocalizedImpExNode(
     name: String,
