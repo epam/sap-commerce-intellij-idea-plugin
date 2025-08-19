@@ -18,31 +18,13 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <completion.contributor language="XML" order="before javaClassReference"
-                                implementationClass="sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionContributor"/>
-
-        <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.beanSystem.psi.contributor.BSReferenceContributor"/>
-
-        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.beanSystem.folding.BeansXmlFoldingBuilder"/>
-
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
-
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoBeanLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoEnumLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoEnumValueLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoBeanPropertyLineMarkerProvider"/>
-
-        <codeInsight.inlayProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.hints.BeansXmlInlayHintsProvider"/>
-
         <xmlStructureViewBuilderProvider order="first" implementation="sap.commerce.toolset.beanSystem.structureView.BSXmlStructureViewBuilderProvider"/>
 
         <projectConfigurable id="hybris.project.bs.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.bs.title"
                              order="after hybris.project.ts.settings"
-                             provider="sap.commerce.toolset.beanSystem.settings.ProjectBeanSystemConfigurableProvider"/>
+                             provider="sap.commerce.toolset.beanSystem.options.ProjectBeanSystemConfigurableProvider"/>
 
         <applicationService serviceImplementation="sap.commerce.toolset.beanSystem.codeInsight.completion.provider.BSClassCompletionProvider"/>
     </extensions>

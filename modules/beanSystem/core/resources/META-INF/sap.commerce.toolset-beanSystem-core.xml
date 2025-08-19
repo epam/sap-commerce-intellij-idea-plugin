@@ -20,6 +20,23 @@
     <extensions defaultExtensionNs="com.intellij">
         <dom.fileMetaData rootTagName="beans" stubVersion="10"
                           implementation="sap.commerce.toolset.beanSystem.BSDomFileDescription"/>
+        <completion.contributor language="XML" order="before javaClassReference"
+                                implementationClass="sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionContributor"/>
+
+        <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.beanSystem.psi.contributor.BSReferenceContributor"/>
+
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.beanSystem.folding.BeansXmlFoldingBuilder"/>
+
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
+
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoBeanLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoEnumLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoEnumValueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoBeanPropertyLineMarkerProvider"/>
+
+        <codeInsight.inlayProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.hints.BeansXmlInlayHintsProvider"/>
     </extensions>
 
 </idea-plugin>

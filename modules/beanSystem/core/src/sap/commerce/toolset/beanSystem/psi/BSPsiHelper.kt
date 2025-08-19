@@ -72,7 +72,7 @@ object BSPsiHelper {
         WriteCommandAction.runWriteCommandAction(project, null, null, {
             xmlTag.delete()
 
-            Notifications.create(
+            Notifications.Companion.create(
                 NotificationType.INFORMATION,
                 i18n(messageTitleKey),
                 i18n(messageContentKey, ownerName ?: "?", meta.name ?: "?")
