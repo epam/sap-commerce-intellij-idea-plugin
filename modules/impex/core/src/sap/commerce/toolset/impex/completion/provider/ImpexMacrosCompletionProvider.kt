@@ -21,24 +21,25 @@ package sap.commerce.toolset.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
-import sap.commerce.toolset.impex.constants.modifier.TypeModifier
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
+import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
+import sap.commerce.toolset.impex.psi.references.ImpexMacroReference
 
-class ImpexHeaderTypeModifierNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ImpexMacrosCompletionProvider : CompletionProvider<CompletionParameters>() {
 
-    public override fun addCompletions(
+    override fun addCompletions(
         parameters: CompletionParameters,
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
-        val element = parameters.position
-        val completionSettings = DeveloperSettings.getInstance(element.project)
-            .impexSettings
-            .completion
-        TypeModifier.entries
-            .map { ImpExLookupElementFactory.build(element, it, completionSettings) }
+        val originalFile = parameters.originalFile
+
+        PsiTreeUtil.findChildrenOfType(originalFile, ImpexMacroDeclaration::class.java)
+            .map { it.firstChild }
+            .map { ImpexMacroReference.escapeName(it.text) }
+            .map { ImpExLookupElementFactory.buildMacro(it) }
             .let { result.addAllElements(it) }
     }
 

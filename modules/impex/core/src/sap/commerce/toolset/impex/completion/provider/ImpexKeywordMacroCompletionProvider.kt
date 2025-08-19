@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,20 +21,13 @@ package sap.commerce.toolset.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 
-class ImpexKeywordModeCompletionProvider : CompletionProvider<CompletionParameters>() {
-
-    private val keywords = listOf(
-        "INSERT",
-        "UPDATE",
-        "INSERT_UPDATE",
-        "REMOVE"
-    )
+class ImpexKeywordMacroCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        result.addAllElements(keywords.map { ImpExLookupElementFactory.buildMode(it) })
+        result.addElement(ImpExLookupElementFactory.buildUserRights())
     }
 
 }

@@ -1,7 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -16,31 +15,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.impex.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
-import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
-import sap.commerce.toolset.impex.psi.references.ImpexMacroReference
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
+import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 
-class ImpexMacrosCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ImpexKeywordModeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
-    override fun addCompletions(
-        parameters: CompletionParameters,
-        context: ProcessingContext,
-        result: CompletionResultSet
-    ) {
-        val originalFile = parameters.originalFile
+    private val keywords = listOf(
+        "INSERT",
+        "UPDATE",
+        "INSERT_UPDATE",
+        "REMOVE"
+    )
 
-        PsiTreeUtil.findChildrenOfType(originalFile, ImpexMacroDeclaration::class.java)
-            .map { it.firstChild }
-            .map { ImpexMacroReference.escapeName(it.text) }
-            .map { ImpExLookupElementFactory.buildMacro(it) }
-            .let { result.addAllElements(it) }
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+        result.addAllElements(keywords.map { ImpExLookupElementFactory.buildMode(it) })
     }
 
 }
