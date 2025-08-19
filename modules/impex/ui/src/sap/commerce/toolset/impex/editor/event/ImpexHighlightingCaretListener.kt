@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.assistance.event
+package sap.commerce.toolset.impex.editor.event
 
 import com.intellij.codeInsight.folding.impl.FoldingUtil
 import com.intellij.codeInsight.highlighting.HighlightManager

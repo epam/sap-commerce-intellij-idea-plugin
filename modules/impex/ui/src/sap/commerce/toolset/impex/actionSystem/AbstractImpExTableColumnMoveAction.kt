@@ -24,7 +24,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.PostprocessReformattingAspect
 import com.intellij.psi.util.startOffset
-import sap.commerce.toolset.impex.assistance.event.ImpexHighlightingCaretListener
+import sap.commerce.toolset.impex.editor.event.ImpexHighlightingCaretListener
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpexHeaderLine
 import sap.commerce.toolset.impex.psi.ImpexValueGroup

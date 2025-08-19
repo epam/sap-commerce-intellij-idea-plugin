@@ -18,9 +18,9 @@
 
 package sap.commerce.toolset.impex.editor
 
-import sap.commerce.toolset.impex.highlighting.ImpexHighlighterColors
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.markup.HighlighterLayer
+import sap.commerce.toolset.impex.highlighting.ImpexHighlighterColors
 
 object ImpExEditorMarkupModelHelper {
 

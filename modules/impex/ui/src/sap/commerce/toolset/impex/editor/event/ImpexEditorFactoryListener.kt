@@ -20,7 +20,6 @@ package sap.commerce.toolset.impex.editor.event
 
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
-import sap.commerce.toolset.impex.assistance.event.ImpexHighlightingCaretListener
 
 class ImpexEditorFactoryListener : EditorFactoryListener {
 

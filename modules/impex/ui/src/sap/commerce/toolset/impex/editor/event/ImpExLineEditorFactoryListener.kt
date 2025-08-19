@@ -18,8 +18,6 @@
 
 package sap.commerce.toolset.impex.editor.event
 
-import sap.commerce.toolset.impex.editor.ImpExEditorMarkupModelHelper
-import sap.commerce.toolset.impex.psi.ImpexFile
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -31,6 +29,8 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import sap.commerce.toolset.impex.editor.ImpExEditorMarkupModelHelper
+import sap.commerce.toolset.impex.psi.ImpexFile
 
 class ImpExLineEditorFactoryListener : EditorFactoryListener {
 
