@@ -16,28 +16,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.polyglotQuery.actionSystem
+package sap.commerce.toolset.polyglotQuery.ui.actionSystem
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.DumbAware
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.polyglotQuery.editor.polyglotQuerySplitEditor
 
-class PolyglotQueryToggleInEditorParametersAction : ToggleAction(
-    message("hybris.actions.in_editor.virtual_parameters"),
-    message("hybris.actions.in_editor.virtual_parameters.description"),
-    HybrisIcons.Actions.TOGGLE_IN_EDITOR_PARAMETERS
+class PolyglotQueryToggleRetrieveAllDataAction : ToggleAction(
+    "Retrieve All Data",
+    "Retrieve all data for found items.",
+    HybrisIcons.PolyglotQuery.Actions.TOGGLE_RETRIEVE_ALL_DATA
 ), DumbAware {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun isSelected(e: AnActionEvent): Boolean = e.polyglotQuerySplitEditor()?.inEditorParameters
+    override fun isSelected(e: AnActionEvent): Boolean = e.polyglotQuerySplitEditor()?.retrieveAllData
         ?: false
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {
-        e.polyglotQuerySplitEditor()?.inEditorParameters = state
+        e.polyglotQuerySplitEditor()?.retrieveAllData = state
     }
 }

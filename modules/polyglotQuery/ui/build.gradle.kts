@@ -36,6 +36,7 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
+    implementation(project(":console-ui"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

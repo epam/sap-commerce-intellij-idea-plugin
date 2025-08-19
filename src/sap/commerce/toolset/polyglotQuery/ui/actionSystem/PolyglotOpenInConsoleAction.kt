@@ -15,25 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.polyglotQuery.ui.actionSystem
 
-package sap.commerce.toolset.polyglotQuery.actionSystem
-
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
-import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
+import sap.commerce.toolset.HybrisI18NBundleUtils.message
+import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
+import sap.commerce.toolset.polyglotQuery.console.HybrisPolyglotQueryConsole
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
-@Service
-class PolyglotQueryFileToolbarInstaller : HybrisFileToolbarInstaller(
-    "hybris.pgq.console",
-    "hybris.pgq.toolbar.left",
-    "hybris.pgq.toolbar.right",
-    PolyglotQueryFileType
-) {
-
-    companion object {
-        fun getInstance(): PolyglotQueryFileToolbarInstaller = application.service()
-    }
-
-}
+class PolyglotOpenInConsoleAction : OpenInConsoleAction(
+    PolyglotQueryFileType,
+    HybrisPolyglotQueryConsole::class,
+    message("hybris.pgq.actions.open_query"),
+    message("hybris.pgq.actions.open_query.description"),
+)

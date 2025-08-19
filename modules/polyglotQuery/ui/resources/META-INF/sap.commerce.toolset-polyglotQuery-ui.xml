@@ -1,0 +1,64 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<idea-plugin>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.typeSystem.folding.ItemsXmlFoldingBuilder"/>
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.typeSystem.folding.DeploymentModelFoldingBuilder"/>
+
+        <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.typeSystem.psi.contributor.TSReferenceContributor"/>
+
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ItemsXmlItemAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ItemsXmlItemSiblingsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ItemsXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
+
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.JaloItemLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ModelEnumLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ModelItemLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ModelItemAttributeMethodLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ModelItemAttributeFieldLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ModelEnumValueLineMarkerProvider"/>
+
+        <codeInsight.inlayProvider language="XML" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.hints.ItemsXmlInlayHintsProvider"/>
+
+        <completion.contributor language="XML" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionContributor"/>
+
+        <xmlStructureViewBuilderProvider order="first" implementation="sap.commerce.toolset.typeSystem.structureView.TSXmlStructureViewBuilderProvider"/>
+
+        <projectConfigurable id="hybris.project.ts.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
+                             order="after hybris.project.integrations.settings"
+                             provider="sap.commerce.toolset.typeSystem.options.ProjectTypeSystemConfigurableProvider"/>
+    </extensions>
+
+    <actions>
+        <group id="TSView.ToolWindow">
+            <group id="TSView.ToolWindow.TreePopup">
+                <action class="sap.commerce.toolset.typeSystem.actionSystem.TSGoToDeclarationNodeAction"
+                        use-shortcut-of="GotoDeclaration"/>
+            </group>
+
+            <group id="TSView.ToolWindow.TablePopup">
+                <action class="sap.commerce.toolset.typeSystem.actionSystem.TSGoToDeclarationTableAction"
+                        use-shortcut-of="GotoDeclaration"/>
+            </group>
+        </group>
+    </actions>
+
+</idea-plugin>

@@ -51,28 +51,28 @@
         <projectConfigurable id="hybris.project.pgq.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.pgq.title"
                              order="after hybris.project.fxs.settings"
-                             provider="sap.commerce.toolset.polyglotQuery.options.ProjectPolyglotQuerySettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.polyglotQuery.ui.options.ProjectPolyglotQuerySettingsConfigurableProvider"/>
     </extensions>
 
     <actions>
         <action id="PolyglotQuery.NewPolyglotQueryFile"
-                class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryFileCreateAction">
+                class="sap.commerce.toolset.polyglotQuery.ui.actionSystem.PolyglotQueryFileCreateAction">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
 
-        <action id="hybris.pgq.openSettings" class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryOpenSettingsAction"/>
+        <action id="hybris.pgq.openSettings" class="sap.commerce.toolset.polyglotQuery.ui.actionSystem.PolyglotQueryOpenSettingsAction"/>
 
         <group id="hybris.pgq.toolbar.left">
             <reference ref="hybris.fxs.executionContextSettings"/>
             <separator/>
-            <action id="hybris.pgq.execute" class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryExecuteAction">
+            <action id="hybris.pgq.execute" class="sap.commerce.toolset.polyglotQuery.ui.actionSystem.PolyglotQueryExecuteAction">
                 <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
             </action>
-            <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotOpenInConsoleAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.ui.actionSystem.PolyglotOpenInConsoleAction"/>
             <separator/>
-            <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryToggleRetrieveAllDataAction"/>
-            <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryToggleInEditorResultsAction"/>
-            <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryToggleInEditorParametersAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.ui.actionSystem.PolyglotQueryToggleRetrieveAllDataAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.ui.actionSystem.PolyglotQueryToggleInEditorResultsAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.ui.actionSystem.PolyglotQueryToggleInEditorParametersAction"/>
             <separator/>
             <reference ref="hybris.pgq.openSettings"/>
         </group>

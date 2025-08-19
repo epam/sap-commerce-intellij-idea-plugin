@@ -16,14 +16,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.polyglotQuery.actionSystem
+package sap.commerce.toolset.polyglotQuery.ui.actionSystem
 
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
-import sap.commerce.toolset.actionSystem.OpenSettingsAction
-import sap.commerce.toolset.polyglotQuery.options.ProjectPolyglotQuerySettingsConfigurableProvider
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.util.application
+import sap.commerce.toolset.actionSystem.HybrisFileToolbarInstaller
+import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
-class PolyglotQueryOpenSettingsAction : OpenSettingsAction(
-    configurableClass = ProjectPolyglotQuerySettingsConfigurableProvider.SettingsConfigurable::class.java,
-    text = message("hybris.pgq.actions.open_settings"),
-    description = message("hybris.pgq.actions.open_settings.description"),
-)
+@Service
+class PolyglotQueryFileToolbarInstaller : HybrisFileToolbarInstaller(
+    "hybris.pgq.console",
+    "hybris.pgq.toolbar.left",
+    "hybris.pgq.toolbar.right",
+    PolyglotQueryFileType
+) {
+
+    companion object {
+        fun getInstance(): PolyglotQueryFileToolbarInstaller = application.service()
+    }
+
+}

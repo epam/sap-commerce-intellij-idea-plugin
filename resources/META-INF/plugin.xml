@@ -104,6 +104,7 @@
 
     <xi:include href="/META-INF/sap.commerce.toolset-polyglotQuery-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-polyglotQuery-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-polyglotQuery-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/sap.commerce.toolset-businessProcess-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-businessProcess-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
