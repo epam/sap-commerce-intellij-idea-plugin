@@ -25,10 +25,10 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.xml.XmlFile
 import org.jetbrains.plugins.groovy.GroovyLanguage
+import sap.commerce.toolset.businessProcess.psi.tryInject
 import sap.commerce.toolset.impex.psi.ImpexGroovyScriptBody
 import sap.commerce.toolset.impex.psi.ImpexString
 import sap.commerce.toolset.impex.psi.getScriptType
-import sap.commerce.toolset.system.businessProcess.psi.tryInject
 import sap.commerce.toolset.typeSystem.ScriptType
 
 class GroovyLanguageInjector : LanguageInjector {

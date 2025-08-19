@@ -18,11 +18,11 @@
 
 package sap.commerce.toolset.codeInspection.rule.externalDependencies
 
-import sap.commerce.toolset.codeInspection.rule.AbstractInspection
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
 import org.jetbrains.idea.maven.dom.model.MavenDomProjectModel
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.codeInspection.AbstractInspection
 
 abstract class AbstractEdInspection : AbstractInspection<MavenDomProjectModel>(MavenDomProjectModel::class.java) {
 

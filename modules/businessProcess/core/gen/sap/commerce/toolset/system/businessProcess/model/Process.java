@@ -22,7 +22,7 @@
 package sap.commerce.toolset.system.businessProcess.model;
 
 import sap.commerce.toolset.HybrisConstants;
-import sap.commerce.toolset.system.businessProcess.util.xml.BpNavigableElementConverter;
+import sap.commerce.toolset.businessProcess.util.xml.BpNavigableElementConverter;
 import com.intellij.util.xml.*;
 import org.jetbrains.annotations.NotNull;
 

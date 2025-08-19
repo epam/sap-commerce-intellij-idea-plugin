@@ -18,11 +18,11 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <completion.contributor language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.completion.EiSCompletionContributor"/>
-        <completion.contributor language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.completion.LeSCompletionContributor"/>
+        <completion.contributor language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.completion.EiCompletionContributor"/>
+        <completion.contributor language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.completion.LeCompletionContributor"/>
 
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.daemon.EiSExtensionLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.daemon.LeSExtensionLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.daemon.EiExtensionLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.daemon.LeExtensionLineMarkerProvider"/>
     </extensions>
 
 </idea-plugin>

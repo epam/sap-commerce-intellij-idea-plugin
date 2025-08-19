@@ -18,11 +18,16 @@
 
 package sap.commerce.toolset.psi
 
+import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.codeInspection.ProblemDescriptorBase
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
 import com.intellij.patterns.XmlPatterns
+import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlTag
+import com.intellij.util.PsiNavigateUtil
+import com.intellij.util.asSafely
 
 /**
  * <tagName attributeName="XmlAttributeValue"/>
@@ -78,3 +83,9 @@ private fun getXmlFilePattern(fileName: String?) = if (fileName == null) anyXmlF
 
 private val anyXmlFilePattern = PlatformPatterns.psiFile()
     .withName(StandardPatterns.string().endsWith(".xml"))
+
+fun navigate(psiElement: PsiElement?, requestFocus: Boolean = true) = PsiNavigateUtil
+    .navigate(psiElement, requestFocus)
+
+fun navigate(descriptor: ProblemDescriptor, psiElement: PsiElement?, requestFocus: Boolean = true) = descriptor.asSafely<ProblemDescriptorBase>()
+    ?.let { navigate(psiElement, requestFocus) }

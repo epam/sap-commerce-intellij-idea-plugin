@@ -19,9 +19,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <dom.fileMetaData rootTagName="process" stubVersion="3"
-                          implementation="sap.commerce.toolset.system.businessProcess.BpDomFileDescription"/>
+                          implementation="sap.commerce.toolset.businessProcess.BpDomFileDescription"/>
 
-        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.system.businessProcess.lang.folding.BpXmlFoldingBuilder"/>
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.businessProcess.lang.folding.BpXmlFoldingBuilder"/>
     </extensions>
 
 </idea-plugin>

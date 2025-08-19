@@ -31,7 +31,7 @@ import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.codeInsight.daemon.HybrisLineMarkerProvider
-import sap.commerce.toolset.extensioninfo.EiSModelAccess
+import sap.commerce.toolset.extensioninfo.EiModelAccess
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.yExtensionName
@@ -54,7 +54,7 @@ abstract class ExtensionLineMarkerProvider : HybrisLineMarkerProvider<XmlAttribu
             ?: return emptyList()
         val extensionInfoName = psi.project.modules
             .find { it.yExtensionName() == psi.value }
-            ?.let { EiSModelAccess.getExtensionInfo(it) }
+            ?.let { EiModelAccess.getExtensionInfo(it) }
             ?.xmlTag
             ?: return emptyList()
 

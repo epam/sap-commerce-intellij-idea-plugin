@@ -21,7 +21,7 @@
 
 package sap.commerce.toolset.system.businessProcess.model;
 
-import sap.commerce.toolset.system.businessProcess.util.xml.BpNavigableElementConverter;
+import sap.commerce.toolset.businessProcess.util.xml.BpNavigableElementConverter;
 import com.intellij.util.xml.Convert;
 import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericAttributeValue;
