@@ -42,6 +42,7 @@ idea {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":typeSystem-core"))
+    implementation(project(":impex-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

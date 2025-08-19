@@ -22,7 +22,6 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.removeUserData
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.firstLeaf
-import sap.commerce.toolset.acl.psi.references.AclTSTargetAttributeReference
 import sap.commerce.toolset.impex.psi.ImpexTypes
 import sap.commerce.toolset.impex.psi.ImpexUserRightsAttributeValue
 import sap.commerce.toolset.impex.psi.references.ImpexUserRightsTSAttributeReference
@@ -35,7 +34,7 @@ abstract class ImpexUserRightsAttributeValueMixin(astNode: ASTNode) : ASTWrapper
     else null
 
     override fun subtreeChanged() {
-        removeUserData(AclTSTargetAttributeReference.CACHE_KEY)
+        removeUserData(ImpexUserRightsTSAttributeReference.CACHE_KEY)
     }
 
     companion object {

@@ -43,7 +43,6 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":typeSystem-core"))
     implementation(project(":project-core"))
-    implementation(project(":acl-core"))
     implementation(project(":typeSystem-core"))
 
     intellijPlatform {

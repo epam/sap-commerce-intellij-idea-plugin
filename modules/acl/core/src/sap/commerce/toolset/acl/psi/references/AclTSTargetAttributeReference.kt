@@ -18,107 +18,16 @@
 
 package sap.commerce.toolset.acl.psi.references
 
-import com.intellij.codeInsight.highlighting.HighlightedReference
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.ResolveResult
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.ParameterizedCachedValue
-import com.intellij.psi.util.ParameterizedCachedValueProvider
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.acl.psi.AclTypes
-import sap.commerce.toolset.psi.PsiUtils
-import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
-import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaRelation
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
-import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
-import sap.commerce.toolset.typeSystem.psi.reference.result.AttributeResolveResult
-import sap.commerce.toolset.typeSystem.psi.reference.result.OrderingAttributeResolveResult
-import sap.commerce.toolset.typeSystem.psi.reference.result.RelationEndResolveResult
+import sap.commerce.toolset.impex.psi.references.ImpexUserRightsTSAttributeReference
 
-open class AclTSTargetAttributeReference : TSReferenceBase<PsiElement>, HighlightedReference {
+open class AclTSTargetAttributeReference : ImpexUserRightsTSAttributeReference {
 
     constructor(owner: PsiElement, soft: Boolean = false, rangeInElement: TextRange? = null) : super(owner, soft, rangeInElement)
 
-    override fun getVariants() = getType()
-        ?.let {
-            TSCompletionService.Companion.getInstance(element.project)
-                .getCompletions(
-                    it,
-                    TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION
-                )
-                .toTypedArray()
-        }
-        ?: emptyArray()
-
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val indicator = ProgressManager.getInstance().progressIndicator
-        if (indicator != null && indicator.isCanceled) return ResolveResult.EMPTY_ARRAY
-
-        return CachedValuesManager.getManager(project)
-            .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-            .let { PsiUtils.getValidResults(it) }
-    }
-
-    open fun getType() = element.node.findChildByType(AclTypes.FIELD_VALUE_TARGET_TYPE)
+    override fun getType() = element.node.findChildByType(AclTypes.FIELD_VALUE_TARGET_TYPE)
         ?.text
 
-    companion object {
-        @JvmStatic
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AclTSTargetAttributeReference>>("HYBRIS_TS_CACHED_TARGET_ATTRIBUTE_REFERENCE")
-
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AclTSTargetAttributeReference> { ref ->
-            val project = ref.project
-            val metaModelAccess = TSMetaModelAccess.Companion.getInstance(project)
-            val featureName = ref.value
-            val type = ref.getType()
-            val result: Array<ResolveResult> = metaModelAccess.findMetaClassifierByName(type)
-                ?.let { meta ->
-                    when (meta) {
-                        is TSGlobalMetaEnum -> metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_ENUMERATION_VALUE)
-                            ?.let { it.allAttributes[featureName] }
-                            ?.let { attr -> AttributeResolveResult(attr) }
-
-                        is TSGlobalMetaItem -> resolve(meta, featureName)
-
-                        is TSGlobalMetaRelation -> {
-                            if (HybrisConstants.ATTRIBUTE_SOURCE.equals(featureName, ignoreCase = true)) {
-                                RelationEndResolveResult(meta.source)
-                            } else if (HybrisConstants.ATTRIBUTE_TARGET.equals(featureName, ignoreCase = true)) {
-                                RelationEndResolveResult(meta.target)
-                            } else {
-                                metaModelAccess.findMetaItemByName(HybrisConstants.TS_TYPE_LINK)
-                                    ?.let { resolve(it, featureName) }
-                            }
-                        }
-
-                        else -> null
-                    }
-                }
-                ?.let { arrayOf(it) }
-                ?: ResolveResult.EMPTY_ARRAY
-
-            // no need to track with PsiModificationTracker.MODIFICATION_COUNT due manual cache reset via custom Mixin
-            CachedValueProvider.Result.create(
-                result,
-                TSModificationTracker.Companion.getInstance(project)
-            )
-        }
-
-        private fun resolve(meta: TSGlobalMetaItem, featureName: String) = meta.allAttributes[featureName]
-            ?.let { attr -> AttributeResolveResult(attr) }
-            ?: meta.allOrderingAttributes[featureName]
-                ?.let { attr -> OrderingAttributeResolveResult(attr) }
-            ?: meta.allRelationEnds
-                .find { relationEnd -> relationEnd.name.equals(featureName, true) }
-                ?.let { relationEnd -> RelationEndResolveResult(relationEnd) }
-
-    }
 }

@@ -28,6 +28,7 @@ import sap.commerce.toolset.acl.psi.AclTypes
 import sap.commerce.toolset.acl.psi.AclUserRightsValueTarget
 import sap.commerce.toolset.acl.psi.references.AclTSTargetAttributeReference
 import sap.commerce.toolset.acl.psi.references.AclTSTargetTypeReference
+import sap.commerce.toolset.impex.psi.references.ImpexUserRightsTSAttributeReference
 import java.io.Serial
 
 abstract class AclUserRightsValueTargetMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), AclUserRightsValueTarget {
@@ -50,7 +51,7 @@ abstract class AclUserRightsValueTargetMixin(astNode: ASTNode) : ASTWrapperPsiEl
     }
 
     override fun subtreeChanged() {
-        removeUserData(AclTSTargetAttributeReference.CACHE_KEY)
+        removeUserData(ImpexUserRightsTSAttributeReference.CACHE_KEY)
         removeUserData(AclTSTargetTypeReference.CACHE_KEY)
         myReferences = null
     }

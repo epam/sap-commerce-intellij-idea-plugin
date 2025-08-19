@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.acl.psi.references
+package sap.commerce.toolset.impex.psi.references
 
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.openapi.progress.ProgressManager
@@ -36,7 +36,7 @@ import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
 import sap.commerce.toolset.typeSystem.psi.reference.result.ItemResolveResult
 
-class AclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), HighlightedReference {
+class ImpexUserRightsTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), HighlightedReference {
 
     override fun getVariants() = getAllowedVariants(element)
         .mapNotNull { TSLookupElementFactory.build(it) }
@@ -52,9 +52,9 @@ class AclTypeReference(owner: PsiElement) : TSReferenceBase<PsiElement>(owner), 
     }
 
     companion object {
-        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, AclTypeReference>>("HYBRIS_TS_CACHED_REFERENCE")
+        val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, ImpexUserRightsTypeReference>>("HYBRIS_TS_CACHED_REFERENCE")
 
-        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, AclTypeReference> { ref ->
+        private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, ImpexUserRightsTypeReference> { ref ->
             val lookingForName = ref.value
             val project = ref.project
 

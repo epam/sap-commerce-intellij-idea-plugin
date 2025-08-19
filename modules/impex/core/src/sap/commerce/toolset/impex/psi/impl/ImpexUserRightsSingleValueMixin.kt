@@ -25,28 +25,28 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.firstLeaf
-import sap.commerce.toolset.acl.psi.references.AclTSTargetAttributeReference
-import sap.commerce.toolset.acl.psi.references.AclTypeReference
 import sap.commerce.toolset.impex.psi.ImpexTypes
 import sap.commerce.toolset.impex.psi.ImpexUserRightsAttributeValue
 import sap.commerce.toolset.impex.psi.ImpexUserRightsSingleValue
 import sap.commerce.toolset.impex.psi.references.ImpexTSItemReference
+import sap.commerce.toolset.impex.psi.references.ImpexUserRightsTSAttributeReference
+import sap.commerce.toolset.impex.psi.references.ImpexUserRightsTypeReference
 import sap.commerce.toolset.psi.impl.ASTWrapperReferencePsiElement
 import java.io.Serial
 
 abstract class ImpexUserRightsSingleValueMixin(astNode: ASTNode) : ASTWrapperReferencePsiElement(astNode), ImpexUserRightsSingleValue {
 
     override fun createReference(): PsiReferenceBase<out PsiElement>? = when (headerParameter?.firstLeaf()?.elementType) {
-        ImpexTypes.TYPE -> AclTypeReference(this)
+        ImpexTypes.TYPE -> ImpexUserRightsTypeReference(this)
         ImpexTypes.TARGET -> ImpexTSItemReference(this)
         else -> null
     }
 
     override fun subtreeChanged() {
-        removeUserData(AclTypeReference.CACHE_KEY)
+        removeUserData(ImpexUserRightsTypeReference.CACHE_KEY)
         removeUserData(ImpexTSItemReference.CACHE_KEY)
         PsiTreeUtil.getNextSiblingOfType(this, ImpexUserRightsAttributeValue::class.java)
-            ?.removeUserData(AclTSTargetAttributeReference.CACHE_KEY)
+            ?.removeUserData(ImpexUserRightsTSAttributeReference.CACHE_KEY)
     }
 
     companion object {
