@@ -19,13 +19,13 @@
 package sap.commerce.toolset.groovy.actionSystem
 
 import org.jetbrains.plugins.groovy.GroovyFileType
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
 import sap.commerce.toolset.groovy.console.HybrisGroovyConsole
+import sap.commerce.toolset.i18n
 
 class GroovyOpenInConsoleAction : OpenInConsoleAction(
     GroovyFileType.GROOVY_FILE_TYPE,
     HybrisGroovyConsole::class,
-    HybrisI18NBundleUtils.message("hybris.groovy.actions.open_query"),
-    HybrisI18NBundleUtils.message("hybris.groovy.actions.open_query.description"),
+    i18n("hybris.groovy.actions.open_query"),
+    i18n("hybris.groovy.actions.open_query.description"),
 )

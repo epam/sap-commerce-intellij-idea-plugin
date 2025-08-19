@@ -21,8 +21,8 @@ package sap.commerce.toolset.flexibleSearch.formatting
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizableOptions
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
+import sap.commerce.toolset.i18n
 
 class FxSLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 
@@ -40,7 +40,7 @@ class FxSLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
                     consumer.showCustomOption(
                         FxSCodeStyleSettings::class.java,
                         fieldName,
-                        HybrisI18NBundleUtils.message("hybris.style.settings.project.fxs.$fieldName.name"),
+                        i18n("hybris.style.settings.project.fxs.$fieldName.name"),
                         group
                     )
                 }
@@ -52,7 +52,7 @@ class FxSLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider()
                     consumer.showCustomOption(
                         FxSCodeStyleSettings::class.java,
                         fieldName,
-                        HybrisI18NBundleUtils.message("hybris.style.settings.project.fxs.$fieldName.name"),
+                        i18n("hybris.style.settings.project.fxs.$fieldName.name"),
                         group
                     )
                 }

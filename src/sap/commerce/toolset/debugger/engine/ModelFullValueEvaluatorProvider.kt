@@ -26,12 +26,12 @@ import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
 import com.intellij.debugger.ui.tree.render.CompoundReferenceRenderer
 import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer
 import com.intellij.ide.IdeBundle
-import sap.commerce.toolset.debugger.ui.tree.render.ModelEnumerationChildrenRendererInfoProvider
-import sap.commerce.toolset.debugger.ui.tree.render.ModelRenderer
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.DumbService
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.debugger.ui.tree.render.ModelEnumerationChildrenRendererInfoProvider
+import sap.commerce.toolset.debugger.ui.tree.render.ModelRenderer
+import sap.commerce.toolset.i18n
 
 class ModelFullValueEvaluatorProvider : FullValueEvaluatorProvider {
 
@@ -42,7 +42,7 @@ class ModelFullValueEvaluatorProvider : FullValueEvaluatorProvider {
         evaluationContext: EvaluationContextImpl,
         private val valueDescriptor: ValueDescriptorImpl
     ) : JavaValue.JavaFullValueEvaluator(
-        HybrisI18NBundleUtils.message("hybris.debug.message.node.type.renderer.refresh"),
+        i18n("hybris.debug.message.node.type.renderer.refresh"),
         evaluationContext
     ) {
         override fun evaluate(callback: XFullValueEvaluationCallback) {
@@ -55,11 +55,11 @@ class ModelFullValueEvaluatorProvider : FullValueEvaluatorProvider {
                 Notifications.create(
                     NotificationType.INFORMATION,
                     IdeBundle.message("progress.performing.indexing.tasks"),
-                    HybrisI18NBundleUtils.message("hybris.notification.debug.dumb.mode.content")
+                    i18n("hybris.notification.debug.dumb.mode.content")
                 )
                     .hideAfter(5)
                     .notify(project)
-                callback.errorOccurred(HybrisI18NBundleUtils.message("hybris.notification.debug.dumb.mode.content"))
+                callback.errorOccurred(i18n("hybris.notification.debug.dumb.mode.content"))
                 return
             }
 

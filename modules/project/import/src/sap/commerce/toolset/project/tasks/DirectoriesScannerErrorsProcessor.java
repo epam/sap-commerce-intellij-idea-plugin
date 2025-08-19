@@ -21,10 +21,11 @@ package sap.commerce.toolset.project.tasks;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.Messages;
-import sap.commerce.toolset.HybrisI18NBundleUtils;
 
 import java.io.File;
 import java.util.List;
+
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class DirectoriesScannerErrorsProcessor implements TaskProgressProcessor<List<File>> {
 
@@ -32,8 +33,8 @@ public class DirectoriesScannerErrorsProcessor implements TaskProgressProcessor<
     public boolean shouldContinue(final List<File> t) {
         if (!t.isEmpty()) {
             ApplicationManager.getApplication().invokeLater(() -> Messages.showErrorDialog(
-                HybrisI18NBundleUtils.message("hybris.project.import.scan.failed", t),
-                HybrisI18NBundleUtils.message("hybris.project.error")
+                message("hybris.project.import.scan.failed", t),
+                message("hybris.project.error")
             ));
         }
 

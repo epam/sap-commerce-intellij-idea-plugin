@@ -21,13 +21,13 @@ package sap.commerce.toolset.impex.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
-import sap.commerce.toolset.impex.psi.ImpexAttribute
 import com.intellij.notification.NotificationType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
+import sap.commerce.toolset.impex.psi.ImpexAttribute
 
 class ImpexHeaderAttributeModifierValueCompletionProvider : CompletionProvider<CompletionParameters>() {
 
@@ -49,8 +49,8 @@ class ImpexHeaderAttributeModifierValueCompletionProvider : CompletionProvider<C
             // show an error message when not defined within hybris API
             Notifications.create(
                 NotificationType.WARNING,
-                HybrisI18NBundleUtils.message("hybris.completion.error.impex.title"),
-                HybrisI18NBundleUtils.message("hybris.completion.error.impex.unknownAttributeModifier.content", modifierName)
+                i18n("hybris.completion.error.impex.title"),
+                i18n("hybris.completion.error.impex.unknownAttributeModifier.content", modifierName)
             )
                 .notify(parameters.position.project)
         }

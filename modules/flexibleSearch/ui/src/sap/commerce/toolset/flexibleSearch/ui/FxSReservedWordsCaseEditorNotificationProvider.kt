@@ -32,9 +32,9 @@ import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotifications
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.FlexibleSearchSettingsState
 import sap.commerce.toolset.settings.state.ReservedWordsCase
 import java.util.function.Function
@@ -51,11 +51,11 @@ class FxSReservedWordsCaseEditorNotificationProvider : FxSEditorNotificationProv
     ) = Function<FileEditor, EditorNotificationPanel> { fileEditor ->
         val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
         panel.icon(HybrisIcons.Y.LOGO_BLUE)
-        panel.text = HybrisI18NBundleUtils.message(
+        panel.text = i18n(
             "hybris.fxs.notification.provider.keywords.text",
-            HybrisI18NBundleUtils.message("hybris.fxs.notification.provider.keywords.case.${fxsSettings.defaultCaseForReservedWords}")
+            i18n("hybris.fxs.notification.provider.keywords.case.${fxsSettings.defaultCaseForReservedWords}")
         )
-        panel.createActionLabel(HybrisI18NBundleUtils.message("hybris.fxs.notification.provider.keywords.action.unify")) {
+        panel.createActionLabel(i18n("hybris.fxs.notification.provider.keywords.action.unify")) {
             ReadAction
                 .nonBlocking<Collection<LeafPsiElement>> { collect(fxsSettings, psiFile).distinct().reversed() }
                 .finishOnUiThread(ModalityState.defaultModalityState()) { leafs ->

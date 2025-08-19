@@ -19,18 +19,18 @@
 
 package sap.commerce.toolset.project.tasks;
 
-import sap.commerce.toolset.project.utils.Processor;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisConstants;
-import sap.commerce.toolset.HybrisI18NBundleUtils;
-import sap.commerce.toolset.project.tasks.DirectoriesScannerProgressIndicatorUpdaterProcessor;
+import sap.commerce.toolset.project.utils.Processor;
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService;
 
 import java.io.File;
+
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class SearchHybrisDistributionDirectoryTaskModalWindow extends Task.Modal {
 
@@ -45,7 +45,7 @@ public class SearchHybrisDistributionDirectoryTaskModalWindow extends Task.Modal
     ) {
         super(
             ProjectImportBuilder.getCurrentProject(),
-            HybrisI18NBundleUtils.message("hybris.project.import.searching.hybris.distribution"),
+            message("hybris.project.import.searching.hybris.distribution"),
             true
         );
 

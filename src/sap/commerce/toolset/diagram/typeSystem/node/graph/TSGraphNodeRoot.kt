@@ -18,10 +18,9 @@
 
 package sap.commerce.toolset.diagram.typeSystem.node.graph
 
-import sap.commerce.toolset.HybrisI18NBundleUtils
-
+import sap.commerce.toolset.i18n
 data class TSGraphNodeRoot(
-    override val name: String = HybrisI18NBundleUtils.message("hybris.diagram.ts.provider.name"),
+    override val name: String = i18n("hybris.diagram.ts.provider.name"),
     override val fields: MutableList<TSGraphField> = mutableListOf(),
     override var collapsed: Boolean = false,
     override val tooltip: String? = null

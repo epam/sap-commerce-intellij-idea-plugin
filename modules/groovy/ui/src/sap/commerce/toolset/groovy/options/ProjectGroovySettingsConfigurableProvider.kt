@@ -25,9 +25,9 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.groovy.actionSystem.GroovyFileToolbarInstaller
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 import javax.swing.JCheckBox
@@ -38,7 +38,7 @@ class ProjectGroovySettingsConfigurableProvider(private val project: Project) : 
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        HybrisI18NBundleUtils.message("hybris.settings.project.groovy.title"), "hybris.groovy.settings"
+        i18n("hybris.settings.project.groovy.title"), "hybris.groovy.settings"
     ) {
 
         private val developerSettings = DeveloperSettings.getInstance(project)

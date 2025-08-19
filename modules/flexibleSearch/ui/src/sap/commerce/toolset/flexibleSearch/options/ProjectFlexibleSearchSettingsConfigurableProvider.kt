@@ -27,8 +27,8 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.ReservedWordsCase
@@ -40,7 +40,7 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(private val project: Pro
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        HybrisI18NBundleUtils.message("hybris.settings.project.fxs.title"), "hybris.fxs.settings"
+        i18n("hybris.settings.project.fxs.title"), "hybris.fxs.settings"
     ) {
 
         private val developerSettings = DeveloperSettings.Companion.getInstance(project)
@@ -75,7 +75,7 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(private val project: Pro
                 row {
                     comboBox(
                         reservedWordsModel,
-                        renderer = SimpleListCellRenderer.create("?") { HybrisI18NBundleUtils.message("hybris.fxs.notification.provider.keywords.case.$it") }
+                        renderer = SimpleListCellRenderer.create("?") { i18n("hybris.fxs.notification.provider.keywords.case.$it") }
                     )
                         .label("Default case for reserved words")
                         .bindItem(mutableSettings::defaultCaseForReservedWords.toNullableProperty())
@@ -105,8 +105,8 @@ class ProjectFlexibleSearchSettingsConfigurableProvider(private val project: Pro
                         tableAliasSeparatorsModel,
                         renderer = SimpleListCellRenderer.create("?") {
                             when (it) {
-                                "." -> HybrisI18NBundleUtils.message("hybris.settings.project.fxs.code.completion.separator.dot")
-                                ":" -> HybrisI18NBundleUtils.message("hybris.settings.project.fxs.code.completion.separator.colon")
+                                "." -> i18n("hybris.settings.project.fxs.code.completion.separator.dot")
+                                ":" -> i18n("hybris.settings.project.fxs.code.completion.separator.colon")
                                 else -> it
                             }
                         }

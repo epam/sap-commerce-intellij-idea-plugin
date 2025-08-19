@@ -34,9 +34,9 @@ import com.intellij.openapi.project.Project
 import com.sun.jdi.ObjectReference
 import com.sun.jdi.Type
 import com.sun.jdi.Value
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.i18n
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
 
@@ -58,7 +58,7 @@ class DefaultModelRenderer : CompoundRendererProvider() {
 
     override fun getFullValueEvaluatorProvider(): FullValueEvaluatorProvider {
         return FullValueEvaluatorProvider { evaluationContext: EvaluationContextImpl, valueDescriptor: ValueDescriptorImpl ->
-            object : JavaFullValueEvaluator(HybrisI18NBundleUtils.message("hybris.debug.message.node.type.renderer.create"), evaluationContext) {
+            object : JavaFullValueEvaluator(i18n("hybris.debug.message.node.type.renderer.create"), evaluationContext) {
                 override fun evaluate(callback: XFullValueEvaluationCallback) {
                     val value = valueDescriptor.value
                     val project = valueDescriptor.project
@@ -69,11 +69,11 @@ class DefaultModelRenderer : CompoundRendererProvider() {
                         Notifications.create(
                             NotificationType.INFORMATION,
                             IdeBundle.message("progress.performing.indexing.tasks"),
-                            HybrisI18NBundleUtils.message("hybris.notification.debug.dumb.mode.content")
+                            i18n("hybris.notification.debug.dumb.mode.content")
                         )
                             .hideAfter(5)
                             .notify(project)
-                        callback.errorOccurred(HybrisI18NBundleUtils.message("hybris.notification.debug.dumb.mode.content"))
+                        callback.errorOccurred(i18n("hybris.notification.debug.dumb.mode.content"))
                         return
                     }
 

@@ -23,7 +23,6 @@ import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
-import sap.commerce.toolset.impex.psi.*
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
@@ -35,8 +34,9 @@ import com.intellij.psi.search.PsiSearchHelper
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.util.PsiTreeUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.psi.*
 
 class ImpexConfigProcessorInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.ERROR
@@ -66,7 +66,7 @@ private class ConfigProcessorVisitor(private val problemsHolder: ProblemsHolder)
         if (!isExist) {
             problemsHolder.registerProblem(
                 macroValue,
-                HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexConfigProcessorInspection.key", ImpExConstants.IMPEX_CONFIG_PREFIX),
+                i18n("hybris.inspections.impex.ImpexConfigProcessorInspection.key", ImpExConstants.IMPEX_CONFIG_PREFIX),
                 ProblemHighlightType.ERROR,
                 LocalFix(macroValue)
             )

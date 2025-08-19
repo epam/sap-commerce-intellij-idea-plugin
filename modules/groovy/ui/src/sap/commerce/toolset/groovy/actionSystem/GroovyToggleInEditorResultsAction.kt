@@ -22,13 +22,13 @@ import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.groovy.editor.groovySplitEditor
+import sap.commerce.toolset.i18n
 
 class GroovyToggleInEditorResultsAction : ToggleAction(
-    HybrisI18NBundleUtils.message("hybris.actions.in_editor.results"),
-    HybrisI18NBundleUtils.message("hybris.actions.in_editor.results.description"),
+    i18n("hybris.actions.in_editor.results"),
+    i18n("hybris.actions.in_editor.results.description"),
     HybrisIcons.Actions.TOGGLE_IN_EDITOR_RESULTS
 ) {
 

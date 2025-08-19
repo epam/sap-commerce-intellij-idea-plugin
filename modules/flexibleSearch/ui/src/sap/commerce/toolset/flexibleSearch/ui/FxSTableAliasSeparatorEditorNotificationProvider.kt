@@ -33,10 +33,10 @@ import com.intellij.psi.util.elementType
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotifications
 import com.intellij.util.concurrency.AppExecutorUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementFactory
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.FlexibleSearchSettingsState
 import java.util.function.Function
 
@@ -52,15 +52,15 @@ class FxSTableAliasSeparatorEditorNotificationProvider : FxSEditorNotificationPr
     ) = Function<FileEditor, EditorNotificationPanel> { fileEditor ->
         val panel = EditorNotificationPanel(fileEditor, EditorNotificationPanel.Status.Info)
         panel.icon(HybrisIcons.Y.LOGO_BLUE)
-        panel.text = HybrisI18NBundleUtils.message(
+        panel.text = i18n(
             "hybris.fxs.notification.provider.tableAliasSeparator.text",
             when (val separator = fxsSettings.completion.defaultTableAliasSeparator) {
-                "." -> HybrisI18NBundleUtils.message("hybris.settings.project.fxs.code.completion.separator.dot")
-                ":" -> HybrisI18NBundleUtils.message("hybris.settings.project.fxs.code.completion.separator.colon")
+                "." -> i18n("hybris.settings.project.fxs.code.completion.separator.dot")
+                ":" -> i18n("hybris.settings.project.fxs.code.completion.separator.colon")
                 else -> separator
             }
         )
-        panel.createActionLabel(HybrisI18NBundleUtils.message("hybris.fxs.notification.provider.tableAliasSeparator.action.unify")) {
+        panel.createActionLabel(i18n("hybris.fxs.notification.provider.tableAliasSeparator.action.unify")) {
             ReadAction
                 .nonBlocking<Collection<LeafPsiElement>> { collect(fxsSettings, psiFile).distinct().reversed() }
                 .finishOnUiThread(ModalityState.defaultModalityState()) { elements ->

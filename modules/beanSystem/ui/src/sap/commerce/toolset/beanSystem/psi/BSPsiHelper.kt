@@ -22,9 +22,9 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.beanSystem.meta.model.*
+import sap.commerce.toolset.i18n
 
 object BSPsiHelper {
 
@@ -74,8 +74,8 @@ object BSPsiHelper {
 
             Notifications.create(
                 NotificationType.INFORMATION,
-                message(messageTitleKey),
-                message(messageContentKey, ownerName ?: "?", meta.name ?: "?")
+                i18n(messageTitleKey),
+                i18n(messageContentKey, ownerName ?: "?", meta.name ?: "?")
             )
                 .notify(project)
         }, xmlTag.containingFile)

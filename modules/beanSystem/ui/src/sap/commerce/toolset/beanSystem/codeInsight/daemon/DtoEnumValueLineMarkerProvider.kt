@@ -23,16 +23,16 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiEnumConstant
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.isEnumFile
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
 import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
+import sap.commerce.toolset.i18n
 import javax.swing.Icon
 
 class DtoEnumValueLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiEnumConstant>() {
 
-    override fun getName() = message("hybris.editor.gutter.bs.dto.enum.value.name")
+    override fun getName() = i18n("hybris.editor.gutter.bs.dto.enum.value.name")
     override fun getIcon(): Icon = HybrisIcons.BeanSystem.ENUM_VALUE
     override fun canProcess(psi: PsiClass) = isEnumFile(psi)
         && psi.qualifiedName != null
@@ -48,7 +48,7 @@ class DtoEnumValueLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<Psi
             NavigationGutterIconBuilder
                 .create(icon)
                 .setTarget(it)
-                .setTooltipText(message("hybris.editor.gutter.bs.dto.enum.value.tooltip.text"))
+                .setTooltipText(i18n("hybris.editor.gutter.bs.dto.enum.value.tooltip.text"))
                 .setAlignment(GutterIconRenderer.Alignment.LEFT)
                 .createLineMarkerInfo(psi.nameIdentifier)
         }

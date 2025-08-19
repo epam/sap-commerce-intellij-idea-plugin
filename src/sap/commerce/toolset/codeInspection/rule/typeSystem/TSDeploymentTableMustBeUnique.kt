@@ -22,8 +22,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.codeInspection.fix.PsiNavigateToDomFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.model.Deployment
 import sap.commerce.toolset.typeSystem.model.Items
@@ -55,7 +55,7 @@ class TSDeploymentTableMustBeUnique : AbstractTSInspection() {
         holder.createProblem(
             dom.table,
             severity,
-            dom.typeCode.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.DeploymentTableMustBeUnique.details.key", it) }
+            dom.typeCode.stringValue?.let { i18n("hybris.inspections.ts.DeploymentTableMustBeUnique.details.key", it) }
                 ?: displayName,
             PsiNavigateToDomFix(deployment.domAnchor)
         )

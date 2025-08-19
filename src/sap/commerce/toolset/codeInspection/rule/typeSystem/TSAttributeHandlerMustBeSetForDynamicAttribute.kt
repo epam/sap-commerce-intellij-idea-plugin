@@ -22,8 +22,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.codeInspection.fix.xml.XmlAddAttributeQuickFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.model.*
 
 class TSAttributeHandlerMustBeSetForDynamicAttribute : AbstractTSInspection() {
@@ -51,7 +51,7 @@ class TSAttributeHandlerMustBeSetForDynamicAttribute : AbstractTSInspection() {
             holder.createProblem(
                 dom.persistence,
                 severity,
-                dom.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.AttributeHandlerMustBeSetForDynamicAttribute.details.key", it) }
+                dom.qualifier.stringValue?.let { i18n("hybris.inspections.ts.AttributeHandlerMustBeSetForDynamicAttribute.details.key", it) }
                     ?: displayName,
                 XmlAddAttributeQuickFix(Persistence.ATTRIBUTE_HANDLER)
             )

@@ -23,12 +23,12 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.psi.ResolveResult
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.codeInsight.completion.AutoPopupInsertHandler
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchColumnAliasName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTableAliasName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.state.FlexibleSearchSettingsState
 import sap.commerce.toolset.typeSystem.psi.reference.result.TSResolveResultUtil
 
@@ -51,7 +51,7 @@ object FxSLookupElementFactory {
     fun buildYSubSelect() = LookupElementBuilder.create("{{  }}")
         .withPresentableText(" ")
         .withTailText("{{...}}")
-        .withTypeText(HybrisI18NBundleUtils.message("hybris.fxs.completion.subQuery"), true)
+        .withTypeText(i18n("hybris.fxs.completion.subQuery"), true)
         .withIcon(HybrisIcons.FlexibleSearch.Y_COLUMN_PLACEHOLDER)
         .withTypeText(null, HybrisIcons.Y.LOGO_BLUE, true)
         .withTypeIconRightAligned(true)
@@ -104,13 +104,13 @@ object FxSLookupElementFactory {
 
     fun buildYColumnAll(addComma: Boolean) = LookupElementBuilder.create("*" + if (addComma) "," else "")
         .withPresentableText(" ")
-        .withTailText(HybrisI18NBundleUtils.message("hybris.fxs.completion.column.star"))
+        .withTailText(i18n("hybris.fxs.completion.column.star"))
         .withIcon(HybrisIcons.FlexibleSearch.Y_COLUMN_ALL)
 
     fun tryBuildLocalizedName(resolveResult: ResolveResult, featureName: String) = if (TSResolveResultUtil.isLocalized(resolveResult, featureName)) {
         LookupElementBuilder.create("$featureName[]")
             .withPresentableText("[]")
-            .withTailText(" ${HybrisI18NBundleUtils.message("hybris.fxs.completion.column.postfix.localized")}")
+            .withTailText(" ${i18n("hybris.fxs.completion.column.postfix.localized")}")
             .withIcon(HybrisIcons.TypeSystem.LOCALIZED)
             .withInsertHandler(object : AutoPopupInsertHandler() {
                 override fun handle(context: InsertionContext, item: LookupElement) {
@@ -140,28 +140,28 @@ object FxSLookupElementFactory {
         }
 
     fun buildOuterJoin() = LookupElementBuilder.create(":o")
-        .withTailText(" ${HybrisI18NBundleUtils.message("hybris.fxs.completion.column.postfix.outerJoin")}")
+        .withTailText(" ${i18n("hybris.fxs.completion.column.postfix.outerJoin")}")
         .withIcon(HybrisIcons.FlexibleSearch.OUTER_JOIN)
 
     fun buildTablePostfixExclamationMark(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK}")
         .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_EXCLAMATION_MARK)
-        .withTailText(" ${HybrisI18NBundleUtils.message("hybris.fxs.completion.table.name.postfix.exclamationMark")}")
+        .withTailText(" ${i18n("hybris.fxs.completion.table.name.postfix.exclamationMark")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_SUFFIX)
 
     fun buildTablePostfixStar(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_POSTFIX_STAR}")
         .withPresentableText(HybrisConstants.FXS_TABLE_POSTFIX_STAR)
-        .withTailText(" ${HybrisI18NBundleUtils.message("hybris.fxs.completion.table.name.postfix.star")}")
+        .withTailText(" ${i18n("hybris.fxs.completion.table.name.postfix.star")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_SUFFIX)
 
     fun buildSeparatorDot(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT}")
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_DOT)
-        .withTailText(" ${HybrisI18NBundleUtils.message("hybris.fxs.completion.table.alias.separator.dot")}")
+        .withTailText(" ${i18n("hybris.fxs.completion.table.alias.separator.dot")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_ALIAS_SEPARATOR)
         .withInsertHandler(AutoPopupInsertHandler.Companion.INSTANCE)
 
     fun buildSeparatorColon(prefix: String) = LookupElementBuilder.create("$prefix${HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON}")
         .withPresentableText(HybrisConstants.FXS_TABLE_ALIAS_SEPARATOR_COLON)
-        .withTailText(" ${HybrisI18NBundleUtils.message("hybris.fxs.completion.table.alias.separator.colon")}")
+        .withTailText(" ${i18n("hybris.fxs.completion.table.alias.separator.colon")}")
         .withIcon(HybrisIcons.FlexibleSearch.TABLE_ALIAS_SEPARATOR)
         .withInsertHandler(AutoPopupInsertHandler.Companion.INSTANCE)
 

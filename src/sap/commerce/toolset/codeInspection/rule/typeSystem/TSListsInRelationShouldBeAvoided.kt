@@ -22,9 +22,9 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.codeInspection.fix.xml.XmlDeleteAttributeQuickFix
 import sap.commerce.toolset.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.model.*
 
 class TSListsInRelationShouldBeAvoided : AbstractTSInspection() {
@@ -49,7 +49,7 @@ class TSListsInRelationShouldBeAvoided : AbstractTSInspection() {
             holder.createProblem(
                 relation.collectionType,
                 severity,
-                relation.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.ListsInRelationShouldBeAvoided.details.key", it) }
+                relation.qualifier.stringValue?.let { i18n("hybris.inspections.ts.ListsInRelationShouldBeAvoided.details.key", it) }
                     ?: displayName,
                 XmlDeleteAttributeQuickFix(RelationElement.COLLECTION_TYPE),
                 XmlUpdateAttributeQuickFix(

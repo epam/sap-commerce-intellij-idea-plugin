@@ -22,14 +22,15 @@ package sap.commerce.toolset.project;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.ProjectWizardStepFactory;
 import com.intellij.ide.util.projectWizard.WizardContext;
-import sap.commerce.toolset.project.wizard.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.projectImport.ProjectImportBuilder;
 import com.intellij.projectImport.ProjectImportProvider;
 import com.intellij.projectImport.ProjectOpenProcessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sap.commerce.toolset.HybrisI18NBundleUtils;
+import sap.commerce.toolset.project.wizard.*;
+
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class HybrisProjectImportProvider extends ProjectImportProvider {
 
@@ -65,6 +66,6 @@ public class HybrisProjectImportProvider extends ProjectImportProvider {
     @Nullable
     @Override
     public String getFileSample() {
-        return HybrisI18NBundleUtils.message("hybris.project.import.dialog.message");
+        return message("hybris.project.import.dialog.message");
     }
 }

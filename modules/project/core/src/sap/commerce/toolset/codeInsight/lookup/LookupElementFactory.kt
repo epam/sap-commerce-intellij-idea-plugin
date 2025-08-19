@@ -19,14 +19,14 @@
 package sap.commerce.toolset.codeInsight.lookup
 
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18nFallback
 
 object LookupElementFactory {
 
     fun buildLanguage(isoCode: String) = LookupElementBuilder.create(isoCode.lowercase())
         .withTypeText(
-            HybrisI18NBundleUtils.messageFallback("hybris.completion.column.language.${isoCode.lowercase()}", "")
+            i18nFallback("hybris.completion.column.language.${isoCode.lowercase()}", "")
                 .let { " $it" }
         )
         .withCaseSensitivity(false)

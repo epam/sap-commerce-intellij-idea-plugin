@@ -22,8 +22,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.codeInspection.fix.xml.XmlDeleteAttributeQuickFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.model.ItemType
 import sap.commerce.toolset.typeSystem.model.Items
 import sap.commerce.toolset.typeSystem.model.all
@@ -49,7 +49,7 @@ class TSJaloClassIsNotAllowedWhenAddingFieldsToExistingClass : AbstractTSInspect
             holder.createProblem(
                 dom,
                 severity,
-                dom.code.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass.details.key", it) }
+                dom.code.stringValue?.let { i18n("hybris.inspections.ts.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass.details.key", it) }
                     ?: displayName,
                 getTextRange(dom),
                 XmlDeleteAttributeQuickFix(ItemType.AUTO_CREATE),

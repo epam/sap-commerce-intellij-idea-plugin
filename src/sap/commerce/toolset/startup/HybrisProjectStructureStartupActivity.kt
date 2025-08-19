@@ -22,10 +22,10 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.common.services.CommonIdeaService
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.actionSystem.ProjectRefreshAction
 import sap.commerce.toolset.project.configurators.ConfiguratorFactory
@@ -48,21 +48,21 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
             if (settingsComponent.isOutdatedHybrisProject()) {
                 Notifications.create(
                     NotificationType.INFORMATION,
-                    HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.title"),
-                    HybrisI18NBundleUtils.message(
+                    i18n("hybris.notification.project.open.outdated.title"),
+                    i18n(
                         "hybris.notification.project.open.outdated.text",
                         settingsComponent.importedByVersion ?: "old"
                     )
                 )
                     .important(true)
-                    .addAction(HybrisI18NBundleUtils.message("hybris.notification.project.open.outdated.action")) { _, _ -> ProjectRefreshAction.triggerAction() }
+                    .addAction(i18n("hybris.notification.project.open.outdated.action")) { _, _ -> ProjectRefreshAction.triggerAction() }
                     .notify(project)
             }
         } else if (commonIdeaService.isPotentiallyHybrisProject(project)) {
             Notifications.create(
                 NotificationType.INFORMATION,
-                HybrisI18NBundleUtils.message("hybris.notification.project.open.potential.title"),
-                HybrisI18NBundleUtils.message("hybris.notification.project.open.potential.text")
+                i18n("hybris.notification.project.open.potential.title"),
+                i18n("hybris.notification.project.open.potential.text")
             )
                 .important(true)
                 .notify(project)

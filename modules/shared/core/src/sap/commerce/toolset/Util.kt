@@ -54,3 +54,9 @@ fun i18n(
     @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
     vararg params: Any
 ) = HybrisI18NBundleUtils.message(key, *params)
+
+fun i18nFallback(
+    @PropertyKey(resourceBundle = "i18n.HybrisBundle") key: String,
+    fallback: String,
+    vararg params: Any
+) = HybrisI18NBundleUtils.messageFallback(key, fallback, *params)

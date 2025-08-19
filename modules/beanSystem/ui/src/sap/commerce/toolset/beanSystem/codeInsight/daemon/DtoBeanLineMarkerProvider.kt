@@ -22,16 +22,16 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.isBeanFile
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
 import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
+import sap.commerce.toolset.i18n
 import javax.swing.Icon
 
 class DtoBeanLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass>() {
 
-    override fun getName() = message("hybris.editor.gutter.bs.dto.bean.name")
+    override fun getName() = i18n("hybris.editor.gutter.bs.dto.bean.name")
     override fun getIcon(): Icon = HybrisIcons.BeanSystem.BEAN
     override fun canProcess(psi: PsiClass) = isBeanFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiClass)
@@ -46,8 +46,8 @@ class DtoBeanLineMarkerProvider : AbstractHybrisClassLineMarkerProvider<PsiClass
             NavigationGutterIconBuilder
                 .create(icon)
                 .setTargets(it)
-                .setPopupTitle(message("hybris.editor.gutter.bs.dto.bean.popup.title"))
-                .setTooltipText(message("hybris.editor.gutter.bs.dto.bean.tooltip.text"))
+                .setPopupTitle(i18n("hybris.editor.gutter.bs.dto.bean.popup.title"))
+                .setTooltipText(i18n("hybris.editor.gutter.bs.dto.bean.tooltip.text"))
                 .setAlignment(GutterIconRenderer.Alignment.LEFT)
                 .createLineMarkerInfo(psi.nameIdentifier!!)
         }

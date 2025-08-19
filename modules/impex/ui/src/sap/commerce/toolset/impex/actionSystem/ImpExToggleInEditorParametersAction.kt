@@ -22,13 +22,13 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
 import com.intellij.openapi.project.DumbAware
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.editor.impexSplitEditorEx
 
 class ImpExToggleInEditorParametersAction : ToggleAction(
-    HybrisI18NBundleUtils.message("hybris.actions.in_editor.virtual_parameters"),
-    HybrisI18NBundleUtils.message("hybris.actions.in_editor.virtual_parameters.description"),
+    i18n("hybris.actions.in_editor.virtual_parameters"),
+    i18n("hybris.actions.in_editor.virtual_parameters.description"),
     HybrisIcons.Actions.TOGGLE_IN_EDITOR_PARAMETERS
 ), DumbAware {
 

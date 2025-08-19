@@ -30,7 +30,7 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider
 import sap.commerce.toolset.settings.DeveloperSettings
@@ -43,7 +43,7 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(private val project: Proj
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(private val project: Project) : BoundSearchableConfigurable(
-        HybrisI18NBundleUtils.message("hybris.settings.project.pgq.title"), "hybris.pgq.settings"
+        i18n("hybris.settings.project.pgq.title"), "hybris.pgq.settings"
     ) {
 
         private val developerSettings = DeveloperSettings.getInstance(project)
@@ -66,7 +66,7 @@ class ProjectPolyglotQuerySettingsConfigurableProvider(private val project: Proj
                 row {
                     comboBox(
                         reservedWordsModel,
-                        renderer = SimpleListCellRenderer.create("?") { HybrisI18NBundleUtils.message("hybris.pgq.notification.provider.keywords.case.$it") }
+                        renderer = SimpleListCellRenderer.create("?") { i18n("hybris.pgq.notification.provider.keywords.case.$it") }
                     )
                         .label("Default case for reserved words")
                         .bindItem(mutableSettings::defaultCaseForReservedWords.toNullableProperty())

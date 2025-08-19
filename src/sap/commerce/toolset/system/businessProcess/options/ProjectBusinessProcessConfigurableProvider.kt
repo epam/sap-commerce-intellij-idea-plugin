@@ -24,7 +24,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 import javax.swing.JCheckBox
@@ -35,7 +35,7 @@ class ProjectBusinessProcessConfigurableProvider(val project: Project) : Configu
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
-        HybrisI18NBundleUtils.message("hybris.settings.project.bp.title"), "[y] SAP CX Business Process configuration."
+        i18n("hybris.settings.project.bp.title"), "[y] SAP CX Business Process configuration."
     ) {
 
         private val developerSettings = DeveloperSettings.getInstance(project)

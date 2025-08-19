@@ -22,13 +22,13 @@ import com.intellij.codeHighlighting.HighlightDisplayLevel
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.constants.modifier.TypeModifier
 import sap.commerce.toolset.impex.psi.ImpexAnyAttributeName
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderType
 import sap.commerce.toolset.impex.psi.ImpexVisitor
-import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.util.PsiTreeUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils
 
 class ImpexUnknownTypeModifierInspection : LocalInspectionTool() {
     override fun getDefaultLevel(): HighlightDisplayLevel = HighlightDisplayLevel.WEAK_WARNING
@@ -42,7 +42,7 @@ class ImpexUnknownTypeModifierInspection : LocalInspectionTool() {
 
             problemsHolder.registerProblem(
                 attribute,
-                HybrisI18NBundleUtils.message("hybris.inspections.impex.ImpexUnknownTypeModifierInspection.key", attribute.text),
+                i18n("hybris.inspections.impex.ImpexUnknownTypeModifierInspection.key", attribute.text),
                 ProblemHighlightType.LIKE_UNKNOWN_SYMBOL
             )
         }

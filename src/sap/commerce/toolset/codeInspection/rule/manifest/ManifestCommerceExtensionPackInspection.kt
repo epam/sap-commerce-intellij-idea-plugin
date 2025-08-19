@@ -28,9 +28,9 @@ import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.ccv2.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
+import sap.commerce.toolset.i18n
 
 class ManifestCommerceExtensionPackInspection : LocalInspectionTool() {
 
@@ -49,7 +49,7 @@ class ManifestCommerceExtensionPackInspection : LocalInspectionTool() {
             if (isApplicable(parent, o) && !CCv2Constants.COMMERCE_EXTENSION_PACKS.contains(o.value)) {
                 holder.registerProblem(
                         o,
-                        HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownExtensionPackInspection.message", o.value)
+                        i18n("hybris.inspections.fix.manifest.ManifestUnknownExtensionPackInspection.message", o.value)
                 )
             }
         }

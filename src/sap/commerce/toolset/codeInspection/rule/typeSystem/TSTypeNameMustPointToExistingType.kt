@@ -24,7 +24,7 @@ import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.model.Items
 import sap.commerce.toolset.typeSystem.model.all
@@ -74,7 +74,7 @@ class TSTypeNameMustPointToExistingType : AbstractTSInspection() {
             holder.createProblem(
                 dom,
                 severity,
-                HybrisI18NBundleUtils.message("hybris.inspections.ts.TypeNameMustPointToExistingType.details.key", typeCode)
+                i18n("hybris.inspections.ts.TypeNameMustPointToExistingType.details.key", typeCode)
             )
         }
     }

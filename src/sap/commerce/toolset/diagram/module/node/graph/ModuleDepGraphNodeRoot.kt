@@ -18,10 +18,9 @@
 
 package sap.commerce.toolset.diagram.module.node.graph
 
-import sap.commerce.toolset.HybrisI18NBundleUtils
-
+import sap.commerce.toolset.i18n
 data class ModuleDepGraphNodeRoot(
-    override val name: String = HybrisI18NBundleUtils.message("hybris.diagram.module.dependencies.provider.name"),
+    override val name: String = i18n("hybris.diagram.module.dependencies.provider.name"),
     override val properties: Array<ModuleDepGraphField> = emptyArray()
 ) : ModuleDepGraphNode {
 

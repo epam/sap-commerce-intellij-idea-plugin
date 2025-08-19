@@ -25,7 +25,7 @@ import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.openapi.vcs.VcsDirectoryMapping
 import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 
 @Service
@@ -36,7 +36,7 @@ class VersionControlSystemConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         project: Project
     ) {
-        indicator.text = HybrisI18NBundleUtils.message("hybris.project.import.vcs")
+        indicator.text = i18n("hybris.project.import.vcs")
 
         val vcsManager = ProjectLevelVcsManager.getInstance(project)
         val rootDetector = VcsRootDetector.getInstance(project)

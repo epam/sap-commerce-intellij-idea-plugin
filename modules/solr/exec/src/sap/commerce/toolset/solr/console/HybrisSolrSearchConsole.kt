@@ -36,12 +36,12 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.whenItemSelectedFromUi
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.solr.exec.SolrExecutionClient
 import sap.commerce.toolset.solr.exec.context.SolrCoreData
 import sap.commerce.toolset.solr.exec.context.SolrQueryExecutionContext
@@ -147,8 +147,8 @@ class HybrisSolrSearchConsole(
     } catch (e: Exception) {
         Notifications.Companion.create(
             NotificationType.WARNING,
-            HybrisI18NBundleUtils.message("hybris.notification.toolwindow.hac.test.connection.title"),
-            HybrisI18NBundleUtils.message("hybris.notification.toolwindow.solr.test.connection.fail.content", e.localizedMessage)
+            i18n("hybris.notification.toolwindow.hac.test.connection.title"),
+            i18n("hybris.notification.toolwindow.solr.test.connection.fail.content", e.localizedMessage)
         )
             .notify(project)
         emptyList()

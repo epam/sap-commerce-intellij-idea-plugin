@@ -25,8 +25,8 @@ import com.intellij.json.psi.*
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.parentOfType
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.ccv2.manifest.jsonSchema.providers.ManifestCommerceJsonSchemaFileProvider
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 class ManifestCommerceExtensionInspection : LocalInspectionTool() {
@@ -46,7 +46,7 @@ class ManifestCommerceExtensionInspection : LocalInspectionTool() {
             if (isApplicable(parent, o) && !ProjectSettings.getInstance(o.project).getAvailableExtensions().contains(o.value)) {
                 holder.registerProblem(
                     o,
-                    HybrisI18NBundleUtils.message("hybris.inspections.fix.manifest.ManifestUnknownExtensionInspection.message", o.value)
+                    i18n("hybris.inspections.fix.manifest.ManifestUnknownExtensionInspection.message", o.value)
                 )
             }
         }

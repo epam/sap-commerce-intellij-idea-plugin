@@ -30,10 +30,10 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.exec.context.ExecutionContext
+import sap.commerce.toolset.i18nFallback
 import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreePath
 import kotlin.reflect.KClass
@@ -104,7 +104,7 @@ class OpenInHybrisConsoleService(private val project: Project) {
         .currentProjectViewPane
         ?.selectionPaths
 
-    private fun getDialogTitleFromProperties(fileExtension: String) = HybrisI18NBundleUtils.messageFallback(HybrisConstants.DIALOG_TITLE + fileExtension, fileExtension)
+    private fun getDialogTitleFromProperties(fileExtension: String) = i18nFallback(HybrisConstants.DIALOG_TITLE + fileExtension, fileExtension)
 
     companion object {
         fun getInstance(project: Project): OpenInHybrisConsoleService = project.service()

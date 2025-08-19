@@ -21,13 +21,13 @@ package sap.commerce.toolset.beanSystem.actionSystem
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.ToggleAction
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.beanSystem.settings.BSViewSettings
 import sap.commerce.toolset.beanSystem.settings.state.ChangeType
+import sap.commerce.toolset.i18n
 
 class BSShowOnlyCustomAction(val settings: BSViewSettings) : ToggleAction(
-    message("hybris.toolwindow.action.only_custom.text"),
-    message("hybris.toolwindow.bs.action.only_custom.description"),
+    i18n("hybris.toolwindow.action.only_custom.text"),
+    i18n("hybris.toolwindow.bs.action.only_custom.description"),
     null
 ) {
 
@@ -42,8 +42,8 @@ class BSShowOnlyCustomAction(val settings: BSViewSettings) : ToggleAction(
 }
 
 class BSShowOnlyDeprecatedAction(val settings: BSViewSettings) : ToggleAction(
-    message("hybris.toolwindow.bs.action.only_deprecated.text"),
-    message("hybris.toolwindow.bs.action.only_deprecated.description"),
+    i18n("hybris.toolwindow.bs.action.only_deprecated.text"),
+    i18n("hybris.toolwindow.bs.action.only_deprecated.description"),
     null
 ) {
 
@@ -58,7 +58,7 @@ class BSShowOnlyDeprecatedAction(val settings: BSViewSettings) : ToggleAction(
 }
 
 class BSShowMetaEnumValuesAction(val settings: BSViewSettings) : ToggleAction(
-    message("hybris.toolwindow.bs.action.enum.values.text"), null, null
+    i18n("hybris.toolwindow.bs.action.enum.values.text"), null, null
 ) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showEnumValues
@@ -72,7 +72,7 @@ class BSShowMetaEnumValuesAction(val settings: BSViewSettings) : ToggleAction(
 }
 
 class BSShowMetaBeanPropertiesAction(val settings: BSViewSettings) : ToggleAction(
-    message("hybris.toolwindow.bs.action.bean.properties.text"), null, null
+    i18n("hybris.toolwindow.bs.action.bean.properties.text"), null, null
 ) {
 
     override fun isSelected(e: AnActionEvent): Boolean = settings.showBeanProperties

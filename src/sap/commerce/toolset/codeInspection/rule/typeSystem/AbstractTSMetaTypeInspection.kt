@@ -23,7 +23,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 import sap.commerce.toolset.typeSystem.model.Items
@@ -58,7 +58,7 @@ abstract class AbstractTSMetaTypeInspection(private val messageKey: String) : Ab
         holder.createProblem(
             dom,
             severity,
-            HybrisI18NBundleUtils.message(messageKey, name)
+            i18n(messageKey, name)
         )
     }
 }

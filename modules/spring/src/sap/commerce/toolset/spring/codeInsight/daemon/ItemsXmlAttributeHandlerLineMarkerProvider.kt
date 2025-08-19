@@ -24,9 +24,9 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.firstLeaf
 import com.intellij.psi.xml.XmlTag
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.spring.SpringHelper
 import sap.commerce.toolset.typeSystem.codeInsight.daemon.AbstractItemsXmlLineMarkerProvider
 import sap.commerce.toolset.typeSystem.model.Attribute
@@ -40,7 +40,7 @@ class ItemsXmlAttributeHandlerLineMarkerProvider : AbstractItemsXmlLineMarkerPro
     override fun canProcess(elements: MutableList<out PsiElement>): Boolean = super.canProcess(elements)
         && Plugin.SPRING.isActive()
 
-    override fun getName() = HybrisI18NBundleUtils.message("hybris.editor.gutter.ts.items.item.attributeHandler.name")
+    override fun getName() = i18n("hybris.editor.gutter.ts.items.item.attributeHandler.name")
     override fun getIcon(): Icon = HybrisIcons.SPRING_BEAN
     override fun tryCast(psi: PsiElement) = (psi as? XmlTag)
         ?.takeIf { it.localName == Attribute.PERSISTENCE }
@@ -53,7 +53,7 @@ class ItemsXmlAttributeHandlerLineMarkerProvider : AbstractItemsXmlLineMarkerPro
         val marker = NavigationGutterIconBuilder
             .create(icon)
             .setTargets(springBeanDeclaration)
-            .setTooltipText(HybrisI18NBundleUtils.message("hybris.editor.gutter.ts.items.item.attributeHandler.tooltip.text"))
+            .setTooltipText(i18n("hybris.editor.gutter.ts.items.item.attributeHandler.tooltip.text"))
             .setAlignment(GutterIconRenderer.Alignment.RIGHT)
             .createLineMarkerInfo(psi.firstLeaf())
         return listOf(marker)

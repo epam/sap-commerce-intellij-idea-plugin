@@ -22,7 +22,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 
@@ -38,9 +38,9 @@ class GroovyTransactionModeActionGroup : DefaultActionGroup() {
     override fun update(e: AnActionEvent) {
         val project = e.project ?: return
         val mode = DeveloperSettings.Companion.getInstance(project).groovySettings.txMode
-            .let { HybrisI18NBundleUtils.message("hybris.groovy.actions.transaction.${it.name.lowercase()}") }
+            .let { i18n("hybris.groovy.actions.transaction.${it.name.lowercase()}") }
 
-        e.presentation.text = HybrisI18NBundleUtils.message("hybris.groovy.actions.transaction.mode", mode)
+        e.presentation.text = i18n("hybris.groovy.actions.transaction.mode", mode)
     }
 
 }

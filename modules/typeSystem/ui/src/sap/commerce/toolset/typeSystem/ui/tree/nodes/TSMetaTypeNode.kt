@@ -23,14 +23,14 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.model.*
 import sap.commerce.toolset.typeSystem.settings.TSViewSettings
 
 class TSMetaTypeNode(parent: TSNode, private val metaType: TSMetaType) : TSNode(parent) {
 
-    override fun getName() = HybrisI18NBundleUtils.message("hybris.toolwindow.ts.group.${metaType.name.lowercase()}.name")
+    override fun getName() = i18n("hybris.toolwindow.ts.group.${metaType.name.lowercase()}.name")
 
     @Suppress("UNCHECKED_CAST")
     override fun update(existingNode: TSNode, newNode: TSNode) {

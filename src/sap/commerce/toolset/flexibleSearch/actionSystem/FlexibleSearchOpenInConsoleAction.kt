@@ -17,14 +17,14 @@
  */
 package sap.commerce.toolset.flexibleSearch.actionSystem
 
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.console.actionSystem.OpenInConsoleAction
 import sap.commerce.toolset.flexibleSearch.console.FlexibleSearchConsole
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
+import sap.commerce.toolset.i18n
 
 class FlexibleSearchOpenInConsoleAction : OpenInConsoleAction(
     FlexibleSearchFileType,
     FlexibleSearchConsole::class,
-    HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query"),
-    HybrisI18NBundleUtils.message("hybris.fxs.actions.open_query.description"),
+    i18n("hybris.fxs.actions.open_query"),
+    i18n("hybris.fxs.actions.open_query.description"),
 )

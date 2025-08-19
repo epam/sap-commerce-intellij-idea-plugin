@@ -22,7 +22,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.model.Attribute
 import sap.commerce.toolset.typeSystem.model.Items
 import sap.commerce.toolset.typeSystem.model.all
@@ -54,7 +54,7 @@ class TSMandatoryFieldMustHaveInitialValue : AbstractTSInspection() {
             holder.createProblem(
                 dom,
                 severity,
-                dom.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.MandatoryFieldMustHaveInitialValue.details.key", it) }
+                dom.qualifier.stringValue?.let { i18n("hybris.inspections.ts.MandatoryFieldMustHaveInitialValue.details.key", it) }
                     ?: displayName,
                 getTextRange(dom)
             )

@@ -17,8 +17,6 @@
  */
 package sap.commerce.toolset.project.configurators.impl
 
-import sap.commerce.toolset.project.configurators.LibRootsConfigurator
-import sap.commerce.toolset.project.descriptors.YModuleLibDescriptorUtil
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.DependencyScope
@@ -30,11 +28,9 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
-import sap.commerce.toolset.project.descriptors.JavaLibraryDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor
-import sap.commerce.toolset.project.descriptors.YModuleDescriptor
+import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.configurators.LibRootsConfigurator
+import sap.commerce.toolset.project.descriptors.*
 import sap.commerce.toolset.project.descriptors.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor
@@ -50,7 +46,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         modifiableModelsProvider: IdeModifiableModelsProvider,
         indicator: ProgressIndicator
     ) {
-        indicator.text2 = HybrisI18NBundleUtils.message("hybris.project.import.module.libs")
+        indicator.text2 = i18n("hybris.project.import.module.libs")
 
         val sourceCodeRoot = getSourceCodeRoot(moduleDescriptor)
         for (javaLibraryDescriptor in YModuleLibDescriptorUtil.getLibraryDescriptors(moduleDescriptor, allYModules)) {

@@ -20,14 +20,13 @@
 package sap.commerce.toolset.project.wizard;
 
 import com.intellij.ide.util.projectWizard.WizardContext;
-import sap.commerce.toolset.project.AbstractHybrisProjectImportBuilder;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.projectImport.SelectImportedProjectsStep;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ui.ImageUtil;
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.HybrisI18NBundleUtils;
+import sap.commerce.toolset.project.AbstractHybrisProjectImportBuilder;
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
 
 import java.awt.*;
@@ -35,6 +34,7 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 import static sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus.MANDATORY;
 import static sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus.UNUSED;
 
@@ -97,8 +97,8 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
 
         if (this.fileChooser.getMarkedElements().isEmpty()) {
             throw new ConfigurationException(
-                HybrisI18NBundleUtils.message("hybris.project.import.error.nothing.found.to.import"),
-                HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
+                message("hybris.project.import.error.nothing.found.to.import"),
+                message("hybris.project.import.error.unable.to.proceed")
             );
         }
 
@@ -136,11 +136,11 @@ public abstract class AbstractSelectModulesToImportStep extends SelectImportedPr
 
         if (!moduleDuplicates.isEmpty()) {
             throw new ConfigurationException(
-                HybrisI18NBundleUtils.message(
+                message(
                     "hybris.project.import.duplicate.projects.found",
                     StringUtil.join(ArrayUtil.toStringArray(moduleDuplicateNames), "\n")
                 ),
-                HybrisI18NBundleUtils.message("hybris.project.error")
+                message("hybris.project.error")
             );
         }
 

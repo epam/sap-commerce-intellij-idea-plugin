@@ -24,10 +24,10 @@ import com.intellij.psi.PsiField
 import com.intellij.psi.PsiLiteralExpression
 import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.codeInsight.daemon.AbstractHybrisClassLineMarkerProvider
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.util.TSUtils
 import javax.swing.Icon
 
@@ -36,7 +36,7 @@ class ModelItemInterceptorLineMarkerProvider : AbstractHybrisClassLineMarkerProv
     override fun canProcess(elements: MutableList<out PsiElement>): Boolean = super.canProcess(elements)
         && Plugin.SPRING.isActive()
 
-    override fun getName() = HybrisI18NBundleUtils.message("hybris.editor.gutter.ts.model.item.interceptors.name")
+    override fun getName() = i18n("hybris.editor.gutter.ts.model.item.interceptors.name")
     override fun getIcon(): Icon = HybrisIcons.TypeSystem.INTERCEPTOR
     override fun canProcess(psi: PsiClass) = TSUtils.isItemModelFile(psi)
     override fun tryCast(psi: PsiElement) = (psi as? PsiField)

@@ -22,8 +22,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.model.*
 
 class TSCmpPersistanceTypeIsDeprecated : AbstractTSInspection() {
@@ -51,7 +51,7 @@ class TSCmpPersistanceTypeIsDeprecated : AbstractTSInspection() {
             holder.createProblem(
                 dom.persistence.type,
                 severity,
-                dom.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.CmpPersistanceTypeIsDeprecated.details.key", it) }
+                dom.qualifier.stringValue?.let { i18n("hybris.inspections.ts.CmpPersistanceTypeIsDeprecated.details.key", it) }
                     ?: displayName,
                 XmlUpdateAttributeQuickFix(
                     Persistence.TYPE,

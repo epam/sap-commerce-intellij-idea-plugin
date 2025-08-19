@@ -22,19 +22,19 @@ import com.intellij.diagram.DiagramPresentationModel
 import com.intellij.diagram.extras.DiagramExtras
 import com.intellij.diagram.settings.DiagramConfigElement
 import com.intellij.diagram.settings.DiagramConfigGroup
-import sap.commerce.toolset.diagram.module.node.ModuleDepDiagramDataModel
-import sap.commerce.toolset.diagram.module.node.graph.ModuleDepGraphNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.intellij.lang.annotations.Pattern
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.diagram.module.node.ModuleDepDiagramDataModel
+import sap.commerce.toolset.diagram.module.node.graph.ModuleDepGraphNode
+import sap.commerce.toolset.i18n
 import javax.swing.Icon
 
 class ModuleDepDiagramProvider : BaseDiagramProvider<ModuleDepGraphNode>() {
     @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisModuleDependencies"
-    override fun getPresentableName() = HybrisI18NBundleUtils.message("hybris.diagram.module.dependencies.provider.name")
+    override fun getPresentableName() = i18n("hybris.diagram.module.dependencies.provider.name")
     override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.Module.Diagram.Actions.SHOW
 
     override fun createVisibilityManager() = ModuleDepDiagramVisibilityManager()

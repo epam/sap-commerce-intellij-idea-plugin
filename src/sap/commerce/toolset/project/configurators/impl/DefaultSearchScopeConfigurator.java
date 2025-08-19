@@ -21,7 +21,6 @@ package sap.commerce.toolset.project.configurators.impl;
 
 import com.intellij.find.FindSettings;
 import com.intellij.ide.projectView.impl.ModuleGroup;
-import sap.commerce.toolset.project.configurators.SearchScopeConfigurator;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -29,9 +28,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.search.scope.packageSet.*;
 import com.intellij.util.ArrayUtil;
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.HybrisI18NBundleUtils;
 import sap.commerce.toolset.HybrisIcons;
 import sap.commerce.toolset.impex.ImpExConstants;
+import sap.commerce.toolset.project.configurators.SearchScopeConfigurator;
 import sap.commerce.toolset.settings.ApplicationSettings;
 
 import javax.swing.*;
@@ -69,7 +68,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             newScopes.add(customScope);
 
             newScopes.add(new NamedScope(
-                HybrisI18NBundleUtils.message("hybris.scope.editable.custom.ts.files"),
+                message("hybris.scope.editable.custom.ts.files"),
                 new FilePatternPackageSet(
                     customGroupName + '*',
                     "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING
@@ -77,7 +76,7 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             ));
 
             newScopes.add(new NamedScope(
-                SEARCH_SCOPE_Y_PREFIX + ' ' + HybrisI18NBundleUtils.message("hybris.scope.editable.custom.ts.beans.impex.files"),
+                SEARCH_SCOPE_Y_PREFIX + ' ' + message("hybris.scope.editable.custom.ts.beans.impex.files"),
                 createCustomTsImpexBeansFilesPattern(applicationSettings)
             ));
         }
@@ -97,11 +96,11 @@ public class DefaultSearchScopeConfigurator implements SearchScopeConfigurator {
             newScopes.add(createScope(HybrisIcons.Scope.INSTANCE.getLOCAL(), nonHybrisGroupName));
         }
         newScopes.add(new NamedScope(
-            HybrisI18NBundleUtils.message("hybris.scope.editable.all.ts.files"),
+            message("hybris.scope.editable.all.ts.files"),
             new FilePatternPackageSet(null, "*//*" + HYBRIS_ITEMS_XML_FILE_ENDING)
         ));
         newScopes.add(new NamedScope(
-            HybrisI18NBundleUtils.message("hybris.scope.editable.all.beans.files"),
+            message("hybris.scope.editable.all.beans.files"),
             new FilePatternPackageSet(null, "*//*" + HYBRIS_BEANS_XML_FILE_ENDING)
         ));
         ApplicationManager.getApplication().invokeLater(() -> addOrReplaceScopes(project, newScopes));

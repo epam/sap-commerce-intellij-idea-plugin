@@ -28,15 +28,15 @@ import com.intellij.psi.xml.XmlTag
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
-import sap.commerce.toolset.HybrisI18NBundleUtils.message
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.meta.BSMetaModelAccess
 import sap.commerce.toolset.beanSystem.model.Bean
+import sap.commerce.toolset.i18n
 import javax.swing.Icon
 
 class BeansXmlBeanAlternativeDeclarationsLineMarkerProvider : AbstractBeansXmlLineMarkerProvider<XmlAttributeValue>() {
 
-    override fun getName() = message("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.name")
+    override fun getName() = i18n("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.name")
     override fun getIcon(): Icon = HybrisIcons.Actions.FORWARD
     override fun tryCast(psi: PsiElement) = psi as? XmlAttributeValue
 
@@ -65,8 +65,8 @@ class BeansXmlBeanAlternativeDeclarationsLineMarkerProvider : AbstractBeansXmlLi
                 NavigationGutterIconBuilder
                     .create(icon)
                     .setTargets(it)
-                    .setPopupTitle(message("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.popup.title"))
-                    .setTooltipText(message("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.tooltip.text"))
+                    .setPopupTitle(i18n("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.popup.title"))
+                    .setTooltipText(i18n("hybris.editor.gutter.bs.beans.bean.alternativeDeclarations.tooltip.text"))
                     .setAlignment(GutterIconRenderer.Alignment.RIGHT)
                     .createLineMarkerInfo(leaf)
             }

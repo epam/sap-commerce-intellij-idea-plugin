@@ -27,7 +27,7 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import com.intellij.util.ui.JBUI
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.typeSystem.ui.TSDiagramSettingsExcludedTypeNameTable
@@ -40,7 +40,7 @@ class ProjectTypeSystemConfigurableProvider(private val project: Project) : Conf
     override fun createConfigurable() = SettingsConfigurable(project)
 
     class SettingsConfigurable(project: Project) : BoundSearchableConfigurable(
-        HybrisI18NBundleUtils.message("hybris.settings.project.ts.title"), "[y] SAP CX Type System configuration."
+        i18n("hybris.settings.project.ts.title"), "[y] SAP CX Type System configuration."
     ) {
 
         private val developerSettings = DeveloperSettings.Companion.getInstance(project)

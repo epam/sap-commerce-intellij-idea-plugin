@@ -25,9 +25,9 @@ import com.intellij.psi.xml.XmlAttributeValue
 import com.intellij.psi.xml.XmlToken
 import com.intellij.psi.xml.XmlTokenType
 import com.intellij.util.xml.DomManager
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.codeInsight.daemon.AbstractItemsXmlLineMarkerProvider
 import sap.commerce.toolset.typeSystem.model.ItemType
 import javax.swing.Icon
@@ -37,7 +37,7 @@ class ItemsXmlInterceptorLineMarkerProvider : AbstractItemsXmlLineMarkerProvider
     override fun canProcess(elements: MutableList<out PsiElement>): Boolean = super.canProcess(elements)
         && Plugin.SPRING.isActive()
 
-    override fun getName() = HybrisI18NBundleUtils.message("hybris.editor.gutter.ts.items.item.interceptors.name")
+    override fun getName() = i18n("hybris.editor.gutter.ts.items.item.interceptors.name")
     override fun getIcon(): Icon = HybrisIcons.TypeSystem.INTERCEPTOR
 
     override fun tryCast(psi: PsiElement) = (psi as? XmlAttributeValue)

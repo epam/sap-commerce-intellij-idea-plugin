@@ -22,7 +22,7 @@ import com.intellij.openapi.ui.InputValidatorEx
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.ui.AddEditDeleteListPanel
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import java.io.Serial
 import java.util.*
 
@@ -35,14 +35,14 @@ class CRUDListPanel(
 
     override fun findItemToAdd() = showEditDialog(
         "",
-        HybrisI18NBundleUtils.message(addTitle),
-        HybrisI18NBundleUtils.message(addText)
+        i18n(addTitle),
+        i18n(addText)
     )
 
     override fun editSelectedItem(item: String) = showEditDialog(
         item,
-        HybrisI18NBundleUtils.message(editTitle),
-        HybrisI18NBundleUtils.message(editText)
+        i18n(editTitle),
+        i18n(editText)
     )
 
     private fun showEditDialog(

@@ -30,7 +30,6 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.actionSystem.BSShowMetaBeanPropertiesAction
 import sap.commerce.toolset.beanSystem.actionSystem.BSShowMetaEnumValuesAction
@@ -43,6 +42,7 @@ import sap.commerce.toolset.beanSystem.settings.BSViewSettings
 import sap.commerce.toolset.beanSystem.settings.event.BSViewSettingsListener
 import sap.commerce.toolset.beanSystem.settings.state.ChangeType
 import sap.commerce.toolset.beanSystem.ui.components.BSTreePanel
+import sap.commerce.toolset.i18n
 import java.awt.GridBagLayout
 import java.io.Serial
 
@@ -61,7 +61,7 @@ class BSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
         when {
             DumbService.Companion.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
-                add(JBLabel(HybrisI18NBundleUtils.message("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+                add(JBLabel(i18n("hybris.toolwindow.bs.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
                 setContent(this)
             }
 
@@ -120,14 +120,14 @@ class BSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
     private fun setContentInitializing() {
         with(JBPanel<JBPanel<*>>(GridBagLayout())) {
-            add(JBLabel(HybrisI18NBundleUtils.message("hybris.toolwindow.bs.suspended.text", HybrisI18NBundleUtils.message("hybris.toolwindow.bs.suspended.initializing.text"))))
+            add(JBLabel(i18n("hybris.toolwindow.bs.suspended.text", i18n("hybris.toolwindow.bs.suspended.initializing.text"))))
             setContent(this)
         }
     }
 
     private fun initBeansViewActionGroup(): DefaultActionGroup = with(
         DefaultActionGroup(
-            HybrisI18NBundleUtils.message("hybris.toolwindow.action.view_options.text"),
+            i18n("hybris.toolwindow.action.view_options.text"),
             true
         )
     ) {

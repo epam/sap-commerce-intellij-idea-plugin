@@ -43,7 +43,6 @@ import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.projectImport.ProjectImportProvider;
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.HybrisI18NBundleUtils;
 import sap.commerce.toolset.HybrisIcons;
 import sap.commerce.toolset.project.AbstractHybrisProjectImportBuilder;
 import sap.commerce.toolset.project.HybrisProjectImportProvider;
@@ -52,6 +51,8 @@ import sap.commerce.toolset.project.facet.YFacet;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.project.wizard.RefreshSupport;
 import sap.commerce.toolset.settings.WorkspaceSettings;
+
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class ProjectRefreshAction extends AnAction {
 
@@ -105,7 +106,7 @@ public class ProjectRefreshAction extends AnAction {
             Messages.showErrorDialog(
                 project,
                 ex.getMessageHtml().toString(),
-                HybrisI18NBundleUtils.message("hybris.project.import.error.unable.to.proceed")
+                message("hybris.project.import.error.unable.to.proceed")
             );
         }
     }

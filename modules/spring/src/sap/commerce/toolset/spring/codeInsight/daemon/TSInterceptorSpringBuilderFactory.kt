@@ -31,8 +31,8 @@ import com.intellij.spring.model.SpringBeanPointer
 import com.intellij.spring.model.xml.DomSpringBean
 import com.intellij.util.NotNullFunction
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.spring.SpringHelper
 
 /**
@@ -80,9 +80,9 @@ object TSInterceptorSpringBuilderFactory {
         )
         builder
             .setTargets(SpringHelper.resolveInterceptorBeansLazy(clazz, typeCode))
-            .setEmptyPopupText(HybrisI18NBundleUtils.message("hybris.editor.gutter.ts.interceptor.no.matches"))
-            .setPopupTitle(HybrisI18NBundleUtils.message("hybris.editor.gutter.ts.interceptor.choose.title"))
-            .setTooltipText(HybrisI18NBundleUtils.message("hybris.editor.gutter.ts.interceptor.tooltip.text"))
+            .setEmptyPopupText(i18n("hybris.editor.gutter.ts.interceptor.no.matches"))
+            .setPopupTitle(i18n("hybris.editor.gutter.ts.interceptor.choose.title"))
+            .setTooltipText(i18n("hybris.editor.gutter.ts.interceptor.tooltip.text"))
             .setTargetRenderer { SpringBeansPsiElementCellRenderer() }
 
         return builder

@@ -18,7 +18,6 @@
 
 package sap.commerce.toolset.impex.lang.refactoring
 
-import sap.commerce.toolset.impex.psi.*
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.SearchScope
@@ -29,8 +28,9 @@ import com.intellij.refactoring.listeners.RefactoringElementListener
 import com.intellij.refactoring.rename.RenamePsiElementProcessor
 import com.intellij.refactoring.rename.UnresolvableCollisionUsageInfo
 import com.intellij.usageView.UsageInfo
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.psi.*
 
 class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
 
@@ -78,9 +78,9 @@ class ImpExRenamePsiElementProcessor : RenamePsiElementProcessor() {
                         result.add(object : UnresolvableCollisionUsageInfo(it, element) {
                             override fun getDescription() = when (element.elementType) {
                                 ImpexTypes.MACRO_NAME_DECLARATION,
-                                ImpexTypes.MACRO_USAGE -> HybrisI18NBundleUtils.message("hybris.impex.refactoring.rename.existing.macroName.conflict", newName)
+                                ImpexTypes.MACRO_USAGE -> i18n("hybris.impex.refactoring.rename.existing.macroName.conflict", newName)
 
-                                else -> HybrisI18NBundleUtils.message("hybris.impex.refactoring.rename.existing.conflict", newName)
+                                else -> i18n("hybris.impex.refactoring.rename.existing.conflict", newName)
                             }
                         })
                     }

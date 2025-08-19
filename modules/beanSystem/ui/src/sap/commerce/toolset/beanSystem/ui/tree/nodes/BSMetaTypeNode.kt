@@ -22,7 +22,6 @@ import com.intellij.ide.projectView.PresentationData
 import com.intellij.openapi.project.Project
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier
@@ -30,11 +29,12 @@ import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
 import sap.commerce.toolset.beanSystem.settings.BSViewSettings
+import sap.commerce.toolset.i18n
 
 @Suppress("UNCHECKED_CAST")
 class BSMetaTypeNode(parent: BSNode, private val metaType: BSMetaType) : BSNode(parent) {
 
-    override fun getName() = HybrisI18NBundleUtils.message("hybris.toolwindow.beans.group.${metaType.name.lowercase()}.name")
+    override fun getName() = i18n("hybris.toolwindow.beans.group.${metaType.name.lowercase()}.name")
 
     override fun update(existingNode: BSNode, newNode: BSNode) {
         val current = existingNode as? BSMetaNode<BSMetaClassifier<out DomElement>> ?: return

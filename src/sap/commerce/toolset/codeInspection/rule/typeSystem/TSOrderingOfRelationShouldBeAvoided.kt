@@ -22,8 +22,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.codeInspection.fix.xml.XmlDeleteAttributeQuickFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.model.Cardinality
 import sap.commerce.toolset.typeSystem.model.Items
 import sap.commerce.toolset.typeSystem.model.RelationElement
@@ -52,7 +52,7 @@ class TSOrderingOfRelationShouldBeAvoided : AbstractTSInspection() {
             holder.createProblem(
                 relation.ordered,
                 severity,
-                relation.qualifier.stringValue?.let { HybrisI18NBundleUtils.message("hybris.inspections.ts.OrderingOfRelationShouldBeAvoided.details.key", it) }
+                relation.qualifier.stringValue?.let { i18n("hybris.inspections.ts.OrderingOfRelationShouldBeAvoided.details.key", it) }
                     ?: displayName,
                 XmlDeleteAttributeQuickFix(RelationElement.ORDERED)
             )

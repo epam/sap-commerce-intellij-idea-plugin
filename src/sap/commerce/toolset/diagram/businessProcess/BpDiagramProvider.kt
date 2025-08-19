@@ -21,20 +21,20 @@ import com.intellij.diagram.*
 import com.intellij.diagram.extras.DiagramExtras
 import com.intellij.diagram.settings.DiagramConfigElement
 import com.intellij.diagram.settings.DiagramConfigGroup
-import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramDataModel
-import sap.commerce.toolset.diagram.businessProcess.node.graph.BpGraphNode
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.intellij.lang.annotations.Pattern
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramDataModel
+import sap.commerce.toolset.diagram.businessProcess.node.graph.BpGraphNode
+import sap.commerce.toolset.i18n
 import javax.swing.Icon
 
 class BpDiagramProvider : BaseDiagramProvider<BpGraphNode>() {
 
     @Pattern("[a-zA-Z0-9_-]*")
     override fun getID() = "HybrisBusinessProcessDiagramProvider"
-    override fun getPresentableName() = HybrisI18NBundleUtils.message("hybris.diagram.bp.provider.name")
+    override fun getPresentableName() = i18n("hybris.diagram.bp.provider.name")
     override fun getActionIcon(isPopup: Boolean): Icon = HybrisIcons.BusinessProcess.FILE
 
     override fun createNodeContentManager(): DiagramNodeContentManager = BpDiagramNodeContentManager()

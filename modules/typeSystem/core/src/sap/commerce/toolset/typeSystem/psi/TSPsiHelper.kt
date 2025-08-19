@@ -25,8 +25,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.xml.DomElement
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.meta.TSMetaHelper
 import sap.commerce.toolset.typeSystem.meta.model.*
 import sap.commerce.toolset.typeSystem.model.Attribute
@@ -93,8 +93,8 @@ object TSPsiHelper {
 
             Notifications.Companion.create(
                 NotificationType.INFORMATION,
-                HybrisI18NBundleUtils.message(messageTitleKey),
-                HybrisI18NBundleUtils.message(messageContentKey, ownerName ?: "?", meta.name ?: "?")
+                i18n(messageTitleKey),
+                i18n(messageContentKey, ownerName ?: "?", meta.name ?: "?")
             )
                 .notify(project)
         }, xmlTag.containingFile)

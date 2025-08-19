@@ -30,8 +30,8 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.actionSystem.*
 import sap.commerce.toolset.typeSystem.meta.TSGlobalMetaModel
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelStateService
@@ -58,7 +58,7 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
         when {
             DumbService.Companion.isDumb(project) -> with(JBPanel<JBPanel<*>>(GridBagLayout())) {
-                add(JBLabel(HybrisI18NBundleUtils.message("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
+                add(JBLabel(i18n("hybris.toolwindow.ts.suspended.text", IdeBundle.message("progress.performing.indexing.tasks"))))
                 setContent(this)
             }
 
@@ -117,14 +117,14 @@ class TSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
     private fun setContentInitializing() {
         with(JBPanel<JBPanel<*>>(GridBagLayout())) {
-            add(JBLabel(HybrisI18NBundleUtils.message("hybris.toolwindow.ts.suspended.text", HybrisI18NBundleUtils.message("hybris.toolwindow.ts.suspended.initializing.text"))))
+            add(JBLabel(i18n("hybris.toolwindow.ts.suspended.text", i18n("hybris.toolwindow.ts.suspended.initializing.text"))))
             setContent(this)
         }
     }
 
     private fun initItemsViewActionGroup(): DefaultActionGroup = with(
         DefaultActionGroup(
-            HybrisI18NBundleUtils.message("hybris.toolwindow.action.view_options.text"),
+            i18n("hybris.toolwindow.action.view_options.text"),
             true
         )
     ) {

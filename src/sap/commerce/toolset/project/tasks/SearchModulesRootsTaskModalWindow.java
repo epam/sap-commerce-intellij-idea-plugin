@@ -23,12 +23,11 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.projectImport.ProjectImportBuilder;
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.HybrisI18NBundleUtils;
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
-import sap.commerce.toolset.project.tasks.DirectoriesScannerErrorsProcessor;
-import sap.commerce.toolset.project.tasks.DirectoriesScannerProgressIndicatorUpdaterProcessor;
 
 import java.io.File;
+
+import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
 public class SearchModulesRootsTaskModalWindow extends Task.Modal {
 
@@ -41,7 +40,7 @@ public class SearchModulesRootsTaskModalWindow extends Task.Modal {
     ) {
         super(
             ProjectImportBuilder.getCurrentProject(),
-            HybrisI18NBundleUtils.message("hybris.project.import.scanning"),
+            message("hybris.project.import.scanning"),
             true
         );
 

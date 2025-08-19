@@ -35,7 +35,7 @@ import com.intellij.openapi.observable.util.bind
 import com.intellij.ui.components.fields.ExtendableTextField
 import com.intellij.ui.components.fields.IntegerField
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import java.io.Serial
 
 class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfiguration) :
@@ -55,13 +55,13 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
     private fun SettingsEditorFragmentContainer<LocalSapCXRunConfiguration>.addEnvironmentFragment() =
         addEnvironmentFragment(
             object : LabeledSettingsFragmentInfo {
-                override val editorLabel: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.environment.variables.component.title")
+                override val editorLabel: String = i18n("hybris.project.run.configuration.localserver.environment.variables.component.title")
                 override val settingsId: String = "hybris.project.run.configuration.localserver.environment.variables.fragment"
-                override val settingsName: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.environment.variables.fragment.name")
-                override val settingsGroup: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.environment.options.group")
-                override val settingsHint: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.environment.variables.fragment.hint")
+                override val settingsName: String = i18n("hybris.project.run.configuration.localserver.environment.variables.fragment.name")
+                override val settingsGroup: String = i18n("hybris.project.run.configuration.localserver.environment.options.group")
+                override val settingsHint: String = i18n("hybris.project.run.configuration.localserver.environment.variables.fragment.hint")
                 override val settingsActionHint: String =
-                    HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.set.custom.environment.variables.for.the.process")
+                    i18n("hybris.project.run.configuration.localserver.set.custom.environment.variables.for.the.process")
             },
             { sapCXOptions.environmentProperties },
             { sapCXOptions.environmentProperties = it as MutableMap<String, String> },
@@ -72,7 +72,7 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
 
     private fun SettingsEditorFragmentContainer<LocalSapCXRunConfiguration>.addDebugHostFragment() = addLabeledSettingsEditorFragment(
         object : LabeledSettingsFragmentInfo {
-            override val editorLabel: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.host.field")
+            override val editorLabel: String = i18n("hybris.project.run.configuration.localserver.host.field")
 
             override val settingsId: String = "hybris.localserver.debug.host.fragment"
             override val settingsName: String = "remoteDebugHost"
@@ -88,7 +88,7 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
 
     private fun SettingsEditorFragmentContainer<LocalSapCXRunConfiguration>.addDebugPortFragment() = addLabeledSettingsEditorFragment(
         object : LabeledSettingsFragmentInfo {
-            override val editorLabel: String = HybrisI18NBundleUtils.message("hybris.project.run.configuration.localserver.port.field")
+            override val editorLabel: String = i18n("hybris.project.run.configuration.localserver.port.field")
 
             override val settingsId: String = "hybris.localserver.debug.port.fragment"
             override val settingsName: String = "remoteDebugPort"
@@ -104,12 +104,12 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
 
     private fun SettingsEditorFragmentContainer<LocalSapCXRunConfiguration>.addDebugLineFragment(commandLine: String) = addLabeledSettingsEditorFragment(
         object : LabeledSettingsFragmentInfo {
-            override val editorLabel: String = HybrisI18NBundleUtils.message("command.line.arguments.for.remote.jvm")
+            override val editorLabel: String = i18n("command.line.arguments.for.remote.jvm")
 
             override val settingsId: String = "hybris.localserver.debug.commandLine.fragment"
             override val settingsName: String = "commandLineArgument"
             override val settingsGroup: String? = null
-            override val settingsHint: String = HybrisI18NBundleUtils.message("copy.and.paste.the.arguments.to.the.command.line.when.jvm.is.started")
+            override val settingsHint: String = i18n("copy.and.paste.the.arguments.to.the.command.line.when.jvm.is.started")
             override val settingsActionHint: String? = null
         },
         { DebugCommandLine(commandLine) },

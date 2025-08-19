@@ -23,8 +23,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisI18NBundleUtils
 import sap.commerce.toolset.codeInspection.fix.xml.XmlUpdateAttributeQuickFix
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.typeSystem.model.Attribute
 import sap.commerce.toolset.typeSystem.model.Items
 import sap.commerce.toolset.typeSystem.model.all
@@ -60,7 +60,7 @@ class TSQualifierMustStartWithLowercaseLetter : AbstractTSInspection() {
             holder.createProblem(
                 attribute,
                 severity,
-                HybrisI18NBundleUtils.message("hybris.inspections.ts.QualifierMustStartWithLowercaseLetter.details.key", name),
+                i18n("hybris.inspections.ts.QualifierMustStartWithLowercaseLetter.details.key", name),
                 XmlUpdateAttributeQuickFix(Attribute.QUALIFIER, newName)
             )
         }

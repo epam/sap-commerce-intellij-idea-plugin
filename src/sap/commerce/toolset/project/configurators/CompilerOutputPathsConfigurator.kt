@@ -24,7 +24,7 @@ import com.intellij.openapi.roots.CompilerModuleExtension
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.vfs.VfsUtilCore
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.HybrisI18NBundleUtils
+import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 import java.io.File
@@ -38,7 +38,7 @@ class CompilerOutputPathsConfigurator {
         moduleDescriptor: ModuleDescriptor
     ) {
 
-        indicator.text2 = HybrisI18NBundleUtils.message("hybris.project.import.module.outputpath")
+        indicator.text2 = i18n("hybris.project.import.module.outputpath")
 
         val useFakeOutputPathForCustomExtensions = moduleDescriptor.rootProjectDescriptor.isUseFakeOutputPathForCustomExtensions
         val outputDirectory = if (moduleDescriptor.descriptorType == ModuleDescriptorType.CUSTOM && !useFakeOutputPathForCustomExtensions)
