@@ -16,16 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.assistance
+package sap.commerce.toolset.impex.ui.breadcrumbs
 
-import sap.commerce.toolset.impex.psi.*
-import sap.commerce.toolset.impex.utils.ImpexPsiUtils
 import com.intellij.lang.Language
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.breadcrumbs.BreadcrumbsProvider
 import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.psi.*
+import sap.commerce.toolset.impex.utils.ImpexPsiUtils
 
 class ImpexColumnBreadcrumbsProvider : BreadcrumbsProvider {
 

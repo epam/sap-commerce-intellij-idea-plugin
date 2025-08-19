@@ -19,13 +19,13 @@
 package sap.commerce.toolset.impex.codeInsight.hints
 
 import com.intellij.codeInsight.hints.declarative.*
-import sap.commerce.toolset.impex.editor.ImpExSplitEditor
-import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.util.asSafely
+import sap.commerce.toolset.impex.editor.ImpExSplitEditor
+import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
 import sap.commerce.toolset.isNotHybrisProject
 
 class ImpExParameterInlayHintProvider : InlayHintsProvider {

@@ -54,7 +54,7 @@
         <codeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
 
-        <breadcrumbsInfoProvider implementation="sap.commerce.toolset.impex.assistance.ImpexColumnBreadcrumbsProvider"/>
+        <breadcrumbsInfoProvider implementation="sap.commerce.toolset.impex.ui.breadcrumbs.ImpexColumnBreadcrumbsProvider"/>
 
         <vetoRenameCondition implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExVetoRenameCondition"/>
         <renameInputValidator implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExRenameInputValidator"/>
@@ -85,7 +85,7 @@
 
         <languageInjector implementation="sap.commerce.toolset.impex.injection.ImpexXmlLanguageInjector"/>
 
-        <editorFactoryListener implementation="sap.commerce.toolset.impex.assistance.event.ImpexEditorFactoryListener"/>
+        <editorFactoryListener implementation="sap.commerce.toolset.impex.editor.event.ImpexEditorFactoryListener"/>
 
         <codeInsight.declarativeInlayProvider language="ImpEx"
                                               implementationClass="sap.commerce.toolset.impex.codeInsight.hints.ImpExDefaultValueDeclarativeInlayProvider"

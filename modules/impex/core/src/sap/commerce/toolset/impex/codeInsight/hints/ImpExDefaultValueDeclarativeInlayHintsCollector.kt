@@ -22,8 +22,8 @@ import com.intellij.codeInsight.hints.declarative.HintFormat
 import com.intellij.codeInsight.hints.declarative.InlayTreeSink
 import com.intellij.codeInsight.hints.declarative.InlineInlayPosition
 import com.intellij.codeInsight.hints.declarative.SharedBypassCollector
-import sap.commerce.toolset.impex.psi.ImpexValueGroup
 import com.intellij.psi.PsiElement
+import sap.commerce.toolset.impex.psi.ImpexValueGroup
 
 class ImpExDefaultValueDeclarativeInlayHintsCollector : SharedBypassCollector {
 
