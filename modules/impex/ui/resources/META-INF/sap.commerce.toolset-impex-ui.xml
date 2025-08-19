@@ -17,4 +17,9 @@
   -->
 <idea-plugin>
 
+    <actions>
+        <action id="hybris.hac.console.impex.validate" class="sap.commerce.toolset.impex.actionSystem.ConsoleImpExValidateAction">
+            <add-to-group group-id="hybris.console.actionGroup" relative-to-action="hybris.hac.console.clearAll" anchor="before"/>
+        </action>
+    </actions>
 </idea-plugin>

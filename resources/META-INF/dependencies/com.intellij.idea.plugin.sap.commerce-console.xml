@@ -21,14 +21,10 @@
     <actions>
         <group id="hybris.console.actionGroup">
             <reference ref="hybris.hac.chooseConnection"/>
-            <action id="hybris.hac.console.executeStatement"
-                    class="sap.commerce.toolset.tools.console.actionSystem.ConsoleExecuteStatementAction">
+            <action id="hybris.hac.console.executeStatement" class="sap.commerce.toolset.tools.console.actionSystem.ConsoleExecuteStatementAction">
                 <keyboard-shortcut keymap="$default" first-keystroke="alt ENTER"/>
             </action>
-            <action id="hybris.hac.console.impex.validate"
-                    class="sap.commerce.toolset.tools.console.actionSystem.ConsoleImpExValidateAction"/>
-            <action id="hybris.hac.console.clearAll"
-                    class="sap.commerce.toolset.tools.console.actionSystem.ConsoleClearAllAction"/>
+            <action id="hybris.hac.console.clearAll" class="sap.commerce.toolset.tools.console.actionSystem.ConsoleClearAllAction"/>
         </group>
     </actions>
 </idea-plugin>

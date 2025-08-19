@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.tools.console.actionSystem
+package sap.commerce.toolset.impex.actionSystem
 
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -36,19 +36,19 @@ class ConsoleImpExValidateAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val console = HybrisConsoleService.getInstance(project).getActiveConsole()
+        val console = HybrisConsoleService.Companion.getInstance(project).getActiveConsole()
             ?: return
 
         val context = ImpExExecutionContext(
             content = console.content,
             executionMode = ImpExExecutionContext.ExecutionMode.VALIDATE,
-            settings = ImpExExecutionContext.DEFAULT_SETTINGS
+            settings = ImpExExecutionContext.Companion.DEFAULT_SETTINGS
         )
 
-        ImpExExecutionClient.getInstance(project).execute(
+        ImpExExecutionClient.Companion.getInstance(project).execute(
             context = context,
-            beforeCallback = { coroutineScope -> console.beforeExecution() },
-            resultCallback = { coroutineScope, result -> console.print(result) }
+            beforeCallback = { _ -> console.beforeExecution() },
+            resultCallback = { _, result -> console.print(result) }
         )
     }
 
@@ -57,7 +57,7 @@ class ConsoleImpExValidateAction : AnAction() {
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole()
+        val activeConsole = HybrisConsoleService.Companion.getInstance(project).getActiveConsole()
             ?: return
         val editor = activeConsole.consoleEditor
         val lookup = LookupManager.getActiveLookup(editor)
