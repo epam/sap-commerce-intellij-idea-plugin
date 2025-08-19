@@ -25,14 +25,14 @@ import com.intellij.openapi.project.Project
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.acl.AclLanguage
-import sap.commerce.toolset.acl.editor.AclSplitEditor
+import sap.commerce.toolset.acl.editor.AclSplitEditorEx
 import sap.commerce.toolset.acl.editor.aclSplitEditor
 import sap.commerce.toolset.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.impex.console.ImpExConsole
 import sap.commerce.toolset.impex.exec.ImpExExecutionClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 
-class AclValidateAction : ExecuteStatementAction<ImpExConsole, AclSplitEditor>(
+class AclValidateAction : ExecuteStatementAction<ImpExConsole, AclSplitEditorEx>(
     AclLanguage,
     ImpExConsole::class,
     "Validate Access Control Lists",
@@ -40,7 +40,7 @@ class AclValidateAction : ExecuteStatementAction<ImpExConsole, AclSplitEditor>(
     HybrisIcons.Acl.Actions.VALIDATE
 ) {
 
-    override fun fileEditor(e: AnActionEvent): AclSplitEditor? = e.aclSplitEditor()
+    override fun fileEditor(e: AnActionEvent): AclSplitEditorEx? = e.aclSplitEditor()
 
     override fun actionPerformed(e: AnActionEvent, project: Project, content: String) {
         val fileEditor = fileEditor(e) ?: return

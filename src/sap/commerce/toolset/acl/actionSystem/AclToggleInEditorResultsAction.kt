@@ -40,7 +40,8 @@ class AclToggleInEditorResultsAction : ToggleAction(
         super.update(e)
     }
 
-    override fun isSelected(e: AnActionEvent): Boolean = e.aclSplitEditor()?.inEditorResults
+    override fun isSelected(e: AnActionEvent): Boolean = e.aclSplitEditor()
+        ?.inEditorResults
         ?: false
 
     override fun setSelected(e: AnActionEvent, state: Boolean) {

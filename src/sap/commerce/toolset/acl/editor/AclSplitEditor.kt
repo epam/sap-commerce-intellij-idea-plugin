@@ -21,7 +21,6 @@ package sap.commerce.toolset.acl.editor
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.edtWriteAction
-import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorState
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.project.Project
@@ -43,9 +42,9 @@ import javax.swing.JComponent
 import javax.swing.JPanel
 
 fun AnActionEvent.aclSplitEditor() = this.getData(PlatformDataKeys.FILE_EDITOR)
-    ?.asSafely<AclSplitEditor>()
+    ?.asSafely<AclSplitEditorEx>()
 
-class AclSplitEditor(internal val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), FileEditor, TextEditor {
+class AclSplitEditorEx(override val textEditor: TextEditor, private val project: Project) : UserDataHolderBase(), AclSplitEditor {
 
     companion object {
         @Serial
@@ -54,7 +53,7 @@ class AclSplitEditor(internal val textEditor: TextEditor, private val project: P
         private val KEY_IN_EDITOR_RESULTS = Key.create<Boolean>("acl.in_editor_results.key")
     }
 
-    var inEditorResults: Boolean
+    override var inEditorResults: Boolean
         get() = getOrCreateUserData(KEY_IN_EDITOR_RESULTS) { true }
         set(state) {
             putUserData(KEY_IN_EDITOR_RESULTS, state)
