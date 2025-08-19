@@ -60,7 +60,6 @@
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-grid.xml">intellij.grid.plugin</depends>
 
     <depends optional="true" config-file="sap.commerce.toolset-copyright-core.xml">com.intellij.copyright</depends>
-
     <depends optional="true" config-file="sap.commerce.toolset-terminal.xml">org.jetbrains.plugins.terminal</depends>
     <depends optional="true" config-file="sap.commerce.toolset-ant-ui.xml">AntSupport</depends>
 

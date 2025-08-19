@@ -22,6 +22,23 @@
 
         <fileType name="Access Control Lists" language="ACL" extensions="acl" fieldName="INSTANCE"
                   implementationClass="sap.commerce.toolset.acl.file.AclFileType"/>
-    </extensions>
 
+        <colorSettingsPage implementation="sap.commerce.toolset.acl.highlighting.AclColorSettingsPage"/>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/AclDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/AclDarcula.xml"/>
+
+        <lang.parserDefinition language="ACL" implementationClass="sap.commerce.toolset.acl.AclParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="ACL" implementationClass="sap.commerce.toolset.acl.highlighting.AclSyntaxHighlighterFactory"/>
+        <lang.commenter language="ACL" implementationClass="sap.commerce.toolset.acl.lang.AclCommenter"/>
+        <lang.formatter language="ACL" implementationClass="sap.commerce.toolset.acl.formatting.AclFormattingModelBuilder"/>
+        <lang.foldingBuilder language="ACL" implementationClass="sap.commerce.toolset.acl.lang.folding.AclFoldingBuilder"/>
+
+        <annotator language="ACL" implementationClass="sap.commerce.toolset.acl.lang.annotation.AclAnnotator"/>
+
+        <editorFactoryListener implementation="sap.commerce.toolset.acl.editor.event.AclLineEditorFactoryListener"/>
+
+        <completion.contributor language="ACL" implementationClass="sap.commerce.toolset.acl.codeInsight.completion.AclCompletionContributor"/>
+
+        <vfs.asyncListener implementation="sap.commerce.toolset.acl.vfs.event.AclVfsAsyncListener"/>
+    </extensions>
 </idea-plugin>
