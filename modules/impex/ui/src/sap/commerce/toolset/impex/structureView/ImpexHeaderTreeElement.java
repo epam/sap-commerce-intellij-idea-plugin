@@ -1,7 +1,7 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
  * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,30 +17,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.view;
+package sap.commerce.toolset.impex.structureView;
 
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.structureView.impl.common.PsiTreeElementBase;
-import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter;
 import com.intellij.navigation.ItemPresentation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import sap.commerce.toolset.impex.psi.ImpexAnyHeaderMode;
+import sap.commerce.toolset.impex.psi.ImpexFullHeaderType;
+import sap.commerce.toolset.impex.psi.ImpexHeaderLine;
 
 import javax.swing.*;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
-public class ImpexHeaderParameterElement extends PsiTreeElementBase<ImpexFullHeaderParameter>
-    implements ItemPresentation {
+public class ImpexHeaderTreeElement extends PsiTreeElementBase<ImpexHeaderLine> implements ItemPresentation {
 
-    protected ImpexHeaderParameterElement(final ImpexFullHeaderParameter psiElement) {
+    protected ImpexHeaderTreeElement(final ImpexHeaderLine psiElement) {
         super(psiElement);
     }
 
     @NotNull
     @Override
     public Collection<StructureViewTreeElement> getChildrenBase() {
-        return Collections.emptyList();
+        final var element = getElement();
+        if (element == null) return Collections.emptyList();
+
+        return getElement().getFullHeaderParameterList()
+            .stream()
+            .map(ImpexHeaderParameterElement::new)
+            .collect(Collectors.toList());
     }
 
     @Nullable
@@ -49,7 +57,21 @@ public class ImpexHeaderParameterElement extends PsiTreeElementBase<ImpexFullHea
         final var element = getElement();
         if (element == null) return null;
 
-        return element.getText();
+        final ImpexFullHeaderType fullHeaderType = getElement().getFullHeaderType();
+        if (fullHeaderType == null) return null;
+
+        return fullHeaderType.getText();
+    }
+
+    @Nullable
+    @Override
+    public String getLocationString() {
+        final var element = getElement();
+
+        if (element == null) return null;
+
+        final ImpexAnyHeaderMode mode = element.getAnyHeaderMode();
+        return mode.getText();
     }
 
     @Override

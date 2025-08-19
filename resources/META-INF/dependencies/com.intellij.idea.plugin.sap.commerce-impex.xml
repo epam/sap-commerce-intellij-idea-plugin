@@ -48,7 +48,7 @@
         <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingBuilder"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingLinesBuilder"/>
         <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpexMacroFoldingBuilder"/>
-        <lang.psiStructureViewFactory language="ImpEx" implementationClass="sap.commerce.toolset.impex.view.ImpexStructureViewBuilderProvider"/>
+        <lang.psiStructureViewFactory language="ImpEx" implementationClass="sap.commerce.toolset.impex.structureView.ImpexStructureViewBuilderProvider"/>
         <lang.refactoringSupport language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.refactoring.ImpexRefactoringSupportProvider"/>
 
         <codeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexCodeStyleSettingsProvider"/>
