@@ -20,7 +20,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <languageInjector implementation="sap.commerce.toolset.psi.injector.GroovyLanguageInjector"/>
+        <languageInjector implementation="sap.commerce.toolset.lang.injection.GroovyLanguageInjector"/>
     </extensions>
 
 </idea-plugin>

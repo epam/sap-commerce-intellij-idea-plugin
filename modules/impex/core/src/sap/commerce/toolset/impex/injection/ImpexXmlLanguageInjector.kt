@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,20 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.impex.injection
 
-import sap.commerce.toolset.impex.psi.impl.ImpexStringImpl
 import com.intellij.lang.xml.XMLLanguage
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
-
+import sap.commerce.toolset.impex.psi.impl.ImpexStringImpl
 
 class ImpexXmlLanguageInjector : LanguageInjector {
-
 
     override fun getLanguagesToInject(
         host: PsiLanguageInjectionHost,
@@ -39,7 +36,7 @@ class ImpexXmlLanguageInjector : LanguageInjector {
 
         val hostString = StringUtil.unquoteString(host.text).lowercase()
         if (StringUtil.trim(hostString).replaceFirst("\"", "").isXmlLike()) {
-            val language = XMLLanguage.INSTANCE
+            val language = XMLLanguage.Companion.INSTANCE
             injectionPlacesRegistrar.addPlace(
                 language,
                 TextRange.from(QUOTE_SYMBOL_LENGTH, host.textLength - 2), null, null
@@ -47,15 +44,8 @@ class ImpexXmlLanguageInjector : LanguageInjector {
         }
     }
 
-    companion object {
-        private const val QUOTE_SYMBOL_LENGTH = 1
-        private val LOG = Logger.getInstance(ImpexXmlLanguageInjector::class.java)
-    }
-
-
     /**
      * return true if the String passed in is something like XML
-     *
      *
      * @return true of the string is XML, false otherwise
      */
@@ -69,5 +59,9 @@ class ImpexXmlLanguageInjector : LanguageInjector {
         }
 
         return false
+    }
+
+    companion object {
+        private const val QUOTE_SYMBOL_LENGTH = 1
     }
 }

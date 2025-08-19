@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.psi.injector
+package sap.commerce.toolset.lang.injection
 
 import com.intellij.lang.javascript.JavascriptLanguage
 import com.intellij.openapi.diagnostic.Logger

@@ -15,12 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.psi.injector
+package sap.commerce.toolset.lang.injection
 
 import com.intellij.cron.CronExpLanguage
-import sap.commerce.toolset.impex.psi.ImpexString
-import sap.commerce.toolset.impex.psi.ImpexValue
-import sap.commerce.toolset.impex.psi.ImpexValueGroup
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
@@ -28,6 +25,9 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.childrenOfType
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.impex.psi.ImpexString
+import sap.commerce.toolset.impex.psi.ImpexValue
+import sap.commerce.toolset.impex.psi.ImpexValueGroup
 
 class CronExpLanguageInjector : LanguageInjector {
 
