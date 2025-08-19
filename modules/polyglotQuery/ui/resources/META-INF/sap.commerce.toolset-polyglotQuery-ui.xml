@@ -47,18 +47,4 @@
                              provider="sap.commerce.toolset.typeSystem.options.ProjectTypeSystemConfigurableProvider"/>
     </extensions>
 
-    <actions>
-        <group id="TSView.ToolWindow">
-            <group id="TSView.ToolWindow.TreePopup">
-                <action class="sap.commerce.toolset.typeSystem.actionSystem.TSGoToDeclarationNodeAction"
-                        use-shortcut-of="GotoDeclaration"/>
-            </group>
-
-            <group id="TSView.ToolWindow.TablePopup">
-                <action class="sap.commerce.toolset.typeSystem.actionSystem.TSGoToDeclarationTableAction"
-                        use-shortcut-of="GotoDeclaration"/>
-            </group>
-        </group>
-    </actions>
-
 </idea-plugin>

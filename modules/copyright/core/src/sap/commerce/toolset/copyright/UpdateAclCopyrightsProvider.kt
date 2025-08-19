@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.acl.copyright
 
-import sap.commerce.toolset.acl.psi.AclFile
+package sap.commerce.toolset.copyright
+
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -31,6 +31,7 @@ import com.maddyhome.idea.copyright.CopyrightProfile
 import com.maddyhome.idea.copyright.psi.UpdateCopyright
 import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider
 import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright
+import sap.commerce.toolset.acl.psi.AclFile
 
 class UpdateAclCopyrightsProvider : UpdateCopyrightsProvider() {
 

@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.copyright;
+package sap.commerce.toolset.copyright;
 
-import sap.commerce.toolset.impex.psi.ImpexFile;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -32,10 +31,11 @@ import com.maddyhome.idea.copyright.CopyrightProfile;
 import com.maddyhome.idea.copyright.psi.UpdateCopyright;
 import com.maddyhome.idea.copyright.psi.UpdateCopyrightsProvider;
 import com.maddyhome.idea.copyright.psi.UpdatePsiFileCopyright;
+import sap.commerce.toolset.impex.psi.ImpexFile;
 
 import java.util.List;
 
-public class UpdateImpexCopyrightsProvider extends UpdateCopyrightsProvider {
+public class UpdateImpExCopyrightsProvider extends UpdateCopyrightsProvider {
 
     @Override
     public UpdateCopyright createInstance(
