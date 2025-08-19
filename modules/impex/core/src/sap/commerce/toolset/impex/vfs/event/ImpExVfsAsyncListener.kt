@@ -17,9 +17,6 @@
  */
 package sap.commerce.toolset.impex.vfs.event
 
-import sap.commerce.toolset.impex.editor.ImpExEditorMarkupModelHelper
-import sap.commerce.toolset.impex.psi.ImpexFile
-import sap.commerce.toolset.impex.psi.ImpexHeaderLine
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.AsyncFileListener.ChangeApplier
@@ -28,6 +25,9 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.childrenOfType
 import com.intellij.util.asSafely
 import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.impex.editor.ImpExEditorMarkupModelHelper
+import sap.commerce.toolset.impex.psi.ImpexFile
+import sap.commerce.toolset.impex.psi.ImpexHeaderLine
 
 class ImpExVfsAsyncListener : AsyncFileListener {
 
