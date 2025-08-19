@@ -20,11 +20,11 @@ package sap.commerce.toolset.impex.formatting
 
 
 import com.intellij.formatting.*
-import sap.commerce.toolset.impex.psi.ImpexTypes
 import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
+import sap.commerce.toolset.impex.psi.ImpexTypes
 
 class ImpexBlock(
     node: ASTNode,

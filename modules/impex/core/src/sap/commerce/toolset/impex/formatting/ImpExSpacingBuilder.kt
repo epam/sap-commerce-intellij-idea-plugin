@@ -19,9 +19,9 @@
 package sap.commerce.toolset.impex.formatting
 
 import com.intellij.formatting.SpacingBuilder
-import sap.commerce.toolset.impex.psi.ImpexTypes
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.psi.ImpexTypes
 
 class ImpExSpacingBuilder(
     settings: CodeStyleSettings,

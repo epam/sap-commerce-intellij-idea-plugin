@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019-2023 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -19,14 +19,14 @@
 package sap.commerce.toolset.impex.formatting
 
 import com.intellij.formatting.Alignment
+import com.intellij.lang.ASTNode
+import com.intellij.psi.util.PsiTreeUtil
+import org.jetbrains.annotations.Contract
 import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.impex.psi.ImpexTypes
 import sap.commerce.toolset.impex.psi.ImpexUserRightsValueGroup
 import sap.commerce.toolset.impex.psi.ImpexValueGroup
 import sap.commerce.toolset.impex.utils.ImpexPsiUtils
-import com.intellij.lang.ASTNode
-import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.annotations.Contract
 
 open class ImpExColumnsAlignmentStrategy : ImpExAlignmentStrategy {
 
