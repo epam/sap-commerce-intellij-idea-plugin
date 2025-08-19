@@ -1,5 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,42 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.flexibleSearch.lang
 
-fun properties(key: String) = providers.gradleProperty(key)
+import com.intellij.lang.Commenter
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+class FlexibleSearchCommenter : Commenter {
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(project(":impex-core"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
+    override fun getLineCommentPrefix() = "-- "
+    override fun getBlockCommentPrefix() = "/*"
+    override fun getBlockCommentSuffix() = "*/"
+    override fun getCommentedBlockCommentPrefix() = null
+    override fun getCommentedBlockCommentSuffix() = null
 }

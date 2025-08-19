@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":shared-ui"))
     implementation(project(":meta-core"))
     implementation(project(":typeSystem-core"))
+    implementation(project(":project-core"))
     implementation(project(":console-core"))
     implementation(project(":console-ui"))
     implementation(project(":exec-core"))

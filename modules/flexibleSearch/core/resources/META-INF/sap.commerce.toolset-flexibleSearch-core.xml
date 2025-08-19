@@ -23,5 +23,52 @@
         <fileType language="FlexibleSearch" extensions="fxs" name="FlexibleSearch file" fieldName="INSTANCE"
                   implementationClass="sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType"/>
     </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <codeInsight.declarativeInlayProvider language="FlexibleSearch"
+                                              implementationClass="sap.commerce.toolset.flexibleSearch.codeInsight.hints.FlexibleSearchParameterInlayHintProvider"
+                                              isEnabledByDefault="true"
+                                              group="VALUES_GROUP"
+                                              providerId="hybris.FlexibleSearch.parameter"
+                                              bundle="i18n.HybrisBundle"
+                                              nameKey="hybris.fxs.editor.parameter.name"
+                                              descriptionKey="hybris.fxs.editor.parameter.description"/>
+
+        <additionalTextAttributes scheme="Default" file="colorSchemes/FlexibleSearchDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/FlexibleSearchDarcula.xml"/>
+
+        <!-- Core elements -->
+        <codeStyleSettingsProvider implementation="sap.commerce.toolset.flexibleSearch.formatting.FxSCodeStyleSettingsProvider"/>
+
+        <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.flexibleSearch.formatting.FxSLanguageCodeStyleSettingsProvider"/>
+
+        <colorSettingsPage implementation="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchColorSettingsPage"/>
+
+        <platform.backend.documentation.psiTargetProvider implementation="sap.commerce.toolset.flexibleSearch.lang.documentation.FlexibleSearchPsiDocumentationTargetProvider" />
+        <platform.backend.documentation.targetProvider implementation="sap.commerce.toolset.flexibleSearch.lang.documentation.FlexibleSearchDocumentationTargetProvider"/>
+        <lang.braceMatcher language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.FlexibleSearchPairedBraceMatcher"/>
+        <lang.braceMatcher language="FlexibleSearch" implementationClass="com.intellij.ide.highlighter.custom.impl.CustomFileTypeBraceMatcher"/>
+        <lang.quoteHandler language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.FlexibleSearchQuoteHandler"/>
+        <lang.parserDefinition language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.FlexibleSearchParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchSyntaxHighlighterFactory"/>
+        <lang.commenter language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.FlexibleSearchCommenter"/>
+        <lang.formatter language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.formatting.FxSFormattingModelBuilder"/>
+        <lang.foldingBuilder language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.folding.FlexibleSearchFoldingBuilder"/>
+        <lang.findUsagesProvider language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.findUsages.FlexibleSearchFindUsagesProvider"/>
+        <lang.refactoringSupport language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.refactoring.FlexibleSearchRefactoringSupportProvider"/>
+
+        <referencesSearch implementation="sap.commerce.toolset.flexibleSearch.lang.findUsages.FlexibleSearchReferenceSearcher"/>
+        <elementDescriptionProvider implementation="sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchElementDescriptionProvider"/>
+
+        <renamePsiElementProcessor implementation="sap.commerce.toolset.flexibleSearch.refactoring.rename.processor.FlexibleSearchRenameProcessor"/>
+
+        <highlightUsagesHandlerFactory implementation="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlightUsagesHandlerFactory"/>
+
+        <languageInjector implementation="sap.commerce.toolset.flexibleSearch.codeInsight.injection.FlexibleSearchLanguageInjector"/>
+
+        <completion.contributor language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.codeInsight.completion.FlexibleSearchCompletionContributor"/>
+
+        <annotator language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.annotation.FlexibleSearchAnnotator"/>
+        <highlightErrorFilter implementation="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlightErrorFilter"/>
+    </extensions>
 
 </idea-plugin>

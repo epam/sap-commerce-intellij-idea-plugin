@@ -18,31 +18,10 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <codeInsight.declarativeInlayProvider language="Polyglot Query"
-                                              implementationClass="sap.commerce.toolset.polyglotQuery.codeInsight.hints.PolyglotQueryParameterInlayHintProvider"
-                                              isEnabledByDefault="true"
-                                              group="VALUES_GROUP"
-                                              providerId="hybris.PolyglotQuery.parameter"
-                                              bundle="i18n.HybrisBundle"
-                                              nameKey="hybris.pgq.editor.parameter.name"
-                                              descriptionKey="hybris.pgq.editor.parameter.description"/>
-
-        <additionalTextAttributes scheme="Default" file="colorSchemes/PolyglotQueryDefault.xml"/>
-        <additionalTextAttributes scheme="Darcula" file="colorSchemes/PolyglotQueryDarcula.xml"/>
-
         <colorSettingsPage implementation="sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQueryColorSettingsPage"/>
         <codeStyleSettingsProvider implementation="sap.commerce.toolset.polyglotQuery.formatting.PgQCodeStyleSettingsProvider"/>
-        <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.polyglotQuery.formatting.PgQLanguageCodeStyleSettingsProvider"/>
-
-        <lang.formatter language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.formatting.PgQFormattingModelBuilder"/>
-        <lang.commenter language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.PolyglotQueryCommenter"/>
-        <lang.braceMatcher language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
-        <lang.foldingBuilder language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.folding.PolyglotQueryFoldingBuilder"/>
-
-        <lang.parserDefinition language="Polyglot Query"
-                               implementationClass="sap.commerce.toolset.polyglotQuery.PolyglotQueryParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="Polyglot Query"
-                                       implementationClass="sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighterFactory"/>
+        <lang.parserDefinition language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.PolyglotQueryParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighterFactory"/>
         <annotator language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
         <editorNotificationProvider id="pgqEditorNotificationProvider" implementation="sap.commerce.toolset.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider"/>
 

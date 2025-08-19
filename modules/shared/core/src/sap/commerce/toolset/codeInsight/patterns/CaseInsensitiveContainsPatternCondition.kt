@@ -16,41 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.codeInsight.patterns
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.util.text.StringUtil
+import com.intellij.patterns.PatternCondition
+import com.intellij.util.ProcessingContext
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+class CaseInsensitiveContainsPatternCondition(private val value: String) : PatternCondition<String>("containsIgnoreCase") {
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(project(":impex-core"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
+    override fun accepts(t: String, context: ProcessingContext?) = StringUtil.containsIgnoreCase(t, value)
 }

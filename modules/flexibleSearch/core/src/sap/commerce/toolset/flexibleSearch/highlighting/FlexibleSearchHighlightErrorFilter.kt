@@ -15,42 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.flexibleSearch.highlighting
 
-fun properties(key: String) = providers.gradleProperty(key)
+import com.intellij.codeInsight.highlighting.HighlightErrorFilter
+import com.intellij.psi.PsiErrorElement
+import com.intellij.psi.util.elementType
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+class FlexibleSearchHighlightErrorFilter : HighlightErrorFilter() {
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+    override fun shouldHighlightErrorElement(element: PsiErrorElement): Boolean {
+        if (element.language != FlexibleSearchLanguage) return true
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(project(":impex-core"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
+        if (element.parent.elementType == FlexibleSearchTypes.COLUMN_LOCALIZED_NAME) {
+            return false
         }
-        bundledPlugins(
-            "com.intellij.java",
-        )
+
+        return true
     }
 }

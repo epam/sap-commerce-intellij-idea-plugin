@@ -15,42 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package sap.commerce.toolset.flexibleSearch.lang.folding
 
-fun properties(key: String) = providers.gradleProperty(key)
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiErrorElement
+import com.intellij.psi.util.PsiElementFilter
+import com.intellij.psi.util.elementType
+import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
+import sap.commerce.toolset.psi.FoldablePsiElement
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+class FlexibleSearchFoldingBlocksFilter : PsiElementFilter {
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
-
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(project(":impex-core"))
-    implementation(project(":project-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-        )
-    }
+    override fun isAccepted(element: PsiElement) = element !is PsiErrorElement
+        && (element is FoldablePsiElement || element.elementType == FlexibleSearchTypes.COMMENT)
+        && !element.textRange.isEmpty
 }
