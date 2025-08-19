@@ -18,9 +18,6 @@
 
 package sap.commerce.toolset.flexibleSearch.injection.impl
 
-import sap.commerce.toolset.flexibleSearch.FxSUtils
-import sap.commerce.toolset.impex.psi.*
-import sap.commerce.toolset.lang.injection.impl.AbstractLanguageInjectorProvider
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.util.text.StringUtil
@@ -30,13 +27,16 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.codeInsight.injection.LanguageInjectorProvider
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
+import sap.commerce.toolset.flexibleSearch.FxSUtils
 import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.settings.DeveloperSettings
 import java.util.*
 
 @Service
-class FlexibleSearchToImpexInjectorProvider : AbstractLanguageInjectorProvider(FlexibleSearchLanguage, ImpExLanguage) {
+class FlexibleSearchToImpexInjectorProvider : LanguageInjectorProvider(FlexibleSearchLanguage, ImpExLanguage) {
 
     override fun tryInject(
         host: PsiLanguageInjectionHost,

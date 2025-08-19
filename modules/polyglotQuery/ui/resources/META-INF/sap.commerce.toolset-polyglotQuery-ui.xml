@@ -18,33 +18,67 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.typeSystem.folding.ItemsXmlFoldingBuilder"/>
-        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.typeSystem.folding.DeploymentModelFoldingBuilder"/>
+        <codeInsight.declarativeInlayProvider language="Polyglot Query"
+                                              implementationClass="sap.commerce.toolset.polyglotQuery.codeInsight.hints.PolyglotQueryParameterInlayHintProvider"
+                                              isEnabledByDefault="true"
+                                              group="VALUES_GROUP"
+                                              providerId="hybris.PolyglotQuery.parameter"
+                                              bundle="i18n.HybrisBundle"
+                                              nameKey="hybris.pgq.editor.parameter.name"
+                                              descriptionKey="hybris.pgq.editor.parameter.description"/>
 
-        <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.typeSystem.psi.contributor.TSReferenceContributor"/>
+        <additionalTextAttributes scheme="Default" file="colorSchemes/PolyglotQueryDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/PolyglotQueryDarcula.xml"/>
 
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ItemsXmlItemAlternativeDeclarationsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ItemsXmlItemSiblingsLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ItemsXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
+        <colorSettingsPage implementation="sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQueryColorSettingsPage"/>
+        <codeStyleSettingsProvider implementation="sap.commerce.toolset.polyglotQuery.formatting.PgQCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.polyglotQuery.formatting.PgQLanguageCodeStyleSettingsProvider"/>
 
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.JaloItemLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ModelEnumLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ModelItemLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ModelItemAttributeMethodLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ModelItemAttributeFieldLineMarkerProvider"/>
-        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.daemon.ModelEnumValueLineMarkerProvider"/>
+        <lang.formatter language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.formatting.PgQFormattingModelBuilder"/>
+        <lang.commenter language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.PolyglotQueryCommenter"/>
+        <lang.braceMatcher language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.PolyglotQueryPairedBraceMatcher"/>
+        <lang.foldingBuilder language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.folding.PolyglotQueryFoldingBuilder"/>
 
-        <codeInsight.inlayProvider language="XML" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.hints.ItemsXmlInlayHintsProvider"/>
+        <lang.parserDefinition language="Polyglot Query"
+                               implementationClass="sap.commerce.toolset.polyglotQuery.PolyglotQueryParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Polyglot Query"
+                                       implementationClass="sap.commerce.toolset.polyglotQuery.highlighting.PolyglotQuerySyntaxHighlighterFactory"/>
+        <annotator language="Polyglot Query" implementationClass="sap.commerce.toolset.polyglotQuery.lang.annotation.PolyglotQueryAnnotator"/>
+        <editorNotificationProvider id="pgqEditorNotificationProvider" implementation="sap.commerce.toolset.polyglotQuery.ui.PolyglotQueryEditorNotificationProvider"/>
 
-        <completion.contributor language="XML" implementationClass="sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionContributor"/>
+        <languageInjector implementation="sap.commerce.toolset.polyglotQuery.codeInsight.injection.PolyglotQueryLanguageInjector"/>
 
-        <xmlStructureViewBuilderProvider order="first" implementation="sap.commerce.toolset.typeSystem.structureView.TSXmlStructureViewBuilderProvider"/>
-
-        <projectConfigurable id="hybris.project.ts.settings" parentId="hybris.project.settings"
-                             nonDefaultProject="true" dynamic="true"
-                             bundle="i18n.HybrisBundle" key="hybris.settings.project.ts.title"
-                             order="after hybris.project.integrations.settings"
-                             provider="sap.commerce.toolset.typeSystem.options.ProjectTypeSystemConfigurableProvider"/>
+        <projectConfigurable id="hybris.project.pgq.settings" parentId="hybris.project.settings" nonDefaultProject="true" dynamic="true"
+                             bundle="i18n.HybrisBundle" key="hybris.settings.project.pgq.title"
+                             order="after hybris.project.fxs.settings"
+                             provider="sap.commerce.toolset.polyglotQuery.options.ProjectPolyglotQuerySettingsConfigurableProvider"/>
     </extensions>
+
+    <actions>
+        <action id="PolyglotQuery.NewPolyglotQueryFile"
+                class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryFileCreateAction">
+            <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+        </action>
+
+        <action id="hybris.pgq.openSettings" class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryOpenSettingsAction"/>
+
+        <group id="hybris.pgq.toolbar.left">
+            <reference ref="hybris.fxs.executionContextSettings"/>
+            <separator/>
+            <action id="hybris.pgq.execute" class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryExecuteAction">
+                <keyboard-shortcut first-keystroke="shift alt ENTER" keymap="$default"/>
+            </action>
+            <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotOpenInConsoleAction"/>
+            <separator/>
+            <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryToggleRetrieveAllDataAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryToggleInEditorResultsAction"/>
+            <action class="sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryToggleInEditorParametersAction"/>
+            <separator/>
+            <reference ref="hybris.pgq.openSettings"/>
+        </group>
+        <group id="hybris.pgq.toolbar.right">
+            <reference ref="hybris.hac.chooseConnection"/>
+        </group>
+    </actions>
 
 </idea-plugin>

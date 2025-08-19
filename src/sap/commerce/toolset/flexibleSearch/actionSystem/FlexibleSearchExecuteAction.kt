@@ -28,14 +28,14 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.actionSystem.ExecuteStatementAction
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.console.FlexibleSearchConsole
-import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
+import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchExecutionContextSettings
 import sap.commerce.toolset.flexibleSearch.editor.flexibleSearchSplitEditor
 import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.i18n
 
-class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole, FlexibleSearchSplitEditor>(
+class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole, FlexibleSearchSplitEditorEx>(
     FlexibleSearchLanguage,
     FlexibleSearchConsole::class,
     i18n("hybris.fxs.actions.execute_query"),
@@ -43,7 +43,7 @@ class FlexibleSearchExecuteAction : ExecuteStatementAction<FlexibleSearchConsole
     HybrisIcons.Console.Actions.EXECUTE
 ) {
 
-    override fun fileEditor(e: AnActionEvent): FlexibleSearchSplitEditor? = e.flexibleSearchSplitEditor()
+    override fun fileEditor(e: AnActionEvent): FlexibleSearchSplitEditorEx? = e.flexibleSearchSplitEditor()
 
     override fun processContent(e: AnActionEvent, content: String, editor: Editor, project: Project): String = fileEditor(e)
         ?.virtualText

@@ -27,12 +27,12 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.beanSystem.BSDomFileDescription
 import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
-import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
+import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
 import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.isNotHybrisProject
-import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
+import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
 import sap.commerce.toolset.system.cockpitng.*
 import sap.commerce.toolset.system.cockpitng.meta.CngModificationTracker
@@ -43,6 +43,7 @@ import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
  * Psi Tree Change Listener is required to reset Meta Cache before invocation of the Inspections.
  * AsyncFileListener will be invoked after in-project Psi Modifications and after Inspection Rules in other files.
  */
+@Deprecated("Use module specific implementation.")
 class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListener {
 
     init {
@@ -72,11 +73,11 @@ class PsiTreeChangeListener(private val project: Project) : PsiTreeChangeListene
 
         when (file) {
             is FlexibleSearchPsiFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
-                .filterIsInstance<FlexibleSearchSplitEditor>()
+                .filterIsInstance<FlexibleSearchSplitEditorEx>()
                 .forEach { it.refreshParameters() }
 
             is PolyglotQueryFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)
-                .filterIsInstance<PolyglotQuerySplitEditor>()
+                .filterIsInstance<PolyglotQuerySplitEditorEx>()
                 .forEach { it.refreshParameters() }
 
             is ImpexFile -> FileEditorManager.getInstance(file.project).getAllEditors(file.virtualFile)

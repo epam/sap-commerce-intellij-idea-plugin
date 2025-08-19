@@ -36,11 +36,32 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
+    implementation(project(":meta-core"))
+    implementation(project(":typeSystem-core"))
+    implementation(project(":project-core"))
+    implementation(project(":console-core"))
     implementation(project(":console-ui"))
+    implementation(project(":exec-core"))
+    implementation(project(":exec-ui"))
+    implementation(project(":groovy-exec"))
+    implementation(project(":impex-core"))
+    implementation(project(":polyglotQuery-core"))
+    implementation(project(":polyglotQuery-exec"))
+    implementation(project(":flexibleSearch-exec"))
+    implementation(project(":flexibleSearch-ui"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+
+        bundledModules(
+            "intellij.libraries.microba",
+            "intellij.grid.impl"
+        )
+
+        bundledPlugins(
+            "com.intellij.database",
+        )
     }
 }

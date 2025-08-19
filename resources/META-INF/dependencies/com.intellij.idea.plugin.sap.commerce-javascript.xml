@@ -21,7 +21,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <languageInjector implementation="sap.commerce.toolset.lang.injection.JavaScriptLanguageInjector" />
+        <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.JavaScriptLanguageInjector" />
 
     </extensions>
 

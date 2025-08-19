@@ -31,22 +31,23 @@ import org.jetbrains.plugins.groovy.GroovyFileType
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.acl.editor.AclSplitEditorEx
 import sap.commerce.toolset.acl.file.AclFileType
-import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditor
+import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
 import sap.commerce.toolset.groovy.editor.GroovySplitEditor
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorBase
 import sap.commerce.toolset.impex.file.ImpexFileType
-import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditor
+import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
+@Deprecated("Use module specific implementation.")
 class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor = with(TextEditorProvider.getInstance().createEditor(project, file)) {
         asSafely<TextEditor>()
             ?.let {
                 when (file.fileType) {
-                    is FlexibleSearchFileType -> FlexibleSearchSplitEditor(it, project)
-                    is PolyglotQueryFileType -> PolyglotQuerySplitEditor(it, project)
+                    is FlexibleSearchFileType -> FlexibleSearchSplitEditorEx(it, project)
+                    is PolyglotQueryFileType -> PolyglotQuerySplitEditorEx(it, project)
                     is ImpexFileType -> ImpExSplitEditorBase(it, project)
                     is AclFileType -> AclSplitEditorEx(it, project)
                     else -> if (Plugin.GROOVY.isActive() && file.fileType is GroovyFileType) GroovySplitEditor(it, project)

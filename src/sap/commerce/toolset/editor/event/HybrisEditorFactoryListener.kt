@@ -33,8 +33,8 @@ import sap.commerce.toolset.groovy.actionSystem.GroovyFileToolbarInstaller
 import sap.commerce.toolset.impex.actionSystem.ImpExFileToolbarInstaller
 import sap.commerce.toolset.impex.file.ImpexFileType
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.polyglotQuery.actionSystem.PolyglotQueryFileToolbarInstaller
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
-import sap.commerce.toolset.polyglotQuery.ui.actionSystem.PolyglotQueryFileToolbarInstaller
 
 class HybrisEditorFactoryListener : EditorFactoryListener {
 

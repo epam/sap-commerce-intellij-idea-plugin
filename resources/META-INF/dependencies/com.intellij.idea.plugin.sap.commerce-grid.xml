@@ -20,7 +20,6 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <codeInsight.lineMarkerProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.ImpExLineMarkerProvider"/>
-        <projectService serviceImplementation="sap.commerce.toolset.grid.GridXSVFormatService"/>
     </extensions>
 
 </idea-plugin>

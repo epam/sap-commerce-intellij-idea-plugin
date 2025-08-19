@@ -19,7 +19,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <multiHostInjector implementation="sap.commerce.toolset.lang.injection.HybrisSpringELInjector"/>
+        <multiHostInjector implementation="sap.commerce.toolset.codeInsight.injection.HybrisSpringELInjector"/>
         <spring.el.contexts order="first" implementation="sap.commerce.toolset.spring.context.CngSpringELContextsExtension"/>
     </extensions>
 
