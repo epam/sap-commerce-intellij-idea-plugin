@@ -59,6 +59,8 @@
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-cron.xml">com.intellij.cron</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-grid.xml">intellij.grid.plugin</depends>
 
+    <depends optional="true" config-file="sap.commerce.toolset-copyright-core.xml">com.intellij.copyright</depends>
+
     <depends optional="true" config-file="sap.commerce.toolset-terminal.xml">org.jetbrains.plugins.terminal</depends>
     <depends optional="true" config-file="sap.commerce.toolset-ant-ui.xml">AntSupport</depends>
 
@@ -69,7 +71,6 @@
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-impex.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-acl.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-polyglot-query.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-console.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-jsp.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
@@ -121,5 +122,4 @@
     <xi:include href="/META-INF/sap.commerce.toolset-logging-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-occ-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-solr-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
-    <xi:include href="/META-INF/sap.commerce.toolset-copyright-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
 </idea-plugin>

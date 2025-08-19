@@ -165,6 +165,11 @@ class HybrisSolrSearchConsole(
 
     override fun title() = "Solr Search"
     override fun tip() = "Solr Search Console"
+    override fun execute() = SolrExecutionClient.getInstance(project).execute(
+        context = context,
+        beforeCallback = { _ -> beforeExecution() },
+        resultCallback = { _, result -> print(result) }
+    )
 
     companion object {
         @Serial

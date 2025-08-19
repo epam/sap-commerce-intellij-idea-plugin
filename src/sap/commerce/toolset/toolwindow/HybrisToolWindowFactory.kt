@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.ui.BSView
 import sap.commerce.toolset.ccv2.toolwindow.CCv2View
-import sap.commerce.toolset.console.ui.HybrisConsolesView
+import sap.commerce.toolset.console.toolWindow.HybrisConsolesToolWindow
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.logging.ui.LoggersView
 import sap.commerce.toolset.typeSystem.ui.TSView
@@ -40,7 +40,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
         arrayOf(
             createTSContent(toolWindow, TSView(project)),
             createBSContent(toolWindow, BSView(project)),
-            createConsolesContent(toolWindow, project, HybrisConsolesView.getInstance(project)),
+            createConsolesContent(toolWindow, project, HybrisConsolesToolWindow.getInstance(project)),
             createCCv2CLIContent(toolWindow, project, CCv2View(project)),
             createLoggersContent(toolWindow, LoggersView(project, coroutineScope))
         ).forEach { toolWindow.contentManager.addContent(it) }
@@ -68,8 +68,8 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
         this
     }
 
-    private fun createConsolesContent(toolWindow: ToolWindow, project: Project, panel: HybrisConsolesView) =
-        with(toolWindow.contentManager.factory.createContent(panel, HybrisConsolesView.ID, true)) {
+    private fun createConsolesContent(toolWindow: ToolWindow, project: Project, panel: HybrisConsolesToolWindow) =
+        with(toolWindow.contentManager.factory.createContent(panel, HybrisConsolesToolWindow.ID, true)) {
             Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
             Disposer.register(toolWindow.disposable, panel)
 

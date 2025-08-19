@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,43 +16,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.tools.console.actionSystem
+package sap.commerce.toolset.console.actionSystem
 
-import com.intellij.execution.ExecutionBundle
-import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.codeInsight.lookup.LookupManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsoleService
 
-class ConsoleClearAllAction : DumbAwareAction(
-    ExecutionBundle.message("clear.all.from.console.action.name"),
-    "Clear the contents of the console",
-    HybrisIcons.Actions.CLEAR_ALL
-) {
+class ConsoleExecuteStatementAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    override fun actionPerformed(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        val project = e.project ?: return
+
+        HybrisConsoleService.getInstance(project).getActiveConsole()
+            ?.execute()
+    }
 
     override fun update(e: AnActionEvent) {
         e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
         if (!e.presentation.isVisible) return
 
         val project = e.project ?: return
-        val activeConsole = HybrisConsoleService.getInstance(project).getActiveConsole() ?: return
+        val consoleService = HybrisConsoleService.getInstance(project)
+        val console = consoleService.getActiveConsole() ?: return
+        val editor = console.consoleEditor
+        val lookup = LookupManager.getActiveLookup(editor)
 
-        var enabled = activeConsole.contentSize > 0
-        if (!enabled) {
-            enabled = e.getData(LangDataKeys.CONSOLE_VIEW) != null
-            val editor = e.getData(CommonDataKeys.EDITOR)
-            if (editor != null && editor.document.textLength == 0) {
-                enabled = false
-            }
-        }
-        e.presentation.isEnabled = enabled
-    }
+        e.presentation.isEnabled = console.canExecute() && (lookup == null || !lookup.isCompletion)
+        e.presentation.disabledIcon = console.disabledIcon()
 
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project ?: return
-        HybrisConsoleService.getInstance(project).getActiveConsole()
-            ?.clear()
+        e.presentation.text = "Execute Current Statement"
+        e.presentation.icon = HybrisIcons.Console.Actions.EXECUTE
     }
 }

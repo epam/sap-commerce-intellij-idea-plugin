@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.console.ui
+package sap.commerce.toolset.console.toolWindow
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ActionGroup
@@ -31,6 +31,7 @@ import com.intellij.ui.JBTabsPaneImpl
 import com.intellij.ui.tabs.impl.JBEditorTabs
 import com.intellij.util.asSafely
 import kotlinx.coroutines.CoroutineScope
+import sap.commerce.toolset.console.ConsoleUiConstants
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.console.HybrisConsoleProvider
 import sap.commerce.toolset.exec.context.ExecutionContext
@@ -42,7 +43,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
 
 @Service(Service.Level.PROJECT)
-class HybrisConsolesView(project: Project, coroutineScope: CoroutineScope) : SimpleToolWindowPanel(true), Disposable {
+class HybrisConsolesToolWindow(project: Project, coroutineScope: CoroutineScope) : SimpleToolWindowPanel(true), Disposable {
 
     override fun dispose() {
         //NOP
@@ -60,7 +61,7 @@ class HybrisConsolesView(project: Project, coroutineScope: CoroutineScope) : Sim
 
         val actionManager = ActionManager.getInstance()
         val toolbarActions = actionManager.getAction("hybris.console.actionGroup") as ActionGroup
-        actionToolbar = actionManager.createActionToolbar(ConsoleConstants.PLACE_TOOLBAR, toolbarActions, false)
+        actionToolbar = actionManager.createActionToolbar(ConsoleUiConstants.PLACE_TOOLBAR, toolbarActions, false)
 
         val rootPanel = JPanel(BorderLayout())
 
@@ -103,6 +104,6 @@ class HybrisConsolesView(project: Project, coroutineScope: CoroutineScope) : Sim
 
         const val ID = "Consoles"
 
-        fun getInstance(project: Project): HybrisConsolesView = project.service()
+        fun getInstance(project: Project): HybrisConsolesToolWindow = project.service()
     }
 }

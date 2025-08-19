@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.groovy.GroovyLanguage
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.http.HybrisHacHttpClient
+import sap.commerce.toolset.groovy.exec.GroovyExecutionClient
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
 import sap.commerce.toolset.settings.state.TransactionMode
 import java.awt.BorderLayout
@@ -62,6 +63,11 @@ class HybrisGroovyConsole(
 
     override fun title() = "Groovy Scripting"
     override fun tip() = "Groovy Console"
+    override fun execute() = GroovyExecutionClient.getInstance(project).execute(
+        context = context,
+        beforeCallback = { _ -> beforeExecution() },
+        resultCallback = { _, result -> print(result) }
+    )
 
     companion object {
         @Serial

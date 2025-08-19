@@ -30,7 +30,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.ui.AnimatedIcon
-import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import sap.commerce.toolset.exec.RemoteConnectionService
@@ -45,10 +44,6 @@ abstract class HybrisConsole<E : ExecutionContext>(
     project: Project, title: String, language: Language,
     private val coroutineScope: CoroutineScope
 ) : LanguageConsoleImpl(project, title, language) {
-
-    protected val borders10 = JBUI.Borders.empty(10)
-    protected val borders5 = JBUI.Borders.empty(5, 10)
-    protected val bordersLabel = JBUI.Borders.empty(10, 10, 10, 0)
 
     private val consoleId: String = "hybris.console.$title"
     private val consoleRootType = object : ConsoleRootType(consoleId, null) {}
@@ -74,6 +69,7 @@ abstract class HybrisConsole<E : ExecutionContext>(
     abstract fun currentExecutionContext(content: String): E
     abstract fun title(): String
     abstract fun tip(): String
+    abstract fun execute()
 
     open fun icon(): Icon? = language.associatedFileType?.icon
     open fun disabledIcon(): Icon? = AnimatedIcon.Default.INSTANCE

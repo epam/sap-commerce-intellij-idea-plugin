@@ -28,6 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.console.HybrisConsole
+import sap.commerce.toolset.flexibleSearch.exec.FlexibleSearchExecutionClient
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.exec.context.QueryMode
 import sap.commerce.toolset.settings.state.TransactionMode
@@ -74,6 +75,12 @@ class SQLConsole(project: Project, coroutineScope: CoroutineScope) : HybrisConso
 
     override fun title(): String = "SQL"
     override fun tip(): String = "SQL Console"
+    override fun execute() = FlexibleSearchExecutionClient.getInstance(project).execute(
+        context = context,
+        beforeCallback = { _ -> beforeExecution() },
+        resultCallback = { _, result -> print(result) }
+    )
+
     override fun icon(): Icon = HybrisIcons.FlexibleSearch.SQL
 
     companion object {

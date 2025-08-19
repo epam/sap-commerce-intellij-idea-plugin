@@ -16,5 +16,13 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 <idea-plugin>
-
+    <actions>
+        <group id="hybris.console.actionGroup">
+            <reference ref="hybris.hac.chooseConnection"/>
+            <action id="hybris.hac.console.executeStatement" class="sap.commerce.toolset.console.actionSystem.ConsoleExecuteStatementAction">
+                <keyboard-shortcut keymap="$default" first-keystroke="alt ENTER"/>
+            </action>
+            <action id="hybris.hac.console.clearAll" class="sap.commerce.toolset.console.actionSystem.ConsoleClearAllAction"/>
+        </group>
+    </actions>
 </idea-plugin>

@@ -32,6 +32,7 @@ import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.exec.context.ConsoleAwareExecutionResult
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.file.ImpexFileType
+import sap.commerce.toolset.impex.monitoring.exec.ImpExMonitorExecutionClient
 import sap.commerce.toolset.impex.monitoring.exec.context.ImpExMonitorExecutionContext
 import sap.commerce.toolset.impex.monitoring.exec.context.TimeOption
 import sap.commerce.toolset.project.settings.ProjectSettings
@@ -99,6 +100,11 @@ class HybrisImpExMonitorConsole(
 
     override fun title() = "ImpEx Monitor"
     override fun tip() = "Last imported ImpEx files"
+    override fun execute() = ImpExMonitorExecutionClient.getInstance(project).execute(
+        context = context,
+        beforeCallback = { _ -> beforeExecution() },
+        resultCallback = { _, result -> print(result) }
+    )
 
     companion object {
         @Serial

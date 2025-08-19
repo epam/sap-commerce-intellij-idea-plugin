@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.console.HybrisConsole
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.exec.ImpExExecutionClient
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 import java.awt.BorderLayout
 import java.io.Serial
@@ -96,6 +97,11 @@ class ImpExConsole(project: Project, coroutineScope: CoroutineScope) : HybrisCon
 
     override fun title(): String = ImpExConstants.IMPEX
     override fun tip(): String = "ImpEx Console"
+    override fun execute() = ImpExExecutionClient.getInstance(project).execute(
+        context = context,
+        beforeCallback = { _ -> beforeExecution() },
+        resultCallback = { _, result -> print(result) }
+    )
 
     companion object {
         @Serial

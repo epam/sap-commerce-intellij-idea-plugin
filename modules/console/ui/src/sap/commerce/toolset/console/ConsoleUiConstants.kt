@@ -16,8 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.console.ui
+package sap.commerce.toolset.console
 
-object ConsoleConstants {
+object ConsoleUiConstants {
     const val PLACE_TOOLBAR = "Hybris.Consoles.ContextMenu"
 }
