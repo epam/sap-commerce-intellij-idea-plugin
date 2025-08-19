@@ -108,7 +108,6 @@
 
         <action id="hybris.impex.extractAcl" class="sap.commerce.toolset.impex.actionSystem.ImpexExtractAclAction"/>
         <action id="hybris.impex.learnMoreAcl" class="sap.commerce.toolset.impex.actionSystem.ImpexLearnMoreAboutAclAction"/>
-        <action id="hybris.impex.openFileInConsole" class="sap.commerce.toolset.impex.actionSystem.ImpExOpenInConsoleAction"/>
         <action id="hybris.impex.openQuery" class="sap.commerce.toolset.impex.actionSystem.ImpExOpenInConsoleAction">
             <keyboard-shortcut first-keystroke="control shift alt O" keymap="$default"/>
         </action>
