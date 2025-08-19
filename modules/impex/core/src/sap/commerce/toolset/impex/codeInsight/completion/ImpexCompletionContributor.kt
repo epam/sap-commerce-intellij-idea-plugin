@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,19 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.completion
+
+package sap.commerce.toolset.impex.codeInsight.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
-import sap.commerce.toolset.codeInsight.completion.provider.ItemCodeCompletionProvider
-import sap.commerce.toolset.impex.completion.provider.*
+import com.intellij.patterns.PlatformPatterns
+import com.intellij.psi.tree.TokenSet
+import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.impex.codeInsight.completion.provider.*
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpexFullHeaderType
 import sap.commerce.toolset.impex.psi.ImpexModifiers
 import sap.commerce.toolset.impex.psi.ImpexTypes
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.psi.tree.TokenSet
-import sap.commerce.toolset.impex.ImpExLanguage
+import sap.commerce.toolset.typeSystem.codeInsight.completion.provider.ItemCodeCompletionProvider
 
 class ImpexCompletionContributor : CompletionContributor() {
     init {

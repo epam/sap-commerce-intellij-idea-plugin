@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,30 +15,37 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.completion.provider
+package sap.commerce.toolset.impex.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
-import sap.commerce.toolset.impex.constants.modifier.AttributeModifier
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.settings.DeveloperSettings
+import sap.commerce.toolset.impex.psi.ImpexHeaderLine
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
-class ImpexHeaderAttributeModifierNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ImpexHeaderItemTypeAttributeNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
         parameters: CompletionParameters,
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
+        val project = parameters.editor.project ?: return
         val element = parameters.position
-        val completionSettings = DeveloperSettings.getInstance(element.project)
-            .impexSettings
-            .completion
-        AttributeModifier.entries
-            .map { ImpExLookupElementFactory.build(element, it, completionSettings) }
-            .let { result.addAllElements(it) }
+
+        val typeCode = PsiTreeUtil.getParentOfType(element, ImpexHeaderLine::class.java)
+            ?.getFullHeaderType()
+            ?.getHeaderTypeName()
+            ?.text
+            ?: return
+
+        with(TSCompletionService.getInstance(project)) {
+            result.addAllElements(getHeaderAbbreviationCompletions(project))
+            result.caseInsensitive().addAllElements(getCompletions(typeCode, TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION))
+        }
     }
 
 }

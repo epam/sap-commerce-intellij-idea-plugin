@@ -16,25 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.completion.provider
+package sap.commerce.toolset.typeSystem.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.typeSystem.meta.model.TSMetaType
 
-class ImpexKeywordModeCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ItemCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
 
-    private val keywords = listOf(
-        "INSERT",
-        "UPDATE",
-        "INSERT_UPDATE",
-        "REMOVE"
-    )
+    public override fun addCompletions(
+        parameters: CompletionParameters,
+        context: ProcessingContext,
+        result: CompletionResultSet
+    ) {
+        val project = parameters.editor.project ?: return
+        val resultCaseInsensitive = result.caseInsensitive()
 
-    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
-        result.addAllElements(keywords.map { ImpExLookupElementFactory.buildMode(it) })
+        TSCompletionService.Companion.getInstance(project)
+            .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM, TSMetaType.META_RELATION)
+            .forEach { resultCaseInsensitive.addElement(it) }
     }
 
 }

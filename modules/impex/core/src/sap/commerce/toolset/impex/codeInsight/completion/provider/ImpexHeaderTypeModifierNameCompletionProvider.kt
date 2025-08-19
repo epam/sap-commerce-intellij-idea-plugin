@@ -1,5 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,28 +16,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.codeInsight.completion.provider
+package sap.commerce.toolset.impex.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
-import sap.commerce.toolset.typeSystem.meta.model.TSMetaType.*
+import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
+import sap.commerce.toolset.impex.constants.modifier.TypeModifier
+import sap.commerce.toolset.settings.DeveloperSettings
 
-class ItemCodeCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ImpexHeaderTypeModifierNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
         parameters: CompletionParameters,
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
-        val project = parameters.editor.project ?: return
-        val resultCaseInsensitive = result.caseInsensitive()
-
-        TSCompletionService.getInstance(project)
-            .getCompletions(META_ITEM, META_ENUM, META_RELATION)
-            .forEach { resultCaseInsensitive.addElement(it) }
+        val element = parameters.position
+        val completionSettings = DeveloperSettings.getInstance(element.project)
+            .impexSettings
+            .completion
+        TypeModifier.entries
+            .map { ImpExLookupElementFactory.build(element, it, completionSettings) }
+            .let { result.addAllElements(it) }
     }
 
 }

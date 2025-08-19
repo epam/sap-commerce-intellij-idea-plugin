@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,33 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.completion.provider
+package sap.commerce.toolset.impex.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.impex.psi.ImpexParameter
-import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
+import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 
-class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ImpexKeywordMacroCompletionProvider : CompletionProvider<CompletionParameters>() {
 
-    public override fun addCompletions(
-        parameters: CompletionParameters,
-        context: ProcessingContext,
-        result: CompletionResultSet
-    ) {
-        val project = parameters.position.project
-        val psiElementUnderCaret = if (parameters.position is LeafPsiElement)
-            parameters.position.parent
-        else parameters.position
-        val parameter = psiElementUnderCaret as? ImpexParameter ?: return
-        val typeName = parameter.itemTypeName ?: return
-
-        TSCompletionService.getInstance(project)
-            .getCompletions(typeName)
-            .let { result.addAllElements(it) }
+    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
+        result.addElement(ImpExLookupElementFactory.buildUserRights())
     }
 
 }

@@ -16,20 +16,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.impex.completion.provider
+
+package sap.commerce.toolset.impex.codeInsight.completion.provider
 
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.notification.NotificationType
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.util.ProcessingContext
-import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.i18n
-import sap.commerce.toolset.impex.constants.modifier.TypeModifier
-import sap.commerce.toolset.impex.psi.ImpexAttribute
+import sap.commerce.toolset.impex.psi.ImpexParameter
+import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 
-class ImpexHeaderTypeModifierValueCompletionProvider : CompletionProvider<CompletionParameters>() {
+class ImpexHeaderItemTypeParameterNameCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     public override fun addCompletions(
         parameters: CompletionParameters,
@@ -37,22 +35,15 @@ class ImpexHeaderTypeModifierValueCompletionProvider : CompletionProvider<Comple
         result: CompletionResultSet
     ) {
         val project = parameters.position.project
-        val psiElementUnderCaret = parameters.position
-        val impexAttribute = PsiTreeUtil.getParentOfType(psiElementUnderCaret, ImpexAttribute::class.java) ?: return
-        val modifierName = impexAttribute.anyAttributeName.text
-        val impexModifier = TypeModifier.getModifier(modifierName)
+        val psiElementUnderCaret = if (parameters.position is LeafPsiElement)
+            parameters.position.parent
+        else parameters.position
+        val parameter = psiElementUnderCaret as? ImpexParameter ?: return
+        val typeName = parameter.itemTypeName ?: return
 
-        if (impexModifier != null) {
-            impexModifier.getLookupElements(project)
-                .forEach { result.addElement(it) }
-        } else {
-            // show an error message when not defined within hybris API
-            Notifications.create(
-                NotificationType.WARNING,
-                i18n("hybris.completion.error.impex.title"),
-                i18n("hybris.completion.error.impex.unknownTypeModifier.content", modifierName)
-            )
-                .notify(parameters.position.project)
-        }
+        TSCompletionService.getInstance(project)
+            .getCompletions(typeName)
+            .let { result.addAllElements(it) }
     }
+
 }

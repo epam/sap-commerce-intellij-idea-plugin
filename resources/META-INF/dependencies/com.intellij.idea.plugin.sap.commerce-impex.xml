@@ -72,7 +72,7 @@
         <!--                                        Impex Completion Providers                                       -->
         <!-- ####################################################################################################### -->
 
-        <completion.contributor language="ImpEx" implementationClass="sap.commerce.toolset.impex.completion.ImpexCompletionContributor"/>
+        <completion.contributor language="ImpEx" implementationClass="sap.commerce.toolset.impex.codeInsight.completion.ImpexCompletionContributor"/>
 
         <!-- ####################################################################################################### -->
 
