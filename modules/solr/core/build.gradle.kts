@@ -35,17 +35,10 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
-    implementation(project(":meta-core"))
-    implementation(project(":project-core"))
-    implementation(project(":beanSystem-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.properties",
-        )
     }
 }

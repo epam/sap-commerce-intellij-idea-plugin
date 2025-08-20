@@ -55,6 +55,7 @@
             <option value="$PROJECT_DIR$/modules/shared/core" />
             <option value="$PROJECT_DIR$/modules/shared/emitter" />
             <option value="$PROJECT_DIR$/modules/shared/ui" />
+            <option value="$PROJECT_DIR$/modules/solr/core" />
             <option value="$PROJECT_DIR$/modules/solr/exec" />
             <option value="$PROJECT_DIR$/modules/spring" />
             <option value="$PROJECT_DIR$/modules/terminal" />
