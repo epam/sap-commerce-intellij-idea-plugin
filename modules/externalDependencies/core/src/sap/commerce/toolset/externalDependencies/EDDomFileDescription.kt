@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.system.externalDependencies
+package sap.commerce.toolset.externalDependencies
 
 import com.intellij.openapi.module.Module
 import com.intellij.psi.xml.XmlFile

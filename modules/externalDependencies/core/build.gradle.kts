@@ -16,16 +16,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.codeInspection.rule.externalDependencies
+fun properties(key: String) = providers.gradleProperty(key)
 
-import com.intellij.openapi.project.Project
-import com.intellij.psi.xml.XmlFile
-import org.jetbrains.idea.maven.dom.model.MavenDomProjectModel
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.codeInspection.AbstractInspection
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-abstract class AbstractEdInspection : AbstractInspection<MavenDomProjectModel>(MavenDomProjectModel::class.java) {
+sourceSets {
+    main {
+        java.srcDirs("src", "gen")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-    override fun canProcess(project: Project, file: XmlFile) = file.name == HybrisConstants.EXTERNAL_DEPENDENCIES_XML
+idea {
+    module {
+        generatedSourceDirs.add(file("gen"))
+    }
+}
 
+dependencies {
+    implementation(project(":shared-core"))
+
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+        bundledPlugins(
+            "org.jetbrains.idea.maven",
+        )
+    }
 }

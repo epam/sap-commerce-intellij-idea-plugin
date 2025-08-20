@@ -27,6 +27,7 @@
             <option value="$PROJECT_DIR$/modules/copyright/core" />
             <option value="$PROJECT_DIR$/modules/exec/core" />
             <option value="$PROJECT_DIR$/modules/exec/ui" />
+            <option value="$PROJECT_DIR$/modules/externalDependencies/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/exec" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/ui" />

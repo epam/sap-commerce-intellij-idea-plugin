@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.codeInspection.rule.externalDependencies
+package sap.commerce.toolset.externalDependencies.codeInspection
 
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
@@ -27,7 +27,7 @@ import org.jetbrains.idea.maven.dom.model.MavenDomProjectModel
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
 
-class EdDependencyIsNotYetDownloaded : AbstractEdInspection() {
+class EdDependencyIsNotYetDownloaded : EdInspection() {
 
     override fun inspect(
         project: Project,
