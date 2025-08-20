@@ -22,31 +22,17 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.NotNullLazyValue
 import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.xml.XmlTag
 import com.intellij.spring.SpringManager
-import com.intellij.spring.java.SpringJavaClassInfo
-import com.intellij.spring.model.SpringBeanPointer
 import com.intellij.spring.model.utils.SpringModelSearchers
-import com.intellij.spring.model.xml.beans.SpringBean
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 
+@Deprecated("move fully to spring module")
 object SpringHelper {
-
-    fun resolveBeanDeclaration(element: PsiElement, beanId: String): XmlTag? {
-        return Plugin.SPRING.ifActive {
-            guessModule(element)
-                ?.let { springResolveBean(it, beanId) }
-                ?.springBean
-                ?.xmlTag
-        } ?: plainResolveBean(element.project, beanId)
-    }
 
     fun resolveBeanClass(element: PsiElement, beanId: String) = Plugin.SPRING.ifActive {
         guessModule(element)
@@ -64,25 +50,6 @@ object SpringHelper {
             .modules
             // fallback to Platform module
             .firstOrNull { YFacet.getState(it)?.type == ModuleDescriptorType.PLATFORM }
-
-    fun resolveInterceptorBeansLazy(
-        clazz: PsiClass,
-        name: String? = null
-    ): NotNullLazyValue<MutableCollection<out SpringBeanPointer<*>>> = NotNullLazyValue.lazy {
-        SpringJavaClassInfo.getSpringJavaClassInfo(clazz).resolve().mappedDomBeans
-            .asSequence()
-            .map { it.springBean }
-            .filterIsInstance<SpringBean>()
-            .filter { bean ->
-                bean.properties.find { property ->
-                    property.propertyName == "typeCode" && (name?.equals(property.valueAsString, true) ?: true)
-                } != null
-            }
-            .mapNotNull { bean -> bean.properties.find { property -> property.propertyName == "interceptor" } }
-            .mapNotNull { interceptor -> interceptor.refValue }
-            .sortedWith(SpringBeanPointer.DISPLAY_COMPARATOR)
-            .toMutableList()
-    }
 
     private fun springResolveBean(module: Module, beanId: String) = SpringManager.getInstance(module.project).getAllModels(module)
         .firstNotNullOfOrNull { SpringModelSearchers.findBean(it, beanId) }
