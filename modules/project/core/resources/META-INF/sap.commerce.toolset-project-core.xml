@@ -25,4 +25,19 @@
         <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.daemon.LeExtensionLineMarkerProvider"/>
     </extensions>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiUnknownExtensionDeclaration.key"
+                         shortName="EiUnknownExtensionDefinition" level="ERROR"
+                         implementationClass="sap.commerce.toolset.project.codeInspection.EiUnknownExtensionDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Extension Info"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ei.EiDuplicateExtensionDeclaration.key"
+                         shortName="EiDuplicateExtensionDefinition" level="ERROR"
+                         implementationClass="sap.commerce.toolset.project.codeInspection.EiDuplicateExtensionDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Local Extensions"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.le.LeUnknownExtensionDeclaration.key"
+                         shortName="LeUnknownExtensionDefinition" level="ERROR"
+                         implementationClass="sap.commerce.toolset.project.codeInspection.LeUnknownExtensionDefinition"/>
+    </extensions>
+
 </idea-plugin>
