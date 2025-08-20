@@ -26,6 +26,9 @@ import sap.commerce.toolset.HybrisIcons
 import javax.swing.Icon
 
 class ModelValueIconRenderer : ValueIconRenderer {
-    override fun calcValueIcon(descriptor: ValueDescriptor?, evaluationContext: EvaluationContext?, listener: DescriptorLabelListener?): Icon =
-        HybrisIcons.Y.LOGO_BLUE
+    override fun calcValueIcon(
+        descriptor: ValueDescriptor?,
+        evaluationContext: EvaluationContext?,
+        listener: DescriptorLabelListener?
+    ): Icon = HybrisIcons.Y.LOGO_BLUE
 }

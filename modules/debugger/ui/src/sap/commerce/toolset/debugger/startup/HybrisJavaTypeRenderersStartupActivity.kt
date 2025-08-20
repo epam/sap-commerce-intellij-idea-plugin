@@ -15,14 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.startup
+
+package sap.commerce.toolset.debugger.startup
 
 import com.intellij.debugger.settings.NodeRendererSettings
 import com.intellij.debugger.ui.tree.render.CompoundReferenceRenderer
-import sap.commerce.toolset.debugger.ui.tree.render.ModelRenderer
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.debugger.ui.tree.render.ModelRenderer
 
 /**
  * As for now IDEA does not save icon renderer and full value evaluator with CompoundReferenceRenderer

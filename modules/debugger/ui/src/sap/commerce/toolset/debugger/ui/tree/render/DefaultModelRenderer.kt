@@ -15,11 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.debugger.ui.tree.render
 
 import com.intellij.debugger.engine.DebuggerUtils
 import com.intellij.debugger.engine.FullValueEvaluatorProvider
-import com.intellij.debugger.engine.JavaValue.JavaFullValueEvaluator
+import com.intellij.debugger.engine.JavaValue
 import com.intellij.debugger.engine.evaluation.EvaluationContextImpl
 import com.intellij.debugger.settings.NodeRendererSettings
 import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
@@ -36,6 +37,7 @@ import com.sun.jdi.Type
 import com.sun.jdi.Value
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.Notifications
+import sap.commerce.toolset.debugger.createRendererName
 import sap.commerce.toolset.i18n
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
@@ -49,7 +51,7 @@ class DefaultModelRenderer : CompoundRendererProvider() {
     override fun getIsApplicableChecker(): Function<Type?, CompletableFuture<Boolean>> {
         return Function { t ->
             CompletableFuture.completedFuture(
-                 DebuggerUtils.instanceOf(t, className)
+                DebuggerUtils.instanceOf(t, className)
             )
         }
     }
@@ -58,15 +60,15 @@ class DefaultModelRenderer : CompoundRendererProvider() {
 
     override fun getFullValueEvaluatorProvider(): FullValueEvaluatorProvider {
         return FullValueEvaluatorProvider { evaluationContext: EvaluationContextImpl, valueDescriptor: ValueDescriptorImpl ->
-            object : JavaFullValueEvaluator(i18n("hybris.debug.message.node.type.renderer.create"), evaluationContext) {
+            object : JavaValue.JavaFullValueEvaluator(i18n("hybris.debug.message.node.type.renderer.create"), evaluationContext) {
                 override fun evaluate(callback: XFullValueEvaluationCallback) {
                     val value = valueDescriptor.value
                     val project = valueDescriptor.project
                     val className = value.type().name()
-                    val rendererName = ModelRenderer.createRendererName(className)
+                    val rendererName = createRendererName(className)
 
-                    if (DumbService.isDumb(project)) {
-                        Notifications.create(
+                    if (DumbService.Companion.isDumb(project)) {
+                        Notifications.Companion.create(
                             NotificationType.INFORMATION,
                             IdeBundle.message("progress.performing.indexing.tasks"),
                             i18n("hybris.notification.debug.dumb.mode.content")

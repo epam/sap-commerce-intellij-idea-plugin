@@ -15,16 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.debugger.ui.tree.render
 
 import com.intellij.debugger.ui.tree.render.ChildrenRenderer
 import com.intellij.debugger.ui.tree.render.CompoundRendererProvider
 import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer
 import com.intellij.debugger.ui.tree.render.NodeRendererImpl
-import sap.commerce.toolset.debugger.engine.ModelFullValueEvaluatorProvider
 import com.intellij.openapi.project.Project
 import com.sun.jdi.Type
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.debugger.engine.ModelFullValueEvaluatorProvider
+import sap.commerce.toolset.debugger.refreshInfos
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
 
@@ -37,26 +38,17 @@ open class ModelRenderer(
     override fun getClassName() = myClassName
     override fun isEnabled() = true
 
-    override fun getIsApplicableChecker(): Function<Type?, CompletableFuture<Boolean>> {
-        return Function { t ->
-            CompletableFuture.completedFuture(
-                t?.name().equals(className)
-            )
-        }
+    override fun getIsApplicableChecker(): Function<Type?, CompletableFuture<Boolean>> = Function { t ->
+        CompletableFuture.completedFuture(t?.name().equals(className))
     }
 
-    override fun getChildrenRenderer(): ChildrenRenderer {
-        val childrenRenderer = EnumerationChildrenRenderer()
-        childrenRenderer.isAppendDefaultChildren = true
-        ModelEnumerationChildrenRendererInfoProvider.refreshInfos(childrenRenderer, project, className)
-        return childrenRenderer
+    override fun getChildrenRenderer(): ChildrenRenderer = EnumerationChildrenRenderer().apply {
+        isAppendDefaultChildren = true
+        refreshInfos(this, project, className)
     }
 
     override fun getIconRenderer() = ModelValueIconRenderer()
     override fun getFullValueEvaluatorProvider() = ModelFullValueEvaluatorProvider()
     override fun toString() = "ModelRenderer(className='$myClassName')"
 
-    companion object {
-        fun createRendererName(className: String) = "${HybrisConstants.DEBUG_MODEL_RENDERER_PREFIX} ${className.substringAfterLast('.')}"
-    }
 }

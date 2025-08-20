@@ -36,7 +36,7 @@
 
         <postStartupActivity order="first" id="hybrisProjectImport" implementation="sap.commerce.toolset.startup.HybrisProjectImportStartupActivity"/>
         <postStartupActivity order="after hybrisProjectImport" implementation="sap.commerce.toolset.startup.HybrisProjectStructureStartupActivity"/>
-        <postStartupActivity order="after hybrisProjectImport" implementation="sap.commerce.toolset.startup.HybrisJavaTypeRenderersStartupActivity"/>
+
         <postStartupActivity order="after hybrisProjectImport" implementation="sap.commerce.toolset.startup.WhatsNewStartupActivity"/>
         <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.HybrisPluginUpdateCheckerStartupActivity"/>
         <backgroundPostStartupActivity implementation="sap.commerce.toolset.startup.PreLoadSystemsStartupActivity"/>
