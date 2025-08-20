@@ -26,7 +26,6 @@ import sap.commerce.toolset.project.configurator.*
 import sap.commerce.toolset.project.configurators.impl.DefaultContentRootConfigurator
 import sap.commerce.toolset.project.configurators.impl.SpringFacetConfigurator
 import sap.commerce.toolset.project.configurators.impl.WebFacetConfigurator
-import sap.commerce.toolset.project.configurators.impl.YFacetConfigurator
 
 @Service
 class ConfiguratorFactory {
@@ -44,7 +43,6 @@ class ConfiguratorFactory {
 
     @Deprecated("Use EP")
     fun getFacetConfiguratorsLegacy() = listOfNotNull(
-        service<YFacetConfigurator>(),
         Plugin.SPRING.service(SpringFacetConfigurator::class.java),
         serviceOrNull<WebFacetConfigurator>()
     )

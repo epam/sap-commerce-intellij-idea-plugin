@@ -15,30 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators.impl
+
+package sap.commerce.toolset.project.configurator
 
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.application.WriteAction
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.configurators.FacetConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.facet.YFacetConstants
 
-/**
- * Main [y] SAP Commerce Facet, acts as a holder for all Module specific configurations and settings.
- */
-@Service
-class YFacetConfigurator : FacetConfigurator {
+class YFacetConfigurator : ProjectFacetConfigurator {
 
-    override fun configure(
+    override fun configureModuleFacet(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
-        javaModule: Module,
+        module: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
         WriteAction.runAndWait<RuntimeException> {
@@ -47,7 +42,7 @@ class YFacetConfigurator : FacetConfigurator {
 
             val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
             val facet = facetType.createFacet(
-                javaModule,
+                module,
                 facetType.defaultFacetName,
                 facetType.createDefaultConfiguration(),
                 null
@@ -57,5 +52,4 @@ class YFacetConfigurator : FacetConfigurator {
             modifiableFacetModel.addFacet(facet)
         }
     }
-
 }

@@ -22,6 +22,8 @@
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
+
+        <project.facetConfigurator implementation="sap.commerce.toolset.project.configurator.YFacetConfigurator"/>
     </extensions>
 
 </idea-plugin>
