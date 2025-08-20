@@ -17,7 +17,4 @@
   -->
 <idea-plugin>
 
-    <extensions defaultExtensionNs="sap.commerce.toolset">
-    </extensions>
-
 </idea-plugin>

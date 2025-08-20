@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators
+package sap.commerce.toolset.ant.configurator
 
 import com.intellij.execution.configurations.ConfigurationTypeUtil.findConfigurationType
 import com.intellij.execution.impl.RunManagerImpl
@@ -30,14 +29,15 @@ import com.intellij.lang.ant.config.impl.AntBuildFileImpl.*
 import com.intellij.lang.ant.config.impl.configuration.EditPropertyContainer
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.util.asSafely
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.ant.AntConstants
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -51,103 +51,28 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
-import java.util.regex.Pattern
 
-@Plugin.DependsOn(Plugin.ANT_SUPPORT)
-@Service
-class AntConfigurator {
+class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurator {
 
-    private val desirablePlatformTargets = listOf(
-        "clean",
-        "build",
-        "all",
-        "addonclean",
-        "alltests",
-        "allwebtests",
-        "apidoc",
-        "bugprooftests",
-        "classpathgen",
-        "cleanMavenDependencies",
-        "cleanear",
-        "clearAdministrationLock",
-        "clearOrphanedTypes",
-        "codequality",
-        "commonwebclean",
-        "copyFromTemplate",
-        "createConfig",
-        "createPlatformImageStructure",
-        "createtypesystem",
-        "customize",
-        "demotests",
-        "deploy",
-        "deployDist",
-        "deployDistWithSources",
-        "dist",
-        "distWithSources",
-        "droptypesystem",
-        "ear",
-        "executeScript",
-        "executesql",
-        "extensionsxml",
-        "extgen",
-        "generateLicenseOverview",
-        "gradle",
-        "importImpex",
-        "initialize",
-        "initializetenantdb",
-        "integrationtests",
-        "localizationtest",
-        "localproperties",
-        "manualtests",
-        "metadata",
-        "modulegen",
-        "performancetests",
-        "production",
-        "runcronjob",
-        "sanitycheck",
-        "sassclean",
-        "sasscompile",
-        "server",
-        "sonarcheck",
-        "sourcezip",
-        "startAdminServer",
-        "startHybrisServer",
-        "syncaddons",
-        "testMavenDependencies",
-        "typecodetest",
-        "unittests",
-        "updateMavenDependencies",
-        "updateSpringXsd",
-        "updatesystem",
-        "webservice_nature",
-        "yunitinit",
-        "yunitupdate"
-    )
+    override fun beforeRefresh(project: Project) {
+        val antConfiguration = AntConfigurationBase.getInstance(project) ?: return
 
-    private val desirableCustomTargets = listOf(
-        "clean",
-        "build",
-        "deploy",
-        "all",
-        "gensource",
-        "dist"
-    )
-    private val metaTargets = listOf(
-        listOf("clean", "all"),
-        listOf("clean", "customize", "all", "initialize"),
-        listOf("clean", "customize", "all", "production")
-    )
+        for (antBuildFile in antConfiguration.buildFiles) {
+            antConfiguration.removeBuildFile(antBuildFile)
+        }
+    }
 
-    fun configureAfterImport(
+    override fun postImport(
         project: Project,
+        refresh: Boolean,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        allModules: List<ModuleDescriptor>
+        moduleDescriptors: List<ModuleDescriptor>
     ): List<() -> Unit> {
         val platformDescriptor = hybrisProjectDescriptor.platformHybrisModuleDescriptor
         val extHybrisModuleDescriptors = mutableListOf<ModuleDescriptor>()
         val customHybrisModuleDescriptors = mutableListOf<ModuleDescriptor>()
 
-        for (descriptor in allModules) {
+        for (descriptor in moduleDescriptors) {
             when (descriptor) {
                 is YPlatformExtModuleDescriptor -> extHybrisModuleDescriptors.add(descriptor)
                 is YCustomRegularModuleDescriptor -> customHybrisModuleDescriptors.add(descriptor)
@@ -167,18 +92,18 @@ class AntConfigurator {
 
             findBuildFile(antConfiguration, platformDescriptor)
                 ?.apply {
-                    metaTargets
+                    AntConstants.META_TARGETS
                         .map { ExecuteCompositeTargetEvent(it) }
                         .filter { antConfiguration.getTargetForEvent(it) == null }
                         .forEach { antConfiguration.setTargetForEvent(this, it.metaTargetName, it) }
                 }
-                ?.let { it to desirablePlatformTargets }
+                ?.let { it to AntConstants.DESIRABLE_PLATFORM_TARGETS }
                 ?.let { antBuildFiles.add(it) }
 
             if (hybrisProjectDescriptor.isImportCustomAntBuildFiles) {
                 customHybrisModuleDescriptors
                     .mapNotNull { findBuildFile(antConfiguration, it) }
-                    .map { it to desirableCustomTargets }
+                    .map { it to AntConstants.DESIRABLE_CUSTOM_TARGETS }
                     .forEach { antBuildFiles.add(it) }
             }
 
@@ -287,7 +212,7 @@ class AntConfigurator {
                             return antOptsText.trim { it <= ' ' }
                         }
                     }
-                } catch (e: IOException) {
+                } catch (_: IOException) {
                     thisLogger().error("Cannot read ", HybrisConstants.IMPORT_OVERRIDE_FILENAME)
                 }
             }
@@ -322,7 +247,8 @@ class AntConfigurator {
         try {
             return antConfiguration.addBuildFile(buildFile)
                 ?.asSafely<AntBuildFileBase>()
-        } catch (ignored: AntNoFileException) {
+        } catch (e: AntNoFileException) {
+            thisLogger().warn(e)
         }
 
         return null
@@ -335,7 +261,7 @@ class AntConfigurator {
                 .find(
                     directory,
                     1,
-                    { path: Path, _ -> Files.isDirectory(path) && PATTERN_APACHE_ANT.matcher(path.toFile().name).matches() })
+                    { path: Path, _ -> Files.isDirectory(path) && AntConstants.PATTERN_APACHE_ANT.matcher(path.toFile().name).matches() })
                 .map { it.toFile() }
                 .map { it.absolutePath }
                 .findFirst()
@@ -370,15 +296,4 @@ class AntConfigurator {
         runManager.setBeforeRunTasks(runConfiguration, emptyList())
     }
 
-    fun clearAntSettings(project: Project) {
-        val antConfiguration = AntConfigurationBase.getInstance(project) ?: return
-
-        for (antBuildFile in antConfiguration.buildFiles) {
-            antConfiguration.removeBuildFile(antBuildFile)
-        }
-    }
-
-    companion object {
-        private val PATTERN_APACHE_ANT: Pattern = Pattern.compile("apache-ant.*")
-    }
 }

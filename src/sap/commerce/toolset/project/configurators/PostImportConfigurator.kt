@@ -55,9 +55,6 @@ class PostImportConfigurator(val project: Project) {
                         getDataSourcesConfigurator()
                             ?.configureAfterImport(project),
 
-                        getAntConfigurator()
-                            ?.configureAfterImport(project, hybrisProjectDescriptor, allModules),
-
                         getXsdSchemaConfigurator()
                             ?.configureAfterImport(project, allModules),
 

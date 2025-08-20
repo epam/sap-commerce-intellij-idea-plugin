@@ -27,6 +27,9 @@
         <extensionPoint qualifiedName="sap.commerce.toolset.project.postImportConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator"
                         dynamic="false"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.refreshConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator"
+                        dynamic="false"/>
     </extensionPoints>
 
     <extensions defaultExtensionNs="com.intellij">

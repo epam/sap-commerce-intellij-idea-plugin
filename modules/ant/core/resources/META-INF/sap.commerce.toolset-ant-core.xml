@@ -1,5 +1,6 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
   ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -18,10 +19,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ModuleDependenciesConfigurator"/>
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
-        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.ant.configurator.AntConfigurator"/>
     </extensions>
 
 </idea-plugin>

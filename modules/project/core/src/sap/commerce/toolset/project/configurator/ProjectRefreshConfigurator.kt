@@ -16,33 +16,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.project.configurator
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.openapi.project.Project
 
-sourceSets {
-    main {
-        java.srcDirs("src")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+interface ProjectRefreshConfigurator {
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":ant-core"))
+    fun beforeRefresh(project: Project)
 
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        compatiblePlugins(
-            "AntSupport",                       // Ant                  https://plugins.jetbrains.com/plugin/23025-ant
-        )
+    companion object {
+        val EP = ExtensionPointName.create<ProjectRefreshConfigurator>("sap.commerce.toolset.project.refreshConfigurator")
     }
 }

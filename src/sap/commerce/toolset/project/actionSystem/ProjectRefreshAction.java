@@ -152,14 +152,9 @@ public class ProjectRefreshAction extends AnAction {
         final var configuratorFactory = ConfiguratorFactory.Companion.getInstance();
 
         clearGradleProjectData(project, configuratorFactory, projectSettings);
-        clearAntProjectData(project, configuratorFactory);
-    }
 
-    private static void clearAntProjectData(final @NotNull Project project, final ConfiguratorFactory configuratorFactory) {
-        final var antConfigurator = configuratorFactory.getAntConfigurator();
-        if (antConfigurator == null) return;
-
-        antConfigurator.clearAntSettings(project);
+        configuratorFactory.getRefreshConfigurators()
+            .forEach(configurator -> configurator.beforeRefresh(project));
     }
 
     private static void clearGradleProjectData(final @NotNull Project project, final ConfiguratorFactory configuratorFactory, final ProjectSettings projectSettings) {

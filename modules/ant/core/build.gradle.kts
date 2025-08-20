@@ -25,7 +25,7 @@ plugins {
 
 sourceSets {
     main {
-        java.srcDirs("src")
+        java.srcDirs("src", "gen")
         resources.srcDirs("resources")
     }
     test {
@@ -35,7 +35,8 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
-    implementation(project(":ant-core"))
+    implementation(project(":project-core"))
+    implementation(project(":project-import"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

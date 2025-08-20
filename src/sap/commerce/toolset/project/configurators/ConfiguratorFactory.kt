@@ -24,6 +24,7 @@ import com.intellij.openapi.components.serviceOrNull
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.configurators.impl.*
 
@@ -36,6 +37,8 @@ class ConfiguratorFactory {
         get() = ProjectStartupConfigurator.EP.extensionList
     val postImportConfigurators
         get() = ProjectPostImportConfigurator.EP.extensionList
+    val refreshConfigurators
+        get() = ProjectRefreshConfigurator.EP.extensionList
 
     fun getFacetConfigurators() = listOfNotNull(
         service<YFacetConfigurator>(),
@@ -57,8 +60,6 @@ class ConfiguratorFactory {
     fun getGradleConfigurator() = serviceOrNull<GradleConfigurator>()
     fun getAngularConfigurator() = serviceOrNull<AngularConfigurator>()
     fun getLoadedConfigurator() = service<LoadedConfigurator>()
-
-    fun getAntConfigurator() = Plugin.ANT_SUPPORT.service(AntConfigurator::class.java)
 
     fun getDataSourcesConfigurator() = Plugin.DATABASE.service(DataSourcesConfigurator::class.java)
 
