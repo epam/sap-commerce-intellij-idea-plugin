@@ -33,12 +33,6 @@
                          bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownExtensionPackInspection.key"
                          implementationClass="sap.commerce.toolset.ccv2.manifest.codeInspection.ManifestCommerceExtensionPackInspection"/>
 
-        <!-- Business Process -->
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Business Process"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
-                         shortName="BPDomElementsInspection" level="ERROR"
-                         implementationClass="sap.commerce.toolset.businessProcess.codeInspection.BPDomElementsInspection"/>
-
         <!-- Cockpitng -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"

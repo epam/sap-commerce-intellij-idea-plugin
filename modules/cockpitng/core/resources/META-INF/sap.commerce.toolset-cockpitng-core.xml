@@ -1,0 +1,85 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<idea-plugin>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <dom.fileMetaData rootTagName="beans" stubVersion="10"
+                          implementation="sap.commerce.toolset.beanSystem.BSDomFileDescription"/>
+        <completion.contributor language="XML" order="before javaClassReference"
+                                implementationClass="sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionContributor"/>
+
+        <psi.referenceContributor language="XML" implementation="sap.commerce.toolset.beanSystem.psi.contributor.BSReferenceContributor"/>
+
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.beanSystem.folding.BeansXmlFoldingBuilder"/>
+
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlBeanSiblingsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlBeanAlternativeDeclarationsLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.BeansXmlEnumAlternativeDeclarationsLineMarkerProvider"/>
+
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoBeanLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoEnumLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoEnumValueLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.daemon.DtoBeanPropertyLineMarkerProvider"/>
+
+        <codeInsight.inlayProvider language="XML" implementationClass="sap.commerce.toolset.beanSystem.codeInsight.hints.BeansXmlInlayHintsProvider"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
+                         shortName="BSDomElementsInspection" level="ERROR"
+                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSDomElementsInspection"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanDeclaration.key"
+                         shortName="BSDuplicateBeanDefinition" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSDuplicateBeanDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumDeclaration.key"
+                         shortName="BSDuplicateEnumDefinition" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSDuplicateEnumDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanPropertyDeclaration.key"
+                         shortName="BSDuplicateBeanPropertyDefinition" level="ERROR"
+                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSDuplicateBeanPropertyDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumValueDeclaration.key"
+                         shortName="BSDuplicateEnumValueDefinition" level="ERROR"
+                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSDuplicateEnumValueDefinition"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSKeywordIsNotAllowedAsBeanPropertyName.key"
+                         shortName="BSKeywordIsNotAllowedAsBeanPropertyName" level="ERROR"
+                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSKeywordIsNotAllowedAsBeanPropertyName"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType.key"
+                         shortName="BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType" level="ERROR"
+                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType.key"
+                         shortName="BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType" level="WARNING"
+                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass.key"
+                         shortName="BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass" level="WARNING"
+                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSOmitJavaLangPackageInBeanPropertyType.key"
+                         shortName="BSOmitJavaLangPackageInBeanPropertyType" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSOmitJavaLangPackageInBeanPropertyType"/>
+    </extensions>
+
+</idea-plugin>

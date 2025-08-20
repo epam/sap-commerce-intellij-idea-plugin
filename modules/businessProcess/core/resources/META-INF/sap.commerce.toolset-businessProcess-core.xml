@@ -24,4 +24,11 @@
         <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.businessProcess.lang.folding.BpXmlFoldingBuilder"/>
     </extensions>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Business Process"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
+                         shortName="BPDomElementsInspection" level="ERROR"
+                         implementationClass="sap.commerce.toolset.businessProcess.codeInspection.BPDomElementsInspection"/>
+    </extensions>
+
 </idea-plugin>
