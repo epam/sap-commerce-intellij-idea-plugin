@@ -65,48 +65,6 @@
                          shortName="CngContextMergeByTypeParentIsNotValid" level="ERROR"
                          implementationClass="sap.commerce.toolset.codeInspection.rule.cockpitng.CngContextMergeByTypeParentIsNotValid"/>
 
-        <!-- Bean System  -->
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
-                         shortName="BSDomElementsInspection" level="ERROR"
-                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSDomElementsInspection"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanDeclaration.key"
-                         shortName="DuplicateBeanDefinition" level="WEAK WARNING"
-                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSDuplicateBeanDefinition"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumDeclaration.key"
-                         shortName="DuplicateEnumDefinition" level="WEAK WARNING"
-                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSDuplicateEnumDefinition"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateBeanPropertyDeclaration.key"
-                         shortName="DuplicateBeanPropertyDefinition" level="ERROR"
-                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSDuplicateBeanPropertyDefinition"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.DuplicateEnumValueDeclaration.key"
-                         shortName="DuplicateEnumValueDefinition" level="ERROR"
-                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSDuplicateEnumValueDefinition"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSKeywordIsNotAllowedAsBeanPropertyName.key"
-                         shortName="BSKeywordIsNotAllowedAsBeanPropertyName" level="ERROR"
-                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSKeywordIsNotAllowedAsBeanPropertyName"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType.key"
-                         shortName="BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType" level="ERROR"
-                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSUnescapedLessThanSignIsNotAllowedInBeanPropertyType"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType.key"
-                         shortName="BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType" level="WARNING"
-                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSUnescapedGreaterThanSignIsNotAllowedInBeanPropertyType"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass.key"
-                         shortName="BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass" level="WARNING"
-                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSUnescapedGreaterLessThanSignIsNotAllowedInBeanClass"/>
-        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Bean System"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.bs.BSOmitJavaLangPackageInBeanPropertyType.key"
-                         shortName="BSOmitJavaLangPackageInBeanPropertyType" level="WEAK WARNING"
-                         implementationClass="sap.commerce.toolset.beanSystem.codeInspection.BSOmitJavaLangPackageInBeanPropertyType"/>
-
         <!-- Type System  -->
         <!-- Weak Warnings -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
