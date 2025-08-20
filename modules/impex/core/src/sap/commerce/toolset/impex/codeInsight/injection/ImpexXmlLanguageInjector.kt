@@ -26,6 +26,7 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import sap.commerce.toolset.impex.psi.impl.ImpexStringImpl
 
+@Deprecated("Move to main")
 class ImpexXmlLanguageInjector : LanguageInjector {
 
     override fun getLanguagesToInject(

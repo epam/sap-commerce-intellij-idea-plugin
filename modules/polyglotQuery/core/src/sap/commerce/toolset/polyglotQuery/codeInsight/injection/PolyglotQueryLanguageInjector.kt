@@ -22,6 +22,7 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import sap.commerce.toolset.Plugin
 
+@Deprecated("Move to main")
 class PolyglotQueryLanguageInjector : LanguageInjector {
 
     override fun getLanguagesToInject(
