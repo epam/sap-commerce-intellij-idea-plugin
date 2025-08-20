@@ -31,9 +31,7 @@ fun <T : ConfigurationType> createRunConfiguration(
     configurationName: String,
     configurationConsumer: (RunnerAndConfigurationSettings) -> Unit = {}
 ) {
-    if (runManager.findConfigurationByName(configurationName) != null) {
-        return
-    }
+    if (runManager.findConfigurationByName(configurationName) != null) return
 
     val confType = ConfigurationTypeUtil.findConfigurationType(configurationType)
     val configurationFactory = confType.configurationFactories.first()

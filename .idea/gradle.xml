@@ -57,6 +57,7 @@
             <option value="$PROJECT_DIR$/modules/polyglotQuery/exec" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/ui" />
             <option value="$PROJECT_DIR$/modules/project/core" />
+            <option value="$PROJECT_DIR$/modules/project/exec" />
             <option value="$PROJECT_DIR$/modules/project/extensioninfo" />
             <option value="$PROJECT_DIR$/modules/project/import" />
             <option value="$PROJECT_DIR$/modules/project/localextensions" />

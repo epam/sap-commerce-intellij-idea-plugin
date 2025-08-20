@@ -19,41 +19,35 @@
 package sap.commerce.toolset.project.runConfigurations
 
 import com.intellij.execution.Executor
-import com.intellij.execution.configurations.*
+import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.execution.configurations.ModuleBasedConfiguration
+import com.intellij.execution.configurations.RemoteConnection
+import com.intellij.execution.configurations.RunConfigurationModule
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.target.LanguageRuntimeType
 import com.intellij.execution.target.TargetEnvironmentAwareRunProfile
 import com.intellij.execution.target.TargetEnvironmentConfiguration
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import org.jdom.Element
-
 
 class LocalSapCXRunConfiguration(project: Project, factory: ConfigurationFactory) :
     ModuleBasedConfiguration<RunConfigurationModule, Element>(RunConfigurationModule(project), factory), TargetEnvironmentAwareRunProfile {
 
     override fun getValidModules(): MutableCollection<Module> = allModules
-
-    override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration?> = LocalSapCXRunSettingsEditor(this)
-
-    override fun getOptionsClass(): Class<out RunConfigurationOptions> = LocalSapCXRunnerOptions::class.java
-
-
-    override fun getState(
-        executor: Executor,
-        environment: ExecutionEnvironment
-    ): RunProfileState = LocalSapCXRunProfileState(executor, environment, project, this)
+    override fun getConfigurationEditor() = LocalSapCXRunSettingsEditor(this)
+    override fun getOptionsClass() = LocalSapCXRunnerOptions::class.java
+    override fun getState(executor: Executor, environment: ExecutionEnvironment) = LocalSapCXRunProfileState(executor, environment, project, this)
 
     override fun canRunOn(target: TargetEnvironmentConfiguration): Boolean = true
-
     override fun getDefaultLanguageRuntimeType(): LanguageRuntimeType<*>? = null
-
     override fun getDefaultTargetName(): String? = null
-
     override fun setDefaultTargetName(targetName: String?) = Unit
 
-    fun getSapCXOptions(): LocalSapCXRunnerOptions = super.getOptions() as LocalSapCXRunnerOptions
+    fun getSapCXOptions() = super.getOptions() as LocalSapCXRunnerOptions
+    fun getRemoteConnection() = RemoteConnection(true, getSapCXOptions().remoteDebugHost, getSapCXOptions().remoteDebugPort, false)
 
-    fun getRemoteConnetion(): RemoteConnection = RemoteConnection(true, getSapCXOptions().remoteDebugHost, getSapCXOptions().remoteDebugPort, false)
+    companion object {
+        private const val serialVersionUID: Long = 3578963582172536206L
+    }
 }

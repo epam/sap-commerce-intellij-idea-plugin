@@ -47,7 +47,7 @@ class LocalSapCXRunSettingsEditor(val runConfiguration: LocalSapCXRunConfigurati
         addAll(BeforeRunFragment.createGroup())
         addDebugHostFragment()
         addDebugPortFragment()
-        addDebugLineFragment(runConfiguration.getRemoteConnetion().launchCommandLine)
+        addDebugLineFragment(runConfiguration.getRemoteConnection().launchCommandLine)
         add(LogsGroupFragment())
         addEnvironmentFragment()
     }

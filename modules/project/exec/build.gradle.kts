@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,22 +15,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.configurator.ConfiguratorCache
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+fun properties(key: String) = providers.gradleProperty(key)
 
-@Service(Service.Level.APP)
-class RunConfigurationConfigurator {
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-    fun configure(
-        indicator: ProgressIndicator,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        project: Project,
-        cache: ConfiguratorCache
-    ) {
+sourceSets {
+    main {
+        java.srcDirs("src")
+        resources.srcDirs("resources")
+    }
+    test {
+        java.srcDirs("tests")
+    }
+}
+
+dependencies {
+    implementation(project(":shared-core"))
+    implementation(project(":project-core"))
+    implementation(project(":project-import"))
+
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
+        }
+        bundledPlugins(
+            "com.intellij.java",
+        )
     }
 }

@@ -41,7 +41,6 @@ class LocalSapCXRunProfileState(
     environment: ExecutionEnvironment, val project: Project, val configuration: LocalSapCXRunConfiguration
 ) : CommandLineState(environment), JavaCommandLine, RemoteConnectionCreator {
 
-
     private fun getScriptPath(): String {
         val basePath = project.basePath ?: ""
         val settings = ProjectSettings.getInstance(project)
@@ -97,7 +96,7 @@ class LocalSapCXRunProfileState(
     }
 
     override fun createRemoteConnection(environment: ExecutionEnvironment?): RemoteConnection {
-        val remoteConnetion = configuration.getRemoteConnetion()
+        val remoteConnetion = configuration.getRemoteConnection()
         updateDebugPort(remoteConnetion.debuggerAddress)
         return remoteConnetion
     }
