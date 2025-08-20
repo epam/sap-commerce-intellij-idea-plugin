@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.ui.breadcrumbs
+package sap.commerce.toolset.impex.breadcrumbs
 
 import com.intellij.lang.Language
 import com.intellij.psi.PsiElement

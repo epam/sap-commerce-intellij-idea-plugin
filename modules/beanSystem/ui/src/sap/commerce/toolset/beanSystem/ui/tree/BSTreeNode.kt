@@ -21,7 +21,7 @@ package sap.commerce.toolset.beanSystem.ui.tree
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSNode
 import java.io.Serial
 
-class TreeNode(private val node: BSNode) : javax.swing.tree.DefaultMutableTreeNode(node) {
+class BSTreeNode(private val node: BSNode) : javax.swing.tree.DefaultMutableTreeNode(node) {
 
     override fun toString() = node.toString()
 

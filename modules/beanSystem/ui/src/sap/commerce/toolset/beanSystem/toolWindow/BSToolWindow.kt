@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.beanSystem.ui
+package sap.commerce.toolset.beanSystem.toolWindow
 
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
@@ -46,7 +46,7 @@ import sap.commerce.toolset.i18n
 import java.awt.GridBagLayout
 import java.io.Serial
 
-class BSView(private val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
+class BSToolWindow(private val project: Project) : SimpleToolWindowPanel(false, true), Disposable {
 
     private val myBeansViewActionGroup: DefaultActionGroup by lazy(::initBeansViewActionGroup)
     private val mySettings = BSViewSettings.Companion.getInstance(project)
@@ -89,7 +89,7 @@ class BSView(private val project: Project) : SimpleToolWindowPanel(false, true),
 
     private fun installSettingsListener() {
         with(project.messageBus.connect(this)) {
-            subscribe(BSViewSettingsListener.TOPIC, object : BSViewSettingsListener {
+            subscribe(BSViewSettingsListener.Companion.TOPIC, object : BSViewSettingsListener {
                 override fun settingsChanged(changeType: ChangeType) {
                     refreshContent(changeType)
                 }

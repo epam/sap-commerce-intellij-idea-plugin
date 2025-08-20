@@ -25,7 +25,7 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.beanSystem.ui.BSView
+import sap.commerce.toolset.beanSystem.toolWindow.BSToolWindow
 import sap.commerce.toolset.ccv2.toolwindow.CCv2View
 import sap.commerce.toolset.console.toolWindow.HybrisConsolesToolWindow
 import sap.commerce.toolset.isHybrisProject
@@ -39,7 +39,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
     ) {
         arrayOf(
             createTSContent(toolWindow, TSView(project)),
-            createBSContent(toolWindow, BSView(project)),
+            createBSContent(toolWindow, BSToolWindow(project)),
             createConsolesContent(toolWindow, project, HybrisConsolesToolWindow.getInstance(project)),
             createCCv2CLIContent(toolWindow, project, CCv2View(project)),
             createLoggersContent(toolWindow, LoggersView(project, coroutineScope))
@@ -59,7 +59,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
         this
     }
 
-    private fun createBSContent(toolWindow: ToolWindow, panel: BSView) = with(toolWindow.contentManager.factory.createContent(panel, BSView.ID, true)) {
+    private fun createBSContent(toolWindow: ToolWindow, panel: BSToolWindow) = with(toolWindow.contentManager.factory.createContent(panel, BSToolWindow.ID, true)) {
         Disposer.register(toolWindow.disposable, panel)
 
         isCloseable = false

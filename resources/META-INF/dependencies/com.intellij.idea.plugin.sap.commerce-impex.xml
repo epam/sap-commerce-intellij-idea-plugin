@@ -54,13 +54,13 @@
         <codeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexCodeStyleSettingsProvider"/>
         <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
 
-        <breadcrumbsInfoProvider implementation="sap.commerce.toolset.impex.ui.breadcrumbs.ImpexColumnBreadcrumbsProvider"/>
+        <breadcrumbsInfoProvider implementation="sap.commerce.toolset.impex.breadcrumbs.ImpexColumnBreadcrumbsProvider"/>
 
         <vetoRenameCondition implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExVetoRenameCondition"/>
         <renameInputValidator implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExRenameInputValidator"/>
         <renamePsiElementProcessor implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExRenamePsiElementProcessor"/>
 
-        <editorNotificationProvider id="impexToAclEditorNotificationProvider" implementation="sap.commerce.toolset.impex.ui.ImpExToAclEditorNotificationProvider"/>
+        <editorNotificationProvider id="impexToAclEditorNotificationProvider" implementation="sap.commerce.toolset.impex.editor.ImpExToAclEditorNotificationProvider"/>
 
         <projectConfigurable id="hybris.project.impex.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"

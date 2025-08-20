@@ -27,10 +27,10 @@ import sap.commerce.toolset.beanSystem.meta.BSGlobalMetaModel
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSNode
 import javax.swing.tree.TreePath
 
-class BSTreeModel(private val rootTreeNode: TreeNode, val project: Project) : com.intellij.ui.tree.BaseTreeModel<TreeNode>(), Disposable, InvokerSupplier {
+class BSTreeModel(private val rootTreeNode: BSTreeNode, val project: Project) : com.intellij.ui.tree.BaseTreeModel<BSTreeNode>(), Disposable, InvokerSupplier {
 
     private var globalMetaModel: BSGlobalMetaModel? = null
-    private val nodes = mutableMapOf<BSNode, TreeNode>()
+    private val nodes = mutableMapOf<BSNode, BSTreeNode>()
     private val myInvoker = if (application.isUnitTestMode) {
         Invoker.forEventDispatchThread(this)
     } else {
@@ -42,14 +42,14 @@ class BSTreeModel(private val rootTreeNode: TreeNode, val project: Project) : co
     override fun getChildren(parent: Any?) = if (parent == rootTreeNode
         || (
             globalMetaModel != null
-                && parent is TreeNode
+                && parent is BSTreeNode
                 && parent.allowsChildren
                 && parent.userObject is BSNode
             )
     ) {
-        ((parent as TreeNode).userObject as BSNode).getChildren(globalMetaModel)
+        ((parent as BSTreeNode).userObject as BSNode).getChildren(globalMetaModel)
             .onEach { it.update() }
-            .map { nodes.computeIfAbsent(it) { bsNode -> TreeNode(bsNode) } }
+            .map { nodes.computeIfAbsent(it) { bsNode -> BSTreeNode(bsNode) } }
     } else {
         emptyList()
     }

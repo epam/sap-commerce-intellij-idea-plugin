@@ -38,7 +38,7 @@ private const val SEARCH_CAN_EXPAND = true
 
 class BSTree(val myProject: Project) : Tree(), Disposable {
 
-    private val myTreeModel = BSTreeModel(TreeNode(BSRootNode(this)), myProject)
+    private val myTreeModel = BSTreeModel(BSTreeNode(BSRootNode(this)), myProject)
     private var previousSelection: TreeNode? = null
 
     init {

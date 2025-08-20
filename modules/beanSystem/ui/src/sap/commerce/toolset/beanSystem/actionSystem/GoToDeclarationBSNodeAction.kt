@@ -28,7 +28,7 @@ import sap.commerce.toolset.beanSystem.model.Bean
 import sap.commerce.toolset.beanSystem.model.Enum
 import sap.commerce.toolset.beanSystem.model.EnumValue
 import sap.commerce.toolset.beanSystem.model.Property
-import sap.commerce.toolset.beanSystem.ui.tree.TreeNode
+import sap.commerce.toolset.beanSystem.ui.tree.BSTreeNode
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSMetaNode
 import sap.commerce.toolset.beanSystem.ui.tree.nodes.BSNode
 import sap.commerce.toolset.ui.actionSystem.AbstractGoToDeclarationAction
@@ -73,7 +73,7 @@ class GoToDeclarationBSNodeAction : AbstractGoToDeclarationAction() {
         ?.asSafely<JTree>()
         ?.selectionPath
         ?.lastPathComponent
-        ?.asSafely<TreeNode>()
+        ?.asSafely<BSTreeNode>()
         ?.userObject
         ?.asSafely<BSNode>()
 }
