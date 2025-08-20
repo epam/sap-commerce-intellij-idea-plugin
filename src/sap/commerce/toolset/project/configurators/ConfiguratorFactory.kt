@@ -55,8 +55,6 @@ class ConfiguratorFactory {
 
     fun getDataSourcesConfigurator() = Plugin.DATABASE.service(DataSourcesConfigurator::class.java)
 
-    fun getXsdSchemaConfigurator() = Plugin.JAVAEE.service(XsdSchemaConfigurator::class.java)
-
     companion object {
         fun getInstance() = service<ConfiguratorFactory>()
     }

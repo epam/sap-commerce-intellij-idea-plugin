@@ -81,6 +81,7 @@ class CngConfigDomFileDescription : DomFileDescription<Config>(Config::class.jav
         )
     }
 
+    @Deprecated("Use CockpitNGConstants")
     companion object {
         const val NAMESPACE_COCKPIT_NG_CONFIG = "http://www.hybris.com/cockpit/config"
         const val NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS = "http://www.hybris.com/cockpit/config/hybris"

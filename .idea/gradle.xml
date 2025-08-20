@@ -45,6 +45,7 @@
             <option value="$PROJECT_DIR$/modules/impex/monitoring" />
             <option value="$PROJECT_DIR$/modules/impex/ui" />
             <option value="$PROJECT_DIR$/modules/java/core" />
+            <option value="$PROJECT_DIR$/modules/javaee/core" />
             <option value="$PROJECT_DIR$/modules/javaee/web" />
             <option value="$PROJECT_DIR$/modules/jrebel/core" />
             <option value="$PROJECT_DIR$/modules/junit/core" />

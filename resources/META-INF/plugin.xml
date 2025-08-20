@@ -127,5 +127,7 @@
     <depends optional="true" config-file="sap.commerce.toolset-eclipse-core.xml">org.jetbrains.idea.eclipse</depends>
     <depends optional="true" config-file="sap.commerce.toolset-angular-core.xml">AngularJS</depends>
     <depends optional="true" config-file="sap.commerce.toolset-junit-core.xml">JUnit</depends>
+
+    <depends optional="true" config-file="sap.commerce.toolset-javaee-core.xml">com.intellij.javaee</depends>
     <depends optional="true" config-file="sap.commerce.toolset-javaee-web.xml">com.intellij.javaee.web</depends>
 </idea-plugin>

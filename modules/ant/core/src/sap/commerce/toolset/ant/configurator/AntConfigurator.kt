@@ -94,6 +94,7 @@ class AntConfigurator : ProjectPostImportConfigurator, ProjectRefreshConfigurato
                 ?.apply {
                     AntConstants.META_TARGETS
                         .map { ExecuteCompositeTargetEvent(it) }
+                        // TODO Slow operation
                         .filter { antConfiguration.getTargetForEvent(it) == null }
                         .forEach { antConfiguration.setTargetForEvent(this, it.metaTargetName, it) }
                 }
