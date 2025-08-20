@@ -704,4 +704,6 @@ object HybrisConstants {
                 .toSortedSet()
         }
     }
+    const val IMPEX_FILE_EXTENSION = "impex"
+    const val HYBRIS_IMPEX_XML_FILE_ENDING = ".${IMPEX_FILE_EXTENSION}"
 }

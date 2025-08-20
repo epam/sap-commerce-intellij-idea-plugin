@@ -188,10 +188,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getModuleDependenciesConfigurator().configure(indicator, hybrisProjectDescriptor, modifiableModelsProvider);
         configuratorFactory.getRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
         configuratorFactory.getVersionControlSystemConfigurator().configure(indicator, hybrisProjectDescriptor, project);
-        configuratorFactory.getSearchScopeConfigurator().configure(indicator, project, appSettings, rootProjectModifiableModel);
 
+        final var finalRootProjectModifiableModel = rootProjectModifiableModel;
         configuratorFactory.getImportConfigurators().forEach(configurator ->
-            configurator.configure(indicator, hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider)
+            configurator.configure(project, indicator, hybrisProjectDescriptor, allModuleDescriptors, finalRootProjectModifiableModel, modifiableModelsProvider)
         );
 
         indicator.setText(message("hybris.project.import.saving.project"));

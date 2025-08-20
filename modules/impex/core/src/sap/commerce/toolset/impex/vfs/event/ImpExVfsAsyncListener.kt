@@ -24,7 +24,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.util.childrenOfType
 import com.intellij.util.asSafely
-import sap.commerce.toolset.impex.ImpExConstants
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.editor.ImpExEditorMarkupModelHelper
 import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.impex.psi.ImpexHeaderLine
@@ -35,7 +35,7 @@ class ImpExVfsAsyncListener : AsyncFileListener {
         val allEditors = EditorFactory.getInstance().allEditors
         val editors = events
             .mapNotNull { it.file }
-            .filter { it.extension == ImpExConstants.IMPEX_FILE_EXTENSION }
+            .filter { it.extension == HybrisConstants.IMPEX_FILE_EXTENSION }
             .distinct()
             .mapNotNull { vf -> allEditors.find { it.virtualFile == vf } }
             .mapNotNull { editor ->

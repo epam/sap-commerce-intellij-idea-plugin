@@ -24,8 +24,6 @@ object ImpExConstants {
     const val IMPEX_CONFIG_PREFIX = "\$config"
     const val IMPEX_CONFIG_COMPLETE_PREFIX = "$IMPEX_CONFIG_PREFIX-"
     const val IMPEX = "ImpEx"
-    const val IMPEX_FILE_EXTENSION = "impex"
-    const val HYBRIS_IMPEX_XML_FILE_ENDING = ".${IMPEX_FILE_EXTENSION}"
     const val IMPEX_PREFIX_DOC_ID = "&"
     const val IMPEX_PREFIX_MACRO = "$"
 

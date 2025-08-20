@@ -19,6 +19,7 @@
 package sap.commerce.toolset.impex.file
 
 import com.intellij.openapi.fileTypes.LanguageFileType
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.impex.ImpExConstants
 import sap.commerce.toolset.impex.ImpExLanguage
@@ -28,7 +29,7 @@ object ImpexFileType : LanguageFileType(ImpExLanguage) {
 
     override fun getName() = ImpExConstants.IMPEX
     override fun getDescription() = "ImpEx language file"
-    override fun getDefaultExtension() = ImpExConstants.IMPEX_FILE_EXTENSION
+    override fun getDefaultExtension() = HybrisConstants.IMPEX_FILE_EXTENSION
 
     override fun getIcon(): Icon = HybrisIcons.ImpEx.FILE
 

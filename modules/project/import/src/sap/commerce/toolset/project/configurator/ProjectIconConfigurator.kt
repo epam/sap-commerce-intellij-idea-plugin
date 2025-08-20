@@ -19,7 +19,9 @@
 package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import java.io.FileInputStream
@@ -30,9 +32,11 @@ import java.nio.file.StandardCopyOption
 class ProjectIconConfigurator : ProjectImportConfigurator {
 
     override fun configure(
+        project: Project,
         indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
+        rootProjectModifiableModel: ModifiableModuleModel,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         val rootDirectory = hybrisProjectDescriptor.rootDirectory ?: return

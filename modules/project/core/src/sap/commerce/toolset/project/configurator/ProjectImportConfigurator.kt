@@ -20,7 +20,9 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.project.Project
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 
@@ -33,9 +35,11 @@ interface ProjectImportConfigurator {
     ) = Unit
 
     fun configure(
+        project: Project,
         indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
+        rootProjectModifiableModel: ModifiableModuleModel,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) = Unit
 

@@ -52,7 +52,6 @@ class ConfiguratorFactory {
     fun getJavadocSettingsConfigurator() = service<JavadocSettingsConfigurator>()
     fun getModuleSettingsConfigurator() = service<ModuleSettingsConfigurator>()
     fun getVersionControlSystemConfigurator() = service<VersionControlSystemConfigurator>()
-    fun getSearchScopeConfigurator() = service<SearchScopeConfigurator>()
     fun getJavaCompilerConfigurator() = service<JavaCompilerConfigurator>()
     fun getRunConfigurationConfigurator() = service<RunConfigurationConfigurator>()
 

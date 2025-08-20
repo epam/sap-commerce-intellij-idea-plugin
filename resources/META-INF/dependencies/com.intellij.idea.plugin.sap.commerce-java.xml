@@ -55,9 +55,6 @@
         <applicationService serviceInterface="sap.commerce.toolset.project.configurators.ModuleSettingsConfigurator"
                             serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultModuleSettingsConfigurator"/>
 
-        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.SearchScopeConfigurator"
-                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultSearchScopeConfigurator"/>
-
         <applicationService serviceInterface="sap.commerce.toolset.project.configurators.JavaCompilerConfigurator"
                             serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultJavaCompilerConfigurator"/>
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.codeInsight.daemon.PopulatorsLineMarkerProvider"/>
