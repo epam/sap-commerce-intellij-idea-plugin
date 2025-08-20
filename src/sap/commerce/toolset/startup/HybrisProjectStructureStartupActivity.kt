@@ -87,9 +87,6 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
         if (project.isDisposed) return
 
         with(ConfiguratorFactory.getInstance()) {
-            getSpringConfigurator()
-                .onStartup(project)
-
             startupConfigurators.forEach { it.onStartup(project) }
         }
     }
