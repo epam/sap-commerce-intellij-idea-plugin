@@ -26,9 +26,9 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.configurators.FacetConfigurator
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import java.io.File
 
 /**

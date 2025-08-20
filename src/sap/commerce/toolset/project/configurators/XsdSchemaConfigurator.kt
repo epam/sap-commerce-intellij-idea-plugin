@@ -23,7 +23,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.cockpitNG.CngConfigDomFileDescription
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.nio.file.Path
 import kotlin.io.path.exists
 

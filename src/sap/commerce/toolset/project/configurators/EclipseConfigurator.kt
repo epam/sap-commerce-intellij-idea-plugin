@@ -19,8 +19,8 @@
 package sap.commerce.toolset.project.configurators
 
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.impl.EclipseModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.impl.EclipseModuleDescriptor
 
 interface EclipseConfigurator {
 

@@ -24,8 +24,8 @@ import com.intellij.openapi.options.ConfigurationException
 import com.intellij.ui.table.JBTable
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.project.descriptors.*
-import sap.commerce.toolset.project.descriptors.impl.*
+import sap.commerce.toolset.project.descriptor.*
+import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 class SelectHybrisModulesToImportStep(wizard: WizardContext) : AbstractSelectModulesToImportStep(wizard), OpenSupport, RefreshSupport {

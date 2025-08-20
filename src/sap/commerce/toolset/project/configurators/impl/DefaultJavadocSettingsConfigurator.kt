@@ -18,13 +18,13 @@
  */
 package sap.commerce.toolset.project.configurators.impl
 
-import sap.commerce.toolset.project.configurators.JavadocSettingsConfigurator
 import com.intellij.openapi.roots.JavaModuleExternalPaths
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptors.ConfigModuleDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.CCv2ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YCustomRegularModuleDescriptor
+import sap.commerce.toolset.project.configurators.JavadocSettingsConfigurator
+import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.CCv2ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 
 class DefaultJavadocSettingsConfigurator : JavadocSettingsConfigurator {
     override fun configure(modifiableRootModel: ModifiableRootModel, moduleDescriptor: ModuleDescriptor) {

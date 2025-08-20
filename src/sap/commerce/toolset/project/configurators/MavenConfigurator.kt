@@ -24,8 +24,8 @@ import org.jetbrains.idea.maven.buildtool.MavenSyncSpec
 import org.jetbrains.idea.maven.model.MavenConstants
 import org.jetbrains.idea.maven.project.MavenProjectsManager
 import org.jetbrains.idea.maven.wizards.MavenProjectAsyncBuilder
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.impl.MavenModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.impl.MavenModuleDescriptor
 import java.io.File
 
 class MavenConfigurator {

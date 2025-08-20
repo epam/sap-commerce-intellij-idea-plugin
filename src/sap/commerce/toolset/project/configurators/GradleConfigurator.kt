@@ -23,7 +23,7 @@ import com.intellij.platform.backend.observation.launchTracked
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.plugins.gradle.service.project.open.linkAndSyncGradleProject
 import org.jetbrains.plugins.gradle.settings.GradleSettings
-import sap.commerce.toolset.project.descriptors.impl.GradleModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.GradleModuleDescriptor
 
 class GradleConfigurator(private val coroutineScope: CoroutineScope) {
 

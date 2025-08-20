@@ -19,8 +19,8 @@
 package sap.commerce.toolset.diagram.module.node.graph
 
 import com.intellij.openapi.module.Module
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
-import sap.commerce.toolset.project.descriptors.SubModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 
 data class ModuleDepGraphNodeModule(
     val module: Module,

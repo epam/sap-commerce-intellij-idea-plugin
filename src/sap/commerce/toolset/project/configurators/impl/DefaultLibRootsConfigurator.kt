@@ -30,10 +30,10 @@ import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurators.LibRootsConfigurator
-import sap.commerce.toolset.project.descriptors.*
-import sap.commerce.toolset.project.descriptors.impl.YCoreExtModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YOotbRegularModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.*
+import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
 class DefaultLibRootsConfigurator : LibRootsConfigurator {

@@ -19,24 +19,24 @@
 
 package sap.commerce.toolset.project.configurators.impl;
 
-import sap.commerce.toolset.project.configurators.GroupModuleConfigurator;
-import sap.commerce.toolset.project.utils.FileUtils;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
-import sap.commerce.toolset.project.descriptors.*;
-import sap.commerce.toolset.project.descriptors.impl.*;
+import sap.commerce.toolset.project.configurators.GroupModuleConfigurator;
+import sap.commerce.toolset.project.descriptor.*;
+import sap.commerce.toolset.project.descriptor.impl.*;
+import sap.commerce.toolset.project.utils.FileUtils;
 import sap.commerce.toolset.settings.ApplicationSettings;
 
 import java.io.*;
 import java.util.*;
 
-import static sap.commerce.toolset.project.utils.FileUtils.toFile;
 import static sap.commerce.toolset.HybrisConstants.*;
 import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
+import static sap.commerce.toolset.project.utils.FileUtils.toFile;
 
 public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     private static final Logger LOG = Logger.getInstance(DefaultGroupModuleConfigurator.class);

@@ -59,8 +59,6 @@
 
         <iconProvider order="first" implementation="sap.commerce.toolset.project.HybrisProjectIconProvider"/>
 
-        <configurationType implementation="sap.commerce.toolset.runConfigurations.LocalSapCXConfigurationType"/>
-
         <errorHandler implementation="com.intellij.diagnostic.JetBrainsMarketplaceErrorReportSubmitter"/>
 
         <fileEditorProvider implementation="sap.commerce.toolset.editor.HybrisSplitFileEditorProvider"/>

@@ -22,6 +22,14 @@
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.RemoteDebugRunConfigurationConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.LocalSapCxRunConfigurationConfigurator"/>
+
+        <project.postImportConfigurator implementation="sap.commerce.toolset.project.configurator.RemoteDebugRunConfigurationConfigurator"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <configurationType implementation="sap.commerce.toolset.project.runConfigurations.LocalSapCXConfigurationType"/>
     </extensions>
 
 </idea-plugin>

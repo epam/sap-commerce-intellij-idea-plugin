@@ -34,7 +34,7 @@ import com.intellij.spring.model.SpringBeanPointer
 import com.intellij.spring.model.utils.SpringModelSearchers
 import com.intellij.spring.model.xml.beans.SpringBean
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 
 object SpringHelper {

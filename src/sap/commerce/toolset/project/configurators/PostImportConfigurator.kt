@@ -27,8 +27,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 @Service(Service.Level.PROJECT)
 class PostImportConfigurator(val project: Project) {
@@ -45,7 +45,7 @@ class PostImportConfigurator(val project: Project) {
                 with(ConfiguratorFactory.getInstance()) {
                     val newConfigurators = postImportConfigurators
                         .map {
-                            it.postImport(project, hybrisProjectDescriptor, allModules)
+                            it.postImport(project, refresh, hybrisProjectDescriptor, allModules)
                         }
                         .flatten()
                     val oldConfigurators = listOfNotNull(
@@ -66,9 +66,6 @@ class PostImportConfigurator(val project: Project) {
 
                         getAngularConfigurator()
                             ?.configureAfterImport(project, allModules),
-
-                        getRunConfigurationConfigurator()
-                            .configureAfterImport(project, refresh)
                     )
                         .flatten()
 

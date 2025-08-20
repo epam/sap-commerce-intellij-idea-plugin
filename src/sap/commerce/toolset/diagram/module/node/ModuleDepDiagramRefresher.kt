@@ -18,13 +18,13 @@
 
 package sap.commerce.toolset.diagram.module.node
 
-import sap.commerce.toolset.diagram.module.ModuleDepDiagramVisibilityManager
-import sap.commerce.toolset.diagram.module.node.graph.ModuleDepGraphFactory
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.uml.java.project.*
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.diagram.module.ModuleDepDiagramVisibilityManager
+import sap.commerce.toolset.diagram.module.node.graph.ModuleDepGraphFactory
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacetConstants
 import sap.commerce.toolset.project.settings.ProjectSettings
 

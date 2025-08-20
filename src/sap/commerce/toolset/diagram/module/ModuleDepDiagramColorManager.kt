@@ -21,10 +21,10 @@ import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramColorManagerBase
 import com.intellij.diagram.DiagramEdge
 import com.intellij.diagram.DiagramNode
+import com.intellij.openapi.editor.colors.ColorKey
 import sap.commerce.toolset.diagram.module.node.ModuleDepDiagramEdge
 import sap.commerce.toolset.diagram.module.node.graph.ModuleDepGraphNodeModule
-import com.intellij.openapi.editor.colors.ColorKey
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
 class ModuleDepDiagramColorManager : DiagramColorManagerBase() {
 

@@ -35,13 +35,14 @@ import org.jdom.JDOMException
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.YRegularModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YCoreExtModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import sap.commerce.toolset.project.yExtensionName
 import java.io.File
 import java.io.FileNotFoundException
@@ -91,7 +92,8 @@ class SpringConfigurator : ProjectImportConfigurator, ProjectStartupConfigurator
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         rootProjectModifiableModel: ModifiableModuleModel,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        modifiableModelsProvider: IdeModifiableModelsProvider,
+        cache: ConfiguratorCache
     ) {
         if (Plugin.SPRING.isDisabled()) return
 

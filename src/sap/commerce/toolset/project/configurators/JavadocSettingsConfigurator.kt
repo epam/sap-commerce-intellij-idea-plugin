@@ -19,7 +19,7 @@
 package sap.commerce.toolset.project.configurators
 
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 interface JavadocSettingsConfigurator {
 

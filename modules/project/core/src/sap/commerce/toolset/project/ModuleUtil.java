@@ -27,7 +27,7 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType;
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType;
 import sap.commerce.toolset.project.facet.YFacetConstants;
 import sap.commerce.toolset.settings.WorkspaceSettings;
 

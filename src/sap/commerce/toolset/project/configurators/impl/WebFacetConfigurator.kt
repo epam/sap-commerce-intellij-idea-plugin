@@ -20,7 +20,6 @@ package sap.commerce.toolset.project.configurators.impl
 import com.intellij.facet.FacetManager
 import com.intellij.facet.FacetTypeRegistry
 import com.intellij.facet.ModifiableFacetModel
-import sap.commerce.toolset.project.configurators.FacetConfigurator
 import com.intellij.javaee.DeploymentDescriptorsConstants
 import com.intellij.javaee.web.facet.WebFacet
 import com.intellij.openapi.application.WriteAction
@@ -30,11 +29,12 @@ import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YAcceleratorAddonSubModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YCommonWebSubModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.configurators.FacetConfigurator
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
 class WebFacetConfigurator : FacetConfigurator {

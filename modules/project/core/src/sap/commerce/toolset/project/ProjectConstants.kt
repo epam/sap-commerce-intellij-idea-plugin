@@ -19,8 +19,8 @@
 package sap.commerce.toolset.project
 
 import com.intellij.openapi.util.Key
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 object ProjectConstants {
     @JvmStatic

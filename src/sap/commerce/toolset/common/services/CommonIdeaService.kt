@@ -27,8 +27,8 @@ import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.RemoteConstants
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.yExtensionName
 
 @Service

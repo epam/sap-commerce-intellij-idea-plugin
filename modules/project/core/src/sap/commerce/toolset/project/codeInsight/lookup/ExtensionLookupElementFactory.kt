@@ -22,7 +22,7 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.ExtensionDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
 object ExtensionLookupElementFactory {
 

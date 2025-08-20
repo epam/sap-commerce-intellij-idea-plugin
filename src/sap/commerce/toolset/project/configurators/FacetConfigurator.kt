@@ -21,8 +21,8 @@ package sap.commerce.toolset.project.configurators
 import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 interface FacetConfigurator {
 

@@ -19,14 +19,14 @@
 
 package sap.commerce.toolset.project.configurators.impl;
 
-import sap.commerce.toolset.project.configurators.EclipseConfigurator;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder;
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
-import sap.commerce.toolset.project.descriptors.impl.AbstractModuleDescriptor;
-import sap.commerce.toolset.project.descriptors.impl.EclipseModuleDescriptor;
+import sap.commerce.toolset.project.configurators.EclipseConfigurator;
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.AbstractModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.EclipseModuleDescriptor;
 
 import java.io.File;
 import java.util.List;

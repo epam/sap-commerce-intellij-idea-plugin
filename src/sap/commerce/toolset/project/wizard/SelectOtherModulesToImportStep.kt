@@ -23,9 +23,9 @@ import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.ui.IdeBorderFactory
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorImportStatus
-import sap.commerce.toolset.project.descriptors.impl.*
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
+import sap.commerce.toolset.project.descriptor.impl.*
 import javax.swing.Icon
 
 class SelectOtherModulesToImportStep(context: WizardContext) : AbstractSelectModulesToImportStep(context) {

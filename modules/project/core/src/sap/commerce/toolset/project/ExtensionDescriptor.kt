@@ -18,8 +18,8 @@
 
 package sap.commerce.toolset.project
 
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
-import sap.commerce.toolset.project.descriptors.SubModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 
 class ExtensionDescriptor(
     var name: String = "",

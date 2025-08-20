@@ -65,9 +65,10 @@ import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.impex.ImpExLanguage;
+import sap.commerce.toolset.project.configurator.ConfiguratorCache;
 import sap.commerce.toolset.project.configurators.*;
-import sap.commerce.toolset.project.descriptors.*;
-import sap.commerce.toolset.project.descriptors.impl.*;
+import sap.commerce.toolset.project.descriptor.*;
+import sap.commerce.toolset.project.descriptor.impl.*;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.settings.ApplicationSettings;
 import sap.commerce.toolset.settings.WorkspaceSettings;
@@ -120,7 +121,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setIndeterminate(true);
         indicator.setText(message("hybris.project.import.preparation"));
 
-        final var cache = new HybrisConfiguratorCache();
+        final var cache = new ConfiguratorCache();
         final var allModules = getHybrisModuleDescriptors();
         final var allYModules = allModules.stream()
             .filter(YModuleDescriptor.class::isInstance)
@@ -185,11 +186,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             }
         }
 
-        configuratorFactory.getRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
-
         final var finalRootProjectModifiableModel = rootProjectModifiableModel;
         configuratorFactory.getImportConfigurators().forEach(configurator ->
-            configurator.configure(project, indicator, hybrisProjectDescriptor, allModuleDescriptors, finalRootProjectModifiableModel, modifiableModelsProvider)
+            configurator.configure(project, indicator, hybrisProjectDescriptor, allModuleDescriptors, finalRootProjectModifiableModel, modifiableModelsProvider, cache)
         );
 
         indicator.setText(message("hybris.project.import.saving.project"));
@@ -277,7 +276,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .toList();
     }
 
-    private void configureJavaCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
+    private void configureJavaCompiler(final @NotNull ProgressIndicator indicator, final ConfiguratorCache cache) {
         final JavaCompilerConfigurator compilerConfigurator = configuratorFactory.getJavaCompilerConfigurator();
 
         if (compilerConfigurator == null) return;
@@ -286,7 +285,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
     }
 
-    private void configureKotlinCompiler(final @NotNull ProgressIndicator indicator, final HybrisConfiguratorCache cache) {
+    private void configureKotlinCompiler(final @NotNull ProgressIndicator indicator, final ConfiguratorCache cache) {
         final var compilerConfigurator = configuratorFactory.getKotlinCompilerConfigurator();
 
         if (compilerConfigurator == null) return;

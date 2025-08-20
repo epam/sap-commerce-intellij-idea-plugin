@@ -26,10 +26,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.DependencyScope
 import com.intellij.openapi.roots.ModifiableRootModel
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YOotbRegularModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YPlatformExtModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YPlatformExtModuleDescriptor
 
 class ModuleDependenciesConfigurator : ProjectImportConfigurator {
 
@@ -39,7 +39,8 @@ class ModuleDependenciesConfigurator : ProjectImportConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         rootProjectModifiableModel: ModifiableModuleModel,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        modifiableModelsProvider: IdeModifiableModelsProvider,
+        cache: ConfiguratorCache
     ) {
         indicator.text = i18n("hybris.project.import.dependencies")
         indicator.text2 = ""

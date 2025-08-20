@@ -20,10 +20,10 @@ package sap.commerce.toolset.project.factories
 
 import kotlinx.collections.immutable.toImmutableSet
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.descriptors.YModuleDescriptor
-import sap.commerce.toolset.project.descriptors.YRegularModuleDescriptor
-import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.*
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YRegularModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.*
 import java.io.File
 
 object SubModuleDescriptorFactory {

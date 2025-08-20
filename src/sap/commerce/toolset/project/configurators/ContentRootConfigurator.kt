@@ -20,7 +20,7 @@ package sap.commerce.toolset.project.configurators
 
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.settings.ApplicationSettings
 
 interface ContentRootConfigurator {

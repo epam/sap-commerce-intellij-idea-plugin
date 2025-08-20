@@ -18,10 +18,10 @@
  */
 package sap.commerce.toolset.project.configurators.impl
 
-import sap.commerce.toolset.project.configurators.ModuleSettingsConfigurator
 import com.intellij.openapi.module.Module
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.configurators.ModuleSettingsConfigurator
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
 class DefaultModuleSettingsConfigurator : ModuleSettingsConfigurator {
 

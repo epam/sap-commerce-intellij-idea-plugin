@@ -27,8 +27,8 @@ import com.intellij.openapi.vcs.VcsDirectoryMapping
 import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class VersionControlSystemConfigurator : ProjectImportConfigurator {
 
@@ -38,7 +38,8 @@ class VersionControlSystemConfigurator : ProjectImportConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         rootProjectModifiableModel: ModifiableModuleModel,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        modifiableModelsProvider: IdeModifiableModelsProvider,
+        cache: ConfiguratorCache
     ) {
         indicator.text = i18n("hybris.project.import.vcs")
 

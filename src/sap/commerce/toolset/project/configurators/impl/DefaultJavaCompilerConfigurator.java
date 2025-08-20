@@ -21,16 +21,16 @@ package sap.commerce.toolset.project.configurators.impl;
 import com.intellij.compiler.CompilerConfiguration;
 import com.intellij.compiler.CompilerConfigurationImpl;
 import com.intellij.compiler.impl.javaCompiler.BackendCompiler;
-import sap.commerce.toolset.project.configurators.HybrisConfiguratorCache;
-import sap.commerce.toolset.project.configurators.JavaCompilerConfigurator;
 import com.intellij.openapi.project.Project;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.model.java.compiler.JavaCompilers;
 import sap.commerce.toolset.HybrisConstants;
-import sap.commerce.toolset.project.descriptors.ConfigModuleDescriptor;
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
-import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor;
+import sap.commerce.toolset.project.configurator.ConfiguratorCache;
+import sap.commerce.toolset.project.configurators.JavaCompilerConfigurator;
+import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator
     public void configure(
         @NotNull final HybrisProjectDescriptor descriptor,
         @NotNull final Project project,
-        @NotNull final HybrisConfiguratorCache cache
+        @NotNull final ConfiguratorCache cache
     ) {
         final String buildCompilerPropValue = findBuildCompilerProperty(descriptor, cache);
 
@@ -75,7 +75,7 @@ public class DefaultJavaCompilerConfigurator implements JavaCompilerConfigurator
 
     private static String findBuildCompilerProperty(
         @NotNull final HybrisProjectDescriptor descriptor,
-        @NotNull final HybrisConfiguratorCache cache
+        @NotNull final ConfiguratorCache cache
     ) {
         final List<File> propertyFiles = new ArrayList<>();
         final ConfigModuleDescriptor configDescriptor = descriptor.getConfigHybrisModuleDescriptor();

@@ -22,8 +22,8 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.io.FileInputStream
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -37,7 +37,8 @@ class ProjectIconConfigurator : ProjectImportConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         rootProjectModifiableModel: ModifiableModuleModel,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        modifiableModelsProvider: IdeModifiableModelsProvider,
+        cache: ConfiguratorCache
     ) {
         val rootDirectory = hybrisProjectDescriptor.rootDirectory ?: return
 

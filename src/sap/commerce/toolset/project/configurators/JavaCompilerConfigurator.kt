@@ -20,13 +20,14 @@
 package sap.commerce.toolset.project.configurators
 
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
+import sap.commerce.toolset.project.configurator.ConfiguratorCache
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 
 interface JavaCompilerConfigurator {
 
     fun configure(
         descriptor: HybrisProjectDescriptor,
         project: Project,
-        cache: HybrisConfiguratorCache
+        cache: ConfiguratorCache
     )
 }

@@ -19,12 +19,12 @@ package sap.commerce.toolset.diagram.module.node
 
 import com.intellij.diagram.DiagramNodeBase
 import com.intellij.diagram.DiagramProvider
+import com.intellij.openapi.editor.colors.EditorColorsManager
+import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.diagram.module.ModuleDepDiagramColors
 import sap.commerce.toolset.diagram.module.node.graph.ModuleDepGraphNode
 import sap.commerce.toolset.diagram.module.node.graph.ModuleDepGraphNodeModule
-import com.intellij.openapi.editor.colors.EditorColorsManager
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.awt.Color
 import java.io.Serial
 import javax.swing.Icon

@@ -23,8 +23,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VfsUtil
 import org.angular2.cli.Angular2ProjectConfigurator
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.AngularModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor
 
 class AngularConfigurator {
 

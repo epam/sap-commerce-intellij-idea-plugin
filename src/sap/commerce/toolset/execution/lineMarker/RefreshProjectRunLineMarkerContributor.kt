@@ -30,7 +30,7 @@ import sap.commerce.toolset.extensioninfo.model.Extension
 import sap.commerce.toolset.extensioninfo.model.ExtensionInfo
 import sap.commerce.toolset.localextensions.model.Extensions
 import sap.commerce.toolset.localextensions.model.Hybrisconfig
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.yExtensionName
 

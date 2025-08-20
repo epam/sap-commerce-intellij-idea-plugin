@@ -19,7 +19,6 @@
 
 package sap.commerce.toolset.project.configurators.impl;
 
-import sap.commerce.toolset.project.configurators.ContentRootConfigurator;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
@@ -35,10 +34,11 @@ import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 import sap.commerce.toolset.HybrisConstants;
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor;
-import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor;
-import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor;
-import sap.commerce.toolset.project.descriptors.impl.*;
+import sap.commerce.toolset.project.configurators.ContentRootConfigurator;
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.*;
 import sap.commerce.toolset.settings.ApplicationSettings;
 
 import java.io.File;

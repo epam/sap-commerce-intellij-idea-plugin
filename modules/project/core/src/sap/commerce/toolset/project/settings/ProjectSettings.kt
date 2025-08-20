@@ -25,8 +25,8 @@ import com.intellij.util.text.VersionComparatorUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.ExtensionDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
-import sap.commerce.toolset.project.descriptors.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.settings.state.ProjectSettingsState
 
 @State(

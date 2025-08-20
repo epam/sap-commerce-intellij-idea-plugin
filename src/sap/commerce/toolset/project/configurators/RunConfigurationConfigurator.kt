@@ -18,119 +18,20 @@
  */
 package sap.commerce.toolset.project.configurators
 
-import com.intellij.execution.RunManager
-import com.intellij.execution.RunnerAndConfigurationSettings
-import com.intellij.execution.configurations.ConfigurationType
-import com.intellij.execution.configurations.ConfigurationTypeUtil
-import com.intellij.execution.remote.RemoteConfiguration
-import com.intellij.execution.remote.RemoteConfigurationType
-import com.intellij.openapi.application.invokeLater
-import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.common.services.CommonIdeaService
-import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.runConfigurations.LocalSapCXConfigurationType
-import java.io.File
+import sap.commerce.toolset.project.configurator.ConfiguratorCache
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 
 @Service(Service.Level.APP)
 class RunConfigurationConfigurator {
-
-    fun configureAfterImport(project: Project, refresh: Boolean): List<() -> Unit> {
-        if (refresh) return emptyList()
-
-        return listOf {
-            val debugConfiguration = i18n("hybris.project.run.configuration.remote.debug")
-            val runManager = RunManager.getInstance(project)
-
-            runManager.findConfigurationByName(debugConfiguration)
-                ?.let { runManager.selectedConfiguration = it }
-        }
-    }
 
     fun configure(
         indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         project: Project,
-        cache: HybrisConfiguratorCache
+        cache: ConfiguratorCache
     ) {
-        indicator.text = i18n("hybris.project.import.runconfiguration")
-        val runManager = RunManager.getInstance(project)
-
-        createRunConfiguration(
-            runManager,
-            RemoteConfigurationType::class.java,
-            i18n("hybris.project.run.configuration.remote.debug")
-        ) {
-            val remoteConfiguration = it.configuration as RemoteConfiguration
-            remoteConfiguration.PORT = getDebugPort(hybrisProjectDescriptor, cache)
-            remoteConfiguration.isAllowRunningInParallel = false
-        }
-        createRunConfiguration(
-            runManager,
-            LocalSapCXConfigurationType::class.java,
-            i18n("hybris.project.run.configuration.localserver")
-        )
-    }
-
-    private fun <T : ConfigurationType> createRunConfiguration(
-        runManager: RunManager,
-        configurationType: Class<T>,
-        configurationName: String,
-        configurationConsumer: (RunnerAndConfigurationSettings) -> Unit = {}
-    ) {
-        if (runManager.findConfigurationByName(configurationName) != null) {
-            return
-        }
-
-        val confType = ConfigurationTypeUtil.findConfigurationType(configurationType)
-        val configurationFactory = confType.configurationFactories.first()
-
-        invokeLater {
-            runWriteAction {
-                val runner = runManager.createConfiguration(
-                    configurationName,
-                    configurationFactory
-                )
-
-                configurationConsumer.invoke(runner)
-
-                runner.isActivateToolWindowBeforeRun = true
-                runner.storeInDotIdeaFolder()
-
-                runManager.addConfiguration(runner)
-            }
-        }
-    }
-
-    private fun getDebugPort(hybrisProjectDescriptor: HybrisProjectDescriptor, cache: HybrisConfiguratorCache) = hybrisProjectDescriptor.configHybrisModuleDescriptor
-        ?.let { findPortProperty(it, HybrisConstants.LOCAL_PROPERTIES_FILE, cache) }
-        ?: CommonIdeaService.getInstance().getPlatformDescriptor(hybrisProjectDescriptor)
-            ?.let { findPortProperty(it, HybrisConstants.PROJECT_PROPERTIES_FILE, cache) }
-        ?: HybrisConstants.DEBUG_PORT
-
-
-    private fun findPortProperty(moduleDescriptor: ModuleDescriptor, fileName: String, cache: HybrisConfiguratorCache) = cache.findPropertyInFile(
-        File(moduleDescriptor.moduleRootDirectory, fileName),
-        HybrisConstants.TOMCAT_JAVA_DEBUG_OPTIONS
-    )
-        ?.split(REGEX_SPACE)
-        ?.dropLastWhile { it.isEmpty() }
-        ?.firstOrNull { it.startsWith(HybrisConstants.X_RUNJDWP_TRANSPORT) }
-        ?.split(REGEX_COMMA)
-        ?.dropLastWhile { it.isEmpty() }
-        ?.firstOrNull { it.startsWith(HybrisConstants.ADDRESS) }
-        ?.split(REGEX_EQUALS)
-        ?.dropLastWhile { it.isEmpty() }
-        ?.getOrNull(1)
-
-    companion object {
-        private val REGEX_SPACE = " ".toRegex()
-        private val REGEX_COMMA = ",".toRegex()
-        private val REGEX_EQUALS = "=".toRegex()
     }
 }

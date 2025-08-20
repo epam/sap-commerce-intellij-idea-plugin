@@ -35,10 +35,10 @@ import org.zeroturnaround.jrebel.client.config.JRebelConfiguration
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YCustomRegularModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 import sap.commerce.toolset.project.settings.ProjectSettings
 import java.io.File
 import java.io.FileInputStream
@@ -50,6 +50,7 @@ class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigur
 
     override fun postImport(
         project: Project,
+        refresh: Boolean,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: List<ModuleDescriptor>
     ): List<() -> Unit> = moduleDescriptors

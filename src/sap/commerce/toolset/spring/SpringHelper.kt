@@ -28,7 +28,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.spring.SpringManager
 import com.intellij.spring.model.utils.SpringModelSearchers
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 
 @Deprecated("move fully to spring module")

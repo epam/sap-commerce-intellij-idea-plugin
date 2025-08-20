@@ -25,8 +25,8 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import com.intellij.ui.dsl.builder.text
 import sap.commerce.toolset.project.ExtensionDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptorType
-import sap.commerce.toolset.project.descriptors.SubModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 
 class YFacetEditorTab(
     val state: ExtensionDescriptor,

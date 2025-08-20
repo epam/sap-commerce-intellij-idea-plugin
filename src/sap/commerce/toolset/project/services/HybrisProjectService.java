@@ -20,7 +20,7 @@
 package sap.commerce.toolset.project.services;
 
 import org.jetbrains.annotations.NotNull;
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor;
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
 
 import java.io.File;
 

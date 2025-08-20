@@ -28,12 +28,12 @@ import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.configurators.FacetConfigurator
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
-import sap.commerce.toolset.project.descriptors.PlatformModuleDescriptor
-import sap.commerce.toolset.project.descriptors.YModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YBackofficeSubModuleDescriptor
-import sap.commerce.toolset.project.descriptors.impl.YWebSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
 @Service

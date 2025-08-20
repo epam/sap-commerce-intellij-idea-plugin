@@ -33,8 +33,8 @@ import com.intellij.util.ArrayUtil
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptors.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.settings.ApplicationSettings
 import javax.swing.Icon
 
@@ -46,7 +46,8 @@ class SearchScopeConfigurator : ProjectImportConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         rootProjectModifiableModel: ModifiableModuleModel,
-        modifiableModelsProvider: IdeModifiableModelsProvider
+        modifiableModelsProvider: IdeModifiableModelsProvider,
+        cache: ConfiguratorCache
     ) {
         indicator.text = i18n("hybris.project.import.search.scope")
         val applicationSettings = ApplicationSettings.getInstance()
