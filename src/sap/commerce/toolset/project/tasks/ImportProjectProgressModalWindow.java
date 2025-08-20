@@ -73,12 +73,8 @@ import sap.commerce.toolset.settings.ApplicationSettings;
 import sap.commerce.toolset.settings.WorkspaceSettings;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -198,8 +194,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             configurator.configure(indicator, hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider)
         );
 
-        configureProjectIcon();
-
         indicator.setText(message("hybris.project.import.saving.project"));
 
         application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
@@ -213,41 +207,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configureAngularModules(indicator, groupModuleConfigurator, appSettings);
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
-    }
-
-    private void configureProjectIcon() {
-        final var rootDirectory = hybrisProjectDescriptor.getRootDirectory();
-        if (rootDirectory == null) return;
-
-        final var target = Paths.get(rootDirectory.getPath(), ".idea", "icon.svg");
-        final var targetDark = Paths.get(rootDirectory.getPath(), ".idea", "icon_dark.svg");
-
-        // do not override existing Icon
-        if (Files.exists(target)) return;
-
-        if (hybrisProjectDescriptor.getProjectIconFile() == null) {
-            try (final var is = this.getClass().getResourceAsStream("/icons/hybrisIcon.svg")) {
-                if (is != null) {
-                    Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
-                }
-            } catch (IOException e) {
-                // NOP
-            }
-            // as for now, Dark icon supported only for Plugin's icons
-            try (final var is = this.getClass().getResourceAsStream("/icons/hybrisIcon_dark.svg")) {
-                if (is != null) {
-                    Files.copy(is, targetDark, StandardCopyOption.REPLACE_EXISTING);
-                }
-            } catch (IOException e) {
-                // NOP
-            }
-        } else {
-            try (final var is = new FileInputStream(hybrisProjectDescriptor.getProjectIconFile())) {
-                Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                // NOP
-            }
-        }
     }
 
     private void processUltimateEdition(final @NotNull ProgressIndicator indicator) {

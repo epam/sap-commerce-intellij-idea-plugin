@@ -17,6 +17,18 @@
   -->
 <idea-plugin>
 
+    <extensionPoints>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.importConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectImportConfigurator"
+                        dynamic="false"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.startupConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectStartupConfigurator"
+                        dynamic="false"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.postImportConfigurator"
+                        interface="sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator"
+                        dynamic="false"/>
+    </extensionPoints>
+
     <extensions defaultExtensionNs="com.intellij">
         <completion.contributor language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.completion.EiCompletionContributor"/>
         <completion.contributor language="XML" implementationClass="sap.commerce.toolset.project.codeInsight.completion.LeCompletionContributor"/>

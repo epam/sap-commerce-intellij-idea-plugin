@@ -37,7 +37,7 @@ interface ProjectImportConfigurator {
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
-    )
+    ) = Unit
 
     companion object {
         val EP = ExtensionPointName.create<ProjectImportConfigurator>("sap.commerce.toolset.project.importConfigurator")
