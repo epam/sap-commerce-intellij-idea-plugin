@@ -45,7 +45,6 @@ class ConfiguratorFactory {
     )
 
     fun getContentRootConfigurator() = service<DefaultContentRootConfigurator>()
-    fun getModuleDependenciesConfigurator() = service<ModuleDependenciesConfigurator>()
     fun getCompilerOutputPathsConfigurator() = service<CompilerOutputPathsConfigurator>()
     fun getLibRootsConfigurator() = service<LibRootsConfigurator>()
     fun getGroupModuleConfigurator() = service<GroupModuleConfigurator>()

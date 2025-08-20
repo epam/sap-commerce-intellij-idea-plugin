@@ -49,9 +49,6 @@
         <applicationService serviceInterface="sap.commerce.toolset.project.configurators.JavadocSettingsConfigurator"
                             serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultJavadocSettingsConfigurator"/>
 
-        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.ModuleDependenciesConfigurator"
-                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultModuleDependenciesConfigurator"/>
-
         <applicationService serviceInterface="sap.commerce.toolset.project.configurators.ModuleSettingsConfigurator"
                             serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultModuleSettingsConfigurator"/>
 
