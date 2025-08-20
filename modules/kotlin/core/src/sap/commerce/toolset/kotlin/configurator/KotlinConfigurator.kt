@@ -94,7 +94,7 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
         return registerKotlinLibrary(project)
     }
 
-    override fun configure(
+    override fun configureModuleFacet(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,

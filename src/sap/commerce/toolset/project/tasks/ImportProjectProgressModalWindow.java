@@ -265,7 +265,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
 
         configuratorFactory.getFacetConfigurators().forEach(configurator ->
-            configurator.configure(hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, module, modifiableRootModel)
+            configurator.configureModuleFacet(hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, module, modifiableRootModel)
         );
     }
 

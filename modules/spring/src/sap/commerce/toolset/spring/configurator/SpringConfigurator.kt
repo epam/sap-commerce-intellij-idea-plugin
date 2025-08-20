@@ -37,6 +37,7 @@ import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectPreImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
@@ -52,8 +53,7 @@ import java.util.regex.Pattern
 import java.util.zip.ZipFile
 import kotlin.io.path.exists
 
-@Plugin.DependsOn(Plugin.SPRING)
-class SpringConfigurator : ProjectImportConfigurator, ProjectStartupConfigurator {
+class SpringConfigurator : ProjectPreImportConfigurator, ProjectImportConfigurator, ProjectStartupConfigurator {
 
     override fun preConfigure(
         indicator: ProgressIndicator,
