@@ -49,9 +49,6 @@ class PostImportConfigurator(val project: Project) {
                         }
                         .flatten()
                     val oldConfigurators = listOfNotNull(
-                        getKotlinCompilerConfigurator()
-                            ?.configureAfterImport(project),
-
                         getDataSourcesConfigurator()
                             ?.configureAfterImport(project),
 

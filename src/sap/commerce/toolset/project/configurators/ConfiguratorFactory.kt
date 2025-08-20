@@ -22,11 +22,11 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.components.serviceOrNull
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
-import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
-import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
-import sap.commerce.toolset.project.configurators.impl.*
+import sap.commerce.toolset.project.configurator.*
+import sap.commerce.toolset.project.configurators.impl.DefaultContentRootConfigurator
+import sap.commerce.toolset.project.configurators.impl.SpringFacetConfigurator
+import sap.commerce.toolset.project.configurators.impl.WebFacetConfigurator
+import sap.commerce.toolset.project.configurators.impl.YFacetConfigurator
 
 @Service
 class ConfiguratorFactory {
@@ -39,11 +39,13 @@ class ConfiguratorFactory {
         get() = ProjectPostImportConfigurator.EP.extensionList
     val refreshConfigurators
         get() = ProjectRefreshConfigurator.EP.extensionList
+    val facetConfigurators
+        get() = ProjectFacetConfigurator.EP.extensionList
 
-    fun getFacetConfigurators() = listOfNotNull(
+    @Deprecated("Use EP")
+    fun getFacetConfiguratorsLegacy() = listOfNotNull(
         service<YFacetConfigurator>(),
         Plugin.SPRING.service(SpringFacetConfigurator::class.java),
-        Plugin.KOTLIN.service(KotlinFacetConfigurator::class.java),
         serviceOrNull<WebFacetConfigurator>()
     )
 
@@ -64,7 +66,6 @@ class ConfiguratorFactory {
     fun getDataSourcesConfigurator() = Plugin.DATABASE.service(DataSourcesConfigurator::class.java)
 
     fun getXsdSchemaConfigurator() = Plugin.JAVAEE.service(XsdSchemaConfigurator::class.java)
-    fun getKotlinCompilerConfigurator() = Plugin.KOTLIN.service(KotlinCompilerConfigurator::class.java)
 
     companion object {
         fun getInstance() = service<ConfiguratorFactory>()

@@ -17,4 +17,9 @@
   -->
 <idea-plugin>
 
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.importConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
+        <project.postImportConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
+        <project.facetConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
+    </extensions>
 </idea-plugin>

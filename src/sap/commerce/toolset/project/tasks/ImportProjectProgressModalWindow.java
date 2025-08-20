@@ -122,13 +122,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.preparation"));
 
         final var cache = new ConfiguratorCache();
-        final var allModules = getHybrisModuleDescriptors();
-        final var allYModules = allModules.stream()
+        final var allHybrisModules = getHybrisModuleDescriptors();
+        final var allYModules = allHybrisModules.stream()
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
             .distinct()
             .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
-        final var allModuleDescriptors = allModules.stream()
+        final var allModuleDescriptors = allHybrisModules.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
         final var appSettings = ApplicationSettings.getInstance();
 
@@ -163,13 +163,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getImportConfigurators().forEach(configurator ->
             configurator.preConfigure(indicator, hybrisProjectDescriptor, allModuleDescriptors)
         );
-        groupModuleConfigurator.process(indicator, allModules);
+        groupModuleConfigurator.process(indicator, allHybrisModules);
 
         int counter = 0;
 
         final var application = ApplicationManager.getApplication();
 
-        for (final var moduleDescriptor : allModules) {
+        for (final var moduleDescriptor : allHybrisModules) {
             final var javaModule = createJavaModule(indicator, allYModules, rootProjectModifiableModel, moduleDescriptor, appSettings);
             modules.add(javaModule);
             counter++;
@@ -198,7 +198,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getLoadedConfigurator().configure(project, hybrisProjectDescriptor.getModulesChosenForImport());
 
         configureJavaCompiler(indicator, cache);
-        configureKotlinCompiler(indicator, cache);
         configureEclipseModules(indicator);
         configureGradleModules(indicator);
         configureAngularModules(indicator, groupModuleConfigurator, appSettings);
@@ -261,9 +260,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     ) {
         final var modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
 
-        for (final var facetConfigurator : configuratorFactory.getFacetConfigurators()) {
+        for (final var facetConfigurator : configuratorFactory.getFacetConfiguratorsLegacy()) {
             facetConfigurator.configure(hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, module, modifiableRootModel);
         }
+
+        configuratorFactory.getFacetConfigurators().forEach(configurator ->
+            configurator.configure(hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, module, modifiableRootModel)
+        );
     }
 
     private List<ModuleDescriptor> getHybrisModuleDescriptors() {
@@ -283,15 +286,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         indicator.setText(message("hybris.project.import.compiler.java"));
         compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
-    }
-
-    private void configureKotlinCompiler(final @NotNull ProgressIndicator indicator, final ConfiguratorCache cache) {
-        final var compilerConfigurator = configuratorFactory.getKotlinCompilerConfigurator();
-
-        if (compilerConfigurator == null) return;
-
-        indicator.setText(message("hybris.project.import.compiler.kotlin"));
-        compilerConfigurator.configure(hybrisProjectDescriptor, project);
     }
 
     private void configureEclipseModules(final @NotNull ProgressIndicator indicator) {
