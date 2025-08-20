@@ -26,7 +26,6 @@ import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.ide.util.PropertiesComponent;
-import sap.commerce.toolset.project.configurators.*;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -66,6 +65,7 @@ import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.impex.ImpExLanguage;
+import sap.commerce.toolset.project.configurators.*;
 import sap.commerce.toolset.project.descriptors.*;
 import sap.commerce.toolset.project.descriptors.impl.*;
 import sap.commerce.toolset.project.settings.ProjectSettings;
@@ -163,7 +163,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             ? modifiableModelsProvider.getModifiableModuleModel()
             : model;
 
-        configuratorFactory.getSpringConfigurator().process(indicator, hybrisProjectDescriptor, allModuleDescriptors);
+        configuratorFactory.getImportConfigurators().forEach(configurator ->
+            configurator.preConfigure(indicator, hybrisProjectDescriptor, allModuleDescriptors)
+        );
         groupModuleConfigurator.process(indicator, allModules);
 
         int counter = 0;
@@ -188,10 +190,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
 
         configuratorFactory.getModuleDependenciesConfigurator().configure(indicator, hybrisProjectDescriptor, modifiableModelsProvider);
-        configuratorFactory.getSpringConfigurator().configure(indicator, hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider);
         configuratorFactory.getRunConfigurationConfigurator().configure(indicator, hybrisProjectDescriptor, project, cache);
         configuratorFactory.getVersionControlSystemConfigurator().configure(indicator, hybrisProjectDescriptor, project);
         configuratorFactory.getSearchScopeConfigurator().configure(indicator, project, appSettings, rootProjectModifiableModel);
+
+        configuratorFactory.getImportConfigurators().forEach(configurator ->
+            configurator.configure(indicator, hybrisProjectDescriptor, allModuleDescriptors, modifiableModelsProvider)
+        );
 
         configureProjectIcon();
 

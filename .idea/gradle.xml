@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/modules/acl/core" />
             <option value="$PROJECT_DIR$/modules/acl/ui" />
+            <option value="$PROJECT_DIR$/modules/angular/core" />
             <option value="$PROJECT_DIR$/modules/ant/ui" />
             <option value="$PROJECT_DIR$/modules/beanSystem/core" />
             <option value="$PROJECT_DIR$/modules/beanSystem/ui" />
@@ -27,12 +28,14 @@
             <option value="$PROJECT_DIR$/modules/console/ui" />
             <option value="$PROJECT_DIR$/modules/copyright/core" />
             <option value="$PROJECT_DIR$/modules/debugger/ui" />
+            <option value="$PROJECT_DIR$/modules/eclipse/core" />
             <option value="$PROJECT_DIR$/modules/exec/core" />
             <option value="$PROJECT_DIR$/modules/exec/ui" />
             <option value="$PROJECT_DIR$/modules/externalDependencies/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/core" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/exec" />
             <option value="$PROJECT_DIR$/modules/flexibleSearch/ui" />
+            <option value="$PROJECT_DIR$/modules/gradle/core" />
             <option value="$PROJECT_DIR$/modules/groovy/core" />
             <option value="$PROJECT_DIR$/modules/groovy/exec" />
             <option value="$PROJECT_DIR$/modules/groovy/ui" />
@@ -40,7 +43,9 @@
             <option value="$PROJECT_DIR$/modules/impex/exec" />
             <option value="$PROJECT_DIR$/modules/impex/monitoring" />
             <option value="$PROJECT_DIR$/modules/impex/ui" />
+            <option value="$PROJECT_DIR$/modules/java/core" />
             <option value="$PROJECT_DIR$/modules/jrebel/core" />
+            <option value="$PROJECT_DIR$/modules/kotlin/core" />
             <option value="$PROJECT_DIR$/modules/logging/core" />
             <option value="$PROJECT_DIR$/modules/logging/exec" />
             <option value="$PROJECT_DIR$/modules/logging/ui" />

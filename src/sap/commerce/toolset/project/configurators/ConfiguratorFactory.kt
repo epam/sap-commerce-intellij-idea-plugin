@@ -22,6 +22,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.components.serviceOrNull
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.configurators.impl.*
@@ -29,6 +30,8 @@ import sap.commerce.toolset.project.configurators.impl.*
 @Service
 class ConfiguratorFactory {
 
+    val importConfigurators
+        get() = ProjectImportConfigurator.EP.extensionList
     val startupConfigurators
         get() = ProjectStartupConfigurator.EP.extensionList
     val postImportConfigurators
@@ -40,9 +43,6 @@ class ConfiguratorFactory {
         Plugin.KOTLIN.service(KotlinFacetConfigurator::class.java),
         serviceOrNull<WebFacetConfigurator>()
     )
-
-    fun getSpringConfigurator() = Plugin.SPRING.service(DefaultSpringConfigurator::class.java)
-        ?: DummySpringConfigurator.getInstance()
 
     fun getContentRootConfigurator() = service<DefaultContentRootConfigurator>()
     fun getModuleDependenciesConfigurator() = service<ModuleDependenciesConfigurator>()

@@ -28,6 +28,8 @@
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <impex.interceptorProvider implementation="sap.commerce.toolset.spring.impex.SpringInterceptorProvider"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringConfigurator"/>
+        <project.startupConfigurator implementation="sap.commerce.toolset.spring.configurator.SpringConfigurator"/>
     </extensions>
 
 </idea-plugin>

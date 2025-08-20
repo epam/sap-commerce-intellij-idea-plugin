@@ -35,19 +35,10 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
-    implementation(project(":project-core"))
-    implementation(project(":typeSystem-core"))
-    implementation(project(":impex-core"))
-    implementation(project(":project-core"))
-    implementation(project(":project-import"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.spring",
-        )
     }
 }

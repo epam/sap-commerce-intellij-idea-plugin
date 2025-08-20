@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,10 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators.impl
+
+package sap.commerce.toolset.spring.configurator
 
 import com.intellij.facet.ModifiableFacetModel
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
@@ -33,8 +32,10 @@ import org.apache.commons.lang3.StringUtils
 import org.jdom.Element
 import org.jdom.JDOMException
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.configurators.SpringConfigurator
+import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.YRegularModuleDescriptor
@@ -49,14 +50,16 @@ import java.util.regex.Pattern
 import java.util.zip.ZipFile
 import kotlin.io.path.exists
 
-@Service
-class DefaultSpringConfigurator : SpringConfigurator {
+@Plugin.DependsOn(Plugin.SPRING)
+class SpringConfigurator : ProjectImportConfigurator, ProjectStartupConfigurator {
 
-    override fun process(
+    override fun preConfigure(
         indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         moduleDescriptors: Map<String, ModuleDescriptor>
     ) {
+        if (Plugin.SPRING.isDisabled()) return
+
         indicator.text = i18n("hybris.project.import.spring")
         for (moduleDescriptor in moduleDescriptors.values) {
             try {
@@ -79,7 +82,6 @@ class DefaultSpringConfigurator : SpringConfigurator {
                     ?.let { File(it.moduleRootDirectory, HybrisConstants.LOCAL_PROPERTIES_FILE) }
                     ?.let { moduleDescriptor.addSpringFile(it.absolutePath) }
             }
-
     }
 
     override fun configure(
@@ -88,6 +90,8 @@ class DefaultSpringConfigurator : SpringConfigurator {
         moduleDescriptors: Map<String, ModuleDescriptor>,
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
+        if (Plugin.SPRING.isDisabled()) return
+
         val facetModels = modifiableModelsProvider.modules
             .associate { it.yExtensionName() to modifiableModelsProvider.getModifiableFacetModel(it) }
 
@@ -96,9 +100,11 @@ class DefaultSpringConfigurator : SpringConfigurator {
     }
 
     override fun onStartup(project: Project) {
-        with(SpringGeneralSettings.getInstance(project)) {
-            isShowMultipleContextsPanel = false
-            isShowProfilesPanel = false
+        Plugin.SPRING.ifActive {
+            with(SpringGeneralSettings.getInstance(project)) {
+                isShowMultipleContextsPanel = false
+                isShowProfilesPanel = false
+            }
         }
     }
 
