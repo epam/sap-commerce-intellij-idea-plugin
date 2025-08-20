@@ -49,7 +49,6 @@
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-angular.xml">AngularJS</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-gradle.xml">com.intellij.gradle</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-spring.xml">com.intellij.spring</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javaee-web.xml">com.intellij.javaee.web</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-diagram.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-groovy.xml">org.intellij.groovy</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-javascript.xml">JavaScript</depends>
@@ -128,4 +127,5 @@
     <depends optional="true" config-file="sap.commerce.toolset-eclipse-core.xml">org.jetbrains.idea.eclipse</depends>
     <depends optional="true" config-file="sap.commerce.toolset-angular-core.xml">AngularJS</depends>
     <depends optional="true" config-file="sap.commerce.toolset-junit-core.xml">JUnit</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-javaee-web.xml">com.intellij.javaee.web</depends>
 </idea-plugin>

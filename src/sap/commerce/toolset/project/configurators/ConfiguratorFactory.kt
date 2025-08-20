@@ -24,7 +24,6 @@ import com.intellij.openapi.components.serviceOrNull
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.configurator.*
 import sap.commerce.toolset.project.configurators.impl.DefaultContentRootConfigurator
-import sap.commerce.toolset.project.configurators.impl.WebFacetConfigurator
 
 @Service
 class ConfiguratorFactory {
@@ -39,11 +38,6 @@ class ConfiguratorFactory {
         get() = ProjectRefreshConfigurator.EP.extensionList
     val facetConfigurators
         get() = ProjectFacetConfigurator.EP.extensionList
-
-    @Deprecated("Use EP")
-    fun getFacetConfiguratorsLegacy() = listOfNotNull(
-        serviceOrNull<WebFacetConfigurator>()
-    )
 
     fun getContentRootConfigurator() = service<DefaultContentRootConfigurator>()
     fun getCompilerOutputPathsConfigurator() = service<CompilerOutputPathsConfigurator>()

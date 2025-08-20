@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators.impl
+package sap.commerce.toolset.javaee.web.configurator
 
 import com.intellij.facet.FacetManager
 import com.intellij.facet.FacetTypeRegistry
@@ -29,7 +29,7 @@ import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.configurators.FacetConfigurator
+import sap.commerce.toolset.project.configurator.ProjectFacetConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
@@ -37,13 +37,13 @@ import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescripto
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
-class WebFacetConfigurator : FacetConfigurator {
+class WebFacetConfigurator : ProjectFacetConfigurator {
 
-    override fun configure(
+    override fun configureModuleFacet(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
-        javaModule: Module,
+        module: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
         val webRoot = when (moduleDescriptor) {
@@ -60,8 +60,8 @@ class WebFacetConfigurator : FacetConfigurator {
                     it.descriptorsContainer.configuration.removeConfigFiles(DeploymentDescriptorsConstants.WEB_XML_META_DATA)
                 }
                 ?: FacetTypeRegistry.getInstance().findFacetType(WebFacet.ID)
-                    .takeIf { it.isSuitableModuleType(ModuleType.get(javaModule)) }
-                    ?.let { FacetManager.getInstance(javaModule).createFacet(it, it.defaultFacetName, null) }
+                    .takeIf { it.isSuitableModuleType(ModuleType.get(module)) }
+                    ?.let { FacetManager.getInstance(module).createFacet(it, it.defaultFacetName, null) }
                     ?.also { modifiableFacetModel.addFacet(it) }
                 ?: return@runAndWait
 
@@ -72,5 +72,4 @@ class WebFacetConfigurator : FacetConfigurator {
                 ?.let { webFacet.descriptorsContainer.configuration.addConfigFile(DeploymentDescriptorsConstants.WEB_XML_META_DATA, it.url) }
         }
     }
-
 }

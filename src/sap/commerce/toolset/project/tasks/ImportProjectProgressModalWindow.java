@@ -260,10 +260,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     ) {
         final var modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
 
-        for (final var facetConfigurator : configuratorFactory.getFacetConfiguratorsLegacy()) {
-            facetConfigurator.configure(hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, module, modifiableRootModel);
-        }
-
         configuratorFactory.getFacetConfigurators().forEach(configurator ->
             configurator.configureModuleFacet(hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, module, modifiableRootModel)
         );
