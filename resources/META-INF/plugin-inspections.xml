@@ -20,18 +20,6 @@
     <extensions defaultExtensionNs="com.intellij">
 
         <!-- manifest.json - Commerce -->
-        <localInspection groupPath="SAP Commerce" shortName="ManifestUnknownExtensionInspection" displayName="[y] Unknown extension"
-                         groupName="[y] Manifest - Commerce" level="ERROR" language="JSON" enabledByDefault="true"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownExtensionInspection.key"
-                         implementationClass="sap.commerce.toolset.ccv2.manifest.codeInspection.ManifestCommerceExtensionInspection"/>
-        <localInspection groupPath="SAP Commerce" shortName="ManifestUnknownTemplateExtensionInspection" displayName="[y] Unknown template extension"
-                         groupName="[y] Manifest - Commerce" level="ERROR" language="JSON" enabledByDefault="true"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownTemplateExtensionInspection.key"
-                         implementationClass="sap.commerce.toolset.ccv2.manifest.codeInspection.ManifestCommerceTemplateExtensionInspection"/>
-        <localInspection groupPath="SAP Commerce" shortName="ManifestUnknownExtensionPackInspection" displayName="[y] Unknown extension pack"
-                         groupName="[y] Manifest - Commerce" level="WEAK WARNING" language="JSON" enabledByDefault="true"
-                         bundle="i18n.HybrisBundle" key="hybris.inspections.manifest.ManifestUnknownExtensionPackInspection.key"
-                         implementationClass="sap.commerce.toolset.ccv2.manifest.codeInspection.ManifestCommerceExtensionPackInspection"/>
 
         <!-- Cockpitng -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
