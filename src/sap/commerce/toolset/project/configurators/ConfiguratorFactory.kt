@@ -24,7 +24,6 @@ import com.intellij.openapi.components.serviceOrNull
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.configurator.*
 import sap.commerce.toolset.project.configurators.impl.DefaultContentRootConfigurator
-import sap.commerce.toolset.project.configurators.impl.SpringFacetConfigurator
 import sap.commerce.toolset.project.configurators.impl.WebFacetConfigurator
 
 @Service
@@ -43,7 +42,6 @@ class ConfiguratorFactory {
 
     @Deprecated("Use EP")
     fun getFacetConfiguratorsLegacy() = listOfNotNull(
-        Plugin.SPRING.service(SpringFacetConfigurator::class.java),
         serviceOrNull<WebFacetConfigurator>()
     )
 

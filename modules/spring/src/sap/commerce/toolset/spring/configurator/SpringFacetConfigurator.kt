@@ -15,11 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators.impl
+package sap.commerce.toolset.spring.configurator
 
 import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.application.WriteAction
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -27,7 +26,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.configurators.FacetConfigurator
+import sap.commerce.toolset.project.configurator.ProjectFacetConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
@@ -36,20 +35,19 @@ import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescript
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
-@Service
-class SpringFacetConfigurator : FacetConfigurator {
+class SpringFacetConfigurator : ProjectFacetConfigurator {
 
-    override fun configure(
+    override fun configureModuleFacet(
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
-        javaModule: Module,
+        module: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
         when (moduleDescriptor) {
             is YBackofficeSubModuleDescriptor -> return
-            is PlatformModuleDescriptor -> configure(javaModule, moduleDescriptor, modifiableFacetModel, emptySet())
-            is YModuleDescriptor -> configure(javaModule, moduleDescriptor, modifiableFacetModel, moduleDescriptor.getSpringFiles())
+            is PlatformModuleDescriptor -> configure(module, moduleDescriptor, modifiableFacetModel, emptySet())
+            is YModuleDescriptor -> configure(module, moduleDescriptor, modifiableFacetModel, moduleDescriptor.getSpringFiles())
         }
     }
 
