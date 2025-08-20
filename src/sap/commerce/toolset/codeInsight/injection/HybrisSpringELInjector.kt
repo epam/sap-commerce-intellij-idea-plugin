@@ -27,8 +27,8 @@ import com.intellij.psi.xml.XmlTagChild
 import com.intellij.psi.xml.XmlText
 import com.intellij.spring.el.SpringELLanguage
 import com.intellij.spring.model.utils.SpringCommonUtils
-import sap.commerce.toolset.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
-import sap.commerce.toolset.system.cockpitng.model.config.hybris.Labels
+import sap.commerce.toolset.cockpitNG.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
+import sap.commerce.toolset.cockpitNG.model.config.hybris.Labels
 
 class HybrisSpringELInjector : MultiHostInjector {
 

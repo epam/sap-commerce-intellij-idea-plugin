@@ -17,13 +17,6 @@
  */
 package sap.commerce.toolset.spring.context
 
-import sap.commerce.toolset.spring.SpringHelper
-import sap.commerce.toolset.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
-import sap.commerce.toolset.system.cockpitng.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
-import sap.commerce.toolset.system.cockpitng.model.config.hybris.Labels
-import sap.commerce.toolset.system.cockpitng.model.config.hybris.Preview
-import sap.commerce.toolset.system.cockpitng.model.wizardConfig.AbstractAction
-import sap.commerce.toolset.system.cockpitng.psi.CngPsiHelper
 import com.intellij.javaee.el.util.ELImplicitVariable
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
@@ -41,6 +34,13 @@ import com.intellij.psi.xml.XmlText
 import com.intellij.spring.el.contextProviders.SpringElContextsExtension
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.cockpitNG.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_HYBRIS
+import sap.commerce.toolset.cockpitNG.CngConfigDomFileDescription.Companion.NAMESPACE_COCKPIT_NG_CONFIG_WIZARD_CONFIG
+import sap.commerce.toolset.cockpitNG.model.config.hybris.Labels
+import sap.commerce.toolset.cockpitNG.model.config.hybris.Preview
+import sap.commerce.toolset.cockpitNG.model.wizardConfig.AbstractAction
+import sap.commerce.toolset.cockpitNG.psi.CngPsiHelper
+import sap.commerce.toolset.spring.SpringHelper
 
 class CngSpringELContextsExtension : SpringElContextsExtension() {
 

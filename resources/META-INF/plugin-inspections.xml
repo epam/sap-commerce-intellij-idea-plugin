@@ -19,8 +19,6 @@
 <idea-plugin>
     <extensions defaultExtensionNs="com.intellij">
 
-        <!-- manifest.json - Commerce -->
-
         <!-- Cockpitng -->
         <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
                          bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"

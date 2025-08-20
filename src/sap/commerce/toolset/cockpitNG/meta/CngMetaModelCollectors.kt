@@ -1,0 +1,125 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package sap.commerce.toolset.cockpitNG.meta
+
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import com.intellij.openapi.project.Project
+import com.intellij.util.asSafely
+import com.intellij.util.xml.DomElement
+import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import sap.commerce.toolset.cockpitNG.model.config.Config
+import sap.commerce.toolset.cockpitNG.model.core.ActionDefinition
+import sap.commerce.toolset.cockpitNG.model.core.EditorDefinition
+import sap.commerce.toolset.cockpitNG.model.core.WidgetDefinition
+import sap.commerce.toolset.cockpitNG.model.core.Widgets
+import sap.commerce.toolset.meta.Meta
+import sap.commerce.toolset.meta.MetaCollector
+
+@Service(Service.Level.PROJECT)
+class CngMetaCollector(project: Project) : MetaCollector<DomElement>(project, DomElement::class.java, nameProvider = CngModificationTracker.KEY_PROVIDER) {
+
+    private val metaConfigCollector by lazy { CngMetaConfigCollector.getInstance(project) }
+    private val metaWidgetsCollector by lazy { CngMetaWidgetsCollector.getInstance(project) }
+    private val metaActionDefinitionCollector by lazy { CngMetaActionDefinitionCollector.getInstance(project) }
+    private val metaWidgetDefinitionCollector by lazy { CngMetaWidgetDefinitionCollector.getInstance(project) }
+    private val metaEditorDefinitionCollector by lazy { CngMetaEditorDefinitionCollector.getInstance(project) }
+
+    override suspend fun collectDependencies(): Set<Meta<DomElement>> = coroutineScope {
+        listOf(
+            async { metaConfigCollector.collectDependencies() },
+            async { metaWidgetsCollector.collectDependencies() },
+            async { metaActionDefinitionCollector.collectDependencies() },
+            async { metaWidgetDefinitionCollector.collectDependencies() },
+            async { metaEditorDefinitionCollector.collectDependencies() },
+        )
+            .awaitAll()
+            .flatten()
+            .asSafely<Collection<Meta<DomElement>>>()
+            ?.toImmutableSet()
+            ?: emptySet()
+    }
+
+    companion object {
+        fun getInstance(project: Project): CngMetaCollector = project.service()
+    }
+}
+
+@Service(Service.Level.PROJECT)
+class CngMetaConfigCollector(project: Project) : MetaCollector<Config>(
+    project,
+    Config::class.java,
+    nameProvider = CngModificationTracker.KEY_PROVIDER
+) {
+    companion object {
+        fun getInstance(project: Project): CngMetaConfigCollector = project.service()
+    }
+}
+
+@Service(Service.Level.PROJECT)
+class CngMetaWidgetsCollector(project: Project) : MetaCollector<Widgets>(
+    project,
+    Widgets::class.java,
+    nameProvider = CngModificationTracker.KEY_PROVIDER
+) {
+    companion object {
+        fun getInstance(project: Project): CngMetaWidgetsCollector = project.service()
+    }
+}
+
+@Service(Service.Level.PROJECT)
+class CngMetaActionDefinitionCollector(project: Project) : MetaCollector<ActionDefinition>(
+    project,
+    ActionDefinition::class.java,
+    { it.id.exists() },
+    CngModificationTracker.KEY_PROVIDER,
+    { vf, dom -> dom.id.value ?: vf.name }
+) {
+    companion object {
+        fun getInstance(project: Project): CngMetaActionDefinitionCollector = project.service()
+    }
+}
+
+@Service(Service.Level.PROJECT)
+class CngMetaWidgetDefinitionCollector(project: Project) : MetaCollector<WidgetDefinition>(
+    project,
+    WidgetDefinition::class.java,
+    { it.id.exists() },
+    CngModificationTracker.KEY_PROVIDER,
+    { vf, dom -> dom.id.value ?: vf.name }
+) {
+    companion object {
+        fun getInstance(project: Project): CngMetaWidgetDefinitionCollector = project.service()
+    }
+}
+
+@Service(Service.Level.PROJECT)
+class CngMetaEditorDefinitionCollector(project: Project) : MetaCollector<EditorDefinition>(
+    project,
+    EditorDefinition::class.java,
+    { it.id.exists() },
+    CngModificationTracker.KEY_PROVIDER,
+    { vf, dom -> dom.id.value ?: vf.name }
+) {
+    companion object {
+        fun getInstance(project: Project): CngMetaEditorDefinitionCollector = project.service()
+    }
+}

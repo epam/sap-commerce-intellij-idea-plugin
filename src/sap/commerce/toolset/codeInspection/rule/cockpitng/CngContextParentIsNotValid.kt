@@ -22,12 +22,12 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import sap.commerce.toolset.cockpitNG.meta.CngMetaModelStateService
+import sap.commerce.toolset.cockpitNG.model.config.Config
+import sap.commerce.toolset.cockpitNG.model.config.Context
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.system.cockpitng.meta.CngMetaModelStateService
-import sap.commerce.toolset.system.cockpitng.model.config.Config
-import sap.commerce.toolset.system.cockpitng.model.config.Context
 
-class CngContextParentIsNotValid : AbstractCngConfigInspection() {
+class CngContextParentIsNotValid : CngConfigInspection() {
 
     override fun inspect(
         project: Project,

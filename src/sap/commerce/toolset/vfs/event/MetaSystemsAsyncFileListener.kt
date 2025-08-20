@@ -28,9 +28,9 @@ import com.intellij.util.PathUtil
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
+import sap.commerce.toolset.cockpitNG.meta.CngMetaModelStateService
+import sap.commerce.toolset.cockpitNG.meta.CngModificationTracker
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.system.cockpitng.meta.CngMetaModelStateService
-import sap.commerce.toolset.system.cockpitng.meta.CngModificationTracker
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 
 /**

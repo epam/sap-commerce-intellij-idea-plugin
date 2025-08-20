@@ -27,6 +27,8 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.beanSystem.BSDomFileDescription
 import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
+import sap.commerce.toolset.cockpitNG.*
+import sap.commerce.toolset.cockpitNG.meta.CngModificationTracker
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSplitEditorEx
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchPsiFile
 import sap.commerce.toolset.impex.editor.ImpExSplitEditorEx
@@ -34,8 +36,6 @@ import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFile
-import sap.commerce.toolset.system.cockpitng.*
-import sap.commerce.toolset.system.cockpitng.meta.CngModificationTracker
 import sap.commerce.toolset.typeSystem.TSDomFileDescription
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 

@@ -23,11 +23,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import sap.commerce.toolset.cockpitNG.model.config.Config
+import sap.commerce.toolset.cockpitNG.util.CngUtils
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.system.cockpitng.model.config.Config
-import sap.commerce.toolset.system.cockpitng.util.CngUtils
 
-class CngContextMergeByPointToExistingContextAttribute : AbstractCngConfigInspection() {
+class CngContextMergeByPointToExistingContextAttribute : CngConfigInspection() {
 
     override fun inspect(
         project: Project,
