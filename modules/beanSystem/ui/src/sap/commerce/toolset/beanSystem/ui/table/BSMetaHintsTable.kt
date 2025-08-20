@@ -16,22 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.beanSystem.ui.components
+package sap.commerce.toolset.beanSystem.ui.table
 
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
-import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
-import sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum
+import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaHint
 import sap.commerce.toolset.ui.AbstractTable
 import java.io.Serial
 
-class BSMetaEnumValuesTable private constructor(myProject: Project) :
-    AbstractTable<BSGlobalMetaEnum, BSMetaEnum.BSMetaEnumValue>(myProject) {
+class BSMetaHintsTable private constructor(myProject: Project) :
+    AbstractTable<BSGlobalMetaBean, BSMetaHint>(myProject) {
 
-    override fun getSearchableColumnNames() = listOf(COLUMN_VALUE)
+    override fun getSearchableColumnNames() = listOf(COLUMN_NAME)
     override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM)
-    override fun select(item: BSMetaEnum.BSMetaEnumValue) = selectRowWithValue(item.name, COLUMN_VALUE)
-    override fun getItems(owner: BSGlobalMetaEnum) = owner.values.values.sortedWith(
+    override fun select(item: BSMetaHint) = selectRowWithValue(item.name, COLUMN_NAME)
+    override fun getItems(owner: BSGlobalMetaBean) = owner.hints.values.sortedWith(
         compareBy(
             { !it.isCustom },
             { it.moduleName },
@@ -39,7 +39,7 @@ class BSMetaEnumValuesTable private constructor(myProject: Project) :
     )
         .toMutableList()
 
-    override fun createModel(): ListTableModel<BSMetaEnum.BSMetaEnumValue> = with(ListTableModel<BSMetaEnum.BSMetaEnumValue>()) {
+    override fun createModel(): ListTableModel<BSMetaHint> = with(ListTableModel<BSMetaHint>()) {
         columnInfos = arrayOf(
             createColumn(
                 name = COLUMN_CUSTOM,
@@ -52,8 +52,12 @@ class BSMetaEnumValuesTable private constructor(myProject: Project) :
                 valueProvider = { attr -> attr.extensionName }
             ),
             createColumn(
-                name = COLUMN_VALUE,
+                name = COLUMN_NAME,
                 valueProvider = { attr -> attr.name }
+            ),
+            createColumn(
+                name = COLUMN_VALUE,
+                valueProvider = { attr -> attr.value }
             )
         )
 
@@ -62,14 +66,15 @@ class BSMetaEnumValuesTable private constructor(myProject: Project) :
 
     companion object {
         @Serial
-        private val serialVersionUID: Long = 6612572661238637911L
+        private val serialVersionUID: Long = 6752572571238637911L
 
         private const val COLUMN_CUSTOM = "C"
         private const val COLUMN_MODULE = "Module"
+        private const val COLUMN_NAME = "Name"
         private const val COLUMN_VALUE = "Value"
 
         @JvmStatic
-        fun getInstance(project: Project): BSMetaEnumValuesTable = with(BSMetaEnumValuesTable(project)) {
+        fun getInstance(project: Project): BSMetaHintsTable = with(BSMetaHintsTable(project)) {
             init()
 
             this

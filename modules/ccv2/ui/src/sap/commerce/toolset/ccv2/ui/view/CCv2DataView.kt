@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.ui.views
+package sap.commerce.toolset.ccv2.ui.view
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -31,7 +31,7 @@ import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
 import sap.commerce.toolset.ui.scrollPanel
 
-abstract class AbstractCCv2DataView<T : CCv2Dto> {
+abstract class CCv2DataView<T : CCv2Dto> {
 
     abstract val tab: CCv2Tab
     abstract fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<T>>): DialogPanel

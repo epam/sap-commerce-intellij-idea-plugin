@@ -32,6 +32,7 @@ import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
 import sap.commerce.toolset.flexibleSearch.file.FlexibleSearchFileType
+import sap.commerce.toolset.flexibleSearch.xsvFlexibleSearchFormat
 import sap.commerce.toolset.ui.editor.InEditorResultsView
 import javax.swing.JComponent
 

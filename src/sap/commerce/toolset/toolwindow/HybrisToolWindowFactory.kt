@@ -25,7 +25,7 @@ import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.beanSystem.toolWindow.BSToolWindow
+import sap.commerce.toolset.beanSystem.ui.BSToolWindow
 import sap.commerce.toolset.ccv2.toolwindow.CCv2View
 import sap.commerce.toolset.console.toolWindow.HybrisConsolesToolWindow
 import sap.commerce.toolset.isHybrisProject

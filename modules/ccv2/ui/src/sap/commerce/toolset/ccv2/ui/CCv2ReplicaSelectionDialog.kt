@@ -39,6 +39,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2ExecConstants
 import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import sap.commerce.toolset.ccv2.ui.tree.CCv2TreeTable
 import sap.commerce.toolset.exec.context.ReplicaContext
 import sap.commerce.toolset.groovy.exec.GroovyExecutionClient

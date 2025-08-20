@@ -16,13 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.ui
+package sap.commerce.toolset.ccv2.ui.components
 
 import com.intellij.ui.AddEditDeleteListPanel
 import com.intellij.ui.ListSpeedSearch
 import com.intellij.util.ui.JBEmptyBorder
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto
+import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionDialog
 import java.awt.Component
 import java.io.Serial
 import java.util.*

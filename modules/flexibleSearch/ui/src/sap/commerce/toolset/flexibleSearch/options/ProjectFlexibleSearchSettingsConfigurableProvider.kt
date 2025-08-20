@@ -27,7 +27,7 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.toNullableProperty
 import com.intellij.ui.layout.selected
-import sap.commerce.toolset.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider
+import sap.commerce.toolset.flexibleSearch.editor.FxSReservedWordsCaseEditorNotificationProvider
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.settings.DeveloperSettings

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.ui.views
+package sap.commerce.toolset.ccv2.ui.view
 
 import com.intellij.ide.HelpTooltip
 import com.intellij.notification.NotificationType

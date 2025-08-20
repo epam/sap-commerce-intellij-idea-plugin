@@ -35,7 +35,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.asSafely
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.*
+import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
 import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
 import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
@@ -45,10 +45,10 @@ import sap.commerce.toolset.ccv2.event.CCv2EnvironmentsListener
 import sap.commerce.toolset.ccv2.event.CCv2SettingsListener
 import sap.commerce.toolset.ccv2.settings.CCv2DeveloperSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionsComboBoxModelFactory
-import sap.commerce.toolset.ccv2.ui.views.CCv2BuildsDataView
-import sap.commerce.toolset.ccv2.ui.views.CCv2DeploymentsDataView
-import sap.commerce.toolset.ccv2.ui.views.CCv2EnvironmentsDataView
+import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
+import sap.commerce.toolset.ccv2.ui.view.CCv2BuildsDataView
+import sap.commerce.toolset.ccv2.ui.view.CCv2DeploymentsDataView
+import sap.commerce.toolset.ccv2.ui.view.CCv2EnvironmentsDataView
 import java.io.Serial
 
 class CCv2View(private val project: Project) : SimpleToolWindowPanel(false), Disposable {

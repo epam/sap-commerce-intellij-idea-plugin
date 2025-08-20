@@ -16,35 +16,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.ui.views
+package sap.commerce.toolset.ccv2.ui.view
 
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.dsl.builder.*
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.ccv2.actionSystem.*
-import sap.commerce.toolset.ccv2.dto.CCv2BuildDto
+import sap.commerce.toolset.ccv2.actionSystem.CCv2TrackDeploymentAction
+import sap.commerce.toolset.ccv2.dto.CCv2DeploymentDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
 import sap.commerce.toolset.ccv2.toolwindow.CCv2Tab
-import sap.commerce.toolset.ccv2.ui.copyLink
 import sap.commerce.toolset.ccv2.ui.date
 import sap.commerce.toolset.ccv2.ui.sUser
 import sap.commerce.toolset.ui.scrollPanel
 
-object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
+object CCv2DeploymentsDataView : CCv2DataView<CCv2DeploymentDto>() {
 
     override val tab: CCv2Tab
-        get() = CCv2Tab.BUILDS
+        get() = CCv2Tab.DEPLOYMENTS
 
-    override fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<CCv2BuildDto>>): DialogPanel = if (data.isEmpty()) noDataPanel()
+    override fun dataPanel(project: Project, data: Map<CCv2Subscription, Collection<CCv2DeploymentDto>>): DialogPanel = if (data.isEmpty()) noDataPanel()
     else panel {
         data.forEach { (subscription, builds) ->
             collapsibleGroup(subscription.toString()) {
                 if (builds.isEmpty()) {
                     noData()
                 } else {
-                    builds.forEach { build(project, subscription, it) }
+                    builds.forEach { deployment(project, subscription, it) }
                 }
             }
                 .expanded = true
@@ -52,82 +51,81 @@ object CCv2BuildsDataView : AbstractCCv2DataView<CCv2BuildDto>() {
     }
         .let { scrollPanel(it) }
 
-    private fun Panel.build(project: Project, subscription: CCv2Subscription, build: CCv2BuildDto) {
+    private fun Panel.deployment(project: Project, subscription: CCv2Subscription, deployment: CCv2DeploymentDto) {
         row {
             panel {
                 row {
                     actionsButton(
                         actions = listOfNotNull(
-                            if (build.canTrack()) CCv2TrackBuildAction(subscription, build) else null,
-                            CCv2ShowBuildDetailsAction(subscription, build),
-                            CCv2RedoBuildAction(subscription, build),
-                            if (build.canDeploy()) CCv2DeployBuildAction(subscription, build) else null,
-                            if (build.canDownloadLogs()) CCv2DownloadBuildLogsAction(subscription, build) else null,
-                            if (build.canDelete()) CCv2DeleteBuildAction(subscription, build) else null
+                            CCv2TrackDeploymentAction(subscription, deployment)
                         ).toTypedArray(),
                         ActionPlaces.TOOLWINDOW_CONTENT
                     )
                 }
             }.gap(RightGap.SMALL)
-
             panel {
                 row {
-                    val buildName = build.link
-                        ?.let { browserLink(build.name, it) }
-                        ?: label(build.name)
-                    buildName
-                        .comment(build.code)
+                    val deploymentCode = deployment.link
+                        ?.let { browserLink(deployment.code, it) }
+                        ?: label(deployment.code)
+                    deploymentCode
+                        .comment(deployment.buildCode)
                         .bold()
                 }
             }.gap(RightGap.COLUMNS)
 
             panel {
                 row {
-                    label(build.version)
-                        .comment("Version")
+                    label(deployment.envCode)
+                        .comment("Environment")
                 }
             }.gap(RightGap.COLUMNS)
 
             panel {
                 row {
-                    icon(HybrisIcons.CCv2.Build.REVISION).gap(RightGap.SMALL)
-                    copyLink(project, "Revision", build.revision, "Build Revision copied to clipboard")
-                }
-            }.gap(RightGap.SMALL)
-
-            panel {
-                row {
-                    icon(HybrisIcons.CCv2.Build.BRANCH).gap(RightGap.SMALL)
-                    copyLink(project, "Branch", build.branch, "Build Branch copied to clipboard")
-                }
-            }.gap(RightGap.COLUMNS)
-
-            panel {
-                row {
-                    icon(build.status.icon)
+                    icon(deployment.status.icon)
                         .gap(RightGap.SMALL)
-                    label(build.status.title)
+                    label(deployment.status.title)
                         .comment("Status")
                 }
             }.gap(RightGap.COLUMNS)
 
             panel {
                 row {
-                    sUser(project, build.createdBy, HybrisIcons.CCv2.Build.CREATED_BY)
+                    icon(deployment.strategy.icon)
+                        .gap(RightGap.SMALL)
+                    label(deployment.strategy.title)
+                        .comment("Strategy")
                 }
             }.gap(RightGap.COLUMNS)
 
             panel {
                 row {
-                    date("Start time", build.startTime)
+                    icon(deployment.updateMode.icon)
+                        .gap(RightGap.SMALL)
+                    label(deployment.updateMode.title)
+                        .comment("Mode")
                 }
             }.gap(RightGap.COLUMNS)
 
             panel {
                 row {
-                    date("End time", build.endTime)
+                    sUser(project, deployment.createdBy, HybrisIcons.CCv2.Deployment.CREATED_BY)
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    date("Created time", deployment.createdTime)
+                }
+            }.gap(RightGap.COLUMNS)
+
+            panel {
+                row {
+                    date("Deployed time", deployment.deployedTime)
                 }
             }
+
         }.layout(RowLayout.PARENT_GRID)
     }
 }

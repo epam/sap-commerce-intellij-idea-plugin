@@ -18,8 +18,8 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <editorNotificationProvider id="fxsReservedWordsCaseEditorNotificationProvider" implementation="sap.commerce.toolset.flexibleSearch.ui.FxSReservedWordsCaseEditorNotificationProvider"/>
-        <editorNotificationProvider id="fxsTableAliasSeparatorEditorNotificationProvider" implementation="sap.commerce.toolset.flexibleSearch.ui.FxSTableAliasSeparatorEditorNotificationProvider"/>
+        <editorNotificationProvider id="fxsReservedWordsCaseEditorNotificationProvider" implementation="sap.commerce.toolset.flexibleSearch.editor.FxSReservedWordsCaseEditorNotificationProvider"/>
+        <editorNotificationProvider id="fxsTableAliasSeparatorEditorNotificationProvider" implementation="sap.commerce.toolset.flexibleSearch.editor.FxSTableAliasSeparatorEditorNotificationProvider"/>
 
         <projectConfigurable id="hybris.project.fxs.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"

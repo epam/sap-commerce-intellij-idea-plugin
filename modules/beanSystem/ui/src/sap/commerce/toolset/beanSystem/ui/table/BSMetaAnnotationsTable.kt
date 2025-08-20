@@ -16,30 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.beanSystem.ui.components
+package sap.commerce.toolset.beanSystem.ui.table
 
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.ListTableModel
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
-import sap.commerce.toolset.beanSystem.meta.model.BSMetaImport
+import sap.commerce.toolset.beanSystem.meta.model.BSMetaAnnotations
 import sap.commerce.toolset.ui.AbstractTable
 import java.io.Serial
 
-class BSMetaImportsTable private constructor(myProject: Project) :
-    AbstractTable<BSGlobalMetaBean, BSMetaImport>(myProject) {
+class BSMetaAnnotationsTable private constructor(myProject: Project) :
+    AbstractTable<BSGlobalMetaBean, BSMetaAnnotations>(myProject) {
 
-    override fun getSearchableColumnNames() = listOf(COLUMN_TYPE)
-    override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_STATIC)
-    override fun select(item: BSMetaImport) = selectRowWithValue(item.type, COLUMN_TYPE)
-    override fun getItems(owner: BSGlobalMetaBean) = owner.imports.sortedWith(
+    override fun getSearchableColumnNames() = listOf(COLUMN_VALUE)
+    override fun getFixedWidthColumnNames() = listOf(COLUMN_CUSTOM, COLUMN_SCOPE)
+    override fun select(item: BSMetaAnnotations) = selectRowWithValue(item.value, COLUMN_VALUE)
+    override fun getItems(owner: BSGlobalMetaBean) = owner.annotations.sortedWith(
         compareBy(
             { !it.isCustom },
             { it.moduleName },
-            { it.type })
+            { it.value })
     )
         .toMutableList()
 
-    override fun createModel(): ListTableModel<BSMetaImport> = with(ListTableModel<BSMetaImport>()) {
+    override fun createModel(): ListTableModel<BSMetaAnnotations> = with(ListTableModel<BSMetaAnnotations>()) {
         columnInfos = arrayOf(
             createColumn(
                 name = COLUMN_CUSTOM,
@@ -48,18 +48,16 @@ class BSMetaImportsTable private constructor(myProject: Project) :
                 tooltip = "Custom"
             ),
             createColumn(
-                name = COLUMN_STATIC,
-                valueProvider = { attr -> attr.isStatic },
-                columnClass = Boolean::class.java,
-                tooltip = "Static"
+                name = COLUMN_SCOPE,
+                valueProvider = { attr -> attr.scope },
             ),
             createColumn(
                 name = COLUMN_MODULE,
                 valueProvider = { attr -> attr.extensionName }
             ),
             createColumn(
-                name = COLUMN_TYPE,
-                valueProvider = { attr -> attr.type }
+                name = COLUMN_VALUE,
+                valueProvider = { attr -> attr.value }
             )
         )
 
@@ -68,15 +66,15 @@ class BSMetaImportsTable private constructor(myProject: Project) :
 
     companion object {
         @Serial
-        private val serialVersionUID: Long = 6752572571238631111L
+        private val serialVersionUID: Long = 6752572571238631345L
 
         private const val COLUMN_CUSTOM = "C"
-        private const val COLUMN_STATIC = "S"
+        private const val COLUMN_SCOPE = "Scope"
         private const val COLUMN_MODULE = "Module"
-        private const val COLUMN_TYPE = "Type"
+        private const val COLUMN_VALUE = "Value"
 
         @JvmStatic
-        fun getInstance(project: Project): BSMetaImportsTable = with(BSMetaImportsTable(project)) {
+        fun getInstance(project: Project): BSMetaAnnotationsTable = with(BSMetaAnnotationsTable(project)) {
             init()
 
             this

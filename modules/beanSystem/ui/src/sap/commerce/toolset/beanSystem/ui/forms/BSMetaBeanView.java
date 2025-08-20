@@ -28,10 +28,10 @@ import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.JBUI;
 import sap.commerce.toolset.beanSystem.meta.model.*;
 import sap.commerce.toolset.beanSystem.psi.BSPsiHelper;
-import sap.commerce.toolset.beanSystem.ui.components.BSMetaAnnotationsTable;
-import sap.commerce.toolset.beanSystem.ui.components.BSMetaHintsTable;
-import sap.commerce.toolset.beanSystem.ui.components.BSMetaImportsTable;
-import sap.commerce.toolset.beanSystem.ui.components.BSMetaPropertiesTable;
+import sap.commerce.toolset.beanSystem.ui.table.BSMetaAnnotationsTable;
+import sap.commerce.toolset.beanSystem.ui.table.BSMetaHintsTable;
+import sap.commerce.toolset.beanSystem.ui.table.BSMetaImportsTable;
+import sap.commerce.toolset.beanSystem.ui.table.BSMetaPropertiesTable;
 import sap.commerce.toolset.ui.AbstractTable;
 
 import javax.swing.*;

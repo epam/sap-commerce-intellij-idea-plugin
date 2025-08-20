@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ccv2.ui.views
+package sap.commerce.toolset.ccv2.ui.view
 
 import com.intellij.ide.HelpTooltip
 import com.intellij.openapi.actionSystem.ActionPlaces
@@ -35,7 +35,7 @@ import sap.commerce.toolset.ccv2.ui.dynatrace
 import sap.commerce.toolset.ui.scrollPanel
 import java.util.*
 
-object CCv2EnvironmentsDataView : AbstractCCv2DataView<CCv2EnvironmentDto>() {
+object CCv2EnvironmentsDataView : CCv2DataView<CCv2EnvironmentDto>() {
 
     override val tab: CCv2Tab
         get() = CCv2Tab.ENVIRONMENTS

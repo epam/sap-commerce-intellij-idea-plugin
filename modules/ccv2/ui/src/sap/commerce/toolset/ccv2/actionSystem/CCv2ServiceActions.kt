@@ -32,7 +32,7 @@ import sap.commerce.toolset.ccv2.dto.CCv2EnvironmentDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceDto
 import sap.commerce.toolset.ccv2.dto.CCv2ServiceReplicaDto
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
-import sap.commerce.toolset.ccv2.ui.views.CCv2ServiceDetailsView
+import sap.commerce.toolset.ccv2.ui.view.CCv2ServiceDetailsView
 
 class CCv2ShowServiceDetailsAction(
     private val subscription: CCv2Subscription,

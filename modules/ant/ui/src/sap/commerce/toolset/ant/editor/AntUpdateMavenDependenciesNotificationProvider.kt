@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ant
+package sap.commerce.toolset.ant.editor
 
 import com.intellij.lang.ant.config.AntBuildFileBase
 import com.intellij.lang.ant.config.AntConfiguration

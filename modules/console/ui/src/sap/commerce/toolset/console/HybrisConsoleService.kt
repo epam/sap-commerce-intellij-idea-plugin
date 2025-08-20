@@ -54,6 +54,12 @@ class HybrisConsoleService(private val project: Project) {
             }
         }
 
+    fun openInConsole(consoleClass: KClass<out HybrisConsole<out ExecutionContext>>, content: String) = openConsole(consoleClass)
+        ?.apply {
+            clear()
+            setInputText(content)
+        }
+
     private fun activateToolWindowTab() = hybrisToolWindow()
         ?.contentManager
         ?.let { contentManager ->

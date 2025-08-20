@@ -36,6 +36,7 @@ import sap.commerce.toolset.ccv2.CCv2Service
 import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.help.CCv2WebHelpProvider
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import java.util.*
 import javax.swing.Icon
 
@@ -155,7 +156,7 @@ class CCv2CreateBuildDialog(
 
         val buildRequest = CCv2BuildRequest(subscription, name, branch, trackBuild, deploymentRequests)
 
-        CCv2Service.getInstance(project).createBuild(buildRequest)
+        CCv2Service.Companion.getInstance(project).createBuild(buildRequest)
     }
 
     override fun getStyle() = DialogStyle.COMPACT
@@ -179,7 +180,7 @@ class CCv2CreateBuildDialog(
             AnimatedIcon.Default.INSTANCE
         )
 
-        CCv2Service.getInstance(project).fetchEnvironments(
+        CCv2Service.Companion.getInstance(project).fetchEnvironments(
             subscriptions = listOf(subscription),
             onCompleteCallback = { environments ->
                 val environmentsPanel = getEnvironmentsPanel(environments, subscription)

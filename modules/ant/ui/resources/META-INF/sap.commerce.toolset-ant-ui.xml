@@ -20,7 +20,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <editorNotificationProvider id="antUpdateMavenDependenciesNotificationProvider"
-                                    implementation="sap.commerce.toolset.ant.AntUpdateMavenDependenciesNotificationProvider"/>
+                                    implementation="sap.commerce.toolset.ant.editor.AntUpdateMavenDependenciesNotificationProvider"/>
     </extensions>
 
 </idea-plugin>

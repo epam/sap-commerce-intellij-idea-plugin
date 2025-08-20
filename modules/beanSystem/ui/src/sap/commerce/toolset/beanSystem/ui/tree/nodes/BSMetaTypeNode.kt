@@ -24,10 +24,7 @@ import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.xml.DomElement
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.meta.BSMetaHelper
-import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaClassifier
-import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum
-import sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier
-import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
+import sap.commerce.toolset.beanSystem.meta.model.*
 import sap.commerce.toolset.beanSystem.settings.BSViewSettings
 import sap.commerce.toolset.i18n
 
@@ -75,7 +72,7 @@ class BSMetaTypeNode(parent: BSNode, private val metaType: BSMetaType) : BSNode(
             ?.mapNotNull {
                 when (it) {
                     is BSGlobalMetaEnum -> BSMetaEnumNode(this, it)
-                    is sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean -> BSMetaBeanNode(this, it)
+                    is BSGlobalMetaBean -> BSMetaBeanNode(this, it)
                     else -> null
                 }
             }

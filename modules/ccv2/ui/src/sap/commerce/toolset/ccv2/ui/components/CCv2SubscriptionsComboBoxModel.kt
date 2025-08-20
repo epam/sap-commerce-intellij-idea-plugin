@@ -16,14 +16,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.editor
+package sap.commerce.toolset.ccv2.ui.components
 
-import com.intellij.database.csv.CsvFormat
-import com.intellij.database.csv.CsvRecordFormat
-import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
+import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import java.io.Serial
+import javax.swing.DefaultComboBoxModel
 
-fun xsvFlexibleSearchFormat(): CsvFormat {
-    val format = CsvRecordFormat("", "", null, emptyList(), CsvRecordFormat.QuotationPolicy.NEVER, HybrisConstants.FXS_TABLE_RESULT_SEPARATOR, "\n", true)
+class CCv2SubscriptionsComboBoxModel(
+    private val onSelectedItem: ((Any?) -> Unit)? = null
+) : DefaultComboBoxModel<CCv2Subscription>() {
 
-    return CsvFormat("FlexibleSearch - Results", format, format, "FlexibleSearch_results", false)
+    override fun setSelectedItem(anObject: Any?) {
+        super.setSelectedItem(anObject)
+        onSelectedItem?.invoke(anObject)
+    }
+
+    fun refresh() {
+        removeAllElements()
+        val subscriptions = CCv2ProjectSettings.Companion.getInstance().ccv2Subscriptions
+        addAll(subscriptions.sortedBy { it.toString() })
+    }
+
+    companion object {
+        @Serial
+        private val serialVersionUID: Long = 4646717472092758251L
+    }
 }

@@ -28,7 +28,7 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.psi.SingleRootFileViewProvider
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.HybrisConsole
-import sap.commerce.toolset.console.ui.OpenInHybrisConsoleService
+import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.exec.context.ExecutionContext
 import javax.swing.Icon
 import kotlin.reflect.KClass
@@ -62,8 +62,7 @@ abstract class OpenInConsoleAction(
             ?.text
             ?: return
 
-        OpenInHybrisConsoleService.getInstance(project)
-            .openInConsole(consoleClass, content)
+        HybrisConsoleService.getInstance(project).openInConsole(consoleClass, content)
     }
 
 }

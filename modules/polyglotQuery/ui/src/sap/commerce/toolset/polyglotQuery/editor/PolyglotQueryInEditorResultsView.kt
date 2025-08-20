@@ -31,8 +31,8 @@ import com.intellij.ui.dsl.builder.panel
 import kotlinx.coroutines.CoroutineScope
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.flexibleSearch.editor.FlexibleSearchSimplifiedTableView
-import sap.commerce.toolset.flexibleSearch.editor.xsvFlexibleSearchFormat
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
+import sap.commerce.toolset.flexibleSearch.xsvFlexibleSearchFormat
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 import sap.commerce.toolset.ui.editor.InEditorResultsView
 import javax.swing.JComponent

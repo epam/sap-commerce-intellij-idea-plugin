@@ -30,7 +30,7 @@ import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaEnum;
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaClassifier;
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaEnum;
 import sap.commerce.toolset.beanSystem.psi.BSPsiHelper;
-import sap.commerce.toolset.beanSystem.ui.components.BSMetaEnumValuesTable;
+import sap.commerce.toolset.beanSystem.ui.table.BSMetaEnumValuesTable;
 import sap.commerce.toolset.ui.AbstractTable;
 
 import javax.swing.*;

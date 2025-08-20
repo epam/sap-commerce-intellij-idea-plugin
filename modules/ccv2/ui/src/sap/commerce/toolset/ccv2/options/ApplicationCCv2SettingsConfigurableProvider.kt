@@ -27,7 +27,7 @@ import com.intellij.ui.dsl.builder.bindIntText
 import com.intellij.ui.dsl.builder.panel
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2SubscriptionDto
-import sap.commerce.toolset.ccv2.ui.CCv2SubscriptionListPanel
+import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionListPanel
 import sap.commerce.toolset.equalsIgnoreOrder
 
 class ApplicationCCv2SettingsConfigurableProvider : ConfigurableProvider() {

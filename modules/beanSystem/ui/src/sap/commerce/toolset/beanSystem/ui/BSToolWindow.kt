@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.beanSystem.toolWindow
+package sap.commerce.toolset.beanSystem.ui
 
 import com.intellij.ide.CommonActionsManager
 import com.intellij.ide.IdeBundle
@@ -41,7 +41,6 @@ import sap.commerce.toolset.beanSystem.meta.event.BSMetaModelChangeListener
 import sap.commerce.toolset.beanSystem.settings.BSViewSettings
 import sap.commerce.toolset.beanSystem.settings.event.BSViewSettingsListener
 import sap.commerce.toolset.beanSystem.settings.state.ChangeType
-import sap.commerce.toolset.beanSystem.ui.components.BSTreePanel
 import sap.commerce.toolset.i18n
 import java.awt.GridBagLayout
 import java.io.Serial

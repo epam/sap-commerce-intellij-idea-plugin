@@ -37,6 +37,7 @@ import sap.commerce.toolset.ccv2.dto.*
 import sap.commerce.toolset.ccv2.help.CCv2WebHelpProvider
 import sap.commerce.toolset.ccv2.settings.CCv2ProjectSettings
 import sap.commerce.toolset.ccv2.settings.state.CCv2Subscription
+import sap.commerce.toolset.ccv2.ui.components.CCv2SubscriptionsComboBoxModelFactory
 import java.util.*
 import javax.swing.JLabel
 
@@ -75,7 +76,7 @@ class CCv2DeployBuildDialog(
         modeComboBox.isEnabled = false
         strategyComboBox.isEnabled = false
 
-        CCv2Service.getInstance(project).fetchEnvironments(
+        CCv2Service.Companion.getInstance(project).fetchEnvironments(
             subscriptions = subscriptions,
             onCompleteCallback = {
                 environments = it
@@ -211,7 +212,7 @@ class CCv2DeployBuildDialog(
             trackCheckBox.isSelected
         )
 
-        CCv2Service.getInstance(project).deployBuild(project, subscription, build, deploymentRequest)
+        CCv2Service.Companion.getInstance(project).deployBuild(project, subscription, build, deploymentRequest)
     }
 
     override fun getStyle() = DialogStyle.COMPACT
