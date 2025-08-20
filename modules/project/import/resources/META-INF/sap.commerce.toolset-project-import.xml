@@ -20,6 +20,7 @@
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.ProjectIconConfigurator"/>
         <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.SearchScopeConfigurator"/>
+        <project.importConfigurator implementation="sap.commerce.toolset.project.configurator.VersionControlSystemConfigurator"/>
     </extensions>
 
 </idea-plugin>

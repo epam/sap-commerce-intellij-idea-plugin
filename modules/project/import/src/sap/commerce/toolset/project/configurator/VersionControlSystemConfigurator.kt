@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,9 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators
 
-import com.intellij.openapi.components.Service
+package sap.commerce.toolset.project.configurator
+
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.ProjectLevelVcsManager
@@ -27,14 +28,17 @@ import com.intellij.openapi.vcs.roots.VcsRootDetector
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 
-@Service
-class VersionControlSystemConfigurator {
+class VersionControlSystemConfigurator : ProjectImportConfigurator {
 
-    fun configure(
+    override fun configure(
+        project: Project,
         indicator: ProgressIndicator,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
-        project: Project
+        moduleDescriptors: Map<String, ModuleDescriptor>,
+        rootProjectModifiableModel: ModifiableModuleModel,
+        modifiableModelsProvider: IdeModifiableModelsProvider
     ) {
         indicator.text = i18n("hybris.project.import.vcs")
 
@@ -51,5 +55,4 @@ class VersionControlSystemConfigurator {
             .filter { it.vcs != null }
             .map { VcsDirectoryMapping(it.path.path, it.vcs!!.name) }
     }
-
 }
