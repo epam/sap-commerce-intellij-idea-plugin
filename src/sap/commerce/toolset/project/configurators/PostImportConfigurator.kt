@@ -43,7 +43,12 @@ class PostImportConfigurator(val project: Project) {
                 if (project.isDisposed) return@nonBlocking emptyList()
 
                 with(ConfiguratorFactory.getInstance()) {
-                    listOfNotNull(
+                    val newConfigurators = postImportConfigurators
+                        .map {
+                            it.postImport(project, hybrisProjectDescriptor, allModules)
+                        }
+                        .flatten()
+                    val oldConfigurators = listOfNotNull(
                         getKotlinCompilerConfigurator()
                             ?.configureAfterImport(project),
 
@@ -56,9 +61,6 @@ class PostImportConfigurator(val project: Project) {
                         getXsdSchemaConfigurator()
                             ?.configureAfterImport(project, allModules),
 
-                        getJRebelConfigurator()
-                            ?.configureAfterImport(project, allModules),
-
                         getMavenConfigurator()
                             ?.configureAfterImport(project, hybrisProjectDescriptor),
 
@@ -69,6 +71,8 @@ class PostImportConfigurator(val project: Project) {
                             .configureAfterImport(project, refresh)
                     )
                         .flatten()
+
+                    oldConfigurators + newConfigurators
                 }
             }
             .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->

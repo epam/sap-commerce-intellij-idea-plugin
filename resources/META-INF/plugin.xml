@@ -59,10 +59,6 @@
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-cron.xml">com.intellij.cron</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-grid.xml">intellij.grid.plugin</depends>
 
-    <depends optional="true" config-file="sap.commerce.toolset-copyright-core.xml">com.intellij.copyright</depends>
-    <depends optional="true" config-file="sap.commerce.toolset-terminal.xml">org.jetbrains.plugins.terminal</depends>
-    <depends optional="true" config-file="sap.commerce.toolset-ant-ui.xml">AntSupport</depends>
-
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-lang.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-cockpitng.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/dependencies/com.intellij.idea.plugin.sap.commerce-impex.xml" xpointer="xpointer(/idea-plugin/*)"/>
@@ -80,6 +76,7 @@
     <xi:include href="/META-INF/sap.commerce.toolset-project-extensioninfo.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-localextensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-project-import.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
     <xi:include href="/META-INF/sap.commerce.toolset-console-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
@@ -119,4 +116,9 @@
     <xi:include href="/META-INF/sap.commerce.toolset-logging-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-occ-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-solr-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
+    <depends optional="true" config-file="sap.commerce.toolset-jrebel-core.xml">JRebelPlugin</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-copyright-core.xml">com.intellij.copyright</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-terminal.xml">org.jetbrains.plugins.terminal</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-ant-ui.xml">AntSupport</depends>
 </idea-plugin>

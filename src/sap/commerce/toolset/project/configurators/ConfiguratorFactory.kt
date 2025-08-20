@@ -22,10 +22,17 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.components.serviceOrNull
 import sap.commerce.toolset.Plugin
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.configurators.impl.*
 
 @Service
 class ConfiguratorFactory {
+
+    val startupConfigurators
+        get() = ProjectStartupConfigurator.EP.extensionList
+    val postImportConfigurators
+        get() = ProjectPostImportConfigurator.EP.extensionList
 
     fun getFacetConfigurators() = listOfNotNull(
         service<YFacetConfigurator>(),
@@ -58,7 +65,7 @@ class ConfiguratorFactory {
     fun getAntConfigurator() = Plugin.ANT_SUPPORT.service(AntConfigurator::class.java)
 
     fun getDataSourcesConfigurator() = Plugin.DATABASE.service(DataSourcesConfigurator::class.java)
-    fun getJRebelConfigurator() = Plugin.JREBEL.service(JRebelConfigurator::class.java)
+
     fun getXsdSchemaConfigurator() = Plugin.JAVAEE.service(XsdSchemaConfigurator::class.java)
     fun getKotlinCompilerConfigurator() = Plugin.KOTLIN.service(KotlinCompilerConfigurator::class.java)
 

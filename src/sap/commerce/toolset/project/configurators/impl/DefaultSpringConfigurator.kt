@@ -95,7 +95,7 @@ class DefaultSpringConfigurator : SpringConfigurator {
             .forEach { configureFacetDependencies(it, facetModels, it.getDirectDependencies()) }
     }
 
-    override fun resetSpringGeneralSettings(project: Project) {
+    override fun onStartup(project: Project) {
         with(SpringGeneralSettings.getInstance(project)) {
             isShowMultipleContextsPanel = false
             isShowProfilesPanel = false

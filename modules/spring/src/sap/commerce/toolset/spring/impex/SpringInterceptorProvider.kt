@@ -28,6 +28,7 @@ import sap.commerce.toolset.spring.psi.reference.SpringReference
 
 class SpringInterceptorProvider : InterceptorProvider {
 
+    // TODO: check Spring Plugin dependency
     override fun collect(project: Project, parentClassFqn: String): Collection<InterceptorProvider.Bean> {
         val interceptorClass = JavaPsiFacade.getInstance(project)
             .findClass(HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING, GlobalSearchScope.allScope(project))

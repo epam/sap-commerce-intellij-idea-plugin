@@ -16,10 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.configurators
+package sap.commerce.toolset.jrebel.configurator
 
 import com.intellij.facet.FacetType
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
@@ -34,6 +33,9 @@ import com.zeroturnaround.javarebel.idea.plugin.xml.RebelXML
 import org.apache.commons.io.IOUtils
 import org.zeroturnaround.jrebel.client.config.JRebelConfiguration
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
+import sap.commerce.toolset.project.descriptors.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptors.ModuleDescriptor
 import sap.commerce.toolset.project.descriptors.YSubModuleDescriptor
 import sap.commerce.toolset.project.descriptors.impl.YCustomRegularModuleDescriptor
@@ -44,19 +46,22 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
-@Service
-class JRebelConfigurator {
+class JRebelConfigurator : ProjectPostImportConfigurator, ProjectStartupConfigurator {
 
-    fun configureAfterImport(project: Project, moduleDescriptors: List<ModuleDescriptor>): List<() -> Unit> = moduleDescriptors
+    override fun postImport(
+        project: Project,
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptors: List<ModuleDescriptor>
+    ): List<() -> Unit> = moduleDescriptors
         .filter {
             it is YCustomRegularModuleDescriptor
                 || (it is YSubModuleDescriptor && it.owner is YCustomRegularModuleDescriptor)
         }
-        .mapNotNull { ModuleManager.getInstance(project).findModuleByName(it.ideaModuleName()) }
+        .mapNotNull { ModuleManager.Companion.getInstance(project).findModuleByName(it.ideaModuleName()) }
         .mapNotNull { configure(it) }
 
-    fun fixBackOfficeJRebelSupport(project: Project) {
-        val projectSettings = ProjectSettings.getInstance(project)
+    override fun onStartup(project: Project) {
+        val projectSettings = ProjectSettings.Companion.getInstance(project)
         val compilingXml = File(
             FileUtilRt.toSystemDependentName(
                 project.basePath + "/" + projectSettings.hybrisDirectory

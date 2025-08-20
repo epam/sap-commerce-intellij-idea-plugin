@@ -40,6 +40,7 @@
             <option value="$PROJECT_DIR$/modules/impex/exec" />
             <option value="$PROJECT_DIR$/modules/impex/monitoring" />
             <option value="$PROJECT_DIR$/modules/impex/ui" />
+            <option value="$PROJECT_DIR$/modules/jrebel/core" />
             <option value="$PROJECT_DIR$/modules/logging/core" />
             <option value="$PROJECT_DIR$/modules/logging/exec" />
             <option value="$PROJECT_DIR$/modules/logging/ui" />

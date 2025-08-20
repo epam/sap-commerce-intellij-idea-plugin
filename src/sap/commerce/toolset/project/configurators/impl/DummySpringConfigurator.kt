@@ -42,7 +42,7 @@ class DummySpringConfigurator : SpringConfigurator {
         modifiableModelsProvider: IdeModifiableModelsProvider
     ) = Unit
 
-    override fun resetSpringGeneralSettings(project: Project) = Unit
+    override fun onStartup(project: Project) = Unit
 
     companion object {
         fun getInstance(): DummySpringConfigurator = service()

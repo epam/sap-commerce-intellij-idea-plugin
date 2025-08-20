@@ -88,9 +88,9 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
 
         with(ConfiguratorFactory.getInstance()) {
             getSpringConfigurator()
-                .resetSpringGeneralSettings(project)
-            getJRebelConfigurator()
-                ?.fixBackOfficeJRebelSupport(project)
+                .onStartup(project)
+
+            startupConfigurators.forEach { it.onStartup(project) }
         }
     }
 
