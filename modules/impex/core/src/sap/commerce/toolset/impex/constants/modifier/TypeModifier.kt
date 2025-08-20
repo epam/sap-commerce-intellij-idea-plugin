@@ -21,7 +21,6 @@ package sap.commerce.toolset.impex.constants.modifier
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.codeInsight.completion.JavaClassCompletionService
 import sap.commerce.toolset.impex.codeInsight.lookup.ImpExLookupElementFactory
 import sap.commerce.toolset.impex.constants.InterceptorType
@@ -48,15 +47,11 @@ enum class TypeModifier(
             .toSet()
     },
     DISABLE_INTERCEPTOR_BEANS("disable.interceptor.beans") {
-        override fun getLookupElements(project: Project): Set<LookupElement> {
-            if (Plugin.SPRING.isDisabled()) return emptySet()
-
-            return InterceptorProvider.EP.extensionList
-                .map { it.collect(project, HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING) }
-                .flatten()
-                .map { ImpExLookupElementFactory.buildInterceptor(it) }
-                .toSet()
-        }
+        override fun getLookupElements(project: Project): Set<LookupElement> = InterceptorProvider.EP.extensionList
+            .map { it.collect(project, HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING) }
+            .flatten()
+            .map { ImpExLookupElementFactory.buildInterceptor(it) }
+            .toSet()
     },
     DISABLE_INTERCEPTOR_TYPES("disable.interceptor.types") {
         override fun getLookupElements(project: Project) = InterceptorType.entries

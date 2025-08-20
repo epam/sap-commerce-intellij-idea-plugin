@@ -22,14 +22,16 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.impex.constants.modifier.InterceptorProvider
 import sap.commerce.toolset.spring.SpringHelper
 import sap.commerce.toolset.spring.psi.reference.SpringReference
 
 class SpringInterceptorProvider : InterceptorProvider {
 
-    // TODO: check Spring Plugin dependency
     override fun collect(project: Project, parentClassFqn: String): Collection<InterceptorProvider.Bean> {
+        if (Plugin.SPRING.isDisabled()) return emptyList()
+
         val interceptorClass = JavaPsiFacade.getInstance(project)
             .findClass(HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING, GlobalSearchScope.allScope(project))
             ?: return emptySet()
