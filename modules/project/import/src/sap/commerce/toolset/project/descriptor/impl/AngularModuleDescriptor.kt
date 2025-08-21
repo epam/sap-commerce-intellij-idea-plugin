@@ -27,7 +27,7 @@ class AngularModuleDescriptor(
     rootProjectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ANGULAR
-) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
     override fun isPreselected() = true
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = moduleDescriptors.values

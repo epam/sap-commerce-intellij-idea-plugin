@@ -26,7 +26,7 @@ class EclipseModuleDescriptor(
     rootProjectDescriptor: HybrisProjectDescriptor,
     name: String,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ECLIPSE
-) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
     override fun isPreselected() = true
 }

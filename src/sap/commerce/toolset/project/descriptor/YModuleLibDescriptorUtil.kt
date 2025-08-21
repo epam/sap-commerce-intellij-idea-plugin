@@ -40,7 +40,7 @@ object YModuleLibDescriptorUtil {
         is YHmcSubModuleDescriptor -> getLibraryDescriptors(descriptor)
         is PlatformModuleDescriptor -> getLibraryDescriptors(descriptor)
         is ConfigModuleDescriptor -> getLibraryDescriptors(descriptor)
-        is RootModuleDescriptor -> emptyList()
+        is ExternalModuleDescriptor -> emptyList()
         else -> emptyList()
     }
 

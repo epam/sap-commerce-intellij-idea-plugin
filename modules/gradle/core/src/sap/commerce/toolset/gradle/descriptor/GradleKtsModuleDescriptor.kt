@@ -15,13 +15,37 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.descriptor.impl
 
+package sap.commerce.toolset.gradle.descriptor
+
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import java.io.File
 
-open class RootModuleDescriptor(
+class GradleKtsModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    name: String
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
+) : GradleModuleDescriptor(
+    moduleRootDirectory,
+    rootProjectDescriptor,
+    File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS)
+) {
+
+    class Provider : ModuleDescriptorProvider {
+
+        override fun isApplicable(moduleRootDirectory: File): Boolean {
+            if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) return false
+
+            return File(moduleRootDirectory, HybrisConstants.GRADLE_SETTINGS_KTS).isFile ||
+                File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS).isFile
+        }
+
+        override fun create(
+            moduleRootDirectory: File,
+            rootProjectDescriptor: HybrisProjectDescriptor
+        ) = GradleKtsModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
+
+    }
+
+}

@@ -28,9 +28,9 @@ enum class ModuleDescriptorType(val icon: Icon = HybrisIcons.Y.LOGO_BLUE) {
     NONE,
     OOTB(HybrisIcons.Extension.OOTB),
     PLATFORM(HybrisIcons.Extension.PLATFORM),
-    ECLIPSE,
-    MAVEN,
-    GRADLE,
-    CCV2(HybrisIcons.Extension.CLOUD),
+    ECLIPSE(HybrisIcons.Module.ECLIPSE),
+    MAVEN (HybrisIcons.Module.MAVEN),
+    GRADLE(HybrisIcons.Module.GRADLE),
+    CCV2(HybrisIcons.Module.CCV2),
     ANGULAR(HybrisIcons.Module.ANGULAR),
 }

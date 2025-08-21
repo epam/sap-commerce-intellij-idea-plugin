@@ -35,6 +35,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.isNotHybrisProject
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.facet.YFacet
 import sap.commerce.toolset.project.services.HybrisProjectService
@@ -125,9 +126,8 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
                 val yFacet = projectRootManager.fileIndex.getModuleForFile(virtualFile)
                     ?.let { YFacet.get(it) }
 
-                if (yFacet == null && (projectService.isGradleModule(file)
+                if (yFacet == null && (ModuleDescriptorProvider.EP.extensionList.any { it.isApplicable(file) }
                         || projectService.isEclipseModule(file)
-                        || projectService.isGradleKtsModule(file)
                         || projectService.isAngularModule(file)
                         || projectService.isMavenModule(file))
                 ) {

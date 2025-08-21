@@ -25,7 +25,9 @@ import com.intellij.ui.IdeBorderFactory
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
-import sap.commerce.toolset.project.descriptor.impl.*
+import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.CCv2ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import javax.swing.Icon
 
 class SelectOtherModulesToImportStep(context: WizardContext) : AbstractSelectModulesToImportStep(context) {
@@ -50,14 +52,8 @@ class SelectOtherModulesToImportStep(context: WizardContext) : AbstractSelectMod
     override fun getElementIcon(module: ModuleDescriptor): Icon? {
         if (isInConflict(module)) return HybrisIcons.Module.CONFLICT
 
-        return when (module) {
-            is MavenModuleDescriptor -> HybrisIcons.Module.MAVEN
-            is EclipseModuleDescriptor -> HybrisIcons.Module.ECLIPSE
-            is GradleModuleDescriptor -> HybrisIcons.Module.GRADLE
-            is AngularModuleDescriptor -> HybrisIcons.Module.ANGULAR
-            is CCv2ModuleDescriptor -> HybrisIcons.Module.CCV2
-            else -> null
-        }
+        return if (module is ExternalModuleDescriptor) module.descriptorType.icon
+        else null
     }
 
     override fun setList(otherElements: List<ModuleDescriptor>) {

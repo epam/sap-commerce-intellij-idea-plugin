@@ -19,6 +19,7 @@
 fun properties(key: String) = providers.gradleProperty(key)
 
 plugins {
+    id("java") // Java support
     id("org.jetbrains.intellij.platform.module")
     alias(libs.plugins.kotlin) // Kotlin support
 }

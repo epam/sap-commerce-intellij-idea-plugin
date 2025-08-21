@@ -30,6 +30,7 @@ import sap.commerce.toolset.extensioninfo.jaxb.ObjectFactory
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.impl.*
 import sap.commerce.toolset.project.services.HybrisProjectService
 import java.io.File
@@ -106,16 +107,6 @@ object ModuleDescriptorFactory {
 
             }
 
-            hybrisProjectService.isGradleModule(resolvedFile) -> {
-                LOG.info("Creating gradle module for $path")
-                GradleModuleDescriptor(resolvedFile, rootProjectDescriptor)
-            }
-
-            hybrisProjectService.isGradleKtsModule(resolvedFile) -> {
-                LOG.info("Creating gradle kts module for $path")
-                GradleKtsModuleDescriptor(resolvedFile, rootProjectDescriptor)
-            }
-
             hybrisProjectService.isMavenModule(resolvedFile) -> {
                 LOG.info("Creating maven module for $path")
                 MavenModuleDescriptor(resolvedFile, rootProjectDescriptor)
@@ -127,8 +118,16 @@ object ModuleDescriptorFactory {
             }
 
             else -> {
-                LOG.info("Creating eclipse module for $path")
-                EclipseModuleDescriptor(resolvedFile, rootProjectDescriptor, getEclipseModuleDescriptorName(resolvedFile))
+                // TODO: refactor this after final migration to descriptor provider
+                val descriptorProvider = ModuleDescriptorProvider.EP.extensionList
+                    .firstOrNull { it.isApplicable(resolvedFile) }
+
+                if (descriptorProvider != null) {
+                    descriptorProvider.create(resolvedFile, rootProjectDescriptor)
+                } else {
+                    LOG.info("Creating eclipse module for $path")
+                    EclipseModuleDescriptor(resolvedFile, rootProjectDescriptor, getEclipseModuleDescriptorName(resolvedFile))
+                }
             }
         }
     }
@@ -138,10 +137,10 @@ object ModuleDescriptorFactory {
         moduleRootDirectory: File,
         rootProjectDescriptor: HybrisProjectDescriptor,
         name: String
-    ): RootModuleDescriptor {
+    ): ExternalModuleDescriptor {
         validateModuleDirectory(moduleRootDirectory)
 
-        return RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
+        return ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
     }
 
     @Throws(HybrisConfigurationException::class)

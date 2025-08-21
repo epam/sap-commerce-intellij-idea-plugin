@@ -38,7 +38,7 @@ import sap.commerce.toolset.Notifications;
 import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
 import sap.commerce.toolset.project.configurators.PostImportConfigurator;
 import sap.commerce.toolset.project.descriptor.*;
-import sap.commerce.toolset.project.descriptor.impl.RootModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.project.tasks.ImportProjectProgressModalWindow;
 import sap.commerce.toolset.project.tasks.SearchModulesRootsTaskModalWindow;
@@ -272,7 +272,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         moduleList = this.getHybrisProjectDescriptor()
             .getFoundModules()
             .stream()
-            .filter(Predicate.not(RootModuleDescriptor.class::isInstance))
+            .filter(Predicate.not(ExternalModuleDescriptor.class::isInstance))
             .collect(Collectors.toList());
     }
 
@@ -281,7 +281,7 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         moduleList = this.getHybrisProjectDescriptor()
             .getFoundModules()
             .stream()
-            .filter(RootModuleDescriptor.class::isInstance)
+            .filter(ExternalModuleDescriptor.class::isInstance)
             .collect(Collectors.toList());
     }
 

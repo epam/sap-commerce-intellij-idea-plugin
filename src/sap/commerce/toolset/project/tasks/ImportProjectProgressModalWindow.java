@@ -64,11 +64,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
+import sap.commerce.toolset.gradle.descriptor.GradleModuleDescriptor;
 import sap.commerce.toolset.impex.ImpExLanguage;
 import sap.commerce.toolset.project.configurator.ConfiguratorCache;
-import sap.commerce.toolset.project.configurators.*;
+import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
+import sap.commerce.toolset.project.configurators.EclipseConfigurator;
+import sap.commerce.toolset.project.configurators.GroupModuleConfigurator;
+import sap.commerce.toolset.project.configurators.JavaCompilerConfigurator;
 import sap.commerce.toolset.project.descriptor.*;
-import sap.commerce.toolset.project.descriptor.impl.*;
+import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.CCv2ModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.EclipseModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.MavenModuleDescriptor;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.settings.ApplicationSettings;
 import sap.commerce.toolset.settings.WorkspaceSettings;
@@ -199,7 +206,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         configureJavaCompiler(indicator, cache);
         configureEclipseModules(indicator);
-        configureGradleModules(indicator);
         configureAngularModules(indicator, groupModuleConfigurator, appSettings);
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
@@ -303,28 +309,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             }
         } catch (Exception e) {
             LOG.error("Can not import Eclipse modules due to an error.", e);
-        }
-    }
-
-    private void configureGradleModules(final @NotNull ProgressIndicator indicator) {
-        final GradleConfigurator gradleConfigurator = configuratorFactory.getGradleConfigurator();
-
-        if (gradleConfigurator == null) return;
-
-        indicator.setText(message("hybris.project.import.gradle"));
-
-        try {
-            final List<GradleModuleDescriptor> gradleModules = hybrisProjectDescriptor
-                .getModulesChosenForImport()
-                .stream()
-                .filter(GradleModuleDescriptor.class::isInstance)
-                .map(GradleModuleDescriptor.class::cast)
-                .collect(Collectors.toList());
-            if (!gradleModules.isEmpty()) {
-                gradleConfigurator.configure(project, gradleModules);
-            }
-        } catch (Exception e) {
-            LOG.error("Can not import Gradle modules due to an error.", e);
         }
     }
 

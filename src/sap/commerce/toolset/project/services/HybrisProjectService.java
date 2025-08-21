@@ -46,8 +46,10 @@ public interface HybrisProjectService {
 
     boolean isEclipseModule(File rootProjectDirectory);
 
+    @Deprecated(since = "Review this usage")
     boolean isGradleModule(File file);
 
+    @Deprecated(since = "Review this usage")
     boolean isGradleKtsModule(File file);
 
     boolean hasVCS(File rootProjectDirectory);

@@ -689,13 +689,15 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
         }
 
         if (!acceptOnlyHybrisModules) {
+            // TODO: review this logic
             if (!rootProjectDirectory.getAbsolutePath().endsWith(HybrisConstants.PLATFORM_MODULE)
                 && !FileUtil.filesEqual(rootProjectDirectory, rootDirectory)
                 && (hybrisProjectService.isGradleModule(rootProjectDirectory) || hybrisProjectService.isGradleKtsModule(rootProjectDirectory))
                 && !hybrisProjectService.isCCv2Module(rootProjectDirectory)) {
+
                 LOG.info("Detected gradle module " + rootProjectDirectory.getAbsolutePath());
+
                 moduleRootMap.get(DIRECTORY_TYPE.NON_HYBRIS).add(rootProjectDirectory);
-//                return;
             }
 
             if (hybrisProjectService.isMavenModule(rootProjectDirectory)
@@ -704,7 +706,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             ) {
                 LOG.info("Detected maven module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(DIRECTORY_TYPE.NON_HYBRIS).add(rootProjectDirectory);
-//                return;
             }
 
             if (hybrisProjectService.isPlatformModule(rootProjectDirectory)) {
@@ -715,7 +716,6 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
             ) {
                 LOG.info("Detected eclipse module " + rootProjectDirectory.getAbsolutePath());
                 moduleRootMap.get(DIRECTORY_TYPE.NON_HYBRIS).add(rootProjectDirectory);
-//                return;
             }
 
             if (hybrisProjectService.isCCv2Module(rootProjectDirectory)) {

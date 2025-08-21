@@ -151,19 +151,8 @@ public class ProjectRefreshAction extends AnAction {
 
         final var configuratorFactory = ConfiguratorFactory.Companion.getInstance();
 
-        clearGradleProjectData(project, configuratorFactory, projectSettings);
-
         configuratorFactory.getRefreshConfigurators()
             .forEach(configurator -> configurator.beforeRefresh(project));
-    }
-
-    private static void clearGradleProjectData(final @NotNull Project project, final ConfiguratorFactory configuratorFactory, final ProjectSettings projectSettings) {
-        if (!projectSettings.getRemoveExternalModulesOnRefresh()) return;
-
-        final var gradleConfigurator = configuratorFactory.getGradleConfigurator();
-        if (gradleConfigurator == null) return;
-
-        gradleConfigurator.clearLinkedProjectSettings(project);
     }
 
     private AddModuleWizard getWizard(final Project project) throws ConfigurationException {

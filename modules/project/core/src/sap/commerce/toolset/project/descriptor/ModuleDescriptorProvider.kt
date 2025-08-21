@@ -15,17 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+package sap.commerce.toolset.project.descriptor
+
+import com.intellij.openapi.extensions.ExtensionPointName
 import java.io.File
 
-class GradleKtsModuleDescriptor(
-    moduleRootDirectory: File,
-    rootProjectDescriptor: HybrisProjectDescriptor,
-) : GradleModuleDescriptor(
-    moduleRootDirectory,
-    rootProjectDescriptor,
-    File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD_KTS)
-)
+interface ModuleDescriptorProvider {
+
+    fun isApplicable(moduleRootDirectory: File): Boolean
+    fun create(
+        moduleRootDirectory: File,
+        rootProjectDescriptor: HybrisProjectDescriptor,
+    ): ModuleDescriptor
+
+    companion object {
+        val EP = ExtensionPointName.create<ModuleDescriptorProvider>("sap.commerce.toolset.project.moduleDescriptorProvider")
+    }
+}

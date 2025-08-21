@@ -35,10 +35,16 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":project-core"))
+    implementation(project(":project-import"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+
+        bundledPlugins(
+            "com.intellij.gradle",
+        )
     }
 }

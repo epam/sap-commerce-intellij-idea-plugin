@@ -36,6 +36,9 @@
         <extensionPoint qualifiedName="sap.commerce.toolset.project.facetConfigurator"
                         interface="sap.commerce.toolset.project.configurator.ProjectFacetConfigurator"
                         dynamic="false"/>
+        <extensionPoint qualifiedName="sap.commerce.toolset.project.moduleDescriptorProvider"
+                        interface="sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider"
+                        dynamic="false"/>
     </extensionPoints>
 
     <extensions defaultExtensionNs="com.intellij">

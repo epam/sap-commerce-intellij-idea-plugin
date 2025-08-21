@@ -25,4 +25,4 @@ class MavenModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.MAVEN
-) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name)
+) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name)

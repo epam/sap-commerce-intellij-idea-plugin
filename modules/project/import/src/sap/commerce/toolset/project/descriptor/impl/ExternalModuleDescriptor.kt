@@ -17,14 +17,11 @@
  */
 package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
-open class GradleModuleDescriptor(
+open class ExternalModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
-    val gradleFile: File = File(moduleRootDirectory, HybrisConstants.GRADLE_BUILD),
-    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.GRADLE
-) : RootModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name)
+    name: String,
+) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)

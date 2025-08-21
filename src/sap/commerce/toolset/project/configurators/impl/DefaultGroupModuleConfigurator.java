@@ -209,7 +209,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
             return groups.get("groupCustom");
         }
 
-        if (moduleDescriptor instanceof RootModuleDescriptor) {
+        if (moduleDescriptor instanceof ExternalModuleDescriptor) {
             return groups.get("groupNonHybris");
         }
 
