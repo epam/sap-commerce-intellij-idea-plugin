@@ -45,8 +45,6 @@ class ConfiguratorFactory {
     fun getModuleSettingsConfigurator() = service<ModuleSettingsConfigurator>()
     fun getJavaCompilerConfigurator() = service<JavaCompilerConfigurator>()
 
-    fun getLoadedConfigurator() = service<LoadedConfigurator>()
-
     companion object {
         fun getInstance() = service<ConfiguratorFactory>()
     }

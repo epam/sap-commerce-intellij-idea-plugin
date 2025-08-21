@@ -194,8 +194,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
 
-        configuratorFactory.getLoadedConfigurator().configure(project, hybrisProjectDescriptor.getModulesChosenForImport());
-
         configureJavaCompiler(indicator, cache);
         configureAngularModules(indicator, groupModuleConfigurator, appSettings);
 
