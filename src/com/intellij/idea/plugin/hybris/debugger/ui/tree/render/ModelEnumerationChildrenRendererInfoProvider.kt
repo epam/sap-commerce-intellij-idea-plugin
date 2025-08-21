@@ -47,7 +47,11 @@ object ModelEnumerationChildrenRendererInfoProvider {
                 TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_TS_MISSING)
                 return@runReadAction
             }
-            val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project)) ?: return@runReadAction
+            val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project))
+            if (psiClass == null) {
+                TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_CLASS_NOT_FOUND)
+                return@runReadAction
+            }
 
             val infos = psiClass.allFields
                 .filterNot { it.name.startsWith("_") }
