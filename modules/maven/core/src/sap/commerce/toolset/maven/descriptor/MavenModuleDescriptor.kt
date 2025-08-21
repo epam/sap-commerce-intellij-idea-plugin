@@ -15,14 +15,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.descriptor.impl
 
+package sap.commerce.toolset.maven.descriptor
+
+import org.jetbrains.idea.maven.model.MavenConstants
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.io.File
 
 class MavenModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.MAVEN
-) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name)
+) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, moduleRootDirectory.name) {
+
+    class Provider : ModuleDescriptorProvider {
+        override fun isApplicable(moduleRootDirectory: File): Boolean {
+            if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX)) return false
+
+            return File(moduleRootDirectory, MavenConstants.POM_XML).isFile()
+        }
+
+        override fun create(
+            moduleRootDirectory: File,
+            rootProjectDescriptor: HybrisProjectDescriptor
+        ) = MavenModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
+    }
+}

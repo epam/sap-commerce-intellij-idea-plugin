@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators
+package sap.commerce.toolset.maven.configurator
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
@@ -24,15 +23,18 @@ import org.jetbrains.idea.maven.buildtool.MavenSyncSpec
 import org.jetbrains.idea.maven.model.MavenConstants
 import org.jetbrains.idea.maven.project.MavenProjectsManager
 import org.jetbrains.idea.maven.wizards.MavenProjectAsyncBuilder
+import sap.commerce.toolset.maven.descriptor.MavenModuleDescriptor
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.impl.MavenModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import java.io.File
 
-class MavenConfigurator {
-
-    fun configureAfterImport(
+class MavenConfigurator : ProjectPostImportConfigurator {
+    override fun postImport(
         project: Project,
-        hybrisProjectDescriptor: HybrisProjectDescriptor
+        refresh: Boolean,
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptors: List<ModuleDescriptor>
     ): List<() -> Unit> {
         val mavenModules = hybrisProjectDescriptor.modulesChosenForImport
             .filterIsInstance<MavenModuleDescriptor>()
@@ -59,5 +61,4 @@ class MavenConfigurator {
 
         return actions
     }
-
 }

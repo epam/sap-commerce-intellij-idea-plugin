@@ -43,18 +43,11 @@ class PostImportConfigurator(val project: Project) {
                 if (project.isDisposed) return@nonBlocking emptyList()
 
                 with(ConfiguratorFactory.getInstance()) {
-                    val newConfigurators = postImportConfigurators
+                    postImportConfigurators
                         .map {
                             it.postImport(project, refresh, hybrisProjectDescriptor, allModules)
                         }
                         .flatten()
-                    val oldConfigurators = listOfNotNull(
-                        getMavenConfigurator()
-                            ?.configureAfterImport(project, hybrisProjectDescriptor),
-                    )
-                        .flatten()
-
-                    oldConfigurators + newConfigurators
                 }
             }
             .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->

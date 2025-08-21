@@ -54,6 +54,7 @@
             <option value="$PROJECT_DIR$/modules/logging/core" />
             <option value="$PROJECT_DIR$/modules/logging/exec" />
             <option value="$PROJECT_DIR$/modules/logging/ui" />
+            <option value="$PROJECT_DIR$/modules/maven/core" />
             <option value="$PROJECT_DIR$/modules/meta/core" />
             <option value="$PROJECT_DIR$/modules/occ/core" />
             <option value="$PROJECT_DIR$/modules/occ/ui" />

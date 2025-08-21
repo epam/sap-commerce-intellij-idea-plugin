@@ -42,6 +42,7 @@ public interface HybrisProjectService {
 
     boolean isOutOfTheBoxModule(@NotNull File file, @NotNull HybrisProjectDescriptor rootProjectDescriptor);
 
+    @Deprecated(since = "Review this usage")
     boolean isMavenModule(File rootProjectDirectory);
 
     @Deprecated(since = "Review this usage")

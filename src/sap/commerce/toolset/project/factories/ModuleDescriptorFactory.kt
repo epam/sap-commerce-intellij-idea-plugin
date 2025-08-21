@@ -106,11 +106,6 @@ object ModuleDescriptorFactory {
 
             }
 
-            hybrisProjectService.isMavenModule(resolvedFile) -> {
-                LOG.info("Creating maven module for $path")
-                MavenModuleDescriptor(resolvedFile, rootProjectDescriptor)
-            }
-
             hybrisProjectService.isAngularModule(resolvedFile) -> {
                 LOG.info("Creating Angular module for $path")
                 AngularModuleDescriptor(resolvedFile, rootProjectDescriptor)
@@ -120,7 +115,7 @@ object ModuleDescriptorFactory {
                 ModuleDescriptorProvider.EP.extensionList
                     .firstOrNull { it.isApplicable(resolvedFile) }
                     ?.create(resolvedFile, rootProjectDescriptor)
-                    ?: throw HybrisConfigurationException("Could not find module descriptor provider for $path")
+                    ?: throw HybrisConfigurationException("Could not find suitable module descriptor provider for $path")
             }
         }
     }
