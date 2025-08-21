@@ -31,7 +31,7 @@ object TypeRendererUtils {
 
     fun notifyError(errorMessage: String) {
         application.invokeLater {
-            val mouseLoc = MouseInfo.getPointerInfo()?.location
+            val mouseLoc = MouseInfo.getPointerInfo()?.location ?: return@invokeLater
             val balloon = JBPopupFactory.getInstance()
                 .createHtmlTextBalloonBuilder(errorMessage, MessageType.ERROR, null)
                 .setFadeoutTime(5000)
