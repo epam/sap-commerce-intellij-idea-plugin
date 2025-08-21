@@ -30,6 +30,7 @@ import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 class JavaCompilerConfigurator : ProjectPostImportConfigurator {
+
     override fun postImport(
         project: Project,
         refresh: Boolean,

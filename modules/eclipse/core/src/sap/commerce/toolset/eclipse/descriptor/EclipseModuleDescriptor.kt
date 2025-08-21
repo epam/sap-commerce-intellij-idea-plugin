@@ -33,8 +33,6 @@ class EclipseModuleDescriptor(
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ECLIPSE
 ) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
-    override fun isPreselected() = true
-
     class Provider : ModuleDescriptorProvider {
         override fun isApplicable(moduleRootDirectory: File): Boolean {
             if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX))  return false
