@@ -64,9 +64,9 @@ import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.impex.ImpExLanguage;
+import sap.commerce.toolset.project.ModuleGroupingUtil;
 import sap.commerce.toolset.project.configurator.ConfiguratorCache;
 import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
-import sap.commerce.toolset.project.configurators.GroupModuleConfigurator;
 import sap.commerce.toolset.project.configurators.JavaCompilerConfigurator;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor;
@@ -129,13 +129,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .map(YModuleDescriptor.class::cast)
             .distinct()
             .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
-        final var allModuleDescriptors = allHybrisModules.stream()
+        final var allHybrisModuleDescriptors = allHybrisModules.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
         final var appSettings = ApplicationSettings.getInstance();
 
         final var projectSettings = ProjectSettings.getInstance(project);
 
-        final var groupModuleConfigurator = configuratorFactory.getGroupModuleConfigurator();
         final var modulesFilesDirectory = hybrisProjectDescriptor.getModulesFilesDirectory();
         if (modulesFilesDirectory != null && !modulesFilesDirectory.exists()) {
             modulesFilesDirectory.mkdirs();
@@ -159,10 +158,9 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             ? modifiableModelsProvider.getModifiableModuleModel()
             : model;
 
-        configuratorFactory.getImportConfigurators().forEach(configurator ->
-            configurator.preConfigure(indicator, hybrisProjectDescriptor, allModuleDescriptors)
+        configuratorFactory.getPreImportConfigurators().forEach(configurator ->
+            configurator.preConfigure(indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors)
         );
-        groupModuleConfigurator.process(indicator, allHybrisModules);
 
         int counter = 0;
 
@@ -187,7 +185,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         final var finalRootProjectModifiableModel = rootProjectModifiableModel;
         configuratorFactory.getImportConfigurators().forEach(configurator ->
-            configurator.configure(project, indicator, hybrisProjectDescriptor, allModuleDescriptors, finalRootProjectModifiableModel, modifiableModelsProvider, cache)
+            configurator.configure(project, indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors, finalRootProjectModifiableModel, modifiableModelsProvider, cache)
         );
 
         indicator.setText(message("hybris.project.import.saving.project"));
@@ -195,7 +193,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
 
         configureJavaCompiler(indicator, cache);
-        configureAngularModules(indicator, groupModuleConfigurator, appSettings);
+        configureAngularModules(indicator, appSettings);
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
@@ -279,7 +277,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     @Deprecated(since = "Migrate to EP")
     private void configureAngularModules(
         final @NotNull ProgressIndicator indicator,
-        final GroupModuleConfigurator groupModuleConfigurator,
         final ApplicationSettings appSettings
     ) {
         if (Plugin.ANGULAR.isDisabled()) return;
@@ -297,7 +294,17 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             .stream()
             .filter(AngularModuleDescriptor.class::isInstance)
             .map(AngularModuleDescriptor.class::cast)
-            .peek(module -> groupModuleConfigurator.process(module, module.getDirectDependencies()))
+            .peek(descriptor -> {
+                final var applicationSettings = ApplicationSettings.getInstance();
+                if (applicationSettings.getGroupModules()) {
+                    final var predefinedGroups = ModuleGroupingUtil.getPredefinedGroups(applicationSettings);
+                    final var groupNames = ModuleGroupingUtil.getGroupName(descriptor, descriptor.getDirectDependencies(), predefinedGroups);
+
+                    if (groupNames != null) {
+                        descriptor.setGroupNames(groupNames);
+                    }
+                }
+            })
             .collect(Collectors.toMap(Function.identity(), module -> rootProjectModifiableModel.newModule(
                 module.ideaModuleFile().getAbsolutePath(),
                 StdModuleTypes.JAVA.getId()

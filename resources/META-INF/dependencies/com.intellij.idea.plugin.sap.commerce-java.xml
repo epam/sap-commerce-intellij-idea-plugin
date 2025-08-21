@@ -40,9 +40,6 @@
 
         <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultContentRootConfigurator"/>
 
-        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.GroupModuleConfigurator"
-                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultGroupModuleConfigurator"/>
-
         <applicationService serviceInterface="sap.commerce.toolset.project.configurators.LibRootsConfigurator"
                             serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultLibRootsConfigurator"/>
 

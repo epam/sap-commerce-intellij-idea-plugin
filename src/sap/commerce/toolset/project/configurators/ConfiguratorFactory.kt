@@ -26,10 +26,12 @@ import sap.commerce.toolset.project.configurators.impl.DefaultContentRootConfigu
 @Service
 class ConfiguratorFactory {
 
-    val importConfigurators
-        get() = ProjectImportConfigurator.EP.extensionList
     val startupConfigurators
         get() = ProjectStartupConfigurator.EP.extensionList
+    val preImportConfigurators
+        get() = ProjectPreImportConfigurator.EP.extensionList
+    val importConfigurators
+        get() = ProjectImportConfigurator.EP.extensionList
     val postImportConfigurators
         get() = ProjectPostImportConfigurator.EP.extensionList
     val refreshConfigurators
@@ -40,7 +42,6 @@ class ConfiguratorFactory {
     fun getContentRootConfigurator() = service<DefaultContentRootConfigurator>()
     fun getCompilerOutputPathsConfigurator() = service<CompilerOutputPathsConfigurator>()
     fun getLibRootsConfigurator() = service<LibRootsConfigurator>()
-    fun getGroupModuleConfigurator() = service<GroupModuleConfigurator>()
     fun getJavadocSettingsConfigurator() = service<JavadocSettingsConfigurator>()
     fun getModuleSettingsConfigurator() = service<ModuleSettingsConfigurator>()
     fun getJavaCompilerConfigurator() = service<JavaCompilerConfigurator>()

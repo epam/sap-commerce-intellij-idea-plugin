@@ -28,12 +28,6 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 interface ProjectImportConfigurator {
 
-    fun preConfigure(
-        indicator: ProgressIndicator,
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        moduleDescriptors: Map<String, ModuleDescriptor>
-    ) = Unit
-
     fun configure(
         project: Project,
         indicator: ProgressIndicator,

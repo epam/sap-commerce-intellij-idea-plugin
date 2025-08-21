@@ -1210,7 +1210,7 @@ public class DefaultHybrisProjectDescriptor implements HybrisProjectDescriptor {
                         VfsUtil.virtualToIoFile(contentRoots[0]), this
                     ));
                 }
-            } catch (HybrisConfigurationException e) {
+            } catch (final HybrisConfigurationException e) {
                 LOG.error(e);
             }
         }

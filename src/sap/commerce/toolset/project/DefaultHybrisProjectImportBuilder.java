@@ -314,7 +314,9 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         final var hybrisProjectDescriptor = getHybrisProjectDescriptor();
 
         final var chosenForImport = new ArrayList<>(list);
-        final var alreadyOpenedModules = hybrisProjectDescriptor.getAlreadyOpenedModules();
+        final var alreadyOpenedModules = refresh
+            ? hybrisProjectDescriptor.getAlreadyOpenedModules()
+            : Collections.emptySet();
         chosenForImport.removeAll(alreadyOpenedModules);
 
         hybrisProjectDescriptor.setModulesChosenForImport(chosenForImport);

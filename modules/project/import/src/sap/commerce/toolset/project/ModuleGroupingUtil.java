@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,16 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.configurators.impl;
+package sap.commerce.toolset.project;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.progress.ProgressIndicator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
-import sap.commerce.toolset.project.configurators.GroupModuleConfigurator;
-import sap.commerce.toolset.project.descriptor.*;
+import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.*;
 import sap.commerce.toolset.project.utils.FileUtils;
 import sap.commerce.toolset.settings.ApplicationSettings;
@@ -35,60 +35,13 @@ import java.io.*;
 import java.util.*;
 
 import static sap.commerce.toolset.HybrisConstants.*;
-import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 import static sap.commerce.toolset.project.utils.FileUtils.toFile;
 
-public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
-    private static final Logger LOG = Logger.getInstance(DefaultGroupModuleConfigurator.class);
+public final class ModuleGroupingUtil {
 
-    @Override
-    public void process(
-        @NotNull final ProgressIndicator indicator,
-        @NotNull final Collection<? extends ModuleDescriptor> modulesChosenForImport
-    ) {
-        indicator.setText2(message("hybris.project.import.module.groups"));
-        final var applicationSettings = ApplicationSettings.getInstance();
-        if (!applicationSettings.getGroupModules()) {
-            return;
-        }
-        final var requiredYModuleDescriptorList = new HashSet<ModuleDescriptor>();
+    private static final Logger LOG = Logger.getInstance(ModuleGroupingUtil.class);
 
-        modulesChosenForImport.stream()
-            .filter(YModuleDescriptor.class::isInstance)
-            .map(YModuleDescriptor.class::cast)
-            .filter(ModuleDescriptor::isPreselected)
-            .forEach(it -> {
-                requiredYModuleDescriptorList.add(it);
-                requiredYModuleDescriptorList.addAll(it.getAllDependencies());
-            });
-
-        final var groups = getPredefinedGroups(applicationSettings);
-        modulesChosenForImport.forEach(it -> {
-            final @Nullable String[] groupNames = getGroupName(it, requiredYModuleDescriptorList, groups);
-            if (groupNames != null) {
-                it.setGroupNames(groupNames);
-            }
-        });
-
-        indicator.setText2("");
-    }
-
-    @Override
-    public void process(final ModuleDescriptor moduleDescriptor, final Collection<ModuleDescriptor> parents) {
-        final var applicationSettings = ApplicationSettings.getInstance();
-        if (!applicationSettings.getGroupModules()) {
-            return;
-        }
-
-        final var predefinedGroups = getPredefinedGroups(applicationSettings);
-        final var groupNames = getGroupName(moduleDescriptor, parents, predefinedGroups);
-
-        if (groupNames != null) {
-            moduleDescriptor.setGroupNames(groupNames);
-        }
-    }
-
-    private Map<String, String[]> getPredefinedGroups(final ApplicationSettings applicationSettings) {
+    public static Map<String, String[]> getPredefinedGroups(final ApplicationSettings applicationSettings) {
         // TODO, fix the map, it cannot have null values
         return Map.of(
             "groupCustom", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupCustom()),
@@ -102,7 +55,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
     @Nullable
-    private String[] getGroupName(@NotNull final ModuleDescriptor moduleDescriptor, final Collection<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
+    public static String[] getGroupName(@NotNull final ModuleDescriptor moduleDescriptor, final Collection<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
         if (!(moduleDescriptor instanceof ConfigModuleDescriptor)) {
             final String[] groupPathOverride = getLocalGroupPathOverride(moduleDescriptor);
             if (groupPathOverride != null) {
@@ -122,7 +75,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         return groupPath.clone();
     }
 
-    private String[] getGlobalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
+    private static String[] getGlobalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
         final ConfigModuleDescriptor configDescriptor = moduleDescriptor.getRootProjectDescriptor().getConfigHybrisModuleDescriptor();
         if (configDescriptor == null) {
             return null;
@@ -135,7 +88,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
     }
 
 
-    private String[] getLocalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
+    private static String[] getLocalGroupPathOverride(final ModuleDescriptor moduleDescriptor) {
         final File groupFile = new File(moduleDescriptor.getModuleRootDirectory(), HybrisConstants.IMPORT_OVERRIDE_FILENAME);
         final String[] pathOverride = getGroupPathOverride(groupFile, moduleDescriptor);
         if (groupFile.exists() && pathOverride == null) {
@@ -144,7 +97,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         return pathOverride;
     }
 
-    private void createCommentedProperties(final File groupFile, final String key, final String comments) {
+    private static void createCommentedProperties(final File groupFile, final String key, final String comments) {
         try (final OutputStream out = new FileOutputStream(groupFile)) {
             final Properties properties = new Properties();
             if (key != null) {
@@ -156,7 +109,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         }
     }
 
-    private String[] getGroupPathOverride(final File groupFile, final ModuleDescriptor moduleDescriptor) {
+    private static String[] getGroupPathOverride(final File groupFile, final ModuleDescriptor moduleDescriptor) {
         if (!groupFile.exists()) {
             return null;
         }
@@ -178,7 +131,7 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
         return ApplicationSettings.toIdeaGroup(rawGroupText);
     }
 
-    private String[] getGroupPath(@NotNull final ModuleDescriptor moduleDescriptor, final Collection<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
+    private static String[] getGroupPath(@NotNull final ModuleDescriptor moduleDescriptor, final Collection<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
         if (moduleDescriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor) {
             return getGroupPath(ySubModuleDescriptor.getOwner(), requiredYModuleDescriptorList, groups);
         }
@@ -271,5 +224,4 @@ public class DefaultGroupModuleConfigurator implements GroupModuleConfigurator {
 
         return groups.get("groupOtherHybris");
     }
-
 }
