@@ -70,6 +70,7 @@ import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
 import sap.commerce.toolset.project.configurators.JavaCompilerConfigurator;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.CCv2ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.settings.ApplicationSettings;
@@ -123,7 +124,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.preparation"));
 
         final var cache = new ConfiguratorCache();
-        final var allHybrisModules = getHybrisModuleDescriptors();
+        final var allHybrisModules = getModuleDescriptors();
         final var allYModules = allHybrisModules.stream()
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
@@ -259,9 +260,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     }
 
     // TODO: double check CCv2 modules handling
-    private List<ModuleDescriptor> getHybrisModuleDescriptors() {
+    private List<ModuleDescriptor> getModuleDescriptors() {
         return hybrisProjectDescriptor.getModulesChosenForImport().stream()
-            .filter(e -> !(e instanceof ExternalModuleDescriptor))
+            .filter(e ->
+                e instanceof CCv2ModuleDescriptor ||
+                !(e instanceof ExternalModuleDescriptor)
+            )
             .toList();
     }
 
