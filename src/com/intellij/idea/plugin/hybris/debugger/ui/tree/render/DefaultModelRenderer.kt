@@ -53,7 +53,7 @@ class DefaultModelRenderer : CompoundRendererProvider() {
     override fun getIsApplicableChecker(): Function<Type?, CompletableFuture<Boolean>> {
         return Function { t ->
             CompletableFuture.completedFuture(
-                 DebuggerUtils.instanceOf(t, className)
+                DebuggerUtils.instanceOf(t, className)
             )
         }
     }
@@ -74,13 +74,13 @@ class DefaultModelRenderer : CompoundRendererProvider() {
                         val meta = metaAccess.findMetaItemByName(typeCode)
 
                         if (meta == null) {
-                            TypeRendererUtils.notifyError("The item type $typeCode is not present in the *items.xml files.")
+                            TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_TS_MISSING)
                             return@runReadAction
                         }
 
                         val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project))
                         if (psiClass == null) {
-                            TypeRendererUtils.notifyError("The class for the item type $typeCode was not found. Rebuild the project and try again.")
+                            TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_CLASS_NOT_FOUND)
                             return@runReadAction
                         }
                     }

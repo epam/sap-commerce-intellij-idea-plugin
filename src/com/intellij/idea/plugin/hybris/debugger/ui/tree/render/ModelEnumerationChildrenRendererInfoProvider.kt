@@ -44,7 +44,7 @@ object ModelEnumerationChildrenRendererInfoProvider {
             val metaAccess = TSMetaModelAccess.getInstance(project)
             val meta = metaAccess.findMetaItemByName(typeCode)
             if (meta == null) {
-                TypeRendererUtils.notifyError("The item type $typeCode is not present in the *items.xml files.")
+                TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_TS_MISSING)
                 return@runReadAction
             }
             val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project)) ?: return@runReadAction

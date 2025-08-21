@@ -27,7 +27,12 @@ import java.awt.MouseInfo
 
 object TypeRendererUtils {
 
+    val ITEM_TYPE_TS_MISSING = { typeCode: String -> "The item type $typeCode is not present in the *items.xml files." }
+    val ITEM_TYPE_CLASS_NOT_FOUND = { typeCode: String -> "The class for the item type $typeCode was not found. Rebuild the project and try again." }
+
     fun toTypeCode(className: String) = className.substringAfterLast('.').removeSuffix("Model")
+
+    fun notifyError(typeCode: String, messageFunc: (String) -> String) = notifyError(messageFunc(typeCode))
 
     fun notifyError(errorMessage: String) {
         application.invokeLater {
