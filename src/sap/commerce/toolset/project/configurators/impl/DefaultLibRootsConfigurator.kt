@@ -39,7 +39,6 @@ import java.io.File
 class DefaultLibRootsConfigurator : LibRootsConfigurator {
 
     override fun configure(
-        progressIndicator: ProgressIndicator,
         allYModules: Map<String, YModuleDescriptor>,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,

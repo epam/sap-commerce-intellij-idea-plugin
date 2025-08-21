@@ -237,7 +237,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         modifiableRootModel.inheritSdk();
 
         configuratorFactory.getJavadocSettingsConfigurator().configure(modifiableRootModel, moduleDescriptor);
-        configuratorFactory.getLibRootsConfigurator().configure(indicator, allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
+        configuratorFactory.getLibRootsConfigurator().configure(allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
         configuratorFactory.getContentRootConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
         configuratorFactory.getCompilerOutputPathsConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor);
 

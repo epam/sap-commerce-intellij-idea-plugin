@@ -28,12 +28,11 @@ import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 interface ModuleImportConfigurator {
 
     fun configure(
-        progressIndicator: ProgressIndicator,
+        indicator: ProgressIndicator,
         allYModules: Map<String, YModuleDescriptor>,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider,
-        indicator: ProgressIndicator
+        modifiableModelsProvider: IdeModifiableModelsProvider
     )
 
     companion object {

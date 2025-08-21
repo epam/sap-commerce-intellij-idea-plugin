@@ -29,7 +29,6 @@ import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 interface LibRootsConfigurator {
 
     fun configure(
-        progressIndicator: ProgressIndicator,
         allYModules: Map<String, YModuleDescriptor>,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
