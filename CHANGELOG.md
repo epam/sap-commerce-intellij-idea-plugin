@@ -1,5 +1,8 @@
 ## [2025.2.3]
 
+### Fixes
+- Enhance JVM Parameters only with Standalone JDK Module Exports during Integrationtestse [1529](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1529)
+
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
 
