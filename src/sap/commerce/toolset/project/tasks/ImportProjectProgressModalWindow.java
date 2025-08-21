@@ -67,7 +67,6 @@ import sap.commerce.toolset.impex.ImpExLanguage;
 import sap.commerce.toolset.project.ModuleGroupingUtil;
 import sap.commerce.toolset.project.configurator.ConfiguratorCache;
 import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
-import sap.commerce.toolset.project.configurators.JavaCompilerConfigurator;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.CCv2ModuleDescriptor;
@@ -193,7 +192,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
 
-        configureJavaCompiler(indicator, cache);
         configureAngularModules(indicator, appSettings);
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
@@ -267,15 +265,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                 !(e instanceof ExternalModuleDescriptor)
             )
             .toList();
-    }
-
-    private void configureJavaCompiler(final @NotNull ProgressIndicator indicator, final ConfiguratorCache cache) {
-        final JavaCompilerConfigurator compilerConfigurator = configuratorFactory.getJavaCompilerConfigurator();
-
-        if (compilerConfigurator == null) return;
-
-        indicator.setText(message("hybris.project.import.compiler.java"));
-        compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
     }
 
     @Deprecated(since = "Migrate to EP")

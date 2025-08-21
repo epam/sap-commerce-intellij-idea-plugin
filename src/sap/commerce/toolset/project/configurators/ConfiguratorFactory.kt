@@ -44,7 +44,6 @@ class ConfiguratorFactory {
     fun getLibRootsConfigurator() = service<LibRootsConfigurator>()
     fun getJavadocSettingsConfigurator() = service<JavadocSettingsConfigurator>()
     fun getModuleSettingsConfigurator() = service<ModuleSettingsConfigurator>()
-    fun getJavaCompilerConfigurator() = service<JavaCompilerConfigurator>()
 
     companion object {
         fun getInstance() = service<ConfiguratorFactory>()
