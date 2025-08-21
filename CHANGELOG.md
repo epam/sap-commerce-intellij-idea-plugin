@@ -2,6 +2,7 @@
 
 ### `xDebugger` enhancements
 - Create type renderer: The item type is not present in the *items.xml files [#1531](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1531)
+- Create type renderer: The class for the item type was not found [#1532](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1532)
 
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)

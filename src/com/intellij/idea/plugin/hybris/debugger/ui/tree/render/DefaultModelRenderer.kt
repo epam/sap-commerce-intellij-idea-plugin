@@ -36,6 +36,7 @@ import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.application
 import com.sun.jdi.ObjectReference
 import com.sun.jdi.Type
@@ -74,6 +75,12 @@ class DefaultModelRenderer : CompoundRendererProvider() {
 
                         if (meta == null) {
                             TypeRendererUtils.notifyError("The item type $typeCode is not present in the *items.xml files.")
+                            return@runReadAction
+                        }
+
+                        val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project))
+                        if (psiClass == null) {
+                            TypeRendererUtils.notifyError("The class for the item type $typeCode was not found. Rebuild the project and try again.")
                             return@runReadAction
                         }
                     }
