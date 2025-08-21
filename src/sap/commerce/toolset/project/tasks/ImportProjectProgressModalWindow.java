@@ -328,14 +328,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
+    @Deprecated(since = "Migrate to EP")
     private void configureAngularModules(
         final @NotNull ProgressIndicator indicator,
         final GroupModuleConfigurator groupModuleConfigurator,
         final ApplicationSettings appSettings
     ) {
-        final var configurator = configuratorFactory.getAngularConfigurator();
-
-        if (configurator == null) return;
+        if (Plugin.ANGULAR.isDisabled()) return;
 
         indicator.setText(message("hybris.project.import.angular"));
 

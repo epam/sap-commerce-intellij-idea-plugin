@@ -35,10 +35,15 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":project-core"))
+    implementation(project(":project-import"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+        compatiblePlugins(
+            "AngularJS"                         // Angular              https://plugins.jetbrains.com/plugin/6971-angular
+        )
     }
 }

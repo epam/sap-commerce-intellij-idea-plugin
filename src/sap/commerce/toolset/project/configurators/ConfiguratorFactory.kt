@@ -49,7 +49,6 @@ class ConfiguratorFactory {
     fun getMavenConfigurator() = serviceOrNull<MavenConfigurator>()
     fun getEclipseConfigurator() = serviceOrNull<EclipseConfigurator>()
     fun getGradleConfigurator() = serviceOrNull<GradleConfigurator>()
-    fun getAngularConfigurator() = serviceOrNull<AngularConfigurator>()
     fun getLoadedConfigurator() = service<LoadedConfigurator>()
 
     companion object {

@@ -51,9 +51,6 @@ class PostImportConfigurator(val project: Project) {
                     val oldConfigurators = listOfNotNull(
                         getMavenConfigurator()
                             ?.configureAfterImport(project, hybrisProjectDescriptor),
-
-                        getAngularConfigurator()
-                            ?.configureAfterImport(project, allModules),
                     )
                         .flatten()
 

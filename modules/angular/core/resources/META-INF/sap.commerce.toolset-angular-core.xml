@@ -17,4 +17,7 @@
   -->
 <idea-plugin>
 
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.postImportConfigurator implementation="sap.commerce.toolset.angular.configurator.AngularConfigurator"/>
+    </extensions>
 </idea-plugin>
