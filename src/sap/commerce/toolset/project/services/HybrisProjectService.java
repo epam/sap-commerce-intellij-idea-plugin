@@ -28,6 +28,7 @@ public interface HybrisProjectService {
 
     boolean isConfigModule(@NotNull File file);
 
+    @Deprecated(since = "Review this usage")
     boolean isCCv2Module(@NotNull File file);
 
     boolean isAngularModule(@NotNull File file);

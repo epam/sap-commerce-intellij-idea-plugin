@@ -63,11 +63,6 @@ object ModuleDescriptorFactory {
                 ConfigModuleDescriptorImpl(resolvedFile, rootProjectDescriptor)
             }
 
-            hybrisProjectService.isCCv2Module(resolvedFile) -> {
-                LOG.info("Creating CCv2 module for $path")
-                CCv2ModuleDescriptor(resolvedFile, rootProjectDescriptor)
-            }
-
             hybrisProjectService.isPlatformModule(resolvedFile) -> {
                 LOG.info("Creating Platform module for $path")
                 PlatformModuleDescriptorImpl(resolvedFile, rootProjectDescriptor)

@@ -22,10 +22,9 @@ import com.intellij.openapi.roots.JavaModuleExternalPaths
 import com.intellij.openapi.roots.ModifiableRootModel
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.CCv2ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 
-internal object JavadocSettingsConfigurator {
+internal object JavadocSettingsConfiguratorEx {
 
     fun configure(modifiableRootModel: ModifiableRootModel, moduleDescriptor: ModuleDescriptor) {
         val javadocRefList = mutableListOf<String>()
@@ -33,7 +32,6 @@ internal object JavadocSettingsConfigurator {
 
         moduleDescriptor.rootProjectDescriptor.javadocUrl
             ?.takeUnless { moduleDescriptor is YCustomRegularModuleDescriptor }
-            ?.takeUnless { moduleDescriptor is CCv2ModuleDescriptor }
             ?.takeUnless { moduleDescriptor is ConfigModuleDescriptor }
             ?.let { javadocRefList.add(it) }
 

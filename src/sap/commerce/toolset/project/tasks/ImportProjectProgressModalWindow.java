@@ -62,13 +62,12 @@ import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.impex.ImpExLanguage;
+import sap.commerce.toolset.java.configurator.ex.ContentRootConfiguratorEx;
 import sap.commerce.toolset.project.ModuleGroupingUtil;
 import sap.commerce.toolset.project.configurator.ConfiguratorCache;
-import sap.commerce.toolset.project.configurator.ContentRootConfigurator;
 import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.CCv2ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.settings.ApplicationSettings;
@@ -121,13 +120,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         indicator.setText(message("hybris.project.import.preparation"));
 
         final var cache = new ConfiguratorCache();
-        final var allHybrisModules = getModuleDescriptors();
-        final var allYModules = allHybrisModules.stream()
+        final var moduleDescriptorsToImport = hybrisProjectDescriptor.getModulesChosenForImport();
+        final var allYModules = moduleDescriptorsToImport.stream()
             .filter(YModuleDescriptor.class::isInstance)
             .map(YModuleDescriptor.class::cast)
             .distinct()
             .collect(Collectors.toMap(YModuleDescriptor::getName, Function.identity()));
-        final var allHybrisModuleDescriptors = allHybrisModules.stream()
+        final var allHybrisModuleDescriptors = moduleDescriptorsToImport.stream()
             .collect(Collectors.toMap(ModuleDescriptor::getName, Function.identity()));
         final var appSettings = ApplicationSettings.getInstance();
 
@@ -164,10 +163,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         final var application = ApplicationManager.getApplication();
 
-        for (final var moduleDescriptor : allHybrisModules) {
+        for (final var moduleDescriptor : moduleDescriptorsToImport) {
             final var modifiableRootModel = rootProjectModifiableModel;
 
-            final var moduleO = configuratorFactory.getModuleImportConfigurators().stream()
+            final var moduleOpt = configuratorFactory.getModuleImportConfigurators().stream()
                 .filter(configurator -> configurator.isApplicable(moduleDescriptor))
                 .findFirst()
                 .map(configurator -> {
@@ -178,11 +177,11 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
                     }
                 );
 
-            if (moduleO.isPresent()) {
-                modules.add(moduleO.get());
+            if (moduleOpt.isPresent()) {
+                modules.add(moduleOpt.get());
                 counter++;
 
-                // TODO: rewrite to own commits
+                // TODO: rewrite to own coroutine commits
                 if (counter >= COMMITTED_CHUNK_SIZE) {
                     counter = 0;
                     application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
@@ -237,15 +236,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         );
     }
 
-    // TODO: double check CCv2 modules handling
-    private List<ModuleDescriptor> getModuleDescriptors() {
-        return hybrisProjectDescriptor.getModulesChosenForImport().stream()
-            .filter(e ->
-                e instanceof CCv2ModuleDescriptor || !(e instanceof ExternalModuleDescriptor)
-            )
-            .toList();
-    }
-
     @Deprecated(since = "Migrate to EP")
     private void configureAngularModules(
         final @NotNull ProgressIndicator indicator
@@ -283,7 +273,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         modules.forEach((descriptor, module) -> {
             final var modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
 
-            ContentRootConfigurator.configure(indicator, modifiableRootModel, descriptor);
+            ContentRootConfiguratorEx.configure(indicator, modifiableRootModel, descriptor);
             configureModuleFacet(descriptor, module, modifiableRootModel, modifiableModelsProvider);
         });
 

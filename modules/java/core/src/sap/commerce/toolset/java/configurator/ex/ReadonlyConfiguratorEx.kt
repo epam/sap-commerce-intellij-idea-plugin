@@ -21,7 +21,7 @@ package sap.commerce.toolset.java.configurator.ex
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
-internal object ReadonlyConfigurator {
+internal object ReadonlyConfiguratorEx {
 
     fun configure(moduleDescriptor: ModuleDescriptor) {
         val descriptorType = moduleDescriptor.descriptorType

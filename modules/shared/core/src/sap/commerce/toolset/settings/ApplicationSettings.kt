@@ -174,3 +174,10 @@ class ApplicationSettings : SerializablePersistentStateComponent<ApplicationSett
         }
     }
 }
+
+fun String.toIdeaGroup(): Array<String>? {
+    if (this.trim { it <= ' ' }.isEmpty()) {
+        return null
+    }
+    return StringUtils.split(this, " ,.;>/\\")
+}

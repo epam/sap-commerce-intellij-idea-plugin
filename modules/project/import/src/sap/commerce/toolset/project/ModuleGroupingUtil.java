@@ -25,9 +25,9 @@ import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.*;
+import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor;
 import sap.commerce.toolset.project.utils.FileUtils;
 import sap.commerce.toolset.settings.ApplicationSettings;
 
@@ -45,12 +45,10 @@ public final class ModuleGroupingUtil {
         // TODO, fix the map, it cannot have null values
         return Map.of(
             "groupCustom", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupCustom()),
-            "groupNonHybris", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupNonHybris()),
             "groupOtherCustom", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupOtherCustom()),
             "groupHybris", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupHybris()),
             "groupOtherHybris", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupOtherHybris()),
-            "groupPlatform", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupPlatform()),
-            "groupCCv2", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupCCv2())
+            "groupPlatform", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupPlatform())
         );
     }
 
@@ -131,13 +129,16 @@ public final class ModuleGroupingUtil {
         return ApplicationSettings.toIdeaGroup(rawGroupText);
     }
 
-    private static String[] getGroupPath(@NotNull final ModuleDescriptor moduleDescriptor, final Collection<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
+    private static String[] getGroupPath(
+        @NotNull final ModuleDescriptor moduleDescriptor,
+        final Collection<ModuleDescriptor> requiredYModuleDescriptorList,
+        final Map<String, String[]> groups
+    ) {
+        final var groupName = moduleDescriptor.groupName();
+        if (groupName != null) return groupName;
+
         if (moduleDescriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor) {
             return getGroupPath(ySubModuleDescriptor.getOwner(), requiredYModuleDescriptorList, groups);
-        }
-
-        if (moduleDescriptor instanceof CCv2ModuleDescriptor) {
-            return groups.get("groupCCv2");
         }
 
         if (moduleDescriptor instanceof AngularModuleDescriptor && requiredYModuleDescriptorList.size() == 1) {
@@ -148,22 +149,6 @@ public final class ModuleGroupingUtil {
             completeGroup[completeGroup.length - 1] = parent.getName();
 
             return completeGroup;
-        }
-
-        if (moduleDescriptor instanceof PlatformModuleDescriptor) {
-            return groups.get("groupPlatform");
-        }
-
-        if (moduleDescriptor instanceof YPlatformExtModuleDescriptor) {
-            return groups.get("groupPlatform");
-        }
-
-        if (moduleDescriptor instanceof ConfigModuleDescriptor) {
-            return groups.get("groupCustom");
-        }
-
-        if (moduleDescriptor instanceof ExternalModuleDescriptor) {
-            return groups.get("groupNonHybris");
         }
 
         if (moduleDescriptor instanceof YCustomRegularModuleDescriptor) {

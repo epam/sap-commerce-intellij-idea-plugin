@@ -18,10 +18,15 @@
 package sap.commerce.toolset.project.descriptor.impl
 
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.settings.toIdeaGroup
 import java.io.File
 
 open class ExternalModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
     name: String,
-) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name)
+) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+
+    override fun groupName() = ApplicationSettings.getInstance().groupNonHybris.toIdeaGroup()
+}

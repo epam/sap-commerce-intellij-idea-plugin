@@ -23,10 +23,10 @@ import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.ui.IdeBorderFactory
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.ccv2.descriptor.CCv2ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.CCv2ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import javax.swing.Icon
 

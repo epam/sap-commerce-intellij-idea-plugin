@@ -40,7 +40,7 @@ import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
-internal object LibRootsConfigurator {
+internal object LibRootsConfiguratorEx {
 
     fun configure(
         allYModules: Map<String, YModuleDescriptor>,

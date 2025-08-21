@@ -15,13 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.descriptor.impl
 
+package sap.commerce.toolset.ccv2.descriptor
+
+import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
+import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.settings.toIdeaGroup
 import java.io.File
 
-@Deprecated("move to own module!")
 class CCv2ModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
@@ -30,4 +35,22 @@ class CCv2ModuleDescriptor(
 ) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
     override fun isPreselected() = true
+    override fun groupName() = ApplicationSettings.getInstance().groupCCv2.toIdeaGroup()
+
+    class Provider : ModuleDescriptorProvider {
+        override fun isApplicable(moduleRootDirectory: File): Boolean {
+            val absolutePath = moduleRootDirectory.absolutePath
+
+            return (absolutePath.contains(CCv2Constants.CORE_CUSTOMIZE_NAME)
+                || absolutePath.contains(CCv2Constants.DATAHUB_NAME)
+                || absolutePath.contains(CCv2Constants.JS_STOREFRONT_NAME)
+                )
+                && File(moduleRootDirectory, CCv2Constants.MANIFEST_NAME).isFile()
+        }
+
+        override fun create(
+            moduleRootDirectory: File,
+            rootProjectDescriptor: HybrisProjectDescriptor
+        ) = CCv2ModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
+    }
 }

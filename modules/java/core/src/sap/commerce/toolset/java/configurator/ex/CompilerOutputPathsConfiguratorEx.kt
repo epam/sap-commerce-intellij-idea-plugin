@@ -27,7 +27,7 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
-internal object CompilerOutputPathsConfigurator {
+internal object CompilerOutputPathsConfiguratorEx {
 
     fun configure(
         indicator: ProgressIndicator,

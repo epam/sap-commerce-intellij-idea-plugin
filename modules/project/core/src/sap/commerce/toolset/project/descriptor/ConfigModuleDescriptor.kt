@@ -18,7 +18,12 @@
 
 package sap.commerce.toolset.project.descriptor
 
+import sap.commerce.toolset.settings.ApplicationSettings
+import sap.commerce.toolset.settings.toIdeaGroup
+
 interface ConfigModuleDescriptor : ModuleDescriptor {
-    fun setPreselected(preselected: Boolean)
     var isMainConfig: Boolean
+
+    fun setPreselected(preselected: Boolean)
+    override fun groupName() = ApplicationSettings.getInstance().groupCustom.toIdeaGroup()
 }

@@ -15,26 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package sap.commerce.toolset.java.configurator
+package sap.commerce.toolset.ccv2.configurator
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.module.StdModuleTypes
 import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil
-import com.intellij.openapi.roots.impl.storage.ClasspathStorage
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.platform.workspace.jps.entities.ModuleTypeId
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.ccv2.descriptor.CCv2ModuleDescriptor
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.java.configurator.ex.*
 import sap.commerce.toolset.project.configurator.ModuleImportConfigurator
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
-import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 
-class JavaModuleImportConfigurator : ModuleImportConfigurator {
-
-    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor !is ExternalModuleDescriptor
+class CCv2ModuleImporter : ModuleImportConfigurator {
+    override fun isApplicable(moduleDescriptor: ModuleDescriptor) = moduleDescriptor is CCv2ModuleDescriptor
 
     override fun configure(
         indicator: ProgressIndicator,
@@ -48,24 +45,11 @@ class JavaModuleImportConfigurator : ModuleImportConfigurator {
 
         val javaModule = rootProjectModifiableModel.newModule(
             moduleDescriptor.ideaModuleFile().absolutePath,
-            StdModuleTypes.JAVA.id
+            ModuleTypeId("CCv2").name
         )
-
-        ReadonlyConfiguratorEx.configure(moduleDescriptor)
-
-        val modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule);
-
-        indicator.text2 = i18n("hybris.project.import.module.sdk");
-        ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
-
-        modifiableRootModel.inheritSdk();
-
-        JavadocSettingsConfiguratorEx.configure(modifiableRootModel, moduleDescriptor)
-        LibRootsConfiguratorEx.configure(allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
-        ContentRootConfiguratorEx.configure(indicator, modifiableRootModel, moduleDescriptor);
-        CompilerOutputPathsConfiguratorEx.configure(indicator, modifiableRootModel, moduleDescriptor);
-
-        indicator.text2 = i18n("hybris.project.import.module.facet");
+        modifiableModelsProvider.getModifiableRootModel(javaModule)
+            .addContentEntry(VfsUtil.pathToUrl(moduleDescriptor.moduleRootDirectory.absolutePath))
+            .addExcludePattern(HybrisConstants.HYBRIS_DIRECTORY)
 
         return javaModule
     }

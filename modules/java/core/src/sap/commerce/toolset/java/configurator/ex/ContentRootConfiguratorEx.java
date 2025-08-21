@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.configurator;
+package sap.commerce.toolset.java.configurator.ex;
 
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.ContentEntry;
@@ -37,7 +37,10 @@ import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.*;
+import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor;
 import sap.commerce.toolset.settings.ApplicationSettings;
 
 import java.io.File;
@@ -48,7 +51,7 @@ import java.util.stream.Collectors;
 import static sap.commerce.toolset.HybrisConstants.*;
 import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
-public final class ContentRootConfigurator {
+public final class ContentRootConfiguratorEx {
 
     // module name -> relative paths
     private static final Map<String, List<String>> ROOTS_TO_IGNORE = new HashMap<>();
@@ -57,7 +60,7 @@ public final class ContentRootConfigurator {
         ROOTS_TO_IGNORE.put("acceleratorstorefrontcommons", Collections.singletonList("commonweb/testsrc"));
     }
 
-    private ContentRootConfigurator() {
+    private ContentRootConfiguratorEx() {
     }
 
     public static void configure(
@@ -78,9 +81,6 @@ public final class ContentRootConfigurator {
 
         configureCommonRoots(moduleDescriptor, contentEntry, dirsToIgnore, appSettings);
 
-        if (moduleDescriptor instanceof final CCv2ModuleDescriptor yCCv2ModuleDescriptor) {
-            contentEntry.addExcludePattern(HybrisConstants.HYBRIS_DIRECTORY);
-        }
         if (moduleDescriptor instanceof final YWebSubModuleDescriptor ySubModuleDescriptor) {
             configureWebRoots(ySubModuleDescriptor, contentEntry, appSettings);
         }
