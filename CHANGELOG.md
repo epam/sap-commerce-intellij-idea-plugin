@@ -1,7 +1,7 @@
 ## [2025.2.3]
 
 ### `xDebugger` enhancements
-- Create type renderer: Show an error message when an item type is not available [#1531](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1531)
+- Create type renderer: The item type is not present in the *items.xml files [#1531](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1531)
 
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)
