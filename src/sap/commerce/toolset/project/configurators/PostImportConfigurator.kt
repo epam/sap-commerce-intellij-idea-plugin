@@ -49,9 +49,6 @@ class PostImportConfigurator(val project: Project) {
                         }
                         .flatten()
                     val oldConfigurators = listOfNotNull(
-                        getDataSourcesConfigurator()
-                            ?.configureAfterImport(project),
-
                         getMavenConfigurator()
                             ?.configureAfterImport(project, hybrisProjectDescriptor),
 

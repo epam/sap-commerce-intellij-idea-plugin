@@ -130,4 +130,6 @@
 
     <depends optional="true" config-file="sap.commerce.toolset-javaee-core.xml">com.intellij.javaee</depends>
     <depends optional="true" config-file="sap.commerce.toolset-javaee-web.xml">com.intellij.javaee.web</depends>
+
+    <depends optional="true" config-file="sap.commerce.toolset-database.xml">com.intellij.database</depends>
 </idea-plugin>

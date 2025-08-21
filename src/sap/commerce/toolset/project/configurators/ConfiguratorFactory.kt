@@ -21,7 +21,6 @@ package sap.commerce.toolset.project.configurators
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.components.serviceOrNull
-import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.project.configurator.*
 import sap.commerce.toolset.project.configurators.impl.DefaultContentRootConfigurator
 
@@ -52,8 +51,6 @@ class ConfiguratorFactory {
     fun getGradleConfigurator() = serviceOrNull<GradleConfigurator>()
     fun getAngularConfigurator() = serviceOrNull<AngularConfigurator>()
     fun getLoadedConfigurator() = service<LoadedConfigurator>()
-
-    fun getDataSourcesConfigurator() = Plugin.DATABASE.service(DataSourcesConfigurator::class.java)
 
     companion object {
         fun getInstance() = service<ConfiguratorFactory>()

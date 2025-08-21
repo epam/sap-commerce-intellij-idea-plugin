@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package sap.commerce.toolset.project.configurators
+package sap.commerce.toolset.database.configurator
 
 import com.intellij.database.access.DatabaseCredentials
 import com.intellij.database.autoconfig.DataSourceConfigUtil
@@ -28,7 +27,6 @@ import com.intellij.database.dataSource.LocalDataSourceManager
 import com.intellij.database.model.DasDataSource
 import com.intellij.database.util.DataSourceUtil
 import com.intellij.database.util.DbImplUtil
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderRootType
@@ -38,11 +36,18 @@ import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.util.ui.classpath.SingleRootClasspathElement
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.PropertyService
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
+import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
-@Service
-class DataSourcesConfigurator {
+class DataSourceConfigurator : ProjectPostImportConfigurator {
 
-    fun configureAfterImport(project: Project): List<() -> Unit> {
+    override fun postImport(
+        project: Project,
+        refresh: Boolean,
+        hybrisProjectDescriptor: HybrisProjectDescriptor,
+        moduleDescriptors: List<ModuleDescriptor>
+    ): List<() -> Unit> {
         val projectProperties = PropertyService.getInstance(project).findAllProperties()
         val dataSources = mutableListOf<LocalDataSource>()
         val dataSourceRegistry = DataSourceRegistry(project)
@@ -86,6 +91,7 @@ class DataSourcesConfigurator {
         }
     }
 
+
     private fun loadDatabaseDriver(project: Project, dataSource: LocalDataSource) {
         if (DbImplUtil.hasDriverFiles(dataSource)) return
 
@@ -112,5 +118,4 @@ class DataSourcesConfigurator {
         dataSource.resolveDriver()
         dataSource.ensureDriverConfigured()
     }
-
 }
