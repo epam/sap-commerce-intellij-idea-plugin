@@ -22,7 +22,7 @@ import com.intellij.debugger.engine.DebuggerUtils
 import com.intellij.debugger.settings.NodeRendererSettings
 import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer
 import com.intellij.debugger.ui.tree.render.EnumerationChildrenRenderer.ChildInfo
-import com.intellij.idea.plugin.hybris.common.HybrisConstants
+import com.intellij.idea.plugin.hybris.debugger.TypeRendererUtils
 import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSGlobalMetaItem
 import com.intellij.idea.plugin.hybris.system.type.meta.model.TSMetaRelation
@@ -40,12 +40,14 @@ object ModelEnumerationChildrenRendererInfoProvider {
     ) {
         application.runReadAction {
             val debuggerUtils = DebuggerUtils.getInstance()
-            val typeCode = className
-                .substringAfterLast(".")
-                .substringBeforeLast(HybrisConstants.MODEL_SUFFIX)
+            val typeCode = TypeRendererUtils.toTypeCode(className)
             val metaAccess = TSMetaModelAccess.getInstance(project)
-            val meta = metaAccess.findMetaItemByName(typeCode) ?: return@runReadAction
-            val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project)) ?: return@runReadAction
+            val meta = metaAccess.findMetaItemByName(typeCode)
+            if (meta == null) {
+                TypeRendererUtils.notifyError("The item type $typeCode is not present in the *items.xml files.")
+                return@runReadAction
+            }
+            val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project))
 
             val infos = psiClass.allFields
                 .filterNot { it.name.startsWith("_") }
