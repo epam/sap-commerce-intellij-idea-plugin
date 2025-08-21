@@ -32,9 +32,9 @@ class PreLoadSystemsStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isNotHybrisProject) return
 
-        refreshSystem(project) { TSMetaModelStateService.getInstance(project).init() }
-        refreshSystem(project) { BSMetaModelStateService.getInstance(project).init() }
-        refreshSystem(project) { CngMetaModelStateService.getInstance(project).init() }
+        TSMetaModelStateService.getInstance(project).init()
+        BSMetaModelStateService.getInstance(project).init()
+        CngMetaModelStateService.getInstance(project).init()
 
         SimpleSpringService.getService(project)
             ?.let { service -> refreshSystem(project) { service.initCache() } }
