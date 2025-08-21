@@ -47,7 +47,7 @@ object ModelEnumerationChildrenRendererInfoProvider {
                 TypeRendererUtils.notifyError("The item type $typeCode is not present in the *items.xml files.")
                 return@runReadAction
             }
-            val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project))
+            val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project)) ?: return@runReadAction
 
             val infos = psiClass.allFields
                 .filterNot { it.name.startsWith("_") }
