@@ -1,6 +1,6 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2019-2024 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -30,10 +30,14 @@ import com.intellij.debugger.ui.tree.render.ValueIconRenderer
 import com.intellij.ide.IdeBundle
 import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.debugger.TypeRendererUtils
 import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.util.application
 import com.sun.jdi.ObjectReference
 import com.sun.jdi.Type
 import com.sun.jdi.Value
@@ -49,7 +53,7 @@ class DefaultModelRenderer : CompoundRendererProvider() {
     override fun getIsApplicableChecker(): Function<Type?, CompletableFuture<Boolean>> {
         return Function { t ->
             CompletableFuture.completedFuture(
-                 DebuggerUtils.instanceOf(t, className)
+                DebuggerUtils.instanceOf(t, className)
             )
         }
     }
@@ -63,6 +67,24 @@ class DefaultModelRenderer : CompoundRendererProvider() {
                     val value = valueDescriptor.value
                     val project = valueDescriptor.project
                     val className = value.type().name()
+
+                    application.runReadAction {
+                        val typeCode = TypeRendererUtils.toTypeCode(className)
+                        val metaAccess = TSMetaModelAccess.getInstance(project)
+                        val meta = metaAccess.findMetaItemByName(typeCode)
+
+                        if (meta == null) {
+                            TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_TS_MISSING)
+                            return@runReadAction
+                        }
+
+                        val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project))
+                        if (psiClass == null) {
+                            TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_CLASS_NOT_FOUND)
+                            return@runReadAction
+                        }
+                    }
+
                     val rendererName = ModelRenderer.createRendererName(className)
 
                     if (DumbService.isDumb(project)) {
