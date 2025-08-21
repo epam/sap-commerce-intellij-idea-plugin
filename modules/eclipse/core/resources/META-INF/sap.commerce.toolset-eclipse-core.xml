@@ -17,4 +17,9 @@
   -->
 <idea-plugin>
 
+    <extensions defaultExtensionNs="sap.commerce.toolset">
+        <project.importConfigurator implementation="sap.commerce.toolset.eclipse.configurator.EclipseConfigurator"/>
+
+        <project.moduleDescriptorProvider implementation="sap.commerce.toolset.eclipse.descriptor.EclipseModuleDescriptor$Provider"/>
+    </extensions>
 </idea-plugin>

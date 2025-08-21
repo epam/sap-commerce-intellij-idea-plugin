@@ -127,7 +127,6 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
                     ?.let { YFacet.get(it) }
 
                 if (yFacet == null && (ModuleDescriptorProvider.EP.extensionList.any { it.isApplicable(file) }
-                        || projectService.isEclipseModule(file)
                         || projectService.isAngularModule(file)
                         || projectService.isMavenModule(file))
                 ) {

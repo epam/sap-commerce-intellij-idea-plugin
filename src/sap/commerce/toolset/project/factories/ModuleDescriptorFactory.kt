@@ -22,7 +22,6 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.application
 import jakarta.xml.bind.JAXBContext
 import jakarta.xml.bind.JAXBException
-import org.jetbrains.idea.eclipse.EclipseProjectFinder
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.exceptions.HybrisConfigurationException
 import sap.commerce.toolset.extensioninfo.jaxb.ExtensionInfo
@@ -118,16 +117,10 @@ object ModuleDescriptorFactory {
             }
 
             else -> {
-                // TODO: refactor this after final migration to descriptor provider
-                val descriptorProvider = ModuleDescriptorProvider.EP.extensionList
+                ModuleDescriptorProvider.EP.extensionList
                     .firstOrNull { it.isApplicable(resolvedFile) }
-
-                if (descriptorProvider != null) {
-                    descriptorProvider.create(resolvedFile, rootProjectDescriptor)
-                } else {
-                    LOG.info("Creating eclipse module for $path")
-                    EclipseModuleDescriptor(resolvedFile, rootProjectDescriptor, getEclipseModuleDescriptorName(resolvedFile))
-                }
+                    ?.create(resolvedFile, rootProjectDescriptor)
+                    ?: throw HybrisConfigurationException("Could not find module descriptor provider for $path")
             }
         }
     }
@@ -162,11 +155,6 @@ object ModuleDescriptorFactory {
             throw HybrisConfigurationException("Can not find module directory using path: $resolvedFile")
         }
     }
-
-    private fun getEclipseModuleDescriptorName(moduleRootDirectory: File) = EclipseProjectFinder.findProjectName(moduleRootDirectory.absolutePath)
-        ?.trim { it <= ' ' }
-        ?.takeIf { it.isNotBlank() }
-        ?: moduleRootDirectory.name
 
     @Throws(HybrisConfigurationException::class)
     private fun getExtensionInfo(moduleRootDirectory: File): ExtensionInfo {

@@ -44,6 +44,7 @@ public interface HybrisProjectService {
 
     boolean isMavenModule(File rootProjectDirectory);
 
+    @Deprecated(since = "Review this usage")
     boolean isEclipseModule(File rootProjectDirectory);
 
     @Deprecated(since = "Review this usage")

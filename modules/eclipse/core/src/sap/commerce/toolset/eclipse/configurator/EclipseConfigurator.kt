@@ -15,29 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.gradle.configurator
 
-import com.intellij.ide.util.PropertiesComponent
-import com.intellij.openapi.diagnostic.thisLogger
+package sap.commerce.toolset.eclipse.configurator
+
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.ModifiableModuleModel
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
-import com.intellij.platform.backend.observation.launchTracked
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import org.jetbrains.plugins.gradle.service.project.open.linkAndSyncGradleProject
-import org.jetbrains.plugins.gradle.settings.GradleSettings
-import sap.commerce.toolset.gradle.descriptor.GradleModuleDescriptor
+import org.jetbrains.idea.eclipse.importWizard.EclipseImportBuilder
+import sap.commerce.toolset.eclipse.descriptor.EclipseModuleDescriptor
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.configurator.ConfiguratorCache
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
-import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.settings.ProjectSettings
 
-class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator {
+class EclipseConfigurator : ProjectImportConfigurator {
 
     override fun configure(
         project: Project,
@@ -48,30 +42,22 @@ class GradleConfigurator : ProjectImportConfigurator, ProjectRefreshConfigurator
         modifiableModelsProvider: IdeModifiableModelsProvider,
         cache: ConfiguratorCache
     ) {
-        indicator.text = i18n("hybris.project.import.gradle")
+        indicator.text = i18n("hybris.project.import.eclipse")
 
-        PropertiesComponent.getInstance(project)
-            .setValue("show.inlinked.gradle.project.popup", false)
+        val projectList = hybrisProjectDescriptor.modulesChosenForImport
+            .filterIsInstance<EclipseModuleDescriptor>()
+            .map { it.moduleRootDirectory }
+            .map { it.path }
 
-        try {
-            hybrisProjectDescriptor
-                .modulesChosenForImport
-                .filterIsInstance<GradleModuleDescriptor>()
-                .mapNotNull { it.gradleFile.path }
-                .forEach { externalProjectPath ->
-                    CoroutineScope(Dispatchers.Default).launchTracked {
-                        linkAndSyncGradleProject(project, externalProjectPath)
-                    }
-                }
-        } catch (e: Exception) {
-            thisLogger().error("Can not import Gradle modules due to an error.", e)
+        val eclipseImportBuilder = EclipseImportBuilder()
+        hybrisProjectDescriptor.modulesFilesDirectory?.let {
+            eclipseImportBuilder.parameters.converterOptions.commonModulesDirectory = it.path
+        }
+
+        eclipseImportBuilder.list = projectList
+
+        ApplicationManager.getApplication().invokeAndWait {
+            eclipseImportBuilder.commit(project)
         }
     }
-
-    override fun beforeRefresh(project: Project) {
-        if (!ProjectSettings.getInstance(project).removeExternalModulesOnRefresh) return
-
-        GradleSettings.getInstance(project).linkedProjectsSettings = emptyList()
-    }
-
 }

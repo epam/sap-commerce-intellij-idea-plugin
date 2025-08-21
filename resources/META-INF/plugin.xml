@@ -45,7 +45,6 @@
     <depends config-file="dependencies/com.intellij.idea.plugin.sap.commerce-java.xml">com.intellij.modules.java</depends>
 
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-maven.xml">org.jetbrains.idea.maven</depends>
-    <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-eclipse.xml">org.jetbrains.idea.eclipse</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-spring.xml">com.intellij.spring</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-diagram.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="dependencies/com.intellij.idea.plugin.sap.commerce-groovy.xml">org.intellij.groovy</depends>

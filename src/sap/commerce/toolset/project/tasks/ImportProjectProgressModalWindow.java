@@ -25,7 +25,6 @@ import com.intellij.facet.FacetTypeRegistry;
 import com.intellij.framework.detection.DetectionExcludesConfiguration;
 import com.intellij.framework.detection.impl.FrameworkDetectionUtil;
 import com.intellij.ide.passwordSafe.PasswordSafe;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.javaee.application.facet.JavaeeApplicationFacet;
 import com.intellij.javaee.web.facet.WebFacet;
 import com.intellij.lang.Language;
@@ -64,18 +63,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
-import sap.commerce.toolset.gradle.descriptor.GradleModuleDescriptor;
 import sap.commerce.toolset.impex.ImpExLanguage;
 import sap.commerce.toolset.project.configurator.ConfiguratorCache;
 import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
-import sap.commerce.toolset.project.configurators.EclipseConfigurator;
 import sap.commerce.toolset.project.configurators.GroupModuleConfigurator;
 import sap.commerce.toolset.project.configurators.JavaCompilerConfigurator;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.CCv2ModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.EclipseModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.MavenModuleDescriptor;
+import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.settings.ApplicationSettings;
 import sap.commerce.toolset.settings.WorkspaceSettings;
@@ -95,7 +90,6 @@ import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 public class ImportProjectProgressModalWindow extends Task.Modal {
     private static final Logger LOG = Logger.getInstance(ImportProjectProgressModalWindow.class);
     private static final int COMMITTED_CHUNK_SIZE = 20;
-    private static final String SHOW_UNLINKED_GRADLE_POPUP = "show.inlinked.gradle.project.popup";
 
     private final Project project;
     private final ModifiableModuleModel model;
@@ -159,8 +153,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.saveImportedSettings(projectSettings, appSettings, projectSettings);
         this.disableWrapOnType(ImpExLanguage.INSTANCE);
 
-        PropertiesComponent.getInstance(project).setValue(SHOW_UNLINKED_GRADLE_POPUP, false);
-
         processUltimateEdition(indicator);
 
         ModifiableModuleModel rootProjectModifiableModel = model == null
@@ -205,7 +197,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getLoadedConfigurator().configure(project, hybrisProjectDescriptor.getModulesChosenForImport());
 
         configureJavaCompiler(indicator, cache);
-        configureEclipseModules(indicator);
         configureAngularModules(indicator, groupModuleConfigurator, appSettings);
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
@@ -271,13 +262,10 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         );
     }
 
+    // TODO: double check CCv2 modules handling
     private List<ModuleDescriptor> getHybrisModuleDescriptors() {
         return hybrisProjectDescriptor.getModulesChosenForImport().stream()
-            .filter(e -> !(e instanceof MavenModuleDescriptor)
-                && !(e instanceof EclipseModuleDescriptor)
-                && !(e instanceof GradleModuleDescriptor)
-                && !(e instanceof AngularModuleDescriptor)
-            )
+            .filter(e -> !(e instanceof ExternalModuleDescriptor))
             .toList();
     }
 
@@ -288,28 +276,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         indicator.setText(message("hybris.project.import.compiler.java"));
         compilerConfigurator.configure(hybrisProjectDescriptor, project, cache);
-    }
-
-    private void configureEclipseModules(final @NotNull ProgressIndicator indicator) {
-        final EclipseConfigurator eclipseConfigurator = configuratorFactory.getEclipseConfigurator();
-
-        if (eclipseConfigurator == null) return;
-
-        indicator.setText(message("hybris.project.import.eclipse"));
-
-        try {
-            final List<EclipseModuleDescriptor> eclipseModules = hybrisProjectDescriptor
-                .getModulesChosenForImport()
-                .stream()
-                .filter(EclipseModuleDescriptor.class::isInstance)
-                .map(EclipseModuleDescriptor.class::cast)
-                .collect(Collectors.toList());
-            if (!eclipseModules.isEmpty()) {
-                eclipseConfigurator.configure(hybrisProjectDescriptor, project, eclipseModules);
-            }
-        } catch (Exception e) {
-            LOG.error("Can not import Eclipse modules due to an error.", e);
-        }
     }
 
     @Deprecated(since = "Migrate to EP")
@@ -477,10 +443,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         projectSettings.setJavadocUrl(hybrisProjectDescriptor.getJavadocUrl());
         final var completeSetOfHybrisModules = hybrisProjectDescriptor.getFoundModules().stream()
-            .filter(e -> !(e instanceof MavenModuleDescriptor)
-                && !(e instanceof EclipseModuleDescriptor)
-                && !(e instanceof GradleModuleDescriptor)
-                && !(e instanceof CCv2ModuleDescriptor)
+            .filter(e -> !(e instanceof ExternalModuleDescriptor)
                 && !(e instanceof ConfigModuleDescriptor)
                 && !(e instanceof YSubModuleDescriptor)
             )

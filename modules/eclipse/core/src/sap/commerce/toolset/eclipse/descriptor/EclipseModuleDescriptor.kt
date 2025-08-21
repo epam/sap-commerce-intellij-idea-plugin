@@ -15,10 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.descriptor.impl
 
+package sap.commerce.toolset.eclipse.descriptor
+
+import org.jetbrains.idea.eclipse.EclipseProjectFinder
+import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.io.File
 
 class EclipseModuleDescriptor(
@@ -29,4 +34,22 @@ class EclipseModuleDescriptor(
 ) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
     override fun isPreselected() = true
+
+    class Provider : ModuleDescriptorProvider {
+        override fun isApplicable(moduleRootDirectory: File): Boolean {
+            if (moduleRootDirectory.absolutePath.contains(HybrisConstants.PLATFORM_MODULE_PREFIX))  return false
+
+            return File(moduleRootDirectory, HybrisConstants.DOT_PROJECT).isFile()
+        }
+
+        override fun create(
+            moduleRootDirectory: File,
+            rootProjectDescriptor: HybrisProjectDescriptor
+        ) = EclipseModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, getEclipseModuleDescriptorName(moduleRootDirectory))
+
+        private fun getEclipseModuleDescriptorName(moduleRootDirectory: File) = EclipseProjectFinder.findProjectName(moduleRootDirectory.absolutePath)
+            ?.trim { it <= ' ' }
+            ?.takeIf { it.isNotBlank() }
+            ?: moduleRootDirectory.name
+    }
 }
