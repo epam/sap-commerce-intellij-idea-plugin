@@ -15,41 +15,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.facet.FacetTypeRegistry
 import com.intellij.facet.ModifiableFacetModel
-import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ModifiableRootModel
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.facet.YFacetConstants
 
-class YFacetConfigurator : ModuleFacetConfigurator {
+interface ModuleFacetConfigurator {
 
-    override fun configureModuleFacet(
+    fun configureModuleFacet(
         module: Module,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
         modifiableRootModel: ModifiableRootModel
-    ) {
-        WriteAction.runAndWait<RuntimeException> {
-            modifiableFacetModel.getFacetByType(YFacetConstants.Y_FACET_TYPE_ID)
-                ?.let { modifiableFacetModel.removeFacet(it) }
+    )
 
-            val facetType = FacetTypeRegistry.getInstance().findFacetType(YFacetConstants.Y_FACET_TYPE_ID)
-            val facet = facetType.createFacet(
-                module,
-                facetType.defaultFacetName,
-                facetType.createDefaultConfiguration(),
-                null
-            )
-            facet.configuration.loadState(moduleDescriptor.extensionDescriptor())
-
-            modifiableFacetModel.addFacet(facet)
-        }
+    companion object {
+        val EP = ExtensionPointName.create<ModuleFacetConfigurator>("sap.commerce.toolset.project.module.facetConfigurator")
     }
 }

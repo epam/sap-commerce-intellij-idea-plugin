@@ -18,18 +18,14 @@
 package sap.commerce.toolset.kotlin.configurator
 
 import com.intellij.facet.FacetManager
-import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.actionSystem.ex.ActionUtil
-import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.module.ModifiableModuleModel
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.util.application
 import org.jetbrains.kotlin.idea.compiler.configuration.Kotlin2JvmCompilerArgumentsHolder
@@ -37,7 +33,6 @@ import org.jetbrains.kotlin.idea.compiler.configuration.KotlinJpsPluginSettings
 import org.jetbrains.kotlin.idea.compiler.configuration.KotlinPluginLayout
 import org.jetbrains.kotlin.idea.configuration.KotlinJavaModuleConfigurator
 import org.jetbrains.kotlin.idea.configuration.NotificationMessageCollector
-import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.KotlinFacetType
 import org.jetbrains.kotlin.idea.projectConfiguration.KotlinProjectConfigurationBundle
 import org.jetbrains.kotlin.idea.projectConfiguration.getDefaultJvmTarget
@@ -46,16 +41,13 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.configurator.ConfiguratorCache
-import sap.commerce.toolset.project.configurator.ProjectFacetConfigurator
 import sap.commerce.toolset.project.configurator.ProjectImportConfigurator
 import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.yExtensionName
-import java.io.File
 
-class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator, ProjectFacetConfigurator {
+class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigurator {
 
     override fun configure(
         project: Project,
@@ -93,45 +85,6 @@ class KotlinConfigurator : ProjectImportConfigurator, ProjectPostImportConfigura
 
         return registerKotlinLibrary(project)
     }
-
-    override fun configureModuleFacet(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
-        moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableRootModel: ModifiableRootModel
-    ) {
-        if (moduleDescriptor !is YModuleDescriptor) return
-
-        val hasKotlinDirectories = hasKotlinDirectories(moduleDescriptor)
-
-        WriteAction.runAndWait<RuntimeException> {
-            // Remove previously registered Kotlin Facet for extensions with removed kotlin sources
-            modifiableFacetModel.getFacetByType(KotlinFacetType.TYPE_ID)
-                ?.takeUnless { hasKotlinDirectories }
-                ?.let { modifiableFacetModel.removeFacet(it) }
-
-            if (!hasKotlinDirectories) return@runAndWait
-            if (hybrisProjectDescriptor.kotlinNatureModuleDescriptor == null) return@runAndWait
-
-            val facet = KotlinFacet.get(module)
-                ?: createFacet(module)
-
-            modifiableFacetModel.addFacet(facet)
-        }
-    }
-
-    private fun createFacet(module: Module) = with(KotlinFacetType.INSTANCE) {
-        createFacet(
-            module,
-            defaultFacetName,
-            createDefaultConfiguration(),
-            null
-        )
-    }
-
-    private fun hasKotlinDirectories(descriptor: ModuleDescriptor) = File(descriptor.moduleRootDirectory, HybrisConstants.KOTLIN_SRC_DIRECTORY).exists()
-        || File(descriptor.moduleRootDirectory, HybrisConstants.KOTLIN_TEST_SRC_DIRECTORY).exists()
 
     private fun registerKotlinLibrary(project: Project): List<() -> Unit> {
         val kotlinAwareModules = ModuleManager.getInstance(project).modules

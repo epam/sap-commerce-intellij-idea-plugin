@@ -29,7 +29,7 @@ import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VfsUtil
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.configurator.ProjectFacetConfigurator
+import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YAcceleratorAddonSubModuleDescriptor
@@ -37,13 +37,13 @@ import sap.commerce.toolset.project.descriptor.impl.YCommonWebSubModuleDescripto
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
-class WebFacetConfigurator : ProjectFacetConfigurator {
+class WebFacetConfigurator : ModuleFacetConfigurator {
 
     override fun configureModuleFacet(
+        module: Module,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
         val webRoot = when (moduleDescriptor) {

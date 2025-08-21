@@ -18,7 +18,7 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.facetConfigurator implementation="sap.commerce.toolset.javaee.web.configurator.WebFacetConfigurator"/>
+        <project.module.facetConfigurator implementation="sap.commerce.toolset.javaee.web.configurator.WebFacetConfigurator"/>
     </extensions>
 
 </idea-plugin>

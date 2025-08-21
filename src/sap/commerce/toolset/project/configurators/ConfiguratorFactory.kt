@@ -35,7 +35,7 @@ class ConfiguratorFactory {
     val refreshConfigurators
         get() = ProjectRefreshConfigurator.EP.extensionList
     val facetConfigurators
-        get() = ProjectFacetConfigurator.EP.extensionList
+        get() = ModuleFacetConfigurator.EP.extensionList
 
     fun getContentRootConfigurator() = service<DefaultContentRootConfigurator>()
     fun getCompilerOutputPathsConfigurator() = service<CompilerOutputPathsConfigurator>()

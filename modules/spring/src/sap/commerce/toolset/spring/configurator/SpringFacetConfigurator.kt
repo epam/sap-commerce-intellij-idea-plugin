@@ -26,7 +26,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.spring.contexts.model.LocalXmlModel
 import com.intellij.spring.facet.SpringFacet
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.configurator.ProjectFacetConfigurator
+import sap.commerce.toolset.project.configurator.ModuleFacetConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
@@ -35,13 +35,13 @@ import sap.commerce.toolset.project.descriptor.impl.YBackofficeSubModuleDescript
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
-class SpringFacetConfigurator : ProjectFacetConfigurator {
+class SpringFacetConfigurator : ModuleFacetConfigurator {
 
     override fun configureModuleFacet(
+        module: Module,
         hybrisProjectDescriptor: HybrisProjectDescriptor,
         modifiableFacetModel: ModifiableFacetModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
         modifiableRootModel: ModifiableRootModel
     ) {
         when (moduleDescriptor) {

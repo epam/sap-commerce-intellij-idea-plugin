@@ -20,6 +20,7 @@
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.importConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
         <project.postImportConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
-        <project.facetConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinConfigurator"/>
+
+        <project.module.facetConfigurator implementation="sap.commerce.toolset.kotlin.configurator.KotlinModuleConfigurator"/>
     </extensions>
 </idea-plugin>

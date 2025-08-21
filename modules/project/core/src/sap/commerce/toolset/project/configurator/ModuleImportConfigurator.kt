@@ -15,26 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.project.configurator
 
-import com.intellij.facet.ModifiableFacetModel
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.module.Module
+import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 
-interface ProjectFacetConfigurator {
+interface ModuleImportConfigurator {
 
-    fun configureModuleFacet(
-        hybrisProjectDescriptor: HybrisProjectDescriptor,
-        modifiableFacetModel: ModifiableFacetModel,
+    fun configure(
+        progressIndicator: ProgressIndicator,
+        allYModules: Map<String, YModuleDescriptor>,
+        modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
-        module: Module,
-        modifiableRootModel: ModifiableRootModel
+        modifiableModelsProvider: IdeModifiableModelsProvider,
+        indicator: ProgressIndicator
     )
 
     companion object {
-        val EP = ExtensionPointName.create<ProjectFacetConfigurator>("sap.commerce.toolset.project.facetConfigurator")
+        val EP = ExtensionPointName.create<ModuleImportConfigurator>("sap.commerce.toolset.project.module.importConfigurator")
     }
 }

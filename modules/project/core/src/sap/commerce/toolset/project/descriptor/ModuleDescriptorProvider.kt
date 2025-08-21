@@ -30,6 +30,6 @@ interface ModuleDescriptorProvider {
     ): ModuleDescriptor
 
     companion object {
-        val EP = ExtensionPointName.create<ModuleDescriptorProvider>("sap.commerce.toolset.project.moduleDescriptorProvider")
+        val EP = ExtensionPointName.create<ModuleDescriptorProvider>("sap.commerce.toolset.project.module.descriptorProvider")
     }
 }

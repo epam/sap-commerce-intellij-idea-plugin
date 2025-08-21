@@ -20,6 +20,6 @@
     <extensions defaultExtensionNs="sap.commerce.toolset">
         <project.postImportConfigurator implementation="sap.commerce.toolset.maven.configurator.MavenConfigurator"/>
 
-        <project.moduleDescriptorProvider implementation="sap.commerce.toolset.maven.descriptor.MavenModuleDescriptor$Provider"/>
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.maven.descriptor.MavenModuleDescriptor$Provider"/>
     </extensions>
 </idea-plugin>
