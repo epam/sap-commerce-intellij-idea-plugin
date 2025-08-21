@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators.impl
+package sap.commerce.toolset.java.configurator.ex
 
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.progress.ProgressIndicator
@@ -29,16 +29,20 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.configurators.LibRootsConfigurator
-import sap.commerce.toolset.project.descriptor.*
+import sap.commerce.toolset.java.descriptor.addBackofficeRootProjectLibrary
+import sap.commerce.toolset.java.descriptor.getLibraryDescriptors
+import sap.commerce.toolset.project.descriptor.JavaLibraryDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
+import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCoreExtModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YOotbRegularModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YWebSubModuleDescriptor
 import java.io.File
 
-class DefaultLibRootsConfigurator : LibRootsConfigurator {
+internal object LibRootsConfigurator {
 
-    override fun configure(
+    fun configure(
         allYModules: Map<String, YModuleDescriptor>,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor,
@@ -48,7 +52,7 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
         indicator.text2 = i18n("hybris.project.import.module.libs")
 
         val sourceCodeRoot = getSourceCodeRoot(moduleDescriptor)
-        for (javaLibraryDescriptor in YModuleLibDescriptorUtil.getLibraryDescriptors(moduleDescriptor, allYModules)) {
+        for (javaLibraryDescriptor in getLibraryDescriptors(moduleDescriptor, allYModules)) {
             if (!javaLibraryDescriptor.libraryFile.exists() && javaLibraryDescriptor.scope == DependencyScope.COMPILE) {
                 continue
             }
@@ -66,20 +70,21 @@ class DefaultLibRootsConfigurator : LibRootsConfigurator {
                 if (moduleDescriptor.hasBackofficeModule) {
                     val backofficeJarDirectory = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.BACKOFFICE_JAR_PATH)
                     if (backofficeJarDirectory.exists()) {
-                        YModuleLibDescriptorUtil.addBackofficeRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory)
+                        addBackofficeRootProjectLibrary(modifiableModelsProvider, backofficeJarDirectory)
                     }
                 }
                 if (moduleDescriptor.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
                     addLibsToModule(modifiableRootModel, modifiableModelsProvider, HybrisConstants.BACKOFFICE_LIBRARY_GROUP, true)
                 }
             }
+
             is YWebSubModuleDescriptor -> {
                 if (moduleDescriptor.owner.name == HybrisConstants.EXTENSION_NAME_BACK_OFFICE) {
                     val classes = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_CLASSES_PATH)
                     val library = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.WEBROOT_WEBINF_LIB_PATH)
                     val sources = File(moduleDescriptor.moduleRootDirectory, HybrisConstants.DOC_SOURCES_PARENT_JAR_PATH)
-                    YModuleLibDescriptorUtil.addBackofficeRootProjectLibrary(modifiableModelsProvider, classes, null, false)
-                    YModuleLibDescriptorUtil.addBackofficeRootProjectLibrary(modifiableModelsProvider, library, sources)
+                    addBackofficeRootProjectLibrary(modifiableModelsProvider, classes, null, false)
+                    addBackofficeRootProjectLibrary(modifiableModelsProvider, library, sources)
                 }
             }
         }

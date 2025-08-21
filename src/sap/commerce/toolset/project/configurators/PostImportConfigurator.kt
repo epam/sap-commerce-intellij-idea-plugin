@@ -31,7 +31,7 @@ import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
 @Service(Service.Level.PROJECT)
-class PostImportConfigurator(val project: Project) {
+class PostImportConfigurator(private val project: Project) {
 
     fun configure(
         hybrisProjectDescriptor: HybrisProjectDescriptor,

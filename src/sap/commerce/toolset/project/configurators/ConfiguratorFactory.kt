@@ -21,7 +21,6 @@ package sap.commerce.toolset.project.configurators
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import sap.commerce.toolset.project.configurator.*
-import sap.commerce.toolset.project.configurators.impl.DefaultContentRootConfigurator
 
 @Service
 class ConfiguratorFactory {
@@ -36,14 +35,10 @@ class ConfiguratorFactory {
         get() = ProjectPostImportConfigurator.EP.extensionList
     val refreshConfigurators
         get() = ProjectRefreshConfigurator.EP.extensionList
-    val facetConfigurators
+    val moduleFacetConfigurators
         get() = ModuleFacetConfigurator.EP.extensionList
-
-    fun getContentRootConfigurator() = service<DefaultContentRootConfigurator>()
-    fun getCompilerOutputPathsConfigurator() = service<CompilerOutputPathsConfigurator>()
-    fun getLibRootsConfigurator() = service<LibRootsConfigurator>()
-    fun getJavadocSettingsConfigurator() = service<JavadocSettingsConfigurator>()
-    fun getModuleSettingsConfigurator() = service<ModuleSettingsConfigurator>()
+    val moduleImportConfigurators
+        get() = ModuleImportConfigurator.EP.extensionList
 
     companion object {
         fun getInstance() = service<ConfiguratorFactory>()

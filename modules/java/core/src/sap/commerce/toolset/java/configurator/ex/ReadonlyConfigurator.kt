@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,17 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.configurators
+package sap.commerce.toolset.java.configurator.ex
 
-import com.intellij.openapi.project.Project
-import sap.commerce.toolset.project.configurator.ConfiguratorCache
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
-interface JavaCompilerConfigurator {
+internal object ReadonlyConfigurator {
 
-    fun configure(
-        descriptor: HybrisProjectDescriptor,
-        project: Project,
-        cache: ConfiguratorCache
-    )
+    fun configure(moduleDescriptor: ModuleDescriptor) {
+        val descriptorType = moduleDescriptor.descriptorType
+        val hasReadOnlySettings = moduleDescriptor.rootProjectDescriptor.isImportOotbModulesInReadOnlyMode
+        val isReadOnlyType = descriptorType === ModuleDescriptorType.OOTB
+            || descriptorType === ModuleDescriptorType.PLATFORM
+            || descriptorType === ModuleDescriptorType.EXT
+        val readOnly = hasReadOnlySettings && isReadOnlyType
+
+        moduleDescriptor.extensionDescriptor().readonly = readOnly
+    }
 }

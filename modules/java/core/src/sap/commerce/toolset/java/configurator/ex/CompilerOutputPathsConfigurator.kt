@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,9 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators
+package sap.commerce.toolset.java.configurator.ex
 
-import com.intellij.openapi.components.Service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.roots.CompilerModuleExtension
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -29,15 +27,13 @@ import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
-@Service
-class CompilerOutputPathsConfigurator {
+internal object CompilerOutputPathsConfigurator {
 
     fun configure(
         indicator: ProgressIndicator,
         modifiableRootModel: ModifiableRootModel,
         moduleDescriptor: ModuleDescriptor
     ) {
-
         indicator.text2 = i18n("hybris.project.import.module.outputpath")
 
         val useFakeOutputPathForCustomExtensions = moduleDescriptor.rootProjectDescriptor.isUseFakeOutputPathForCustomExtensions

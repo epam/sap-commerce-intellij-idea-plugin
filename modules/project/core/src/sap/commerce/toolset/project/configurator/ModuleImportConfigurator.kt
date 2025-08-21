@@ -20,20 +20,23 @@ package sap.commerce.toolset.project.configurator
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
+import com.intellij.openapi.module.ModifiableModuleModel
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.roots.ModifiableRootModel
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.YModuleDescriptor
 
 interface ModuleImportConfigurator {
 
+    fun isApplicable(moduleDescriptor: ModuleDescriptor): Boolean
+
     fun configure(
         indicator: ProgressIndicator,
+        modifiableModelsProvider: IdeModifiableModelsProvider,
         allYModules: Map<String, YModuleDescriptor>,
-        modifiableRootModel: ModifiableRootModel,
+        rootProjectModifiableModel: ModifiableModuleModel,
         moduleDescriptor: ModuleDescriptor,
-        modifiableModelsProvider: IdeModifiableModelsProvider
-    )
+    ): Module
 
     companion object {
         val EP = ExtensionPointName.create<ModuleImportConfigurator>("sap.commerce.toolset.project.module.importConfigurator")

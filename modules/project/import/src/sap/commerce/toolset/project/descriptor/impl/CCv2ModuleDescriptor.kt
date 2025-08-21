@@ -21,6 +21,7 @@ import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
+@Deprecated("move to own module!")
 class CCv2ModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,

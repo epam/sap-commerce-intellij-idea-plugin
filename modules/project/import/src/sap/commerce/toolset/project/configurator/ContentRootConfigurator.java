@@ -17,14 +17,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.configurators.impl;
+package sap.commerce.toolset.project.configurator;
 
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtil;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +34,6 @@ import org.jetbrains.jps.model.java.JavaSourceRootType;
 import org.jetbrains.jps.model.java.JpsJavaExtensionService;
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType;
 import sap.commerce.toolset.HybrisConstants;
-import sap.commerce.toolset.project.configurators.ContentRootConfigurator;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
@@ -49,7 +48,7 @@ import java.util.stream.Collectors;
 import static sap.commerce.toolset.HybrisConstants.*;
 import static sap.commerce.toolset.HybrisI18NBundleUtils.message;
 
-public class DefaultContentRootConfigurator implements ContentRootConfigurator {
+public final class ContentRootConfigurator {
 
     // module name -> relative paths
     private static final Map<String, List<String>> ROOTS_TO_IGNORE = new HashMap<>();
@@ -58,19 +57,22 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         ROOTS_TO_IGNORE.put("acceleratorstorefrontcommons", Collections.singletonList("commonweb/testsrc"));
     }
 
-    @Override
-    public void configure(
+    private ContentRootConfigurator() {
+    }
+
+    public static void configure(
         @NotNull final ProgressIndicator indicator,
         @NotNull final ModifiableRootModel modifiableRootModel,
-        @NotNull final ModuleDescriptor moduleDescriptor,
-        @NotNull final ApplicationSettings appSettings
+        @NotNull final ModuleDescriptor moduleDescriptor
     ) {
+        final var appSettings = ApplicationSettings.getInstance();
+
         indicator.setText2(message("hybris.project.import.module.content"));
         final var contentEntry = modifiableRootModel.addContentEntry(VfsUtil.pathToUrl(
             moduleDescriptor.getModuleRootDirectory().getAbsolutePath()
         ));
 
-        final var dirsToIgnore = CollectionUtils.emptyIfNull(ROOTS_TO_IGNORE.get(moduleDescriptor.getName())).stream()
+        final var dirsToIgnore = ROOTS_TO_IGNORE.getOrDefault(moduleDescriptor.getName(), List.of()).stream()
             .map(relPath -> new File(moduleDescriptor.getModuleRootDirectory(), relPath))
             .collect(Collectors.toList());
 
@@ -93,7 +95,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         }
     }
 
-    protected void configureCommonRoots(
+    private static void configureCommonRoots(
         @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final List<File> dirsToIgnore,
@@ -125,7 +127,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         excludeCommonNeedlessDirs(contentEntry, moduleDescriptor);
     }
 
-    protected void configureResourceDirectory(
+    private static void configureResourceDirectory(
         @NotNull final ContentEntry contentEntry,
         @NotNull final ModuleDescriptor moduleDescriptor,
         @NotNull final List<File> dirsToIgnore,
@@ -144,7 +146,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         }
     }
 
-    protected void excludeCommonNeedlessDirs(
+    private static void excludeCommonNeedlessDirs(
         final ContentEntry contentEntry,
         final ModuleDescriptor moduleDescriptor
     ) {
@@ -165,7 +167,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         }
     }
 
-    private void excludeSubDirectories(
+    private static void excludeSubDirectories(
         @NotNull final ContentEntry contentEntry,
         @NotNull final File dir,
         @NotNull final Iterable<String> names
@@ -179,7 +181,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         contentEntry.addExcludeFolder(VfsUtil.pathToUrl(dir.getAbsolutePath()));
     }
 
-    protected void configureWebRoots(
+    private static void configureWebRoots(
         @NotNull final YWebSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         @NotNull final ApplicationSettings appSettings
@@ -226,7 +228,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
             });
     }
 
-    protected void configurePlatformRoots(
+    private static void configurePlatformRoots(
         @NotNull final PlatformModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry,
         final List<File> dirsToIgnore,
@@ -258,7 +260,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         contentEntry.addExcludePattern("apache-ant-*");
     }
 
-    protected void configureWebModuleRoots(
+    private static void configureWebModuleRoots(
         @NotNull final YSubModuleDescriptor moduleDescriptor,
         @NotNull final ContentEntry contentEntry
     ) {
@@ -288,7 +290,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         }
     }
 
-    protected static <P extends JpsElement> void addSourceFolderIfNotIgnored(
+    private static <P extends JpsElement> void addSourceFolderIfNotIgnored(
         @NotNull final ContentEntry contentEntry,
         @NotNull final File testSrcDir,
         @NotNull final JpsModuleSourceRootType<P> rootType,
@@ -328,7 +330,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         }
     }
 
-    protected void configureWebInf(
+    private static void configureWebInf(
         final ContentEntry contentEntry,
         final YSubModuleDescriptor moduleDescriptor
     ) {
@@ -346,7 +348,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
             || (moduleDescriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor && ySubModuleDescriptor.getOwner() instanceof YCustomRegularModuleDescriptor);
     }
 
-    private void addResourcesDirectory(final @NotNull ContentEntry contentEntry, final File platformBootstrapDirectory) {
+    private static void addResourcesDirectory(final @NotNull ContentEntry contentEntry, final File platformBootstrapDirectory) {
         final var platformBootstrapResourcesDirectory = new File(platformBootstrapDirectory, RESOURCES_DIRECTORY);
         contentEntry.addSourceFolder(
             VfsUtil.pathToUrl(platformBootstrapResourcesDirectory.getAbsolutePath()),
@@ -354,7 +356,7 @@ public class DefaultContentRootConfigurator implements ContentRootConfigurator {
         );
     }
 
-    private boolean testSrcDirectoriesExists(final File webModuleDirectory) {
+    private static boolean testSrcDirectoriesExists(final File webModuleDirectory) {
         return TEST_SRC_DIR_NAMES.stream().anyMatch(s -> new File(webModuleDirectory, s).exists());
     }
 }

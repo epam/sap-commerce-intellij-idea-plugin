@@ -38,16 +38,8 @@
         <applicationService serviceInterface="sap.commerce.toolset.project.services.HybrisProjectService"
                             serviceImplementation="sap.commerce.toolset.project.services.impl.DefaultHybrisProjectService"/>
 
-        <applicationService serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultContentRootConfigurator"/>
-
         <applicationService serviceInterface="sap.commerce.toolset.project.configurators.LibRootsConfigurator"
                             serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultLibRootsConfigurator"/>
-
-        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.JavadocSettingsConfigurator"
-                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultJavadocSettingsConfigurator"/>
-
-        <applicationService serviceInterface="sap.commerce.toolset.project.configurators.ModuleSettingsConfigurator"
-                            serviceImplementation="sap.commerce.toolset.project.configurators.impl.DefaultModuleSettingsConfigurator"/>
 
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.codeInsight.daemon.PopulatorsLineMarkerProvider"/>
 

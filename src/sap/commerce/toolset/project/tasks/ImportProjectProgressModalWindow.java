@@ -46,8 +46,6 @@ import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.LanguageLevelProjectExtension;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.roots.impl.storage.ClassPathStorageUtil;
-import com.intellij.openapi.roots.impl.storage.ClasspathStorage;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -66,6 +64,7 @@ import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.impex.ImpExLanguage;
 import sap.commerce.toolset.project.ModuleGroupingUtil;
 import sap.commerce.toolset.project.configurator.ConfiguratorCache;
+import sap.commerce.toolset.project.configurator.ContentRootConfigurator;
 import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor;
@@ -79,7 +78,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -167,23 +165,39 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         final var application = ApplicationManager.getApplication();
 
         for (final var moduleDescriptor : allHybrisModules) {
-            final var javaModule = createJavaModule(indicator, allYModules, rootProjectModifiableModel, moduleDescriptor, appSettings);
-            modules.add(javaModule);
-            counter++;
+            final var modifiableRootModel = rootProjectModifiableModel;
 
-            if (counter >= COMMITTED_CHUNK_SIZE) {
-                counter = 0;
-                application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
+            final var moduleO = configuratorFactory.getModuleImportConfigurators().stream()
+                .filter(configurator -> configurator.isApplicable(moduleDescriptor))
+                .findFirst()
+                .map(configurator -> {
+                        final var module = configurator.configure(indicator, modifiableModelsProvider, allYModules, modifiableRootModel, moduleDescriptor);
+                        final var rootModel = modifiableModelsProvider.getModifiableRootModel(module);
+                        configureModuleFacet(moduleDescriptor, module, rootModel, modifiableModelsProvider);
+                        return module;
+                    }
+                );
 
-                modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
+            if (moduleO.isPresent()) {
+                modules.add(moduleO.get());
+                counter++;
 
-                rootProjectModifiableModel = model == null
-                    ? modifiableModelsProvider.getModifiableModuleModel()
-                    : model;
+                // TODO: rewrite to own commits
+                if (counter >= COMMITTED_CHUNK_SIZE) {
+                    counter = 0;
+                    application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
+
+                    modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
+
+                    rootProjectModifiableModel = model == null
+                        ? modifiableModelsProvider.getModifiableModuleModel()
+                        : model;
+                }
             }
         }
 
         final var finalRootProjectModifiableModel = rootProjectModifiableModel;
+
         configuratorFactory.getImportConfigurators().forEach(configurator ->
             configurator.configure(project, indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors, finalRootProjectModifiableModel, modifiableModelsProvider, cache)
         );
@@ -192,7 +206,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
 
-        configureAngularModules(indicator, appSettings);
+        configureAngularModules(indicator);
 
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
@@ -212,47 +226,13 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         }
     }
 
-    @NotNull
-    private Module createJavaModule(final @NotNull ProgressIndicator indicator,
-                                    final Map<String, YModuleDescriptor> allYModules,
-                                    final ModifiableModuleModel rootProjectModifiableModel,
-                                    final ModuleDescriptor moduleDescriptor,
-                                    final @NotNull ApplicationSettings appSettings
-    ) {
-        indicator.setText(message("hybris.project.import.module.import", moduleDescriptor.getName()));
-        indicator.setText2(message("hybris.project.import.module.settings"));
-
-        final Module javaModule = rootProjectModifiableModel.newModule(
-            moduleDescriptor.ideaModuleFile().getAbsolutePath(),
-            StdModuleTypes.JAVA.getId()
-        );
-
-        configuratorFactory.getModuleSettingsConfigurator().configure(moduleDescriptor, javaModule);
-
-        final var modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(javaModule);
-
-        indicator.setText2(message("hybris.project.import.module.sdk"));
-        ClasspathStorage.setStorageType(modifiableRootModel, ClassPathStorageUtil.DEFAULT_STORAGE);
-
-        modifiableRootModel.inheritSdk();
-
-        configuratorFactory.getJavadocSettingsConfigurator().configure(modifiableRootModel, moduleDescriptor);
-        configuratorFactory.getLibRootsConfigurator().configure(allYModules, modifiableRootModel, moduleDescriptor, modifiableModelsProvider, indicator);
-        configuratorFactory.getContentRootConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor, appSettings);
-        configuratorFactory.getCompilerOutputPathsConfigurator().configure(indicator, modifiableRootModel, moduleDescriptor);
-
-        indicator.setText2(message("hybris.project.import.module.facet"));
-        configureModuleFacet(moduleDescriptor, javaModule, modifiableRootModel, modifiableModelsProvider);
-        return javaModule;
-    }
-
     private void configureModuleFacet(
         final ModuleDescriptor moduleDescriptor, final Module module,
         final ModifiableRootModel modifiableRootModel, final IdeModifiableModelsProvider modifiableModelsProvider
     ) {
         final var modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
 
-        configuratorFactory.getFacetConfigurators().forEach(configurator ->
+        configuratorFactory.getModuleFacetConfigurators().forEach(configurator ->
             configurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
         );
     }
@@ -261,22 +241,19 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     private List<ModuleDescriptor> getModuleDescriptors() {
         return hybrisProjectDescriptor.getModulesChosenForImport().stream()
             .filter(e ->
-                e instanceof CCv2ModuleDescriptor ||
-                !(e instanceof ExternalModuleDescriptor)
+                e instanceof CCv2ModuleDescriptor || !(e instanceof ExternalModuleDescriptor)
             )
             .toList();
     }
 
     @Deprecated(since = "Migrate to EP")
     private void configureAngularModules(
-        final @NotNull ProgressIndicator indicator,
-        final ApplicationSettings appSettings
+        final @NotNull ProgressIndicator indicator
     ) {
         if (Plugin.ANGULAR.isDisabled()) return;
 
         indicator.setText(message("hybris.project.import.angular"));
 
-        final var contentRootConfigurator = configuratorFactory.getContentRootConfigurator();
         final var modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
         final var rootProjectModifiableModel = model == null
             ? modifiableModelsProvider.getModifiableModuleModel()
@@ -306,14 +283,12 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         modules.forEach((descriptor, module) -> {
             final var modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
 
-            contentRootConfigurator.configure(indicator, modifiableRootModel, descriptor, appSettings);
+            ContentRootConfigurator.configure(indicator, modifiableRootModel, descriptor);
             configureModuleFacet(descriptor, module, modifiableRootModel, modifiableModelsProvider);
         });
 
         final var application = ApplicationManager.getApplication();
         application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
-
-//        configurator.configure(project, modules.values());
     }
 
     private void updateProjectDictionary(

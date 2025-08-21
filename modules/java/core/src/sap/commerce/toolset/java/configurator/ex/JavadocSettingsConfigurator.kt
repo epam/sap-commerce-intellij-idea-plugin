@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,18 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.configurators.impl
+
+package sap.commerce.toolset.java.configurator.ex
 
 import com.intellij.openapi.roots.JavaModuleExternalPaths
 import com.intellij.openapi.roots.ModifiableRootModel
-import sap.commerce.toolset.project.configurators.JavadocSettingsConfigurator
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.CCv2ModuleDescriptor
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor
 
-class DefaultJavadocSettingsConfigurator : JavadocSettingsConfigurator {
-    override fun configure(modifiableRootModel: ModifiableRootModel, moduleDescriptor: ModuleDescriptor) {
+internal object JavadocSettingsConfigurator {
+
+    fun configure(modifiableRootModel: ModifiableRootModel, moduleDescriptor: ModuleDescriptor) {
         val javadocRefList = mutableListOf<String>()
         val javaModuleExternalPaths = modifiableRootModel.getModuleExtension(JavaModuleExternalPaths::class.java)
 
