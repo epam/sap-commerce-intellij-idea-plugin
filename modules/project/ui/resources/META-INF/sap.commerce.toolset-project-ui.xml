@@ -17,4 +17,8 @@
   -->
 <idea-plugin>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <runLineMarkerContributor language="XML"
+                                  implementationClass="sap.commerce.toolset.project.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
+    </extensions>
 </idea-plugin>

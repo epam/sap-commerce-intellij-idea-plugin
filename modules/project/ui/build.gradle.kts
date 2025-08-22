@@ -36,7 +36,9 @@ sourceSets {
 dependencies {
     implementation(project(":shared-core"))
     implementation(project(":shared-ui"))
-    implementation(project(":acl-core"))
+    implementation(project(":project-extensioninfo"))
+    implementation(project(":project-localextensions"))
+    implementation(project(":project-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
