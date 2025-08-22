@@ -40,7 +40,9 @@ public final class ImpExCommonPsiUtils {
     @Nullable
     @Contract(pure = true)
     public static IElementType getNullSafeElementType(@Nullable final PsiElement element) {
-        return element == null ? null : ImpExCommonAstUtils.getNullSafeElementType(element.getNode());
+        return element == null ? null
+            : element.getNode() == null ? null
+            : element.getNode().getElementType();
     }
 
     @Nullable
