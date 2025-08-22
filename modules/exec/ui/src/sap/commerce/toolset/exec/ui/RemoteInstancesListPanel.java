@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.ui;
+package sap.commerce.toolset.exec.ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.AddEditDeleteListPanel;
@@ -43,9 +43,9 @@ abstract public class RemoteInstancesListPanel extends AddEditDeleteListPanel<Re
     private static final long serialVersionUID = -1932103943790251488L;
     private ListCellRenderer myListCellRenderer;
     private final Icon icon;
-    final Project myProject;
+    protected final Project myProject;
 
-    abstract void addItem();
+    public abstract void addItem();
 
     public enum EventType {
         ADD, REMOVE, CHANGE

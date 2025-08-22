@@ -27,6 +27,7 @@ import sap.commerce.toolset.exec.RemoteConstants
 import sap.commerce.toolset.exec.settings.event.RemoteConnectionListener
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionScope
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.ui.AbstractRemoteConnectionDialog
 import sap.commerce.toolset.solr.exec.SolrExecutionClient
 import java.awt.Component
 

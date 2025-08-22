@@ -22,6 +22,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
 import sap.commerce.toolset.toolwindow.RemoteSolrConnectionDialog
 import java.io.Serial
 

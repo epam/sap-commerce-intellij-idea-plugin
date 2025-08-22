@@ -31,6 +31,7 @@ import sap.commerce.toolset.exec.http.HybrisHacHttpClient
 import sap.commerce.toolset.exec.settings.event.RemoteConnectionListener
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionScope
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
+import sap.commerce.toolset.exec.ui.AbstractRemoteConnectionDialog
 import java.awt.Component
 
 class RemoteHacConnectionDialog(

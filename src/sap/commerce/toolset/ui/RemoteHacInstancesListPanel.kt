@@ -22,6 +22,7 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
 import sap.commerce.toolset.toolwindow.RemoteHacConnectionDialog
 import java.io.Serial
 
@@ -30,7 +31,7 @@ class RemoteHacInstancesListPanel(
     private val onDataChanged: (EventType, Set<RemoteConnectionSettingsState>) -> Unit
 ) : RemoteInstancesListPanel(project, RemoteConnectionType.Hybris, HybrisIcons.Y.REMOTE) {
 
-    public override fun addItem() {
+    override fun addItem() {
         val settings = RemoteConnectionService.getInstance(myProject).createDefaultRemoteConnectionSettings(RemoteConnectionType.Hybris)
         val dialog = RemoteHacConnectionDialog(myProject, this, settings)
         if (dialog.showAndGet()) {
