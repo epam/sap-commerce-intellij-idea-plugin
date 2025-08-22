@@ -15,14 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.diagram.businessProcess.node.graph
 
-import sap.commerce.toolset.businessProcess.model.Process
+package sap.commerce.toolset.businessProcess.model
 
-interface BpGraphNode {
-    val name: String
-    val virtualFileUrl: String
-    val virtualFileName: String
-    val process: Process
-    val properties: Array<BpGraphField>
-}
+val Process.nodes: List<NavigableElement>
+    get() = scriptActions + notifies + joins + waits + splits + ends + actions
+

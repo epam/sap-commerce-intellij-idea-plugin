@@ -15,14 +15,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.diagram.businessProcess.node.graph
 
-import sap.commerce.toolset.businessProcess.model.Process
+// Generated on Tue Jan 10 21:54:19 CET 2023
+// DTD/Schema  :    http://www.hybris.de/xsd/processdefinition
 
-interface BpGraphNode {
-    val name: String
-    val virtualFileUrl: String
-    val virtualFileName: String
-    val process: Process
-    val properties: Array<BpGraphField>
+package sap.commerce.toolset.businessProcess.model;
+
+/**
+ * http://www.hybris.de/xsd/processdefinition:parameterUse enumeration.
+ */
+public enum ParameterUse implements com.intellij.util.xml.NamedEnum {
+	OPTIONAL ("optional"),
+	REQUIRED ("required");
+
+	private final String value;
+	ParameterUse(final String value) { this.value = value; }
+	@Override
+    public String getValue() { return value; }
+
 }

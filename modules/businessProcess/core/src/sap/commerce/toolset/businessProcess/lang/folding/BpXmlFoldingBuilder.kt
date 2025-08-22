@@ -23,11 +23,11 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.PsiElementFilter
 import com.intellij.psi.xml.XmlTag
+import sap.commerce.toolset.businessProcess.model.*
 import sap.commerce.toolset.businessProcess.util.BpHelper
 import sap.commerce.toolset.folding.XmlFoldingBuilderEx
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.settings.state.BpFoldingSettingsState
-import sap.commerce.toolset.system.businessProcess.model.*
 
 class BpXmlFoldingBuilder : XmlFoldingBuilderEx<BpFoldingSettingsState, Process>(Process::class.java), DumbAware {
 

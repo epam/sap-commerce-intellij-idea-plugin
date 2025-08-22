@@ -23,8 +23,8 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomFileDescription
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.businessProcess.model.Process
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.system.businessProcess.model.Process
 import javax.swing.Icon
 
 class BpDomFileDescription : DomFileDescription<Process>(Process::class.java, HybrisConstants.ROOT_TAG_BUSINESS_PROCESS_XML) {

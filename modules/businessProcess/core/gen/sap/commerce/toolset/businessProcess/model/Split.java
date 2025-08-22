@@ -15,14 +15,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.diagram.businessProcess.node.graph
 
-import sap.commerce.toolset.businessProcess.model.Process
+// Generated on Tue Jan 10 21:54:19 CET 2023
+// DTD/Schema  :    http://www.hybris.de/xsd/processdefinition
 
-interface BpGraphNode {
-    val name: String
-    val virtualFileUrl: String
-    val virtualFileName: String
-    val process: Process
-    val properties: Array<BpGraphField>
+package sap.commerce.toolset.businessProcess.model;
+
+import com.intellij.util.xml.Required;
+import com.intellij.util.xml.SubTagList;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * http://www.hybris.de/xsd/processdefinition:split interface.
+ */
+public interface Split extends NavigableElement {
+
+	/**
+	 * Returns the list of targetNode children.
+	 * @return the list of targetNode children.
+	 */
+	@NotNull
+	@SubTagList ("targetNode")
+	@Required
+	java.util.List<TargetNode> getTargetNodes();
+	/**
+	 * Adds new child to the list of targetNode children.
+	 * @return created child
+	 */
+	@SubTagList ("targetNode")
+	TargetNode addTargetNode();
+
+
 }

@@ -15,14 +15,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.diagram.businessProcess.node.graph
 
-import sap.commerce.toolset.businessProcess.model.Process
+// Generated on Tue Jan 10 21:54:19 CET 2023
+// DTD/Schema  :    http://www.hybris.de/xsd/processdefinition
 
-interface BpGraphNode {
-    val name: String
-    val virtualFileUrl: String
-    val virtualFileName: String
-    val process: Process
-    val properties: Array<BpGraphField>
+package sap.commerce.toolset.businessProcess.model;
+
+import sap.commerce.toolset.businessProcess.util.xml.BpNavigableElementConverter;
+import com.intellij.util.xml.Convert;
+import com.intellij.util.xml.GenericAttributeValue;
+import com.intellij.util.xml.Required;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * http://www.hybris.de/xsd/processdefinition:choice interface.
+ */
+public interface Choice extends NavigableElement {
+
+	String THEN = "then";
+
+	/**
+	 * Returns the value of the then child.
+	 * @return the value of the then child.
+	 */
+	@NotNull
+	@com.intellij.util.xml.Attribute (THEN)
+	@Required
+	@Convert(BpNavigableElementConverter.class)
+	GenericAttributeValue<String> getThen();
+
+
 }

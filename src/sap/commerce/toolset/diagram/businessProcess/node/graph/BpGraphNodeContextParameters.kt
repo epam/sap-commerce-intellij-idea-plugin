@@ -1,6 +1,6 @@
 /*
- * This file is part of "SAP Commerce Developers Toolset" plugin for Intellij IDEA.
- * Copyright (C) 2019 EPAM Systems <hybrisideaplugin@epam.com>
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -17,9 +17,9 @@
  */
 package sap.commerce.toolset.diagram.businessProcess.node.graph
 
-import sap.commerce.toolset.system.businessProcess.model.Process
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
+import sap.commerce.toolset.businessProcess.model.Process
 
 open class BpGraphNodeContextParameters(
     override val name: String,

@@ -19,6 +19,6 @@
 package sap.commerce.toolset.businessProcess.codeInspection
 
 import com.intellij.util.xml.highlighting.BasicDomElementsInspection
-import sap.commerce.toolset.system.businessProcess.model.Process
+import sap.commerce.toolset.businessProcess.model.Process
 
 class BPDomElementsInspection : BasicDomElementsInspection<Process>(Process::class.java)

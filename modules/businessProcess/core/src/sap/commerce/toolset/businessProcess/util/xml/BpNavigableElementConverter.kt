@@ -29,7 +29,7 @@ import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.ResolvingConverter
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.system.businessProcess.model.*
+import sap.commerce.toolset.businessProcess.model.*
 
 class BpNavigableElementConverter : ResolvingConverter<NavigableElement>() {
 

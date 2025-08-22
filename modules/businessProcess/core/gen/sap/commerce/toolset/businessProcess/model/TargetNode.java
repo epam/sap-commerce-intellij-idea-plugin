@@ -15,14 +15,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.diagram.businessProcess.node.graph
 
-import sap.commerce.toolset.businessProcess.model.Process
+// Generated on Tue Jan 10 21:54:19 CET 2023
+// DTD/Schema  :    http://www.hybris.de/xsd/processdefinition
 
-interface BpGraphNode {
-    val name: String
-    val virtualFileUrl: String
-    val virtualFileName: String
-    val process: Process
-    val properties: Array<BpGraphField>
+package sap.commerce.toolset.businessProcess.model;
+
+import sap.commerce.toolset.businessProcess.util.xml.BpNavigableElementConverter;
+import com.intellij.util.xml.*;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * http://www.hybris.de/xsd/processdefinition:targetNode interface.
+ * <pre>
+ * <h3>Type http://www.hybris.de/xsd/processdefinition:targetNode documentation</h3>
+ * Define target node for split.
+ * </pre>
+ */
+public interface TargetNode extends DomElement {
+
+	/**
+	 * Returns the value of the name child.
+	 * @return the value of the name child.
+	 */
+	@NotNull
+	@Attribute ("name")
+	@Required
+	@Convert(BpNavigableElementConverter.class)
+	GenericAttributeValue<String> getName();
+
+
 }

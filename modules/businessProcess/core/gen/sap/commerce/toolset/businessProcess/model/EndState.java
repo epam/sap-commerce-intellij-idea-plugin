@@ -15,14 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.diagram.businessProcess.node.graph
 
-import sap.commerce.toolset.businessProcess.model.Process
+// Generated on Tue Jan 10 21:54:19 CET 2023
+// DTD/Schema  :    http://www.hybris.de/xsd/processdefinition
 
-interface BpGraphNode {
-    val name: String
-    val virtualFileUrl: String
-    val virtualFileName: String
-    val process: Process
-    val properties: Array<BpGraphField>
+package sap.commerce.toolset.businessProcess.model;
+
+/**
+ * http://www.hybris.de/xsd/processdefinition:endState enumeration.
+ */
+public enum EndState {
+	ERROR,
+	FAILED,
+	SUCCEEDED
 }

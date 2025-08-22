@@ -19,15 +19,15 @@ package sap.commerce.toolset.diagram.businessProcess
 
 import com.intellij.diagram.AbstractDiagramElementManager
 import com.intellij.diagram.DiagramBuilder
-import sap.commerce.toolset.diagram.businessProcess.node.graph.*
-import sap.commerce.toolset.system.businessProcess.model.Action
-import sap.commerce.toolset.system.businessProcess.model.ParameterUse
-import sap.commerce.toolset.system.businessProcess.model.Process
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.businessProcess.model.Action
+import sap.commerce.toolset.businessProcess.model.ParameterUse
+import sap.commerce.toolset.businessProcess.model.Process
+import sap.commerce.toolset.diagram.businessProcess.node.graph.*
 import sap.commerce.toolset.isNotHybrisProject
 
 class BpDiagramElementManager : AbstractDiagramElementManager<BpGraphNode>() {

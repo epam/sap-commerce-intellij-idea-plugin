@@ -26,12 +26,12 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomManager
+import sap.commerce.toolset.businessProcess.model.*
 import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramEdge
 import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramEdgeType
 import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramNode
 import sap.commerce.toolset.diagram.businessProcess.node.BpDiagramRelationship
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.system.businessProcess.model.*
 
 object BpGraphFactory {
 

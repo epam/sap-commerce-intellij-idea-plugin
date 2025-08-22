@@ -19,10 +19,10 @@
 package sap.commerce.toolset.diagram.businessProcess.impl
 
 import org.apache.commons.collections4.CollectionUtils
+import sap.commerce.toolset.businessProcess.model.*
 import sap.commerce.toolset.diagram.businessProcess.BpGraphService
 import sap.commerce.toolset.diagram.businessProcess.node.graph.*
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.system.businessProcess.model.*
 
 class BpGraphServiceImpl : BpGraphService {
 

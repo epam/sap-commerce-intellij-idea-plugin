@@ -19,11 +19,11 @@ package sap.commerce.toolset.diagram.businessProcess.node
 
 import com.intellij.diagram.DiagramNodeBase
 import com.intellij.diagram.DiagramProvider
+import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.businessProcess.model.*
 import sap.commerce.toolset.diagram.businessProcess.node.graph.BpGraphNode
 import sap.commerce.toolset.diagram.businessProcess.node.graph.BpGraphNodeContextParameters
 import sap.commerce.toolset.diagram.businessProcess.node.graph.BpGraphNodeNavigable
-import sap.commerce.toolset.system.businessProcess.model.*
-import sap.commerce.toolset.HybrisIcons
 import java.io.Serial
 
 class BpDiagramNode(val graphNode: BpGraphNode, provider: DiagramProvider<BpGraphNode?>) : DiagramNodeBase<BpGraphNode>(provider) {

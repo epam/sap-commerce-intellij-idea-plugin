@@ -15,14 +15,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.diagram.businessProcess.node.graph
 
-import sap.commerce.toolset.businessProcess.model.Process
+package sap.commerce.toolset.businessProcess.model
 
-interface BpGraphNode {
-    val name: String
-    val virtualFileUrl: String
-    val virtualFileName: String
-    val process: Process
-    val properties: Array<BpGraphField>
+import com.intellij.util.xml.*
+
+@Stubbed
+@StubbedOccurrence
+interface NavigableElement : DomElement {
+
+    companion object {
+        const val ID = "id"
+    }
+
+    /**
+     * Returns the value of the id child.
+     * @return the value of the id child.
+     */
+    @Attribute(ID)
+    @Required
+    @Stubbed
+    @NameValue
+    fun getId(): GenericAttributeValue<String>
+
 }
