@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.options
 
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -36,7 +37,7 @@ class ApplicationProjectImportSettingsConfigurableProvider : ConfigurableProvide
         i18n("hybris.settings.application.project_import.title"), "[y] SAP CX project import configuration."
     ) {
 
-        private val applicationSettings = ApplicationSettings.getInstance()
+        private val applicationSettings = ApplicationSettings.Companion.getInstance()
 
         private lateinit var groupModulesCheckBox: JCheckBox
         private lateinit var externalModulesCheckBox: JCheckBox
