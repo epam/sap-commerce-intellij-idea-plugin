@@ -25,6 +25,17 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.java.codeInsight.daemon.PopulatorsLineMarkerProvider"/>
+
+        <codeInsight.declarativeInlayProvider language="JAVA"
+                                              implementationClass="sap.commerce.toolset.java.codeInsight.hints.DynamicAttributeDeclarativeInlayProvider"
+                                              isEnabledByDefault="true"
+                                              group="METHOD_CHAINS_GROUP"
+                                              providerId="hybris.typeSystem"
+                                              bundle="i18n.HybrisBundle"
+                                              nameKey="hybris.editor.java.inlay_provider.dynamic_attribute.name"
+                                              descriptionKey="hybris.editor.java.inlay_provider.dynamic_attribute.description"/>
+        <codeInsight.inlayActionHandler handlerId="inlay.hybris.dynamic.attribute"
+                                        implementationClass="sap.commerce.toolset.java.codeInsight.hints.DynamicAttributeDeclarativeInlayActionHandler"/>
     </extensions>
 
 </idea-plugin>

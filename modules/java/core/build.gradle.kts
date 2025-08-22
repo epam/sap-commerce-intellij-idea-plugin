@@ -37,6 +37,7 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":project-core"))
     implementation(project(":project-import"))
+    implementation(project(":typeSystem-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
