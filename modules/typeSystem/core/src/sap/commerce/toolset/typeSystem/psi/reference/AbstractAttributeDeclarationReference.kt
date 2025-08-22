@@ -27,7 +27,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -51,7 +51,7 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, cacheKey, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
 
     override fun getVariants(): Array<Any> {
@@ -85,10 +85,10 @@ abstract class AbstractAttributeDeclarationReference : PsiReferenceBase.Poly<Psi
 
             val originalValue = ref.value
             val result = metaModelAccess.findAttributeByName(metaItem, originalValue, true)
-                ?.let { PsiUtils.getValidResults(arrayOf(AttributeResolveResult(it))) }
+                ?.let { getValidResults(arrayOf(AttributeResolveResult(it))) }
                 ?: metaModelAccess.findRelationEndsByQualifier(metaItem, originalValue, true)
                     ?.firstOrNull()
-                    ?.let { PsiUtils.getValidResults(arrayOf(RelationEndResolveResult(it))) }
+                    ?.let { getValidResults(arrayOf(RelationEndResolveResult(it))) }
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(

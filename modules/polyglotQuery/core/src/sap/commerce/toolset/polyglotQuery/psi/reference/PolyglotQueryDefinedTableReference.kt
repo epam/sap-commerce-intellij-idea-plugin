@@ -24,7 +24,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryTypeKeyName
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -44,7 +44,7 @@ class PolyglotQueryDefinedTableReference(owner: PolyglotQueryTypeKeyName) : PsiR
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     override fun getVariants() = TSCompletionService.getInstance(element.project)
         .getCompletions(TSMetaType.META_ITEM, TSMetaType.META_ENUM)

@@ -25,6 +25,9 @@ import com.intellij.patterns.StandardPatterns
 import com.intellij.patterns.XmlAttributeValuePattern
 import com.intellij.patterns.XmlPatterns
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReference
+import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.ResolveResult
 import com.intellij.psi.xml.XmlTag
 import com.intellij.util.PsiNavigateUtil
 import com.intellij.util.asSafely
@@ -78,14 +81,22 @@ fun tagAttributePattern(
 )
     .inFile(getXmlFilePattern(fileName))
 
-private fun getXmlFilePattern(fileName: String?) = if (fileName == null) anyXmlFilePattern else PlatformPatterns.psiFile()
-    .withName(StandardPatterns.string().equalTo(fileName))
-
-private val anyXmlFilePattern = PlatformPatterns.psiFile()
-    .withName(StandardPatterns.string().endsWith(".xml"))
-
 fun navigate(psiElement: PsiElement?, requestFocus: Boolean = true) = PsiNavigateUtil
     .navigate(psiElement, requestFocus)
 
 fun navigate(descriptor: ProblemDescriptor, psiElement: PsiElement?, requestFocus: Boolean = true) = descriptor.asSafely<ProblemDescriptorBase>()
     ?.let { navigate(psiElement, requestFocus) }
+
+fun shouldCreateNewReference(reference: PsiReference?, text: String?) = reference.asSafely<PsiReferenceBase<*>>()
+    ?.let { text != null && (text.length != it.getRangeInElement().length || text != it.getValue()) }
+    ?: false
+
+fun getValidResults(resolveResults: Array<out ResolveResult>) = resolveResults
+    .filter { it.isValidResult }
+    .toTypedArray()
+
+private fun getXmlFilePattern(fileName: String?) = if (fileName == null) anyXmlFilePattern else PlatformPatterns.psiFile()
+    .withName(StandardPatterns.string().equalTo(fileName))
+
+private val anyXmlFilePattern = PlatformPatterns.psiFile()
+    .withName(StandardPatterns.string().endsWith(".xml"))

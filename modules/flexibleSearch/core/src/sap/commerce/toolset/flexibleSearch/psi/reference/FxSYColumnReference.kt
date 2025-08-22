@@ -36,7 +36,7 @@ import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTableAliasName
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchTypes
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchYColumnName
 import sap.commerce.toolset.psi.PsiTreeUtilExt
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.settings.DeveloperSettings
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
@@ -56,7 +56,7 @@ class FxSYColumnReference(owner: FlexibleSearchYColumnName) : PsiReferenceBase.P
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     /*
     By default, Lexer will create non-aliased Element, so we may extend variants with supported aliases first

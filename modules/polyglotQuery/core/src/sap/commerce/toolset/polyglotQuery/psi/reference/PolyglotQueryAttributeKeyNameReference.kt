@@ -29,7 +29,7 @@ import sap.commerce.toolset.flexibleSearch.FlexibleSearchConstants
 import sap.commerce.toolset.flexibleSearch.FxSUtils
 import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import sap.commerce.toolset.polyglotQuery.psi.PolyglotQueryAttributeKeyName
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -44,7 +44,7 @@ class PolyglotQueryAttributeKeyNameReference(owner: PolyglotQueryAttributeKeyNam
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     override fun getVariants() = element.typeName
         ?.let { type ->

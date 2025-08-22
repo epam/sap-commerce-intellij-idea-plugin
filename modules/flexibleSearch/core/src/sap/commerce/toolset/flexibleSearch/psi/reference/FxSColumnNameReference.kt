@@ -32,7 +32,7 @@ import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFa
 import sap.commerce.toolset.flexibleSearch.psi.*
 import sap.commerce.toolset.flexibleSearch.psi.reference.result.FxSColumnAliasNameResolveResult
 import sap.commerce.toolset.flexibleSearch.psi.reference.result.FxSYColumnNameResolveResult
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.settings.DeveloperSettings
 
 class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase.Poly<FlexibleSearchColumnName>(owner) {
@@ -47,7 +47,7 @@ class FxSColumnNameReference(owner: FlexibleSearchColumnName) : PsiReferenceBase
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     override fun getVariants() = PsiTreeUtil.getPrevSiblingOfType(element, FlexibleSearchSelectedTableName::class.java)
         ?.reference

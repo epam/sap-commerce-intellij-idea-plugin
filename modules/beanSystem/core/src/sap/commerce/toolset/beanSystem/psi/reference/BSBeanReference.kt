@@ -28,7 +28,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionService
 import sap.commerce.toolset.beanSystem.meta.model.BSMetaType
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class BSBeanReference(
     element: PsiElement,
@@ -41,7 +41,7 @@ class BSBeanReference(
 
     override fun multiResolve(p0: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, cacheKey(value), provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     companion object {
         fun cacheKey(postfix: String) = Key.create<ParameterizedCachedValue<Array<ResolveResult>, BSBeanReference>>("HYBRIS_BS_CACHED_REFERENCE_" + postfix)

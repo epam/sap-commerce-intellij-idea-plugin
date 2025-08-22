@@ -31,7 +31,7 @@ import sap.commerce.toolset.cockpitNG.meta.CngMetaModelStateService
 import sap.commerce.toolset.cockpitNG.meta.CngModificationTracker
 import sap.commerce.toolset.cockpitNG.psi.reference.result.ActionDefinitionResolveResult
 import sap.commerce.toolset.cockpitNG.psi.reference.result.EditorDefinitionResolveResult
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
@@ -39,7 +39,7 @@ class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiEle
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     companion object {
         private const val STUB_LENGTH = HybrisConstants.COCKPIT_NG_WIDGET_ID_STUB.length
@@ -54,9 +54,9 @@ class CngWidgetStubReference(element: PsiElement) : PsiReferenceBase.Poly<PsiEle
 
             val result = metaModel
                 .editorDefinitions[value]
-                ?.let { PsiUtils.getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
+                ?.let { getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
                 ?: metaModel.actionDefinitions[value]
-                    ?.let { PsiUtils.getValidResults(arrayOf(ActionDefinitionResolveResult(it))) }
+                    ?.let { getValidResults(arrayOf(ActionDefinitionResolveResult(it))) }
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(

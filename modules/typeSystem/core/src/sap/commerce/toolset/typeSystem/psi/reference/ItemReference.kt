@@ -27,7 +27,7 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -42,7 +42,7 @@ open class ItemReference(element: PsiElement) : TSReferenceBase<PsiElement>(elem
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     override fun getVariants(): Array<LookupElementBuilder> = TSCompletionService.Companion.getInstance(element.project)
         .getCompletions(TSMetaType.META_ITEM)

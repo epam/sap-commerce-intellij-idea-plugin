@@ -33,7 +33,7 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpexParameter
 import sap.commerce.toolset.impex.psi.ImpexTypes
 import sap.commerce.toolset.psi.PsiTreeUtilExt
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -69,7 +69,7 @@ class ImpexFunctionTSAttributeReference(owner: ImpexParameter) : TSReferenceBase
 
         return CachedValuesManager.getManager(project)
             .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-            .let { PsiUtils.getValidResults(it) }
+            .let { getValidResults(it) }
     }
 
     companion object {

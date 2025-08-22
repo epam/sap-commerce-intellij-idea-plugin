@@ -26,7 +26,7 @@ import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
@@ -62,7 +62,7 @@ open class CngTSItemReference(element: PsiElement) : TSReferenceBase<PsiElement>
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngTSItemReference>>("HYBRIS_TS_CACHED_REFERENCE")

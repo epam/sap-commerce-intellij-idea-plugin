@@ -28,7 +28,7 @@ import sap.commerce.toolset.flexibleSearch.FxSUtils
 import sap.commerce.toolset.flexibleSearch.codeInsight.lookup.FxSLookupElementFactory
 import sap.commerce.toolset.flexibleSearch.psi.FlexibleSearchSelectedTableName
 import sap.commerce.toolset.flexibleSearch.psi.reference.result.FxSTableAliasNameResolveResult
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : PsiReferenceBase.Poly<FlexibleSearchSelectedTableName>(owner) {
 
@@ -42,7 +42,7 @@ class FxSSelectedTableNameReference(owner: FlexibleSearchSelectedTableName) : Ps
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     override fun getVariants() = element.tableAliases
         .map { tableAlias -> FxSLookupElementFactory.build(tableAlias) }

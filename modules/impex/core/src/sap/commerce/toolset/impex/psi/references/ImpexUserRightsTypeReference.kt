@@ -28,7 +28,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.lookup.TSLookupElementFactory
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -48,7 +48,7 @@ class ImpexUserRightsTypeReference(owner: PsiElement) : TSReferenceBase<PsiEleme
 
         return CachedValuesManager.getManager(project)
             .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-            .let { PsiUtils.getValidResults(it) }
+            .let { getValidResults(it) }
     }
 
     companion object {

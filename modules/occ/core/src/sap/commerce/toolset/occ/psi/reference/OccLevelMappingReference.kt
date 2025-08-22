@@ -30,7 +30,7 @@ import sap.commerce.toolset.beanSystem.codeInsight.completion.BSCompletionServic
 import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
 import sap.commerce.toolset.occ.psi.OccPropertyMapping
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class OccLevelMappingReference(
     private val meta: BSGlobalMetaBean,
@@ -44,7 +44,7 @@ class OccLevelMappingReference(
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, cacheKey(rangeInElement), provider, false, this to meta)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     companion object {
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, Pair<OccLevelMappingReference, BSGlobalMetaBean>> { param ->
@@ -64,7 +64,7 @@ class OccLevelMappingReference(
                 ?.mapNotNull { it.valueElement }
                 ?.filter { it.value == levelMapping }
                 ?.let { PsiElementResolveResult.createResults(it) }
-                ?.let { PsiUtils.getValidResults(it) }
+                ?.let { getValidResults(it) }
                 ?: emptyArray()
 
             val project = element.project

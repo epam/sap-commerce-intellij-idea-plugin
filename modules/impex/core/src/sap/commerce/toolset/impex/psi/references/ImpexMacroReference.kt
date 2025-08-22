@@ -29,7 +29,7 @@ import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpexFile
 import sap.commerce.toolset.impex.psi.ImpexMacroDeclaration
 import sap.commerce.toolset.impex.psi.util.getLineNumber
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?>(owner, false) {
 
@@ -41,7 +41,7 @@ class ImpexMacroReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement?
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     override fun handleElementRename(newElementName: String) = ImpExPsiElementManipulator().handleContentChange(element, rangeInElement, newElementName)
 

@@ -23,7 +23,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceBase
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.shouldCreateNewReference
 import java.io.Serial
 
 abstract class ASTWrapperReferencePsiElement(node: ASTNode) : ASTWrapperPsiElement(node) {
@@ -36,7 +36,7 @@ abstract class ASTWrapperReferencePsiElement(node: ASTNode) : ASTWrapperPsiEleme
         .firstOrNull()
 
     override fun getReferences(): Array<PsiReference> {
-        if (PsiUtils.shouldCreateNewReference(myReference, text)) {
+        if (shouldCreateNewReference(myReference, text)) {
             myReference = createReference()
         }
         return myReference

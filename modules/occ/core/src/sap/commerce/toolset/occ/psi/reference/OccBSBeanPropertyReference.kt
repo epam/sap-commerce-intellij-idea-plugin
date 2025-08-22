@@ -31,7 +31,7 @@ import sap.commerce.toolset.beanSystem.meta.BSModificationTracker
 import sap.commerce.toolset.beanSystem.meta.model.BSGlobalMetaBean
 import sap.commerce.toolset.beanSystem.psi.reference.result.BeanPropertyResolveResult
 import sap.commerce.toolset.occ.psi.OccPropertyMapping
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class OccBSBeanPropertyReference(
     private val meta: BSGlobalMetaBean,
@@ -45,7 +45,7 @@ class OccBSBeanPropertyReference(
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, cacheKey(rangeInElement), provider, false, this to meta)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     companion object {
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, Pair<OccBSBeanPropertyReference, BSGlobalMetaBean>> { param ->
@@ -57,7 +57,7 @@ class OccBSBeanPropertyReference(
             val result = meta.allProperties[propertyName]
                 ?.let { BeanPropertyResolveResult(it) }
                 ?.let { arrayOf(it) }
-                ?.let { PsiUtils.getValidResults(it) }
+                ?.let { getValidResults(it) }
                 ?: emptyArray()
 
             val project = element.project

@@ -29,14 +29,14 @@ import com.intellij.psi.util.*
 import sap.commerce.toolset.cockpitNG.meta.CngMetaModelStateService
 import sap.commerce.toolset.cockpitNG.meta.CngModificationTracker
 import sap.commerce.toolset.cockpitNG.psi.reference.result.EditorDefinitionResolveResult
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : PsiReferenceBase.Poly<PsiElement>(element, textRange, false),
     PsiPolyVariantReference, HighlightedReference {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, cacheKey(rangeInElement), provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     companion object {
         private val provider = ParameterizedCachedValueProvider<Array<ResolveResult>, CngEditorDefinitionReference> { ref ->
@@ -46,7 +46,7 @@ class CngEditorDefinitionReference(element: PsiElement, textRange: TextRange) : 
 
             val result = CngMetaModelStateService.state(project)
                 .editorDefinitions[value]
-                ?.let { PsiUtils.getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
+                ?.let { getValidResults(arrayOf(EditorDefinitionResolveResult(it))) }
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(

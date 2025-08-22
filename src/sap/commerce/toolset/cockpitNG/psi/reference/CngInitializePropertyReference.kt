@@ -26,7 +26,7 @@ import com.intellij.psi.util.*
 import com.intellij.psi.xml.XmlTag
 import sap.commerce.toolset.cockpitNG.codeInsight.completion.CngCompletionService
 import sap.commerce.toolset.cockpitNG.psi.CngPsiHelper
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class CngInitializePropertyReference : PsiReferenceBase.Poly<PsiElement>, PsiPolyVariantReference, HighlightedReference {
 
@@ -38,7 +38,7 @@ class CngInitializePropertyReference : PsiReferenceBase.Poly<PsiElement>, PsiPol
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, cacheKey(rangeInElement), provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     companion object {
         const val NEW_OBJECT = "newObject"
@@ -59,12 +59,12 @@ class CngInitializePropertyReference : PsiReferenceBase.Poly<PsiElement>, PsiPol
                 ?.filter { it.value == text }
                 ?.map { PsiElementResolveResult(it) }
                 ?.toList()
-                ?.let { PsiUtils.getValidResults(it.toTypedArray()) }
+                ?.let { getValidResults(it.toTypedArray()) }
                 ?.takeIf { it.isNotEmpty() }
                 ?: CngPsiHelper.resolveContextTag(element)
                     ?.getAttribute("type")
                     ?.valueElement
-                    ?.let { PsiUtils.getValidResults(arrayOf(PsiElementResolveResult(it))) }
+                    ?.let { getValidResults(arrayOf(PsiElementResolveResult(it))) }
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(

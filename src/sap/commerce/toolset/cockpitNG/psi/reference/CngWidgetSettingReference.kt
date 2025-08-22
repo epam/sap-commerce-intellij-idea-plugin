@@ -28,7 +28,7 @@ import com.intellij.psi.xml.XmlTag
 import sap.commerce.toolset.cockpitNG.meta.CngMetaModelStateService
 import sap.commerce.toolset.cockpitNG.meta.CngModificationTracker
 import sap.commerce.toolset.cockpitNG.psi.reference.result.WidgetSettingResolveResult
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 /**
  * See https://help.sap.com/docs/SAP_COMMERCE/5c9ea0c629214e42b727bf08800d8dfa/76d2195f994a47f593a2732ef99c91d3.html?locale=en-US&q=socket
@@ -37,7 +37,7 @@ class CngWidgetSettingReference(element: PsiElement) : PsiReferenceBase.Poly<Psi
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngWidgetSettingReference>>("HYBRIS_CNGWIDGETSETTINGREFERENCE")
@@ -55,7 +55,7 @@ class CngWidgetSettingReference(element: PsiElement) : PsiReferenceBase.Poly<Psi
             else CngMetaModelStateService.state(project).widgetDefinitions[widgetDefinitionId]
                 ?.settings
                 ?.get(lookingForName)
-                ?.let { PsiUtils.getValidResults(arrayOf(WidgetSettingResolveResult(it))) }
+                ?.let { getValidResults(arrayOf(WidgetSettingResolveResult(it))) }
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(

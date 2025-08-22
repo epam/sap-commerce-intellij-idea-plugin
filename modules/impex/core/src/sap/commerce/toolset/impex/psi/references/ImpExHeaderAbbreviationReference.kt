@@ -30,13 +30,13 @@ import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpexAnyHeaderParameterName
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class ImpExHeaderAbbreviationReference(owner: ImpexAnyHeaderParameterName) : PsiReferenceBase.Poly<PsiElement?>(owner, false) {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     override fun calculateDefaultRangeInElement() = TextRange.from(0, element.textLength)
 
@@ -65,7 +65,7 @@ class ImpExHeaderAbbreviationReference(owner: ImpexAnyHeaderParameterName) : Psi
                 }
                 ?.psiElement
                 ?.let { PsiElementResolveResult.createResults(it) }
-                ?.let { PsiUtils.getValidResults(it) }
+                ?.let { getValidResults(it) }
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(

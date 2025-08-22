@@ -30,7 +30,7 @@ import sap.commerce.toolset.impex.psi.ImpexFullHeaderParameter
 import sap.commerce.toolset.impex.psi.ImpexTypes
 import sap.commerce.toolset.impex.psi.references.*
 import sap.commerce.toolset.project.PropertyService
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.shouldCreateNewReference
 import java.io.Serial
 
 abstract class ImpexAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPsiElement(astNode), ImpexAnyHeaderParameterName {
@@ -63,7 +63,7 @@ abstract class ImpexAnyHeaderParameterNameMixin(astNode: ASTNode) : ASTWrapperPs
             ImpexTypes.HEADER_PARAMETER_NAME != leafType
                 && ImpexTypes.FUNCTION != leafType -> return PsiReference.EMPTY_ARRAY
 
-            PsiUtils.shouldCreateNewReference(myReference, text) -> {
+            shouldCreateNewReference(myReference, text) -> {
                 myReference = if (isHeaderAbbreviation()) ImpExHeaderAbbreviationReference(this)
                 else ImpexTSAttributeReference(this)
             }

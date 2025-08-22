@@ -28,13 +28,13 @@ import com.intellij.psi.util.*
 import sap.commerce.toolset.cockpitNG.meta.CngMetaModelStateService
 import sap.commerce.toolset.cockpitNG.meta.CngModificationTracker
 import sap.commerce.toolset.cockpitNG.psi.reference.result.WidgetResolveResult
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class CngWidgetReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement>(element), PsiPolyVariantReference, HighlightedReference {
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     companion object {
         val CACHE_KEY = Key.create<ParameterizedCachedValue<Array<ResolveResult>, CngWidgetReference>>("HYBRIS_CNGWIDGETREFERENCE")
@@ -46,7 +46,7 @@ class CngWidgetReference(element: PsiElement) : PsiReferenceBase.Poly<PsiElement
 
             val result = CngMetaModelStateService.state(project)
                 .widgets[lookingForName]
-                ?.let { PsiUtils.getValidResults(arrayOf(WidgetResolveResult(it))) }
+                ?.let { getValidResults(arrayOf(WidgetResolveResult(it))) }
                 ?: emptyArray()
 
             CachedValueProvider.Result.create(

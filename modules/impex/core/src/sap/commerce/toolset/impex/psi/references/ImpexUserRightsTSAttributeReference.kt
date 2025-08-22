@@ -27,7 +27,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpexUserRightsSingleValue
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -61,7 +61,7 @@ open class ImpexUserRightsTSAttributeReference : TSReferenceBase<PsiElement>, Hi
 
         return CachedValuesManager.getManager(project)
             .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-            .let { PsiUtils.getValidResults(it) }
+            .let { getValidResults(it) }
     }
 
     open fun getType() = PsiTreeUtil.getPrevSiblingOfType(element, ImpexUserRightsSingleValue::class.java)

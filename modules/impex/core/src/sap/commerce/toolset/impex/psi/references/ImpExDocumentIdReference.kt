@@ -30,7 +30,7 @@ import com.intellij.psi.util.*
 import sap.commerce.toolset.impex.lang.refactoring.ImpExPsiElementManipulator
 import sap.commerce.toolset.impex.psi.ImpexDocumentIdDec
 import sap.commerce.toolset.impex.psi.ImpexDocumentIdUsage
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 
 class ImpExDocumentIdReference(impexDocumentId: ImpexDocumentIdUsage) : PsiReferenceBase.Poly<PsiElement>(impexDocumentId, false) {
@@ -40,7 +40,7 @@ class ImpExDocumentIdReference(impexDocumentId: ImpexDocumentIdUsage) : PsiRefer
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     override fun getRangeInElement() = TextRange.from(0, element.textLength)
 

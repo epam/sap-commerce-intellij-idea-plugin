@@ -25,7 +25,7 @@ import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.*
 import com.intellij.util.IncorrectOperationException
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class ImpExJavaEnumValueReference(psiElement: PsiElement, private val className: String) : PsiReferenceBase.Poly<PsiElement>(psiElement, false) {
 
@@ -33,7 +33,7 @@ class ImpExJavaEnumValueReference(psiElement: PsiElement, private val className:
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this to className)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     override fun getRangeInElement() = TextRange.from(0, element.textLength)
 

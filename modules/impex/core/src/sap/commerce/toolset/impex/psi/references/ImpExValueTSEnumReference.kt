@@ -26,7 +26,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.util.*
 import sap.commerce.toolset.impex.psi.ImpexValue
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.codeInsight.completion.TSCompletionService
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
@@ -68,7 +68,7 @@ abstract class ImpExValueTSEnumReference(
 
         return CachedValuesManager.getManager(project)
             .getParameterizedCachedValue(element, cacheKey, provider, false, this)
-            .let { PsiUtils.getValidResults(it) }
+            .let { getValidResults(it) }
     }
 
     companion object {

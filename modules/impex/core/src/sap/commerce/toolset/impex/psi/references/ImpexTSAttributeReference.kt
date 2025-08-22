@@ -26,7 +26,7 @@ import com.intellij.psi.util.ParameterizedCachedValue
 import com.intellij.psi.util.ParameterizedCachedValueProvider
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.impex.psi.ImpexAnyHeaderParameterName
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
 import sap.commerce.toolset.typeSystem.psi.reference.TSReferenceBase
@@ -44,7 +44,7 @@ class ImpexTSAttributeReference(owner: ImpexAnyHeaderParameterName) : TSReferenc
 
         return CachedValuesManager.getManager(project)
             .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-            .let { PsiUtils.getValidResults(it) }
+            .let { getValidResults(it) }
     }
 
     companion object {

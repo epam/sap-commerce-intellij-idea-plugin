@@ -203,7 +203,6 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
                 .map { it.extensionDescriptor() }
                 .forEach { put(it.name, it) }
             putAll(getCloudExtensions())
-
         }
     }
 

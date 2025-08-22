@@ -26,7 +26,7 @@ import com.intellij.psi.util.*
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.codeInsight.lookup.LookupElementFactory
-import sap.commerce.toolset.psi.PsiUtils
+import sap.commerce.toolset.psi.getValidResults
 
 class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(owner) {
 
@@ -37,7 +37,7 @@ class LanguageReference(owner: PsiElement) : PsiReferenceBase.Poly<PsiElement>(o
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> = CachedValuesManager.getManager(element.project)
         .getParameterizedCachedValue(element, CACHE_KEY, provider, false, this)
-        .let { PsiUtils.getValidResults(it) }
+        .let { getValidResults(it) }
 
     override fun getVariants() = PropertyService.Companion.getInstance(element.project)
         .getLanguages()
