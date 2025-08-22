@@ -45,10 +45,6 @@
                                  key="hybris.settings.application.project_import.title"
                                  provider="sap.commerce.toolset.options.ApplicationProjectImportSettingsConfigurableProvider"/>
 
-        <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true"
-                             dynamic="true"
-                             key="hybris.settings.project.title"
-                             provider="sap.commerce.toolset.options.ProjectSettingsConfigurableProvider"/>
         <projectConfigurable id="hybris.project.integrations.settings" parentId="hybris.project.settings"
                              nonDefaultProject="true" dynamic="true"
                              displayName="Integrations" order="first"

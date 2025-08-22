@@ -18,11 +18,6 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-        <runLineMarkerContributor language="XML"
-                                  implementationClass="sap.commerce.toolset.project.execution.lineMarker.RefreshProjectRunLineMarkerContributor"/>
-        <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true"
-                             dynamic="true"
-                             key="hybris.settings.project.title"
-                             provider="sap.commerce.toolset.options.ProjectSettingsConfigurableProvider"/>
     </extensions>
+
 </idea-plugin>

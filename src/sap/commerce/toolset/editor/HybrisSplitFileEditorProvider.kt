@@ -39,7 +39,6 @@ import sap.commerce.toolset.impex.file.ImpexFileType
 import sap.commerce.toolset.polyglotQuery.editor.PolyglotQuerySplitEditorEx
 import sap.commerce.toolset.polyglotQuery.file.PolyglotQueryFileType
 
-@Deprecated("Use module specific implementation.")
 class HybrisSplitFileEditorProvider : FileEditorProvider, DumbAware {
 
     override fun createEditor(project: Project, file: VirtualFile): FileEditor = with(TextEditorProvider.getInstance().createEditor(project, file)) {
