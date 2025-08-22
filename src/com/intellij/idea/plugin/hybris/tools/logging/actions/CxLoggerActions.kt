@@ -23,11 +23,14 @@ import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerAccess
 import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.LoggersOptionsTree
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.BundledLoggersTemplateItemNode
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates.CustomLoggersTemplateLoggersOptionsNode
+import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.project.DumbAware
 import com.intellij.ui.AnimatedIcon
+import com.intellij.util.asSafely
+import javax.swing.tree.DefaultMutableTreeNode
 
 abstract class CxLoggerAction(private val logLevel: LogLevel) : AnAction() {
 
@@ -99,3 +102,66 @@ class FetchLoggersStateAction : AnAction() {
         e.presentation.disabledIcon = if (loggerAccess.ready) null else AnimatedIcon.Default.INSTANCE
     }
 }
+
+
+class ApplyBundledTemplateAction : AnAction() {
+
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    override fun actionPerformed(e: AnActionEvent) {
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        val project = e.project ?: return
+
+        e.selectedNode()
+            ?.asSafely<BundledLoggersTemplateItemNode>()
+            ?.loggers
+            ?.let {
+                CxLoggerAccess.getInstance(project).setLoggers(it) { _, result ->
+                    println(result)
+                }
+            }
+    }
+
+    override fun update(e: AnActionEvent) {
+        e.presentation.text = "Apply Template"
+        e.presentation.icon = HybrisIcons.Log.Template.APPLY
+    }
+}
+
+class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
+    override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+    override fun getChildren(e: AnActionEvent?): Array<AnAction> {
+        val selectedNode = e?.selectedNode() ?: return emptyArray()
+        return when (selectedNode) {
+            is BundledLoggersTemplateItemNode -> arrayOf(ApplyBundledTemplateAction())
+            else -> emptyArray()
+        }
+    }
+
+    override fun update(e: AnActionEvent) {
+        val selectedNode = e.selectedNode()
+        when (selectedNode) {
+            is BundledLoggersTemplateItemNode -> {
+                e.presentation.isEnabledAndVisible = true
+            }
+
+            is CustomLoggersTemplateLoggersOptionsNode -> {
+                e.presentation.isEnabledAndVisible = true
+            }
+
+            else -> {
+                e.presentation.isEnabledAndVisible = false
+            }
+        }
+    }
+}
+
+private fun AnActionEvent.selectedNode(): Any? = this.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
+    ?.asSafely<LoggersOptionsTree>()
+    ?.selectionPath
+    ?.lastPathComponent
+    ?.asSafely<DefaultMutableTreeNode>()
+    ?.userObject

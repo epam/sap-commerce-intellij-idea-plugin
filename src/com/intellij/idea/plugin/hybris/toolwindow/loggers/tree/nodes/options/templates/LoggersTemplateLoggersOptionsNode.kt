@@ -19,17 +19,59 @@
 package com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.templates
 
 import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
+import com.intellij.idea.plugin.hybris.tools.logging.CxLoggerModel
+import com.intellij.idea.plugin.hybris.tools.logging.LogLevel
+import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNode
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.LoggersNodeParameters
 import com.intellij.idea.plugin.hybris.toolwindow.loggers.tree.nodes.options.LoggersOptionsNode
 import com.intellij.openapi.project.Project
 
-class LoggersTemplateLoggersOptionsNode(project: Project) : LoggersOptionsNode("Logger Templates", HybrisIcons.Log.Template.TEMPLATES, project) {
+class BundledLoggersTemplateGroupNode(project: Project) : LoggersOptionsNode("Bundled Loggers Templates", HybrisIcons.Log.Template.TEMPLATES, project) {
 
-    override fun getNewChildren(nodeParameters: LoggersNodeParameters) = listOf(
-        BundledLoggersTemplateLoggersOptionsNode(project),
-        CustomLoggersTemplateLoggersOptionsNode(project)
-    ).associateBy { it.name }
+    override fun getNewChildren(nodeParameters: LoggersNodeParameters): Map<String, LoggersNode> {
+        val content = ExtensionResource.CX_LOGGERS_BUNDLED.content
+
+        return listOf(
+            BundledLoggersTemplateItemNode(
+                "Enabled SOLR loggers",
+                listOf(
+                    CxLoggerModel.of("de.hybris.platform.solrfacetsearch.search.impl.DefaultFacetSearchStrategy", LogLevel.DEBUG.name)
+                ),
+                project
+            ),
+            BundledLoggersTemplateItemNode(
+                "Disabled SOLR loggers",
+                listOf(
+                    CxLoggerModel.of("de.hybris.platform.solrfacetsearch.search.impl.DefaultFacetSearchStrategy", LogLevel.OFF.name)
+                ),
+                project
+            ),
+            BundledLoggersTemplateItemNode(
+                "Enabled FlexibleSearch loggers",
+                listOf(
+                    CxLoggerModel.of("de.hybris.platform.jalo.flexiblesearch", LogLevel.DEBUG.name)
+                ),
+                project
+            ),
+            BundledLoggersTemplateItemNode(
+                "Disabled FlexibleSearch loggers",
+                listOf(
+                    CxLoggerModel.of("de.hybris.platform.jalo.flexiblesearch", LogLevel.OFF.name)
+                ),
+                project
+            )
+        )
+            .associateBy { it.name }
+    }
 }
 
-class BundledLoggersTemplateLoggersOptionsNode(project: Project) : LoggersOptionsNode("Bundled", HybrisIcons.Log.Template.BUNDLED, project)
+class BundledLoggersTemplateItemNode(
+    private val text: String,
+    val loggers: List<CxLoggerModel>,
+    project: Project
+) : LoggersOptionsNode(text, HybrisIcons.Log.Template.BUNDLED, project) {
+
+}
+
 class CustomLoggersTemplateLoggersOptionsNode(project: Project) : LoggersOptionsNode("Custom", HybrisIcons.Log.Template.CUSTOM, project)

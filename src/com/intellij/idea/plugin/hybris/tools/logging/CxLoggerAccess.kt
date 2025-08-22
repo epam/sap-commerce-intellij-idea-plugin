@@ -22,6 +22,7 @@ import com.intellij.idea.plugin.hybris.extensions.ExtensionResource
 import com.intellij.idea.plugin.hybris.notifications.Notifications
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionService
 import com.intellij.idea.plugin.hybris.tools.remote.RemoteConnectionType
+import com.intellij.idea.plugin.hybris.tools.remote.execution.DefaultExecutionResult
 import com.intellij.idea.plugin.hybris.tools.remote.execution.TransactionMode
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionClient
 import com.intellij.idea.plugin.hybris.tools.remote.execution.groovy.GroovyExecutionContext
@@ -104,9 +105,32 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
     fun fetch() = fetch(RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris))
 
     fun fetch(server: RemoteConnectionSettingsState) {
+        executeGroovyLoggersScript(server, ExtensionResource.CX_LOGGERS_STATE.content)
+    }
+
+    fun setLoggers(loggers: List<CxLoggerModel>, callback: (CoroutineScope, DefaultExecutionResult) -> Unit = { _, _ -> }) {
+        val groovyScriptContent = loggers.joinToString(",\n") {
+            """
+                "${it.name}" : "${it.level}"
+            """.trimIndent()
+        }
+            .let { ExtensionResource.UPDATE_CX_LOGGERS_STATE.content.replace("[loggersMapToBeReplacedPlaceholder]", it) }
+
+        executeGroovyLoggersScript(
+            RemoteConnectionService.getInstance(project).getActiveRemoteConnectionSettings(RemoteConnectionType.Hybris),
+            groovyScriptContent,
+            callback
+        )
+    }
+
+    private fun executeGroovyLoggersScript(
+        server: RemoteConnectionSettingsState,
+        groovyScriptContent: String,
+        callback: (CoroutineScope, DefaultExecutionResult) -> Unit = { _, _ -> }
+    ) {
         val context = GroovyExecutionContext(
             executionTitle = "Fetching Loggers from SAP Commerce [${server.shortenConnectionName()}]...",
-            content = ExtensionResource.CX_LOGGERS_STATE.content,
+            content = groovyScriptContent,
             transactionMode = TransactionMode.ROLLBACK
         )
 
@@ -139,6 +163,8 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
                     updateState(loggers, server)
                 }
 
+                callback.invoke(coroutineScope, result)
+
                 project.messageBus.syncPublisher(CxLoggersStateListener.TOPIC).onLoggersStateChanged(server)
 
                 when {
@@ -154,9 +180,9 @@ class CxLoggerAccess(private val project: Project, private val coroutineScope: C
 
                     else -> notify(NotificationType.INFORMATION, "Loggers state is fetched.") {
                         """
-                    <p>Declared loggers: ${loggers.size}</p>
-                    <p>Server: ${server.shortenConnectionName()}</p>
-                """.trimIndent()
+                        <p>Declared loggers: ${loggers.size}</p>
+                        <p>Server: ${server.shortenConnectionName()}</p>
+                    """.trimIndent()
                     }
                 }
             }
