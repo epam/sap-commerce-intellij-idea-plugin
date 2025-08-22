@@ -1,5 +1,7 @@
 ## [2025.2.3]
 
+### `SAP CX Logging` enhancements
+- Improve positioning of `[y] log level` CTA for classes with annotations [#1535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1535)
 
 ### `xDebugger` enhancements
 - Create type renderer: The item type is not present in the *items.xml files [#1531](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1531)
@@ -9,6 +11,7 @@
 
 ### Fixes
 - Enhance JVM Parameters only with Standalone JDK Module Exports during Integrationtestse [1529](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1529)
+- Fixed the slow operation exception during initialization of Loggers toolwindow [#1536](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1536)
 
 ### `Other` enhancements
 - Migrated to immutable Settings [#1527](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1527)

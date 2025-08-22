@@ -24,6 +24,7 @@ import com.intellij.idea.plugin.hybris.toolwindow.loggers.LoggersView
 import com.intellij.idea.plugin.hybris.toolwindow.system.bean.view.BSView
 import com.intellij.idea.plugin.hybris.toolwindow.system.type.view.TSView
 import com.intellij.idea.plugin.hybris.util.isHybrisProject
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -31,19 +32,25 @@ import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : ToolWindowFactory, DumbAware {
 
     override fun createToolWindowContent(
         project: Project, toolWindow: ToolWindow
     ) {
-        arrayOf(
-            createTSContent(toolWindow, TSView(project)),
-            createBSContent(toolWindow, BSView(project)),
-            createConsolesContent(toolWindow, project, HybrisConsolesView.getInstance(project)),
-            createCCv2CLIContent(toolWindow, project, CCv2View(project)),
-            createLoggersContent(toolWindow, project, LoggersView(project, coroutineScope))
-        ).forEach { toolWindow.contentManager.addContent(it) }
+        coroutineScope.launch(Dispatchers.IO) {
+            edtWriteAction {
+                arrayOf(
+                    createTSContent(toolWindow, TSView(project)),
+                    createBSContent(toolWindow, BSView(project)),
+                    createConsolesContent(toolWindow, project, HybrisConsolesView.getInstance(project)),
+                    createCCv2CLIContent(toolWindow, project, CCv2View(project)),
+                    createLoggersContent(toolWindow, project, LoggersView(project, coroutineScope))
+                ).forEach { toolWindow.contentManager.addContent(it) }
+            }
+        }
     }
 
     override suspend fun isApplicableAsync(project: Project) = project.isHybrisProject
