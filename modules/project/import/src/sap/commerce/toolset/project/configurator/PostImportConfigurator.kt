@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.project.configurators
+package sap.commerce.toolset.project.configurator
 
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ModalityState
@@ -27,7 +27,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
@@ -66,7 +65,7 @@ class PostImportConfigurator(private val project: Project) {
         val notificationTitle = if (refresh) i18n("hybris.notification.project.refresh.title")
         else i18n("hybris.notification.project.import.title")
 
-        with(Notifications) {
+        with(Notifications.Companion) {
             create(NotificationType.INFORMATION, notificationTitle, notificationContent).notify(project)
             showSystemNotificationIfNotActive(project, notificationContent, notificationTitle, notificationContent)
         }

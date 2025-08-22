@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.HybrisIcons;
 import sap.commerce.toolset.Notifications;
-import sap.commerce.toolset.project.configurators.PostImportConfigurator;
+import sap.commerce.toolset.project.configurator.PostImportConfigurator;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
 import sap.commerce.toolset.project.settings.ProjectSettings;

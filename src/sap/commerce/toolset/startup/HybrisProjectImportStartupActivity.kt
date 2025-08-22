@@ -30,7 +30,7 @@ import sap.commerce.toolset.common.services.CommonIdeaService
 import sap.commerce.toolset.console.HybrisConsoleService
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
-import sap.commerce.toolset.project.configurators.PostImportConfigurator
+import sap.commerce.toolset.project.configurator.PostImportConfigurator
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.settings.WorkspaceSettings
 
