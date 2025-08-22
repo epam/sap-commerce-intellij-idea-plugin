@@ -22,4 +22,217 @@
         <dom.fileMetaData rootTagName="model" stubVersion="3" implementation="sap.commerce.toolset.typeSystem.TSDeploymentModelDomFileDescription"/>
     </extensions>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.MandatoryFieldMustHaveInitialValue.key"
+                         shortName="MandatoryFieldMustHaveInitialValue" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSMandatoryFieldMustHaveInitialValue"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSEnumValueMustBeUppercase.key"
+                         shortName="TSEnumValueMustBeUppercase" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSEnumValueMustBeUppercase"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.ImmutableFieldMustHaveInitialValue.key"
+                         shortName="ImmutableFieldMustHaveInitialValue" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSImmutableFieldMustHaveInitialValue"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TypeNameMustStartWithUppercaseLetter.key"
+                         shortName="TypeNameMustStartWithUppercaseLetter" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSTypeNameMustStartWithUppercaseLetter"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.QualifierMustStartWithLowercaseLetter.key"
+                         shortName="QualifierMustStartWithLowercaseLetter" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSQualifierMustStartWithLowercaseLetter"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.OrderingOfRelationShouldBeAvoided.key"
+                         shortName="OrderingOfRelationShouldBeAvoided" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSOrderingOfRelationShouldBeAvoided"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.ListsInRelationShouldBeAvoided.key"
+                         shortName="ListsInRelationShouldBeAvoided" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSListsInRelationShouldBeAvoided"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.UseOfUnoptimizedAttributesIsNotRecommended.key"
+                         shortName="UseOfUnoptimizedAttributesIsNotRecommended" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSUseOfUnoptimizedAttributesIsNotRecommended"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.CollectionsAreOnlyForDynamicAndJalo.key"
+                         shortName="CollectionsAreOnlyForDynamicAndJalo" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSCollectionsAreOnlyForDynamicAndJalo"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TypeNameMustNotStartWithGenerated.key"
+                         shortName="TypeNameMustNotStartWithGenerated" level="WEAK WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSTypeNameMustNotStartWithGenerated"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TypeNameMustPointToExistingType.key"
+                         shortName="TypeNameMustPointToExistingType" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSTypeNameMustPointToExistingType"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.ItemAttributeMetaTypeNameMustPointToValidMetaType.key"
+                         shortName="ItemAttributeMetaTypeNameMustPointToValidMetaType" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSItemAttributeMetaTypeNameMustPointToValidMetaType"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.ItemMetaTypeNameMustPointToValidMetaType.key"
+                         shortName="ItemMetaTypeNameMustPointToValidMetaType" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSItemMetaTypeNameMustPointToValidMetaType"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.RelationElementMetaTypeNameMustPointToValidMetaType.key"
+                         shortName="RelationElementMetaTypeNameMustPointToValidMetaType" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSRelationElementMetaTypeNameMustPointToValidMetaType"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.JaloPersistanceTypeIsDeprecated.key"
+                         shortName="JaloPersistanceTypeIsDeprecated" level="WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSJaloPersistanceTypeIsDeprecated"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.CmpPersistanceTypeIsDeprecated.key"
+                         shortName="CmpPersistanceTypeIsDeprecated" level="WARNING"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSCmpPersistanceTypeIsDeprecated"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.DeploymentTableMustExistForItemExtendingGenericItem.key"
+                         shortName="DeploymentTableMustExistForItemExtendingGenericItem" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTableMustExistForItemExtendingGenericItem"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.DeploymentTableMustNotBeRedeclaredInChildTypes.key"
+                         shortName="DeploymentTableMustNotBeRedeclaredInChildTypes" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTableMustNotBeRedeclaredInChildTypes"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.DeploymentTypeCodeMustBeUnique.key"
+                         shortName="DeploymentTypeCodeMustBeUnique" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTypeCodeMustBeUnique"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.DeploymentTableMustBeUnique.key"
+                         shortName="DeploymentTableMustBeUnique" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTableMustBeUnique"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.JaloClassIsNotAllowedWhenAddingFieldsToExistingClass.key"
+                         shortName="JaloClassIsNotAllowedWhenAddingFieldsToExistingClass" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSJaloClassIsNotAllowedWhenAddingFieldsToExistingClass"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.AttributeHandlerMustBeSetForDynamicAttribute.key"
+                         shortName="AttributeHandlerMustBeSetForDynamicAttribute" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSAttributeHandlerMustBeSetForDynamicAttribute"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.DeploymentTypeCodeMustBeGreaterThanTenThousand.key"
+                         shortName="DeploymentTypeCodeMustBeGreaterThanTenThousand" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTypeCodeMustBeGreaterThanTenThousand"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.DeploymentTableMustExistForManyToManyRelation.key"
+                         shortName="DeploymentTableMustExistForManyToManyRelation" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTableMustExistForManyToManyRelation"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.DeploymentTypeCodeMustBeGreaterThanTenThousandForRelations.key"
+                         shortName="DeploymentTypeCodesMustBeGreaterThanTenThousandForRelations" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTypeCodesMustBeGreaterThanTenThousandForRelations"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTypeCodeReservedForCommonsExtension.key"
+                         shortName="DeploymentTypeCodeReservedForCommonsExtension" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTypeCodeReservedForCommonsExtension"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTypeCodeReservedForPrintExtension.key"
+                         shortName="DeploymentTypeCodeReservedForPrintExtension" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTypeCodeReservedForPrintExtension"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTypeCodeReservedForProcessingExtension.key"
+                         shortName="DeploymentTypeCodeReservedForProcessingExtension" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTypeCodeReservedForProcessingExtension"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSDeploymentTypeCodeReservedInspection.key"
+                         shortName="TSDeploymentTypeCodeReservedInspection" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTypeCodeReservedInspection"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle"
+                         key="hybris.inspections.ts.DeploymentTypeCodeReservedForLegacyXPrintExtension.key"
+                         shortName="DeploymentTypeCodeReservedForLegacyXPrintExtension" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTypeCodeReservedForLegacyXPrintExtension"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTypeCodeReservedForB2BCommerceExtension.key"
+                         shortName="DeploymentTypeCodeReservedForB2BCommerceExtension" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTypeCodeReservedForB2BCommerceExtension"/>
+
+        <!--        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"-->
+        <!--                         bundle="i18n.HybrisBundle" key="hybris.inspections.typeSystem.CatalogAwareTypesMustHaveSpecificConditions.key"-->
+        <!--                         shortName="CatalogAwareTypesMustHaveSpecificConditions" level="ERROR"-->
+        <!--                         implementationClass="sap.commerce.toolset.codeInspection.rule.TSCatalogAwareTypesMustHaveSpecificConditions"/>-->
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.CatalogAwareUniqueKeyAttributeQualifier.key"
+                         shortName="CatalogAwareUniqueKeyAttributeQualifier" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSCatalogAwareUniqueKeyAttributeQualifier"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.CatalogAwareCatalogVersionAttributeQualifier.key"
+                         shortName="CatalogAwareCatalogVersionAttributeQualifier" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSCatalogAwareCatalogVersionAttributeQualifier"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DefaultValueForEnumTypeMustBeAssignable.key"
+                         shortName="DefaultValueForEnumTypeMustBeAssignable" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDefaultValueForEnumTypeMustBeAssignable"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.DeploymentTagMustNotBeDeclaredForO2MRelation.key"
+                         shortName="TSDeploymentTagMustNotBeDeclaredForO2MRelation" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTagMustNotBeDeclaredForO2MRelation"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSDeploymentTableNameLengthShouldBeValid.key"
+                         shortName="TSDeploymentTableNameLengthShouldBeValid" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSDeploymentTableNameLengthShouldBeValid"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse.key"
+                         shortName="TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSQualifierAndModifiersMustNotBeDeclaredForNavigableFalse"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSOnlyOneSideN2mRelationMustBeNotNavigable.key"
+                         shortName="TSOnlyOneSideN2mRelationMustBeNotNavigable" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSOnlyOneSideN2mRelationMustBeNotNavigable"/>
+
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Type System"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.ts.TSQualifierMustExistForNavigablePartInN2MRelation.key"
+                         shortName="TSQualifierMustExistForNavigablePartInN2MRelation" level="ERROR"
+                         implementationClass="sap.commerce.toolset.typeSystem.codeInspection.TSQualifierMustExistForNavigablePartInN2MRelation"/>
+    </extensions>
+
 </idea-plugin>
