@@ -20,11 +20,11 @@ package sap.commerce.toolset.beanSystem.codeInsight.daemon
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import sap.commerce.toolset.beanSystem.BSUtils
+import sap.commerce.toolset.beanSystem.isBeansXmlFile
 import sap.commerce.toolset.codeInsight.daemon.HybrisLineMarkerProvider
 
 abstract class BeansXmlLineMarkerProvider<T : PsiElement> : HybrisLineMarkerProvider<T>() {
 
-    final override fun canProcess(psi: PsiFile) = BSUtils.isBeansXmlFile(psi)
+    final override fun canProcess(psi: PsiFile) = psi.isBeansXmlFile
 
 }

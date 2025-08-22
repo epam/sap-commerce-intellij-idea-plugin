@@ -20,13 +20,13 @@ package sap.commerce.toolset.beanSystem.codeInspection
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.xml.XmlFile
-import sap.commerce.toolset.beanSystem.BSUtils
+import sap.commerce.toolset.beanSystem.isBeansXmlFile
 import sap.commerce.toolset.beanSystem.model.Beans
 import sap.commerce.toolset.codeInspection.AbstractInspection
 
 abstract class BSInspection : AbstractInspection<Beans>(Beans::class.java) {
 
-    override fun canProcess(project: Project, file: XmlFile) = BSUtils.isBeansXmlFile(file)
+    override fun canProcess(project: Project, file: XmlFile) = file.isBeansXmlFile
 
     override fun canProcess(dom: Beans) = dom.xmlElement != null
 }

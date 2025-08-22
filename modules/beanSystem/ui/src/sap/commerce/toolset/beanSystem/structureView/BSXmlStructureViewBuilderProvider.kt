@@ -21,11 +21,11 @@ import com.intellij.ide.structureView.xml.XmlStructureViewBuilderProvider
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomElement
 import com.intellij.util.xml.DomService
-import sap.commerce.toolset.beanSystem.BSUtils
+import sap.commerce.toolset.beanSystem.isBeansXmlFile
 
 class BSXmlStructureViewBuilderProvider : XmlStructureViewBuilderProvider {
 
-    override fun createStructureViewBuilder(xmlFile: XmlFile) = if (!BSUtils.isBeansXmlFile(xmlFile)) null
+    override fun createStructureViewBuilder(xmlFile: XmlFile) = if (!xmlFile.isBeansXmlFile) null
     else  BSStructureViewBuilder(xmlFile) { _: DomElement -> DomService.StructureViewMode.SHOW }
 
 }

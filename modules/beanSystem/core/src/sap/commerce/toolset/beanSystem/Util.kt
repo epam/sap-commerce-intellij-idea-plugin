@@ -19,7 +19,11 @@
 package sap.commerce.toolset.beanSystem
 
 import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiFile
+import com.intellij.psi.xml.XmlFile
+import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.beanSystem.model.Beans
 
 fun isGeneratedFile(psiClass: PsiClass): Boolean {
     val virtualFile = psiClass.containingFile.virtualFile
@@ -27,7 +31,7 @@ fun isGeneratedFile(psiClass: PsiClass): Boolean {
     if (virtualFile?.extension == null) return false
 
     return (virtualFile.extension == "class" && virtualFile.path.contains(HybrisConstants.JAR_MODELS))
-            || (virtualFile.extension == "java" && virtualFile.path.contains("${HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY}/${HybrisConstants.GEN_SRC_DIRECTORY}"))
+        || (virtualFile.extension == "java" && virtualFile.path.contains("${HybrisConstants.PLATFORM_BOOTSTRAP_DIRECTORY}/${HybrisConstants.GEN_SRC_DIRECTORY}"))
 }
 
 fun isBeanFile(psiClass: PsiClass): Boolean {
@@ -39,3 +43,10 @@ fun isEnumFile(psiClass: PsiClass): Boolean {
 
     return isGeneratedFile(psiClass)
 }
+
+val PsiFile.isBeansXmlFile
+    get() = this is XmlFile && this.isBeansXmlFile
+
+val XmlFile.isBeansXmlFile
+    get() = this.name.endsWith(HybrisConstants.HYBRIS_BEANS_XML_FILE_ENDING)
+        && DomManager.getDomManager(this.project).getFileElement(this, Beans::class.java) != null
