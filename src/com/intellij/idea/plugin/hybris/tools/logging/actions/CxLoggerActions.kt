@@ -109,9 +109,19 @@ class ApplyBundledTemplateAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun actionPerformed(e: AnActionEvent) {
-        println("Place: " + e.place)
-        val lastPathComponent = e.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT).asSafely<LoggersOptionsTree>()?.selectionPath?.lastPathComponent
-        println("Last component: " + (lastPathComponent?.toString() ?: "n/a"))
+        e.presentation.isVisible = ActionPlaces.ACTION_SEARCH != e.place
+        if (!e.presentation.isVisible) return
+
+        val project = e.project ?: return
+
+        e.selectedNode()
+            ?.asSafely<BundledLoggersTemplateItemNode>()
+            ?.loggers
+            ?.let {
+                CxLoggerAccess.getInstance(project).setLoggers(it) { _, result ->
+                    println(result)
+                }
+            }
     }
 
     override fun update(e: AnActionEvent) {
@@ -124,32 +134,34 @@ class CxLoggersContextMenuActionGroup : ActionGroup(), DumbAware {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
-        val selectedNode = selectedNode(e) ?: return emptyArray()
+        val selectedNode = e?.selectedNode() ?: return emptyArray()
         return when (selectedNode) {
             is BundledLoggersTemplateItemNode -> arrayOf(ApplyBundledTemplateAction())
             else -> emptyArray()
         }
     }
 
-    private fun selectedNode(e: AnActionEvent?): Any? = e?.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
-        ?.asSafely<LoggersOptionsTree>()
-        ?.selectionPath
-        ?.lastPathComponent
-        ?.asSafely<DefaultMutableTreeNode>()
-        ?.userObject
-
     override fun update(e: AnActionEvent) {
-        val selectedNode = selectedNode(e)
+        val selectedNode = e.selectedNode()
         when (selectedNode) {
             is BundledLoggersTemplateItemNode -> {
                 e.presentation.isEnabledAndVisible = true
             }
+
             is CustomLoggersTemplateLoggersOptionsNode -> {
                 e.presentation.isEnabledAndVisible = true
             }
+
             else -> {
                 e.presentation.isEnabledAndVisible = false
             }
         }
     }
 }
+
+private fun AnActionEvent.selectedNode(): Any? = this.getData(PlatformCoreDataKeys.CONTEXT_COMPONENT)
+    ?.asSafely<LoggersOptionsTree>()
+    ?.selectionPath
+    ?.lastPathComponent
+    ?.asSafely<DefaultMutableTreeNode>()
+    ?.userObject
