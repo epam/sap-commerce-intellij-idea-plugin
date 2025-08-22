@@ -27,8 +27,8 @@ import com.intellij.util.Processor
 import com.intellij.util.xml.ConvertContext
 import com.intellij.util.xml.DomManager
 import com.intellij.util.xml.stubs.index.DomElementClassIndex
-import sap.commerce.toolset.project.ModuleUtil
 import sap.commerce.toolset.project.PropertyService
+import sap.commerce.toolset.project.module
 import sap.commerce.toolset.typeSystem.codeInsight.lookup.TSLookupElementFactory
 import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
 import sap.commerce.toolset.typeSystem.model.deployment.DatabaseSchema
@@ -83,7 +83,7 @@ class AdvancedTypeMappingConverter : AbstractTSConverterBase<TypeMapping>(TypeMa
             object : Processor<PsiFile> {
                 override fun process(psiFile: PsiFile): Boolean {
                     psiFile.virtualFile ?: return true
-                    ModuleUtil.getModule(psiFile) ?: return true
+                    psiFile.module ?: return true
                     deploymentModel = domManager.getFileElement(psiFile as XmlFile, Model::class.java)
                         ?.rootElement
                         ?: return true

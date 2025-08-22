@@ -28,7 +28,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.xml.XmlFile
 import com.intellij.util.xml.DomManager
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.ModuleUtil
+import sap.commerce.toolset.project.isCustomExtensionFile
 import sap.commerce.toolset.typeSystem.model.Items
 
 object TSUtils {
@@ -43,7 +43,7 @@ object TSUtils {
         if (!isTypeSystemFile(file)) return@getCachedValue CachedValueProvider.Result.create(false, file)
 
         val vFile = file.virtualFile
-        CachedValueProvider.Result.create(vFile != null && ModuleUtil.isCustomExtensionFile(vFile, file.project), file)
+        CachedValueProvider.Result.create(vFile != null && vFile.isCustomExtensionFile(file.project), file)
     }
 
     fun cleanItemModelSearchName(searchName: String?): String? {
