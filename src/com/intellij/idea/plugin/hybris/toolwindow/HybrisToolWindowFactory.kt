@@ -40,7 +40,7 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
     override fun createToolWindowContent(
         project: Project, toolWindow: ToolWindow
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch(Dispatchers.IO) {
             edtWriteAction {
                 arrayOf(
                     createTSContent(toolWindow, TSView(project)),
@@ -50,7 +50,6 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
                     createLoggersContent(toolWindow, project, LoggersView(project, coroutineScope))
                 ).forEach { toolWindow.contentManager.addContent(it) }
             }
-
         }
     }
 
