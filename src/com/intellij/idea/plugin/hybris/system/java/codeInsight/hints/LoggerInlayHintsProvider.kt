@@ -59,10 +59,10 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         return PsiTreeUtil.findChildrenOfAnyType(psiFile, PsiClass::class.java, PsiPackageStatement::class.java)
             .mapNotNull { psiElement ->
                 when (psiElement) {
-                    is PsiClass -> {
-                        return@mapNotNull psiElement.nameIdentifier
-                            ?.let { FqnUtil.elementToFqn(psiElement, editor) }
-                            ?.let { psiElement.nameIdentifier!! to it }
+                    is PsiClass -> psiElement.nameIdentifier
+                        ?.let { psiClassIdentifier ->
+                            FqnUtil.elementToFqn(psiElement, editor)
+                                ?.let { fqn -> psiClassIdentifier to fqn }
                     }
 
                     is PsiPackageStatement -> psiElement to psiElement.packageName
