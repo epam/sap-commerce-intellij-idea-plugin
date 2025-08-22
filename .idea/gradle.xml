@@ -49,6 +49,7 @@
             <option value="$PROJECT_DIR$/modules/javaee/core" />
             <option value="$PROJECT_DIR$/modules/javaee/web" />
             <option value="$PROJECT_DIR$/modules/jrebel/core" />
+            <option value="$PROJECT_DIR$/modules/jsp/ui" />
             <option value="$PROJECT_DIR$/modules/junit/core" />
             <option value="$PROJECT_DIR$/modules/kotlin/core" />
             <option value="$PROJECT_DIR$/modules/logging/core" />
