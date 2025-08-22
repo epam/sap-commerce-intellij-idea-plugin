@@ -46,7 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.HybrisIcons;
 import sap.commerce.toolset.project.AbstractHybrisProjectImportBuilder;
 import sap.commerce.toolset.project.HybrisProjectImportProvider;
-import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
+import sap.commerce.toolset.project.configurator.ProjectRefreshConfigurator;
 import sap.commerce.toolset.project.facet.YFacet;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.project.wizard.RefreshSupport;
@@ -149,9 +149,7 @@ public class ProjectRefreshAction extends AnAction {
             libraryModel.commit();
         });
 
-        final var configuratorFactory = ConfiguratorFactory.Companion.getInstance();
-
-        configuratorFactory.getRefreshConfigurators()
+        ProjectRefreshConfigurator.Companion.getEP().getExtensionList()
             .forEach(configurator -> configurator.beforeRefresh(project));
     }
 

@@ -27,6 +27,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.util.concurrency.AppExecutorUtil
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.i18n
+import sap.commerce.toolset.project.configurator.ProjectPostImportConfigurator
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor
 
@@ -42,13 +43,11 @@ class PostImportConfigurator(private val project: Project) {
             .nonBlocking<List<() -> Unit>> {
                 if (project.isDisposed) return@nonBlocking emptyList()
 
-                with(ConfiguratorFactory.getInstance()) {
-                    postImportConfigurators
-                        .map {
-                            it.postImport(project, refresh, hybrisProjectDescriptor, allModules)
-                        }
-                        .flatten()
-                }
+                ProjectPostImportConfigurator.EP.extensionList
+                    .map {
+                        it.postImport(project, refresh, hybrisProjectDescriptor, allModules)
+                    }
+                    .flatten()
             }
             .finishOnUiThread(ModalityState.defaultModalityState()) { actions ->
                 if (project.isDisposed) return@finishOnUiThread

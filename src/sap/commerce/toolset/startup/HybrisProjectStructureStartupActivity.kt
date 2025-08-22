@@ -28,7 +28,7 @@ import sap.commerce.toolset.common.services.CommonIdeaService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.actionSystem.ProjectRefreshAction
-import sap.commerce.toolset.project.configurators.ConfiguratorFactory
+import sap.commerce.toolset.project.configurator.ProjectStartupConfigurator
 import sap.commerce.toolset.project.settings.ProjectSettings
 
 class HybrisProjectStructureStartupActivity : ProjectActivity {
@@ -86,9 +86,7 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     private fun continueOpening(project: Project) {
         if (project.isDisposed) return
 
-        with(ConfiguratorFactory.getInstance()) {
-            startupConfigurators.forEach { it.onStartup(project) }
-        }
+        ProjectStartupConfigurator.EP.extensionList.forEach { it.onStartup(project) }
     }
 
 }

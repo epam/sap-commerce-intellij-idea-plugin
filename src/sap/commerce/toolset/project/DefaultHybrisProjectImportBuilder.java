@@ -20,7 +20,6 @@
 package sap.commerce.toolset.project;
 
 import com.intellij.notification.NotificationType;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
@@ -35,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.HybrisIcons;
 import sap.commerce.toolset.Notifications;
-import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
 import sap.commerce.toolset.project.configurators.PostImportConfigurator;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
@@ -152,12 +150,10 @@ public class DefaultHybrisProjectImportBuilder extends AbstractHybrisProjectImpo
         if (allModules.isEmpty()) {
             return Collections.emptyList();
         }
-        final ConfiguratorFactory configuratorFactory = ApplicationManager.getApplication().getService(ConfiguratorFactory.class);
-
         this.performProjectsCleanup(allModules);
 
         new ImportProjectProgressModalWindow(
-            project, model, configuratorFactory, hybrisProjectDescriptor, modules, refresh
+            project, model, hybrisProjectDescriptor, modules, refresh
         ).queue();
 
         if (refresh) {

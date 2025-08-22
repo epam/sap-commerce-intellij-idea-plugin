@@ -61,8 +61,7 @@ import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.impex.ImpExLanguage;
-import sap.commerce.toolset.project.configurator.ConfiguratorCache;
-import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
+import sap.commerce.toolset.project.configurator.*;
 import sap.commerce.toolset.project.descriptor.*;
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
 import sap.commerce.toolset.project.settings.ProjectSettings;
@@ -86,7 +85,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
     private final Project project;
     private final ModifiableModuleModel model;
-    private final ConfiguratorFactory configuratorFactory;
     private final HybrisProjectDescriptor hybrisProjectDescriptor;
     private final List<Module> modules;
     private final boolean refresh;
@@ -96,7 +94,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     public ImportProjectProgressModalWindow(
         final Project project,
         final ModifiableModuleModel model,
-        final ConfiguratorFactory configuratorFactory,
         final HybrisProjectDescriptor hybrisProjectDescriptor,
         final List<Module> modules,
         final boolean refresh) {
@@ -104,7 +101,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         this.project = project;
         this.model = model;
         this.modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
-        this.configuratorFactory = configuratorFactory;
         this.hybrisProjectDescriptor = hybrisProjectDescriptor;
         this.modules = modules;
         this.refresh = refresh;
@@ -151,7 +147,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
             ? modifiableModelsProvider.getModifiableModuleModel()
             : model;
 
-        configuratorFactory.getPreImportConfigurators().forEach(configurator ->
+        ProjectPreImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
             configurator.preConfigure(indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors)
         );
 
@@ -162,7 +158,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         for (final var moduleDescriptor : moduleDescriptorsToImport) {
             final var modifiableRootModel = rootProjectModifiableModel;
 
-            final var moduleOpt = configuratorFactory.getModuleImportConfigurators().stream()
+            final var moduleOpt = ModuleImportConfigurator.Companion.getEP().getExtensionList().stream()
                 .filter(configurator -> configurator.isApplicable(moduleDescriptor))
                 .findFirst()
                 .map(configurator -> {
@@ -193,7 +189,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         final var finalRootProjectModifiableModel = rootProjectModifiableModel;
 
-        configuratorFactory.getImportConfigurators().forEach(configurator ->
+        ProjectImportConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
             configurator.configure(project, indicator, hybrisProjectDescriptor, allHybrisModuleDescriptors, finalRootProjectModifiableModel, modifiableModelsProvider, cache)
         );
 
@@ -225,7 +221,7 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
     ) {
         final var modifiableFacetModel = modifiableModelsProvider.getModifiableFacetModel(module);
 
-        configuratorFactory.getModuleFacetConfigurators().forEach(configurator ->
+        ModuleFacetConfigurator.Companion.getEP().getExtensionList().forEach(configurator ->
             configurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
         );
     }

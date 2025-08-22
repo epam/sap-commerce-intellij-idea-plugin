@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.actionSystem
+
+package sap.commerce.toolset.searcheverywhere
 
 import com.intellij.ide.actions.SearchEverywhereBaseAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import sap.commerce.toolset.isHybrisProject
-import sap.commerce.toolset.searcheverywhere.SearchEverywhereContributor
 
 class GotoTypeAction : SearchEverywhereBaseAction(), DumbAware {
 

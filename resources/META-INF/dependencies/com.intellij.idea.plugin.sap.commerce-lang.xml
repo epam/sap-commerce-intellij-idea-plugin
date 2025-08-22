@@ -51,7 +51,7 @@
             <add-to-group group-id="FileMenu" anchor="after" relative-to-action="InvalidateCaches"/>
         </action>
 
-        <action id="GotoType" class="sap.commerce.toolset.project.actionSystem.GotoTypeAction"
+        <action id="GotoType" class="sap.commerce.toolset.searcheverywhere.GotoTypeAction"
                 text="SAP Type...">
             <keyboard-shortcut first-keystroke="control shift H" keymap="$default"/>
             <add-to-group group-id="GoToTargetEx"/>
