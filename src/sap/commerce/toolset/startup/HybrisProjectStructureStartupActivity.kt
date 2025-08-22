@@ -24,7 +24,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import sap.commerce.toolset.Notifications
 import sap.commerce.toolset.Plugin
-import sap.commerce.toolset.common.services.CommonIdeaService
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.actionSystem.ProjectRefreshAction
@@ -38,37 +37,26 @@ class HybrisProjectStructureStartupActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isDisposed) return
 
-        val commonIdeaService = CommonIdeaService.getInstance()
         val settingsComponent = ProjectSettings.getInstance(project)
         val isHybrisProject = project.isHybrisProject
 
-        if (isHybrisProject) {
-            settingsComponent.registerCloudExtensions()
+        if (!isHybrisProject) return
 
-            if (settingsComponent.isOutdatedHybrisProject()) {
-                Notifications.create(
-                    NotificationType.INFORMATION,
-                    i18n("hybris.notification.project.open.outdated.title"),
-                    i18n(
-                        "hybris.notification.project.open.outdated.text",
-                        settingsComponent.importedByVersion ?: "old"
-                    )
-                )
-                    .important(true)
-                    .addAction(i18n("hybris.notification.project.open.outdated.action")) { _, _ -> ProjectRefreshAction.triggerAction() }
-                    .notify(project)
-            }
-        } else if (commonIdeaService.isPotentiallyHybrisProject(project)) {
+        settingsComponent.registerCloudExtensions()
+
+        if (settingsComponent.isOutdatedHybrisProject()) {
             Notifications.create(
                 NotificationType.INFORMATION,
-                i18n("hybris.notification.project.open.potential.title"),
-                i18n("hybris.notification.project.open.potential.text")
+                i18n("hybris.notification.project.open.outdated.title"),
+                i18n(
+                    "hybris.notification.project.open.outdated.text",
+                    settingsComponent.importedByVersion ?: "old"
+                )
             )
                 .important(true)
+                .addAction(i18n("hybris.notification.project.open.outdated.action")) { _, _ -> ProjectRefreshAction.triggerAction() }
                 .notify(project)
         }
-
-        if (!isHybrisProject) return
 
         logVersion(project)
         continueOpening(project)
