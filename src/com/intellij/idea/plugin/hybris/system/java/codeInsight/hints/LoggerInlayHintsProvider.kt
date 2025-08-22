@@ -60,9 +60,8 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
             .mapNotNull {psiElement -> return@mapNotNull when (psiElement) {
                     is PsiClass -> {
                         val fqn = FqnUtil.elementToFqn(psiElement, editor)
-                        val simpleClassName = psiElement.nameIdentifier?.text
                         return@mapNotNull fqn
-                            ?.let { PsiTreeUtil.findChildrenOfType(psiElement, PsiIdentifier::class.java).firstOrNull { it.text == simpleClassName} }
+                            ?.let { psiElement.nameIdentifier }
                             ?.let { it to fqn }
                     }
                     is PsiPackageStatement -> psiElement to psiElement.packageName
