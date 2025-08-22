@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.searcheverywhere
+package sap.commerce.toolset.project.searcheverywhere
 
 import com.intellij.ide.util.gotoByName.ChooseByNameFilterConfiguration
 import com.intellij.openapi.components.*
@@ -24,7 +24,7 @@ import com.intellij.openapi.project.Project
 
 @Service(Service.Level.PROJECT)
 @State(name = "GotoTypeConfiguration", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
-class GotoTypeConfiguration(private val project: Project) : ChooseByNameFilterConfiguration<SystemRef>() {
+class GotoTypeConfiguration : ChooseByNameFilterConfiguration<SystemRef>() {
 
     override fun nameForElement(type: SystemRef) = type.id
 

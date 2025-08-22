@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.searcheverywhere
+package sap.commerce.toolset.project.searcheverywhere
 
 import com.intellij.ide.IdeBundle
 import com.intellij.ide.util.gotoByName.FilteringGotoByModel
@@ -26,10 +26,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.ui.IdeUICustomization
 
-class GotoTypeModel(project: Project, contributors: List<ChooseByNameContributor>) : FilteringGotoByModel<SystemRef>(project, contributors) {
+class GotoTypeModel(private val project: Project, contributors: List<ChooseByNameContributor>) : FilteringGotoByModel<SystemRef>(project, contributors) {
 
     override fun getPromptText(): String = "Enter SAP CX type name:"
-    override fun getNotInMessage() = IdeUICustomization.getInstance().projectMessage("label.no.matches.found.in.project")
+    override fun getNotInMessage() = IdeUICustomization.getInstance().projectMessage("label.no.matches.found.in.project", project.name)
     override fun willOpenEditor() = true
 
     override fun getNotFoundMessage(): String = IdeBundle.message("label.no.matches.found")

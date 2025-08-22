@@ -16,27 +16,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.searcheverywhere
+fun properties(key: String) = providers.gradleProperty(key)
 
-import com.intellij.ide.actions.SearchEverywhereBaseAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.DumbAware
-import sap.commerce.toolset.isHybrisProject
+plugins {
+    id("org.jetbrains.intellij.platform.module")
+    alias(libs.plugins.kotlin) // Kotlin support
+}
 
-class GotoTypeAction : SearchEverywhereBaseAction(), DumbAware {
-
-    override fun actionPerformed(e: AnActionEvent) {
-        val tabID = SearchEverywhereContributor::class.java.simpleName
-        showInSearchEverywherePopup(tabID, e, false, true)
+sourceSets {
+    main {
+        java.srcDirs("src", "gen")
+        resources.srcDirs("resources")
     }
+    test {
+        java.srcDirs("tests")
+    }
+}
 
-    override fun update(event: AnActionEvent) {
-        super.update(event)
+idea {
+    module {
+        generatedSourceDirs.add(file("gen"))
+    }
+}
 
-        if (event.presentation.isEnabledAndVisible) {
-            val project = event.project ?: return
-            event.presentation.isEnabledAndVisible = project.isHybrisProject
+dependencies {
+    implementation(project(":shared-core"))
+    implementation(project(":typeSystem-core"))
+    implementation(project(":beanSystem-core"))
+
+    intellijPlatform {
+        intellijIdeaUltimate(properties("intellij.version")) {
+            useInstaller = false
         }
     }
-
 }

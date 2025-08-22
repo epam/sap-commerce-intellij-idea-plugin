@@ -72,6 +72,7 @@
             <option value="$PROJECT_DIR$/modules/project/extensioninfo" />
             <option value="$PROJECT_DIR$/modules/project/import" />
             <option value="$PROJECT_DIR$/modules/project/localextensions" />
+            <option value="$PROJECT_DIR$/modules/project/searcheverywhere" />
             <option value="$PROJECT_DIR$/modules/project/ui" />
             <option value="$PROJECT_DIR$/modules/shared/core" />
             <option value="$PROJECT_DIR$/modules/shared/emitter" />

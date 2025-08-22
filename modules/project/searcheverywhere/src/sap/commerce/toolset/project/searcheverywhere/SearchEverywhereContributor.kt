@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.searcheverywhere
+package sap.commerce.toolset.project.searcheverywhere
 
 import com.intellij.ide.actions.SearchEverywherePsiRenderer
 import com.intellij.ide.actions.searcheverywhere.*

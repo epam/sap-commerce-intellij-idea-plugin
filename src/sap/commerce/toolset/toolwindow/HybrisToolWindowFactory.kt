@@ -32,7 +32,6 @@ import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.logging.ui.LoggersView
 import sap.commerce.toolset.typeSystem.ui.TSView
 
-@Deprecated("Move to shared-ui")
 class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : ToolWindowFactory, DumbAware {
 
     override fun createToolWindowContent(

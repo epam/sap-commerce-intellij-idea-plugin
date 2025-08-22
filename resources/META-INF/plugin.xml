@@ -68,6 +68,7 @@
     <xi:include href="/META-INF/sap.commerce.toolset-project-compile.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-extensioninfo.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-localextensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="/META-INF/sap.commerce.toolset-project-searcheverywhere.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-import.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-exec.xml" xpointer="xpointer(/idea-plugin/*)"/>
