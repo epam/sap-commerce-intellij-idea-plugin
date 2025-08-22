@@ -18,6 +18,20 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <dom.extender domClass="sap.commerce.toolset.cockpitNG.model.config.Context"
+                      extenderClass="sap.commerce.toolset.cockpitNG.CngConfigDomExtender"/>
+        <dom.fileMetaData rootTagName="config" stubVersion="4"
+                          implementation="sap.commerce.toolset.cockpitNG.CngConfigDomFileDescription"/>
+        <dom.fileMetaData rootTagName="widgets" stubVersion="5"
+                          implementation="sap.commerce.toolset.cockpitNG.CngWidgetsDomFileDescription"/>
+        <dom.fileMetaData rootTagName="action-definition" stubVersion="4"
+                          implementation="sap.commerce.toolset.cockpitNG.CngActionDefinitionDomFileDescription"/>
+        <dom.fileMetaData rootTagName="widget-definition" stubVersion="5"
+                          implementation="sap.commerce.toolset.cockpitNG.CngWidgetDefinitionDomFileDescription"/>
+        <dom.fileMetaData rootTagName="editor-definition" stubVersion="4"
+                          implementation="sap.commerce.toolset.cockpitNG.CngEditorDefinitionDomFileDescription"/>
+
+        <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.cockpitNG.lang.folding.CngConfigFoldingBuilder"/>
     </extensions>
 
 </idea-plugin>
