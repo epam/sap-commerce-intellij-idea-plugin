@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.idea.maven.model.MavenConstants;
 import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.ccv2.CCv2Constants;
-import sap.commerce.toolset.common.HybrisUtil;
+import sap.commerce.toolset.project.HybrisUtil;
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor;
 import sap.commerce.toolset.project.services.HybrisProjectService;
 import sap.commerce.toolset.project.vfs.VirtualFileSystemService;

@@ -19,7 +19,6 @@
 package sap.commerce.toolset.project
 
 import com.intellij.ide.actions.ImportModuleAction
-import sap.commerce.toolset.common.HybrisUtil
 import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project

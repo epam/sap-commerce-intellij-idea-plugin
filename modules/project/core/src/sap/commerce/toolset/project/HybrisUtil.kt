@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.common
+
+package sap.commerce.toolset.project
 
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VfsUtilCore
@@ -27,6 +27,7 @@ import java.io.File
 
 object HybrisUtil {
 
+    private val KEY_HYBRIS_PROJECT_DIRECTORY = Key.create<Boolean>("IS_HYBRIS_FILE")
     private val SKIP_DIRS = setOf(
         HybrisConstants.NODE_MODULES_DIRECTORY,
         ".idea",
@@ -74,6 +75,4 @@ object HybrisUtil {
 
         return java.lang.Boolean.TRUE == root.getUserData(KEY_HYBRIS_PROJECT_DIRECTORY)
     }
-
-    private val KEY_HYBRIS_PROJECT_DIRECTORY = Key.create<Boolean>("IS_HYBRIS_FILE")
 }

@@ -18,13 +18,13 @@
 
 package sap.commerce.toolset.gotoClass
 
-import sap.commerce.toolset.common.HybrisUtil
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.HybrisUtil
 
 class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
 
