@@ -18,13 +18,12 @@
 
 package sap.commerce.toolset.junit.runConfigurations
 
-import com.intellij.execution.Executor
+import ai.grazie.nlp.utils.tokenizeByWhitespace
 import com.intellij.execution.RunConfigurationExtension
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.configurations.ParametersList
 import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunnerSettings
-import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.junit.JUnitConfiguration
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
@@ -35,53 +34,33 @@ import com.intellij.openapi.roots.OrderEnumerator
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.search.GlobalSearchScope
+import java.util.*
+import sap.commerce.toolset.HybrisConstants.PROPERTY_PLATFORMHOME
+import sap.commerce.toolset.HybrisConstants.PROPERTY_STANDALONE_JDKMODULESEXPORTS
 import sap.commerce.toolset.isHybrisProject
 import sap.commerce.toolset.project.PropertyService
 import sap.commerce.toolset.project.facet.YFacet
-import java.util.*
 
 class HybrisJUnitExtension : RunConfigurationExtension() {
 
-    private companion object {
-        const val JVM_ADDITIONAL_PREFIX = "wrapper.java.additional."
-        const val STRIP_QUOTES_SUFFIX = ".stripquotes"
-    }
-
     override fun isApplicableFor(configuration: RunConfigurationBase<*>) =
         if (configuration !is JUnitConfiguration) false
-        else configuration.project.isHybrisProject
+        else ProjectSettings.getInstance(configuration.project)
+            .isHybrisProject()
 
-    override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
-        configuration: T & Any,
-        params: JavaParameters,
-        runnerSettings: RunnerSettings?,
-        executor: Executor
-    ) {
-        val project = configuration.project
-        val junitConfig = (configuration as JUnitConfiguration)
+    private fun updateSapCXJVMProperties(project: Project, params: JavaParameters) {
+        val vmParameters = params.vmParametersList
+        PropertyService.getInstance(project).let { service ->
+            service.getPlatformHome()?.let {
+                addVmParameterIfNotExist(vmParameters, "-D$PROPERTY_PLATFORMHOME=$it")
+            }
 
-        if (isApplicableFor(configuration) && !isPureUnitTest(junitConfig, project)) {
-            updateSapCXJVMProperties(project, params, executor)
-        }
-
-        super.updateJavaParameters(configuration, params, runnerSettings, executor)
-    }
-
-    private fun updateSapCXJVMProperties(project: Project, params: JavaParameters, executor: Executor) {
-        PropertyService.Companion.getInstance(project)
-            .let { propertyService ->
-
-                val vmParameters = params.vmParametersList
-
-                val tomcatWrapperProperties = when {
-                    executor.id == DefaultDebugExecutor.EXECUTOR_ID -> propertyService.getTomcatWrapperProperties("debug")
-                    else -> propertyService.getTomcatWrapperProperties()
-                }
-
-                getTomcatWrapperJVMProperties(tomcatWrapperProperties).forEach {
-                    addVmParameterIfNotExist(vmParameters, it)
+            service.findProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS)?.let { propertyValue ->
+                propertyValue.tokenizeByWhitespace().forEach {
+                    addVmParameterIfNotExist(vmParameters, it.replace("\"", ""))
                 }
             }
+        }
     }
 
     override fun <T : RunConfigurationBase<*>?> updateJavaParameters(
@@ -94,6 +73,8 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
         val project = configuration.project
 
         if (isPureUnitTest(junitConfig, project)) return
+
+        updateSapCXJVMProperties(project, params)
 
         enhanceClassPath(params, project)
     }
@@ -114,10 +95,10 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
     private fun enhanceClassPath(params: JavaParameters, project: Project) {
         val classPathEntries = HashSet<String>()
 
-        val modules: Array<Module> = ModuleManager.Companion.getInstance(project).modules
+        val modules: Array<Module> = ModuleManager.getInstance(project).modules
         for (module in modules) {
 
-            if (YFacet.Companion.getState(module)?.type?.name.equals("CCV2")) {
+            if (YFacet.getState(module)?.type?.name.equals("CCV2")) {
                 continue
             }
 
@@ -149,30 +130,6 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
                 }
         }
     }
-
-    private fun getTomcatWrapperJVMProperties(
-        properties: Properties
-    ): List<String> = properties.entries
-        .asSequence()
-        .map { it.key.toString() to it.value.toString() }
-        .filter { (key, _) -> key.startsWith(JVM_ADDITIONAL_PREFIX) }
-        .filter { (key, _) -> !key.endsWith(STRIP_QUOTES_SUFFIX) }
-        .sortedBy { (key, _) ->
-            key.removePrefix(JVM_ADDITIONAL_PREFIX)
-                .toIntOrNull() ?: Int.MAX_VALUE
-        }
-        .map { (key, value) ->
-            when {
-                shouldStripQuotes(key, properties) -> value.replace("\"", "").trim()
-                else -> value.trim()
-            }
-        }
-        .toList()
-
-    private fun shouldStripQuotes(key: String, properties: Properties): Boolean =
-        properties["$key$STRIP_QUOTES_SUFFIX"]
-            ?.toString()
-            ?.uppercase() == "TRUE"
 
     private fun addVmParameterIfNotExist(vmParameters: ParametersList, newParam: String) {
         if (!vmParameters.hasParameter(newParam)) {

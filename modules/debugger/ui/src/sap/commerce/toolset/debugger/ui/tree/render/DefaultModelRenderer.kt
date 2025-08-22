@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
-package sap.commerce.toolset.debugger.ui.tree.render
+package com.intellij.idea.plugin.hybris.debugger.ui.tree.render
 
 import com.intellij.debugger.engine.DebuggerUtils
 import com.intellij.debugger.engine.FullValueEvaluatorProvider
-import com.intellij.debugger.engine.JavaValue
+import com.intellij.debugger.engine.JavaValue.JavaFullValueEvaluator
 import com.intellij.debugger.engine.evaluation.EvaluationContextImpl
 import com.intellij.debugger.settings.NodeRendererSettings
 import com.intellij.debugger.ui.impl.watch.ValueDescriptorImpl
@@ -29,16 +28,19 @@ import com.intellij.debugger.ui.tree.render.CompoundRendererProvider
 import com.intellij.debugger.ui.tree.render.NodeRenderer
 import com.intellij.debugger.ui.tree.render.ValueIconRenderer
 import com.intellij.ide.IdeBundle
+import com.intellij.idea.plugin.hybris.common.utils.HybrisI18NBundleUtils
+import com.intellij.idea.plugin.hybris.common.utils.HybrisIcons
+import com.intellij.idea.plugin.hybris.debugger.TypeRendererUtils
+import com.intellij.idea.plugin.hybris.notifications.Notifications
+import com.intellij.idea.plugin.hybris.system.type.meta.TSMetaModelAccess
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.util.application
 import com.sun.jdi.ObjectReference
 import com.sun.jdi.Type
 import com.sun.jdi.Value
-import sap.commerce.toolset.HybrisIcons
-import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.debugger.createRendererName
-import sap.commerce.toolset.i18n
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
 
@@ -60,15 +62,31 @@ class DefaultModelRenderer : CompoundRendererProvider() {
 
     override fun getFullValueEvaluatorProvider(): FullValueEvaluatorProvider {
         return FullValueEvaluatorProvider { evaluationContext: EvaluationContextImpl, valueDescriptor: ValueDescriptorImpl ->
-            object : JavaValue.JavaFullValueEvaluator(i18n("hybris.debug.message.node.type.renderer.create"), evaluationContext) {
+            object : JavaFullValueEvaluator(i18n("hybris.debug.message.node.type.renderer.create"), evaluationContext) {
                 override fun evaluate(callback: XFullValueEvaluationCallback) {
                     val value = valueDescriptor.value
                     val project = valueDescriptor.project
                     val className = value.type().name()
-                    val rendererName = createRendererName(className)
 
-                    if (DumbService.Companion.isDumb(project)) {
-                        Notifications.Companion.create(
+                    application.runReadAction {
+                        val typeCode = TypeRendererUtils.toTypeCode(className)
+                        val metaAccess = TSMetaModelAccess.getInstance(project)
+                        val meta = metaAccess.findMetaItemByName(typeCode)
+
+                        if (meta == null) {
+                            TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_TS_MISSING)
+                            return@runReadAction
+                        }
+
+                        val psiClass = DebuggerUtils.findClass(className, project, GlobalSearchScope.allScope(project))
+                        if (psiClass == null) {
+                            TypeRendererUtils.notifyError(typeCode, TypeRendererUtils.ITEM_TYPE_CLASS_NOT_FOUND)
+                            return@runReadAction
+                        }
+                    }
+
+                    if (DumbService.isDumb(project)) {
+                        Notifications.create(
                             NotificationType.INFORMATION,
                             IdeBundle.message("progress.performing.indexing.tasks"),
                             i18n("hybris.notification.debug.dumb.mode.content")
@@ -78,6 +96,8 @@ class DefaultModelRenderer : CompoundRendererProvider() {
                         callback.errorOccurred(i18n("hybris.notification.debug.dumb.mode.content"))
                         return
                     }
+
+                    val rendererName = ModelRenderer.createRendererName(className)
 
                     NodeRendererSettings.getInstance().getAllRenderers(project)
                         .filterIsInstance<CompoundReferenceRenderer>()
