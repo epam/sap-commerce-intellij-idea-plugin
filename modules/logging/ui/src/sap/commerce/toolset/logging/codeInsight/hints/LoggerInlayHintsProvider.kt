@@ -57,13 +57,17 @@ class LoggerInlayHintsProvider : JavaCodeVisionProviderBase() {
         val project = psiFile.project
 
         return PsiTreeUtil.findChildrenOfAnyType(psiFile, PsiClass::class.java, PsiPackageStatement::class.java)
-            .mapNotNull {
-                val fqn = when (it) {
-                    is PsiClass -> FqnUtil.elementToFqn(it, editor)
-                    is PsiPackageStatement -> it.packageName
+            .mapNotNull { psiElement ->
+                when (psiElement) {
+                    is PsiClass -> psiElement.nameIdentifier
+                        ?.let { psiClassIdentifier ->
+                            FqnUtil.elementToFqn(psiElement, editor)
+                                ?.let { fqn -> psiClassIdentifier to fqn }
+                    }
+
+                    is PsiPackageStatement -> psiElement to psiElement.packageName
                     else -> null
-                } ?: return@mapNotNull null
-                it to fqn
+                }
             }
             .map { (psiElement, loggerIdentifier) ->
                 val range = InlayHintsUtils.getTextRangeWithoutLeadingCommentsAndWhitespaces(psiElement)

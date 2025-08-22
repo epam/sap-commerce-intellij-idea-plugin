@@ -17,6 +17,7 @@
  */
 package sap.commerce.toolset.toolwindow
 
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -24,6 +25,8 @@ import com.intellij.openapi.vcs.impl.LineStatusTrackerManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.beanSystem.ui.BSToolWindow
 import sap.commerce.toolset.ccv2.toolwindow.CCv2View
@@ -37,13 +40,17 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
     override fun createToolWindowContent(
         project: Project, toolWindow: ToolWindow
     ) {
-        arrayOf(
-            createTSContent(toolWindow, TSView(project)),
-            createBSContent(toolWindow, BSToolWindow(project)),
-            createConsolesContent(toolWindow, project, HybrisConsolesToolWindow.getInstance(project)),
-            createCCv2CLIContent(toolWindow, project, CCv2View(project)),
-            createLoggersContent(toolWindow, LoggersView(project, coroutineScope))
-        ).forEach { toolWindow.contentManager.addContent(it) }
+        coroutineScope.launch(Dispatchers.IO) {
+            edtWriteAction {
+                arrayOf(
+                    createTSContent(toolWindow, TSView(project)),
+                    createBSContent(toolWindow, BSToolWindow(project)),
+                    createConsolesContent(toolWindow, project, HybrisConsolesToolWindow.getInstance(project)),
+                    createCCv2CLIContent(toolWindow, project, CCv2View(project)),
+                    createLoggersContent(toolWindow, LoggersView(project, coroutineScope))
+                ).forEach { toolWindow.contentManager.addContent(it) }
+            }
+        }
     }
 
     override suspend fun isApplicableAsync(project: Project) = project.isHybrisProject
@@ -79,16 +86,17 @@ class HybrisToolWindowFactory(private val coroutineScope: CoroutineScope) : Tool
             this
         }
 
-    private fun createCCv2CLIContent(toolWindow: ToolWindow, project: Project, panel: CCv2View) = with(toolWindow.contentManager.factory.createContent(panel, CCv2View.TAB_NAME, true)) {
-        Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
-        Disposer.register(toolWindow.disposable, panel)
+    private fun createCCv2CLIContent(toolWindow: ToolWindow, project: Project, panel: CCv2View) =
+        with(toolWindow.contentManager.factory.createContent(panel, CCv2View.TAB_NAME, true)) {
+            Disposer.register(LineStatusTrackerManager.getInstanceImpl(project), toolWindow.disposable)
+            Disposer.register(toolWindow.disposable, panel)
 
-        isCloseable = false
-        icon = HybrisIcons.CCv2.DESCRIPTOR
-        putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
+            isCloseable = false
+            icon = HybrisIcons.CCv2.DESCRIPTOR
+            putUserData(ToolWindow.SHOW_CONTENT_ICON, true)
 
-        this
-    }
+            this
+        }
 
     private fun createLoggersContent(toolWindow: ToolWindow, panel: LoggersView) = with(toolWindow.contentManager.factory.createContent(panel, LoggersView.ID, true)) {
         Disposer.register(toolWindow.disposable, panel)
