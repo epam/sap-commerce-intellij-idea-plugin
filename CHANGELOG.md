@@ -1,7 +1,7 @@
 ## [2025.2.3]
 
 ### `SAP CX Logging` enhancements
-- Fix positioning of `[y] log level` CTA for classes with annotations [#1535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1535)
+- Improve positioning of `[y] log level` CTA for classes with annotations [#1535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1535)
 
 ### `xDebugger` enhancements
 - Create type renderer: The item type is not present in the *items.xml files [#1531](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1531)
