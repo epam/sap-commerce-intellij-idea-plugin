@@ -62,6 +62,9 @@
         <errorHandler implementation="com.intellij.diagnostic.JetBrainsMarketplaceErrorReportSubmitter"/>
 
         <fileEditorProvider implementation="sap.commerce.toolset.editor.HybrisSplitFileEditorProvider"/>
+
+        <!-- Language injections -->
+        <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.FlexibleSearchLanguageInjector"/>
     </extensions>
 
     <actions>

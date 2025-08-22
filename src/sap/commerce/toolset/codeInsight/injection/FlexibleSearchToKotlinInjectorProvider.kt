@@ -15,24 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.flexibleSearch.codeInsight.injection
 
-import com.intellij.psi.InjectedLanguagePlaces
-import com.intellij.psi.LanguageInjector
-import com.intellij.psi.PsiLanguageInjectionHost
-import sap.commerce.toolset.Plugin
+package sap.commerce.toolset.codeInsight.injection
 
-@Deprecated("Move to main")
-class FlexibleSearchLanguageInjector : LanguageInjector {
+import com.intellij.openapi.components.Service
+import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
+import sap.commerce.toolset.flexibleSearch.FxSUtils
 
-    override fun getLanguagesToInject(
-        host: PsiLanguageInjectionHost,
-        injectionPlacesRegistrar: InjectedLanguagePlaces
-    ) {
-        FlexibleSearchToImpexInjectorProvider.getInstance()
-            .inject(host, injectionPlacesRegistrar)
-            ?: Plugin.KOTLIN.service(FlexibleSearchToKotlinInjectorProvider::class.java)
-                ?.inject(host, injectionPlacesRegistrar)
-    }
+@Service
+class FlexibleSearchToKotlinInjectorProvider : LanguageToKotlinInjectorProvider(FlexibleSearchLanguage) {
+
+    override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
 
 }

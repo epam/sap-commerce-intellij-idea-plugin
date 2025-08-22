@@ -83,7 +83,7 @@
 
         <annotator language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.annotation.ImpexAnnotator"/>
 
-        <languageInjector implementation="sap.commerce.toolset.impex.codeInsight.injection.ImpexXmlLanguageInjector"/>
+        <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.ImpexXmlLanguageInjector"/>
 
         <editorFactoryListener implementation="sap.commerce.toolset.impex.editor.event.ImpexEditorFactoryListener"/>
 

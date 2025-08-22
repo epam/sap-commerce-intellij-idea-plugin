@@ -40,6 +40,7 @@ import sap.commerce.toolset.typeSystem.meta.TSModificationTracker
  * Anyway, any modification to file itself will trigger corresponding PsiTree change which will be tracked by {@see sap.commerce.toolset.psi.event.PsiTreeChangeListener}
  * It means, that crete/move without modification of the file content may not always re-trigger cache re-evaluation.
  */
+@Deprecated("Move to meta & customize via EP")
 class MetaSystemsAsyncFileListener : AsyncFileListener {
 
     private fun mapToTracker(fileName: String, fqn: String, project: Project, trackedCngModels: Set<String>) = when {

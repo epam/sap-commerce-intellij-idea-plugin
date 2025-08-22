@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.flexibleSearch.codeInsight.injection
+package sap.commerce.toolset.codeInsight.injection
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -26,10 +26,9 @@ import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.parentOfType
 import com.intellij.util.application
-import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.codeInsight.injection.LanguageInjectorProvider
 import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
 import sap.commerce.toolset.flexibleSearch.FxSUtils
+import sap.commerce.toolset.flexibleSearch.codeInsight.injection.TypeDependantInjection
 import sap.commerce.toolset.impex.ImpExLanguage
 import sap.commerce.toolset.impex.psi.*
 import sap.commerce.toolset.settings.DeveloperSettings
@@ -76,7 +75,7 @@ class FlexibleSearchToImpexInjectorProvider : LanguageInjectorProvider(FlexibleS
                 headerLine.fullHeaderType
                     ?.headerTypeName
                     ?.text
-                    ?.let { TypeDependantInjection.of(it) }
+                    ?.let { TypeDependantInjection.Companion.of(it) }
                     ?.let { tryInjectAnotherColumnTypeDependant(valueLine, headerLine, injectionPlacesRegistrar, host, expression, quoteLength, it) }
             }
             ?: injectSimple(injectionPlacesRegistrar, host, expression, quoteLength)
@@ -114,7 +113,7 @@ class FlexibleSearchToImpexInjectorProvider : LanguageInjectorProvider(FlexibleS
             ?.computeValue()
             ?: return injectSimple(injectionPlacesRegistrar, host, expression, quoteLength = quoteLength)
 
-        val alias = DeveloperSettings.getInstance(host.project)
+        val alias = DeveloperSettings.Companion.getInstance(host.project)
             .flexibleSearchSettings
             .fallbackToTableNameIfNoAliasProvided
             .takeIf { it }
@@ -129,13 +128,4 @@ class FlexibleSearchToImpexInjectorProvider : LanguageInjectorProvider(FlexibleS
         fun getInstance(): FlexibleSearchToImpexInjectorProvider = application.service()
     }
 
-}
-
-enum class TypeDependantInjection(val typeName: String, val parameterName: String, val targetTypeParameterName: String) {
-    SEARCH_RESTRICTION(HybrisConstants.TS_TYPE_SEARCH_RESTRICTION, "query", "restrictedType"),
-    AFTER_RETENTION_CLEANUP_RULE(HybrisConstants.TS_TYPE_AFTER_RETENTION_CLEANUP_RULE, "itemFilterExpression", "retirementItemType"), ;
-
-    companion object {
-        fun of(typeName: String): TypeDependantInjection? = entries.find { it.typeName == typeName }
-    }
 }

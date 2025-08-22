@@ -59,7 +59,6 @@ internal fun findClass(project: Project, classNameFqn: String): PsiClass? {
     return psiClass
 }
 
-@Deprecated("migrate to coroutine")
 internal fun refreshInfos(
     childrenRenderer: EnumerationChildrenRenderer,
     project: Project,

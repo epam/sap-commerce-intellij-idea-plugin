@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.impex.codeInsight.injection
+package sap.commerce.toolset.codeInsight.injection
 
 import com.intellij.lang.xml.XMLLanguage
 import com.intellij.openapi.util.TextRange
@@ -26,7 +26,6 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import sap.commerce.toolset.impex.psi.impl.ImpexStringImpl
 
-@Deprecated("Move to main")
 class ImpexXmlLanguageInjector : LanguageInjector {
 
     override fun getLanguagesToInject(

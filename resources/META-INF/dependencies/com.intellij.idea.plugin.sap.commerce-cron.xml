@@ -19,7 +19,6 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
-
         <languageInjector implementation="sap.commerce.toolset.codeInsight.injection.CronExpLanguageInjector" />
     </extensions>
 

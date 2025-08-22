@@ -16,22 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.polyglotQuery.codeInsight.injection
+package sap.commerce.toolset.codeInsight.injection
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
-import com.intellij.util.application
-import sap.commerce.toolset.codeInsight.injection.LanguageToKotlinInjectorProvider
-import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
-import sap.commerce.toolset.polyglotQuery.PolyglotQueryUtils
+import com.intellij.psi.InjectedLanguagePlaces
+import com.intellij.psi.LanguageInjector
+import com.intellij.psi.PsiLanguageInjectionHost
+import sap.commerce.toolset.Plugin
 
-@Service
-class PolyglotQueryToKotlinInjectorProvider : LanguageToKotlinInjectorProvider(PolyglotQueryLanguage) {
+class PolyglotQueryLanguageInjector : LanguageInjector {
 
-    override fun canProcess(expression: String) = PolyglotQueryUtils.isPolyglotQuery(expression)
-
-    companion object {
-        fun getInstance(): PolyglotQueryToKotlinInjectorProvider = application.service()
+    override fun getLanguagesToInject(
+        host: PsiLanguageInjectionHost,
+        injectionPlacesRegistrar: InjectedLanguagePlaces
+    ) {
+        PolyglotQueryToImpexInjectorProvider.Companion.getInstance()
+            .inject(host, injectionPlacesRegistrar)
+            ?: Plugin.KOTLIN.service(PolyglotQueryToKotlinInjectorProvider::class.java)
+                ?.inject(host, injectionPlacesRegistrar)
     }
-
 }

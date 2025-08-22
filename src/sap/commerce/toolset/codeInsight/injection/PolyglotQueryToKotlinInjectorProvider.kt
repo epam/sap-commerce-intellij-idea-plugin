@@ -16,41 +16,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.polyglotQuery.codeInsight.injection
+package sap.commerce.toolset.codeInsight.injection
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.util.text.StringUtil
-import com.intellij.psi.InjectedLanguagePlaces
-import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.util.application
-import sap.commerce.toolset.codeInsight.injection.LanguageInjectorProvider
-import sap.commerce.toolset.impex.ImpExLanguage
-import sap.commerce.toolset.impex.psi.ImpexString
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryLanguage
 import sap.commerce.toolset.polyglotQuery.PolyglotQueryUtils
-import java.util.*
 
 @Service
-class PolyglotQueryToImpexInjectorProvider : LanguageInjectorProvider(PolyglotQueryLanguage, ImpExLanguage) {
+class PolyglotQueryToKotlinInjectorProvider : LanguageToKotlinInjectorProvider(PolyglotQueryLanguage) {
 
-    override fun tryInject(
-        host: PsiLanguageInjectionHost,
-        injectionPlacesRegistrar: InjectedLanguagePlaces
-    ) {
-        if (host !is ImpexString) return
-
-        val expression = StringUtil.unquoteString(host.text).lowercase(Locale.getDefault())
-
-        // do not inject executable statement
-        if (expression.startsWith("#%")) return
-
-        if (PolyglotQueryUtils.isPolyglotQuery(expression)) {
-            registerInjectionPlace(injectionPlacesRegistrar, host)
-        }
-    }
+    override fun canProcess(expression: String) = PolyglotQueryUtils.isPolyglotQuery(expression)
 
     companion object {
-        fun getInstance(): PolyglotQueryToImpexInjectorProvider = application.service()
+        fun getInstance(): PolyglotQueryToKotlinInjectorProvider = application.service()
     }
+
 }

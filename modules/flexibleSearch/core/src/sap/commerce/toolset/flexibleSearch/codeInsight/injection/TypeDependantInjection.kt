@@ -18,14 +18,13 @@
 
 package sap.commerce.toolset.flexibleSearch.codeInsight.injection
 
-import com.intellij.openapi.components.Service
-import sap.commerce.toolset.codeInsight.injection.LanguageToKotlinInjectorProvider
-import sap.commerce.toolset.flexibleSearch.FlexibleSearchLanguage
-import sap.commerce.toolset.flexibleSearch.FxSUtils
+import sap.commerce.toolset.HybrisConstants
 
-@Service
-class FlexibleSearchToKotlinInjectorProvider : LanguageToKotlinInjectorProvider(FlexibleSearchLanguage) {
+enum class TypeDependantInjection(val typeName: String, val parameterName: String, val targetTypeParameterName: String) {
+    SEARCH_RESTRICTION(HybrisConstants.TS_TYPE_SEARCH_RESTRICTION, "query", "restrictedType"),
+    AFTER_RETENTION_CLEANUP_RULE(HybrisConstants.TS_TYPE_AFTER_RETENTION_CLEANUP_RULE, "itemFilterExpression", "retirementItemType"), ;
 
-    override fun canProcess(expression: String) = FxSUtils.isFlexibleSearchQuery(expression)
-
+    companion object {
+        fun of(typeName: String): TypeDependantInjection? = entries.find { it.typeName == typeName }
+    }
 }

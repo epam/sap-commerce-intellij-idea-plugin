@@ -63,8 +63,6 @@
 
         <highlightUsagesHandlerFactory implementation="sap.commerce.toolset.flexibleSearch.highlighting.FlexibleSearchHighlightUsagesHandlerFactory"/>
 
-        <languageInjector implementation="sap.commerce.toolset.flexibleSearch.codeInsight.injection.FlexibleSearchLanguageInjector"/>
-
         <completion.contributor language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.codeInsight.completion.FlexibleSearchCompletionContributor"/>
 
         <annotator language="FlexibleSearch" implementationClass="sap.commerce.toolset.flexibleSearch.lang.annotation.FlexibleSearchAnnotator"/>

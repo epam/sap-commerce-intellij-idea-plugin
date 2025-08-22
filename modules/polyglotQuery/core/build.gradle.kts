@@ -43,7 +43,6 @@ dependencies {
     implementation(project(":shared-core"))
     implementation(project(":typeSystem-core"))
     implementation(project(":project-core"))
-    implementation(project(":impex-core"))
     implementation(project(":flexibleSearch-core"))
 
     intellijPlatform {

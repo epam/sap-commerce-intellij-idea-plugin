@@ -15,23 +15,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.polyglotQuery.codeInsight.injection
+
+package sap.commerce.toolset.codeInsight.injection
 
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiLanguageInjectionHost
 import sap.commerce.toolset.Plugin
 
-@Deprecated("Move to main")
-class PolyglotQueryLanguageInjector : LanguageInjector {
+class FlexibleSearchLanguageInjector : LanguageInjector {
 
     override fun getLanguagesToInject(
         host: PsiLanguageInjectionHost,
         injectionPlacesRegistrar: InjectedLanguagePlaces
     ) {
-        PolyglotQueryToImpexInjectorProvider.getInstance()
+        FlexibleSearchToImpexInjectorProvider.getInstance()
             .inject(host, injectionPlacesRegistrar)
-            ?: Plugin.KOTLIN.service(PolyglotQueryToKotlinInjectorProvider::class.java)
+            ?: Plugin.KOTLIN.service(FlexibleSearchToKotlinInjectorProvider::class.java)
                 ?.inject(host, injectionPlacesRegistrar)
     }
+
 }
