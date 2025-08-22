@@ -23,4 +23,8 @@
         <project.module.importConfigurator implementation="sap.commerce.toolset.java.configurator.JavaModuleImportConfigurator"/>
     </extensions>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <codeInsight.lineMarkerProvider language="JAVA" implementationClass="sap.commerce.toolset.java.codeInsight.daemon.PopulatorsLineMarkerProvider"/>
+    </extensions>
+
 </idea-plugin>

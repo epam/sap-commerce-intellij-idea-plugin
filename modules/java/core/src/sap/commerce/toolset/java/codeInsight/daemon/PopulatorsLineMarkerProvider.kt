@@ -1,6 +1,5 @@
 /*
  * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
- * Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
  * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.codeInsight.daemon
+package sap.commerce.toolset.java.codeInsight.daemon
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
@@ -30,6 +29,7 @@ import com.intellij.psi.search.searches.ClassInheritorsSearch
 import org.apache.commons.lang3.StringUtils
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
+import sap.commerce.toolset.codeInsight.daemon.HybrisLineMarkerProvider
 import sap.commerce.toolset.i18n
 import javax.swing.Icon
 
