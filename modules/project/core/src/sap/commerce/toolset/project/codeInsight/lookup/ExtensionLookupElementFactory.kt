@@ -20,7 +20,6 @@ package sap.commerce.toolset.project.codeInsight.lookup
 
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
-import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 
@@ -29,22 +28,13 @@ object ExtensionLookupElementFactory {
     fun build(ed: ExtensionDescriptor) = LookupElementBuilder.create(ed.name)
         .withTailText(tail(ed), true)
         .withTypeText(ed.type.name, true)
-        .withIcon(
-            when (ed.type) {
-                ModuleDescriptorType.CCV2 -> HybrisIcons.Extension.CLOUD
-                ModuleDescriptorType.CUSTOM -> HybrisIcons.Extension.CUSTOM
-                ModuleDescriptorType.EXT -> HybrisIcons.Extension.EXT
-                ModuleDescriptorType.OOTB -> HybrisIcons.Extension.OOTB
-                ModuleDescriptorType.PLATFORM -> HybrisIcons.Extension.PLATFORM
-                else -> null
-            }
-        )
+        .withIcon(ed.type.icon)
         .let {
             PrioritizedLookupElement.withPriority(
                 it,
                 when (ed.type) {
                     ModuleDescriptorType.CUSTOM -> 5.0
-                    ModuleDescriptorType.CCV2 -> 4.0
+                    ModuleDescriptorType.CCV2_EXTERNAL -> 4.0
                     ModuleDescriptorType.OOTB -> 3.0
                     ModuleDescriptorType.EXT -> 2.0
                     else -> 1.0

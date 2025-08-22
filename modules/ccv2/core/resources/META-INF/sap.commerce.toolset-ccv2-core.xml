@@ -22,7 +22,10 @@
     </extensions>
 
     <extensions defaultExtensionNs="sap.commerce.toolset">
-        <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.descriptor.CCv2ModuleDescriptor$Provider"/>
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.descriptor.CCv2CoreModuleDescriptor$Provider"/>
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.descriptor.CCv2StorefrontModuleDescriptor$Provider"/>
+        <project.module.descriptorProvider implementation="sap.commerce.toolset.ccv2.descriptor.CCv2DatahubModuleDescriptor$Provider"/>
+
         <project.module.importConfigurator implementation="sap.commerce.toolset.ccv2.configurator.CCv2ModuleImporter"/>
     </extensions>
 

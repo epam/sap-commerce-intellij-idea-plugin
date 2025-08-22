@@ -214,7 +214,7 @@ class ProjectSettings : SerializablePersistentStateComponent<ProjectSettingsStat
         }
 
     private fun getCloudExtensions() = HybrisConstants.CCV2_COMMERCE_CLOUD_EXTENSIONS
-        .map { ExtensionDescriptor(name = it, type = ModuleDescriptorType.CCV2) }
+        .map { ExtensionDescriptor(name = it, type = ModuleDescriptorType.CCV2_EXTERNAL) }
         .associateBy { it.name }
 
     override fun getModificationCount() = stateModificationCount

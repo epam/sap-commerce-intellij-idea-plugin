@@ -32,7 +32,6 @@ import com.intellij.psi.xml.XmlTokenType
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.codeInsight.daemon.HybrisLineMarkerProvider
 import sap.commerce.toolset.extensioninfo.EiModelAccess
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.settings.ProjectSettings
 import sap.commerce.toolset.project.yExtensionName
 import javax.swing.Icon
@@ -59,16 +58,7 @@ abstract class ExtensionLineMarkerProvider : HybrisLineMarkerProvider<XmlAttribu
             ?: return emptyList()
 
         val marker = NavigationGutterIconBuilder
-            .create(
-                when (descriptor.type) {
-                    ModuleDescriptorType.CCV2 -> HybrisIcons.Extension.CLOUD
-                    ModuleDescriptorType.CUSTOM -> HybrisIcons.Extension.CUSTOM
-                    ModuleDescriptorType.EXT -> HybrisIcons.Extension.EXT
-                    ModuleDescriptorType.OOTB -> HybrisIcons.Extension.OOTB
-                    ModuleDescriptorType.PLATFORM -> HybrisIcons.Extension.PLATFORM
-                    else -> icon
-                }
-            )
+            .create(descriptor.type.icon)
             .setTargets(extensionInfoName)
             .setPopupTitle(getPopupTitle())
             .setTooltipText(getTooltipText())

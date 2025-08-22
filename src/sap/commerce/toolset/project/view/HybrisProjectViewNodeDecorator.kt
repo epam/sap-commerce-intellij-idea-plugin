@@ -61,14 +61,12 @@ class HybrisProjectViewNodeDecorator : ProjectViewNodeDecorator {
             return
         }
 
-        if (extensionDescriptor.subModuleType != null) {
-            data.setIcon(extensionDescriptor.subModuleType!!.icon)
+        val subModuleType = extensionDescriptor.subModuleType
+        if (subModuleType != null) {
+            data.setIcon(subModuleType.icon)
             return
         }
 
-        when (extensionDescriptor.type) {
-            ModuleDescriptorType.CCV2 -> data.setIcon(HybrisIcons.Module.CCV2_GROUP)
-            else -> extensionDescriptor.type.icon
-        }
+        if (extensionDescriptor.type != ModuleDescriptorType.NONE) data.setIcon(extensionDescriptor.type.icon)
     }
 }

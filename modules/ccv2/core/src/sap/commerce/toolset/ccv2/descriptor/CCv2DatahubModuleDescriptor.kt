@@ -18,24 +18,30 @@
 
 package sap.commerce.toolset.ccv2.descriptor
 
+import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
-import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
-import sap.commerce.toolset.settings.ApplicationSettings
-import sap.commerce.toolset.settings.toIdeaGroup
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import java.io.File
 
-abstract class CCv2ModuleDescriptor(
+class CCv2DatahubModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
-) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+    override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CCV2_DATAHUB
+) : CCv2ModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
-    init {
-        importStatus = ModuleDescriptorImportStatus.MANDATORY
+    class Provider : ModuleDescriptorProvider {
+        override fun isApplicable(moduleRootDirectory: File): Boolean {
+            val absolutePath = moduleRootDirectory.absolutePath
+
+            return absolutePath.contains(CCv2Constants.DATAHUB_NAME)
+                && File(moduleRootDirectory, CCv2Constants.MANIFEST_NAME).isFile()
+        }
+
+        override fun create(
+            moduleRootDirectory: File,
+            rootProjectDescriptor: HybrisProjectDescriptor
+        ) = CCv2DatahubModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
     }
-
-    override fun isPreselected() = true
-    override fun groupName() = ApplicationSettings.getInstance().groupCCv2.toIdeaGroup()
-
 }

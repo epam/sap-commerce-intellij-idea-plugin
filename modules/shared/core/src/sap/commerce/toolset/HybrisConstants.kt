@@ -31,6 +31,7 @@ object HybrisConstants {
     const val PLATFORM_VERSION_5_0 = "5.0"
     const val PLATFORM_VERSION_5_2 = "5.2"
 
+    @Deprecated("Move to ccv2 module and use EP to inject extra extensions")
     val CCV2_COMMERCE_CLOUD_EXTENSIONS = arrayOf(
         "azurecloudhotfolder",
         "cloudmediaconversion",
