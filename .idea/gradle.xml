@@ -47,10 +47,10 @@
             <option value="$PROJECT_DIR$/modules/impex/monitoring" />
             <option value="$PROJECT_DIR$/modules/impex/ui" />
             <option value="$PROJECT_DIR$/modules/java/core" />
+            <option value="$PROJECT_DIR$/modules/java/jsp" />
             <option value="$PROJECT_DIR$/modules/javaee/core" />
             <option value="$PROJECT_DIR$/modules/javaee/web" />
             <option value="$PROJECT_DIR$/modules/jrebel/core" />
-            <option value="$PROJECT_DIR$/modules/jsp/ui" />
             <option value="$PROJECT_DIR$/modules/junit/core" />
             <option value="$PROJECT_DIR$/modules/kotlin/core" />
             <option value="$PROJECT_DIR$/modules/logging/core" />
@@ -64,6 +64,7 @@
             <option value="$PROJECT_DIR$/modules/polyglotQuery/exec" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/ui" />
             <option value="$PROJECT_DIR$/modules/project/core" />
+            <option value="$PROJECT_DIR$/modules/project/diagram" />
             <option value="$PROJECT_DIR$/modules/project/exec" />
             <option value="$PROJECT_DIR$/modules/project/extensioninfo" />
             <option value="$PROJECT_DIR$/modules/project/import" />

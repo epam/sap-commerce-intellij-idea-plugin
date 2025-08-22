@@ -57,6 +57,7 @@ class EclipseConfigurator : ProjectImportConfigurator {
         eclipseImportBuilder.list = projectList
 
         ApplicationManager.getApplication().invokeAndWait {
+            // TODO: java.lang.Throwable: Slow operations are prohibited on EDT. See SlowOperations.assertSlowOperationsAreAllowed javadoc.
             eclipseImportBuilder.commit(project)
         }
     }
