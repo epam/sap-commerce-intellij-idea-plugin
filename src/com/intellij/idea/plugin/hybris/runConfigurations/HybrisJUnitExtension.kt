@@ -18,7 +18,6 @@
  */
 package com.intellij.idea.plugin.hybris.runConfigurations
 
-import ai.grazie.nlp.utils.tokenizeByWhitespace
 import com.intellij.execution.RunConfigurationExtension
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.configurations.ParametersList
@@ -56,7 +55,7 @@ class HybrisJUnitExtension : RunConfigurationExtension() {
             }
 
             service.findProperty(PROPERTY_STANDALONE_JDKMODULESEXPORTS)?.let { propertyValue ->
-                propertyValue.tokenizeByWhitespace().forEach {
+                propertyValue.split(' ').forEach {
                     addVmParameterIfNotExist(vmParameters, it.replace("\"", ""))
                 }
             }
