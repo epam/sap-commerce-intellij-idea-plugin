@@ -18,14 +18,12 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable id="hybris.settings" parentId="root" displayName="[y] SAP CX"
+                                 provider="sap.commerce.toolset.options.ApplicationSettingsConfigurableProvider"/>
+
         <applicationConfigurable id="hybris.project.import.settings" parentId="hybris.settings"
                                  key="hybris.settings.application.project_import.title"
                                  provider="sap.commerce.toolset.options.ApplicationProjectImportSettingsConfigurableProvider"/>
-
-        <projectConfigurable id="hybris.project.integrations.settings" parentId="hybris.project.settings"
-                             nonDefaultProject="true" dynamic="true"
-                             displayName="Integrations" order="first"
-                             provider="sap.commerce.toolset.options.ProjectIntegrationsSettingsConfigurableProvider"/>
     </extensions>
 
 </idea-plugin>

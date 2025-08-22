@@ -39,8 +39,10 @@
         <gotoClassContributor implementation="sap.commerce.toolset.gotoClass.CustomGotoClassContributor"/>
         <directoryIndexExcludePolicy implementation="sap.commerce.toolset.project.indexing.HybrisDirectoryIndexExcludePolicy"/>
 
-        <applicationConfigurable id="hybris.settings" parentId="root" displayName="[y] SAP CX"
-                                 provider="sap.commerce.toolset.options.ApplicationSettingsConfigurableProvider"/>
+        <projectConfigurable id="hybris.project.integrations.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             displayName="Integrations" order="first"
+                             provider="sap.commerce.toolset.options.ProjectIntegrationsSettingsConfigurableProvider"/>
 
         <toolWindow id="SAP CX" icon="/icons/toolWindow.svg" anchor="bottom" doNotActivateOnStart="true" canCloseContents="true"
                     factoryClass="sap.commerce.toolset.toolwindow.HybrisToolWindowFactory"/>
