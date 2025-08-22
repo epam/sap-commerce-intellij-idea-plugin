@@ -59,6 +59,8 @@
     <xi:include href="/META-INF/plugin-internal.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/plugin-inspections.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
+    <xi:include href="/META-INF/sap.commerce.toolset-shared-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
     <xi:include href="/META-INF/sap.commerce.toolset-typeSystem-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-typeSystem-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
@@ -129,6 +131,7 @@
 
     <depends optional="true" config-file="sap.commerce.toolset-javaee-core.xml">com.intellij.javaee</depends>
     <depends optional="true" config-file="sap.commerce.toolset-javaee-web.xml">com.intellij.javaee.web</depends>
+    <depends optional="true" config-file="sap.commerce.toolset-javaee-el.xml">com.intellij.spring</depends>
 
     <depends optional="true" config-file="sap.commerce.toolset-database-core.xml">com.intellij.database</depends>
 </idea-plugin>

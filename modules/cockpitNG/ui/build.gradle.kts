@@ -41,9 +41,12 @@ idea {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":shared-ui"))
     implementation(project(":meta-core"))
     implementation(project(":project-core"))
+    implementation(project(":cockpitNG-core"))
     implementation(project(":typeSystem-core"))
+    implementation(project(":typeSystem-ui"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
@@ -51,7 +54,7 @@ dependencies {
         }
         bundledPlugins(
             "com.intellij.java",
-            "com.intellij.properties",
+            "com.intellij.java-i18n",
         )
     }
 }

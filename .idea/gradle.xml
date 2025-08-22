@@ -26,6 +26,7 @@
             <option value="$PROJECT_DIR$/modules/ccv2/manifest" />
             <option value="$PROJECT_DIR$/modules/ccv2/ui" />
             <option value="$PROJECT_DIR$/modules/cockpitNG/core" />
+            <option value="$PROJECT_DIR$/modules/cockpitNG/ui" />
             <option value="$PROJECT_DIR$/modules/console/core" />
             <option value="$PROJECT_DIR$/modules/console/ui" />
             <option value="$PROJECT_DIR$/modules/copyright/core" />
@@ -49,6 +50,7 @@
             <option value="$PROJECT_DIR$/modules/java/core" />
             <option value="$PROJECT_DIR$/modules/java/jsp" />
             <option value="$PROJECT_DIR$/modules/javaee/core" />
+            <option value="$PROJECT_DIR$/modules/javaee/el" />
             <option value="$PROJECT_DIR$/modules/javaee/web" />
             <option value="$PROJECT_DIR$/modules/jrebel/core" />
             <option value="$PROJECT_DIR$/modules/junit/core" />

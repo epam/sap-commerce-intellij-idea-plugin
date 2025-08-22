@@ -24,8 +24,8 @@ import com.intellij.psi.search.GlobalSearchScope
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.Plugin
 import sap.commerce.toolset.impex.constants.modifier.InterceptorProvider
-import sap.commerce.toolset.spring.SpringHelper
 import sap.commerce.toolset.spring.psi.reference.SpringReference
+import sap.commerce.toolset.spring.resolveInterceptorBeansLazy
 
 class SpringInterceptorProvider : InterceptorProvider {
 
@@ -36,7 +36,7 @@ class SpringInterceptorProvider : InterceptorProvider {
             .findClass(HybrisConstants.CLASS_FQN_INTERCEPTOR_MAPPING, GlobalSearchScope.allScope(project))
             ?: return emptySet()
 
-        return SpringHelper.resolveInterceptorBeansLazy(interceptorClass).value
+        return interceptorClass.resolveInterceptorBeansLazy().value
             .mapNotNull {
                 val beanName = it.springBean.beanName ?: return@mapNotNull null
                 val className = it.beanClass?.name ?: "?"

@@ -1,0 +1,43 @@
+/*
+ * This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+ * Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package sap.commerce.toolset.spring
+
+import com.intellij.openapi.util.NotNullLazyValue
+import com.intellij.psi.PsiClass
+import com.intellij.spring.java.SpringJavaClassInfo
+import com.intellij.spring.model.SpringBeanPointer
+import com.intellij.spring.model.xml.beans.SpringBean
+
+internal fun PsiClass.resolveInterceptorBeansLazy(
+    name: String? = null
+): NotNullLazyValue<MutableCollection<out SpringBeanPointer<*>>> = NotNullLazyValue.lazy {
+    SpringJavaClassInfo.getSpringJavaClassInfo(this).resolve().mappedDomBeans
+        .asSequence()
+        .map { it.springBean }
+        .filterIsInstance<SpringBean>()
+        .filter { bean ->
+            bean.properties.find { property ->
+                property.propertyName == "typeCode" && (name?.equals(property.valueAsString, true) ?: true)
+            } != null
+        }
+        .mapNotNull { bean -> bean.properties.find { property -> property.propertyName == "interceptor" } }
+        .mapNotNull { interceptor -> interceptor.refValue }
+        .sortedWith(SpringBeanPointer.DISPLAY_COMPARATOR)
+        .toMutableList()
+}

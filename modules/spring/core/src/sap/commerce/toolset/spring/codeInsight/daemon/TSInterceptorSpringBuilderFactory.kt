@@ -33,7 +33,7 @@ import com.intellij.util.NotNullFunction
 import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.spring.SpringHelper
+import sap.commerce.toolset.spring.resolveInterceptorBeansLazy
 
 /**
  * Initial idea taken from SpringBeanAnnotator
@@ -79,7 +79,7 @@ object TSInterceptorSpringBuilderFactory {
             gotoRelatedItemProvider
         )
         builder
-            .setTargets(SpringHelper.resolveInterceptorBeansLazy(clazz, typeCode))
+            .setTargets(clazz.resolveInterceptorBeansLazy(typeCode))
             .setEmptyPopupText(i18n("hybris.editor.gutter.ts.interceptor.no.matches"))
             .setPopupTitle(i18n("hybris.editor.gutter.ts.interceptor.choose.title"))
             .setTooltipText(i18n("hybris.editor.gutter.ts.interceptor.tooltip.text"))

@@ -1,6 +1,5 @@
 <!--
   ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
-  ~ Copyright (C) 2014-2016 Alexander Bartash <AlexanderBartash@gmail.com>
   ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -18,9 +17,10 @@
   -->
 <idea-plugin>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <multiHostInjector implementation="sap.commerce.toolset.javaee.el.codeInsight.injection.HybrisSpringELInjector"/>
-        <spring.el.contexts order="first" implementation="sap.commerce.toolset.javaee.el.CngSpringELContextsExtension"/>
-    </extensions>
+    <extensionPoints>
+        <extensionPoint qualifiedName="sap.commerce.toolset.shared.springService"
+                        interface="sap.commerce.toolset.spring.SpringService"
+                        dynamic="false"/>
+    </extensionPoints>
 
 </idea-plugin>

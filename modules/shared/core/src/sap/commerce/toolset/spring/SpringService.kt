@@ -16,42 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.spring
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.extensions.ExtensionPointName
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiElement
+import com.intellij.psi.xml.XmlTag
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+interface SpringService {
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
+    fun resolveBeanDeclaration(element: PsiElement, beanId: String): XmlTag?
+    fun resolveBeanClass(element: PsiElement, beanId: String): PsiClass?
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":meta-core"))
-    implementation(project(":project-core"))
-    implementation(project(":typeSystem-core"))
-
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.properties",
-        )
+    companion object {
+        val EP = ExtensionPointName.create<SpringService>("sap.commerce.toolset.shared.springService")
     }
 }

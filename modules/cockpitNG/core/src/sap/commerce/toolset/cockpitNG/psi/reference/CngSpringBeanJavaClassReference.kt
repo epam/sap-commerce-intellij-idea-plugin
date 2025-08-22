@@ -16,42 +16,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.cockpitNG.psi.reference
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
+import sap.commerce.toolset.spring.SpringHelper
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+class CngSpringBeanJavaClassReference : CngJavaClassReference {
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
+    constructor(element: PsiElement, className: String) : super(element, className)
+    constructor(element: PsiElement, textRange: TextRange, className: String) : super(element, textRange, className)
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":meta-core"))
-    implementation(project(":project-core"))
-    implementation(project(":typeSystem-core"))
+    override fun evalClassName() = SpringHelper.resolveBeanClass(element, className)
+        ?.qualifiedName
+        ?: className
 
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.properties",
-        )
-    }
 }

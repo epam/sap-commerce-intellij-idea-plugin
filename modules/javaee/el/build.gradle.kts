@@ -25,7 +25,7 @@ plugins {
 
 sourceSets {
     main {
-        java.srcDirs("src", "gen")
+        java.srcDirs("src")
         resources.srcDirs("resources")
     }
     test {
@@ -33,25 +33,19 @@ sourceSets {
     }
 }
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
-
 dependencies {
     implementation(project(":shared-core"))
-    implementation(project(":meta-core"))
-    implementation(project(":project-core"))
-    implementation(project(":typeSystem-core"))
+    implementation(project(":cockpitNG-core"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {
             useInstaller = false
         }
+
         bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.properties",
+            "com.intellij.spring",
+            "com.intellij.javaee",
+            "com.intellij.javaee.el",
         )
     }
 }

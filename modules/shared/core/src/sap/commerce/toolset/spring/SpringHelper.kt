@@ -16,42 +16,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-fun properties(key: String) = providers.gradleProperty(key)
+package sap.commerce.toolset.spring
 
-plugins {
-    id("org.jetbrains.intellij.platform.module")
-    alias(libs.plugins.kotlin) // Kotlin support
-}
+import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiElement
 
-sourceSets {
-    main {
-        java.srcDirs("src", "gen")
-        resources.srcDirs("resources")
-    }
-    test {
-        java.srcDirs("tests")
-    }
-}
+object SpringHelper {
 
-idea {
-    module {
-        generatedSourceDirs.add(file("gen"))
-    }
-}
+    fun resolveBeanDeclaration(element: PsiElement, beanId: String) = SpringService.EP.extensionList
+        .firstNotNullOfOrNull { it.resolveBeanDeclaration(element, beanId) }
+        ?: SimpleSpringService.getService(element.project)
+            ?.resolveBeanDeclaration(element, beanId)
 
-dependencies {
-    implementation(project(":shared-core"))
-    implementation(project(":meta-core"))
-    implementation(project(":project-core"))
-    implementation(project(":typeSystem-core"))
 
-    intellijPlatform {
-        intellijIdeaUltimate(properties("intellij.version")) {
-            useInstaller = false
-        }
-        bundledPlugins(
-            "com.intellij.java",
-            "com.intellij.properties",
-        )
-    }
+    fun resolveBeanClass(element: PsiElement, beanId: String): PsiClass? = SpringService.EP.extensionList
+        .firstNotNullOfOrNull { it.resolveBeanClass(element, beanId) }
+        ?: SimpleSpringService.getService(element.project)
+            ?.resolveBeanClass(element, beanId)
+
 }
