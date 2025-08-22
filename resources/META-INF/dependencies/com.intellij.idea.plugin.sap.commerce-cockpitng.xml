@@ -40,7 +40,6 @@
                              bundle="i18n.HybrisBundle" key="hybris.settings.project.cng.title"
                              order="after hybris.project.bp.settings"
                              provider="sap.commerce.toolset.cockpitNG.options.ProjectCngSettingsConfigurableProvider"/>
-
     </extensions>
 
 </idea-plugin>
