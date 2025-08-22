@@ -24,7 +24,7 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.HybrisUtil
+import sap.commerce.toolset.project.ImportUtil
 
 class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
 
@@ -42,7 +42,7 @@ class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
 
         if (virtualFile.name == HybrisConstants.CLASSES_DIRECTORY) {
             return virtualFile.parent
-                ?.let { HybrisUtil.isHybrisModuleRoot(virtualFile) }
+                ?.let { ImportUtil.isHybrisModuleRoot(virtualFile) }
                 ?: false
         }
 
