@@ -18,6 +18,10 @@
 <idea-plugin>
 
     <extensions defaultExtensionNs="com.intellij">
+        <projectConfigurable id="hybris.project.integrations.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             displayName="Integrations" order="first"
+                             provider="sap.commerce.toolset.options.ProjectIntegrationsSettingsConfigurableProvider"/>
     </extensions>
 
 </idea-plugin>

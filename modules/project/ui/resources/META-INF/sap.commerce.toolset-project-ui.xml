@@ -23,6 +23,6 @@
         <projectConfigurable id="hybris.project.settings" parentId="hybris.settings" nonDefaultProject="true"
                              dynamic="true"
                              key="hybris.settings.project.title"
-                             provider="sap.commerce.toolset.options.ProjectSettingsConfigurableProvider"/>
+                             provider="sap.commerce.toolset.project.options.ProjectSettingsConfigurableProvider"/>
     </extensions>
 </idea-plugin>

@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package sap.commerce.toolset.options
 
 import com.intellij.openapi.options.BoundSearchableConfigurable
@@ -32,7 +33,7 @@ class ApplicationSettingsConfigurableProvider : ConfigurableProvider() {
         "[y] SAP Commerce", "[y] SAP CX configuration."
     ) {
 
-        private val applicationSettings = ApplicationSettings.getInstance()
+        private val applicationSettings = ApplicationSettings.Companion.getInstance()
 
         override fun createPanel() = panel {
             row {
