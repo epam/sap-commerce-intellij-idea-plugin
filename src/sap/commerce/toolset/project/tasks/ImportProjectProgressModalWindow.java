@@ -197,6 +197,8 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
 
+        cache.clear();
+
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
 

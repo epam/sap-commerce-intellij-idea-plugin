@@ -31,13 +31,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-// TODO: dispose after project import / refresh
-@Deprecated(since = "make disposable")
 public class ConfiguratorCache {
 
     private static final Logger LOG = Logger.getInstance(ConfiguratorCache.class);
 
     private final Map<String, Ref<Properties>> path2Properties = new HashMap<>();
+
+    public void clear() {
+        path2Properties.clear();
+    }
+
+    @Nullable
+    public String findPropertyInFile(@NotNull final File file, @NotNull final String propertyName) {
+        final Properties properties = getParsedProperties(file.getPath());
+
+        if (properties == null) {
+            return null;
+        }
+        return (String) properties.get(propertyName);
+    }
 
     @Nullable
     private Properties getParsedProperties(@NotNull final String filePath) {
@@ -61,27 +73,5 @@ public class ConfiguratorCache {
         }
         path2Properties.put(filePath, Ref.create(properties));
         return properties;
-    }
-
-    @Nullable
-    public String findPropertyInFiles(@NotNull final Iterable<File> files, @NotNull final String propertyName) {
-        for (File file : files) {
-            final String candidate = findPropertyInFile(file, propertyName);
-
-            if (candidate != null) {
-                return candidate;
-            }
-        }
-        return null;
-    }
-
-    @Nullable
-    public String findPropertyInFile(@NotNull final File file, @NotNull final String propertyName) {
-        final Properties properties = getParsedProperties(file.getPath());
-
-        if (properties == null) {
-            return null;
-        }
-        return (String) properties.get(propertyName);
     }
 }
