@@ -161,6 +161,30 @@ class RemoteConnectionService(private val project: Project) {
         addRemoteConnection(settings)
     }
 
+    fun fixRemoteConnectionSettings() {
+        listOf(
+            RemoteConnectionType.Hybris,
+            RemoteConnectionType.SOLR
+        ).forEach {
+            val remoteConnections = getRemoteConnections(it)
+
+            if (remoteConnections.isEmpty()) {
+                val settings = createDefaultRemoteConnectionSettings(it)
+                addRemoteConnection(settings)
+                setActiveRemoteConnectionSettings(settings)
+            } else {
+                fixSslRemoteConnectionSettings(remoteConnections)
+            }
+        }
+    }
+
+    private fun fixSslRemoteConnectionSettings(connectionSettings: Collection<RemoteConnectionSettingsState>) {
+        connectionSettings.forEach {
+            it.isSsl = it.generatedURL.startsWith(RemoteConstants.HTTPS_PROTOCOL)
+            it.hostIP = it.hostIP?.replace(regex, "")
+        }
+    }
+
     private fun getProjectPersonalLevelSettings(type: RemoteConnectionType) = getRemoteConnectionSettings(
         type,
         RemoteConnectionScope.PROJECT_PERSONAL,
@@ -187,6 +211,8 @@ class RemoteConnectionService(private val project: Project) {
         ?: fallback
 
     companion object {
+        private val regex = "https?://".toRegex()
+
         fun getInstance(project: Project): RemoteConnectionService = project.service()
     }
 }

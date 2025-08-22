@@ -23,12 +23,6 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.exec.RemoteConnectionService
-import sap.commerce.toolset.exec.RemoteConstants
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.PlatformModuleDescriptor
 import sap.commerce.toolset.project.yExtensionName
 
 @Service
@@ -56,41 +50,11 @@ class CommonIdeaService {
     private fun matchAllModuleNames(namePatterns: Collection<String>, moduleNames: Collection<String>) = namePatterns
         .all { matchModuleName(it, moduleNames) }
 
-    fun getPlatformDescriptor(hybrisProjectDescriptor: HybrisProjectDescriptor) = hybrisProjectDescriptor
-        .foundModules
-        .firstNotNullOfOrNull { it as? PlatformModuleDescriptor }
-
-    fun fixRemoteConnectionSettings(project: Project) {
-        val remoteConnectionService = RemoteConnectionService.getInstance(project)
-        listOf(
-            RemoteConnectionType.Hybris,
-            RemoteConnectionType.SOLR
-        ).forEach {
-            val remoteConnections = remoteConnectionService.getRemoteConnections(it)
-
-            if (remoteConnections.isEmpty()) {
-                val settings = remoteConnectionService.createDefaultRemoteConnectionSettings(it)
-                remoteConnectionService.addRemoteConnection(settings)
-                remoteConnectionService.setActiveRemoteConnectionSettings(settings)
-            } else {
-                fixSslRemoteConnectionSettings(remoteConnections)
-            }
-        }
-    }
-
-    private fun fixSslRemoteConnectionSettings(connectionSettings: Collection<RemoteConnectionSettingsState>) {
-        connectionSettings.forEach {
-            it.isSsl = it.generatedURL.startsWith(RemoteConstants.HTTPS_PROTOCOL)
-            it.hostIP = it.hostIP?.replace(regex, "")
-        }
-    }
 
     private fun matchModuleName(pattern: String, moduleNames: Collection<String>) = moduleNames
         .any { it.matches(Regex("\\Q$pattern\\E".replace("*", "\\E.*\\Q"))) }
 
     companion object {
-        private val regex = "https?://".toRegex()
-
         @JvmStatic
         fun getInstance(): CommonIdeaService = application.service()
     }

@@ -26,8 +26,8 @@ import com.intellij.openapi.util.removeUserData
 import com.intellij.util.application
 import com.intellij.util.asSafely
 import sap.commerce.toolset.Notifications
-import sap.commerce.toolset.common.services.CommonIdeaService
 import sap.commerce.toolset.console.HybrisConsoleService
+import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.isNotHybrisProject
 import sap.commerce.toolset.project.ProjectConstants
 import sap.commerce.toolset.project.configurator.PostImportConfigurator
@@ -76,7 +76,7 @@ class HybrisProjectImportStartupActivity : ProjectActivity {
             HybrisConsoleService.getInstance(project).activateToolWindow()
         }
 
-        CommonIdeaService.getInstance().fixRemoteConnectionSettings(project)
+        RemoteConnectionService.getInstance(project).fixRemoteConnectionSettings()
     }
 
 }

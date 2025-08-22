@@ -52,7 +52,6 @@ import kotlin.io.path.exists
 import kotlin.io.path.extension
 import kotlin.io.path.name
 
-// TODO: add progress indicator
 class ProjectBeforeCompilerTask : CompileTask {
 
     override fun execute(context: CompileContext): Boolean {

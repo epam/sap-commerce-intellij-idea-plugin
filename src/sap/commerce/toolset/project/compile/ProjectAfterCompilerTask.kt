@@ -29,7 +29,7 @@ import sap.commerce.toolset.project.yExtensionName
 
 class ProjectAfterCompilerTask : CompileTask {
 
-    override fun execute(context: CompileContext) = application.runReadAction<Boolean> {
+    override fun execute(context: CompileContext): Boolean = application.runReadAction<Boolean> {
         val project = context.project
         val settings = ProjectSettings.getInstance(project)
         if (!project.isHybrisProject) return@runReadAction true
