@@ -33,51 +33,16 @@
         <diagram.Provider id="HybrisModuleDependencies"
                           implementation="sap.commerce.toolset.diagram.module.ModuleDepDiagramProvider"/>
 
-        <diagram.Provider id="HybrisTypeSystemDependencies"
-                          implementation="sap.commerce.toolset.diagram.typeSystem.TSDiagramProvider"/>
-
-        <applicationService serviceImplementation="sap.commerce.toolset.diagram.typeSystem.TSDiagramToolbarActionsProvider"/>
-
-        <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.businessProcess.execution.lineMarker.ShowBPDiagramRunLineMarkerContributor"/>
-        <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.diagram.typeSystem.execution.lineMarker.ShowTSDiagramRunLineMarkerContributor"/>
         <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.diagram.module.execution.lineMarker.ShowModuleDepDiagramRunLineMarkerContributor"/>
     </extensions>
 
     <actions>
-        <action id="ShowBusinessProcessDiagram"
-                class="sap.commerce.toolset.businessProcess.actionSystem.ShowBusinessProcessDiagramAction"
-                text="Show Business Process Diagram">
-        </action>
-        <action id="ShowTypeSystemDiagram"
-                class="sap.commerce.toolset.diagram.typeSystem.actionSystem.ShowTypeSystemDiagramAction"
-                text="Show Type System Diagram">
-            <add-to-group group-id="HybrisToolsActions"/>
-        </action>
         <action id="ShowModuleDependencyDiagram"
                 class="sap.commerce.toolset.diagram.module.actionSystem.ShowModuleDependencyDiagramAction"
                 text="Show Module Dependency Diagram"
                 icon="AllIcons.FileTypes.Diagram">
             <add-to-group group-id="HybrisToolsActions"/>
         </action>
-
-        <group id="Diagram.Hybris.TypeSystem.Actions">
-            <action id="Diagram.Hybris.TypeSystem.Actions.OpenSettings"
-                    class="sap.commerce.toolset.diagram.typeSystem.actionSystem.OpenSettingsDiagramAction"/>
-            <separator/>
-            <action id="Diagram.Hybris.TypeSystem.Actions.RestoreRemovedNodes"
-                    class="sap.commerce.toolset.diagram.typeSystem.actionSystem.RestoreRemovedNodesDiagramAction"/>
-            <action id="Diagram.Hybris.TypeSystem.Actions.ExpandAll"
-                    class="sap.commerce.toolset.diagram.typeSystem.actionSystem.ExpandAllDiagramAction"/>
-            <action id="Diagram.Hybris.TypeSystem.Actions.CollapseAll"
-                    class="sap.commerce.toolset.diagram.typeSystem.actionSystem.CollapseAllDiagramAction"/>
-        </group>
-
-        <group id="Diagram.Hybris.TypeSystem.Node.Actions">
-            <action id="Diagram.Hybris.TypeSystem.Node.Actions.ExcludeTypeName"
-                    class="sap.commerce.toolset.diagram.typeSystem.actionSystem.ExcludeTypeNameDiagramAction">
-                <keyboard-shortcut first-keystroke="ctrl meta pressed E" keymap="$default"/>
-            </action>
-        </group>
     </actions>
 
 </idea-plugin>

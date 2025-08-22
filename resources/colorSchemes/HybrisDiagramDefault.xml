@@ -40,14 +40,5 @@
         <option name="MODULE_DEP_DIAGRAM_HEADER_CORE_SUB_MODULE_BACKGROUND" value="FFEFD6"/>
 
         <!-- Type System Diagram -->
-        <!-- EDGES -->
-
-        <option name="TS_DIAGRAM_EDGE_PART_OF" value="FFB16D"/>
-        <option name="TS_DIAGRAM_EDGE_EXTENDS" value="749A54"/>
-        <option name="TS_DIAGRAM_EDGE_DEPENDENCY" value="848789"/>
-        <option name="TS_DIAGRAM_EDGE_DEPENDENCY_NAVIGABLE" value="3CADD4"/>
-
-        <!-- HEADERS -->
-        <option name="TS_DIAGRAM_NODE_HEADER_CUSTOM" value="C8C8C8"/>
     </colors>
 </list>

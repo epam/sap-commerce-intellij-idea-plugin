@@ -22,8 +22,16 @@
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/BpDiagramDarcula.xml"/>
 
         <diagram.Provider id="HybrisBusinessProcessDiagramProvider"
-                          implementation="sap.commerce.toolset.businessProcess.BpDiagramProvider"/>
+                          implementation="sap.commerce.toolset.businessProcess.diagram.BpDiagramProvider"/>
 
+        <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.businessProcess.execution.lineMarker.ShowBPDiagramRunLineMarkerContributor"/>
     </extensions>
+
+    <actions>
+        <action id="ShowBusinessProcessDiagram"
+                class="sap.commerce.toolset.businessProcess.actionSystem.ShowBusinessProcessDiagramAction"
+                text="Show Business Process Diagram">
+        </action>
+    </actions>
 
 </idea-plugin>

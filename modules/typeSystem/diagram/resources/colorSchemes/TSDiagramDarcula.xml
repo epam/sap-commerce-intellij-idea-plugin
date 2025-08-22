@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<list>
+    <colors>
+        <!-- EDGES -->
+        <option name="TS_DIAGRAM_EDGE_PART_OF" value="FFB16D"/>
+        <option name="TS_DIAGRAM_EDGE_EXTENDS" value="749A54"/>
+        <option name="TS_DIAGRAM_EDGE_DEPENDENCY" value="848789"/>
+        <option name="TS_DIAGRAM_EDGE_DEPENDENCY_NAVIGABLE" value="3CADD4"/>
+
+        <!-- HEADERS -->
+        <option name="TS_DIAGRAM_NODE_HEADER_CUSTOM" value="28282D"/>
+    </colors>
+</list>

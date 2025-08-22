@@ -1,0 +1,57 @@
+<!--
+  ~ This file is part of "SAP Commerce Developers Toolset" plugin for IntelliJ IDEA.
+  ~ Copyright (C) 2019-2025 EPAM Systems <hybrisideaplugin@epam.com> and contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  ~ See the GNU Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<idea-plugin>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <additionalTextAttributes scheme="Default" file="colorSchemes/TSDiagramDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/TSDiagramDarcula.xml"/>
+
+        <diagram.Provider id="HybrisTypeSystemDependencies"
+                          implementation="sap.commerce.toolset.typeSystem.diagram.TSDiagramProvider"/>
+
+        <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.typeSystem.execution.lineMarker.ShowTSDiagramRunLineMarkerContributor"/>
+    </extensions>
+
+    <actions>
+        <action id="ShowTypeSystemDiagram"
+                class="sap.commerce.toolset.typeSystem.actionSystem.ShowTypeSystemDiagramAction"
+                text="Show Type System Diagram">
+            <add-to-group group-id="HybrisToolsActions"/>
+        </action>
+
+        <group id="Diagram.Hybris.TypeSystem.Actions">
+            <action id="Diagram.Hybris.TypeSystem.Actions.OpenSettings"
+                    class="sap.commerce.toolset.typeSystem.actionSystem.OpenSettingsDiagramAction"/>
+            <separator/>
+            <action id="Diagram.Hybris.TypeSystem.Actions.RestoreRemovedNodes"
+                    class="sap.commerce.toolset.typeSystem.actionSystem.RestoreRemovedNodesDiagramAction"/>
+            <action id="Diagram.Hybris.TypeSystem.Actions.ExpandAll"
+                    class="sap.commerce.toolset.typeSystem.actionSystem.ExpandAllDiagramAction"/>
+            <action id="Diagram.Hybris.TypeSystem.Actions.CollapseAll"
+                    class="sap.commerce.toolset.typeSystem.actionSystem.CollapseAllDiagramAction"/>
+        </group>
+
+        <group id="Diagram.Hybris.TypeSystem.Node.Actions">
+            <action id="Diagram.Hybris.TypeSystem.Node.Actions.ExcludeTypeName"
+                    class="sap.commerce.toolset.typeSystem.actionSystem.ExcludeTypeNameDiagramAction">
+                <keyboard-shortcut first-keystroke="ctrl meta pressed E" keymap="$default"/>
+            </action>
+        </group>
+    </actions>
+
+</idea-plugin>
