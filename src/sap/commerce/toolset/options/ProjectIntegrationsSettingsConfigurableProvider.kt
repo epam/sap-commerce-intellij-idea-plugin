@@ -38,8 +38,8 @@ import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
 import sap.commerce.toolset.i18n
 import sap.commerce.toolset.isHybrisProject
+import sap.commerce.toolset.solr.ui.RemoteSolrInstancesListPanel
 import sap.commerce.toolset.ui.RemoteHacInstancesListPanel
-import sap.commerce.toolset.ui.RemoteSolrInstancesListPanel
 import javax.swing.DefaultComboBoxModel
 
 class ProjectIntegrationsSettingsConfigurableProvider(private val project: Project) : ConfigurableProvider(), Disposable {

@@ -35,6 +35,10 @@ sourceSets {
 
 dependencies {
     implementation(project(":shared-core"))
+    implementation(project(":exec-core"))
+    implementation(project(":exec-ui"))
+    implementation(project(":solr-core"))
+    implementation(project(":solr-exec"))
 
     intellijPlatform {
         intellijIdeaUltimate(properties("intellij.version")) {

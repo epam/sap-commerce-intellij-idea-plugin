@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow
+package sap.commerce.toolset.solr.ui
 
 import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.project.Project
@@ -40,7 +40,7 @@ class RemoteSolrConnectionDialog(
     override fun applyFields() {
         super.applyFields()
 
-        project.messageBus.syncPublisher(RemoteConnectionListener.TOPIC).onSolrConnectionModified(settings)
+        project.messageBus.syncPublisher(RemoteConnectionListener.Companion.TOPIC).onSolrConnectionModified(settings)
     }
 
     override fun panel() = panel {

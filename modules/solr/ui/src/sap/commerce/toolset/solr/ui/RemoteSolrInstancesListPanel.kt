@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.ui
+
+package sap.commerce.toolset.solr.ui
 
 import com.intellij.openapi.project.Project
 import sap.commerce.toolset.HybrisIcons
@@ -23,7 +24,6 @@ import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.exec.ui.RemoteInstancesListPanel
-import sap.commerce.toolset.toolwindow.RemoteSolrConnectionDialog
 import java.io.Serial
 
 class RemoteSolrInstancesListPanel(
@@ -38,7 +38,7 @@ class RemoteSolrInstancesListPanel(
     }
 
     public override fun addItem() {
-        val item = RemoteConnectionService.getInstance(myProject).createDefaultRemoteConnectionSettings(RemoteConnectionType.SOLR)
+        val item = RemoteConnectionService.Companion.getInstance(myProject).createDefaultRemoteConnectionSettings(RemoteConnectionType.SOLR)
         val dialog = RemoteSolrConnectionDialog(myProject, this, item)
         if (dialog.showAndGet()) {
             addElement(item)
