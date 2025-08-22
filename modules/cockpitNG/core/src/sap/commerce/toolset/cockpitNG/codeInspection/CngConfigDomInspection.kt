@@ -16,15 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.codeInspection.rule.cockpitng
+package sap.commerce.toolset.cockpitNG.codeInspection
 
-import com.intellij.openapi.project.Project
-import com.intellij.psi.xml.XmlFile
+import com.intellij.util.xml.highlighting.BasicDomElementsInspection
 import sap.commerce.toolset.cockpitNG.model.config.Config
-import sap.commerce.toolset.cockpitNG.util.CngUtils
-import sap.commerce.toolset.codeInspection.AbstractInspection
 
-abstract class CngConfigInspection : AbstractInspection<Config>(Config::class.java) {
-
-    override fun canProcess(project: Project, file: XmlFile) = CngUtils.isConfigFile(file)
-}
+class CngConfigDomInspection : BasicDomElementsInspection<Config>(Config::class.java)

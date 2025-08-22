@@ -16,18 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.codeInspection.rule.cockpitng
+package sap.commerce.toolset.cockpitNG.codeInspection
 
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
-import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
+import sap.commerce.toolset.cockpitNG.meta.CngMetaModelStateService
 import sap.commerce.toolset.cockpitNG.model.config.Config
-import sap.commerce.toolset.cockpitNG.util.CngUtils
+import sap.commerce.toolset.cockpitNG.model.config.Context
 import sap.commerce.toolset.i18n
 
-class CngContextMergeByPointToExistingContextAttribute : CngConfigInspection() {
+class CngContextParentIsNotValid : CngConfigInspection() {
 
     override fun inspect(
         project: Project,
@@ -37,23 +37,28 @@ class CngContextMergeByPointToExistingContextAttribute : CngConfigInspection() {
         severity: HighlightSeverity
     ) {
         dom.contexts
-            .map { it.mergeBy }
             .forEach { check(it, holder, severity, project) }
     }
 
     private fun check(
-        dom: GenericAttributeValue<String>,
+        dom: Context,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity,
         project: Project
     ) {
-        val mergeByValue = dom.stringValue ?: return
+        val mergeBy = dom.mergeBy.stringValue ?: return
+        if (mergeBy == "type") return
 
-        if (!CngUtils.getValidMergeByValues(project).contains(mergeByValue)) {
+        val parentValue = dom.parentAttribute.stringValue ?: return
+        if (parentValue == Context.PARENT_AUTO) return
+
+        val allowedValues = CngMetaModelStateService.state(project).contextAttributes[mergeBy]
+
+        if (allowedValues == null || !allowedValues.contains(parentValue)) {
             holder.createProblem(
-                dom,
+                dom.parentAttribute,
                 severity,
-                i18n("hybris.inspections.fix.cng.ContextMergeByPointToExistingContextAttribute.message", mergeByValue)
+                i18n("hybris.inspections.fix.cng.ContextParentIsNotValid.message", parentValue, mergeBy)
             )
         }
     }

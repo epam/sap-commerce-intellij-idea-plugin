@@ -34,4 +34,31 @@
         <lang.foldingBuilder language="XML" implementationClass="sap.commerce.toolset.cockpitNG.lang.folding.CngConfigFoldingBuilder"/>
     </extensions>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
+                         shortName="CngConfigDomElementsInspection" level="ERROR"
+                         implementationClass="sap.commerce.toolset.cockpitNG.codeInspection.CngConfigDomInspection"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
+                         shortName="CngActionsDomElementsInspection" level="ERROR"
+                         implementationClass="sap.commerce.toolset.cockpitNG.codeInspection.CngActionsDomInspection"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.DomElementsInspection.key"
+                         shortName="CngWidgetsDomElementsInspection" level="ERROR"
+                         implementationClass="sap.commerce.toolset.cockpitNG.codeInspection.CngWidgetsDomInspection"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.cng.ContextMergeByPointToExistingContextAttribute.key"
+                         shortName="CngContextMergeByPointToExistingContextAttribute" level="ERROR"
+                         implementationClass="sap.commerce.toolset.cockpitNG.codeInspection.CngContextMergeByPointToExistingContextAttribute"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.cng.ContextParentIsNotValid.key"
+                         shortName="CngContextParentIsNotValid" level="ERROR"
+                         implementationClass="sap.commerce.toolset.cockpitNG.codeInspection.CngContextParentIsNotValid"/>
+        <localInspection language="XML" enabledByDefault="true" groupPath="SAP Commerce" groupName="[y] Cockpit NG"
+                         bundle="i18n.HybrisBundle" key="hybris.inspections.cng.CngContextMergeByTypeParentIsNotValid.key"
+                         shortName="CngContextMergeByTypeParentIsNotValid" level="ERROR"
+                         implementationClass="sap.commerce.toolset.cockpitNG.codeInspection.CngContextMergeByTypeParentIsNotValid"/>
+    </extensions>
+
 </idea-plugin>

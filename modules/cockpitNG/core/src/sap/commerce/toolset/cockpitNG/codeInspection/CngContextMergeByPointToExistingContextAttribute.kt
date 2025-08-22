@@ -16,21 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.codeInspection.rule.cockpitng
+package sap.commerce.toolset.cockpitNG.codeInspection
 
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.project.Project
+import com.intellij.util.xml.GenericAttributeValue
 import com.intellij.util.xml.highlighting.DomElementAnnotationHolder
 import com.intellij.util.xml.highlighting.DomHighlightingHelper
-import sap.commerce.toolset.HybrisConstants
 import sap.commerce.toolset.cockpitNG.model.config.Config
-import sap.commerce.toolset.cockpitNG.model.config.Context
+import sap.commerce.toolset.cockpitNG.util.CngUtils
 import sap.commerce.toolset.i18n
-import sap.commerce.toolset.typeSystem.meta.TSMetaModelAccess
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaEnum
-import sap.commerce.toolset.typeSystem.meta.model.TSGlobalMetaItem
 
-class CngContextMergeByTypeParentIsNotValid : CngConfigInspection() {
+class CngContextMergeByPointToExistingContextAttribute : CngConfigInspection() {
 
     override fun inspect(
         project: Project,
@@ -39,38 +36,25 @@ class CngContextMergeByTypeParentIsNotValid : CngConfigInspection() {
         helper: DomHighlightingHelper,
         severity: HighlightSeverity
     ) {
-        val metaModelAccess = TSMetaModelAccess.getInstance(project)
         dom.contexts
-            .filter { it.mergeBy.stringValue == "type" }
-            .forEach { check(it, holder, severity, metaModelAccess) }
+            .map { it.mergeBy }
+            .forEach { check(it, holder, severity, project) }
     }
 
     private fun check(
-        dom: Context,
+        dom: GenericAttributeValue<String>,
         holder: DomElementAnnotationHolder,
         severity: HighlightSeverity,
-        metaModelAccess: TSMetaModelAccess
+        project: Project
     ) {
-        val parentType = dom.parentAttribute.stringValue ?: return
-        val type = dom.type.stringValue ?: return
+        val mergeByValue = dom.stringValue ?: return
 
-        val typeMeta = metaModelAccess.findMetaClassifierByName(type) ?: return
-
-        // skip enums
-        if (typeMeta is TSGlobalMetaEnum && parentType == HybrisConstants.TS_TYPE_ENUMERATION_VALUE) return
-
-        // skip non-item types
-        if (typeMeta !is TSGlobalMetaItem) return
-
-        val validParentType = typeMeta.allExtends
-            .any { parentType.equals(it.name, true) }
-
-        if (validParentType) return
-
-        holder.createProblem(
-            dom.parentAttribute,
-            severity,
-            i18n("hybris.inspections.fix.cng.CngContextMergeByTypeParentIsNotValid.key", type, parentType)
-        )
+        if (!CngUtils.getValidMergeByValues(project).contains(mergeByValue)) {
+            holder.createProblem(
+                dom,
+                severity,
+                i18n("hybris.inspections.fix.cng.ContextMergeByPointToExistingContextAttribute.message", mergeByValue)
+            )
+        }
     }
 }

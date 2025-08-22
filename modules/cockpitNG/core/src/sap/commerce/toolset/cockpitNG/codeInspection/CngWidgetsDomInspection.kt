@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.codeInspection.rule.cockpitng
+package sap.commerce.toolset.cockpitNG.codeInspection
 
 import com.intellij.util.xml.highlighting.BasicDomElementsInspection
-import sap.commerce.toolset.cockpitNG.model.config.Config
+import sap.commerce.toolset.cockpitNG.model.core.Widgets
 
-class CngConfigDomInspection : BasicDomElementsInspection<Config>(Config::class.java)
+class CngWidgetsDomInspection : BasicDomElementsInspection<Widgets>(Widgets::class.java)
