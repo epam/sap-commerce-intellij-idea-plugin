@@ -30,7 +30,7 @@ import sap.commerce.toolset.HybrisConstants
 import java.nio.file.Path
 
 @Service(Service.Level.PROJECT)
-class ProjectCompileService(private val project: Project, private val coroutineScope: CoroutineScope) {
+internal class ProjectCompileService(private val project: Project, private val coroutineScope: CoroutineScope) {
 
     fun triggerRefreshGeneratedFiles(bootstrapDirectory: Path) {
         coroutineScope.launch(Dispatchers.IO) {

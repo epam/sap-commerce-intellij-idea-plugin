@@ -65,6 +65,7 @@
     <xi:include href="/META-INF/sap.commerce.toolset-beanSystem-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-beanSystem-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
+    <xi:include href="/META-INF/sap.commerce.toolset-project-compile.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-extensioninfo.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-localextensions.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-project-core.xml" xpointer="xpointer(/idea-plugin/*)"/>

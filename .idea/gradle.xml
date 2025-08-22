@@ -65,6 +65,7 @@
             <option value="$PROJECT_DIR$/modules/polyglotQuery/core" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/exec" />
             <option value="$PROJECT_DIR$/modules/polyglotQuery/ui" />
+            <option value="$PROJECT_DIR$/modules/project/compile" />
             <option value="$PROJECT_DIR$/modules/project/core" />
             <option value="$PROJECT_DIR$/modules/project/diagram" />
             <option value="$PROJECT_DIR$/modules/project/exec" />
