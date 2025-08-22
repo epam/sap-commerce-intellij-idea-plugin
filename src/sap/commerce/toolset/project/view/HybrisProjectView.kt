@@ -126,9 +126,7 @@ open class HybrisProjectView(val project: Project) : TreeStructureProvider, Dumb
                 val yFacet = projectRootManager.fileIndex.getModuleForFile(virtualFile)
                     ?.let { YFacet.get(it) }
 
-                if (yFacet == null && (ModuleDescriptorProvider.EP.extensionList.any { it.isApplicable(file) }
-                        || projectService.isAngularModule(file))
-                ) {
+                if (yFacet == null && ModuleDescriptorProvider.EP.extensionList.any { it.isApplicable(file) }) {
                     otherNodes.add(child)
                 } else {
                     treeNodes.add(child)

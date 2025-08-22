@@ -28,5 +28,5 @@ open class ExternalModuleDescriptor(
     name: String,
 ) : AbstractModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
 
-    override fun groupName() = ApplicationSettings.getInstance().groupNonHybris.toIdeaGroup()
+    override fun groupName(): Array<String>? = ApplicationSettings.getInstance().groupNonHybris.toIdeaGroup()
 }

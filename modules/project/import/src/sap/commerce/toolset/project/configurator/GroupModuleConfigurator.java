@@ -56,9 +56,8 @@ public class GroupModuleConfigurator implements ProjectPreImportConfigurator {
                 requiredYModuleDescriptorList.addAll(it.getAllDependencies());
             });
 
-        final var groups = ModuleGroupingUtil.getPredefinedGroups(applicationSettings);
         hybrisProjectDescriptor.getModulesChosenForImport().forEach(it -> {
-            final @Nullable String[] groupNames = ModuleGroupingUtil.getGroupName(it, requiredYModuleDescriptorList, groups);
+            final @Nullable String[] groupNames = ModuleGroupingUtil.getGroupName(it, requiredYModuleDescriptorList);
             if (groupNames != null) {
                 it.setGroupNames(groupNames);
             }

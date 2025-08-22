@@ -116,7 +116,7 @@ abstract class AbstractModuleDescriptor(
     override fun getDirectDependencies() = directDependencies
 
     override fun addDirectDependencies(dependencies: Collection<ModuleDescriptor>) = this.directDependencies.addAll(dependencies)
-    internal open fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = emptySet()
+    open fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>): Set<String> = emptySet()
 
     override fun toString() = "${javaClass.simpleName} {name=$name, moduleRootDirectory=$moduleRootDirectory}"
 

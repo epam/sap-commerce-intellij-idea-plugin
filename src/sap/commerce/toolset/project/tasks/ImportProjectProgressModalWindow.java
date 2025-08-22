@@ -36,7 +36,6 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProviderImpl;
 import com.intellij.openapi.module.ModifiableModuleModel;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.StdModuleTypes;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
@@ -62,12 +61,9 @@ import org.jetbrains.annotations.NotNull;
 import sap.commerce.toolset.Plugin;
 import sap.commerce.toolset.ccv2.CCv2Constants;
 import sap.commerce.toolset.impex.ImpExLanguage;
-import sap.commerce.toolset.java.configurator.ex.ContentRootConfiguratorEx;
-import sap.commerce.toolset.project.ModuleGroupingUtil;
 import sap.commerce.toolset.project.configurator.ConfiguratorCache;
 import sap.commerce.toolset.project.configurators.ConfiguratorFactory;
 import sap.commerce.toolset.project.descriptor.*;
-import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor;
 import sap.commerce.toolset.project.settings.ProjectSettings;
 import sap.commerce.toolset.settings.ApplicationSettings;
@@ -205,8 +201,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
 
         application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
 
-        configureAngularModules(indicator);
-
         project.putUserData(ExternalSystemDataKeys.NEWLY_CREATED_PROJECT, Boolean.TRUE);
     }
 
@@ -234,51 +228,6 @@ public class ImportProjectProgressModalWindow extends Task.Modal {
         configuratorFactory.getModuleFacetConfigurators().forEach(configurator ->
             configurator.configureModuleFacet(module, hybrisProjectDescriptor, modifiableFacetModel, moduleDescriptor, modifiableRootModel)
         );
-    }
-
-    @Deprecated(since = "Migrate to EP")
-    private void configureAngularModules(
-        final @NotNull ProgressIndicator indicator
-    ) {
-        if (Plugin.ANGULAR.isDisabled()) return;
-
-        indicator.setText(message("hybris.project.import.angular"));
-
-        final var modifiableModelsProvider = new IdeModifiableModelsProviderImpl(project);
-        final var rootProjectModifiableModel = model == null
-            ? modifiableModelsProvider.getModifiableModuleModel()
-            : model;
-
-        final var modules = hybrisProjectDescriptor
-            .getModulesChosenForImport()
-            .stream()
-            .filter(AngularModuleDescriptor.class::isInstance)
-            .map(AngularModuleDescriptor.class::cast)
-            .peek(descriptor -> {
-                final var applicationSettings = ApplicationSettings.getInstance();
-                if (applicationSettings.getGroupModules()) {
-                    final var predefinedGroups = ModuleGroupingUtil.getPredefinedGroups(applicationSettings);
-                    final var groupNames = ModuleGroupingUtil.getGroupName(descriptor, descriptor.getDirectDependencies(), predefinedGroups);
-
-                    if (groupNames != null) {
-                        descriptor.setGroupNames(groupNames);
-                    }
-                }
-            })
-            .collect(Collectors.toMap(Function.identity(), module -> rootProjectModifiableModel.newModule(
-                module.ideaModuleFile().getAbsolutePath(),
-                StdModuleTypes.JAVA.getId()
-            )));
-
-        modules.forEach((descriptor, module) -> {
-            final var modifiableRootModel = modifiableModelsProvider.getModifiableRootModel(module);
-
-            ContentRootConfiguratorEx.configure(indicator, modifiableRootModel, descriptor);
-            configureModuleFacet(descriptor, module, modifiableRootModel, modifiableModelsProvider);
-        });
-
-        final var application = ApplicationManager.getApplication();
-        application.invokeAndWait(() -> application.runWriteAction(modifiableModelsProvider::commit));
     }
 
     private void updateProjectDictionary(

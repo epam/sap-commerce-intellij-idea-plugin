@@ -26,13 +26,14 @@ import sap.commerce.toolset.HybrisConstants;
 import sap.commerce.toolset.project.descriptor.ConfigModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.ModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.YSubModuleDescriptor;
-import sap.commerce.toolset.project.descriptor.impl.AngularModuleDescriptor;
 import sap.commerce.toolset.project.descriptor.impl.YCustomRegularModuleDescriptor;
 import sap.commerce.toolset.project.utils.FileUtils;
 import sap.commerce.toolset.settings.ApplicationSettings;
 
 import java.io.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
 
 import static sap.commerce.toolset.HybrisConstants.*;
 import static sap.commerce.toolset.project.utils.FileUtils.toFile;
@@ -41,19 +42,11 @@ public final class ModuleGroupingUtil {
 
     private static final Logger LOG = Logger.getInstance(ModuleGroupingUtil.class);
 
-    public static Map<String, String[]> getPredefinedGroups(final ApplicationSettings applicationSettings) {
-        // TODO, fix the map, it cannot have null values
-        return Map.of(
-            "groupCustom", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupCustom()),
-            "groupOtherCustom", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupOtherCustom()),
-            "groupHybris", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupHybris()),
-            "groupOtherHybris", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupOtherHybris()),
-            "groupPlatform", ApplicationSettings.toIdeaGroup(applicationSettings.getGroupPlatform())
-        );
-    }
-
     @Nullable
-    public static String[] getGroupName(@NotNull final ModuleDescriptor moduleDescriptor, final Collection<ModuleDescriptor> requiredYModuleDescriptorList, final Map<String, String[]> groups) {
+    public static String[] getGroupName(
+        @NotNull final ModuleDescriptor moduleDescriptor,
+        final Collection<ModuleDescriptor> requiredYModuleDescriptorList
+    ) {
         if (!(moduleDescriptor instanceof ConfigModuleDescriptor)) {
             final String[] groupPathOverride = getLocalGroupPathOverride(moduleDescriptor);
             if (groupPathOverride != null) {
@@ -66,7 +59,7 @@ public final class ModuleGroupingUtil {
             return groupPathOverride.clone();
         }
 
-        final String[] groupPath = getGroupPath(moduleDescriptor, requiredYModuleDescriptorList, groups);
+        final String[] groupPath = getGroupPath(moduleDescriptor, requiredYModuleDescriptorList);
         if (groupPath == null) {
             return null;
         }
@@ -129,26 +122,15 @@ public final class ModuleGroupingUtil {
         return ApplicationSettings.toIdeaGroup(rawGroupText);
     }
 
-    private static String[] getGroupPath(
+    public static String[] getGroupPath(
         @NotNull final ModuleDescriptor moduleDescriptor,
-        final Collection<ModuleDescriptor> requiredYModuleDescriptorList,
-        final Map<String, String[]> groups
+        final Collection<ModuleDescriptor> requiredYModuleDescriptorList
     ) {
         final var groupName = moduleDescriptor.groupName();
         if (groupName != null) return groupName;
 
         if (moduleDescriptor instanceof final YSubModuleDescriptor ySubModuleDescriptor) {
-            return getGroupPath(ySubModuleDescriptor.getOwner(), requiredYModuleDescriptorList, groups);
-        }
-
-        if (moduleDescriptor instanceof AngularModuleDescriptor && requiredYModuleDescriptorList.size() == 1) {
-            // assumption that there can be only 1 parent
-            final var parent = requiredYModuleDescriptorList.iterator().next();
-            final var parentPath = getGroupPath(parent, List.of(), groups);
-            final var completeGroup = Arrays.copyOf(parentPath, parentPath.length + 1);
-            completeGroup[completeGroup.length - 1] = parent.getName();
-
-            return completeGroup;
+            return getGroupPath(ySubModuleDescriptor.getOwner(), requiredYModuleDescriptorList);
         }
 
         if (moduleDescriptor instanceof YCustomRegularModuleDescriptor) {
@@ -158,7 +140,7 @@ public final class ModuleGroupingUtil {
                 customDirectory = new File(moduleDescriptor.getRootProjectDescriptor().getHybrisDistributionDirectory(), HybrisConstants.CUSTOM_MODULES_DIRECTORY_RELATIVE_PATH);
             }
             if (!customDirectory.exists()) {
-                return groups.get("groupCustom");
+                return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom());
             }
             customDirectory = toFile(customDirectory.getAbsolutePath());
 
@@ -171,7 +153,7 @@ public final class ModuleGroupingUtil {
                         " custom directory  '%s'.",
                     moduleDescriptor.getName(), moduleDescriptor.getModuleRootDirectory(), customDirectory
                 ));
-                return groups.get("groupCustom");
+                return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom());
             }
 
             final boolean isCustomModuleInLocalExtensionsXml = requiredYModuleDescriptorList.contains(
@@ -179,7 +161,9 @@ public final class ModuleGroupingUtil {
             );
 
             return ArrayUtils.addAll(
-                isCustomModuleInLocalExtensionsXml ? groups.get("groupCustom") : groups.get("groupOtherCustom"),
+                isCustomModuleInLocalExtensionsXml
+                    ? ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupCustom())
+                    : ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupOtherCustom()),
                 path.toArray(new String[0])
             );
         }
@@ -198,15 +182,15 @@ public final class ModuleGroupingUtil {
                     "Can not build group path for OOTB module '%s' because its root directory '%s' is not under Hybris bin directory '%s'.",
                     moduleDescriptor.getName(), moduleDescriptor.getModuleRootDirectory(), hybrisBinDirectory
                 ));
-                return groups.get("groupHybris");
+                return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupHybris());
             }
 
             if (!path.isEmpty() && path.get(0).equals("modules")) {
                 path.remove(0);
             }
-            return ArrayUtils.addAll(groups.get("groupHybris"), path.toArray(new String[0]));
+            return ArrayUtils.addAll(ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupHybris()), path.toArray(new String[0]));
         }
 
-        return groups.get("groupOtherHybris");
+        return ApplicationSettings.toIdeaGroup(ApplicationSettings.getInstance().getGroupOtherHybris());
     }
 }

@@ -15,20 +15,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package sap.commerce.toolset.project.descriptor.impl
 
-import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptor
-import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
+package sap.commerce.toolset.angular.descriptor
+
+import sap.commerce.toolset.HybrisConstants
+import sap.commerce.toolset.project.ModuleGroupingUtil
+import sap.commerce.toolset.project.descriptor.*
+import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
 import java.io.File
 
-@Deprecated("Move to own module")
 class AngularModuleDescriptor(
     moduleRootDirectory: File,
     rootProjectDescriptor: HybrisProjectDescriptor,
     name: String = moduleRootDirectory.name,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.ANGULAR
 ) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+
+    init {
+        importStatus = ModuleDescriptorImportStatus.MANDATORY
+    }
 
     override fun isPreselected() = true
     override fun initDependencies(moduleDescriptors: Map<String, ModuleDescriptor>) = moduleDescriptors.values
@@ -37,4 +42,21 @@ class AngularModuleDescriptor(
         .map { it.name }
         .take(1)
         .toSet()
+
+    override fun groupName(): Array<String> {
+        // assumption that there can be only 1 parent
+        val parent = getDirectDependencies().firstOrNull()
+            ?: return emptyArray()
+        val parentPath = ModuleGroupingUtil.getGroupPath(parent, listOf())
+        return parentPath + parent.name
+    }
+
+    class Provider : ModuleDescriptorProvider {
+        override fun isApplicable(moduleRootDirectory: File) = File(moduleRootDirectory, HybrisConstants.FILE_ANGULAR_JSON).isFile()
+
+        override fun create(
+            moduleRootDirectory: File,
+            rootProjectDescriptor: HybrisProjectDescriptor
+        ) = AngularModuleDescriptor(moduleRootDirectory, rootProjectDescriptor)
+    }
 }

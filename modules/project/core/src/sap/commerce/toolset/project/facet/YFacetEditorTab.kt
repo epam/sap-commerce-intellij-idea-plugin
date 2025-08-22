@@ -28,6 +28,7 @@ import sap.commerce.toolset.project.ExtensionDescriptor
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.SubModuleDescriptorType
 
+@Deprecated("Make it ModuleDescriptor aware")
 class YFacetEditorTab(
     val state: ExtensionDescriptor,
     private val editorContext: FacetEditorContext

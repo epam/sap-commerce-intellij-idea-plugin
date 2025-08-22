@@ -20,6 +20,7 @@ package sap.commerce.toolset.ccv2.descriptor
 
 import sap.commerce.toolset.ccv2.CCv2Constants
 import sap.commerce.toolset.project.descriptor.HybrisProjectDescriptor
+import sap.commerce.toolset.project.descriptor.ModuleDescriptorImportStatus
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorProvider
 import sap.commerce.toolset.project.descriptor.ModuleDescriptorType
 import sap.commerce.toolset.project.descriptor.impl.ExternalModuleDescriptor
@@ -33,6 +34,10 @@ class CCv2ModuleDescriptor(
     name: String = moduleRootDirectory.name,
     override val descriptorType: ModuleDescriptorType = ModuleDescriptorType.CCV2
 ) : ExternalModuleDescriptor(moduleRootDirectory, rootProjectDescriptor, name) {
+
+    init {
+        importStatus = ModuleDescriptorImportStatus.MANDATORY
+    }
 
     override fun isPreselected() = true
     override fun groupName() = ApplicationSettings.getInstance().groupCCv2.toIdeaGroup()

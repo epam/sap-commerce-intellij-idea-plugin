@@ -101,11 +101,6 @@ object ModuleDescriptorFactory {
 
             }
 
-            hybrisProjectService.isAngularModule(resolvedFile) -> {
-                LOG.info("Creating Angular module for $path")
-                AngularModuleDescriptor(resolvedFile, rootProjectDescriptor)
-            }
-
             else -> {
                 ModuleDescriptorProvider.EP.extensionList
                     .firstOrNull { it.isApplicable(resolvedFile) }
