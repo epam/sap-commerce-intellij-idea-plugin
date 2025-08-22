@@ -29,6 +29,8 @@
     </extensions>
 
     <actions>
+        <action id="hybris.impex.extractAcl" class="sap.commerce.toolset.acl.actionSystem.ImpexExtractAclAction"/>
+
         <action id="Acl.NewAclFile" class="sap.commerce.toolset.acl.actionSystem.AclFileCreateAction"
                 text="Access Control Lists File" description="Create new Access control lists file">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>

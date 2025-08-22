@@ -31,6 +31,71 @@
 
         <defaultLiveTemplates file="liveTemplates/ImpEx.xml"/>
         <liveTemplateContext contextId="IMPEX" implementation="sap.commerce.toolset.impex.liveTemplates.ImpexContextType"/>
+
+        <codeInsight.declarativeInlayProvider language="ImpEx"
+                                              implementationClass="sap.commerce.toolset.impex.codeInsight.hints.ImpExParameterInlayHintProvider"
+                                              isEnabledByDefault="true"
+                                              group="VALUES_GROUP"
+                                              providerId="hybris.ImpEx.parameter"
+                                              bundle="i18n.HybrisBundle"
+                                              nameKey="hybris.impex.editor.parameter.name"
+                                              descriptionKey="hybris.impex.editor.parameter.description"/>
+
+        <colorSettingsPage implementation="sap.commerce.toolset.impex.highlighting.ImpexColorSettingsPage"/>
+
+        <additionalTextAttributes scheme="Default" file="colorSchemes/ImpExDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colorSchemes/ImpExDarcula.xml"/>
+
+        <platform.backend.documentation.psiTargetProvider implementation="sap.commerce.toolset.impex.lang.documentation.ImpexPsiDocumentationTargetProvider"/>
+        <platform.backend.documentation.targetProvider implementation="sap.commerce.toolset.impex.lang.documentation.ImpexDocumentationTargetProvider"/>
+
+        <vfs.asyncListener implementation="sap.commerce.toolset.impex.vfs.event.ImpExVfsAsyncListener"/>
+
+        <lang.parserDefinition language="ImpEx" implementationClass="sap.commerce.toolset.impex.ImpexParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="ImpEx" implementationClass="sap.commerce.toolset.impex.highlighting.ImpexSyntaxHighlighterFactory"/>
+        <lang.commenter language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.ImpexCommenter"/>
+        <lang.formatter language="ImpEx" implementationClass="sap.commerce.toolset.impex.formatting.ImpexFormattingModelBuilder"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingBuilder"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpExFoldingLinesBuilder"/>
+        <lang.foldingBuilder language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.folding.ImpexMacroFoldingBuilder"/>
+        <lang.refactoringSupport language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.refactoring.ImpexRefactoringSupportProvider"/>
+
+        <codeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="sap.commerce.toolset.impex.formatting.ImpexLanguageCodeStyleSettingsProvider"/>
+
+        <vetoRenameCondition implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExVetoRenameCondition"/>
+        <renameInputValidator implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExRenameInputValidator"/>
+        <renamePsiElementProcessor implementation="sap.commerce.toolset.impex.lang.refactoring.ImpExRenamePsiElementProcessor"/>
+
+        <projectConfigurable id="hybris.project.impex.settings" parentId="hybris.project.settings"
+                             nonDefaultProject="true" dynamic="true"
+                             bundle="i18n.HybrisBundle" key="hybris.settings.project.impex.title"
+                             order="after hybris.project.integrations.settings"
+                             provider="sap.commerce.toolset.impex.options.ProjectImpExSettingsConfigurableProvider"/>
+
+        <!-- ####################################################################################################### -->
+        <!--                                        Impex Completion Providers                                       -->
+        <!-- ####################################################################################################### -->
+
+        <completion.contributor language="ImpEx" implementationClass="sap.commerce.toolset.impex.codeInsight.completion.ImpexCompletionContributor"/>
+
+        <!-- ####################################################################################################### -->
+
+        <highlightUsagesHandlerFactory
+                implementation="sap.commerce.toolset.impex.highlighting.findUsages.HighlightMacrosHandlerFactory"/>
+
+        <lang.findUsagesProvider language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.findUsages.ImpexFindUsagesProvider"/>
+
+        <annotator language="ImpEx" implementationClass="sap.commerce.toolset.impex.lang.annotation.ImpexAnnotator"/>
+
+        <codeInsight.declarativeInlayProvider language="ImpEx"
+                                              implementationClass="sap.commerce.toolset.impex.codeInsight.hints.ImpExDefaultValueDeclarativeInlayProvider"
+                                              isEnabledByDefault="true"
+                                              group="VALUES_GROUP"
+                                              providerId="hybris.ImpEx.defaultValue"
+                                              bundle="i18n.HybrisBundle"
+                                              nameKey="hybris.editor.impex.inlay_provider.default_value.name"
+                                              descriptionKey="hybris.editor.impex.inlay_provider.default_value.description"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
