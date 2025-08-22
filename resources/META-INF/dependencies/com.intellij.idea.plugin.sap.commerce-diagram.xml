@@ -30,28 +30,22 @@
         <additionalTextAttributes scheme="Default" file="colorSchemes/HybrisDiagramDefault.xml"/>
         <additionalTextAttributes scheme="Darcula" file="colorSchemes/HybrisDiagramDarcula.xml"/>
 
-        <diagram.Provider id="HybrisBusinessProcessDiagramProvider"
-                          implementation="sap.commerce.toolset.diagram.businessProcess.BpDiagramProvider"/>
-
         <diagram.Provider id="HybrisModuleDependencies"
                           implementation="sap.commerce.toolset.diagram.module.ModuleDepDiagramProvider"/>
 
         <diagram.Provider id="HybrisTypeSystemDependencies"
                           implementation="sap.commerce.toolset.diagram.typeSystem.TSDiagramProvider"/>
 
-        <projectService serviceInterface="sap.commerce.toolset.diagram.businessProcess.BpGraphService"
-                        serviceImplementation="sap.commerce.toolset.diagram.businessProcess.impl.BpGraphServiceImpl"/>
-
         <applicationService serviceImplementation="sap.commerce.toolset.diagram.typeSystem.TSDiagramToolbarActionsProvider"/>
 
-        <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.diagram.businessProcess.execution.lineMarker.ShowBPDiagramRunLineMarkerContributor"/>
+        <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.businessProcess.execution.lineMarker.ShowBPDiagramRunLineMarkerContributor"/>
         <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.diagram.typeSystem.execution.lineMarker.ShowTSDiagramRunLineMarkerContributor"/>
         <runLineMarkerContributor language="XML" implementationClass="sap.commerce.toolset.diagram.module.execution.lineMarker.ShowModuleDepDiagramRunLineMarkerContributor"/>
     </extensions>
 
     <actions>
         <action id="ShowBusinessProcessDiagram"
-                class="sap.commerce.toolset.diagram.businessProcess.actionSystem.ShowBusinessProcessDiagramAction"
+                class="sap.commerce.toolset.businessProcess.actionSystem.ShowBusinessProcessDiagramAction"
                 text="Show Business Process Diagram">
         </action>
         <action id="ShowTypeSystemDiagram"

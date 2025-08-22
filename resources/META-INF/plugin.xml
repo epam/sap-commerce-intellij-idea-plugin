@@ -113,6 +113,7 @@
     <xi:include href="/META-INF/sap.commerce.toolset-java-core.xml" xpointer="xpointer(/idea-plugin/*)"/>
     <xi:include href="/META-INF/sap.commerce.toolset-jsp-ui.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
+    <depends optional="true" config-file="sap.commerce.toolset-businessProcess-diagram.xml">com.intellij.diagram</depends>
     <depends optional="true" config-file="sap.commerce.toolset-jrebel-core.xml">JRebelPlugin</depends>
     <depends optional="true" config-file="sap.commerce.toolset-copyright-core.xml">com.intellij.copyright</depends>
     <depends optional="true" config-file="sap.commerce.toolset-terminal-core.xml">org.jetbrains.plugins.terminal</depends>

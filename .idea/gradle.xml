@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/modules/beanSystem/core" />
             <option value="$PROJECT_DIR$/modules/beanSystem/ui" />
             <option value="$PROJECT_DIR$/modules/businessProcess/core" />
+            <option value="$PROJECT_DIR$/modules/businessProcess/diagram" />
             <option value="$PROJECT_DIR$/modules/businessProcess/ui" />
             <option value="$PROJECT_DIR$/modules/ccv2/core" />
             <option value="$PROJECT_DIR$/modules/ccv2/exec" />
