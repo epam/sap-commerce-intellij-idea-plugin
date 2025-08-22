@@ -25,7 +25,7 @@ import com.intellij.openapi.vfs.VirtualFileVisitor
 import sap.commerce.toolset.HybrisConstants
 import java.io.File
 
-object ImportUtil {
+object ProjectUtil {
 
     private val KEY_HYBRIS_PROJECT_DIRECTORY = Key.create<Boolean>("IS_HYBRIS_FILE")
     private val SKIP_DIRS = setOf(

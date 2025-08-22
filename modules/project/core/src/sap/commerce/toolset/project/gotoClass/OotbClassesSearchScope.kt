@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.gotoClass
+package sap.commerce.toolset.project.gotoClass
 
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
@@ -24,7 +24,7 @@ import com.intellij.openapi.vfs.JarFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import sap.commerce.toolset.HybrisConstants
-import sap.commerce.toolset.project.ImportUtil
+import sap.commerce.toolset.project.ProjectUtil
 
 class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
 
@@ -42,7 +42,7 @@ class OotbClassesSearchScope(project: Project) : GlobalSearchScope(project) {
 
         if (virtualFile.name == HybrisConstants.CLASSES_DIRECTORY) {
             return virtualFile.parent
-                ?.let { ImportUtil.isHybrisModuleRoot(virtualFile) }
+                ?.let { ProjectUtil.isHybrisModuleRoot(virtualFile) }
                 ?: false
         }
 

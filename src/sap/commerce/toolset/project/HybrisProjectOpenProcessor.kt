@@ -77,7 +77,7 @@ class HybrisProjectOpenProcessor : ProjectOpenProcessorBase<OpenHybrisProjectImp
     }
 
     override fun canOpenProject(file: VirtualFile) = if (super.canOpenProject(file)) true
-    else ImportUtil.isPotentialHybrisProject(file)
+    else ProjectUtil.isPotentialHybrisProject(file)
 
     override val supportedExtensions = arrayOf(
         HybrisConstants.EXTENSION_INFO_XML,
