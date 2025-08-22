@@ -31,7 +31,7 @@ import org.jsoup.nodes.Element
 import sap.commerce.toolset.exec.DefaultExecutionClient
 import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.context.DefaultExecutionResult
-import sap.commerce.toolset.exec.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.http.HacHttpClient
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.impex.exec.context.ImpExExecutionContext
 import java.io.IOException
@@ -50,7 +50,7 @@ class ImpExExecutionClient(project: Project, coroutineScope: CoroutineScope) : D
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
-        val response = HybrisHacHttpClient.getInstance(project)
+        val response = HacHttpClient.getInstance(project)
             .post(actionUrl, params, false, context.settings.timeout, settings, null)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode

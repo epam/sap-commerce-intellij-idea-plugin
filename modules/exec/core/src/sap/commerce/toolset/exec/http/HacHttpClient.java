@@ -82,9 +82,9 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static org.apache.http.HttpVersion.HTTP_1_1;
 
 @Service(Service.Level.PROJECT)
-public final class HybrisHacHttpClient extends UserDataHolderBase {
+public final class HacHttpClient extends UserDataHolderBase {
 
-    private static final Logger LOG = Logger.getInstance(HybrisHacHttpClient.class);
+    private static final Logger LOG = Logger.getInstance(HacHttpClient.class);
     public static final int DEFAULT_HAC_TIMEOUT = 6000;
 
     @Serial
@@ -109,11 +109,11 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
 
     private final Map<String, Map<String, String>> cookiesPerSettings = new ConcurrentHashMap<>();
 
-    public static HybrisHacHttpClient getInstance(final Project project) {
-        return project.getService(HybrisHacHttpClient.class);
+    public static HacHttpClient getInstance(final Project project) {
+        return project.getService(HacHttpClient.class);
     }
 
-    public HybrisHacHttpClient(final Project project) {
+    public HacHttpClient(final Project project) {
         project.getMessageBus().connect().subscribe(RemoteConnectionListener.Companion.getTOPIC(), new RemoteConnectionListener() {
             @Override
             public void onHybrisConnectionModified(@NotNull final RemoteConnectionSettingsState remoteConnection) {
@@ -198,7 +198,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
         if (needsLogin) {
             cookiesPerSettings.remove(cookiesKey);
             if (canReLoginIfNeeded) {
-                return post(actionUrl, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, replicaContext);
+                return post(actionUrl, params, false, HacHttpClient.DEFAULT_HAC_TIMEOUT, settings, replicaContext);
             }
         }
         return response;
@@ -227,7 +227,7 @@ public final class HybrisHacHttpClient extends UserDataHolderBase {
             new BasicNameValuePair("_csrf", csrfToken)
         );
         final var loginURL = hostHacURL + "/j_spring_security_check";
-        final HttpResponse response = post(loginURL, params, false, HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT, settings, replicaContext);
+        final HttpResponse response = post(loginURL, params, false, HacHttpClient.DEFAULT_HAC_TIMEOUT, settings, replicaContext);
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY) {
             final Header location = response.getFirstHeader("Location");
             if (location != null && location.getValue().contains("login_error")) {

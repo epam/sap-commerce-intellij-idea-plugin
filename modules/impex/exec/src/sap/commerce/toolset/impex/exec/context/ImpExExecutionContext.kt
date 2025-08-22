@@ -21,7 +21,7 @@ package sap.commerce.toolset.impex.exec.context
 import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.context.ExecutionContext
-import sap.commerce.toolset.exec.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.http.HacHttpClient
 import java.nio.charset.StandardCharsets
 
 data class ImpExExecutionContext(
@@ -123,7 +123,7 @@ data class ImpExExecutionContext(
             Settings(
                 validationMode = ValidationMode.IMPORT_STRICT,
                 maxThreads = 20,
-                timeout = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,
+                timeout = HacHttpClient.DEFAULT_HAC_TIMEOUT,
                 encoding = StandardCharsets.UTF_8.name(),
                 legacyMode = Toggle.OFF,
                 enableCodeExecution = Toggle.ON,

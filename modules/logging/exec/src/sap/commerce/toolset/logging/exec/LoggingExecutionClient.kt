@@ -33,7 +33,7 @@ import org.apache.http.message.BasicNameValuePair
 import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.ExecutionClient
 import sap.commerce.toolset.exec.RemoteConnectionService
-import sap.commerce.toolset.exec.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.http.HacHttpClient
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.logging.CxLoggerModel
 import sap.commerce.toolset.logging.exec.context.LoggingExecutionContext
@@ -54,7 +54,7 @@ class LoggingExecutionClient(project: Project, coroutineScope: CoroutineScope) :
             .map { BasicNameValuePair(it.key, it.value) }
 
         val actionUrl = settings.generatedURL + "/platform/log4j/changeLevel/"
-        val response = HybrisHacHttpClient.getInstance(project)
+        val response = HacHttpClient.getInstance(project)
             .post(actionUrl, params, false, context.timeout, settings, null)
 
         val statusLine = response.statusLine

@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package sap.commerce.toolset.toolwindow
+package sap.commerce.toolset.exec.ui
 
 import com.intellij.credentialStore.Credentials
 import com.intellij.openapi.project.Project
@@ -27,11 +27,10 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.selected
 import sap.commerce.toolset.exec.RemoteConstants
-import sap.commerce.toolset.exec.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.http.HacHttpClient
 import sap.commerce.toolset.exec.settings.event.RemoteConnectionListener
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionScope
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionSettingsState
-import sap.commerce.toolset.exec.ui.AbstractRemoteConnectionDialog
 import java.awt.Component
 
 class RemoteHacConnectionDialog(
@@ -46,7 +45,7 @@ class RemoteHacConnectionDialog(
     override fun applyFields() {
         super.applyFields()
 
-        project.messageBus.syncPublisher(RemoteConnectionListener.TOPIC).onHybrisConnectionModified(settings)
+        project.messageBus.syncPublisher(RemoteConnectionListener.Companion.TOPIC).onHybrisConnectionModified(settings)
     }
 
     override fun createTestSettings() = with(RemoteConnectionSettingsState()) {
@@ -62,10 +61,10 @@ class RemoteHacConnectionDialog(
         this
     }
 
-    override fun testConnection(testSettings: RemoteConnectionSettingsState): String = HybrisHacHttpClient.getInstance(project)
+    override fun testConnection(testSettings: RemoteConnectionSettingsState): String = HacHttpClient.getInstance(project)
         .testConnection(testSettings)
 
-    override fun panel() = panel {
+    override fun panel() = com.intellij.ui.dsl.builder.panel {
         row {
             label("Connection name:")
                 .bold()

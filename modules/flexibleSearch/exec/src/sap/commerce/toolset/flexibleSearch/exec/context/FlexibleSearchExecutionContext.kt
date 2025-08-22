@@ -23,7 +23,7 @@ import com.intellij.openapi.util.Key
 import org.apache.commons.lang3.BooleanUtils
 import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.context.ExecutionContext
-import sap.commerce.toolset.exec.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.http.HacHttpClient
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.settings.state.TransactionMode
 
@@ -32,7 +32,7 @@ data class FlexibleSearchExecutionContext(
     private val transactionMode: TransactionMode = TransactionMode.ROLLBACK,
     private val queryMode: QueryMode = QueryMode.FlexibleSearch,
     private val settings: Settings,
-    val timeout: Int = HybrisHacHttpClient.DEFAULT_HAC_TIMEOUT,
+    val timeout: Int = HacHttpClient.DEFAULT_HAC_TIMEOUT,
 ) : ExecutionContext {
 
     override val executionTitle: String

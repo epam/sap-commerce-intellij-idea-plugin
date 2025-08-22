@@ -28,7 +28,7 @@ import org.apache.http.HttpStatus
 import org.apache.http.message.BasicNameValuePair
 import sap.commerce.toolset.exec.ExecutionClient
 import sap.commerce.toolset.exec.RemoteConnectionService
-import sap.commerce.toolset.exec.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.http.HacHttpClient
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionContext
 import sap.commerce.toolset.flexibleSearch.exec.context.FlexibleSearchExecutionResult
@@ -53,7 +53,7 @@ class FlexibleSearchExecutionClient(
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
-        val response = HybrisHacHttpClient.getInstance(project)
+        val response = HacHttpClient.getInstance(project)
             .post(actionUrl, params, true, context.timeout, settings, null)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode

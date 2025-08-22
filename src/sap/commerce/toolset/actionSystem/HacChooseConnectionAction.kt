@@ -27,8 +27,8 @@ import sap.commerce.toolset.HybrisIcons
 import sap.commerce.toolset.console.ConsoleUiConstants
 import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
+import sap.commerce.toolset.exec.ui.RemoteHacConnectionDialog
 import sap.commerce.toolset.options.ProjectIntegrationsSettingsConfigurableProvider
-import sap.commerce.toolset.toolwindow.RemoteHacConnectionDialog
 import sap.commerce.toolset.ui.ActionButtonWithTextAndDescription
 import sap.commerce.toolset.ui.actionSystem.HybrisActionPlaces
 import java.awt.Component

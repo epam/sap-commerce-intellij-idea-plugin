@@ -34,7 +34,7 @@ import org.jsoup.Jsoup
 import sap.commerce.toolset.exec.DefaultExecutionClient
 import sap.commerce.toolset.exec.RemoteConnectionService
 import sap.commerce.toolset.exec.context.DefaultExecutionResult
-import sap.commerce.toolset.exec.http.HybrisHacHttpClient
+import sap.commerce.toolset.exec.http.HacHttpClient
 import sap.commerce.toolset.exec.settings.state.RemoteConnectionType
 import sap.commerce.toolset.groovy.exec.context.GroovyExecutionContext
 import sap.commerce.toolset.groovy.exec.context.GroovyReplicaAwareContext
@@ -57,7 +57,7 @@ class GroovyExecutionClient(project: Project, coroutineScope: CoroutineScope) : 
         val params = context.params()
             .map { BasicNameValuePair(it.key, it.value) }
 
-        val response = HybrisHacHttpClient.getInstance(project)
+        val response = HacHttpClient.getInstance(project)
             .post(actionUrl, params, true, context.timeout, settings, context.replicaContext)
         val statusLine = response.statusLine
         val statusCode = statusLine.statusCode
