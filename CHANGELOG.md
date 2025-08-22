@@ -1,5 +1,12 @@
 ## [2025.2.3]
 
+### <!> BREAKING CHANGE <!>
+
+> Due severe API changes it is highly advised to backup project and import it from the scratch.
+> Please, report any issues via project's Slack or GitHub.
+
+- Complete rework of the project to Gradle multi-modular architecture [#1528](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1528)
+
 ### `SAP CX Logging` enhancements
 - Improve positioning of `[y] log level` CTA for classes with annotations [#1535](https://github.com/epam/sap-commerce-intellij-idea-plugin/pull/1535)
 
